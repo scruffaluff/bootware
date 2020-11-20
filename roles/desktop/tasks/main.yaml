@@ -1,0 +1,81 @@
+- name: Install web browsers for Debian distributions
+  apt:
+    name:
+      - firefox
+      - google-chrome-stable
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install web browsers for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name:
+      - firefox
+      - google-chrome
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Add howdy repository from PPA for Debian distributions
+  apt_repository:
+    repo: ppa:boltgolt/howdy
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install camera and facial ID support for Debian distributions
+  apt:
+    name:
+      - cheese
+      - howdy
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+# Spotify is unreliable with maintaing debs and flatpaks. Best to install with
+# operating system application store.
+# - name: Install Spotify for Linux
+#   become: yes
+#   community.general.flatpak:
+#     name: com.spotify.Client
+#   when: ansible_system == "Linux"
+
+- name: Install Spotify for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: spotify
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Create background pictures directory
+  become_user: "{{ user.account }}"
+  file:
+    path: "{{ user.home_dir}}/Pictures/background"
+    state: directory
+
+- name: Download desktop background picture
+  become_user: "{{ user.account }}"
+  get_url:
+    dest: "{{ user.home_dir}}/Pictures/background/white_and_gray_mountains.jpg"
+    mode: 0644
+    url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
+
+- name: Change GNOME settings for Linux
+  become_user: "{{ user.account }}"
+  shell:
+    cmd: |
+      gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user.account }}/Pictures/background/white_and_gray_mountains.jpg"
+      gsettings set org.gnome.desktop.interface gtk-theme Pop
+      gsettings set org.gnome.desktop.interface show-battery-percentage true
+      gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+      gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false  # Turn off automatic brightness
+  when: ansible_system == "Linux"
+
+- name: Change GNOME settings for PopOS
+  become_user: "{{ user.account }}"
+  shell:
+    cmd: |
+      gsettings set com.system76.hidpi enable false  # Remove HiDPI notifications
+      gsettings set com.system76.hidpi mode hidpi  # Turn on HiDPI mode
+  when: ansible_os_family == "Pop!_OS"
