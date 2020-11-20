@@ -1,0 +1,78 @@
+name: build
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+      - master
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Code repository checkout
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Node dependencies
+        run: |
+          npm install
+      - name: Check format of configuration files
+        run: |
+          npm run lint-test
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          outputs: type=docker,dest=/tmp/euclid.tar
+          tags: wolfgangwazzlestrauss/euclid:latest
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: euclid
+          path: /tmp/euclid.tar
+  test:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Code repository checkout
+        uses: actions/checkout@v2
+      - name: Copy Euclid configuration file
+        run: cp ./.github/host_vars/ubuntu.yaml $HOME/euclid.yaml
+      - name: Configure SSH daemon
+        run: |
+          sudo mv ./.github/configs/sshd_config /etc/ssh/sshd_config
+          sudo systemctl restart ssh
+      - name: Create SSH key and authorization files
+        run: |
+          ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa
+          cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+      - name: Set SSH file permissions
+        run: |
+          chmod 600 ~/.ssh/authorized_keys
+          chmod 700 ~/.ssh
+          sudo chmod 0755 ~/
+      - name: Test SSH connection to localhost
+        run: |
+          ssh -vvv -i ~/.ssh/id_rsa \
+            -o BatchMode=yes -o StrictHostKeyChecking=no runner@localhost
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: euclid
+          path: /tmp
+      - name: Load Docker image
+        run: |
+          docker load --input /tmp/euclid.tar
+          docker image ls -a
+      - name: Test bootstrapping
+        run: EUCLID_PASSWORDLESS_SUDO=1 ./euclid.sh --tag server
