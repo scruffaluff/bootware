@@ -1,0 +1,105 @@
+- name: Install Python Apt packages for Debian distributions
+  apt:
+    name:
+      - python3
+      - python3-dev
+      - python3-pip
+      - python3-venv
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Pyenv dependencies for Debian distributions
+  apt:
+    name:
+      - build-essential
+      - curl
+      - git
+      - libbluetooth-dev
+      - libbz2-dev
+      - libffi-dev
+      - liblzma-dev
+      - libncurses5-dev
+      - libncursesw5-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - libssl-dev
+      - llvm
+      - python-openssl
+      - tk-dev
+      - uuid-dev
+      - wget
+      - xz-utils
+      - zlib1g-dev
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install ONNX dependencies for Debian distributions
+  apt:
+    name:
+      - cmake
+      - libprotoc-dev
+      - protobuf-compiler
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Make system Python interpreter discoverable by Pyenv for Linux
+  become: yes
+  file:
+    src: /usr/bin/python3
+    dest: /usr/bin/python
+    mode: 0755
+    state: link
+  when: ansible_system == "Linux"
+
+- name: Install system Python packages and Pipx for Linux
+  become: yes
+  shell:
+    cmd: python3 -m pip install --upgrade pip pipx setuptools wheel
+  when: ansible_system == "Linux"
+
+- name: Install Pipx command line applications
+  become: yes
+  shell:
+    cmd: |
+      pipx install cookiecutter
+      pipx install gdbgui
+      pipx install poetry
+
+- name: Install Pyenv for Unix
+  become_user: "{{ user.account }}"
+  shell:
+    cmd: curl -Sfs https://pyenv.run | bash
+    creates: "{{ user.home_dir}}/.pyenv/bin/pyenv"
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install multiple Python versions for Unix
+  become_user: "{{ user.account }}"
+  shell:
+    cmd: |
+      pyenv install -s 3.9.0
+      pyenv install -s 3.8.6
+      pyenv install -s 3.7.9
+      pyenv install -s 3.6.12
+      pyenv global 3.9.0 3.8.6 3.7.9 3.6.12
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Jupyter settings directory
+  become_user: "{{ user.account }}"
+  file:
+    path: "{{ user.home_dir}}/.jupyter"
+    state: directory
+
+- name: Copy Jupyter notebook settings file
+  become_user: "{{ user.account }}"
+  copy:
+    dest: "{{ user.home_dir}}/.jupyter/jupyter_notebook_config.py"
+    force: yes
+    mode: 0755
+    src: jupyter_notebook_config.py
