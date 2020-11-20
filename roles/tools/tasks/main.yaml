@@ -18,3 +18,11 @@
       terraform_formula.json.versions.stable }}/terraform_{{
       terraform_formula.json.versions.stable }}_linux_amd64.zip
   when: ansible_system == "Linux"
+
+- name: Install Terraform for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: terraform
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"

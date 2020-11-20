@@ -32,6 +32,16 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install applications for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name:
+      - 1password
+      - google-backup-and-sync
+      - vlc
+    state: present
+  when: ansible_system == "Darwin"
+
 - name: Create background pictures directory
   become_user: "{{ user.account }}"
   file:
