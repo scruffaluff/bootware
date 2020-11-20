@@ -1,0 +1,48 @@
+- name: Set groups for standard user for Linux
+  become: yes
+  user:
+    name: "{{ user.account }}"
+    groups:
+      - docker
+      - sudo
+  when: ansible_system == "Linux"
+
+- name: Change user default shell to Fish for Unix
+  become: yes
+  user:
+    name: "{{ user.account }}"
+    shell: /usr/bin/fish
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Change computer hostname
+  hostname:
+    name: "{{ machine.name }}"
+  when: ansible_system == "Linux"
+
+- name: Install system packages for Debian distributions
+  apt:
+    name:
+      - flatpak
+      - neofetch
+      - pass
+      - tmate
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Add Flathub remote repository for Linux
+  become: yes
+  shell:
+    cmd:
+      flatpak remote-add --if-not-exists flathub
+      https://flathub.org/repo/flathub.flatpakrepo
+  when: ansible_system == "Linux"
+
+- name: Install Pass Docker credential helper for Linux
+  unarchive:
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+    src: https://github.com/docker/docker-credential-helpers/releases/download/v0.6.3/docker-credential-pass-v0.6.3-amd64.tar.gz
+  when: ansible_system == "Linux"
