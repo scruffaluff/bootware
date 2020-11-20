@@ -1,0 +1,87 @@
+- name: Set up system accounts and permissions
+  hosts: all
+  roles:
+    - system
+  tags:
+    - always
+    - server
+    - system
+
+- name: Install and configure shells
+  hosts: all
+  roles:
+    - shell
+  tags:
+    - desktop
+    - server
+    - shell
+
+- name: Install and configure Git
+  hosts: all
+  roles:
+    - git
+  tags:
+    - desktop
+    - git
+    - server
+
+- name: Install and configure Neovim
+  hosts: all
+  roles:
+    - neovim
+  tags:
+    - desktop
+    - neovim
+    - server
+
+- name: Install various tools
+  hosts: all
+  roles:
+    - tools
+  tags:
+    - desktop
+    - server
+    - tools
+
+- name: Configure desktop
+  hosts: all
+  roles:
+    - desktop
+  tags:
+    - desktop
+
+- name: Install Python
+  hosts: all
+  roles:
+    - python
+  tags:
+    - desktop
+    - python
+    - server
+
+- name: Install Rust
+  hosts: all
+  roles:
+    - rust
+  tags:
+    - desktop
+    - rust
+    - server
+
+- name: Install TypeScript
+  hosts: all
+  roles:
+    - typescript
+  tags:
+    - desktop
+    - server
+    - typescript
+
+- name: Install VSCode
+  hosts: all
+  roles:
+    - vscode
+  tags:
+    - desktop
+    - server
+    - vscode
