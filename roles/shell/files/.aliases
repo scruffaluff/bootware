@@ -1,0 +1,5 @@
+# Command line aliases.
+
+
+alias exa="exa -hl -s type --color auto"
+alias fd="fdfind --color auto"
