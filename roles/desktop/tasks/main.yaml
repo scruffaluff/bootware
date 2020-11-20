@@ -17,22 +17,6 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Add howdy repository from PPA for Debian distributions
-  apt_repository:
-    repo: ppa:boltgolt/howdy
-  become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
-
-- name: Install camera and facial ID support for Debian distributions
-  apt:
-    name:
-      - cheese
-      - howdy
-    state: latest
-    update_cache: yes
-  become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
-
 # Spotify is unreliable with maintaing debs and flatpaks. Best to install with
 # operating system application store.
 # - name: Install Spotify for Linux
