@@ -12,6 +12,18 @@
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
+- name: Install Homebrew shell packages for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name:
+      - bash
+      - fish
+      - shellcheck
+      - tmux
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
 - name: Download shell aliases file for Unix
   become_user: "{{ user.account }}"
   copy:
@@ -30,27 +42,41 @@
     src: .bashrc
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Fish settings directory for Linux
+- name: Create Fish settings directory for Unix
   become_user: "{{ user.account }}"
   file:
     path: "{{ user.home_dir}}/.config/fish"
     state: directory
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Fish functions directory for Linux
+- name: Create Fish functions directory for Unix
   become_user: "{{ user.account }}"
   file:
     path: "{{ user.home_dir}}/.config/fish/functions"
     state: directory
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Copy Fish settings file for Linux
+- name: Copy Fish settings file for Unix
   become_user: "{{ user.account }}"
   copy:
     dest: "{{ user.home_dir}}/.config/fish/config.fish"
     force: yes
     mode: 0755
     src: config.fish
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Change user default shell to Fish for MacOS
+  become: yes
+  user:
+    name: "{{ user.account }}"
+    shell: /usr/local/bin/fish
+  when: ansible_system == "Darwin"
+
+- name: Change user default shell to Fish for Linux
+  become: yes
+  user:
+    name: "{{ user.account }}"
+    shell: /usr/bin/fish
   when: ansible_system == "Linux"
 
 - name: Install Starship for shell prompts for Unix

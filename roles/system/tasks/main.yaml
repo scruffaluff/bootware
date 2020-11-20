@@ -7,13 +7,6 @@
       - sudo
   when: ansible_system == "Linux"
 
-- name: Change user default shell to Fish for Unix
-  become: yes
-  user:
-    name: "{{ user.account }}"
-    shell: /usr/bin/fish
-  when: ansible_system in ["Darwin", "Linux"]
-
 - name: Change computer hostname
   hostname:
     name: "{{ machine.name }}"
