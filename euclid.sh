@@ -48,7 +48,7 @@ bootstrap() {
 
     case "$_os_type" in
         Darwin)
-            _ip_flag=""
+            _ip_flag=()
             ;;
         Linux)
             find_docker_ip
@@ -73,7 +73,7 @@ bootstrap_password() {
         -v "$1:/root/.ssh/euclid" \
         -v "$2:/euclid/host_vars/host.docker.internal.yaml" \
         --rm \
-        "$4" "$5" \
+        ${4:+"$4"} ${5:+"$5"} \
         wolfgangwazzlestrauss/euclid:latest \
         --ask-become-pass \
         --tag "$3" \
@@ -87,7 +87,7 @@ bootstrap_passwordless() {
         -v "$1:/root/.ssh/euclid" \
         -v "$2:/euclid/host_vars/host.docker.internal.yaml" \
         --rm \
-        "$4" "$5" \
+        ${4:+"$4"} ${5:+"$5"} \
         wolfgangwazzlestrauss/euclid:latest \
         --tag "$3" \
         --user "$USER" \
