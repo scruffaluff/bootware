@@ -1,18 +1,18 @@
-- name: Create Neovim settings directory for Linux
+- name: Create Neovim settings directory for Unix
   become_user: "{{ user.account }}"
   file:
     path: "{{ user.home_dir}}/.config/nvim"
     state: directory
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Copy Neovim settings file for Linux
+- name: Copy Neovim settings file for Unix
   become_user: "{{ user.account }}"
   copy:
     dest: "{{ user.home_dir}}/.config/nvim/init.vim"
     force: yes
     mode: 0755
     src: init.vim
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Neovim for Debian distributions
   apt:
@@ -22,3 +22,11 @@
     update_cache: yes
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Neovim for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: neovim
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
