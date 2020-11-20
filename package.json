@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "lint-format": "prettier --write **/*.{css,html,js,json,md,ts,vue,yaml,yml}",
+    "lint-test": "prettier --check **/*.{css,html,js,json,md,ts,vue,yaml,yml}"
+  },
+  "devDependencies": {
+    "bats": "^1.2.1",
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 80,
+    "proseWrap": "always",
+    "semi": true,
+    "tabWidth": 2,
+    "trailingComma": "es5"
+  }
+}
