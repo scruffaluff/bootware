@@ -1,0 +1,7 @@
+machine:
+  name: host-name
+user:
+  account: user-name
+  email: user.name@gmail.com
+  home_dir: /home/user-name
+  name: User Name
