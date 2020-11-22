@@ -9,7 +9,7 @@
   get_url:
     dest: /tmp/dvc_amd64.deb
     mode: 0700
-    url: >
+    url: >-
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc_{{
       dvc_formula.json.versions.stable }}_amd64.deb

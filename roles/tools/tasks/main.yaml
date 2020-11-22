@@ -36,7 +36,7 @@
     mode: 0755
     owner: root
     remote_src: yes
-    src: >
+    src: >-
       https://releases.hashicorp.com/packer/{{
       packer_formula.json.versions.stable }}/packer_{{
       packer_formula.json.versions.stable }}_linux_amd64.zip

@@ -65,11 +65,9 @@
 
 - name: Install Pipx command line applications
   become: yes
+  loop: "{{ python_applications}}"
   shell:
-    cmd: |
-      pipx install cookiecutter
-      pipx install gdbgui
-      pipx install poetry
+    cmd: pipx install {{ item }}
 
 - name: Install Pyenv for Unix
   become_user: "{{ user_account }}"
@@ -83,24 +81,28 @@
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
-    cmd:
-      'pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
-      xargs'
-  register: python_releases
+    cmd: >-
+      pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
+      xargs
+  register: pyenv_releases
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Extract Python versions from Pyenv outputs
+  set_fact:
+    python_releases: "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
 
 - name: Install multiple Python versions for Unix
   become_user: "{{ user_account }}"
-  loop: "{{ python_releases.results }}"
+  loop: "{{ python_releases }}"
   shell:
-    cmd: pyenv install -s {{ item.stdout }}
+    cmd: pyenv install -s {{ item }}
   when: ansible_system in ["Darwin", "Linux"]
 
-# - name: Set Python global versions
-#   become_user: "{{ user_account }}"
-#   shell:
-#     cmd: "pyenv global {{ python_releases|reverse }}"
-#   when: ansible_system in ["Darwin", "Linux"]
+- name: Set Python global versions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: "pyenv global {{ python_releases | reverse | join(' ') }}"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Jupyter settings directory
   become_user: "{{ user_account }}"
