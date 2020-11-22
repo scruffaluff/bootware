@@ -36,26 +36,6 @@
 
 - name: Install VSCode extensions
   become_user: "{{ user_account }}"
+  loop: "{{ vscode_extensions }}"
   shell:
-    cmd: |
-      code --install-extension bungcip.better-toml
-      code --install-extension coenraads.bracket-pair-colorizer-2
-      code --install-extension eamodio.gitlens
-      code --install-extension esbenp.prettier-vscode
-      code --install-extension james-yu.latex-workshop
-      code --install-extension jroesch.lean
-      code --install-extension matklad.rust-analyzer
-      code --install-extension ms-dotnettools.csharp
-      code --install-extension ms-python.python
-      code --install-extension ms-python.vscode-pylance
-      code --install-extension ms-vscode-remote.vscode-remote-extensionpack
-      code --install-extension octref.vetur
-      code --install-extension ritwickdey.liveserver
-      code --install-extension ryanluker.vscode-coverage-gutters
-      code --install-extension skyapps.fish-vscode
-      code --install-extension stkb.rewrap
-      code --install-extension tabnine.tabnine-vscode
-      code --install-extension timonwong.shellcheck
-      code --install-extension vadimcn.vscode-lldb
-      code --install-extension vscode-icons-team.vscode-icons
-      code --install-extension yzhang.markdown-all-in-one
+    cmd: code --install-extension {{ item }}

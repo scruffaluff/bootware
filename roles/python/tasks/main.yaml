@@ -79,16 +79,28 @@
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Get latest patch release for each Python minor version
+  become_user: "{{ user_account }}"
+  loop: "{{ python_versions }}"
+  shell:
+    cmd:
+      'pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
+      xargs'
+  register: python_releases
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install multiple Python versions for Unix
   become_user: "{{ user_account }}"
+  loop: "{{ python_releases.results }}"
   shell:
-    cmd: |
-      pyenv install -s 3.9.0
-      pyenv install -s 3.8.6
-      pyenv install -s 3.7.9
-      pyenv install -s 3.6.12
-      pyenv global 3.9.0 3.8.6 3.7.9 3.6.12
+    cmd: pyenv install -s {{ item.stdout }}
   when: ansible_system in ["Darwin", "Linux"]
+
+# - name: Set Python global versions
+#   become_user: "{{ user_account }}"
+#   shell:
+#     cmd: "pyenv global {{ python_releases|reverse }}"
+#   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Jupyter settings directory
   become_user: "{{ user_account }}"

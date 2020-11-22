@@ -1,2 +1,5 @@
-user:
-  shell: /usr/bin/fish
+_shell:
+  Darwin: /usr/local/bin/fish
+  Linux: /usr/bin/fish
+  Windows: C:\\Program Files\\PowerShell\\7pwsh.exe
+user_shell: "{{ _shell[ansible_system] }}"

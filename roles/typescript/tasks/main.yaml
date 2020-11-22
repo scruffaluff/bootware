@@ -8,15 +8,18 @@
 
 - name: Install multiple Node versions for Unix
   become_user: "{{ user_account }}"
+  loop: "{{ node_versions }}"
   shell:
-    cmd: |
-      source $HOME/.nvm/nvm.sh
-      nvm install 14
-      nvm install 12
-      nvm install 10
-      nvm alias default 14
+    cmd: source $HOME/.nvm/nvm.sh && nvm install 14
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
+
+# - name: Set default Node version for Unix
+#   become_user: "{{ user_account }}"
+#   shell:
+#     cmd: "source $HOME/.nvm/nvm.sh && nvm default {{ node_versions[-1] }}"
+#     executable: /bin/bash
+#   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Node CLI applications for Unix
   become_user: "{{ user_account }}"

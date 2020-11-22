@@ -1,18 +1,3 @@
-machine_name: host-name # required
-node_versions:
-  - "10"
-  - "12"
-  - "14"
-python_versions:
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "3.9"
-user_account: user-name # required
-user_email: user.name@gmail.com
-user_home_dir: /home/user-name
-user_name: User Name # required
-user_shell: /usr/bin/fish
 vscode_extensions:
   - "bungcip.better-toml"
   - "coenraads.bracket-pair-colorizer-2"
