@@ -68,6 +68,7 @@
       gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user.account }}/Pictures/background/white_and_gray_mountains.jpg"
       gsettings set org.gnome.desktop.interface gtk-theme Pop
       gsettings set org.gnome.desktop.interface show-battery-percentage true
+      gsettings set org.gnome.desktop.notifications show-banners false
       gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
       gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false  # Turn off automatic brightness
   when: ansible_system == "Linux"

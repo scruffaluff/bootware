@@ -1,11 +1,8 @@
-# Colors (Solarized Light)
+# Solarized Light theme colors.
 colors:
-  # Default colors
   primary:
     background: '0xfdf6e3'
     foreground: '0x586e75'
-
-  # Normal colors
   normal:
     black:   '0x073642'
     red:     '0xdc322f'
@@ -15,8 +12,6 @@ colors:
     magenta: '0xd33682'
     cyan:    '0x2aa198'
     white:   '0xeee8d5'
-
-  # Bright colors
   bright:
     black:   '0x002b36'
     red:     '0xcb4b16'
@@ -26,7 +21,25 @@ colors:
     magenta: '0x6c71c4'
     cyan:    '0x93a1a1'
     white:   '0xfdf6e3'
+
 cursor:
   style: Beam
+
+font:
+  normal:
+    family: fira-code
+    style: Regular
+  bold:
+    family: fira-code
+    style: Bold
+  italic:
+    family: fira-code
+    style: Italic
+  bold_italic:
+    family: fira-code
+    style: Bold Italic
+
+size: 14.0
+
 shell:
   program: {{ user.shell }}
