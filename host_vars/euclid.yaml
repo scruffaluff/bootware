@@ -5,3 +5,4 @@ user:
   email: user.name@gmail.com
   home_dir: /home/user-name
   name: User Name
+  shell: /usr/bin/fish

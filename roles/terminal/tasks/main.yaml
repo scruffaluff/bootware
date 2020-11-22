@@ -1,0 +1,58 @@
+- name: Install Alacritty for Debian distributions
+  apt:
+    name: alacritty
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Alacritty for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: alacritty
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Create Alacritty configuration directory for Unix
+  become_user: "{{ user.account }}"
+  file:
+    path: "{{ user.home_dir}}/.config/alacritty/"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Alacritty configuration directory for Windows
+  become_user: "{{ user.account }}"
+  file:
+    path: "{{ user.home_dir}}/AppData/Roaming/alacritty/"
+    state: directory
+  when: ansible_system == "Windows"
+
+- name: Copy Alacritty configuration file for Unix
+  become_user: "{{ user.account }}"
+  template:
+    dest: "{{ user.home_dir}}/.config/alacritty/alacritty.yml"
+    force: yes
+    mode: 0644
+    src: alacritty.j2
+  when: ansible_system == "Linux"
+
+- name: Tap Homebrew fonts for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+  when: ansible_system == "Darwin"
+
+- name: Install Fira Code font for Debian distributions
+  apt:
+    name: fonts-firacode
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Fira Code font for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: font-fira-code
+    state: present
+  when: ansible_system == "Darwin"

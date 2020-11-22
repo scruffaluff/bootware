@@ -50,6 +50,13 @@
   tags:
     - desktop
 
+- name: Configure terminals
+  hosts: all
+  roles:
+    - terminal
+  tags:
+    - desktop
+
 - name: Install Python
   hosts: all
   roles:

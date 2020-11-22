@@ -1,24 +1,3 @@
-- name: Install Fira Code font for Debian distributions
-  apt:
-    name: fonts-firacode
-    state: latest
-    update_cache: yes
-  become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
-
-- name: Tap Homebrew fonts for MacOS
-  become_user: "{{ user.account }}"
-  community.general.homebrew_tap:
-    name: homebrew/cask-fonts
-  when: ansible_system == "Darwin"
-
-- name: Install Fira Code font for MacOS
-  become_user: "{{ user.account }}"
-  community.general.homebrew_cask:
-    name: font-fira-code
-    state: present
-  when: ansible_system == "Darwin"
-
 # Spotify is unreliable with maintaing debs and flatpaks. Best to install with
 # operating system application store.
 # - name: Install Spotify for Linux

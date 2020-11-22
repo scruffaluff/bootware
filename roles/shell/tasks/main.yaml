@@ -25,7 +25,7 @@
     update_homebrew: yes
   when: ansible_system == "Darwin"
 
-- name: Download shell aliases file for Unix
+- name: Copy shell aliases file for Unix
   become_user: "{{ user.account }}"
   copy:
     dest: "{{ user.home_dir}}/.aliases"
@@ -34,7 +34,7 @@
     src: .aliases
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Download Bash settings file for Unix
+- name: Copy Bash settings file for Unix
   become_user: "{{ user.account }}"
   copy:
     dest: "{{ user.home_dir }}/.bashrc"
