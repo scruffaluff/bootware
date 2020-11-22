@@ -43,21 +43,6 @@
     - server
     - tools
 
-- name: Configure desktop
-  hosts: all
-  roles:
-    - desktop
-  tags:
-    - desktop
-
-- name: Configure terminals
-  hosts: all
-  roles:
-    - terminal
-  tags:
-    - desktop
-    - terminal
-
 - name: Install Python
   hosts: all
   roles:
@@ -85,11 +70,33 @@
     - server
     - typescript
 
+- name: Configure desktop
+  hosts: all
+  roles:
+    - desktop
+  tags:
+    - desktop
+
+- name: Configure terminals
+  hosts: all
+  roles:
+    - terminal
+  tags:
+    - desktop
+    - terminal
+
+- name: Configure virtual machines
+  hosts: all
+  roles:
+    - vm
+  tags:
+    - desktop
+    - vm
+
 - name: Install VSCode
   hosts: all
   roles:
     - vscode
   tags:
     - desktop
-    - server
     - vscode

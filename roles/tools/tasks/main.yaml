@@ -14,6 +14,13 @@
     update_homebrew: yes
   when: ansible_system == "Darwin"
 
+- name: Install Google Cloud SDK for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: google-cloud-sdk
+    state: latest
+  when: ansible_system == "Darwin"
+
 - name: Get latest Packer version
   uri:
     url: https://formulae.brew.sh/api/formula/packer.json
