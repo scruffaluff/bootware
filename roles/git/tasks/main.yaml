@@ -22,7 +22,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install DVC for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dvc
     state: latest
@@ -40,7 +40,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Git for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - git
@@ -58,9 +58,9 @@
   when: ansible_system == "Windows"
 
 - name: Copy Git configuration file
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/.gitconfig"
+    dest: "{{ user_home_dir}}/.gitconfig"
     force: yes
     mode: 0644
     src: gitconfig.j2

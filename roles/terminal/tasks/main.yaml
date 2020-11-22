@@ -7,52 +7,52 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Alacritty for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: alacritty
     state: present
   when: ansible_system == "Darwin"
 
 - name: Create Alacritty configuration directory for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/alacritty/"
+    path: "{{ user_home_dir}}/.config/alacritty/"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Alacritty configuration directory for Windows
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/AppData/Roaming/alacritty/"
+    path: "{{ user_home_dir}}/AppData/Roaming/alacritty/"
     state: directory
   when: ansible_system == "Windows"
 
 - name: Copy Alacritty configuration file for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/.config/alacritty/alacritty.yml"
+    dest: "{{ user_home_dir}}/.config/alacritty/alacritty.yml"
     force: yes
     mode: 0644
     src: alacritty.j2
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Alacritty configuration file for Windows
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/AppData/Roaming/alacritty/alacritty.yml"
+    dest: "{{ user_home_dir}}/AppData/Roaming/alacritty/alacritty.yml"
     force: yes
     mode: 0644
     src: alacritty.j2
   when: ansible_system == "Windows"
 
 - name: Tap Homebrew fonts for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: homebrew/cask-fonts
   when: ansible_system == "Darwin"
 
 - name: Change GNOME terminal default profile for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       GNOME_TERMINAL_PROFILE=$(gsettings get org.gnome.Terminal.ProfilesList default)
@@ -72,7 +72,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Fira Code font for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: font-fira-code
     state: present
@@ -92,55 +92,55 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Hyper for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: hyper
     state: present
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/Hyper/"
+    path: "{{ user_home_dir}}/.config/Hyper/"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Create Hyper configuration directory for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/Library/Application Support/Hyper/"
+    path: "{{ user_home_dir}}/Library/Application Support/Hyper/"
     state: directory
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/AppData/Roaming/Hyper/"
+    path: "{{ user_home_dir}}/AppData/Roaming/Hyper/"
     state: directory
   when: ansible_system == "Windows"
 
 - name: Copy Hyper configuration file for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/.config/Hyper/.hyper.js"
+    dest: "{{ user_home_dir}}/.config/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2
   when: ansible_system == "Linux"
 
 - name: Copy Hyper configuration file for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/Library/Application Support/Hyper/.hyper.js"
+    dest: "{{ user_home_dir}}/Library/Application Support/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2
   when: ansible_system == "Darwin"
 
 - name: Copy Hyper configuration file for Windows
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   template:
-    dest: "{{ user.home_dir}}/AppData/Roaming/Hyper/.hyper.js"
+    dest: "{{ user_home_dir}}/AppData/Roaming/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2

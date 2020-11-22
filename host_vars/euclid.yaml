@@ -1,8 +1,6 @@
-machine:
-  name: host-name
-user:
-  account: user-name
-  email: user.name@gmail.com
-  home_dir: /home/user-name
-  name: User Name
-  shell: /usr/bin/fish
+machine_name: host-name
+user_account: user-name
+user_email: user.name@gmail.com
+user_home_dir: /home/user-name
+user_name: User Name
+user_shell: /usr/bin/fish

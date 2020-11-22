@@ -7,7 +7,7 @@
 #   when: ansible_system == "Linux"
 
 - name: Install Spotify for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: spotify
     state: present
@@ -24,7 +24,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install web browsers for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name:
       - firefox
@@ -33,7 +33,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install general applications for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name:
       - 1password
@@ -49,23 +49,23 @@
   when: ansible_system == "Darwin"
 
 - name: Create background pictures directory
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/Pictures/background"
+    path: "{{ user_home_dir}}/Pictures/background"
     state: directory
 
 - name: Download desktop background picture
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   get_url:
-    dest: "{{ user.home_dir}}/Pictures/background/white_and_gray_mountains.jpg"
+    dest: "{{ user_home_dir}}/Pictures/background/white_and_gray_mountains.jpg"
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
 
 - name: Change desktop settings for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user.account }}/Pictures/background/white_and_gray_mountains.jpg"
+      gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user_account }}/Pictures/background/white_and_gray_mountains.jpg"
       gsettings set org.gnome.desktop.interface gtk-theme Pop
       gsettings set org.gnome.desktop.interface show-battery-percentage true
       gsettings set org.gnome.desktop.notifications show-banners false
@@ -74,7 +74,7 @@
   when: ansible_system == "Linux"
 
 - name: Change desktop settings for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       defaults write com.apple.dock autohide -bool true
@@ -83,7 +83,7 @@
   when: ansible_system == "Darwin"
 
 - name: Change desktop settings for PopOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       gsettings set com.system76.hidpi enable false  # Remove HiDPI notifications

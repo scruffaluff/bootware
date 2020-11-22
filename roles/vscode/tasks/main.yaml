@@ -12,30 +12,30 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install VSCode for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: visual-studio-code
     state: present
   when: ansible_system == "Darwin"
 
 - name: Create VSCode user directory for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/Code/User/"
+    path: "{{ user_home_dir}}/.config/Code/User/"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Copy VSCode settings file for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user.home_dir}}/.config/Code/User/settings.json"
+    dest: "{{ user_home_dir}}/.config/Code/User/settings.json"
     force: yes
     mode: 0644
     src: settings.json
   when: ansible_system == "Linux"
 
 - name: Install VSCode extensions
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       code --install-extension bungcip.better-toml

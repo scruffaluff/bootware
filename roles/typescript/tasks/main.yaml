@@ -1,5 +1,5 @@
 - name: Install Node version manager for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
@@ -7,7 +7,7 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install multiple Node versions for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       source $HOME/.nvm/nvm.sh
@@ -19,7 +19,7 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Node CLI applications for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       source $HOME/.nvm/nvm.sh
@@ -28,22 +28,22 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Node CLI applications for Windows
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: npm install -g gitmoji-cli @vue/cli
   when: ansible_system == "Windows"
 
 - name: Create Fish functions directory for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/fish/functions"
+    path: "{{ user_home_dir}}/.config/fish/functions"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Download fast NVM Fish for Linux
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   get_url:
-    dest: "{{ user.home_dir}}/.config/fish/functions/nvm.fish"
+    dest: "{{ user_home_dir}}/.config/fish/functions/nvm.fish"
     mode: 0755
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
   when: ansible_system == "Linux"

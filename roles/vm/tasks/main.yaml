@@ -9,7 +9,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install QEMU for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - qemu
@@ -34,7 +34,7 @@
 #   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install VirtualBox for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name:
       - virtualbox

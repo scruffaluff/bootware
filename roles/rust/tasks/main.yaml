@@ -11,15 +11,15 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Rust for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://sh.rustup.rs | sh -s -- -y --no-modify-path
-    creates: "{{ user.home_dir}}/.cargo/bin/cargo"
+    creates: "{{ user_home_dir}}/.cargo/bin/cargo"
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Add Rust components and targets
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       rustup component add clippy
@@ -27,14 +27,14 @@
       rustup target add wasm32-wasi
 
 - name: Install Cargo packges
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       cargo install \
         cargo-edit cargo-generate cargo-make cargo-tarpaulin cargo-watch
 
 - name: Install Wasmtime for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://wasmtime.dev/install.sh | bash
     warn: no

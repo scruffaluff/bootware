@@ -13,7 +13,7 @@
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Homebrew shell packages for MacOS
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - bash
@@ -26,41 +26,41 @@
   when: ansible_system == "Darwin"
 
 - name: Copy shell aliases file for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user.home_dir}}/.aliases"
+    dest: "{{ user_home_dir}}/.aliases"
     force: yes
     mode: 0755
     src: .aliases
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Bash settings file for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user.home_dir }}/.bashrc"
+    dest: "{{ user_home_dir }}/.bashrc"
     force: yes
     mode: 0755
     src: .bashrc
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish settings directory for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/fish"
+    path: "{{ user_home_dir}}/.config/fish"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish functions directory for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   file:
-    path: "{{ user.home_dir}}/.config/fish/functions"
+    path: "{{ user_home_dir}}/.config/fish/functions"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Fish settings file for Unix
-  become_user: "{{ user.account }}"
+  become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user.home_dir}}/.config/fish/config.fish"
+    dest: "{{ user_home_dir}}/.config/fish/config.fish"
     force: yes
     mode: 0755
     src: config.fish
@@ -69,14 +69,14 @@
 - name: Change user default shell to Fish for MacOS
   become: yes
   user:
-    name: "{{ user.account }}"
+    name: "{{ user_account }}"
     shell: /usr/local/bin/fish
   when: ansible_system == "Darwin"
 
 - name: Change user default shell to Fish for Linux
   become: yes
   user:
-    name: "{{ user.account }}"
+    name: "{{ user_account }}"
     shell: /usr/bin/fish
   when: ansible_system == "Linux"
 
