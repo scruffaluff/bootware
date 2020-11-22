@@ -17,6 +17,7 @@
   community.general.homebrew:
     name:
       - bash
+      - bash-completion
       - fish
       - shellcheck
       - tmux

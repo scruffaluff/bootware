@@ -1,3 +1,39 @@
+- name: Install Fira Code font for Debian distributions
+  apt:
+    name: fonts-firacode
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Tap Homebrew fonts for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+  when: ansible_system == "Darwin"
+
+- name: Install Fira Code font for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: font-fira-code
+    state: present
+  when: ansible_system == "Darwin"
+
+# Spotify is unreliable with maintaing debs and flatpaks. Best to install with
+# operating system application store.
+# - name: Install Spotify for Linux
+#   become: yes
+#   community.general.flatpak:
+#     name: com.spotify.Client
+#   when: ansible_system == "Linux"
+
+- name: Install Spotify for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew_cask:
+    name: spotify
+    state: present
+  when: ansible_system == "Darwin"
+
 - name: Install web browsers for Debian distributions
   apt:
     name:
@@ -17,27 +53,18 @@
     state: present
   when: ansible_system == "Darwin"
 
-# Spotify is unreliable with maintaing debs and flatpaks. Best to install with
-# operating system application store.
-# - name: Install Spotify for Linux
-#   become: yes
-#   community.general.flatpak:
-#     name: com.spotify.Client
-#   when: ansible_system == "Linux"
-
-- name: Install Spotify for MacOS
-  become_user: "{{ user.account }}"
-  community.general.homebrew_cask:
-    name: spotify
-    state: present
-  when: ansible_system == "Darwin"
-
-- name: Install applications for MacOS
+- name: Install general applications for MacOS
   become_user: "{{ user.account }}"
   community.general.homebrew_cask:
     name:
       - 1password
+      - balenaetcher
+      - discord
       - google-backup-and-sync
+      - hyper
+      - mongodb-compass
+      - postman
+      - slack
       - vlc
     state: present
   when: ansible_system == "Darwin"
@@ -55,7 +82,7 @@
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
 
-- name: Change GNOME settings for Linux
+- name: Change desktop settings for Linux
   become_user: "{{ user.account }}"
   shell:
     cmd: |
@@ -66,7 +93,16 @@
       gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false  # Turn off automatic brightness
   when: ansible_system == "Linux"
 
-- name: Change GNOME settings for PopOS
+- name: Change desktop settings for MacOS
+  become_user: "{{ user.account }}"
+  shell:
+    cmd: |
+      defaults write com.apple.dock autohide -bool true
+      defaults write com.apple.dock magnification -bool true
+      defaults write com.apple.dock show-recents 0
+  when: ansible_system == "Darwin"
+
+- name: Change desktop settings for PopOS
   become_user: "{{ user.account }}"
   shell:
     cmd: |

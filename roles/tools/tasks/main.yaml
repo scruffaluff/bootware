@@ -26,3 +26,11 @@
     state: latest
     update_homebrew: yes
   when: ansible_system == "Darwin"
+
+- name: Install AWSCLI for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: awscli
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
