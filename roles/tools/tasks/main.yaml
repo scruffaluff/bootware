@@ -1,3 +1,73 @@
+- name: Install AWSCLI for Debian distributions
+  apt:
+    name: awscli
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install AWSCLI for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: awscli
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Get latest Packer version
+  uri:
+    url: https://formulae.brew.sh/api/formula/packer.json
+    method: GET
+    return_content: yes
+  register: packer_formula
+
+- name: Install Packer for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >
+      https://releases.hashicorp.com/packer/{{
+      packer_formula.json.versions.stable }}/packer_{{
+      packer_formula.json.versions.stable }}_linux_amd64.zip
+  when: ansible_system == "Linux"
+
+- name: Install Packer for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: packer
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Install SQLite for Debian distributions
+  apt:
+    name: sqlite3
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install SQLite for MacOS
+  become_user: "{{ user.account }}"
+  community.general.homebrew:
+    name: sqlite
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Copy SQLite settings file for Unix
+  become_user: "{{ user.account }}"
+  copy:
+    dest: "{{ user.home_dir}}/.sqliterc"
+    force: yes
+    mode: 0644
+    src: .sqliterc
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Get latest Terrafrom version
   uri:
     url: https://formulae.brew.sh/api/formula/terraform.json
@@ -23,14 +93,6 @@
   become_user: "{{ user.account }}"
   community.general.homebrew:
     name: terraform
-    state: latest
-    update_homebrew: yes
-  when: ansible_system == "Darwin"
-
-- name: Install AWSCLI for MacOS
-  become_user: "{{ user.account }}"
-  community.general.homebrew:
-    name: awscli
     state: latest
     update_homebrew: yes
   when: ansible_system == "Darwin"
