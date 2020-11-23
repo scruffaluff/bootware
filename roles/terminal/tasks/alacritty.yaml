@@ -1,0 +1,46 @@
+- name: Install Alacritty for Debian distributions
+  apt:
+    name: alacritty
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Alacritty for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: alacritty
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Create Alacritty configuration directory for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir}}/.config/alacritty/"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Alacritty configuration directory for Windows
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir}}/AppData/Roaming/alacritty/"
+    state: directory
+  when: ansible_system == "Windows"
+
+- name: Copy Alacritty configuration file for Unix
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir}}/.config/alacritty/alacritty.yml"
+    force: yes
+    mode: 0644
+    src: alacritty.j2
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Copy Alacritty configuration file for Windows
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir}}/AppData/Roaming/alacritty/alacritty.yml"
+    force: yes
+    mode: 0644
+    src: alacritty.j2
+  when: ansible_system == "Windows"

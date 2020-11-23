@@ -1,0 +1,11 @@
+- name: Change GNOME terminal default profile for Linux
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      GNOME_TERMINAL_PROFILE=$(gsettings get org.gnome.Terminal.ProfilesList default)
+      gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/legacy/profiles:/:$GNOME_TERMINAL_PROFILE/ cursor-background-color "rgb(0,0,0)"
+      gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/legacy/profiles:/:$GNOME_TERMINAL_PROFILE/ cursor-blink-mode on
+      gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/legacy/profiles:/:$GNOME_TERMINAL_PROFILE/ cursor-shape ibeam
+      gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/legacy/profiles:/:$GNOME_TERMINAL_PROFILE/ font "Fira Code 14"
+      gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/legacy/profiles:/:$GNOME_TERMINAL_PROFILE/ visible-name "Solarized Light"
+  when: ansible_system == "Linux"
