@@ -63,19 +63,45 @@
     cmd: python3 -m pip install --upgrade pip pipx setuptools wheel
   when: ansible_system == "Linux"
 
-- name: Install Pipx command line applications
-  become: yes
-  loop: "{{ python_applications}}"
-  shell:
-    cmd: pipx install {{ item }}
+- name: Install Pipx for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: pipx
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
 
-- name: Install Pyenv for Unix
+- name: Install Pipx command line applications for Linux
+  become: yes
+  loop: "{{ python_applications }}"
+  shell:
+    cmd: /usr/local/bin/pipx install {{ item }}
+    executable: /bin/bash
+  when: ansible_system == "Linux"
+
+- name: Install Pipx command line applications for MacOS
+  become_user: "{{ user_account }}"
+  loop: "{{ python_applications }}"
+  shell:
+    cmd: /usr/local/bin/pipx install {{ item }}
+    executable: /bin/bash
+  when: ansible_system == "Darwin"
+
+- name: Install Pyenv for Linux
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ user_home_dir}}/.pyenv/bin/pyenv"
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
+
+- name: Install Pyenv for Macos
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: pipx
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
 
 - name: Get latest patch release for each Python minor version
   become_user: "{{ user_account }}"
