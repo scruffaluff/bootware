@@ -53,7 +53,8 @@
 
 - name: Extract Python versions from Pyenv outputs
   set_fact:
-    python_releases: "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
+    python_releases:
+      "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
 
 - name: Install multiple Python versions for Unix
   become_user: "{{ user_account }}"

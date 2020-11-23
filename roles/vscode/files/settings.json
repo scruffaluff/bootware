@@ -63,6 +63,7 @@
   "latex-workshop.view.pdf.viewer": "tab",
   "powershell.integratedConsole.showOnStartup": false,
   "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
   "python.linting.flake8Args": ["--max-line-length=80"],
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,

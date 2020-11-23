@@ -1,7 +1,5 @@
-machine:
-  name: github-runner-ubuntu
-user:
-  account: runner
-  email: ubuntu.runner@github.com
-  home_dir: /home/runner
-  name: Ubuntu Runner
+machine_name: github-runner-ubuntu
+user_account: runner
+user_email: ubuntu.runner@github.com
+user_home_dir: /home/runner
+user_name: Ubuntu Runner

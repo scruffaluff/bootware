@@ -1,2 +1,2 @@
-user_email: "{{ user_name|lower|replace(' ', '.') }}@gmail.com"
+user_email: "{{ user_name | lower | replace(' ', '.') }}@gmail.com"
 user_name: User Name
