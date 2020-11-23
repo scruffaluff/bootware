@@ -15,6 +15,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows
+  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: sqlite

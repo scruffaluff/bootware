@@ -1,0 +1,29 @@
+- name: Install Pipx for Linux
+  become: yes
+  shell:
+    cmd: python3 -m pip install --upgrade pipx
+  when: ansible_system == "Linux"
+
+- name: Install Pipx for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: pipx
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Install Pipx for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: pipx
+  when: ansible_system == "Windows"
+
+# Pipx installs applications per user, so user_account is required.
+- name: Install Pipx command line applications for Unix
+  become_user: "{{ user_account }}"
+  loop: "{{ python_applications }}"
+  shell:
+    cmd: "/usr/local/bin/pipx install {{ item }}"
+    executable: /bin/bash
+  when: ansible_system in ["Darwin", "Linux"]

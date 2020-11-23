@@ -50,11 +50,12 @@
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows
+  become_user: "{{ user_account }}"
   community.windows.win_scoop:
+    architecture: 64bit
     name:
       - git
       - git-lfs
-    state: present
   when: ansible_system == "Windows"
 
 - name: Copy Git configuration file

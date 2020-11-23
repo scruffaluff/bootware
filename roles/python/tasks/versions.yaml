@@ -1,0 +1,69 @@
+- name: Install Pyenv dependencies for Debian distributions
+  apt:
+    name:
+      - build-essential
+      - curl
+      - git
+      - libbluetooth-dev
+      - libbz2-dev
+      - libffi-dev
+      - liblzma-dev
+      - libncurses5-dev
+      - libncursesw5-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - libssl-dev
+      - llvm
+      - python3-openssl
+      - tk-dev
+      - uuid-dev
+      - wget
+      - xz-utils
+      - zlib1g-dev
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Pyenv for Linux
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: curl -Sfs https://pyenv.run | bash
+    creates: "{{ user_home_dir}}/.pyenv/bin/pyenv"
+    warn: no
+  when: ansible_system == "Linux"
+
+- name: Install Pyenv for Macos
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: pipx
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Get latest patch release for each Python minor version
+  become_user: "{{ user_account }}"
+  loop: "{{ python_versions }}"
+  shell:
+    cmd: >-
+      pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
+      xargs
+  register: pyenv_releases
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Extract Python versions from Pyenv outputs
+  set_fact:
+    python_releases: "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
+
+- name: Install multiple Python versions for Unix
+  become_user: "{{ user_account }}"
+  loop: "{{ python_releases }}"
+  shell:
+    cmd: pyenv install -s {{ item }}
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Set Python global versions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: "pyenv global {{ python_releases | reverse | join(' ') }}"
+  when: ansible_system in ["Darwin", "Linux"]

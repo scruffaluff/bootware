@@ -1,0 +1,31 @@
+- name: Install Python Apt packages for Debian distributions
+  apt:
+    name:
+      - python3
+      - python3-dev
+      - python3-pip
+      - python3-venv
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install ONNX dependencies for Debian distributions
+  apt:
+    name:
+      - cmake
+      - libprotoc-dev
+      - protobuf-compiler
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Make system Python interpreter discoverable by Pyenv for Linux
+  become: yes
+  file:
+    src: /usr/bin/python3
+    dest: /usr/bin/python
+    mode: 0755
+    state: link
+  when: ansible_system == "Linux"
