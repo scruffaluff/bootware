@@ -1,0 +1,22 @@
+- name: Install AWSCLI for Debian distributions
+  apt:
+    name: awscli
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install AWSCLI for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: awscli
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Install Google Cloud SDK for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: google-cloud-sdk
+    state: latest
+  when: ansible_system == "Darwin"
