@@ -14,18 +14,19 @@
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
-# - name: Set default Node version for Unix
-#   become_user: "{{ user_account }}"
-#   shell:
-#     cmd: "source $HOME/.nvm/nvm.sh && nvm default {{ node_versions[-1] }}"
-#     executable: /bin/bash
-#   when: ansible_system in ["Darwin", "Linux"]
+- name: Set default Node version for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: "source $HOME/.nvm/nvm.sh && nvm alias default {{ node_versions[-1] }}"
+    executable: /bin/bash
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Node CLI applications for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: |
       source $HOME/.nvm/nvm.sh
+      nvm use {{ node_versions[-1] }}
       npm install -g gitmoji-cli @vue/cli
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
