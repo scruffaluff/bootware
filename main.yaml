@@ -16,13 +16,13 @@
     - server
     - shell
 
-- name: Install and configure Git
+- name: Install and configure version control systems
   hosts: all
   roles:
-    - git
+    - vcs
   tags:
     - desktop
-    - git
+    - vcs
     - server
 
 - name: Install and configure Neovim
