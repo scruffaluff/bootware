@@ -1,0 +1,30 @@
+- name: Get latest DVC version
+  uri:
+    url: https://formulae.brew.sh/api/formula/dvc.json
+    method: GET
+    return_content: yes
+  register: dvc_formula
+
+- name: Download DVC for Debian distributions
+  get_url:
+    dest: /tmp/dvc_amd64.deb
+    mode: 0700
+    url: >-
+      https://github.com/iterative/dvc/releases/download/{{
+      dvc_formula.json.versions.stable }}/dvc_{{
+      dvc_formula.json.versions.stable }}_amd64.deb
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install DVC for Debian distributions
+  apt:
+    deb: /tmp/dvc_amd64.deb
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install DVC for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: dvc
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"

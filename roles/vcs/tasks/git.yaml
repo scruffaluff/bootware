@@ -1,0 +1,36 @@
+- name: Install Git for Debian distributions
+  apt:
+    name:
+      - git
+      - git-lfs
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Git for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - git
+      - git-lfs
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Install Git for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - git
+      - git-lfs
+  when: ansible_system == "Windows"
+
+- name: Copy Git configuration file
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir}}/.gitconfig"
+    force: yes
+    mode: 0644
+    src: gitconfig.j2
