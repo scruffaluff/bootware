@@ -1,0 +1,6 @@
+- name: Install Wasmtime for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: curl -Sfs https://wasmtime.dev/install.sh | bash
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]

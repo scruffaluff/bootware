@@ -1,43 +1,11 @@
-- name: Install QEMU for Debian distributions
-  apt:
-    name:
-      - qemu-kvm
-      - qemu-system
-    state: latest
-    update_cache: yes
-  become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+- name: Install Docker
+  import_tasks: docker.yaml
 
-- name: Install QEMU for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name:
-      - qemu
-    state: present
-  when: ansible_system == "Darwin"
+- name: Install QEMU
+  import_tasks: qemu.yaml
 
-- name: Install VirtualBox for Debian distributions
-  apt:
-    name:
-      - virtualbox
-    state: latest
-    update_cache: yes
-  become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+- name: Install VirtualBox
+  import_tasks: virtualbox.yaml
 
-# Cannot use Apt module since the extension pack requires addtional arguments to
-# prevent an interactive license agreement prompt.
-# - name: Install VirtualBox extension pack for Debian distributions
-#   become: yes
-#   shell:
-#     cmd: yes | apt-get install -y virtualbox-ext-pack
-#   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
-
-- name: Install VirtualBox for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    name:
-      - virtualbox
-      - virtualbox-extension-pack
-    state: present
-  when: ansible_system == "Darwin"
+- name: Install WASM utilities
+  import_tasks: wasm.yaml

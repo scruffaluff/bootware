@@ -32,10 +32,3 @@
     cmd: |
       cargo install \
         cargo-edit cargo-generate cargo-make cargo-tarpaulin cargo-watch
-
-- name: Install Wasmtime for Unix
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: curl -Sfs https://wasmtime.dev/install.sh | bash
-    warn: no
-  when: ansible_system in ["Darwin", "Linux"]

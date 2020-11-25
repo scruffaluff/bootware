@@ -1,0 +1,19 @@
+# Cannot automated install the VirutalBox extension pack, since it requires
+# addtional arguments to prevent an interactive license agreement prompt.
+
+- name: Install VirtualBox for Debian distributions
+  apt:
+    name:
+      - virtualbox
+    state: latest
+    update_cache: yes
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install VirtualBox for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name:
+      - virtualbox
+    state: present
+  when: ansible_system == "Darwin"
