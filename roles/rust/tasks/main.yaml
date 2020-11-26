@@ -23,6 +23,7 @@
   shell:
     cmd: |
       rustup component add clippy
+      rustup component add rust-src
       rustup component add rustfmt
       rustup target add wasm32-wasi
 

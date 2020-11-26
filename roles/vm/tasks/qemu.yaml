@@ -1,6 +1,7 @@
 - name: Install QEMU for Debian distributions
   apt:
     name:
+      - qemu
       - qemu-kvm
       - qemu-system
     state: latest
