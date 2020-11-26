@@ -15,12 +15,14 @@
 - name: Install system packages for Debian distributions
   apt:
     name:
-      - docker-compose
+      - apt-file
       - flatpak
       - gnupg2
       - neofetch
       - pass
+      - pbuilder
       - tmate
+      - ubuntu-dev-tools 
     state: latest
     update_cache: yes
   become: yes

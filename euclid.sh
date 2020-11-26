@@ -124,7 +124,14 @@ find_config_path() {
 
 # Find IP address of host machine that is accessible from Docker.
 find_docker_ip() {
-    RET_VAL=$(sudo docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
+    local _docker_ip
+    _docker_ip=$(sudo docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
+
+    if [ -z "$_docker_ip" ]; then
+        error "Unable to find Docker host IP address. Restart Docker and try again."
+    fi
+
+    RET_VAL="$_docker_ip"
 }
 
 # Create temporary SSH key for Ansible.
