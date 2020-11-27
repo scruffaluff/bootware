@@ -9,3 +9,6 @@
 
 - name: Install Terraform
   import_tasks: terraform.yaml
+
+- name: Install Zola
+  import_tasks: zola.yaml

@@ -22,7 +22,7 @@
       - pass
       - pbuilder
       - tmate
-      - ubuntu-dev-tools 
+      - ubuntu-dev-tools
     state: latest
     update_cache: yes
   become: yes
