@@ -24,10 +24,10 @@ RUN pip3 install --upgrade \
 COPY ./configs/ /etc/ansible/
 RUN ansible-galaxy install -r /etc/ansible/requirements.yaml
 
-RUN mkdir /euclid
-WORKDIR /euclid
+RUN mkdir /bootware
+WORKDIR /bootware
 
-COPY ./main.yaml /euclid/main.yaml
-COPY ./roles /euclid/roles
+COPY ./main.yaml /bootware/main.yaml
+COPY ./roles /bootware/roles
 
 ENTRYPOINT ["/usr/local/bin/ansible-playbook"]

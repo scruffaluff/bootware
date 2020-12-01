@@ -9,18 +9,18 @@ set -e
 # Cannot use function name help, since help is a pre-existing command.
 usage() {
     cat 1>&2 <<EOF
-Euclid 0.0.1
+Bootware 0.0.1
 Boostrapping software installer
 
 USAGE:
-    euclid [FLAGS] [OPTIONS]
+    bootware [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help       Print help information
     -v, --version    Print version information
 
 OPTIONS:
-    -c, --config     Path to euclid user configuation file
+    -c, --config     Path to bootware user configuation file
         --tag        Tag for Ansible playbook
 EOF
 }
@@ -43,7 +43,7 @@ bootstrap() {
     #     -s: Print the kernel name.
     _os_type=$(uname -s)
 
-    echo "Launching Euclid Docker container..."
+    echo "Launching Bootware Docker container..."
     echo "Enter your user account password when prompted."
 
     case "$_os_type" in
@@ -70,11 +70,11 @@ bootstrap() {
 bootstrap_password() {
     sudo docker run \
         -it \
-        -v "$1:/root/.ssh/euclid" \
-        -v "$2:/euclid/host_vars/host.docker.internal.yaml" \
+        -v "$1:/root/.ssh/bootware" \
+        -v "$2:/bootware/host_vars/host.docker.internal.yaml" \
         --rm \
         ${4:+"$4"} ${5:+"$5"} \
-        wolfgangwazzlestrauss/euclid:latest \
+        wolfgangwazzlestrauss/bootware:latest \
         --ask-become-pass \
         --tag "$3" \
         --user "$USER" \
@@ -84,11 +84,11 @@ bootstrap_password() {
 # Launch Docker container to boostrap software installation for MacOS.
 bootstrap_passwordless() {
     sudo docker run \
-        -v "$1:/root/.ssh/euclid" \
-        -v "$2:/euclid/host_vars/host.docker.internal.yaml" \
+        -v "$1:/root/.ssh/bootware" \
+        -v "$2:/bootware/host_vars/host.docker.internal.yaml" \
         --rm \
         ${4:+"$4"} ${5:+"$5"} \
-        wolfgangwazzlestrauss/euclid:latest \
+        wolfgangwazzlestrauss/bootware:latest \
         --tag "$3" \
         --user "$USER" \
         main.yaml
@@ -105,18 +105,18 @@ error() {
     exit 1
 }
 
-# Find path of Euclid configuation file.
+# Find path of Bootware configuation file.
 find_config_path() {
     if test -f "$1" ; then
         RET_VAL="$1"
-    elif test -f "$(pwd)/euclid.yaml" ; then
-        RET_VAL="$(pwd)/euclid.yaml"
+    elif test -f "$(pwd)/bootware.yaml" ; then
+        RET_VAL="$(pwd)/bootware.yaml"
     elif [[ -n "${EUCLID_CONFIG}" ]] ; then
         RET_VAL="$EUCLID_CONFIG"
-    elif test -f "$HOME/euclid.yaml" ; then
-        RET_VAL="$HOME/euclid.yaml"
+    elif test -f "$HOME/bootware.yaml" ; then
+        RET_VAL="$HOME/bootware.yaml"
     else
-        error "Unable to find Euclid configuation file."
+        error "Unable to find Bootware configuation file."
     fi
 
     echo "Using $RET_VAL as configuration file."

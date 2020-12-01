@@ -33,21 +33,21 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          outputs: type=docker,dest=/tmp/euclid.tar
-          tags: wolfgangwazzlestrauss/euclid:latest
+          outputs: type=docker,dest=/tmp/bootware.tar
+          tags: wolfgangwazzlestrauss/bootware:latest
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: euclid
-          path: /tmp/euclid.tar
+          name: bootware
+          path: /tmp/bootware.tar
   test:
     needs: build
     runs-on: ubuntu-20.04
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
-      - name: Copy Euclid configuration file
-        run: cp ./.github/host_vars/ubuntu.yaml $HOME/euclid.yaml
+      - name: Copy Bootware configuration file
+        run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
       - name: Configure SSH daemon
         run: |
           sudo mv ./.github/configs/sshd_config /etc/ssh/sshd_config
@@ -68,11 +68,11 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: euclid
+          name: bootware
           path: /tmp
       - name: Load Docker image
         run: |
-          docker load --input /tmp/euclid.tar
+          docker load --input /tmp/bootware.tar
           docker image ls -a
       - name: Test bootstrapping
-        run: EUCLID_PASSWORDLESS_SUDO=1 ./euclid.sh --tag server
+        run: EUCLID_PASSWORDLESS_SUDO=1 ./bootware.sh --tag server
