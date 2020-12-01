@@ -4,8 +4,5 @@
 - name: Install QEMU
   import_tasks: qemu.yaml
 
-- name: Install VirtualBox
-  import_tasks: virtualbox.yaml
-
 - name: Install WASM utilities
   import_tasks: wasm.yaml
