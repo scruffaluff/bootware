@@ -31,18 +31,34 @@
     src: init.vim
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Neovim root user settings directory for Unix
+- name: Create Neovim root user settings directory for Linux
   become: yes
   file:
     path: /root/.config/nvim
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Copy Neovim root user settings file for Unix
+- name: Create Neovim root user settings directory for MacOS
+  become: yes
+  file:
+    path: /var/root/.config/nvim
+    state: directory
+  when: ansible_system == "Darwin"
+
+- name: Copy Neovim root user settings file for Linux
   become: yes
   copy:
     dest: /root/.config/nvim/init.vim
     force: yes
     mode: 0644
     src: init.vim
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
+
+- name: Copy Neovim root user settings file for MacOS
+  become: yes
+  copy:
+    dest: /var/root/.config/nvim/init.vim
+    force: yes
+    mode: 0644
+    src: init.vim
+  when: ansible_system == "Darwin"
