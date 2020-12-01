@@ -21,14 +21,31 @@
 - name: Create VSCode user directory for Linux
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.config/Code/User/"
+    path: "{{ user_home_dir }}/.config/Code/User/"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Copy VSCode settings file for Linux
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.config/Code/User/settings.json"
+    dest: "{{ user_home_dir }}/.config/Code/User/settings.json"
+    force: yes
+    mode: 0644
+    src: settings.json
+  when: ansible_system == "Linux"
+
+- name: Create VSCode user directory for MacOS
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/Library/Application Support/Code/User/"
+    state: directory
+  when: ansible_system == "Linux"
+
+- name: Copy VSCode settings file for MacOS
+  become_user: "{{ user_account }}"
+  copy:
+    dest:
+      "{{ user_home_dir }}/Library/Application Support/Code/User/settings.json"
     force: yes
     mode: 0644
     src: settings.json
@@ -39,3 +56,11 @@
   loop: "{{ vscode_extensions }}"
   shell:
     cmd: code --install-extension {{ item }}
+  when: ansible_system != "Darwin"
+
+- name: Install VSCode extensions for MacOS
+  become_user: "{{ user_account }}"
+  loop: "{{ vscode_extensions }}"
+  shell:
+    cmd: /usr/local/bin/code --install-extension {{ item }}
+  when: ansible_system == "Darwin"
