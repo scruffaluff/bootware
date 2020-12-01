@@ -1,13 +1,13 @@
 - name: Create Jupyter settings directory
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.jupyter"
+    path: "{{ user_home_dir }}/.jupyter"
     state: directory
 
 - name: Copy Jupyter notebook settings file
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.jupyter/jupyter_notebook_config.py"
+    dest: "{{ user_home_dir }}/.jupyter/jupyter_notebook_config.py"
     force: yes
     mode: 0755
     src: jupyter_notebook_config.py

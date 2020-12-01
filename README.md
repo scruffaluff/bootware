@@ -6,7 +6,8 @@ installations on a computer.
 ## Configuration File
 
 Bootware uses a configuration file for customizing the software bootstrapping.
-Bootware uses the first available following option for a configuration file path.
+Bootware uses the first available following option for a configuration file
+path.
 
 - \<path> (argument to -c/--config command line flag)
 - bootware.yaml (in the current directory)

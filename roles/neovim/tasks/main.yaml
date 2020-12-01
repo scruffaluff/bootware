@@ -18,14 +18,14 @@
 - name: Create Neovim standard user settings directory for Unix
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.config/nvim"
+    path: "{{ user_home_dir }}/.config/nvim"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Neovim standard user settings file for Unix
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.config/nvim/init.vim"
+    dest: "{{ user_home_dir }}/.config/nvim/init.vim"
     force: yes
     mode: 0644
     src: init.vim

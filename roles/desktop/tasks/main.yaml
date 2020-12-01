@@ -51,13 +51,13 @@
 - name: Create background pictures directory
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/Pictures/background"
+    path: "{{ user_home_dir }}/Pictures/background"
     state: directory
 
 - name: Download desktop background picture
   become_user: "{{ user_account }}"
   get_url:
-    dest: "{{ user_home_dir}}/Pictures/background/white_and_gray_mountains.jpg"
+    dest: "{{ user_home_dir }}/Pictures/background/white_and_gray_mountains.jpg"
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
 

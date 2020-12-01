@@ -28,7 +28,7 @@
 - name: Copy shell aliases file for Unix
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.aliases"
+    dest: "{{ user_home_dir }}/.aliases"
     force: yes
     mode: 0755
     src: .aliases
@@ -46,21 +46,21 @@
 - name: Create Fish settings directory for Unix
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.config/fish"
+    path: "{{ user_home_dir }}/.config/fish"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish functions directory for Unix
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.config/fish/functions"
+    path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Fish settings file for Unix
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.config/fish/config.fish"
+    dest: "{{ user_home_dir }}/.config/fish/config.fish"
     force: yes
     mode: 0755
     src: config.fish

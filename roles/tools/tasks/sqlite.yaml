@@ -24,7 +24,7 @@
 - name: Copy SQLite settings file
   become_user: "{{ user_account }}"
   copy:
-    dest: "{{ user_home_dir}}/.sqliterc"
+    dest: "{{ user_home_dir }}/.sqliterc"
     force: yes
     mode: 0644
     src: .sqliterc

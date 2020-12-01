@@ -21,28 +21,28 @@
 - name: Create Hyper configuration directory for Linux
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/.config/Hyper/"
+    path: "{{ user_home_dir }}/.config/Hyper/"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Create Hyper configuration directory for MacOS
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/Library/Application Support/Hyper/"
+    path: "{{ user_home_dir }}/Library/Application Support/Hyper/"
     state: directory
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir}}/AppData/Roaming/Hyper/"
+    path: "{{ user_home_dir }}/AppData/Roaming/Hyper/"
     state: directory
   when: ansible_system == "Windows"
 
 - name: Copy Hyper configuration file for Linux
   become_user: "{{ user_account }}"
   template:
-    dest: "{{ user_home_dir}}/.config/Hyper/.hyper.js"
+    dest: "{{ user_home_dir }}/.config/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2
@@ -51,7 +51,7 @@
 - name: Copy Hyper configuration file for MacOS
   become_user: "{{ user_account }}"
   template:
-    dest: "{{ user_home_dir}}/Library/Application Support/Hyper/.hyper.js"
+    dest: "{{ user_home_dir }}/Library/Application Support/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2
@@ -60,7 +60,7 @@
 - name: Copy Hyper configuration file for Windows
   become_user: "{{ user_account }}"
   template:
-    dest: "{{ user_home_dir}}/AppData/Roaming/Hyper/.hyper.js"
+    dest: "{{ user_home_dir }}/AppData/Roaming/Hyper/.hyper.js"
     force: yes
     mode: 0644
     src: hyper.j2

@@ -30,7 +30,7 @@
 - name: Copy Git configuration file
   become_user: "{{ user_account }}"
   template:
-    dest: "{{ user_home_dir}}/.gitconfig"
+    dest: "{{ user_home_dir }}/.gitconfig"
     force: yes
     mode: 0644
     src: gitconfig.j2

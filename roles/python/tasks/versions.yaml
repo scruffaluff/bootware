@@ -29,7 +29,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
-    creates: "{{ user_home_dir}}/.pyenv/bin/pyenv"
+    creates: "{{ user_home_dir }}/.pyenv/bin/pyenv"
     warn: no
   when: ansible_system == "Linux"
 
