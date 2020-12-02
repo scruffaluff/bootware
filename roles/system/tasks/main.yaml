@@ -36,6 +36,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Pass Docker credential helper for Linux
+  become: yes
   unarchive:
     dest: /usr/local/bin/
     mode: 0755
