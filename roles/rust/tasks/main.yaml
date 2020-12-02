@@ -6,7 +6,6 @@
       - lldb
       - llvm
     state: latest
-    update_cache: yes
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
