@@ -1,11 +1,11 @@
 - name: Install cloud SDKs
   import_tasks: cloud.yaml
 
+- name: Install database tools
+  import_tasks: database.yaml
+
 - name: Install Packer
   import_tasks: packer.yaml
-
-- name: Install SQLite
-  import_tasks: sqlite.yaml
 
 - name: Install Terraform
   import_tasks: terraform.yaml
