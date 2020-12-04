@@ -40,6 +40,12 @@
     update_homebrew: yes
   when: ansible_system == "Darwin"
 
+- name: Update Pyenv for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: pyenv update
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Get latest patch release for each Python minor version
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"

@@ -27,3 +27,10 @@
     cmd: "/usr/local/bin/pipx install {{ item }}"
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Update Pipx command line applications for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: /usr/local/bin/pipx upgrade-all
+    executable: /bin/bash
+  when: ansible_system in ["Darwin", "Linux"]
