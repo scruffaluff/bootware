@@ -31,6 +31,15 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install general applications for Debian distributions
+  become: yes
+  apt:
+    name:
+      - gnome-extensions
+      - gnome-tweaks
+    state: latest
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
 - name: Install general applications for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
