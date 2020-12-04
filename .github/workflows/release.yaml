@@ -3,10 +3,6 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
-    branches:
-      - develop
-      - feature/*
-      - master
 jobs:
   tag:
     runs-on: ubuntu-20.04
@@ -18,6 +14,7 @@ jobs:
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
         id: extract_tag
   push:
+    needs: tag
     runs-on: ubuntu-20.04
     steps:
       - name: Code repository checkout
@@ -37,15 +34,4 @@ jobs:
           push: true
           tags: |
             wolfgangwazzlestrauss/bootware:latest
-  document:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Code repository checkout
-        uses: actions/checkout@v2
-      - name: Upload image description to Docker Hub
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          repository: wolfgangwazzlestrauss/bootware
-          readme-filepath: ./README.md
+            wolfgangwazzlestrauss/bootware:${{ needs.tag.outputs.tag }}
