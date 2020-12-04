@@ -1,5 +1,7 @@
 ./bootware.yaml
 .DS_Store
+docs/index.md
 node_modules/
 package-lock.json
+site/
 tmp/
