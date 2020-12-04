@@ -8,6 +8,7 @@ const fs = require("fs");
 const vuepress = require("vuepress");
 
 function copyFiles() {
+  fs.mkdirSync("docs", {recursive: true});
   fs.copyFileSync("README.md", "docs/index.md");
 }
 
