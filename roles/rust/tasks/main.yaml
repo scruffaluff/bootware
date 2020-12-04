@@ -17,6 +17,13 @@
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Update Rust
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      rustup self update
+      rustup update stable
+
 - name: Add Rust components and targets
   become_user: "{{ user_account }}"
   shell:
@@ -26,7 +33,7 @@
       rustup component add rustfmt
       rustup target add wasm32-wasi
 
-- name: Install Cargo packges
+- name: Update or install Cargo packges
   become_user: "{{ user_account }}"
   shell:
     cmd: |

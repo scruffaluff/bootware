@@ -35,7 +35,6 @@
   become: yes
   apt:
     name:
-      - gnome-extensions
       - gnome-tweaks
     state: latest
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
