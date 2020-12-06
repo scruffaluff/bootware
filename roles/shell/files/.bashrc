@@ -107,5 +107,5 @@ fi
 
 
 # Wasmtime settings.
-# export WASMTIME_HOME="/usr/local/wasmtime"
-# export PATH="$WASMTIME_HOME/bin:$PATH"
+export WASMTIME_HOME="$HOME/.wasmtime"
+export PATH="$WASMTIME_HOME/bin:$PATH"

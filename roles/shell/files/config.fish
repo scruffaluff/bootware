@@ -93,5 +93,5 @@ end
 
 
 # Wasmtime settings.
-# set -x WASMTIME_HOME "/usr/local/wasmtime"
-# set -x PATH "$WASMTIME_HOME/bin:$PATH"
+set -x WASMTIME_HOME "$HOME/.wasmtime"
+set -x PATH "$WASMTIME_HOME/bin:$PATH"
