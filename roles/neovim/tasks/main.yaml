@@ -4,6 +4,8 @@
       - neovim
     state: latest
   become: yes
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Neovim for MacOS
@@ -12,6 +14,8 @@
     name: neovim
     state: latest
     update_homebrew: yes
+  tags:
+    - update
   when: ansible_system == "Darwin"
 
 - name: Create Neovim standard user settings directory for Unix

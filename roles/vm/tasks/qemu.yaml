@@ -6,11 +6,15 @@
       - qemu-system
     state: latest
   become: yes
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install QEMU for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: qemu
-    state: present
+    state: latest
+  tags:
+    - update
   when: ansible_system == "Darwin"

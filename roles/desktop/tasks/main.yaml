@@ -20,6 +20,8 @@
       - google-chrome-stable
     state: latest
   become: yes
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install web browsers for MacOS
@@ -37,6 +39,8 @@
     name:
       - gnome-tweaks
     state: latest
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install general applications for MacOS
@@ -67,6 +71,8 @@
     dest: "{{ user_home_dir }}/Pictures/background/white_and_gray_mountains.jpg"
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
+  tags:
+    - update
 
 - name: Change desktop settings for Linux
   become_user: "{{ user_account }}"

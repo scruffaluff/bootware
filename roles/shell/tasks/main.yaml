@@ -9,6 +9,8 @@
       - tmux
     state: latest
   become: yes
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Homebrew shell packages for MacOS
@@ -22,6 +24,8 @@
       - tmux
     state: latest
     update_homebrew: yes
+  tags:
+    - update
   when: ansible_system == "Darwin"
 
 - name: Copy shell aliases file for Unix
@@ -31,6 +35,8 @@
     force: yes
     mode: 0755
     src: .aliases
+  tags:
+    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Bash settings file for Unix
@@ -40,6 +46,8 @@
     force: yes
     mode: 0755
     src: .bashrc
+  tags:
+    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish settings directory for Unix
@@ -63,6 +71,8 @@
     force: yes
     mode: 0755
     src: config.fish
+  tags:
+    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Change user default shell to Fish for MacOS
@@ -79,10 +89,13 @@
     shell: /usr/bin/fish
   when: ansible_system == "Linux"
 
+# Unable to find update instructions for Starship. Reinstalling will use a newer
+# version.
 - name: Install Starship for shell prompts for Unix
   become: yes
   shell:
     cmd: curl -LSfs https://starship.rs/install.sh | bash -s -- -y
-    creates: /usr/local/bin/starship
     warn: no
+  tags:
+    - update
   when: ansible_system in ["Darwin", "Linux"]

@@ -5,6 +5,8 @@
       - git-lfs
     state: latest
   become: yes
+  tags:
+    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Git for MacOS
@@ -15,6 +17,8 @@
       - git-lfs
     state: latest
     update_homebrew: yes
+  tags:
+    - update
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows
