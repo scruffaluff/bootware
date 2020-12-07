@@ -7,7 +7,7 @@ module.exports = {
       { text: "Home", link: "/" },
       { text: "Configuration", link: "/config/" },
     ],
-    repo: 'https://github.com/wolfgangwazzlestrauss/bootware',
+    repo: "https://github.com/wolfgangwazzlestrauss/bootware",
     smoothScroll: true,
   },
 };

@@ -1,10 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "docs-build": "node scripts/build_docs.js",
-    "docs-serve": "vuepress dev docs/",
-    "lint-format": "prettier --write **/*.{css,html,js,json,md,ts,vue,yaml,yml}",
-    "lint-test": "prettier --check **/*.{css,html,js,json,md,ts,vue,yaml,yml}"
+    "docs:build": "node scripts/build_docs.js",
+    "docs:serve": "vuepress dev docs/",
+    "lint:format": "prettier --write **/*.{css,html,js,json,md,ts,vue,yaml,yml}",
+    "lint:test": "prettier --check **/*.{css,html,js,json,md,ts,vue,yaml,yml}"
   },
   "devDependencies": {
     "bats": "^1.2.1",
