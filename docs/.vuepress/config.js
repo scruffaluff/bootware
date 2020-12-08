@@ -1,4 +1,5 @@
 module.exports = {
+  base: "/bootware/",
   themeConfig: {
     docsDir: "docs",
     editLinks: true,

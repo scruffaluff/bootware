@@ -15,36 +15,21 @@
 Bootware is a set of shell scripts and Docker images for bootstrapping software
 installations on a computer.
 
-## Optional Steps
-
-It is recommended but optional to install the `caffeinate` command to help
-prevent the computer from going to sleep during bootstrapping. The following
-commands install `caffeinate`.
-
-Linux:
-
-```bash
-sudo apt-get update && sudo apt-get install -y caffeine
-```
-
-MacOS: Pre-installed.
-
-Windows: To be determined.
-
 ## Install
 
 Bootware is invoked by shell scripts on the user's computer. The following
-commands will download the shell scripts and add them to the system path.
+commands will download the shell scripts and add them to the system path. Note
+that on Windows, PowerShell will need to run as administrator.
 
-Linux:
-
+<code-group>
+<code-block title="Linux" active>
 ```bash
 sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
 sudo chmod 755 /usr/local/bin/bootware
 ```
+</code-block>
 
-MacOS:
-
+<code-block title="MacOS">
 ```bash
 sudo mkdir -p /usr/local/bin/
 sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
@@ -52,17 +37,17 @@ sudo chmod 755 /usr/local/bin/bootware
 echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.profile"
 export PATH="$PATH:/usr/local/bin"
 ```
+</code-block>
 
-One needs to additionally enable remote login in `System Preferences > Sharing`.
-
-Windows: (Run as Administrator)
-
-```bash
+<code-block title="Windows">
+```powershell
 New-Item -Path "C:\Program Files\Bootware" -Type Directory
 $Env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";C:\Program Files\Bootware"
 [Environment]::SetEnvironmentVariable("Path", "$Env:Path", "Machine")
 Invoke-WebRequest -Uri  https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1 -o "C:\Program Files\Bootware\bootware"
 ```
+</code-block>
+</code-group>
 
 ## Usage
 
