@@ -8,9 +8,24 @@ set -e
 #
 # Cannot use function name help, since help is a pre-existing command.
 usage() {
-    cat 1>&2 <<EOF
-Bootware 0.0.1
-Boostrapping software installer
+    case "$1" in
+        config)
+            cat 1>&2 <<EOF
+Bootware config
+Generate default Bootware configuration file
+
+USAGE:
+    bootware config [FLAGS]
+
+FLAGS:
+    -h, --help       Print help information
+    -v, --version    Print version information
+EOF
+            ;;
+        install)
+            cat 1>&2 <<EOF
+Bootware install
+Boostrap install computer software
 
 USAGE:
     bootware [FLAGS] [OPTIONS]
@@ -21,8 +36,27 @@ FLAGS:
 
 OPTIONS:
     -c, --config     Path to bootware user configuation file
-        --tag        Tag for Ansible playbook
+        --tag        Ansible playbook tag
 EOF
+            ;;
+        main)
+            cat 1>&2 <<EOF
+Bootware 0.0.1
+Boostrapping software installer
+
+USAGE:
+    bootware [FLAGS] [SUBCOMMAND]
+
+FLAGS:
+    -h, --help       Print help information
+    -v, --version    Print version information
+
+SUBCOMMANDS:
+    config           Generate default Bootware configuration file
+    install          Boostrap install computer software
+EOF
+            ;;
+    esac
 }
 
 # Assert that command can be found on machine.
@@ -99,6 +133,36 @@ check_cmd() {
     command -v "$1" > /dev/null 2>&1
 }
 
+# Config subcommand.
+config() {
+    assert_cmd curl
+
+    # Parse command line arguments.
+    for arg in "$@"; do
+        case "$arg" in
+            -h|--help)
+                usage "config"
+                exit 0
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    echo "Downloading default configuration file to $HOME/bootware.yaml..."
+
+    # Download default configuration file.
+    #
+    # Flags:
+    #     -L: Follow redirect request.
+    #     -S: Show errors.
+    #     -f: Use archive file. Must be third flag.
+    #     -o <path>: Write output to path instead of stdout. 
+    curl -LSf \
+        https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml \
+        -o "$HOME/bootware.yaml"
+}
+
 # Print error message and exit with error code.
 error() {
     printf 'Error: %s\n' "$1" >&2
@@ -127,6 +191,10 @@ find_docker_ip() {
     local _docker_ip
     _docker_ip=$(sudo docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
 
+    # Check if Docker IP is not null.
+    #
+    # Flags:
+    #     -z: True if string has zero length.
     if [ -z "$_docker_ip" ]; then
         error "Unable to find Docker host IP address. Restart Docker and try again."
     fi
@@ -168,6 +236,48 @@ generate_keys() {
     cat "$_public_key" >> "$HOME/.ssh/authorized_keys"
 
     RET_VAL="$_private_key"
+}
+
+# Install subcommand.
+install() {
+    # Dev null is never a normal file.
+    local _config_path="/dev/null"
+    local _private_key
+    local _tag="all"
+
+    # Parse command line arguments.
+    for arg in "$@"; do
+        case "$arg" in
+            -h|--help)
+                usage "install"
+                exit 0
+                ;;
+            -c|--config)
+                _config_path="$2"
+                # Remove two arguments from arguments list.
+                shift
+                shift
+                ;;
+            --tag)
+                _tag="$2"
+                # Remove two arguments from arguments list.
+                shift
+                shift
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    prepare
+
+    find_config_path "$_config_path"
+    _config_path="$RET_VAL"
+
+    generate_keys
+    _private_key="$RET_VAL"
+
+    bootstrap "$_private_key" "$_config_path" "$_tag"
 }
 
 # Configure boostrapping services and utilities.
@@ -227,6 +337,8 @@ prepare_linux() {
 prepare_macos() {
     local _remote_login
 
+    # Check if remote login is available.
+    #
     # Remote login is required for SSH connections.
     _remote_login=$(sudo systemsetup -getremotelogin)
     if ! grep -q "On" <<< "$_remote_login" ; then
@@ -236,7 +348,9 @@ prepare_macos() {
         # sudo systemsetup -setremotelogin on
     fi
 
-    # Homebrew depends on XCode command line tools.
+    # Install XCode command line tools if not already installed.
+    #
+    # Homebrew depends on the XCode command line tools.
     if ! xcode-select -p &>/dev/null ; then
         echo "Installing command line tools for XCode..."
         sudo xcode-select --install
@@ -254,12 +368,17 @@ prepare_macos() {
         curl -LSfs https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash
     fi
 
+    # Install Docker Desktop if not already installed.
+    #
+    # Flags:
+    #     ---background:
     if ! brew list --cask docker &>/dev/null ; then
         echo "Installing Docker..."
         brew cask install docker
         open --background /Applications/Docker.app
     fi
 
+    # Install OpenSSH client and server if not already installed.
     if ! brew list openssh &>/dev/null ; then
         echo "Installing OpenSSH..."
         brew install openssh
@@ -273,44 +392,25 @@ main() {
     assert_cmd mktemp
     assert_cmd uname
 
-    # Dev null is never a normal file.
-    local _config_path="/dev/null"
-    local _private_key
-    local _tag="all"
-
     # Parse command line arguments.
     for arg in "$@"; do
         case "$arg" in
-            -h|--help)
-                usage
+            config)
+                shift
+                config "$@"
                 exit 0
                 ;;
-            -c|--config)
-                _config_path="$2"
-                # Remove two arguments from arguments list.
+            install)
                 shift
-                shift
-                ;;
-            --tag)
-                _tag="$2"
-                # Remove two arguments from arguments list.
-                shift
-                shift
+                install "$@"
+                exit 0
                 ;;
             *)
                 ;;
         esac
     done
 
-    prepare
-
-    find_config_path "$_config_path"
-    _config_path="$RET_VAL"
-
-    generate_keys
-    _private_key="$RET_VAL"
-
-    bootstrap "$_private_key" "$_config_path" "$_tag"
+    usage "main"
 }
 
 # Execute main with command line arguments and call exit on failure.

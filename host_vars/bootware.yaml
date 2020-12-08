@@ -1,4 +1,4 @@
-machine_name: host-name # required
+machine_name: host-name
 node_versions:
   - "10"
   - "12"
@@ -8,10 +8,10 @@ python_versions:
   - "3.7"
   - "3.8"
   - "3.9"
-user_account: user-name # required
+user_account: user-name
 user_email: user.name@gmail.com
 user_home_dir: /home/user-name
-user_name: User Name # required
+user_name: User Name
 user_shell: /usr/bin/fish
 vscode_extensions:
   - "bungcip.better-toml"
