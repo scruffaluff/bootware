@@ -455,8 +455,6 @@ main() {
     assert_cmd mktemp
     assert_cmd uname
 
-    local _version
-
     # Parse command line arguments.
     for arg in "$@"; do
         case "$arg" in
