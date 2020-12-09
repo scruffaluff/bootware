@@ -41,7 +41,7 @@ EOF
             ;;
         main)
             cat 1>&2 <<EOF
-Bootware 0.0.1
+Bootware $(version)
 Boostrapping software installer
 
 USAGE:
@@ -54,6 +54,20 @@ FLAGS:
 SUBCOMMANDS:
     config           Generate default Bootware configuration file
     install          Boostrap install computer software
+    update           Update Bootware to latest version
+EOF
+            ;;
+        update)
+            cat 1>&2 <<EOF
+Bootware update
+Update Bootware to latest version
+
+USAGE:
+    bootware update [FLAGS]
+
+FLAGS:
+    -h, --help       Print help information
+    -v, --version    Print version information
 EOF
             ;;
     esac
@@ -385,12 +399,63 @@ prepare_macos() {
     fi
 }
 
+# Update subcommand.
+update() {
+    local _os_type
+
+    # Parse command line arguments.
+    for arg in "$@"; do
+        case "$arg" in
+            -h|--help)
+                usage "update"
+                exit 0
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    # Get operating system for local machine.
+    #
+    # Flags:
+    #     -s: Print the kernel name.
+    _os_type=$(uname -s)
+
+    echo "Updating Bootware..."
+
+    case "$_os_type" in
+        Darwin)
+            sudo mkdir -p /usr/local/bin/
+            sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
+            sudo chmod 755 /usr/local/bin/bootware
+            echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.profile"
+            export PATH="$PATH:/usr/local/bin"
+            ;;
+        Linux)
+            sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
+            sudo chmod 755 /usr/local/bin/bootware
+            ;;
+        *)
+            error "Operting system $_os_type is not supported."
+            ;;
+    esac
+
+    echo "Updated Bootware to version $(bootware --version)"
+}
+
+# Get Bootware version string
+version() {
+    echo "0.0.1"
+}
+
 # Script entrypoint.
 main() {
     assert_cmd chmod
     assert_cmd mkdir
     assert_cmd mktemp
     assert_cmd uname
+
+    local _version
 
     # Parse command line arguments.
     for arg in "$@"; do
@@ -403,6 +468,15 @@ main() {
             install)
                 shift
                 install "$@"
+                exit 0
+                ;;
+            update)
+                shift
+                update "$@"
+                exit 0
+                ;;
+            -v|--version)
+                version
                 exit 0
                 ;;
             *)
