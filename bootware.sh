@@ -19,7 +19,6 @@ USAGE:
 
 FLAGS:
     -h, --help       Print help information
-    -v, --version    Print version information
 EOF
             ;;
         install)
@@ -32,7 +31,6 @@ USAGE:
 
 FLAGS:
     -h, --help       Print help information
-    -v, --version    Print version information
 
 OPTIONS:
     -c, --config     Path to bootware user configuation file
@@ -41,7 +39,7 @@ EOF
             ;;
         main)
             cat 1>&2 <<EOF
-Bootware $(version)
+$(version)
 Boostrapping software installer
 
 USAGE:
@@ -67,7 +65,6 @@ USAGE:
 
 FLAGS:
     -h, --help       Print help information
-    -v, --version    Print version information
 EOF
             ;;
     esac
@@ -440,12 +437,12 @@ update() {
             ;;
     esac
 
-    echo "Updated Bootware to version $(bootware --version)"
+    echo "Updated to version $(bootware --version)"
 }
 
 # Get Bootware version string
 version() {
-    echo "0.0.1"
+    echo "Bootware 0.0.2"
 }
 
 # Script entrypoint.
