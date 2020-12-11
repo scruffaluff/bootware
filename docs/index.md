@@ -24,18 +24,13 @@ that on Windows, PowerShell will need to run as administrator.
 <code-group>
 <code-block title="Linux" active>
 ```bash
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
-sudo chmod 755 /usr/local/bin/bootware
+sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh | bash -s -- update
 ```
 </code-block>
 
 <code-block title="MacOS">
 ```bash
-sudo mkdir -p /usr/local/bin/
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
-sudo chmod 755 /usr/local/bin/bootware
-echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.profile"
-export PATH="$PATH:/usr/local/bin"
+sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh | bash -s -- update
 ```
 </code-block>
 
