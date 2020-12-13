@@ -7,6 +7,9 @@
 - name: Install Packer
   import_tasks: packer.yaml
 
+- name: Install shell tools
+  import_tasks: shell.yaml
+
 - name: Install Terraform
   import_tasks: terraform.yaml
 
