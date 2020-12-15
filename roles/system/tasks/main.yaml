@@ -7,10 +7,10 @@
       - sudo
   when: ansible_system == "Linux"
 
-- name: Change computer hostname
-  hostname:
-    name: "{{ machine_name }}"
-  when: ansible_system == "Linux"
+# - name: Change computer hostname
+#   hostname:
+#     name: "{{ machine_name }}"
+#   when: ansible_system == "Linux"
 
 - name: Install system packages for Debian distributions
   apt:
