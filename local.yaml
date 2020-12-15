@@ -1,5 +1,5 @@
 - name: Set up system accounts and permissions
-  hosts: all
+  hosts: localhost
   roles:
     - system
   tags:
@@ -8,7 +8,7 @@
     - system
 
 - name: Install and configure shells
-  hosts: all
+  hosts: localhost
   roles:
     - shell
   tags:
@@ -17,7 +17,7 @@
     - shell
 
 - name: Install and configure version control systems
-  hosts: all
+  hosts: localhost
   roles:
     - vcs
   tags:
@@ -26,7 +26,7 @@
     - vcs
 
 - name: Install and configure Neovim
-  hosts: all
+  hosts: localhost
   roles:
     - neovim
   tags:
@@ -35,7 +35,7 @@
     - server
 
 - name: Install various tools
-  hosts: all
+  hosts: localhost
   roles:
     - tools
   tags:
@@ -44,7 +44,7 @@
     - tools
 
 - name: Install Python
-  hosts: all
+  hosts: localhost
   roles:
     - python
   tags:
@@ -53,7 +53,7 @@
     - server
 
 - name: Install Rust
-  hosts: all
+  hosts: localhost
   roles:
     - rust
   tags:
@@ -62,7 +62,7 @@
     - server
 
 - name: Install TypeScript
-  hosts: all
+  hosts: localhost
   roles:
     - typescript
   tags:
@@ -71,14 +71,14 @@
     - typescript
 
 - name: Configure desktop
-  hosts: all
+  hosts: localhost
   roles:
     - desktop
   tags:
     - desktop
 
 - name: Configure terminals
-  hosts: all
+  hosts: localhost
   roles:
     - terminal
   tags:
@@ -86,7 +86,7 @@
     - terminal
 
 - name: Configure virtual machines
-  hosts: all
+  hosts: localhost
   roles:
     - vm
   tags:
@@ -94,7 +94,7 @@
     - vm
 
 - name: Install VSCode
-  hosts: all
+  hosts: localhost
   roles:
     - vscode
   tags:
