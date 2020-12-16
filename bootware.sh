@@ -232,10 +232,9 @@ generate_keys() {
     # Flags:
     #     -q: Silence ssh-keygen.
     #     -N "": Do not associate a password with the key.
-    #     -b 4096: Number of bits in key to create.
     #     -f <path>: Filename of the key file.
-    #     -t rsa: Use RSA cryptosystem.
-    ssh-keygen -q -N "" -b 4096 -f "$_private_key" -t rsa
+    #     -t ed25519: Use RSA cryptosystem.
+    ssh-keygen -q -N "" -f "$_private_key" -t ed25519
 
     # Create SSH directory with correct permissions.
     #
