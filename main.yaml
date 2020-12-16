@@ -70,12 +70,13 @@
     - server
     - typescript
 
-- name: Configure desktop
+- name: Configure GUI settings
   hosts: all
   roles:
-    - desktop
+    - gui
   tags:
     - desktop
+    - gui
 
 - name: Configure terminals
   hosts: all
