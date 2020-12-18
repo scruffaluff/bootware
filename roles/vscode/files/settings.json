@@ -23,14 +23,17 @@
   "[json]": {
     "editor.tabSize": 2
   },
+  "[rust]": {
+    "editor.rulers": [100]
+  },
   "[terraform]": {
+    "editor.tabSize": 2
+  },
+  "[vue]": {
     "editor.tabSize": 2
   },
   "[yaml]": {
     "editor.tabSize": 2
-  },
-  "[rust]": {
-    "editor.rulers": [100]
   },
   "emmet.excludeLanguages": [],
   "emmet.includeLanguages": {
