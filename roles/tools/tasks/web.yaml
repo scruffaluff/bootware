@@ -1,0 +1,39 @@
+- name: Get latest Mkcert version
+  uri:
+    url: https://formulae.brew.sh/api/formula/mkcert.json
+    method: GET
+    return_content: yes
+  register: mkcert_formula
+
+- name: Install network security service libraries for Debian distributions
+  apt:
+    name: libnss3-tools
+    state: latest
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Mkcert for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/mkcert
+    mode: 0755
+    url: >-
+      https://github.com/FiloSottile/mkcert/releases/download/v{{
+      mkcert_formula.json.versions.stable }}/mkcert-v{{
+      mkcert_formula.json.versions.stable }}-linux-amd64
+  when: ansible_system == "Linux"
+
+- name: Install Mkcert for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: mkcert
+    state: latest
+    update_homebrew: yes
+  when: ansible_system == "Darwin"
+
+- name: Install Mkcert for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mkcert
+  when: ansible_system == "Windows"

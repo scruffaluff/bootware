@@ -9,7 +9,7 @@
   get_url:
     dest: /tmp/mongodb_compass.deb
     mode: 0700
-    url:
+    url: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       mongodb_compass_formula.json.version }}_amd64.deb
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
