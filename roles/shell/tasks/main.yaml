@@ -57,6 +57,13 @@
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Create Fish completions directory for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/fish/completions"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Create Fish functions directory for Unix
   become_user: "{{ user_account }}"
   file:
