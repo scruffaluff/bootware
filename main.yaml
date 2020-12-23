@@ -92,6 +92,7 @@
     - vm
   tags:
     - desktop
+    - server
     - vm
 
 - name: Install VSCode

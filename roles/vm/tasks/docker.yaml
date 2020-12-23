@@ -1,4 +1,4 @@
-- name: Install Docker for Debian distributions
+- name: Install Docker and Docker Compose for Debian distributions
   apt:
     name:
       - docker.io
@@ -9,18 +9,13 @@
     - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
-- name: Install Docker for MacOS
+- name: Install Docker and Docker Compose for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    name: docker
+    name: 
+      - docker
+      - docker-compose
     state: present
-  when: ansible_system == "Darwin"
-
-- name: Install Docker Compose for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: docker-compose
-    state: latest
   when: ansible_system == "Darwin"
 
 - name: Install Docker Fish shell completions for Unix
@@ -28,4 +23,11 @@
     dest: "{{ user_home_dir }}/.config/fish/completions/docker.fish"
     mode: 0755
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Docker Compose Fish shell completions for Unix
+  get_url:
+    dest: "{{ user_home_dir }}/.config/fish/completions/docker-compose.fish"
+    mode: 0755
+    url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
   when: ansible_system in ["Darwin", "Linux"]
