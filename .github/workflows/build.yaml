@@ -20,7 +20,7 @@ jobs:
           npm install
       - name: Check format of configuration files
         run: |
-          npm run lint:test
+          npm run prettier:test
   build:
     runs-on: ubuntu-20.04
     steps:

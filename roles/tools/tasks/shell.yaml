@@ -40,7 +40,7 @@
     state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
-  
+
 - name: Install JQ for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

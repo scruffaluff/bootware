@@ -12,7 +12,7 @@
 - name: Install Docker and Docker Compose for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    name: 
+    name:
       - docker
       - docker-compose
     state: present
