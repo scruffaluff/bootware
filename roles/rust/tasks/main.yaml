@@ -2,6 +2,7 @@
   apt:
     name:
       - clang
+      - gdb
       - lld
       - lldb
       - llvm
@@ -28,9 +29,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      rustup component add clippy
-      rustup component add rust-src
-      rustup component add rustfmt
+      rustup component clippy llvm-tools-preview rust-src rustfmt
       rustup target add wasm32-wasi
 
 - name: Update or install Cargo packges
@@ -38,4 +37,9 @@
   shell:
     cmd: |
       cargo install \
-        cargo-edit cargo-generate cargo-make cargo-tarpaulin cargo-watch
+        cargo-binutils \
+        cargo-edit \
+        cargo-generate \
+        cargo-make \
+        cargo-tarpaulin \
+        cargo-watch
