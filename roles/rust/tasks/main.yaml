@@ -3,9 +3,11 @@
     name:
       - clang
       - gdb
+      - gdb-multiarch
       - lld
       - lldb
       - llvm
+      - openocd
     state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]

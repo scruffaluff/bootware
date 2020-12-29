@@ -27,7 +27,7 @@ Bootware install
 Boostrap install computer software
 
 USAGE:
-    bootware [FLAGS] [OPTIONS]
+    bootware install [FLAGS] [OPTIONS]
 
 FLAGS:
     -h, --help       Print help information
@@ -481,5 +481,5 @@ main() {
     usage "main"
 }
 
-# Execute main with command line arguments and call exit on failure.
-main "$@" || exit 1
+# Execute main with command line arguments.
+main "$@"

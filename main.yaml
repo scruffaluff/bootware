@@ -1,3 +1,23 @@
+- name: Update system packages
+  hosts: all
+  tasks:
+    - name: Update Apt packages for Debian distributions
+      apt:
+        autoremove: yes
+        update_cache: yes
+        upgrade: full
+      become: yes
+      when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+    - name: Update Homebrew packages for MacOS
+      become_user: "{{ user_account }}"
+      community.general.homebrew:
+        update_homebrew: yes
+        upgrade_all: yes
+      when: ansible_system == "Darwin"
+  tags:
+    - desktop
+    - server
+
 - name: Set up system accounts and permissions
   hosts: all
   roles:
