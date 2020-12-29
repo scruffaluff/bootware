@@ -47,7 +47,6 @@
     name:
       - firefox
       - google-chrome-stable
-    state: latest
   become: yes
   tags:
     - update
@@ -67,7 +66,6 @@
   apt:
     name:
       - gnome-tweaks
-    state: latest
   tags:
     - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]

@@ -25,6 +25,4 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dvc
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"

@@ -7,7 +7,6 @@
       - fonts-firacode
       - shellcheck
       - tmux
-    state: latest
   become: yes
   tags:
     - update
@@ -22,8 +21,6 @@
       - fish
       - shellcheck
       - tmux
-    state: latest
-    update_homebrew: yes
   tags:
     - update
   when: ansible_system == "Darwin"

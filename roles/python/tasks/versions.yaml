@@ -20,7 +20,6 @@
       - wget
       - xz-utils
       - zlib1g-dev
-    state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
@@ -36,8 +35,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: pipx
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Update Pyenv for Unix

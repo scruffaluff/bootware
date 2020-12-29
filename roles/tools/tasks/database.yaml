@@ -19,7 +19,6 @@
 - name: Install PostgreSQL client for Debian distributions
   apt:
     name: postgresql-client
-    state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
@@ -27,14 +26,11 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: libpq
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Debian distributions
   apt:
     name: sqlite3
-    state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
@@ -42,8 +38,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sqlite
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows

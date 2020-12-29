@@ -2,7 +2,6 @@
   apt:
     name:
       - neovim
-    state: latest
   become: yes
   tags:
     - update
@@ -12,8 +11,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: neovim
-    state: latest
-    update_homebrew: yes
   tags:
     - update
   when: ansible_system == "Darwin"

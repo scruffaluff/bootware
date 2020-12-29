@@ -23,8 +23,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zola
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Install Zola for Windows

@@ -8,7 +8,6 @@
 - name: Install network security service libraries for Debian distributions
   apt:
     name: libnss3-tools
-    state: latest
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
@@ -27,8 +26,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mkcert
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Install Mkcert for Windows

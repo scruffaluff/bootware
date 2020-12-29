@@ -8,8 +8,6 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: pipx
-    state: latest
-    update_homebrew: yes
   when: ansible_system == "Darwin"
 
 - name: Install Pipx for Windows

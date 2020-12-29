@@ -3,7 +3,6 @@
     name:
       - git
       - git-lfs
-    state: latest
   become: yes
   tags:
     - update
@@ -15,8 +14,6 @@
     name:
       - git
       - git-lfs
-    state: latest
-    update_homebrew: yes
   tags:
     - update
   when: ansible_system == "Darwin"

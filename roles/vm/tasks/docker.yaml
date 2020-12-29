@@ -3,7 +3,6 @@
     name:
       - docker.io
       - docker-compose
-    state: latest
   become: yes
   tags:
     - update
