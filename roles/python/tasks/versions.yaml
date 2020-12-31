@@ -68,5 +68,5 @@
 - name: Set Python global versions
   become_user: "{{ user_account }}"
   shell:
-    cmd: "pyenv global {{ python_releases | reverse | join(' ') }}"
+    cmd: "pyenv global system {{ python_releases | reverse | join(' ') }}"
   when: ansible_system in ["Darwin", "Linux"]

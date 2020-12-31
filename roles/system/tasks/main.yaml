@@ -18,6 +18,7 @@
       - apt-file
       - flatpak
       - gnupg2
+      - htop
       - neofetch
       - pass
       - pbuilder
