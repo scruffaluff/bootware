@@ -16,7 +16,10 @@
   apt:
     name:
       - apt-file
+      - apt-transport-https
+      - ca-certificates
       - flatpak
+      - gnupg
       - gnupg2
       - htop
       - neofetch
