@@ -1,0 +1,3 @@
+user_home_dir: >-
+  "{{ '/home/' + user_account if ansible_system == 'Linux' else '/Users/' +
+  user_account }}"

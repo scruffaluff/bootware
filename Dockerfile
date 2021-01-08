@@ -27,6 +27,7 @@ RUN ansible-galaxy install -r /etc/ansible/requirements.yaml
 RUN mkdir /bootware
 WORKDIR /bootware
 
+COPY ./group_vars /bootware/group_vars
 COPY ./main.yaml /bootware/main.yaml
 COPY ./roles /bootware/roles
 
