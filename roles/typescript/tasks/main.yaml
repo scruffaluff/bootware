@@ -1,3 +1,17 @@
+- name: Install Deno for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Deno for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: deno
+  when: ansible_system == "Windows"
+
 - name: Install Node version manager for Unix
   become_user: "{{ user_account }}"
   shell:

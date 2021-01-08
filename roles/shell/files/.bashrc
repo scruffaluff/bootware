@@ -102,8 +102,8 @@ if [ -f "$NVM_DIR/bash_completion" ]; then
 fi
 
 # Deno settings.
-# export DENO_INSTALL="/usr/local/deno"
-# export PATH="$DENO_INSTALL/bin:$PATH"
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
 
 
 # Wasmtime settings.

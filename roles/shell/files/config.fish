@@ -88,8 +88,8 @@ if type -q nvm
 end
 
 # Deno settings.
-# set -x DENO_INSTALL "/usr/local/deno"
-# set -x PATH "$DENO_INSTALL/bin:$PATH"
+set -x DENO_INSTALL "$HOME/.deno"
+set -x PATH "$DENO_INSTALL/bin:$PATH"
 
 
 # Wasmtime settings.
