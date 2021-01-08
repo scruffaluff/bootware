@@ -1,3 +1,25 @@
+- name: Get latest Bat version
+  uri:
+    url: https://formulae.brew.sh/api/formula/bat.json
+    method: GET
+    return_content: yes
+  register: bat_formula
+
+- name: Install Bat for Debian distributions
+  apt:
+    deb: >-
+      https://github.com/sharkdp/bat/releases/download/v{{
+      bat_formula.json.versions.stable }}/bat_{{
+      bat_formula.json.versions.stable }}_amd64.deb
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Bat for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: bat
+  when: ansible_system == "Darwin"
+
 - name: Get latest Exa version
   uri:
     url: https://formulae.brew.sh/api/formula/exa.json
@@ -34,7 +56,7 @@
 
 - name: Install JQ for Debian distributions
   apt:
-    name: apt
+    name: jq
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
@@ -42,4 +64,16 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: jq
+  when: ansible_system == "Darwin"
+
+- name: Install Ripgrep for Debian distributions
+  apt:
+    name: ripgrep
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Ripgrep for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: ripgrep
   when: ansible_system == "Darwin"
