@@ -1,0 +1,32 @@
+- name: Get latest Go version
+  uri:
+    url: https://formulae.brew.sh/api/formula/go.json
+    method: GET
+    return_content: yes
+  register: go_formula
+
+- name: Install Go for Linux
+  become: yes
+  unarchive:
+    creates: /usr/local/go
+    dest: /usr/local/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://golang.org/dl/go{{ go_formula.json.versions.stable
+      }}.linux-amd64.tar.gz
+  when: ansible_system == "Linux"
+
+- name: Install Go for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: go
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Go for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: go
+  when: ansible_system == "Windows"

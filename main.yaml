@@ -63,6 +63,15 @@
     - server
     - tools
 
+- name: Install Go
+  hosts: all
+  roles:
+    - go
+  tags:
+    - desktop
+    - go
+    - server
+
 - name: Install Python
   hosts: all
   roles:

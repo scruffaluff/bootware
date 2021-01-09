@@ -31,9 +31,14 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 
+# Docker settings.
+export COMPOSE_DOCKER_CLI_BUILD=1
+export DOCKER_BUILDKIT=1
+
+
 # Go settings.
-# export GOPATH="/usr/local/go"
-# export PATH="$GOPATH/bin:$PATH"
+export GOROOT="/usr/local/go"
+export PATH="$GOROOT/bin:$PATH"
 
 
 # Python settings.

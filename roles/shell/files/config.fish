@@ -18,6 +18,11 @@ end
 set -x PATH "$HOME/.local/bin:$PATH"
 
 
+# Docker settings.
+set -x COMPOSE_DOCKER_CLI_BUILD 1
+set -x DOCKER_BUILDKIT 1
+
+
 # Fish settings.
 
 # Disable welcome message.
@@ -25,8 +30,8 @@ set fish_greeting
 
 
 # Go settings.
-# set -x GOPATH "/usr/local/go"
-# set -x PATH "$GOPATH/bin:$PATH"
+set -x GOROOT "/usr/local/go"
+set -x PATH "$GOROOT/bin:$PATH"
 
 
 # Python settings.
