@@ -24,7 +24,7 @@
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
   shell:
-    cmd: source $HOME/.nvm/nvm.sh && nvm install 14
+    cmd: source $HOME/.nvm/nvm.sh && nvm install {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
