@@ -20,6 +20,13 @@
     name: bat
   when: ansible_system == "Darwin"
 
+- name: Install Bat for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: bat
+  when: ansible_system == "Windows"
+
 - name: Get latest Exa version
   uri:
     url: https://formulae.brew.sh/api/formula/exa.json
@@ -66,6 +73,13 @@
     name: jq
   when: ansible_system == "Darwin"
 
+- name: Install JQ for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: jq
+  when: ansible_system == "Windows"
+
 - name: Install Ripgrep for Debian distributions
   apt:
     name: ripgrep
@@ -77,3 +91,10 @@
   community.general.homebrew:
     name: ripgrep
   when: ansible_system == "Darwin"
+
+- name: Install Ripgrep for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: ripgrep
+  when: ansible_system == "Windows"

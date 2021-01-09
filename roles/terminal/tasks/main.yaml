@@ -17,6 +17,13 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Fira Code font for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: firacode
+  when: ansible_system == "Windows"
+
 - name: Install and configure Alacritty terminal
   import_tasks: alacritty.yaml
 

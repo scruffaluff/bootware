@@ -18,6 +18,13 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Hyper for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: hyper
+  when: ansible_system == "Windows"
+
 - name: Create Hyper configuration directory for Linux
   become_user: "{{ user_account }}"
   file:

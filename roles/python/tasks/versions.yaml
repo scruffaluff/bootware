@@ -65,6 +65,14 @@
     cmd: pyenv install -s {{ item }}
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Install Pipx for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: python{{ item | replace('.','') | replace('39','') }}
+  loop: "{{ python_releases }}"
+  when: ansible_system == "Windows"
+
 - name: Set Python global versions
   become_user: "{{ user_account }}"
   shell:

@@ -15,6 +15,13 @@
     - update
   when: ansible_system == "Darwin"
 
+- name: Install Neovim for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: neovim
+  when: ansible_system == "Windows"
+
 - name: Create Neovim standard user settings directory for Unix
   become_user: "{{ user_account }}"
   file:
@@ -30,6 +37,15 @@
     mode: 0644
     src: init.vim
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Copy Neovim standard user settings file for Windows
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"
+    force: yes
+    mode: 0644
+    src: init.vim
+  when: ansible_system == "Windows"
 
 - name: Create Neovim root user settings directory for Linux
   become: yes

@@ -18,6 +18,13 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install VSCode for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: vscode
+  when: ansible_system == "Windows"
+
 - name: Create VSCode user directory for Linux
   become_user: "{{ user_account }}"
   file:
@@ -50,6 +57,15 @@
     mode: 0644
     src: settings.json
   when: ansible_system == "Linux"
+
+- name: Copy VSCode settings file for Windows
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/settings.json"
+    force: yes
+    mode: 0644
+    src: settings.json
+  when: ansible_system == "Windows"
 
 - name: Install VSCode extensions
   become_user: "{{ user_account }}"

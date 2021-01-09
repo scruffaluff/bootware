@@ -19,6 +19,13 @@
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Install Rust for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: rustup
+  when: ansible_system == "Windows"
+
 - name: Update Rust
   become_user: "{{ user_account }}"
   shell:

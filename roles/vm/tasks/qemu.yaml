@@ -16,3 +16,10 @@
   tags:
     - update
   when: ansible_system == "Darwin"
+
+- name: Install QEMU for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: qemu
+  when: ansible_system == "Windows"

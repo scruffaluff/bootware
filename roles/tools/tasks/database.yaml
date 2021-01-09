@@ -16,6 +16,13 @@
     src: https://downloads.mongodb.com/compass/mongosh-0.6.1-darwin.zip
   when: ansible_system == "Darwin"
 
+- name: Install MongoDB client for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mongodb-database-tools
+  when: ansible_system == "Windows"
+
 - name: Install PostgreSQL client for Debian distributions
   apt:
     name: postgresql-client

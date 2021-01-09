@@ -25,6 +25,7 @@
     name:
       - git
       - git-lfs
+      - posh-git
   when: ansible_system == "Windows"
 
 - name: Copy Git configuration file

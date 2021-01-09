@@ -11,6 +11,13 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Alacritty for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: alacritty
+  when: ansible_system == "Windows"
+
 - name: Create Alacritty configuration directory for Unix
   become_user: "{{ user_account }}"
   file:

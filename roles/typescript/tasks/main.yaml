@@ -20,6 +20,13 @@
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Install Node version manager for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: nvm
+  when: ansible_system == "Windows"
+
 - name: Install multiple Node versions for Unix
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
@@ -28,12 +35,25 @@
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Install multiple Node versions for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ node_versions }}"
+  shell:
+    cmd: nvm install {{ item }}
+  when: ansible_system == "Windows"
+
 - name: Set default Node version for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: "source $HOME/.nvm/nvm.sh && nvm alias default {{ node_versions[-1] }}"
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Set default Node version for Windows
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: "nvm alias default {{ node_versions[-1] }}"
+  when: ansible_system == "Windows"
 
 - name: Install Node CLI applications for Unix
   become_user: "{{ user_account }}"

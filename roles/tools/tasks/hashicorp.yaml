@@ -25,6 +25,13 @@
     name: packer
   when: ansible_system == "Darwin"
 
+- name: Install Packer for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: packer
+  when: ansible_system == "Windows"
+
 - name: Get latest Terrafrom version
   uri:
     url: https://formulae.brew.sh/api/formula/terraform.json
@@ -52,6 +59,13 @@
     name: terraform
   when: ansible_system == "Darwin"
 
+- name: Install Terraform for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: terraform
+  when: ansible_system == "Windows"
+
 - name: Get latest Terragrunt version
   uri:
     url: https://formulae.brew.sh/api/formula/terragrunt.json
@@ -74,6 +88,13 @@
   community.general.homebrew:
     name: terragrunt
   when: ansible_system == "Darwin"
+
+- name: Install Terragrunt for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: terragrunt
+  when: ansible_system == "Windows"
 
 - name: Get latest Vault version
   uri:
@@ -100,3 +121,10 @@
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"
+
+- name: Install Vault for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: vault
+  when: ansible_system == "Windows"

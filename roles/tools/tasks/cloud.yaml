@@ -10,6 +10,13 @@
     name: awscli
   when: ansible_system == "Darwin"
 
+- name: Install AWSCLI for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: aws
+  when: ansible_system == "Windows"
+
 - name: Add Google Cloud key and distribution URI for Debian distributions
   shell:
     cmd: |
@@ -30,3 +37,10 @@
   community.general.homebrew_cask:
     name: google-cloud-sdk
   when: ansible_system == "Darwin"
+
+- name: Install Google Cloud SDK for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: gcloud
+  when: ansible_system == "Windows"

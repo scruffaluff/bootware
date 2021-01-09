@@ -17,6 +17,15 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Docker Compose for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - docker-compose
+      - posh-docker
+  when: ansible_system == "Windows"
+
 - name: Install Docker Fish shell completions for Unix
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/completions/docker.fish"

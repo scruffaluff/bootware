@@ -30,6 +30,18 @@
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
+- name: Install sytem packages for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - openssh
+      - openssl
+      - unzip
+      - zip
+      - vcredist2019
+  when: ansible_system == "Windows"
+
 - name: Add Flathub remote repository for Linux
   become: yes
   shell:

@@ -27,6 +27,13 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install MongoDB Compass for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mongodb-compass-community
+  when: ansible_system == "Windows"
+
 # Spotify is unreliable with maintaing debs and flatpaks. Best to install with
 # operating system application store.
 # - name: Install Spotify for Linux
@@ -61,6 +68,15 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install web browsers for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - firefox
+      - googlechrome
+  when: ansible_system == "Windows"
+
 - name: Install general applications for Debian distributions
   become: yes
   apt:
@@ -83,6 +99,17 @@
       - vlc
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install general applications for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - discord
+      - postman
+      - slack
+      - vlc
+  when: ansible_system == "Windows"
 
 - name: Create background pictures directory
   become_user: "{{ user_account }}"

@@ -4,3 +4,10 @@
     cmd: curl -Sfs https://wasmtime.dev/install.sh | bash
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Wasmtime for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: wasmtime
+  when: ansible_system == "Windows"
