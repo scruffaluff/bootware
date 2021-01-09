@@ -1,0 +1,80 @@
+- name: Get latest Packer version
+  uri:
+    url: https://formulae.brew.sh/api/formula/packer.json
+    method: GET
+    return_content: yes
+  register: packer_formula
+
+- name: Install Packer for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >-
+      https://releases.hashicorp.com/packer/{{
+      packer_formula.json.versions.stable }}/packer_{{
+      packer_formula.json.versions.stable }}_linux_amd64.zip
+  when: ansible_system == "Linux"
+
+- name: Install Packer for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: packer
+  when: ansible_system == "Darwin"
+
+- name: Get latest Terrafrom version
+  uri:
+    url: https://formulae.brew.sh/api/formula/terraform.json
+    method: GET
+    return_content: yes
+  register: terraform_formula
+
+- name: Install Terraform for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >-
+      https://releases.hashicorp.com/terraform/{{
+      terraform_formula.json.versions.stable }}/terraform_{{
+      terraform_formula.json.versions.stable }}_linux_amd64.zip
+  when: ansible_system == "Linux"
+
+- name: Install Terraform for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: terraform
+  when: ansible_system == "Darwin"
+
+- name: Get latest Vault version
+  uri:
+    url: https://formulae.brew.sh/api/formula/vault.json
+    method: GET
+    return_content: yes
+  register: vault_formula
+
+- name: Install Vault for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >-
+      https://releases.hashicorp.com/vault/{{
+      vault_formula.json.versions.stable }}/vault_{{
+      vault_formula.json.versions.stable }}_linux_amd64.zip
+  when: ansible_system == "Linux"
+
+- name: Install Vault for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: vault
+  when: ansible_system == "Darwin"
