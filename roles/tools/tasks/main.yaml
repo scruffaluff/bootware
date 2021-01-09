@@ -13,6 +13,9 @@
 - name: Install Terraform
   import_tasks: terraform.yaml
 
+- name: Install Vault
+  import_tasks: vault.yaml
+
 - name: Install web tools
   import_tasks: web.yaml
 
