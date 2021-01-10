@@ -279,7 +279,9 @@ install() {
         esac
     done
 
-    prepare
+    if [ "$BOOTWARE_SETUP" != 0 ]; then
+        setup
+    fi
 
     find_config_path "$_config_path"
     _config_path="$RET_VAL"
@@ -291,7 +293,7 @@ install() {
 }
 
 # Configure boostrapping services and utilities.
-prepare() {
+setup() {
     local _os_type
 
     # Get operating system for local machine.
@@ -302,10 +304,10 @@ prepare() {
 
     case "$_os_type" in
         Darwin)
-            prepare_macos
+            setup_macos
             ;;
         Linux)
-            prepare_linux
+            setup_linux
             ;;
         *)
             error "Operting system $_os_type is not supported."
@@ -314,7 +316,7 @@ prepare() {
 }
 
 # Configure boostrapping services and utilities for Linux.
-prepare_linux() {
+setup_linux() {
     assert_cmd apt-get
     assert_cmd dpkg
 
@@ -344,7 +346,7 @@ prepare_linux() {
 }
 
 # Configure boostrapping services and utilities for MacOS.
-prepare_macos() {
+setup_macos() {
     local _remote_login
 
     # Check if remote login is available.
