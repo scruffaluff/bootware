@@ -23,7 +23,7 @@ path.
 
 - \<path> (argument to -c/--config command line flag)
 - bootware.yaml (in the current directory)
-- EUCLID_CONFIG (environment variable)
+- BOOTWARE_CONFIG (environment variable)
 - ~/bootware.yaml (in the home directory)
 
 The following commands will download the example configuration file to the user

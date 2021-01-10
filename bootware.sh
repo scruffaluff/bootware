@@ -104,14 +104,14 @@ bootstrap() {
             ;;
     esac
 
-    if [ -z ${EUCLID_PASSWORDLESS_SUDO+x} ]; then
+    if [ -z ${BOOTWARE_PASSWORDLESS_SUDO+x} ]; then
         bootstrap_password "$1" "$2" "$3" "${_ip_flag[@]}"
     else
         bootstrap_passwordless "$1" "$2" "$3" "${_ip_flag[@]}"
     fi
 }
 
-# Launch Docker container to boostrap software installation for Linux.
+# Launch Docker container to boostrap software installation.
 bootstrap_password() {
     sudo docker run \
         -it \
@@ -126,7 +126,7 @@ bootstrap_password() {
         main.yaml
 }
 
-# Launch Docker container to boostrap software installation for MacOS.
+# Launch Docker container to boostrap software installation without password.
 bootstrap_passwordless() {
     sudo docker run \
         -v "$1:/root/.ssh/bootware" \
@@ -186,8 +186,8 @@ find_config_path() {
         RET_VAL="$1"
     elif test -f "$(pwd)/bootware.yaml" ; then
         RET_VAL="$(pwd)/bootware.yaml"
-    elif [[ -n "${EUCLID_CONFIG}" ]] ; then
-        RET_VAL="$EUCLID_CONFIG"
+    elif [[ -n "${BOOTWARE_CONFIG}" ]] ; then
+        RET_VAL="$BOOTWARE_CONFIG"
     elif test -f "$HOME/bootware.yaml" ; then
         RET_VAL="$HOME/bootware.yaml"
     else

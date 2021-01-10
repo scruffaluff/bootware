@@ -1,5 +1,4 @@
 machine_name: github-runner-macos
 user_account: runner
 user_email: macos.runner@github.com
-user_home_dir: /Users/runner
 user_name: MacOS Runner
