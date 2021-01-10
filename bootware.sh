@@ -384,7 +384,7 @@ prepare_macos() {
     #     ---background:
     if ! brew list --cask docker &>/dev/null ; then
         echo "Installing Docker..."
-        brew cask install docker
+        brew install --cask docker
         open --background /Applications/Docker.app
     fi
 

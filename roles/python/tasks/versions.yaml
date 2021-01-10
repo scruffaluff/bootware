@@ -1,3 +1,6 @@
+# Pyenv dependencies are listed at
+# https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
+
 - name: Install Pyenv dependencies for Debian distributions
   apt:
     name:
@@ -23,24 +26,32 @@
   become: yes
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
-- name: Install Pyenv for Linux
+- name: Install Pyenv dependencies for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - openssl
+      - readline
+      - sqlite3
+      - xz
+      - zlib
+  when: ansible_system == "Darwin"
+
+# Do not use Homebrew for installing Pyenv. The subsequent commands will not be
+# able to find the Pyenv executable.
+- name: Install Pyenv for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ user_home_dir }}/.pyenv/bin/pyenv"
     warn: no
-  when: ansible_system == "Linux"
-
-- name: Install Pyenv for Macos
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: pipx
-  when: ansible_system == "Darwin"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Update Pyenv for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: pyenv update
+    executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Get latest patch release for each Python minor version
@@ -50,6 +61,7 @@
     cmd: >-
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
       xargs
+    executable: /bin/bash
   register: pyenv_releases
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -63,9 +75,10 @@
   loop: "{{ python_releases }}"
   shell:
     cmd: pyenv install -s {{ item }}
+    executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Pipx for Windows
+- name: Install multiple Python versions for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -76,5 +89,7 @@
 - name: Set Python global versions
   become_user: "{{ user_account }}"
   shell:
-    cmd: "pyenv global system {{ python_releases | reverse | join(' ') }}"
+    cmd: >-
+      pyenv global system {{ python_releases | reverse | join(' ') }}
+    executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]

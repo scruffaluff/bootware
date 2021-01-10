@@ -8,12 +8,17 @@
     - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
-- name: Install Docker and Docker Compose for MacOS
+- name: Install Docker for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    name:
-      - docker
-      - docker-compose
+    name: docker
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Docker Compose for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: docker-compose
     state: present
   when: ansible_system == "Darwin"
 

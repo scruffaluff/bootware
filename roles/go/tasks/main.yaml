@@ -19,7 +19,7 @@
 
 - name: Install Go for MacOS
   become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
+  community.general.homebrew:
     name: go
     state: present
   when: ansible_system == "Darwin"
