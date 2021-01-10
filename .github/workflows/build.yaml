@@ -75,4 +75,4 @@ jobs:
           docker load --input /tmp/bootware.tar
           docker image ls -a
       - name: Test bootstrapping
-        run: BOOTWARE_PASSWORDLESS_SUDO=1 ./bootware.sh --tag server
+        run: BOOTWARE_PASSWORDLESS_SUDO=1 ./bootware.sh install --tag server
