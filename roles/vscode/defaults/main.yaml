@@ -1,4 +1,5 @@
 vscode_extensions:
+  - "alefragnani.bookmarks"
   - "bungcip.better-toml"
   - "coenraads.bracket-pair-colorizer-2"
   - "eamodio.gitlens"

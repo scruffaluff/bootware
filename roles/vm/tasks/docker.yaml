@@ -1,7 +1,30 @@
+- name: Install Docker dependencies for Debian distributions
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Add Docker GPG key and repository for Debian distributions
+  become: yes
+  shell:
+    cmd: |
+      curl -LSfs https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | tee /usr/share/keyrings/docker-ce-archive-keyring.gpg > /dev/null
+      add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    executable: /bin/bash
+  warn: false
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
 - name: Install Docker and Docker Compose for Debian distributions
   apt:
     name:
-      - docker.io
+      - containerd.io
+      - docker-ce
+      - docker-ce-cli
       - docker-compose
   become: yes
   tags:
