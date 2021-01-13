@@ -119,11 +119,11 @@ bootstrap_password() {
         -v "$2:/bootware/host_vars/host.docker.internal.yaml" \
         --rm \
         ${4:+"$4"} ${5:+"$5"} \
-        wolfgangwazzlestrauss/bootware:latest \
+        "wolfgangwazzlestrauss/bootware:latest" \
         --ask-become-pass \
         --tag "$3" \
         --user "$USER" \
-        main.yaml
+        "main.yaml"
 }
 
 # Launch Docker container to boostrap software installation without password.
@@ -133,10 +133,10 @@ bootstrap_passwordless() {
         -v "$2:/bootware/host_vars/host.docker.internal.yaml" \
         --rm \
         ${4:+"$4"} ${5:+"$5"} \
-        wolfgangwazzlestrauss/bootware:latest \
+        "wolfgangwazzlestrauss/bootware:latest" \
         --tag "$3" \
         --user "$USER" \
-        main.yaml
+        "main.yaml"
 }
 
 # Check if command can be found on machine.
@@ -170,7 +170,7 @@ config() {
     #     -f: Use archive file. Must be third flag.
     #     -o <path>: Write output to path instead of stdout. 
     curl -LSf \
-        https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml \
+        "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" \
         -o "$HOME/bootware.yaml"
 }
 
@@ -332,7 +332,7 @@ setup_linux() {
             gnupg-agent \
             software-properties-common
 
-        curl -LSfs https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/docker-ce-archive-keyring.gpg > /dev/null
+        curl -LSfs "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee "/usr/share/keyrings/docker-ce-archive-keyring.gpg" > /dev/null
         sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
         sudo apt-get -qq install -y containerd.io docker-ce docker-ce-cli
 
@@ -386,7 +386,7 @@ setup_macos() {
     #     -s: Disable progress bars.
     if ! check_cmd brew ; then
         echo "Installing Homebrew..."
-        curl -LSfs https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash
+        curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
     fi
 
     # Install Docker Desktop if not already installed.
@@ -432,15 +432,15 @@ update() {
 
     case "$_os_type" in
         Darwin)
-            sudo mkdir -p /usr/local/bin/
-            sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
-            sudo chmod 755 /usr/local/bin/bootware
-            echo 'export PATH="$PATH:/usr/local/bin"' >> "$HOME/.profile"
+            sudo mkdir -p "/usr/local/bin/"
+            sudo curl -LSfs "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh" -o "/usr/local/bin/bootware"
+            sudo chmod 755 "/usr/local/bin/bootware"
+            echo "export PATH=\"\$PATH:/usr/local/bin\"" >> "$HOME/.profile"
             export PATH="$PATH:/usr/local/bin"
             ;;
         Linux)
-            sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /usr/local/bin/bootware
-            sudo chmod 755 /usr/local/bin/bootware
+            sudo curl -LSfs "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh" -o "/usr/local/bin/bootware"
+            sudo chmod 755 "/usr/local/bin/bootware"
             ;;
         *)
             error "Operting system $_os_type is not supported."
