@@ -323,18 +323,9 @@ setup_linux() {
     # dpkg -l does not always return the correct exit code. dpkg -s does. See
     # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
     # for more information.
-    if ! dpkg -s docker-ce &>/dev/null ; then
+    if ! dpkg -s docker.io &>/dev/null ; then
         echo "Installing Docker..."
-        sudo apt-get -qq update && sudo apt-get -qq install -y \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            gnupg-agent \
-            software-properties-common
-
-        curl -LSfs "https://download.docker.com/linux/ubuntu/gpg" | gpg --dearmor | sudo tee "/usr/share/keyrings/docker-ce-archive-keyring.gpg" > /dev/null
-        sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-        sudo apt-get -qq install -y containerd.io docker-ce docker-ce-cli
+        sudo apt-get -qq update && sudo apt-get -qq install -y docker.io
 
         # Docker gateway IP is not always available after installation. A
         # restart is believed to help.
