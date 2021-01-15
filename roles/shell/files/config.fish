@@ -15,7 +15,7 @@ end
 # User settings.
 
 # Add scripts directory to system path.
-set -x PATH "$HOME/.local/bin:$PATH"
+set -x PATH "$HOME/.local/bin" $PATH
 
 
 # Docker settings.
@@ -31,7 +31,7 @@ set fish_greeting
 
 # Go settings.
 set -x GOROOT "/usr/local/go"
-set -x PATH "$GOROOT/bin:$PATH"
+set -x PATH "$GOROOT/bin" $PATH
 
 
 # Python settings.
@@ -40,7 +40,7 @@ set -x PATH "$GOROOT/bin:$PATH"
 set -x POETRY_VIRTUALENVS_IN_PROJECT 1
 
 # Add Pyenv binaries to system path.
-set -x PATH "$HOME/.pyenv/bin:$PATH"
+set -x PATH "$HOME/.pyenv/bin" $PATH
 
 # Initialize Pyenv if available.
 #
@@ -53,7 +53,7 @@ end
 
 
 # Rust settings.
-set -x PATH "$HOME/.cargo/bin:$PATH"
+set -x PATH "$HOME/.cargo/bin" $PATH
 
 
 # Starship settings.
@@ -82,7 +82,7 @@ end
 # TypeScript settings.
 
 # Add NPM global binaries to system path.
-set -x PATH "$HOME/.npm-global/bin:$PATH"
+set -x PATH "$HOME/.npm-global/bin" $PATH
 
 # Initialize NVM default version of Node if available.
 #
@@ -94,9 +94,9 @@ end
 
 # Deno settings.
 set -x DENO_INSTALL "$HOME/.deno"
-set -x PATH "$DENO_INSTALL/bin:$PATH"
+set -x PATH "$DENO_INSTALL/bin" $PATH
 
 
 # Wasmtime settings.
 set -x WASMTIME_HOME "$HOME/.wasmtime"
-set -x PATH "$WASMTIME_HOME/bin:$PATH"
+set -x PATH "$WASMTIME_HOME/bin" $PATH

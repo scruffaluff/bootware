@@ -61,6 +61,8 @@
     "**/node_modules/**": true,
     "**/target/**": true
   },
+  "jupyter.alwaysTrustNotebooks": true,
+  "jupyter.askForKernelRestart": false,
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
