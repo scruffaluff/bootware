@@ -49,6 +49,14 @@ if test -f "$HOME/.aliases"
     source "$HOME/.aliases"
 end
 
+# Load environment variables if file exists.
+#
+# Flags:
+#     -f: Check if inode is a regular file.
+if test -f "$HOME/.env"
+    source "$HOME/.env"
+end
+
 # Load secrets if file exists.
 #
 # Flags:
