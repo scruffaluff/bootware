@@ -1,23 +1,6 @@
 # Bash settings file for non-login shells.
 
 
-# Aliases.
-
-# Load aliases if file exists.
-#
-# Flags:
-#     -f: Check if file exists and is a regular file.
-if [ -f "$HOME/.aliases" ]; then
-    source "$HOME/.aliases"
-fi
-
-
-# User settings.
-
-# Add scripts directory to PATH environment variable.
-export PATH="$HOME/.local/bin:$PATH"
-
-
 # Bash settings
 
 # Load Bash completion if it exists.
@@ -27,7 +10,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # Flags:
 #     -f: Check if file exists and is a regular file.
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+    source /etc/bash_completion
 fi
 
 
@@ -64,6 +47,26 @@ fi
 
 # Rust settings.
 export PATH="$HOME/.cargo/bin:$PATH"
+
+
+# Shell settings.
+
+# Load aliases if file exists.
+#
+# Flags:
+#     -f: Check if file exists and is a regular file.
+if [ -f "$HOME/.aliases" ]; then
+    source "$HOME/.aliases"
+fi
+
+# Causes errors variables are exports using Fish syntax.
+# # Load secrets if file exists.
+# #
+# # Flags:
+# #     -f: Check if file exists and is a regular file.
+# if [ -f "$HOME/.secrets" ]; then
+#     source "$HOME/.secrets"
+# fi
 
 
 # Starship settings.
@@ -109,6 +112,12 @@ fi
 # Deno settings.
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
+
+
+# User settings.
+
+# Add scripts directory to PATH environment variable.
+export PATH="$HOME/.local/bin:$PATH"
 
 
 # Wasmtime settings.

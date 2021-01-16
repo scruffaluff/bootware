@@ -17,6 +17,38 @@
     name: aws
   when: ansible_system == "Windows"
 
+- name: Get latest Digital Ocean CLI  version
+  uri:
+    url: https://formulae.brew.sh/api/formula/doctl.json
+    method: GET
+    return_content: yes
+  register: doctl_formula
+
+- name: Install Digital Ocean CLI for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://github.com/digitalocean/doctl/releases/download/v{{
+      doctl_formula.json.versions.stable }}/doctl-{{
+      doctl_formula.json.versions.stable }}-linux-amd64.tar.gz
+  when: ansible_system == "Linux"
+
+- name: Install Digital Ocean CLI for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: doctl
+  when: ansible_system == "Darwin"
+
+- name: Install Digital Ocean CLI for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: doctl
+  when: ansible_system == "Windows"
+
 - name: Add Google Cloud key and distribution URI for Debian distributions
   shell:
     cmd: |

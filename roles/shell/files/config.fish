@@ -1,23 +1,6 @@
 # Fish settings file.
 
 
-# Aliases.
-
-# Load aliases if file exists.
-#
-# Flags:
-#     -f: Check if inode is a regular file.
-if test -f "$HOME/.aliases"
-    source "$HOME/.aliases"
-end
-
-
-# User settings.
-
-# Add scripts directory to system path.
-set -x PATH "$HOME/.local/bin" $PATH
-
-
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
 set -x DOCKER_BUILDKIT 1
@@ -54,6 +37,25 @@ end
 
 # Rust settings.
 set -x PATH "$HOME/.cargo/bin" $PATH
+
+
+# Shell settings
+
+# Load aliases if file exists.
+#
+# Flags:
+#     -f: Check if inode is a regular file.
+if test -f "$HOME/.aliases"
+    source "$HOME/.aliases"
+end
+
+# Load secrets if file exists.
+#
+# Flags:
+#     -f: Check if inode is a regular file.
+if test -f "$HOME/.secrets"
+    source "$HOME/.secrets"
+end
 
 
 # Starship settings.
@@ -95,6 +97,12 @@ end
 # Deno settings.
 set -x DENO_INSTALL "$HOME/.deno"
 set -x PATH "$DENO_INSTALL/bin" $PATH
+
+
+# User settings.
+
+# Add scripts directory to system path.
+set -x PATH "$HOME/.local/bin" $PATH
 
 
 # Wasmtime settings.

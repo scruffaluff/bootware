@@ -5,6 +5,13 @@
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Generate Deno Fish completions for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: deno completions fish > $HOME/.config/fish/completions/deno.fish
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install Deno for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
