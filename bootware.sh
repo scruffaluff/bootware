@@ -83,6 +83,7 @@ bootstrap() {
     echo "Enter your user account password when prompted."
 
     ansible-pull \
+        --ask-become-pass \
         --extra-vars "user_account=$USER $1" \
         --inventory 127.0.0.1, \
         --url https://github.com/wolfgangwazzlestrauss/bootware.git \
