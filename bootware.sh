@@ -84,8 +84,10 @@ bootstrap() {
 
     ansible-pull \
         --ask-become-pass \
-        --extra-vars "user_account=$USER $1" \
+        --extra-vars "user_account=$USER" \
+        --extra-vars "@$1" \
         --inventory 127.0.0.1, \
+        --tag "$2" \
         --url https://github.com/wolfgangwazzlestrauss/bootware.git \
         main.yaml
 }
