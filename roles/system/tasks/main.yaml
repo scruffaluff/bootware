@@ -1,17 +1,3 @@
-- name: Set groups for standard user for Linux
-  become: yes
-  user:
-    name: "{{ user_account }}"
-    groups:
-      - docker
-      - sudo
-  when: ansible_system == "Linux"
-
-- name: Change computer hostname
-  hostname:
-    name: "{{ machine_name }}"
-  when: ansible_system == "Linux"
-
 - name: Install system packages for Debian distributions
   apt:
     name:

@@ -15,6 +15,14 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Set user to Docker group for Unix systems
+  become: yes
+  user:
+    name: "{{ user_account }}"
+    groups:
+      - docker
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install Docker Compose for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
