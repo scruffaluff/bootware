@@ -18,6 +18,7 @@
 - name: Set user to Docker group for Unix systems
   become: yes
   user:
+    append: yes
     name: "{{ user_account }}"
     groups:
       - docker

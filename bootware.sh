@@ -15,9 +15,9 @@ Bootware config
 Generate default Bootware configuration file
 
 USAGE:
-    bootware config [FLAGS]
+    bootware config [OPTIONS]
 
-FLAGS:
+OPTIONS:
     -h, --help       Print help information
 EOF
             ;;
@@ -27,13 +27,11 @@ Bootware install
 Boostrap install computer software
 
 USAGE:
-    bootware install [FLAGS] [OPTIONS]
-
-FLAGS:
-    -h, --help       Print help information
+    bootware install [OPTIONS]
 
 OPTIONS:
     -c, --config     Path to bootware user configuation file
+    -h, --help       Print help information
         --tag        Ansible playbook tag
 EOF
             ;;
@@ -43,9 +41,9 @@ $(version)
 Boostrapping software installer
 
 USAGE:
-    bootware [FLAGS] [SUBCOMMAND]
+    bootware [OPTIONS] [SUBCOMMAND]
 
-FLAGS:
+OPTIONS:
     -h, --help       Print help information
     -v, --version    Print version information
 
@@ -61,9 +59,9 @@ Bootware update
 Update Bootware to latest version
 
 USAGE:
-    bootware update [FLAGS]
+    bootware update [OPTIONS]
 
-FLAGS:
+OPTIONS:
     -h, --help       Print help information
 EOF
             ;;
@@ -127,7 +125,7 @@ config() {
 
     # Download default configuration file.
     #
-    # Flags:
+    # FLAGS:
     #     -L: Follow redirect request.
     #     -S: Show errors.
     #     -f: Use archive file. Must be third flag.
@@ -206,7 +204,7 @@ setup() {
 
     # Get operating system for local machine.
     #
-    # Flags:
+    # FLAGS:
     #     -s: Print the kernel name.
     _os_type=$(uname -s)
 
@@ -252,7 +250,7 @@ setup_macos() {
 
     # Install Homebrew if not already installed.
     #
-    # Flags:
+    # FLAGS:
     #     -L: Follow redirect request.
     #     -S: Show errors.
     #     -f: Fail silently on server errors.
@@ -264,7 +262,7 @@ setup_macos() {
 
     # Install Ansible if not already installed.
     #
-    # Flags:
+    # FLAGS:
     #     ---background:
     if ! brew list ansible &>/dev/null ; then
         echo "Installing Docker..."
@@ -290,7 +288,7 @@ update() {
 
     # Get operating system for local machine.
     #
-    # Flags:
+    # FLAGS:
     #     -s: Print the kernel name.
     _os_type=$(uname -s)
 
