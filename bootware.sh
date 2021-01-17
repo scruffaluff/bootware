@@ -82,14 +82,24 @@ bootstrap() {
     echo "Launching Ansible pipeline..."
     echo "Enter your user account password when prompted."
 
-    ansible-pull \
-        --ask-become-pass \
-        --extra-vars "user_account=$USER" \
-        --extra-vars "@$1" \
-        --inventory 127.0.0.1, \
-        --tag "$2" \
-        --url https://github.com/wolfgangwazzlestrauss/bootware.git \
-        main.yaml
+    if [[ "$BOOTWARE_NOPASSWD" ]]; then
+        ansible-pull \
+            --extra-vars "user_account=$USER" \
+            --extra-vars "@$1" \
+            --inventory 127.0.0.1, \
+            --tag "$2" \
+            --url https://github.com/wolfgangwazzlestrauss/bootware.git \
+            main.yaml
+    else
+        ansible-pull \
+            --ask-become-pass \
+            --extra-vars "user_account=$USER" \
+            --extra-vars "@$1" \
+            --inventory 127.0.0.1, \
+            --tag "$2" \
+            --url https://github.com/wolfgangwazzlestrauss/bootware.git \
+            main.yaml
+    fi
 }
 
 # Check if command can be found on machine.
@@ -180,7 +190,7 @@ install() {
         esac
     done
 
-    if [ "$BOOTWARE_SETUP" != 0 ]; then
+    if [[ ! "$BOOTWARE_NOSETUP" ]]; then
         setup
     fi
 

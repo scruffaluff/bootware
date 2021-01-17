@@ -48,33 +48,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Copy Bootware configuration file
         run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
-      - name: Configure SSH daemon
-        run: |
-          sudo mv ./.github/configs/sshd_config /etc/ssh/sshd_config
-          sudo systemctl restart ssh
-      - name: Create SSH key and authorization files
-        run: |
-          ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa
-          cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-      - name: Set SSH file permissions
-        run: |
-          chmod 600 ~/.ssh/authorized_keys
-          chmod 700 ~/.ssh
-          sudo chmod 0755 ~/
-      - name: Test SSH connection to localhost
-        run: |
-          ssh -vvv -i ~/.ssh/id_rsa \
-            -o BatchMode=yes -o StrictHostKeyChecking=no runner@localhost
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: bootware
-          path: /tmp
-      - name: Load Docker image
-        run: |
-          docker load --input /tmp/bootware.tar
-          docker image ls -a
       - name: Test bootstrapping
         run: >
-          BOOTWARE_PASSWORDLESS_SUDO=1 BOOTWARE_SETUP=0 ./bootware.sh install
-          --tag server
+          BOOTWARE_NOPASSWD=1 BOOTWARE_NOSETUP=1 ./bootware.sh install --tag
+          server
