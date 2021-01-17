@@ -49,6 +49,4 @@ jobs:
       - name: Copy Bootware configuration file
         run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
       - name: Test bootstrapping
-        run: >
-          BOOTWARE_NOPASSWD=1 BOOTWARE_NOSETUP=1 ./bootware.sh install --tag
-          server
+        run: BOOTWARE_NOPASSWD=1 ./bootware.sh install --tag server

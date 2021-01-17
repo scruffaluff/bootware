@@ -15,6 +15,7 @@
         upgrade_all: yes
       when: ansible_system == "Darwin"
   tags:
+    - container
     - desktop
     - server
 
@@ -23,6 +24,7 @@
   roles:
     - system
   tags:
+    - container
     - desktop
     - server
     - system
@@ -32,6 +34,7 @@
   roles:
     - shell
   tags:
+    - container
     - desktop
     - server
     - shell
@@ -41,6 +44,7 @@
   roles:
     - vcs
   tags:
+    - container
     - desktop
     - server
     - vcs
@@ -50,6 +54,7 @@
   roles:
     - neovim
   tags:
+    - container
     - desktop
     - neovim
     - server
@@ -59,6 +64,7 @@
   roles:
     - tools
   tags:
+    - container
     - desktop
     - server
     - tools
@@ -68,6 +74,7 @@
   roles:
     - go
   tags:
+    - container
     - desktop
     - go
     - server
@@ -77,6 +84,7 @@
   roles:
     - python
   tags:
+    - container
     - desktop
     - python
     - server
@@ -95,6 +103,7 @@
   roles:
     - typescript
   tags:
+    - container
     - desktop
     - server
     - typescript
@@ -120,6 +129,7 @@
   roles:
     - vm
   tags:
+    - container
     - desktop
     - server
     - vm
