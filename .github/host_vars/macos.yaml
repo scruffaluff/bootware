@@ -1,2 +1,6 @@
+python_versions:
+  - "3.7"
+  - "3.8"
+  - "3.9"
 user_email: macos.runner@github.com
 user_name: MacOS Runner

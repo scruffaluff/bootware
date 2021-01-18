@@ -8,8 +8,10 @@
 - name: Generate Deno Fish completions for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: deno completions fish > $HOME/.config/fish/completions/deno.fish
-    warn: no
+    cmd: >
+      source $HOME/.bashrc && deno completions fish >
+      $HOME/.config/fish/completions/deno.fish
+    executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Deno for Windows
