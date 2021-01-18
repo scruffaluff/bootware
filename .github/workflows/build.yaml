@@ -24,7 +24,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
+      - name: Code repository checkout
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -40,12 +40,29 @@ jobs:
         with:
           name: bootware
           path: /tmp/bootware.tar
-  test:
+  test-macos:
+    needs: build
+    runs-on: macos-11.0
+    steps:
+      - name: Code repository checkout
+        uses: actions/checkout@v2
+      - name: Install Bootware
+        run: >
+          curl -LSfs
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
+      - name: Copy Bootware configuration file
+        run: cp ./.github/host_vars/macos.yaml $HOME/bootware.yaml
+      - name: Test bootstrapping
+        run: BOOTWARE_NOPASSWD=1 bootware install --tag server
+  test-ubuntu:
     needs: build
     runs-on: ubuntu-20.04
     steps:
+      - name: Code repository checkout
+        uses: actions/checkout@v2
       - name: Install Bootware
-        run:
+        run: >
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
