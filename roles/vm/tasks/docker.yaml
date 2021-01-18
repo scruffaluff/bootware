@@ -4,8 +4,6 @@
       - docker.io
       - docker-compose
   become: yes
-  tags:
-    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Docker for MacOS

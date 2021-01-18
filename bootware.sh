@@ -78,26 +78,17 @@ assert_cmd() {
 # Launch Docker container to boostrap software installation.
 bootstrap() {
     echo "Launching Ansible pipeline..."
-    echo "Enter your user account password when prompted."
+    echo "Enter your user account password if prompted."
 
-    if [[ "$BOOTWARE_NOPASSWD" ]]; then
-        ansible-pull \
-            --extra-vars "user_account=$USER" \
-            --extra-vars "@$1" \
-            --inventory 127.0.0.1, \
-            --tag "$2" \
-            --url https://github.com/wolfgangwazzlestrauss/bootware.git \
-            main.yaml
-    else
-        ansible-pull \
-            --ask-become-pass \
-            --extra-vars "user_account=$USER" \
-            --extra-vars "@$1" \
-            --inventory 127.0.0.1, \
-            --tag "$2" \
-            --url https://github.com/wolfgangwazzlestrauss/bootware.git \
-            main.yaml
-    fi
+    ansible-pull \
+        ${2:+ --ask-become-pass} \
+        --extra-vars "user_account=$USER" \
+        --extra-vars "@$1" \
+        --inventory 127.0.0.1, \
+        ${3:+ --skip-tags "$3"} \
+        ${4:+ --tags "$4"} \
+        --url https://github.com/wolfgangwazzlestrauss/bootware.git \
+        main.yaml
 }
 
 # Check if command can be found on machine.
@@ -162,7 +153,10 @@ find_config_path() {
 install() {
     # Dev null is never a normal file.
     local _config_path="/dev/null"
-    local _tag="all"
+    local _no_setup
+    local _use_passwd="1"
+    local _skip_tags
+    local _tags
 
     # Parse command line arguments.
     for arg in "$@"; do
@@ -173,13 +167,24 @@ install() {
                 ;;
             -c|--config)
                 _config_path="$2"
-                # Remove two arguments from arguments list.
                 shift
                 shift
                 ;;
-            --tag)
-                _tag="$2"
-                # Remove two arguments from arguments list.
+            --no-passwd)
+                _use_passwd=""
+                shift
+                ;;
+            --no-setup)
+                _no_setup="1"
+                shift
+                ;;
+            --skip-tags)
+                _skip_tags="$2"
+                shift
+                shift
+                ;;
+            --tags)
+                _tags="$2"
                 shift
                 shift
                 ;;
@@ -188,14 +193,14 @@ install() {
         esac
     done
 
-    if [[ ! "$BOOTWARE_NOSETUP" ]]; then
+    if [[ ! "$_no_setup" ]]; then
         setup
     fi
 
     find_config_path "$_config_path"
     _config_path="$RET_VAL"
 
-    bootstrap "$_config_path" "$_tag"
+    bootstrap "$_config_path" "$_use_passwd" "$_skip_tags" "$_tags"
 }
 
 # Configure boostrapping services and utilities.
@@ -348,7 +353,6 @@ main() {
                 exit 0
                 ;;
             -v|--version)
-                shift
                 version
                 exit 0
                 ;;

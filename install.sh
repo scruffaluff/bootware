@@ -37,20 +37,20 @@ check_cmd() {
 
 # Configure path for user's shell.
 configure_shell() {
-    local _export
+    local _export="export PATH=\"$1:\$PATH\""
     local _profile
+    local _shell
 
-    case $(basename "$SHELL") in
+    _shell=$(basename "$SHELL")
+
+    case "$_shell" in
         bash)
-            _export="export PATH=\"$1:\$PATH\""
             _profile="$HOME/.bashrc"
             ;;
         zsh)
-            _export="export PATH=\"$1:\$PATH\""
             _profile="$HOME/.zshrc"
             ;;
         ksh)
-            _export="export PATH=\"$1:\$PATH\""
             _profile="$HOME/.profile"
             ;;
         fish)
@@ -58,7 +58,7 @@ configure_shell() {
             _profile="$HOME/.config/fish/config.fish"
             ;;
         *)
-            error "Shell $SHELL is not supported."
+            error "Shell $_shell is not supported."
             ;;
     esac
 
@@ -79,9 +79,7 @@ main() {
     local _dest_dir
     local _source
     local _user
-    local _version
-
-    _version="master"
+    local _version="master"
 
     # Parse command line arguments.
     for arg in "$@"; do

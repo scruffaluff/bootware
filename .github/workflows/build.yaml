@@ -54,7 +54,7 @@ jobs:
       - name: Copy Bootware configuration file
         run: cp ./.github/host_vars/macos.yaml $HOME/bootware.yaml
       - name: Test bootstrapping
-        run: BOOTWARE_NOPASSWD=1 bootware install --tag server
+        run: bootware install --no-passwd --tags "server,"
   test-ubuntu:
     needs: build
     runs-on: ubuntu-20.04
@@ -69,4 +69,4 @@ jobs:
       - name: Copy Bootware configuration file
         run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
       - name: Test bootstrapping
-        run: BOOTWARE_NOPASSWD=1 bootware install --tag server
+        run: bootware install --no-passwd --tags "server,"
