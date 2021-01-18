@@ -24,13 +24,13 @@ that on Windows, PowerShell will need to run as administrator.
 <code-group>
 <code-block title="Linux" active>
 ```bash
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="MacOS">
 ```bash
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 ```
 </code-block>
 

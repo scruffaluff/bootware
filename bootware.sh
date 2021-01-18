@@ -324,6 +324,7 @@ version() {
 # Script entrypoint.
 main() {
     assert_cmd chmod
+    assert_cmd git
     assert_cmd mkdir
     assert_cmd mktemp
     assert_cmd uname

@@ -44,9 +44,12 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
-      - name: Code repository checkout
-        uses: actions/checkout@v2
+      - name: Install Bootware
+        run:
+          curl -LSfs
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
       - name: Copy Bootware configuration file
         run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
       - name: Test bootstrapping
-        run: BOOTWARE_NOPASSWD=1 ./bootware.sh install --tag server
+        run: BOOTWARE_NOPASSWD=1 bootware install --tag server

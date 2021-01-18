@@ -50,31 +50,32 @@
 - name: Update Pyenv for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: pyenv update
+    cmd: source $HOME/.bashrc && pyenv update
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Get latest patch release for each Python minor version
+- name: Get latest patch release for each Python minor version for Unix
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
     cmd: >-
-      pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
-      xargs
+      source $HOME/.bashrc && pyenv install --list | grep -E "^\\s*{{ item
+      }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: /bin/bash
   register: pyenv_releases
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Extract Python versions from Pyenv outputs
+- name: Extract Python versions from Pyenv outputs for Unix
   set_fact:
     python_releases:
       "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install multiple Python versions for Unix
   become_user: "{{ user_account }}"
   loop: "{{ python_releases }}"
   shell:
-    cmd: pyenv install -s {{ item }}
+    cmd: source $HOME/.bashrc && pyenv install -s {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -86,10 +87,11 @@
   loop: "{{ python_releases }}"
   when: ansible_system == "Windows"
 
-- name: Set Python global versions
+- name: Set Python global versions for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: >-
-      pyenv global system {{ python_releases | reverse | join(' ') }}
+      source $HOME/.bashrc && pyenv global system {{ python_releases | reverse |
+      join(' ') }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
