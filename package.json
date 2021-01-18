@@ -9,7 +9,8 @@
   "devDependencies": {
     "bats": "^1.2.1",
     "prettier": "^2.0.5",
-    "vuepress": "^1.5.3"
+    "vuepress": "^1.5.3",
+    "vuepress-plugin-code-copy": "^1.0.6"
   },
   "prettier": {
     "arrowParens": "always",

@@ -24,22 +24,19 @@ that on Windows, PowerShell will need to run as administrator.
 <code-group>
 <code-block title="Linux" active>
 ```bash
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh | bash -s -- update
+sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="MacOS">
 ```bash
-sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh | bash -s -- update
+sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="Windows">
 ```powershell
-New-Item -Path "C:\Program Files\Bootware" -Type Directory
-$Env:Path = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";C:\Program Files\Bootware"
-[Environment]::SetEnvironmentVariable("Path", "$Env:Path", "Machine")
-Invoke-WebRequest -Uri  https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1 -o "C:\Program Files\Bootware\bootware"
+Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1 | Invoke-Expression
 ```
 </code-block>
 </code-group>

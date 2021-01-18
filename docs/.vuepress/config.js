@@ -1,5 +1,8 @@
 module.exports = {
   base: "/bootware/",
+  plugins: [
+    ["vuepress-plugin-code-copy", { color: "#FFFFFF", staticIcon: true }],
+  ],
   themeConfig: {
     docsDir: "docs",
     editLinks: true,
