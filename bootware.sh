@@ -32,7 +32,7 @@ USAGE:
 OPTIONS:
     -c, --config     Path to bootware user configuation file
     -h, --help       Print help information
-        --tag        Ansible playbook tag
+        --tag string Ansible playbook tag
 EOF
             ;;
         main)
@@ -347,6 +347,7 @@ main() {
                 exit 0
                 ;;
             -v|--version)
+                shift
                 version
                 exit 0
                 ;;

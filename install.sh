@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck shell=bash
 # Exit immediately if a command exists with a non-zero status.
 set -e
@@ -10,27 +10,59 @@ set -e
 usage() {
     cat 1>&2 <<EOF
 $(version)
-Boostrapping software installer
+Installer script for Bootware
 
 USAGE:
-    bootware [OPTIONS]
+    bootware-installer [OPTIONS]
 
 OPTIONS:
-    -h, --help       Print help information
-    -v, --version    Print version information
+    -d, --dest string       Location to install bootware
+    -h, --help              Print help information
+    -u, --user              Install bootware for current user
+    -v, --version string    Version of Bootware to install
 EOF
 }
 
 # Assert that command can be found on machine.
 assert_cmd() {
     if ! check_cmd "$1" ; then
-        error "Cannot find $1 command on computer."
+        error "Cannot find $1 command on computer. Please install and retry installation."
     fi
 }
 
 # Check if command can be found on machine.
 check_cmd() {
     command -v "$1" > /dev/null 2>&1
+}
+
+# Configure path for user's shell.
+configure_shell() {
+    local _export
+    local _profile
+
+    case $(basename "$SHELL") in
+        bash)
+            _export="export PATH=\"$1:\$PATH\""
+            _profile="$HOME/.bashrc"
+            ;;
+        zsh)
+            _export="export PATH=\"$1:\$PATH\""
+            _profile="$HOME/.zshrc"
+            ;;
+        ksh)
+            _export="export PATH=\"$1:\$PATH\""
+            _profile="$HOME/.profile"
+            ;;
+        fish)
+            _export="set -x PATH \"$1\" \$PATH"
+            _profile="$HOME/.config/fish/config.fish"
+            ;;
+        *)
+            error "Shell $SHELL is not supported."
+            ;;
+    esac
+
+    printf "\n# Added by Bootware installer.\n$_export\n" >> "$_profile"
 }
 
 # Print error message and exit with error code.
@@ -44,8 +76,10 @@ main() {
     assert_cmd curl
 
     local _dest
-    local _version
+    local _dest_dir
     local _source
+    local _user
+    local _version
 
     _version="master"
 
@@ -56,7 +90,15 @@ main() {
                 usage
                 exit 0
                 ;;
+            -d|--dest)
+                shift
+                _dest="$2"
+                ;;
+            -u|--user)
+                _user=1
+                ;;
             -v|--version)
+                shift
                 _version="$2"
                 ;;
             *)
@@ -65,23 +107,25 @@ main() {
     done
 
     _source="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$_version/bootware.sh"
+    if [[ "$_user" == 1 ]] ; then
+        _dest="$HOME/.local/bin/bootware"
+        _sudo=""
+    else
+        assert_cmd sudo
+        _dest="/usr/local/bin/bootware"
+        _sudo=sudo
+    fi
+    _dest_dir=$(dirname "$_dest")
 
     echo "Installing Bootware..."
 
-    if [[ "$EUID" == 0 ]] ; then
-        _dest="/usr/local/bin/bootware"
-        _dest_dir="/usr/local/bin/"
-    else
-        _dest="$HOME/.local/bin/bootware"
-        _dest_dir="$HOME/.local/bin/"
-    fi
+    ${_sudo} mkdir -p "$_dest_dir"
+    ${_sudo} curl -LSfs "$_source" -o "$_dest"
+    ${_sudo} chmod 755 "$_dest"
 
-    mkdir -p "$_dest_dir"
-    curl -LSfs "$_source" -o "$_dest"
-    chmod 755 "$_dest"
-
-    if [[ ":$PATH:" == *":$_dest_dir:"* ]]; then
-        printf "# Added by Bootware installer.\nexport PATH=\"$_dest_dir:\$PATH\"" >> "$HOME/.bashrc"
+    if ! command -v bootware > /dev/null; then
+        configure_shell "$_dest_dir"
+        export PATH="$_dest_dir:$PATH"
     fi
 
     echo "Installed $(bootware --version)."
