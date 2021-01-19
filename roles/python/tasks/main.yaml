@@ -3,9 +3,13 @@
 
 - name: Install Pipx and Python applications
   import_tasks: pipx.yaml
+  tags:
+    - pipx
 
 - name: Install multiple Python versions
   import_tasks: versions.yaml
 
 - name: Configure user settings for Jupyter
   import_tasks: jupyter.yaml
+  tags:
+    - jupyter

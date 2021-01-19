@@ -26,9 +26,13 @@
 
 - name: Install and configure Alacritty terminal
   import_tasks: alacritty.yaml
+  tags:
+    - alacritty
 
 - name: Install and configure Hyper terminal
-  import_tasks: alacritty.yaml
+  import_tasks: hyper.yaml
+  tags:
+    - hyper
 
 - name: Install and configure system terminal
   import_tasks: system.yaml

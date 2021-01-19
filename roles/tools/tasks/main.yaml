@@ -1,14 +1,38 @@
 - name: Install cloud SDKs
   import_tasks: cloud.yaml
+  tags:
+    - aws
+    - cloud
+    - do
+    - gcp
 
 - name: Install database tools
   import_tasks: database.yaml
+  tags:
+    - database
+    - mongodb
+    - postgresql
+    - sqlite
 
 - name: Install Hashicorp tools
   import_tasks: hashicorp.yaml
+  tags:
+    - hashicorp
+    - packer
+    - terraform
+    - terragrunt
+    - vault
 
 - name: Install shell tools
   import_tasks: shell.yaml
+  tags:
+    - bat
+    - exa
+    - jq
+    - ripgrep
 
 - name: Install web tools
   import_tasks: web.yaml
+  tags:
+    - mkcert
+    - zola
