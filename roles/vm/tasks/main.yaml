@@ -9,6 +9,6 @@
     - qemu
 
 - name: Install WASM utilities
-  import_tasks: wasm.yaml
+  include_tasks: wasm.yaml
   tags:
     - wasm
