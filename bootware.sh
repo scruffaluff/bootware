@@ -21,13 +21,13 @@ OPTIONS:
     -h, --help       Print help information
 EOF
             ;;
-        install)
+        bootstrap)
             cat 1>&2 <<EOF
-Bootware install
+Bootware bootstrap
 Boostrap install computer software
 
 USAGE:
-    bootware install [OPTIONS]
+    bootware bootstrap [OPTIONS]
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
@@ -52,7 +52,7 @@ OPTIONS:
 
 SUBCOMMANDS:
     config           Generate default Bootware configuration file
-    install          Boostrap install computer software
+    bootstrap        Boostrap install computer software
     update           Update Bootware to latest version
 EOF
             ;;
@@ -79,19 +79,68 @@ assert_cmd() {
     fi
 }
 
-# Launch Docker container to boostrap software installation.
+# Bootstrap subcommand.
 bootstrap() {
-    echo "Launching Ansible pipeline..."
+    # Dev null is never a normal file.
+    local _config_path="/dev/null"
+    local _no_setup
+    local _use_passwd="1"
+    local _skip_tags
+    local _tags
+
+    # Parse command line arguments.
+    for arg in "$@"; do
+        case "$arg" in
+            -h|--help)
+                usage "bootstrap"
+                exit 0
+                ;;
+            -c|--config)
+                _config_path="$2"
+                shift
+                shift
+                ;;
+            --no-passwd)
+                _use_passwd=""
+                shift
+                ;;
+            --no-setup)
+                _no_setup="1"
+                shift
+                ;;
+            --skip-tags)
+                _skip_tags="$2"
+                shift
+                shift
+                ;;
+            --tags)
+                _tags="$2"
+                shift
+                shift
+                ;;
+            *)
+                ;;
+        esac
+    done
+
+    if [[ ! "$_no_setup" ]]; then
+        setup
+    fi
+
+    find_config_path "$_config_path"
+    _config_path="$RET_VAL"
+
+    echo "Executing Ansible pull..."
     echo "Enter your user account password if prompted."
 
     ansible-pull \
-        ${2:+ --ask-become-pass} \
+        ${_use_passwd:+ --ask-become-pass} \
         --extra-vars "ansible_python_interpreter=auto_silent" \
         --extra-vars "user_account=$USER" \
-        --extra-vars "@$1" \
+        --extra-vars "@$_config_path" \
         --inventory 127.0.0.1, \
-        ${3:+ --skip-tags "$3"} \
-        ${4:+ --tags "$4"} \
+        ${_skip_tags:+ --skip-tags "$_skip_tags"} \
+        ${_tags:+ --tags "$_tags"} \
         --url https://github.com/wolfgangwazzlestrauss/bootware.git \
         main.yaml
 }
@@ -152,60 +201,6 @@ find_config_path() {
     fi
 
     echo "Using $RET_VAL as configuration file."
-}
-
-# Install subcommand.
-install() {
-    # Dev null is never a normal file.
-    local _config_path="/dev/null"
-    local _no_setup
-    local _use_passwd="1"
-    local _skip_tags
-    local _tags
-
-    # Parse command line arguments.
-    for arg in "$@"; do
-        case "$arg" in
-            -h|--help)
-                usage "install"
-                exit 0
-                ;;
-            -c|--config)
-                _config_path="$2"
-                shift
-                shift
-                ;;
-            --no-passwd)
-                _use_passwd=""
-                shift
-                ;;
-            --no-setup)
-                _no_setup="1"
-                shift
-                ;;
-            --skip-tags)
-                _skip_tags="$2"
-                shift
-                shift
-                ;;
-            --tags)
-                _tags="$2"
-                shift
-                shift
-                ;;
-            *)
-                ;;
-        esac
-    done
-
-    if [[ ! "$_no_setup" ]]; then
-        setup
-    fi
-
-    find_config_path "$_config_path"
-    _config_path="$RET_VAL"
-
-    bootstrap "$_config_path" "$_use_passwd" "$_skip_tags" "$_tags"
 }
 
 # Configure boostrapping services and utilities.
@@ -275,7 +270,7 @@ setup_macos() {
     # FLAGS:
     #     ---background:
     if ! brew list ansible &>/dev/null ; then
-        echo "Installing Docker..."
+        echo "Installing Ansible..."
         brew install ansible
     fi
 }
@@ -343,9 +338,9 @@ main() {
                 config "$@"
                 exit 0
                 ;;
-            install)
+            bootstrap)
                 shift
-                install "$@"
+                bootstrap "$@"
                 exit 0
                 ;;
             update)
