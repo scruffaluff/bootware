@@ -82,6 +82,7 @@ bootstrap() {
 
     ansible-pull \
         ${2:+ --ask-become-pass} \
+        --extra-vars "ansible_python_interpreter=auto_silent" \
         --extra-vars "user_account=$USER" \
         --extra-vars "@$1" \
         --inventory 127.0.0.1, \
