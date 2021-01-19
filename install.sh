@@ -16,10 +16,10 @@ USAGE:
     bootware-installer [OPTIONS]
 
 OPTIONS:
-    -d, --dest string       Location to install bootware
-    -h, --help              Print help information
-    -u, --user              Install bootware for current user
-    -v, --version string    Version of Bootware to install
+    -d, --dest <PATH>           Path to install bootware
+    -h, --help                  Print help information
+    -u, --user                  Install bootware for current user
+    -v, --version <VERSION>     Version of Bootware to install
 EOF
 }
 

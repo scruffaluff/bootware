@@ -30,9 +30,12 @@ USAGE:
     bootware install [OPTIONS]
 
 OPTIONS:
-    -c, --config     Path to bootware user configuation file
-    -h, --help       Print help information
-        --tag string Ansible playbook tag
+    -c, --config <PATH>             Path to bootware user configuation file
+    -h, --help                      Print help information
+        --no-passwd                 Do not ask for user password
+        --no-setup                  Skip Ansible installation
+        ---skip-tags <TAG-LIST>     Ansible playbook tag list
+        --tags <TAG-LIST>           Ansible playbook tag list
 EOF
             ;;
         main)
@@ -62,7 +65,8 @@ USAGE:
     bootware update [OPTIONS]
 
 OPTIONS:
-    -h, --help       Print help information
+    -h, --help                  Print help information
+    -v, --version <VERSION>     Version override for update
 EOF
             ;;
     esac
@@ -278,7 +282,13 @@ setup_macos() {
 
 # Update subcommand.
 update() {
-    local _os_type
+    assert_cmd curl
+
+    local _dest
+    local _source
+    local _version="master"
+
+    _dest=$(realpath $0)
 
     # Parse command line arguments.
     for arg in "$@"; do
@@ -287,39 +297,29 @@ update() {
                 usage "update"
                 exit 0
                 ;;
+            -v|--version)
+                shift
+                _version="$2"
+                ;;
             *)
                 ;;
         esac
     done
 
-    # Get operating system for local machine.
-    #
-    # FLAGS:
-    #     -s: Print the kernel name.
-    _os_type=$(uname -s)
+    _source="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$_version/bootware.sh"
+    if [ -O "$_dest" ]; then
+        _sudo=""
+    else
+        assert_cmd sudo
+        _sudo=sudo
+    fi
 
     echo "Updating Bootware..."
 
-    case "$_os_type" in
-        Darwin)
-            sudo mkdir -p "/usr/local/bin/"
-            sudo curl -LSfs "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh" -o "/usr/local/bin/bootware"
-            sudo chmod 755 "/usr/local/bin/bootware"
-            if [[ ":$PATH:" == *":/usr/local/bin:"* ]]; then
-                printf "# Added by Bootware installer.\nexport PATH=\"/usr/local/bin\":\$PATH" >> "$HOME/.bashrc"
-                export PATH="$PATH:/usr/local/bin"
-            fi
-            ;;
-        Linux)
-            sudo curl -LSfs "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh" -o "/usr/local/bin/bootware"
-            sudo chmod 755 "/usr/local/bin/bootware"
-            ;;
-        *)
-            error "Operting system $_os_type is not supported."
-            ;;
-    esac
+    ${_sudo} curl -LSfs "$_source" -o "$_dest"
+    ${_sudo} chmod 755 "$_dest"
 
-    echo "Updated to version $(bootware --version)"
+    echo "Updated to version $(bootware --version)."
 }
 
 # Get Bootware version string
