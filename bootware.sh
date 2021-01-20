@@ -319,7 +319,7 @@ update() {
 
 # Get Bootware version string
 version() {
-    echo "Bootware 0.0.4"
+    echo "Bootware 0.0.5"
 }
 
 # Script entrypoint.
