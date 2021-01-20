@@ -9,18 +9,6 @@ set -e
 # Cannot use function name help, since help is a pre-existing command.
 usage() {
     case "$1" in
-        config)
-            cat 1>&2 <<EOF
-Bootware config
-Generate default Bootware configuration file
-
-USAGE:
-    bootware config [OPTIONS]
-
-OPTIONS:
-    -h, --help       Print help information
-EOF
-            ;;
         bootstrap)
             cat 1>&2 <<EOF
 Bootware bootstrap
@@ -38,6 +26,18 @@ OPTIONS:
         --tags <TAG-LIST>           Ansible playbook tag list
 EOF
             ;;
+        config)
+            cat 1>&2 <<EOF
+Bootware config
+Generate default Bootware configuration file
+
+USAGE:
+    bootware config [OPTIONS]
+
+OPTIONS:
+    -h, --help       Print help information
+EOF
+            ;;
         main)
             cat 1>&2 <<EOF
 $(version)
@@ -51,8 +51,8 @@ OPTIONS:
     -v, --version    Print version information
 
 SUBCOMMANDS:
-    config           Generate default Bootware configuration file
     bootstrap        Boostrap install computer software
+    config           Generate default Bootware configuration file
     update           Update Bootware to latest version
 EOF
             ;;
@@ -166,7 +166,9 @@ config() {
         esac
     done
 
-    echo "Downloading default configuration file to $HOME/bootware.yaml..."
+    mkdir -p "$HOME/.bootware"
+
+    echo "Downloading default configuration file to $HOME/.bootware/config.yaml..."
 
     # Download default configuration file.
     #
@@ -177,7 +179,7 @@ config() {
     #     -o <path>: Write output to path instead of stdout. 
     curl -LSf \
         "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" \
-        -o "$HOME/bootware.yaml"
+        -o "$HOME/.bootware/config.yaml"
 }
 
 # Print error message and exit with error code.
@@ -194,8 +196,8 @@ find_config_path() {
         RET_VAL="$(pwd)/bootware.yaml"
     elif [[ -n "${BOOTWARE_CONFIG}" ]] ; then
         RET_VAL="$BOOTWARE_CONFIG"
-    elif test -f "$HOME/bootware.yaml" ; then
-        RET_VAL="$HOME/bootware.yaml"
+    elif test -f "$HOME/.bootware/config.yaml" ; then
+        RET_VAL="$HOME/.bootware/config.yaml"
     else
         error "Unable to find Bootware configuation file."
     fi
@@ -241,6 +243,14 @@ setup_linux() {
         echo "Installing Ansible..."
         sudo apt-get -qq update && sudo apt-get -qq install -y ansible
     fi
+
+    # dpkg -l does not always return the correct exit code. dpkg -s does. See
+    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
+    # for more information.
+    if ! dpkg -s git &>/dev/null ; then
+        echo "Installing Git..."
+        sudo apt-get -qq update && sudo apt-get -qq install -y git
+    fi
 }
 
 # Configure boostrapping services and utilities for MacOS.
@@ -272,6 +282,18 @@ setup_macos() {
     if ! brew list ansible &>/dev/null ; then
         echo "Installing Ansible..."
         brew install ansible
+    fi
+
+    # Install Git if not already installed.
+    #
+    # FLAGS:
+    #     -L: Follow redirect request.
+    #     -S: Show errors.
+    #     -f: Fail silently on server errors.
+    #     -s: Disable progress bars.
+    if ! brew list git &>/dev/null ; then
+        echo "Installing Git.."
+        brew install git
     fi
 }
 

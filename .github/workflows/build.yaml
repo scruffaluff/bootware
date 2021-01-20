@@ -41,8 +41,7 @@ jobs:
           name: bootware
           path: /tmp/bootware.tar
   test-macos:
-    needs: build
-    runs-on: macos-11.0
+    runs-on: macos-latest
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
@@ -52,12 +51,13 @@ jobs:
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
       - name: Copy Bootware configuration file
-        run: cp ./.github/host_vars/macos.yaml $HOME/bootware.yaml
+        run: |
+          bootware config
+          cp ./.github/host_vars/ubuntu.yaml $HOME/.bootware/config.yaml
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
   test-ubuntu:
-    needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
@@ -67,6 +67,23 @@ jobs:
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
       - name: Copy Bootware configuration file
-        run: cp ./.github/host_vars/ubuntu.yaml $HOME/bootware.yaml
+        run: |
+          bootware config
+          cp ./.github/host_vars/ubuntu.yaml $HOME/.bootware/config.yaml
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
+  test-windows:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - name: Install Bootware
+        run: >
+          Invoke-WebRequest -UseBasicParsing -Uri
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1
+          | Invoke-Expression
+      - name: Copy Bootware configuration file
+        run: |
+          bootware config
+          cp ./.github/host_vars/windows.yaml $HOME/.bootware/config.yaml
+      - name: Test bootstrapping
+        run: bootware bootstrap --no-passwd --tags server,

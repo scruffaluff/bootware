@@ -1,5 +1,3 @@
-#!/usr/bin/pwsh
-#
 # If unable to execute due to policy rules, run 
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
@@ -48,8 +46,8 @@ FLAGS:
     -v, --version    Print version information
 
 SUBCOMMANDS:
+    bootstrap        Boostrap install computer software
     config           Generate default Bootware configuration file
-    install          Boostrap install computer software
     update           Update Bootware to latest version
 '@
         }
@@ -70,19 +68,29 @@ FLAGS:
 
 # Launch Docker container to boostrap software installation.
 Function Bootstrap() {
+    ForEach ($Arg in $Args) {
+        Switch ($Arg) {
+            "-h" { Usage "install"; Exit 0 }
+            "--help" { Usage "install"; Exit 0 }
+        }
+    }
+
     Write-Output "Launching Bootware Docker container..."
-    Write-Output "Enter your user account password when prompted."
+    Write-Output "Enter your user account password if prompted."
 
     docker run `
         -it `
         -v "$Args[0]:/root/.ssh/bootware" `
         -v "$Args[1]:/bootware/host_vars/host.docker.internal.yaml" `
         --rm `
-        "--add-host" "host.docker.internal:$FindDockerIp" `
+        --add-host "host.docker.internal:$FindDockerIp" `
         wolfgangwazzlestrauss/bootware:latest `
         --ask-become-pass `
-        --tag "$3" `
-        --user "$Env:UserName" `
+        --extra-vars "ansible_connection=winrm" `
+        --extra-vars "ansible_user=$Env:UserName" `
+        --extra-vars "ansible_winrm_server_cert_validation=ignore" `
+        --extra-vars "ansible_winrm_transport=basic" `
+        --tags "$3" `
         main.yaml
 }
 
@@ -95,8 +103,8 @@ Function Config() {
         }
     }
 
-    Write-Output "Downloading default configuration file to $HOME/bootware.yaml..."
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" -OutFile "$HOME/bootware.yaml"
+    Write-Output "Downloading default configuration file to $HOME/.bootware/config.yaml..."
+    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" -OutFile "$HOME/.bootware/config.yaml"
 }
 
 # Print error message and exit with error code.
@@ -113,8 +121,8 @@ Function FindConfigPath($FilePath) {
         $ConfigPath = "$(Get-Location)/bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
-    } elif (Test-Path -Path "$HOME/bootware.yaml" -PathType Leaf) {
-        $ConfigPath = "$HOME/bootware.yaml"
+    } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     } else {
         Error "Unable to find Bootware configuation file."
     }
@@ -131,29 +139,23 @@ Function FindDockerIp() {
     # # Flags:
     # #     -z: True if string has zero length.
     # if [ -z "$_docker_ip" ]; then
-    #     error "Unable to find Docker host IP address. Restart Docker and try again."
+    #     Error "Unable to find Docker host IP address. Restart Docker and try again."
     # fi
 
     # RET_VAL="$_docker_ip"
-}
-
-Function Install() {
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
-            "-h" { Usage "install"; Exit 0 }
-            "--help" { Usage "install"; Exit 0 }
-        }
-    }
-
-    Write-Output "Install subcommand."
-    Error "Not implemented."
 }
 
 # Configure boostrapping services and utilities.
 Function Setup() {
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        Invoke-WebRequest -Uri "https://get.scoop.sh" | Invoke-Expression
+        Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
+        scoop bucket add extras fonts versions
+    }
+
+    # Install Scoop package manager.
+    If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
+        scoop install git
     }
 
     # Install Docker Desktop.
@@ -168,11 +170,12 @@ Function Setup() {
 
     # Start WinRM service.
     # Enable-PSRemoting -Force -SkipNetworkProfileCheck
+    # winrm quickconfig
 
-    # Something?
-    # winrm set winrm/config/client/auth '@{Basic="true"}'
-    # winrm set winrm/config/service/auth '@{Basic="true"}'
-    # winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+    # Allow HTTP WinRM connection with password credentials.
+    winrm set winrm/config/client/auth '@{Basic="true"}'
+    winrm set winrm/config/service/auth '@{Basic="true"}'
+    winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 }
 
 
@@ -199,8 +202,8 @@ Function Main() {
             "--help" { Usage "main"; Exit 0 }
             "-v" { Version; Exit 0 }
             "--version" { Version; Exit 0 }
+            "bootstrap" { Bootstrap Args[1:]; Exit 0 }
             "config" { Config Args[1:]; Exit 0 }
-            "install" { Install Args[1:]; Exit 0 }
             "update" { Update Args[1:]; Exit 0 }
         }
     }

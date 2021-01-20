@@ -9,7 +9,7 @@ set -e
 # Cannot use function name help, since help is a pre-existing command.
 usage() {
     cat 1>&2 <<EOF
-$(version)
+Bootware Installer
 Installer script for Bootware
 
 USAGE:
