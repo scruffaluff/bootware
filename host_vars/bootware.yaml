@@ -1,4 +1,3 @@
-machine_name: host-name
 node_versions:
   - "10"
   - "12"

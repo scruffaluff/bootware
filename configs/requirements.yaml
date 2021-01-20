@@ -1,5 +1,3 @@
 collections:
-  # homebrew_cask is currently broken. Git revision has bug fixes.
-  # https://github.com/ansible-collections/community.general/pull/1038#issuecomment-719538134
   - name: community.general
   - name: community.windows

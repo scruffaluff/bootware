@@ -24,7 +24,7 @@ path.
 - \<path> (argument to -c/--config command line flag)
 - bootware.yaml (in the current directory)
 - BOOTWARE_CONFIG (environment variable)
-- ~/bootware.yaml (in the home directory)
+- ~/.bootware/config.yaml (in the home directory)
 
 The following commands will download the example configuration file to the user
 home directory. The file should be manually edited for the user's computer.
