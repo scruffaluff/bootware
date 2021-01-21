@@ -27,7 +27,7 @@ Function Error($Message) {
 
 # Script entrypoint.
 Function Main() {
-    $User = false
+    $Target = "Machine"
     $Version = "master"
 
     ForEach ($Arg in $Args) {
@@ -36,22 +36,24 @@ Function Main() {
             "--help" { Usage; Exit 0 }
             "-v" { $Version = Args[1] }
             "--version" { $Version = Args[1] }
-            "--user" { $User = true }
+            "--user" { $Target = "User" }
         }
     }
 
     $Source = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
-    If ($User) {
-        $Dest = "$Env:AppData/Roaming/Bootware/bootware.ps1"
-        [System.Environment]::SetEnvironmentVariable("PATH", "$Dest.Parent" + ";$Env:PATH", "User")
+    If ($Target -Eq "User") {
+        $Dest = "$Env:AppData/Bootware/bootware.ps1"
     } Else {
         $Dest = "C:/Program Files/Bootware/bootware.ps1"
-        [System.Environment]::SetEnvironmentVariable("PATH", "$Dest.Parent" + ";$Env:PATH", "Machine")
     }
+
+    $DestDir = Split-Path -Path $Dest -Parent
+    $Env:Path = "$DestDir" + ";$Env:Path"
+    [System.Environment]::SetEnvironmentVariable("Path", "$Env:Path", "$Target")
 
     echo "Installing Bootware..."
 
-    New-Item -Force -ItemType Directory -Path $Dest.Parent
+    New-Item -Force -ItemType Directory -Path $DestDir
     Invoke-WebRequest -UseBasicParsing -Uri "$Source" -OutFile "$Dest"
 
     echo "Installed $(bootware --version)."

@@ -96,6 +96,8 @@ Function Bootstrap() {
 
 # Config subcommand.
 Function Config() {
+    $Dest = "$HOME/.bootware/config.yaml"
+
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
             "-h" { Usage "config"; Exit 0 }
@@ -103,8 +105,10 @@ Function Config() {
         }
     }
 
+    New-Item -Force -ItemType Directory -Path $(Split-Path -Path $Dest -Parent)
+
     Write-Output "Downloading default configuration file to $HOME/.bootware/config.yaml..."
-    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" -OutFile "$HOME/.bootware/config.yaml"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" -OutFile "$Dest"
 }
 
 # Print error message and exit with error code.

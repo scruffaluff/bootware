@@ -6,8 +6,17 @@ on:
       - feature/*
       - master
 jobs:
+  branch:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_tag.outputs.tag }}
+    steps:
+      - name: Extract branch
+        id: extract_branch
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        shell: bash
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
@@ -22,7 +31,7 @@ jobs:
         run: |
           npm run prettier:test
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
@@ -41,15 +50,17 @@ jobs:
           name: bootware
           path: /tmp/bootware.tar
   test-macos:
-    runs-on: macos-latest
+    needs: branch
+    runs-on: macos-11.0
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
-          | bash
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${{
+          needs.branch.outputs.branch }}/install.sh | bash -s -- --version ${{
+          needs.branch.outputs.branch }}
       - name: Copy Bootware configuration file
         run: |
           bootware config
@@ -57,15 +68,17 @@ jobs:
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
   test-ubuntu:
-    runs-on: ubuntu-latest
+    needs: branch
+    runs-on: ubuntu-20.04
     steps:
       - name: Code repository checkout
         uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
-          | bash
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${{
+          needs.branch.outputs.branch }}/install.sh | bash -s -- --version ${{
+          needs.branch.outputs.branch }}
       - name: Copy Bootware configuration file
         run: |
           bootware config
@@ -73,7 +86,9 @@ jobs:
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
   test-windows:
-    needs: build
+    needs:
+      - branch
+      - build
     runs-on: windows-latest
     steps:
       - name: Install Bootware
