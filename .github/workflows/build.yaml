@@ -99,6 +99,7 @@ jobs:
         shell: powershell
       - name: Copy Bootware configuration file
         run: |
+          Write-Output "Path: $Env:Path"
           bootware config
-          cp ./.github/host_vars/windows.yaml $HOME/.bootware/config.yaml
+          Copy-Item -Path ./.github/host_vars/windows.yaml -Destination $HOME/.bootware/config.yaml
         shell: powershell
