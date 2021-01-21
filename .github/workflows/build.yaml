@@ -58,9 +58,8 @@ jobs:
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${{
-          needs.branch.outputs.branch }}/install.sh | bash -s -- --version ${{
-          needs.branch.outputs.branch }}
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
       - name: Copy Bootware configuration file
         run: |
           bootware config
@@ -76,9 +75,8 @@ jobs:
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${{
-          needs.branch.outputs.branch }}/install.sh | bash -s -- --version ${{
-          needs.branch.outputs.branch }}
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
       - name: Copy Bootware configuration file
         run: |
           bootware config
@@ -91,14 +89,16 @@ jobs:
       - build
     runs-on: windows-latest
     steps:
+      - name: Code repository checkout
+        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1
           | Invoke-Expression
+        shell: powershell
       - name: Copy Bootware configuration file
         run: |
           bootware config
           cp ./.github/host_vars/windows.yaml $HOME/.bootware/config.yaml
-      - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --tags server,
+        shell: powershell
