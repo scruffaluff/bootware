@@ -97,9 +97,11 @@ jobs:
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1
           | Invoke-Expression
         shell: powershell
+      # The GitHub Windows server does not seem to update its path correctly.
+      # Appears to work on other Windows servers.
       - name: Copy Bootware configuration file
         run: |
           Write-Output "Path: $Env:Path"
-          bootware config
+          "C:/Program Files/Bootware/bootware.ps1" config
           Copy-Item -Path ./.github/host_vars/windows.yaml -Destination $HOME/.bootware/config.yaml
         shell: powershell
