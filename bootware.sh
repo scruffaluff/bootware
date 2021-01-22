@@ -289,42 +289,87 @@ setup() {
     ansible-galaxy collection install community.windows > /dev/null
 }
 
+# Configure boostrapping services and utilities for Arch distributions.
+setup_arch() {
+    # Install dependencies for Bootware.
+    #
+    # dpkg -l does not always return the correct exit code. dpkg -s does. See
+    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
+    # for more information.
+    #
+    # Flags:
+    #     -Q:
+    #     -i:
+    if ! pacman -Qi ansible &>/dev/null ; then
+        echo "Installing Ansible..."
+        ${1:+sudo} pacman --noconfirm -Suy
+        ${1:+sudo} pacman --noconfirm -S ansible
+    fi
+
+    if ! pacman -Qi curl &>/dev/null ; then
+        echo "Installing Curl..."
+        ${1:+sudo} pacman --noconfirm -Suy
+        ${1:+sudo} pacman -S --noconfirm curl
+    fi
+
+    if ! pacman -Qi git &>/dev/null ; then
+        echo "Installing Git..."
+        ${1:+sudo} pacman --noconfirm -Suy
+        ${1:+sudo} pacman -S --noconfirm git
+    fi
+}
+
+# Configure boostrapping services and utilities for Debian distributions.
+setup_debian() {
+    # Install dependencies for Bootware.
+    #
+    # dpkg -l does not always return the correct exit code. dpkg -s does. See
+    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
+    # for more information.
+    #
+    # Flags:
+    #     -s
+    if ! dpkg -s ansible &>/dev/null ; then
+        echo "Installing Ansible..."
+        ${1:+sudo} apt-get -qq update
+        ${1:+sudo} apt-get -qq install -y ansible python3-apt
+    fi
+
+    if ! dpkg -s curl &>/dev/null ; then
+        echo "Installing Curl..."
+        ${1:+sudo} apt-get -qq update
+        ${1:+sudo} apt-get -qq install -y curl
+    fi
+
+    if ! dpkg -s git &>/dev/null ; then
+        echo "Installing Git..."
+        ${1:+sudo} apt-get -qq update
+        ${1:+sudo} apt-get -qq install -y git
+    fi
+}
+
 # Configure boostrapping services and utilities for Linux.
 setup_linux() {
-    assert_cmd apt-get
-    assert_cmd dpkg
-
     local _sudo=1
 
     if [ $EUID == 0 ]; then
         _sudo=""
     fi
 
+    # Install dependencies for Debian based distributions.
+    #
     # dpkg -l does not always return the correct exit code. dpkg -s does. See
     # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
     # for more information.
-    if ! dpkg -s ansible &>/dev/null ; then
-        echo "Installing Ansible..."
-        ${_sudo:+sudo} apt-get -qq update \
-            && ${_sudo:+sudo} apt-get -qq install -y ansible python3-apt
-    fi
-
-    # dpkg -l does not always return the correct exit code. dpkg -s does. See
-    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
-    # for more information.
-    if ! dpkg -s curl &>/dev/null ; then
-        echo "Installing Curl..."
-        ${_sudo:+sudo} apt-get -qq update \
-            && ${_sudo:+sudo} apt-get -qq install -y curl
-    fi
-
-    # dpkg -l does not always return the correct exit code. dpkg -s does. See
-    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
-    # for more information.
-    if ! dpkg -s git &>/dev/null ; then
-        echo "Installing Git..."
-        ${_sudo:+sudo} apt-get -qq update \
-            && ${_sudo:+sudo} apt-get -qq install -y git
+    #
+    # Flags:
+    #     -v
+    if command -v pacman &>/dev/null ; then
+        setup_arch "$_sudo"
+    elif command -v apt-get &>/dev/null ; then
+        setup_debian "$_sudo"
+    else
+        error "Unable to find supported package manager."
     fi
 }
 
@@ -335,7 +380,7 @@ setup_macos() {
     # Homebrew depends on the XCode command line tools.
     if ! xcode-select -p &>/dev/null ; then
         echo "Installing command line tools for XCode..."
-        ${_sudo:+sudo} xcode-select --install
+        sudo xcode-select --install
     fi
 
     # Install Homebrew if not already installed.
@@ -354,12 +399,6 @@ setup_macos() {
     if ! brew list ansible &>/dev/null ; then
         echo "Installing Ansible..."
         brew install ansible
-    fi
-
-    # Install Curl if not already installed.
-    if ! brew list curl &>/dev/null ; then
-        echo "Installing Curl..."
-        brew install curl
     fi
 
     # Install Git if not already installed.

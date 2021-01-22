@@ -129,7 +129,6 @@
   roles:
     - vm
   tags:
-    - container
     - desktop
     - server
     - vm
