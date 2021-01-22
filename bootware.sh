@@ -57,7 +57,20 @@ OPTIONS:
 SUBCOMMANDS:
     bootstrap        Boostrap install computer software
     config           Generate default Bootware configuration file
+    setup            Install dependencies for Bootware
     update           Update Bootware to latest version
+EOF
+            ;;
+        setup)
+            cat 1>&2 <<EOF
+Bootware setup
+Install dependencies for Bootware
+
+USAGE:
+    bootware setup [OPTIONS]
+
+OPTIONS:
+    -h, --help      Print help information
 EOF
             ;;
         update)
@@ -241,6 +254,18 @@ find_config_path() {
 # Configure boostrapping services and utilities.
 setup() {
     local _os_type
+
+    # Parse command line arguments.
+    for arg in "$@"; do
+        case "$arg" in
+            -h|--help)
+                usage "setup"
+                exit 0
+                ;;
+            *)
+                ;;
+        esac
+    done
 
     # Get operating system for local machine.
     #
