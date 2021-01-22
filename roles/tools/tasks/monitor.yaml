@@ -1,3 +1,14 @@
+- name: Install monitoring tools for Linux
+  become: yes
+  package:
+    name:
+      - glances
+      - htop
+      - iftop
+      - iotop
+      - neofetch
+  when: ansible_system == "Linux"
+
 - name: Get latest Bottom release
   uri:
     url: https://api.github.com/repos/ClementTsang/bottom/releases/latest
