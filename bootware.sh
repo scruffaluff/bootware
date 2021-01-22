@@ -245,12 +245,28 @@ setup_linux() {
     assert_cmd apt-get
     assert_cmd dpkg
 
+    local _sudo=1
+
+    if [ $EUID == 0 ]; then
+        _sudo=""
+    fi
+
     # dpkg -l does not always return the correct exit code. dpkg -s does. See
     # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
     # for more information.
     if ! dpkg -s ansible &>/dev/null ; then
         echo "Installing Ansible..."
-        sudo apt-get -qq update && sudo apt-get -qq install -y ansible
+        ${_sudo:+sudo} apt-get -qq update \
+            && ${_sudo:+sudo} apt-get -qq install -y ansible
+    fi
+
+    # dpkg -l does not always return the correct exit code. dpkg -s does. See
+    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
+    # for more information.
+    if ! dpkg -s curl &>/dev/null ; then
+        echo "Installing Curl..."
+        ${_sudo:+sudo} apt-get -qq update \
+            && ${_sudo:+sudo} apt-get -qq install -y curl
     fi
 
     # dpkg -l does not always return the correct exit code. dpkg -s does. See
@@ -258,7 +274,8 @@ setup_linux() {
     # for more information.
     if ! dpkg -s git &>/dev/null ; then
         echo "Installing Git..."
-        sudo apt-get -qq update && sudo apt-get -qq install -y git
+        ${_sudo:+sudo} apt-get -qq update \
+            && ${_sudo:+sudo} apt-get -qq install -y git
     fi
 }
 
@@ -269,7 +286,7 @@ setup_macos() {
     # Homebrew depends on the XCode command line tools.
     if ! xcode-select -p &>/dev/null ; then
         echo "Installing command line tools for XCode..."
-        sudo xcode-select --install
+        ${_sudo:+sudo} xcode-select --install
     fi
 
     # Install Homebrew if not already installed.
@@ -285,21 +302,18 @@ setup_macos() {
     fi
 
     # Install Ansible if not already installed.
-    #
-    # FLAGS:
-    #     ---background:
     if ! brew list ansible &>/dev/null ; then
         echo "Installing Ansible..."
         brew install ansible
     fi
 
+    # Install Curl if not already installed.
+    if ! brew list curl &>/dev/null ; then
+        echo "Installing Curl..."
+        brew install curl
+    fi
+
     # Install Git if not already installed.
-    #
-    # FLAGS:
-    #     -L: Follow redirect request.
-    #     -S: Show errors.
-    #     -f: Fail silently on server errors.
-    #     -s: Disable progress bars.
     if ! brew list git &>/dev/null ; then
         echo "Installing Git.."
         brew install git
@@ -312,6 +326,7 @@ update() {
 
     local _dest
     local _source
+    local _sudo=1
     local _version="master"
 
     _dest=$(realpath $0)
@@ -333,17 +348,14 @@ update() {
     done
 
     _source="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$_version/bootware.sh"
-    if [ -O "$_dest" ]; then
+    if [ -O "$_dest" ] || [ $EUID == 0 ]; then
         _sudo=""
-    else
-        assert_cmd sudo
-        _sudo=sudo
     fi
 
     echo "Updating Bootware..."
 
-    ${_sudo} curl -LSfs "$_source" -o "$_dest"
-    ${_sudo} chmod 755 "$_dest"
+    ${_sudo:+sudo} curl -LSfs "$_source" -o "$_dest"
+    ${_sudo:+sudo} chmod 755 "$_dest"
 
     echo "Updated to version $(bootware --version)."
 }
@@ -356,7 +368,6 @@ version() {
 # Script entrypoint.
 main() {
     assert_cmd chmod
-    assert_cmd git
     assert_cmd mkdir
     assert_cmd mktemp
     assert_cmd uname
@@ -372,6 +383,11 @@ main() {
             bootstrap)
                 shift
                 bootstrap "$@"
+                exit 0
+                ;;
+            setup)
+                shift
+                setup "$@"
                 exit 0
                 ;;
             update)
