@@ -161,7 +161,7 @@ bootstrap() {
         ${_use_passwd:+--ask-become-pass} \
         ${_playbook:+--connection local} \
         --extra-vars "ansible_python_interpreter=auto_silent" \
-        --extra-vars "user_account=$USER" \
+        --extra-vars "user_account=${USER:-root}" \
         --extra-vars "@$_config_path" \
         --inventory 127.0.0.1, \
         ${_skip_tags:+--skip-tags "$_skip_tags"} \
@@ -210,8 +210,8 @@ config() {
     mkdir -p $(dirname "$_dest")
 
     if [ $_empty == 1 ]; then
-        echo "Generating empty configuration file at $_dest..."
-        touch "$_dest"
+        echo "Writing empty configuration file to $_dest..."
+        echo "mock_data: true" > "$_dest"
     else
         assert_cmd curl
 
@@ -306,7 +306,7 @@ setup_linux() {
     if ! dpkg -s ansible &>/dev/null ; then
         echo "Installing Ansible..."
         ${_sudo:+sudo} apt-get -qq update \
-            && ${_sudo:+sudo} apt-get -qq install -y ansible
+            && ${_sudo:+sudo} apt-get -qq install -y ansible python3-apt
     fi
 
     # dpkg -l does not always return the correct exit code. dpkg -s does. See
