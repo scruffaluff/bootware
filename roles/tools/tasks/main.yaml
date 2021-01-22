@@ -23,6 +23,12 @@
     - terragrunt
     - vault
 
+- name: Install monitoring tools
+  import_tasks: monitor.yaml
+  tags:
+    - bottom
+    - monitor
+
 - name: Install shell tools
   import_tasks: shell.yaml
   tags:

@@ -1,0 +1,40 @@
+- name: Get latest Bottom release
+  uri:
+    url: https://api.github.com/repos/ClementTsang/bottom/releases/latest
+    method: GET
+    return_content: yes
+  register: bottom_release
+
+- name: Download Bottom for Debian distributions
+  get_url:
+    dest: /tmp/bottom.deb
+    mode: 0700
+    url: >-
+      https://github.com/ClementTsang/bottom/releases/download/{{
+      bottom_release.json.tag_name }}/bottom_{{ bottom_release.json.tag_name
+      }}_amd64.deb
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Install Bottom For Debian distributions
+  apt:
+    deb: /tmp/bottom.deb
+  become: yes
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+
+- name: Tap Bottom Homebrew repository
+  community.general.homebrew_tap:
+    name: clementtsang/bottom
+  when: ansible_system == "Darwin"
+
+- name: Install Bottom for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: clementtsang/bottom/bottom
+  when: ansible_system == "Darwin"
+
+- name: Install Bottom for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: bottom
+  when: ansible_system == "Windows"

@@ -5,9 +5,12 @@
       - apt-transport-https
       - ca-certificates
       - flatpak
+      - glances
       - gnupg
       - gnupg2
       - htop
+      - iftop
+      - iotop
       - neofetch
       - pass
       - pbuilder
