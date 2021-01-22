@@ -8,7 +8,8 @@
 - name: Generate Deno Fish completions for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: >
+    cmd: |
+      source $HOME/.bashrc
       deno completions fish > $HOME/.config/fish/completions/deno.fish
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
@@ -39,7 +40,9 @@
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
   shell:
-    cmd: source $HOME/.nvm/nvm.sh && nvm install {{ item }}
+    cmd: |
+      source $HOME/.bashrc
+      nvm install {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -53,21 +56,23 @@
 - name: Set default Node version for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: "source $HOME/.nvm/nvm.sh && nvm alias default {{ node_versions[-1] }}"
+    cmd: |
+      source $HOME/.bashrc 
+      nvm alias default {{ node_versions[-1] }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Set default Node version for Windows
   become_user: "{{ user_account }}"
   shell:
-    cmd: "nvm alias default {{ node_versions[-1] }}"
+    cmd: nvm alias default {{ node_versions[-1] }}
   when: ansible_system == "Windows"
 
 - name: Install Node CLI applications for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.nvm/nvm.sh
+      source $HOME/.bashrc
       nvm use {{ node_versions[-1] }}
       npm install -g gitmoji-cli @vue/cli
     executable: /bin/bash

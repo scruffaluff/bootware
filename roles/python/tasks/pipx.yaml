@@ -22,12 +22,14 @@
   become_user: "{{ user_account }}"
   loop: "{{ python_applications }}"
   shell:
-    cmd: >-
+    cmd: |
+      source $HOME/.bashrc
       pipx install {{ item }} || pipx upgrade {{ item }}
-    executable: /bin/bash
 
 - name: Update Pipx command line applications
   become_user: "{{ user_account }}"
   shell:
-    cmd: pipx upgrade-all
+    cmd: |
+      source $HOME/.bashrc
+      pipx upgrade-all
     executable: /bin/bash
