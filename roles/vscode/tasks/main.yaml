@@ -22,11 +22,11 @@
     dest: /tmp/vscode_amd64.rpm
     mode: 0700
     url: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr in ["dnf", "yum"]
 
 - name: Install VSCode for Red Hat distributions
   become: yes
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr in ["dnf", "yum"]
   yum:
     name: /tmp/vscode_amd64.rpm
 

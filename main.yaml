@@ -1,14 +1,20 @@
 - name: Update system packages
   hosts: all
   tasks:
-    - name: Update Apt packages for Debian distributions
+    - name: Update packages for Arch distributions
+      become: yes
+      pacman:
+        update_cache: yes
+        upgrade: yes
+      when: ansible_pkg_mgr == "pacman"
+    - name: Update packages for Debian distributions
       apt:
         autoremove: yes
         update_cache: yes
         upgrade: full
       become: yes
       when: ansible_pkg_mgr == "apt"
-    - name: Update Homebrew packages for MacOS
+    - name: Update packages for MacOS
       become_user: "{{ user_account }}"
       community.general.homebrew:
         update_homebrew: yes
@@ -94,6 +100,7 @@
   roles:
     - rust
   tags:
+    - container
     - desktop
     - rust
     - server

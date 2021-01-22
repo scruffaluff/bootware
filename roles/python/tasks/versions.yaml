@@ -59,7 +59,7 @@
 - name: Update Pyenv for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: source $HOME/.bashrc && pyenv update
+    cmd: pyenv update
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -67,9 +67,9 @@
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
-    cmd: >-
-      source $HOME/.bashrc && pyenv install --list | grep -E "^\\s*{{ item
-      }}.[0-9]+\\s*$" | tail -1 | xargs
+    cmd: >
+      pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 |
+      xargs
     executable: /bin/bash
   register: pyenv_releases
   when: ansible_system in ["Darwin", "Linux"]
@@ -84,7 +84,7 @@
   become_user: "{{ user_account }}"
   loop: "{{ python_releases }}"
   shell:
-    cmd: source $HOME/.bashrc && pyenv install -s {{ item }}
+    cmd: pyenv install -s {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -99,8 +99,6 @@
 - name: Set Python global versions for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: >-
-      source $HOME/.bashrc && pyenv global system {{ python_releases | reverse |
-      join(' ') }}
+    cmd: pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]

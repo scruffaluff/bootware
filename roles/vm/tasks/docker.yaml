@@ -1,8 +1,13 @@
-- name: Install Docker and Docker Compose for Debian distributions
+- name: Install Docker for Arch distributions
+  become: yes
+  pacman:
+    name: docker
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Docker for Debian distributions
   apt:
     name:
       - docker.io
-      - docker-compose
   become: yes
   when: ansible_pkg_mgr == "apt"
 
@@ -21,6 +26,12 @@
     groups:
       - docker
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Docker Compose for Linux
+  become: yes
+  package:
+    name: docker-compose
+  when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS
   become_user: "{{ user_account }}"

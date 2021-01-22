@@ -1,18 +1,24 @@
 - name: Install QEMU for Linux
   become: yes
   package:
-    name: qemu
+    name:
+      - libvirt
+      - qemu
   when: ansible_system == "Linux"
 
 - name: Install QEMU for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
-    name: qemu
+    name:
+      - libvirt
+      - qemu
   when: ansible_system == "Darwin"
 
 - name: Install QEMU for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: qemu
+    name:
+      - libvirt
+      - qemu
   when: ansible_system == "Windows"

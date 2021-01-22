@@ -14,7 +14,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://sh.rustup.rs | sh -s -- -y --no-modify-path
-    creates: "{{ user_home_dir }}/.cargo/bin/cargo"
+    creates: "{{ user_home_dir }}/.cargo/bin/rustup"
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -31,6 +31,7 @@
     cmd: |
       rustup self update
       rustup update stable
+    executable: /bin/bash
 
 - name: Add Rust components and targets
   become_user: "{{ user_account }}"
@@ -38,6 +39,7 @@
     cmd: |
       rustup component clippy llvm-tools-preview rust-src rustfmt
       rustup target add wasm32-wasi
+    executable: /bin/bash
 
 - name: Update or install Cargo packges
   become_user: "{{ user_account }}"
@@ -50,3 +52,4 @@
         cargo-make \
         cargo-tarpaulin \
         cargo-watch
+    executable: /bin/bash

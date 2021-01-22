@@ -356,11 +356,7 @@ setup_linux() {
         _sudo=""
     fi
 
-    # Install dependencies for Debian based distributions.
-    #
-    # dpkg -l does not always return the correct exit code. dpkg -s does. See
-    # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
-    # for more information.
+    # Install dependencies for Bootware base on available package manager.
     #
     # Flags:
     #     -v
@@ -368,6 +364,8 @@ setup_linux() {
         setup_arch "$_sudo"
     elif command -v apt-get &>/dev/null ; then
         setup_debian "$_sudo"
+    elif command -v yum &>/dev/null ; then
+        setup_redhat "$_sudo"
     else
         error "Unable to find supported package manager."
     fi
@@ -405,6 +403,28 @@ setup_macos() {
     if ! brew list git &>/dev/null ; then
         echo "Installing Git.."
         brew install git
+    fi
+}
+
+# Configure boostrapping services and utilities for Red Hat distributions.
+setup_redhat() {
+    # Install dependencies for Bootware.
+    if ! yum list installed ansible &>/dev/null ; then
+        echo "Installing Ansible..."
+        ${1:+sudo} yum check-update
+        ${1:+sudo} yum install -y ansible
+    fi
+
+    if ! yum list installed curl &>/dev/null ; then
+        echo "Installing Curl..."
+        ${1:+sudo} yum check-update
+        ${1:+sudo} yum install -y curl
+    fi
+
+    if ! yum list installed git &>/dev/null ; then
+        echo "Installing Git..."
+        ${1:+sudo} yum check-update
+        ${1:+sudo} yum install git
     fi
 }
 

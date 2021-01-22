@@ -30,13 +30,22 @@
     src: .aliases
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Copy Bash settings file for Unix
+- name: Copy Bash non-login settings file for Unix
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.bashrc"
     force: yes
     mode: 0755
     src: .bashrc
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Copy Bash login settings file for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.bash_profile"
+    force: yes
+    mode: 0755
+    src: .bash_profile
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish settings directory for Unix
