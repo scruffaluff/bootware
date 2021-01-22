@@ -19,6 +19,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
+        --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Ansible installation
@@ -84,9 +85,11 @@ bootstrap() {
     # Dev null is never a normal file.
     local _config_path="/dev/null"
     local _no_setup
-    local _use_passwd="1"
+    local _playbook
+    local _pull="1"
     local _skip_tags
     local _tags
+    local _use_passwd="1"
 
     # Parse command line arguments.
     for arg in "$@"; do
@@ -98,6 +101,11 @@ bootstrap() {
             -c|--config)
                 _config_path="$2"
                 shift
+                shift
+                ;;
+            --dev)
+                _pull=""
+                _playbook="playbook"
                 shift
                 ;;
             --no-passwd)
@@ -130,18 +138,19 @@ bootstrap() {
     find_config_path "$_config_path"
     _config_path="$RET_VAL"
 
-    echo "Executing Ansible pull..."
+    echo "Executing Ansible ${_playbook:-pull}..."
     echo "Enter your user account password if prompted."
 
-    ansible-pull \
-        ${_use_passwd:+ --ask-become-pass} \
+    ansible-${_playbook:-pull}  \
+        ${_use_passwd:+--ask-become-pass} \
+        ${_playbook:+--connection local} \
         --extra-vars "ansible_python_interpreter=auto_silent" \
         --extra-vars "user_account=$USER" \
         --extra-vars "@$_config_path" \
         --inventory 127.0.0.1, \
-        ${_skip_tags:+ --skip-tags "$_skip_tags"} \
-        ${_tags:+ --tags "$_tags"} \
-        --url https://github.com/wolfgangwazzlestrauss/bootware.git \
+        ${_skip_tags:+--skip-tags "$_skip_tags"} \
+        ${_tags:+--tags "$_tags"} \
+        ${_pull:+--url "https://github.com/wolfgangwazzlestrauss/bootware.git"} \
         main.yaml
 }
 

@@ -101,7 +101,6 @@ jobs:
       # Appears to work on other Windows servers.
       - name: Copy Bootware configuration file
         run: |
-          Write-Output "Path: $Env:Path"
-          "C:/Program Files/Bootware/bootware.ps1" config
+          & "C:/Program Files/Bootware/bootware.ps1" config
           Copy-Item -Path ./.github/host_vars/windows.yaml -Destination $HOME/.bootware/config.yaml
         shell: powershell
