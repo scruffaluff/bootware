@@ -1,15 +1,14 @@
-- name: Install Rust utility Apt packages for Debian distributions
-  apt:
+- name: Install Rust utility packages for Linux
+  package:
     name:
       - clang
       - gdb
-      - gdb-multiarch
       - lld
       - lldb
       - llvm
       - openocd
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_system == "Linux"
 
 - name: Install Rust for Unix
   become_user: "{{ user_account }}"

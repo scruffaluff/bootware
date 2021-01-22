@@ -1,4 +1,12 @@
-- name: Install Python Apt packages for Debian distributions
+- name: Install Python packages for Arch distributions
+  become: yes
+  pacman:
+    name:
+      - python
+      - python-pip
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Python packages for Debian distributions
   apt:
     name:
       - python3
@@ -6,7 +14,15 @@
       - python3-pip
       - python3-venv
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install ONNX dependencies for Arch distributions
+  become: yes
+  pacman:
+    name:
+      - cmake
+      - protobuf
+  when: ansible_pkg_mgr == "pacman"
 
 - name: Install ONNX dependencies for Debian distributions
   apt:
@@ -15,7 +31,7 @@
       - libprotoc-dev
       - protobuf-compiler
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Make system Python interpreter discoverable by Pyenv for Linux
   become: yes

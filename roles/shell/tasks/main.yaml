@@ -8,8 +8,6 @@
       - shellcheck
       - tmux
   become: yes
-  tags:
-    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install Homebrew shell packages for MacOS
@@ -21,8 +19,6 @@
       - fish
       - shellcheck
       - tmux
-  tags:
-    - update
   when: ansible_system == "Darwin"
 
 - name: Copy shell aliases file for Unix
@@ -32,8 +28,6 @@
     force: yes
     mode: 0755
     src: .aliases
-  tags:
-    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Bash settings file for Unix
@@ -43,8 +37,6 @@
     force: yes
     mode: 0755
     src: .bashrc
-  tags:
-    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish settings directory for Unix
@@ -75,8 +67,6 @@
     force: yes
     mode: 0755
     src: config.fish
-  tags:
-    - update
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy PowerShell settings file for Windows
@@ -87,8 +77,6 @@
     force: yes
     mode: 0755
     src: profile.ps1
-  tags:
-    - update
   when: ansible_system == "Windows"
 
 - name: Change user default shell to Fish for MacOS
@@ -112,6 +100,4 @@
   shell:
     cmd: curl -LSfs https://starship.rs/install.sh | bash -s -- -y
     warn: no
-  tags:
-    - update
   when: ansible_system in ["Darwin", "Linux"]

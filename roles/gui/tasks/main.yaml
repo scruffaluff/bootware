@@ -12,13 +12,13 @@
     url: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       mongodb_compass_formula.json.version }}_amd64.deb
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install MongoDB Compass For Debian distributions
   apt:
     deb: /tmp/mongodb_compass.deb
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install MongoDB Compass for MacOS
   become_user: "{{ user_account }}"
@@ -34,14 +34,6 @@
     name: mongodb-compass-community
   when: ansible_system == "Windows"
 
-# Spotify is unreliable with maintaing debs and flatpaks. Best to install with
-# operating system application store.
-# - name: Install Spotify for Linux
-#   become: yes
-#   community.general.flatpak:
-#     name: com.spotify.Client
-#   when: ansible_system == "Linux"
-
 - name: Install Spotify for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -55,9 +47,7 @@
       - firefox
       - google-chrome-stable
   become: yes
-  tags:
-    - update
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install web browsers for MacOS
   become_user: "{{ user_account }}"
@@ -82,9 +72,7 @@
   apt:
     name:
       - gnome-tweaks
-  tags:
-    - update
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install general applications for MacOS
   become_user: "{{ user_account }}"
@@ -123,8 +111,6 @@
     dest: "{{ user_home_dir }}/Pictures/background/white_and_gray_mountains.jpg"
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
-  tags:
-    - update
 
 - name: Change desktop settings for Linux
   become_user: "{{ user_account }}"
@@ -138,7 +124,7 @@
       gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
       gsettings set org.gnome.nautilus.preferences show-hidden-files true
       gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false  # Turn off automatic brightness
-  when: ansible_system == "Linux"
+  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Change desktop settings for MacOS
   become_user: "{{ user_account }}"

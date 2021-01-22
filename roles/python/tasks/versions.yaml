@@ -1,6 +1,15 @@
 # Pyenv dependencies are listed at
 # https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
 
+- name: Install ONNX dependencies for Arch distributions
+  become: yes
+  pacman:
+    name:
+      - base-devel
+      - openssl
+      - zlib
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install Pyenv dependencies for Debian distributions
   apt:
     name:
@@ -24,7 +33,7 @@
       - xz-utils
       - zlib1g-dev
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Pyenv dependencies for MacOS
   become_user: "{{ user_account }}"

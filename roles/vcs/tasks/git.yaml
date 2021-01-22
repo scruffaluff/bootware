@@ -1,12 +1,10 @@
-- name: Install Git for Debian distributions
-  apt:
+- name: Install Git for Linux
+  become: yes
+  package:
     name:
       - git
       - git-lfs
-  become: yes
-  tags:
-    - update
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_system == "Linux"
 
 - name: Install Git for MacOS
   become_user: "{{ user_account }}"
@@ -14,8 +12,6 @@
     name:
       - git
       - git-lfs
-  tags:
-    - update
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows

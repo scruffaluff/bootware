@@ -5,16 +5,12 @@
       - qemu-kvm
       - qemu-system
   become: yes
-  tags:
-    - update
   when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
 
 - name: Install QEMU for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: qemu
-  tags:
-    - update
   when: ansible_system == "Darwin"
 
 - name: Install QEMU for Windows
