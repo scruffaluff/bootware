@@ -2,7 +2,7 @@
   apt:
     name: alacritty
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Alacritty for MacOS
   become_user: "{{ user_account }}"

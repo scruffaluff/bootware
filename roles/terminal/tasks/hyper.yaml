@@ -3,13 +3,13 @@
     dest: /tmp/hyper.deb
     mode: 0700
     url: https://releases.hyper.is/download/deb
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Hyper for Debian distributions
   apt:
     deb: /tmp/hyper.deb
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Hyper for MacOS
   become_user: "{{ user_account }}"

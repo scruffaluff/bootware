@@ -27,7 +27,7 @@
   apt:
     name: postgresql-client
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install PostgreSQL client for MacOS
   become_user: "{{ user_account }}"
@@ -39,7 +39,7 @@
   apt:
     name: sqlite3
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install SQLite for MacOS
   become_user: "{{ user_account }}"

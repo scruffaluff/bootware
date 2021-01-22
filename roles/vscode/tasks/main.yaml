@@ -1,3 +1,9 @@
+- name: Install VSCode for Arch distributions
+  become: yes
+  pacman:
+    name: code
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download VSCode for Debian distributions
   get_url:
     dest: /tmp/vscode_amd64.deb
@@ -10,6 +16,19 @@
     deb: /tmp/vscode_amd64.deb
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Download VSCode for Red Hat distributions
+  get_url:
+    dest: /tmp/vscode_amd64.rpm
+    mode: 0700
+    url: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
+  when: ansible_pkg_mgr == "yum"
+
+- name: Install VSCode for Red Hat distributions
+  become: yes
+  when: ansible_pkg_mgr == "yum"
+  yum:
+    name: /tmp/vscode_amd64.rpm
 
 - name: Install VSCode for MacOS
   become_user: "{{ user_account }}"

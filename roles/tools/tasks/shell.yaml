@@ -12,7 +12,7 @@
       bat_formula.json.versions.stable }}/bat_{{
       bat_formula.json.versions.stable }}_amd64.deb
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Bat for MacOS
   become_user: "{{ user_account }}"
@@ -65,7 +65,7 @@
   apt:
     name: jq
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install JQ for MacOS
   become_user: "{{ user_account }}"
@@ -84,7 +84,7 @@
   apt:
     name: ripgrep
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Ripgrep for MacOS
   become_user: "{{ user_account }}"

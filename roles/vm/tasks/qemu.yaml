@@ -1,11 +1,8 @@
-- name: Install QEMU for Debian distributions
-  apt:
-    name:
-      - qemu
-      - qemu-kvm
-      - qemu-system
+- name: Install QEMU for Linux
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  package:
+    name: qemu
+  when: ansible_system == "Linux"
 
 - name: Install QEMU for MacOS
   become_user: "{{ user_account }}"

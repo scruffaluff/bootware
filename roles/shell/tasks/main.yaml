@@ -8,7 +8,7 @@
       - shellcheck
       - tmux
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Homebrew shell packages for MacOS
   become_user: "{{ user_account }}"

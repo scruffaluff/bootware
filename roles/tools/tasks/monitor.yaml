@@ -24,13 +24,13 @@
       https://github.com/ClementTsang/bottom/releases/download/{{
       bottom_release.json.tag_name }}/bottom_{{ bottom_release.json.tag_name
       }}_amd64.deb
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Bottom For Debian distributions
   apt:
     deb: /tmp/bottom.deb
   become: yes
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  when: ansible_pkg_mgr == "apt"
 
 - name: Tap Bottom Homebrew repository
   community.general.homebrew_tap:
