@@ -19,24 +19,27 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
-        --dev                       Run bootstrapping in development mode
+    -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Ansible installation
-        ---skip-tags <TAG-LIST>     Ansible playbook tag list
-        --tags <TAG-LIST>           Ansible playbook tag list
+    -s, --skip-tags <TAG-LIST>      Ansible playbook tag list
+    -t, --tags <TAG-LIST>           Ansible playbook tag list
 EOF
             ;;
         config)
             cat 1>&2 <<EOF
 Bootware config
-Generate default Bootware configuration file
+Download default Bootware configuration file
 
 USAGE:
     bootware config [OPTIONS]
 
 OPTIONS:
-    -h, --help       Print help information
+    -h, --help              Print help information
+    -d, --dest <PATH>       Path to alternate download destination
+        --empty             Write empty configuration file
+    -s, --source <URL>      URL to configuration file
 EOF
             ;;
         main)
@@ -103,7 +106,7 @@ bootstrap() {
                 shift
                 shift
                 ;;
-            --dev)
+            -d|--dev)
                 _pull=""
                 _playbook="playbook"
                 shift
@@ -116,12 +119,12 @@ bootstrap() {
                 _no_setup="1"
                 shift
                 ;;
-            --skip-tags)
+            -s|--skip-tags)
                 _skip_tags="$2"
                 shift
                 shift
                 ;;
-            --tags)
+            -t|--tags)
                 _tags="$2"
                 shift
                 shift
@@ -161,7 +164,9 @@ check_cmd() {
 
 # Config subcommand.
 config() {
-    assert_cmd curl
+    local _source="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
+    local _dest="$HOME/.bootware/config.yaml"
+    local _empty
 
     # Parse command line arguments.
     for arg in "$@"; do
@@ -170,25 +175,44 @@ config() {
                 usage "config"
                 exit 0
                 ;;
+            -d|--dest)
+                _dest="$2"
+                shift
+                shift
+                ;;
+            --empty)
+                _empty=1
+                shift
+                ;;
+            -s|--source)
+                _source="$2"
+                shift
+                shift
+                ;;
             *)
                 ;;
         esac
     done
 
-    mkdir -p "$HOME/.bootware"
+    mkdir -p $(dirname "$_dest")
 
-    echo "Downloading default configuration file to $HOME/.bootware/config.yaml..."
+    if [ $_empty == 1 ]; then
+        echo "Generating empty configuration file at $_dest..."
+        touch "$_dest"
+    else
+        assert_cmd curl
 
-    # Download default configuration file.
-    #
-    # FLAGS:
-    #     -L: Follow redirect request.
-    #     -S: Show errors.
-    #     -f: Use archive file. Must be third flag.
-    #     -o <path>: Write output to path instead of stdout. 
-    curl -LSf \
-        "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" \
-        -o "$HOME/.bootware/config.yaml"
+        echo "Downloading configuration file to $_dest..."
+
+        # Download default configuration file.
+        #
+        # FLAGS:
+        #     -L: Follow redirect request.
+        #     -S: Show errors.
+        #     -f: Use archive file. Must be third flag.
+        #     -o <path>: Write output to path instead of stdout. 
+        curl -LSf "$_source" -o "$_dest"
+    fi
 }
 
 # Print error message and exit with error code.
