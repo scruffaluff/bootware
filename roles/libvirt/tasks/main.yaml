@@ -1,4 +1,4 @@
-- name: Install libvirt for Debian distributions
+- name: Install Libvirt for Debian distributions
   apt:
     name:
       - libvirt-clients
@@ -7,26 +7,15 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install QEMU for Linux
-  become: yes
-  package:
-    name:
-      - qemu
-  when: ansible_system == "Linux"
-
-- name: Install QEMU for MacOS
+- name: Install Libvirt for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
-    name:
-      - libvirt
-      - qemu
+    name: libvirt
   when: ansible_system == "Darwin"
 
-- name: Install QEMU for Windows
+- name: Install Libvirt for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name:
-      - libvirt
-      - qemu
+    name: libvirt
   when: ansible_system == "Windows"
