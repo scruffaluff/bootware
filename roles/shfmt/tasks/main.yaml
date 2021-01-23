@@ -1,4 +1,4 @@
-- name: Get latest Terragrunt version
+- name: Get latest Shfmt version
   uri:
     url: https://formulae.brew.sh/api/formula/shfmt.json
     method: GET

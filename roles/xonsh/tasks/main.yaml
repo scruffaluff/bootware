@@ -1,0 +1,18 @@
+- name: Install Xonsh for Linux
+  become: yes
+  package:
+    name: xonsh
+  when: ansible_system == "Linux"
+
+- name: Install Xonsh for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: xonsh
+  when: ansible_system == "Darwin"
+
+- name: Install Xonsh for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: xonsh
+  when: ansible_system == "Windows"

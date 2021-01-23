@@ -1,0 +1,55 @@
+- name: Install Fish for Linux
+  become: yes
+  package:
+    name: fish
+  when: ansible_system == "Linux"
+
+- name: Install Fish for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: fish
+  when: ansible_system == "Darwin"
+
+- name: Create Fish configuration directory for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/fish"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Fish completions directory for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/fish/completions"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Fish functions directory for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/fish/functions"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Copy Fish settings file for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.config/fish/config.fish"
+    force: yes
+    mode: 0755
+    src: config.fish
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Change user default shell to Fish for MacOS
+  become: yes
+  user:
+    name: "{{ user_account }}"
+    shell: /usr/local/bin/fish
+  when: ansible_system == "Darwin"
+
+- name: Change user default shell to Fish for Linux
+  become: yes
+  user:
+    name: "{{ user_account }}"
+    shell: /usr/bin/fish
+  when: ansible_system == "Linux"
