@@ -4,6 +4,7 @@ vscode_extensions:
   - "coenraads.bracket-pair-colorizer-2"
   - "eamodio.gitlens"
   - "esbenp.prettier-vscode"
+  - "foxundermoon.shell-format"
   - "james-yu.latex-workshop"
   - "jroesch.lean"
   - "matklad.rust-analyzer"

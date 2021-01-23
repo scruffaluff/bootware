@@ -1,6 +1,6 @@
 - name: Install libvirt for Debian distributions
   apt:
-    name: 
+    name:
       - libvirt-clients
       - libvirt-daemon-system
       - virtinst

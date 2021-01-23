@@ -45,6 +45,17 @@
     - server
     - shell
 
+- name: Install Shfmt
+  hosts: all
+  roles:
+    - shfmt
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - shfmt
+
 - name: Install and configure version control systems
   hosts: all
   roles:

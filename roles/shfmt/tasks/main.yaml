@@ -1,0 +1,30 @@
+- name: Get latest Terragrunt version
+  uri:
+    url: https://formulae.brew.sh/api/formula/shfmt.json
+    method: GET
+    return_content: yes
+  register: shfmt_formula
+
+- name: Install Shfmt for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/shfmt
+    mode: 0755
+    url: >
+      https://github.com/mvdan/sh/releases/download/v{{
+      shfmt_formula.json.versions.stable }}/shfmt_v{{
+      shfmt_formula.json.versions.stable }}_linux_amd64
+  when: ansible_system == "Linux"
+
+- name: Install Shfmt for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: shfmt
+  when: ansible_system == "Darwin"
+
+- name: Install Shfmt for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: shfmt
+  when: ansible_system == "Windows"
