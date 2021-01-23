@@ -26,6 +26,9 @@
   "[rust]": {
     "editor.rulers": [100]
   },
+  "[shellscript]": {
+    "editor.tabSize": 2
+  },
   "[terraform]": {
     "editor.tabSize": 2
   },

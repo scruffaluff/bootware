@@ -1,8 +1,16 @@
+- name: Install libvirt for Debian distributions
+  apt:
+    name: 
+      - libvirt-clients
+      - libvirt-daemon-system
+      - virtinst
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install QEMU for Linux
   become: yes
   package:
     name:
-      - libvirt
       - qemu
   when: ansible_system == "Linux"
 

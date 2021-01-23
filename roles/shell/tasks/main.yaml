@@ -8,9 +8,10 @@
       - shellcheck
       - tmate
       - tmux
+      - xonsh
   when: ansible_system == "Linux"
 
-- name: Install Homebrew shell packages for MacOS
+- name: Install shell packages for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -20,7 +21,15 @@
       - shellcheck
       - tmate
       - tmux
+      - xonsh
   when: ansible_system == "Darwin"
+
+- name: Install shell packages for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: xonsh
+  when: ansible_system == "Windows"
 
 - name: Copy shell aliases file for Unix
   become_user: "{{ user_account }}"
