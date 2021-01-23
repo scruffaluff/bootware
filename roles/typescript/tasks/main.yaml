@@ -81,7 +81,9 @@
 - name: Install Node CLI applications for Windows
   become_user: "{{ user_account }}"
   shell:
-    cmd: npm install -g gitmoji-cli @vue/cli
+    cmd: |
+      nvm use {{ node_versions[-1] }}
+      npm install -g gitmoji-cli @vue/cli
   when: ansible_system == "Windows"
 
 - name: Create Fish functions directory for Linux
@@ -91,7 +93,7 @@
     state: directory
   when: ansible_system == "Linux"
 
-- name: Download fast NVM Fish for Linux
+- name: Download Fast NVM Fish for Linux
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"

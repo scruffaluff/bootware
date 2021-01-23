@@ -102,6 +102,7 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 #
 # Flags:
 #     -f: Check if file exists and is a regular file.
+export NVM_DIR="$HOME/.nvm"
 if [ -f "$NVM_DIR/nvm.sh" ]; then
     source "$NVM_DIR/nvm.sh" 
 fi

@@ -1,6 +1,5 @@
 python_applications:
   - cookiecutter
-  - gdbgui
   - poetry
 python_versions:
   - "3.6"
