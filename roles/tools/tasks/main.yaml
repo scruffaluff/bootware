@@ -1,11 +1,3 @@
-- name: Install cloud SDKs
-  import_tasks: cloud.yaml
-  tags:
-    - aws
-    - cloud
-    - do
-    - gcp
-
 - name: Install database tools
   import_tasks: database.yaml
   tags:

@@ -1,0 +1,31 @@
+- name: Tap Homebrew fonts for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+  when: ansible_system == "Darwin"
+
+- name: Install Fira Code for Arch distributions
+  become: yes
+  pacman:
+    name: ttf-fira-code
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Fira Code font for Debian distributions
+  apt:
+    name: fonts-firacode
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Fira Code font for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: font-fira-code
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Fira Code font for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: firacode
+  when: ansible_system == "Windows"

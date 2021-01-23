@@ -1,4 +1,4 @@
-- name: Update system package managers
+- name: Update package managers and install essential packages
   hosts: all
   roles:
     - package
@@ -8,15 +8,13 @@
     - package
     - server
 
-- name: Setup system accounts
+- name: Install Alacritty
   hosts: all
   roles:
-    - system
+    - alacritty
   tags:
-    - account
-    - container
+    - alacritty
     - desktop
-    - server
 
 - name: Install Amazon Web Services SDK
   hosts: all
@@ -40,17 +38,6 @@
     - server
     - shell
 
-- name: Install Data Version Control
-  hosts: all
-  roles:
-    - dvc
-  tags:
-    - container
-    - desktop
-    - dvc
-    - server
-    - vcs
-
 - name: Install Deno
   hosts: all
   roles:
@@ -59,8 +46,17 @@
     - container
     - deno
     - desktop
+    - language
     - server
     - typescript
+
+- name: Configure desktop environment
+  hosts: all
+  roles:
+    - deskenv
+  tags:
+    - deskenv
+    - desktop
 
 - name: Install Digital Ocean SDK
   hosts: all
@@ -83,6 +79,17 @@
     - server
     - vm
 
+- name: Install Data Version Control
+  hosts: all
+  roles:
+    - dvc
+  tags:
+    - container
+    - desktop
+    - dvc
+    - server
+    - vcs
+
 - name: Install Fish
   hosts: all
   roles:
@@ -94,10 +101,20 @@
     - server
     - shell
 
+- name: Install fonts
+  hosts: all
+  roles:
+    - font
+  tags:
+    - container
+    - desktop
+    - font
+    - server
+
 - name: Install Google Cloud Platform SDK
   hosts: all
   roles:
-    - digitalocean
+    - gcp
   tags:
     - cloud
     - container
@@ -124,16 +141,24 @@
     - container
     - desktop
     - go
+    - language
     - server
+
+- name: Install Hyper
+  hosts: all
+  roles:
+    - hyper
+  tags:
+    - desktop
+    - hyper
 
 - name: Install Libvirt
   hosts: all
   roles:
-    - neovim
+    - libvirt
   tags:
-    - container
     - desktop
-    - neovim
+    - libvirt
     - server
     - vm
 
@@ -144,6 +169,7 @@
   tags:
     - container
     - desktop
+    - editor
     - neovim
     - server
 
@@ -154,10 +180,55 @@
   tags:
     - container
     - desktop
+    - language
     - node
     - server
+    - typescript
 
-- name: Install and configure shells
+- name: Install PowerShell
+  hosts: all
+  roles:
+    - powershell
+  tags:
+    - container
+    - desktop
+    - powershell
+    - server
+    - shell
+
+- name: Install Python
+  hosts: all
+  roles:
+    - python
+  tags:
+    - container
+    - desktop
+    - language
+    - python
+    - server
+
+- name: Install QEMU
+  hosts: all
+  roles:
+    - qemu
+  tags:
+    - desktop
+    - qemu
+    - server
+    - vm
+
+- name: Install Rust
+  hosts: all
+  roles:
+    - rust
+  tags:
+    - container
+    - desktop
+    - language
+    - rust
+    - server
+
+- name: Install shell tools
   hosts: all
   roles:
     - shell
@@ -178,6 +249,14 @@
     - shell
     - shfmt
 
+- name: Configure default terminal
+  hosts: all
+  roles:
+    - terminal
+  tags:
+    - desktop
+    - terminal
+
 - name: Install various tools
   hosts: all
   roles:
@@ -188,67 +267,33 @@
     - server
     - tools
 
-- name: Install Python
-  hosts: all
-  roles:
-    - python
-  tags:
-    - container
-    - desktop
-    - python
-    - server
-
-- name: Install Rust
-  hosts: all
-  roles:
-    - rust
-  tags:
-    - container
-    - desktop
-    - rust
-    - server
-
-- name: Configure GUI settings
-  hosts: all
-  roles:
-    - gui
-  tags:
-    - desktop
-    - gui
-
-- name: Configure terminals
-  hosts: all
-  roles:
-    - terminal
-  tags:
-    - desktop
-    - terminal
-
-- name: Install Qemu
-  hosts: all
-  roles:
-    - neovim
-  tags:
-    - desktop
-    - qemu
-    - server
-    - vm
-
-- name: Install Web Assembly
-  hosts: all
-  roles:
-    - wasm
-  tags:
-    - container
-    - desktop
-    - server
-    - vm
-    - wasm
-
 - name: Install VSCode
   hosts: all
   roles:
     - vscode
   tags:
     - desktop
+    - editor
     - vscode
+
+- name: Install Web Assembly tools
+  hosts: all
+  roles:
+    - wasm
+  tags:
+    - container
+    - desktop
+    - server
+    - vm
+    - wasm
+
+- name: Install Xonsh
+  hosts: all
+  roles:
+    - xonsh
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - xonsh
