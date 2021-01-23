@@ -1,0 +1,18 @@
+- name: Install AWSCLI for Debian distributions
+  apt:
+    name: awscli
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install AWSCLI for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: awscli
+  when: ansible_system == "Darwin"
+
+- name: Install AWSCLI for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: aws
+  when: ansible_system == "Windows"

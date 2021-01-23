@@ -1,0 +1,21 @@
+- name: Update packages for Arch distributions
+  become: yes
+  pacman:
+    update_cache: yes
+    upgrade: yes
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Update packages for Debian distributions
+  apt:
+    autoremove: yes
+    update_cache: yes
+    upgrade: full
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Update packages for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    update_homebrew: yes
+    upgrade_all: yes
+  when: ansible_system == "Darwin"
