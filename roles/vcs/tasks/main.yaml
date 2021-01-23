@@ -1,5 +1,0 @@
-- name: Install Data Version Control
-  import_tasks: dvc.yaml
-
-- name: Install and configure Git
-  import_tasks: git.yaml
