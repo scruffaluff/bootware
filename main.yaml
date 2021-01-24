@@ -15,6 +15,7 @@
   tags:
     - alacritty
     - desktop
+    - terminal
 
 - name: Install Amazon Web Services SDK
   hosts: all
@@ -37,6 +38,15 @@
     - desktop
     - server
     - shell
+
+- name: Configure default terminal
+  hosts: all
+  roles:
+    - defterm
+  tags:
+    - defterm
+    - desktop
+    - terminal
 
 - name: Install Deno
   hosts: all
@@ -61,12 +71,12 @@
 - name: Install Digital Ocean SDK
   hosts: all
   roles:
-    - digitalocean
+    - digiocn
   tags:
     - cloud
     - container
     - desktop
-    - digitalocean
+    - digiocn
     - server
 
 - name: Install Docker
@@ -151,6 +161,7 @@
   tags:
     - desktop
     - hyper
+    - terminal
 
 - name: Install Libvirt
   hosts: all
@@ -248,14 +259,6 @@
     - server
     - shell
     - shfmt
-
-- name: Configure default terminal
-  hosts: all
-  roles:
-    - terminal
-  tags:
-    - desktop
-    - terminal
 
 - name: Install various tools
   hosts: all
