@@ -10,7 +10,7 @@
     - package
     - server
 
-- name: Install Alacritty
+- name: Install Alacritty terminal
   hosts: all
   roles:
     - alacritty
@@ -19,7 +19,7 @@
     - desktop
     - terminal
 
-- name: Install Amazon Web Services SDK
+- name: Install Amazon Web Services development tools
   hosts: all
   roles:
     - aws
@@ -41,7 +41,7 @@
     - server
     - shell
 
-- name: Install Bat
+- name: Install Bat file reader
   hosts: all
   roles:
     - bat
@@ -52,7 +52,7 @@
     - server
     - shell
 
-- name: Install Bottom system monitor
+- name: Install Bottom resource monitor
   hosts: all
   roles:
     - bottom
@@ -72,7 +72,7 @@
     - chrome
     - desktop
 
-- name: Install MongoDB Compass
+- name: Install MongoDB Compass database graphical client
   hosts: all
   roles:
     - compass
@@ -81,7 +81,7 @@
     - database
     - desktop
 
-- name: Configure default terminal
+- name: Configure default system terminal
   hosts: all
   roles:
     - defterm
@@ -90,7 +90,7 @@
     - desktop
     - terminal
 
-- name: Install Deno
+- name: Install Deno JavaScript and TypeScript runtime
   hosts: all
   roles:
     - deno
@@ -102,7 +102,7 @@
     - server
     - typescript
 
-- name: Configure desktop environment
+- name: Configure system desktop environment
   hosts: all
   roles:
     - deskenv
@@ -110,7 +110,7 @@
     - deskenv
     - desktop
 
-- name: Install Digital Ocean SDK
+- name: Install Digital Ocean development tools
   hosts: all
   roles:
     - digiocn
@@ -121,7 +121,7 @@
     - digiocn
     - server
 
-- name: Install Docker
+- name: Install Docker container platform
   hosts: all
   roles:
     - docker
@@ -142,7 +142,7 @@
     - server
     - vcs
 
-- name: Install Exa
+- name: Install Exa file lister
   hosts: all
   roles:
     - exa
@@ -162,7 +162,7 @@
     - desktop
     - firefox
 
-- name: Install Fish
+- name: Install Fish shell
   hosts: all
   roles:
     - fish
@@ -183,7 +183,7 @@
     - font
     - server
 
-- name: Install Google Cloud Platform SDK
+- name: Install Google Cloud Platform development tools
   hosts: all
   roles:
     - gcp
@@ -194,7 +194,7 @@
     - gcp
     - server
 
-- name: Install Git
+- name: Install Git version control
   hosts: all
   roles:
     - git
@@ -205,7 +205,7 @@
     - server
     - vcs
 
-- name: Install Go
+- name: Install Go language
   hosts: all
   roles:
     - go
@@ -216,7 +216,7 @@
     - language
     - server
 
-- name: Install Hyper
+- name: Install Hyper terminal
   hosts: all
   roles:
     - hyper
@@ -225,7 +225,7 @@
     - hyper
     - terminal
 
-- name: Install Jq
+- name: Install Jq JSON parser
   hosts: all
   roles:
     - jq
@@ -236,7 +236,7 @@
     - server
     - shell
 
-- name: Install Libvirt
+- name: Install Libvirt virtualization API
   hosts: all
   roles:
     - libvirt
@@ -246,7 +246,7 @@
     - server
     - vm
 
-- name: Install MongoDB client
+- name: Install MongoDB database client
   hosts: all
   roles:
     - mongo
@@ -257,7 +257,7 @@
     - mongo
     - server
 
-- name: Install Neovim
+- name: Install Neovim terminal text editor
   hosts: all
   roles:
     - neovim
@@ -268,7 +268,7 @@
     - neovim
     - server
 
-- name: Install Mkcert
+- name: Install Mkcert web certificate generator
   hosts: all
   roles:
     - mkcert
@@ -279,7 +279,7 @@
     - network
     - server
 
-- name: Install Node
+- name: Install Node JavaScript runtime
   hosts: all
   roles:
     - node
@@ -291,7 +291,7 @@
     - server
     - typescript
 
-- name: Install Packer
+- name: Install Packer image generator
   hosts: all
   roles:
     - packer
@@ -302,7 +302,7 @@
     - packer
     - server
 
-- name: Install PostgreSQL client
+- name: Install PostgreSQL database client
   hosts: all
   roles:
     - postgres
@@ -313,7 +313,7 @@
     - postgres
     - server
 
-- name: Install PowerShell
+- name: Install PowerShell shell
   hosts: all
   roles:
     - powershell
@@ -324,7 +324,7 @@
     - server
     - shell
 
-- name: Install Python
+- name: Install Python language
   hosts: all
   roles:
     - python
@@ -335,7 +335,7 @@
     - python
     - server
 
-- name: Install QEMU
+- name: Install QEMU hardware virtualizer
   hosts: all
   roles:
     - qemu
@@ -345,7 +345,7 @@
     - server
     - vm
 
-- name: Install Ripgrep
+- name: Install Ripgrep text searcher
   hosts: all
   roles:
     - ripgrep
@@ -356,7 +356,7 @@
     - server
     - shell
 
-- name: Install Rust
+- name: Install Rust language
   hosts: all
   roles:
     - rust
@@ -378,7 +378,7 @@
     - shell
     - starship
 
-- name: Install Shfmt
+- name: Install Shfmt shell file formatter
   hosts: all
   roles:
     - shfmt
@@ -389,7 +389,7 @@
     - shell
     - shfmt
 
-- name: Install SQLite
+- name: Install SQLite database
   hosts: all
   roles:
     - sqlite
@@ -400,7 +400,7 @@
     - server
     - sqlite
 
-- name: Install Terraform
+- name: Install Terraform infrastructure as code software
   hosts: all
   roles:
     - terraform
@@ -411,7 +411,7 @@
     - server
     - terraform
 
-- name: Install Terragrunt
+- name: Install Terragrunt Terraform manager
   hosts: all
   roles:
     - terragrunt
@@ -422,7 +422,7 @@
     - server
     - terragrunt
 
-- name: Install Vault
+- name: Install Vault secrets manager
   hosts: all
   roles:
     - vault
@@ -433,7 +433,7 @@
     - server
     - vault
 
-- name: Install VSCode
+- name: Install VSCode text exitor
   hosts: all
   roles:
     - vscode
@@ -442,7 +442,7 @@
     - editor
     - vscode
 
-- name: Install Web Assembly tools
+- name: Install Web Assembly runtime
   hosts: all
   roles:
     - wasm
@@ -453,7 +453,7 @@
     - vm
     - wasm
 
-- name: Install Xonsh
+- name: Install Xonsh shell
   hosts: all
   roles:
     - xonsh
@@ -464,7 +464,7 @@
     - shell
     - xonsh
 
-- name: Install Zola
+- name: Install Zola static website generator
   hosts: all
   roles:
     - zola
