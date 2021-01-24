@@ -17,7 +17,8 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     update_homebrew: yes
-    upgrade_all: yes
+    # TODO: Resolve brew link error for upgrade_all.
+    # upgrade_all: yes
   when: ansible_system == "Darwin"
 
 - name: Install essential packages for Linux

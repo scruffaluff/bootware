@@ -14,10 +14,12 @@ user_home_dir: /home/user-name
 user_name: User Name
 user_shell: /usr/bin/fish
 vscode_extensions:
+  - "alefragnani.bookmarks"
   - "bungcip.better-toml"
   - "coenraads.bracket-pair-colorizer-2"
   - "eamodio.gitlens"
   - "esbenp.prettier-vscode"
+  - "foxundermoon.shell-format"
   - "james-yu.latex-workshop"
   - "jroesch.lean"
   - "matklad.rust-analyzer"

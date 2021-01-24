@@ -18,14 +18,14 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Add user to Docker group for Unix systems
+- name: Add user to Docker group for Linux
   become: yes
   user:
     append: yes
     name: "{{ user_account }}"
     groups:
       - docker
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
 - name: Install Docker Compose for Linux
   become: yes
@@ -50,6 +50,7 @@
   when: ansible_system == "Windows"
 
 - name: Install Docker Fish shell completions for Unix
+  become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/completions/docker.fish"
     mode: 0755
@@ -57,6 +58,7 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Docker Compose Fish shell completions for Unix
+  become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/completions/docker-compose.fish"
     mode: 0755

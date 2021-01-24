@@ -44,5 +44,5 @@ Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfg
 ## Usage
 
 Bootware will bootstrap the computer software by invoking `bootware bootstrap`
-after customizing the configuration file. To view the CLI help message, invoke
-`bootware --help`.
+after customizing the configuration file. To view the bootstrapping options,
+execute `bootware bootstrap --help`.
