@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # Install Bootware for MacOS or Linux systems.
-# shellcheck shell=bash
+
+
 # Exit immediately if a command exists with a non-zero status.
 set -e
-
 
 #######################################
 # Show CLI help information.
@@ -37,8 +37,10 @@ EOF
 #   Writes error message to stderr if command is not in system path.
 #######################################
 assert_cmd() {
-  if ! command -v "$1" > /dev/null ; then
-    error "Cannot find $1 command on computer. Please install and retry installation."
+  # Flags:
+  #   -v: Only show file path of command.
+  if ! command -v "$1" > /dev/null; then
+    error "Cannot find required $1 command on computer."
   fi
 }
 
@@ -52,32 +54,32 @@ assert_cmd() {
 #   Parent directory of Bootware script.
 #######################################
 configure_shell() {
-  local _export="export PATH=\"$1:\$PATH\""
-  local _profile
-  local _shell
+  local export_cmd="export PATH=\"$1:\$PATH\""
+  local profile
+  local shell_name
 
-  _shell=$(basename "$SHELL")
+  shell_name=$(basename "${SHELL}")
 
-  case "$_shell" in
+  case "${shell_name}" in
     bash)
-      _profile="$HOME/.bashrc"
+      profile="${HOME}/.bashrc"
       ;;
     zsh)
-      _profile="$HOME/.zshrc"
+      profile="${HOME}/.zshrc"
       ;;
     ksh)
-      _profile="$HOME/.profile"
+      profile="${HOME}/.profile"
       ;;
     fish)
-      _export="set -x PATH \"$1\" \$PATH"
-      _profile="$HOME/.config/fish/config.fish"
+      export_cmd="set -x PATH \"$1\" \$PATH"
+      profile="${HOME}/.config/fish/config.fish"
       ;;
     *)
-      error "Shell $_shell is not supported."
+      error "Shell ${shell_name} is not supported."
       ;;
   esac
 
-  printf "\n# Added by Bootware installer.\n%s\n" "$_export" >> "$_profile"
+  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >> "${profile}"
 }
 
 #######################################
@@ -94,61 +96,65 @@ error() {
 # Script entrypoint.
 #######################################
 main() {
-  assert_cmd curl
+  local arg
+  local dst_dir
+  local dst_file="/usr/local/bin/bootware"
+  local src_url
+  local use_sudo
+  local user_install=0
+  local version="master"
 
-  local _dest
-  local _dest_dir
-  local _source
-  local _user
-  local _version="master"
+  assert_cmd curl
 
   # Parse command line arguments.
   for arg in "$@"; do
-    case "$arg" in
+    case "${arg}" in
       -h|--help)
         usage
         exit 0
         ;;
       -d|--dest)
         shift
-        _dest="$2"
+        dst_file="$2"
         ;;
       -u|--user)
-        _user=1
+        dst_file="${HOME}/.local/bin/bootware"
+        user_install=1
         ;;
       -v|--version)
         shift
-        _version="$2"
+        version="$2"
         ;;
       *)
         ;;
     esac
   done
 
-  _source="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$_version/bootware.sh"
-  if [[ "$_user" == 1 ]] ; then
-    _dest="$HOME/.local/bin/bootware"
-    _sudo=""
-  else
+  src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
+
+  # Use sudo for system installation if user is not root.
+  if [[ ${user_install} != 0 && ${EUID} != 0 ]]; then
     assert_cmd sudo
-    _dest="/usr/local/bin/bootware"
-    _sudo=sudo
+    use_sudo=1
   fi
-  _dest_dir=$(dirname "$_dest")
+  dst_dir=$(dirname "${dst_file}")
 
   echo "Installing Bootware..."
 
-  ${_sudo} mkdir -p "$_dest_dir"
-  ${_sudo} curl -LSfs "$_source" -o "$_dest"
-  ${_sudo} chmod 755 "$_dest"
+  ${use_sudo:+sudo} mkdir -p "${dst_dir}"
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
+  # Add Bootware to shell profile if not in system path.
+  #
+  # Flags:
+  #   -v: Only show file path of command.
   if ! command -v bootware > /dev/null; then
-    configure_shell "$_dest_dir"
-    export PATH="$_dest_dir:$PATH"
+    configure_shell "${dst_dir}"
+    export PATH="${dst_dir}:${PATH}"
   fi
 
   echo "Installed $(bootware --version)."
 }
 
-# Execute main with command line arguments.
 main "$@"

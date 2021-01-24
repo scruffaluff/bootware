@@ -32,6 +32,8 @@ jobs:
           npm run prettier:test
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
+        with:
+          ignore: node_modules
   build:
     runs-on: ubuntu-latest
     steps:
