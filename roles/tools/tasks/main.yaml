@@ -6,15 +6,6 @@
     - postgresql
     - sqlite
 
-- name: Install Hashicorp tools
-  import_tasks: hashicorp.yaml
-  tags:
-    - hashicorp
-    - packer
-    - terraform
-    - terragrunt
-    - vault
-
 - name: Install monitoring tools
   import_tasks: monitor.yaml
   tags:

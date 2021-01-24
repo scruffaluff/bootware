@@ -198,6 +198,17 @@
     - server
     - typescript
 
+- name: Install Packer
+  hosts: all
+  roles:
+    - packer
+  tags:
+    - container
+    - desktop
+    - hashicorp
+    - packer
+    - server
+
 - name: Install PowerShell
   hosts: all
   roles:
@@ -262,6 +273,28 @@
     - shell
     - shfmt
 
+- name: Install Terraform
+  hosts: all
+  roles:
+    - terraform
+  tags:
+    - container
+    - desktop
+    - hashicorp
+    - server
+    - terraform
+
+- name: Install Terragrunt
+  hosts: all
+  roles:
+    - terragrunt
+  tags:
+    - container
+    - desktop
+    - hashicorp
+    - server
+    - terragrunt
+
 - name: Install various tools
   hosts: all
   roles:
@@ -271,6 +304,17 @@
     - desktop
     - server
     - tools
+
+- name: Install Vault
+  hosts: all
+  roles:
+    - vault
+  tags:
+    - container
+    - desktop
+    - hashicorp
+    - server
+    - vault
 
 - name: Install VSCode
   hosts: all

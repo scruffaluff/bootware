@@ -1,0 +1,29 @@
+- name: Get latest Terragrunt version
+  uri:
+    url: https://formulae.brew.sh/api/formula/terragrunt.json
+    method: GET
+    return_content: yes
+  register: terragrunt_formula
+
+- name: Install Terragrunt for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/terragrunt
+    mode: 0755
+    url: >-
+      https://github.com/gruntwork-io/terragrunt/releases/download/v{{
+      terragrunt_formula.json.versions.stable }}/terragrunt_linux_amd64
+  when: ansible_system == "Linux"
+
+- name: Install Terragrunt for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: terragrunt
+  when: ansible_system == "Darwin"
+
+- name: Install Terragrunt for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: terragrunt
+  when: ansible_system == "Windows"
