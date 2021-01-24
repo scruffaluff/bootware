@@ -1,5 +1,10 @@
-user_home_dir_linux: >-
+linux_home_dir: >-
   {{ '/root' if user_account == 'root' else '/home/' + user_account }}
+system_shell:
+  Darwin: /usr/local/bin/fish
+  Linux: /usr/bin/fish
+  Windows: C:\\Program Files\\PowerShell\\7pwsh.exe
 user_home_dir: >-
-  {{ user_home_dir_linux if ansible_system == 'Linux' else '/Users/' +
-  user_account }}
+  {{ linux_home_dir if ansible_system == 'Linux' else '/Users/' + user_account
+  }}
+user_shell: "{{ system_shell[ansible_system] }}"

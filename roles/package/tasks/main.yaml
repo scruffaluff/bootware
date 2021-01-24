@@ -26,7 +26,12 @@
     name:
       - ca-certificates
       - flatpak
+      - glances
       - gnupg
+      - htop
+      - iftop
+      - iotop
+      - neofetch
       - openssl
       - pass
       - shellcheck

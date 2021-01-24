@@ -30,7 +30,7 @@
     - desktop
     - server
 
-- name: Install Bash
+- name: Install Bash shell
   hosts: all
   roles:
     - bash
@@ -40,6 +40,28 @@
     - desktop
     - server
     - shell
+
+- name: Install Bat
+  hosts: all
+  roles:
+    - bat
+  tags:
+    - bat
+    - container
+    - desktop
+    - server
+    - shell
+
+- name: Install Bottom system monitor
+  hosts: all
+  roles:
+    - bottom
+  tags:
+    - bottom
+    - container
+    - desktop
+    - monitor
+    - server
 
 - name: Configure default terminal
   hosts: all
@@ -101,6 +123,17 @@
     - dvc
     - server
     - vcs
+
+- name: Install Exa
+  hosts: all
+  roles:
+    - exa
+  tags:
+    - container
+    - desktop
+    - exa
+    - server
+    - shell
 
 - name: Install Fish
   hosts: all
@@ -164,6 +197,17 @@
     - desktop
     - hyper
     - terminal
+
+- name: Install Jq
+  hosts: all
+  roles:
+    - jq
+  tags:
+    - container
+    - desktop
+    - jq
+    - server
+    - shell
 
 - name: Install Libvirt
   hosts: all
@@ -274,6 +318,17 @@
     - server
     - vm
 
+- name: Install Ripgrep
+  hosts: all
+  roles:
+    - ripgrep
+  tags:
+    - container
+    - desktop
+    - ripgrep
+    - server
+    - shell
+
 - name: Install Rust
   hosts: all
   roles:
@@ -339,16 +394,6 @@
     - hashicorp
     - server
     - terragrunt
-
-- name: Install various tools
-  hosts: all
-  roles:
-    - tools
-  tags:
-    - container
-    - desktop
-    - server
-    - tools
 
 - name: Install Vault
   hosts: all

@@ -1,0 +1,33 @@
+- name: Get latest Exa version
+  uri:
+    url: https://formulae.brew.sh/api/formula/exa.json
+    method: GET
+    return_content: yes
+  register: exa_formula
+
+- name: Download Exa for Linux
+  become: yes
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://github.com/ogham/exa/releases/download/v{{
+      exa_formula.json.versions.stable }}/exa-linux-x86_64-{{
+      exa_formula.json.versions.stable }}.zip
+  when: ansible_system == "Linux"
+
+- name: Install Exa for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/exa
+    mode: 0755
+    remote_src: yes
+    src: /tmp/exa-linux-x86_64
+  when: ansible_system == "Linux"
+
+- name: Install Exa for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: exa
+  when: ansible_system == "Darwin"
