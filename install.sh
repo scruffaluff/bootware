@@ -100,7 +100,8 @@ main() {
   local dst_dir
   local dst_file="/usr/local/bin/bootware"
   local src_url
-  local use_sudo=1
+  local use_sudo
+  local user_install
   local version="master"
 
   assert_cmd curl
@@ -118,6 +119,7 @@ main() {
         ;;
       -u|--user)
         dst_file="${HOME}/.local/bin/bootware"
+        user_install=1
         ;;
       -v|--version)
         shift
@@ -130,13 +132,14 @@ main() {
 
   src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
 
-  # Use sudo for system installation if user is not root.
+  # Use sudo for system installation if user did not give the --user, does not
+  # own the file, and is not root.
   #
-  # Flags:
+  # Flags: 
   #   -O: True if file is owned by the current user.
-  if [[ -O "${dst_file}" || $EUID == 0 ]]; then
+  if [[ -z ${user_install} && ! -O "${dst_file}" && ${EUID} != 0 ]]; then
     assert_cmd sudo
-    use_sudo=0
+    use_sudo=1
   fi
   dst_dir=$(dirname "${dst_file}")
 

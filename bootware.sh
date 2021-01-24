@@ -384,7 +384,7 @@ setup_debian() {
 setup_linux() {
   local use_sudo
 
-  if [[ $EUID != 0 ]]; then
+  if [[ ${EUID} != 0 ]]; then
     use_sudo=1
   fi
 
@@ -472,7 +472,7 @@ setup_redhat() {
 update() {
   local dst_file
   local src_url
-  local use_sudo=1
+  local use_sudo
   local version="master"
 
   assert_cmd chmod
@@ -506,8 +506,9 @@ update() {
   #
   # Flags:
   #   -O: True if file is owned by the current user.
-  if [[ -O "${dst_file}" || $EUID == 0 ]]; then
-    use_sudo=0
+  if [[ ! -O "${dst_file}" || ${EUID} != 0 ]]; then
+    assert_cmd sudo
+    use_sudo=1
   fi
 
   echo "Updating Bootware..."
