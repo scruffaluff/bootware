@@ -478,7 +478,11 @@ update() {
   assert_cmd chmod
   assert_cmd curl
 
-  dst_file=$(realpath "$0")
+  # Cannot use realpath command, since it is not built into MacOS.
+  #
+  # Flags:
+  #   -P: Resolve any symbolic links in the path.
+  dst_file="$(cd "$(dirname "$0")"; pwd -P)/$(basename "$0")"
 
   # Parse command line arguments.
   for arg in "$@"; do
@@ -516,7 +520,7 @@ update() {
 
 # Get Bootware version string
 version() {
-  echo "Bootware 0.0.5"
+  echo "Bootware 0.1.0"
 }
 
 #######################################
