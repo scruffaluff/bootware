@@ -1,0 +1,33 @@
+- name: Get latest Zola version
+  uri:
+    url: https://formulae.brew.sh/api/formula/zola.json
+    method: GET
+    return_content: yes
+  register: zola_formula
+
+- name: Install Zola for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >-
+      https://github.com/getzola/zola/releases/download/v{{
+      zola_formula.json.versions.stable }}/zola-v{{
+      zola_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  when: ansible_system == "Linux"
+
+- name: Install Zola for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: zola
+  when: ansible_system == "Darwin"
+
+- name: Install Zola for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: zola
+  when: ansible_system == "Windows"

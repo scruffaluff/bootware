@@ -11,9 +11,3 @@
     - exa
     - jq
     - ripgrep
-
-- name: Install web tools
-  import_tasks: web.yaml
-  tags:
-    - mkcert
-    - zola

@@ -29,7 +29,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       rustup self update
       rustup update stable
     executable: /bin/bash
@@ -38,7 +38,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       rustup component clippy llvm-tools-preview rust-src rustfmt
       rustup target add wasm32-wasi
     executable: /bin/bash
@@ -47,7 +47,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       cargo install \
         cargo-binutils \
         cargo-edit \

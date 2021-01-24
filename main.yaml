@@ -197,6 +197,17 @@
     - neovim
     - server
 
+- name: Install Mkcert
+  hosts: all
+  roles:
+    - mkcert
+  tags:
+    - container
+    - desktop
+    - mkcert
+    - network
+    - server
+
 - name: Install Node
   hosts: all
   roles:
@@ -379,3 +390,14 @@
     - server
     - shell
     - xonsh
+
+- name: Install Zola
+  hosts: all
+  roles:
+    - zola
+  tags:
+    - container
+    - desktop
+    - server
+    - website
+    - zola

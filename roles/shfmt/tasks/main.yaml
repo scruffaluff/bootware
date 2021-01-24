@@ -10,7 +10,7 @@
   get_url:
     dest: /usr/local/bin/shfmt
     mode: 0755
-    url: >
+    url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
       shfmt_formula.json.versions.stable }}_linux_amd64

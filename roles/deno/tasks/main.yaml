@@ -9,8 +9,8 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
-      deno completions fish > $HOME/.config/fish/completions/deno.fish
+      source {{ user_home_dir }}/.bashrc
+      deno completions fish > {{ user_home_dir }}/.config/fish/completions/deno.fish
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 

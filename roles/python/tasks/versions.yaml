@@ -60,7 +60,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       pyenv update
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
@@ -70,7 +70,7 @@
   loop: "{{ python_versions }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: /bin/bash
   register: pyenv_releases
@@ -87,7 +87,7 @@
   loop: "{{ python_releases }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       pyenv install -s {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
@@ -104,7 +104,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source $HOME/.bashrc
+      source {{ user_home_dir }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]

@@ -101,7 +101,6 @@ main() {
   local dst_file="/usr/local/bin/bootware"
   local src_url
   local use_sudo=1
-  local user_install=0
   local version="master"
 
   assert_cmd curl
@@ -119,7 +118,6 @@ main() {
         ;;
       -u|--user)
         dst_file="${HOME}/.local/bin/bootware"
-        user_install=1
         ;;
       -v|--version)
         shift
