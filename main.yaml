@@ -63,6 +63,24 @@
     - monitor
     - server
 
+- name: Install Google Chrome web browser
+  hosts: all
+  roles:
+    - chrome
+  tags:
+    - browser
+    - chrome
+    - desktop
+
+- name: Install MongoDB Compass
+  hosts: all
+  roles:
+    - compass
+  tags:
+    - compass
+    - database
+    - desktop
+
 - name: Configure default terminal
   hosts: all
   roles:
@@ -134,6 +152,15 @@
     - exa
     - server
     - shell
+
+- name: Install Firefox web browser
+  hosts: all
+  roles:
+    - firefox
+  tags:
+    - browser
+    - desktop
+    - firefox
 
 - name: Install Fish
   hosts: all

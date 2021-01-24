@@ -1,0 +1,19 @@
+- name: Install web browsers for Debian distributions
+  apt:
+    name: google-chrome-stable
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install web browsers for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: google-chrome
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install web browsers for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: googlechrome
+  when: ansible_system == "Windows"

@@ -1,0 +1,19 @@
+- name: Install Firefox for Debian distributions
+  apt:
+    name: firefox
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Firefox for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: firefox
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install web browsers for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: firefox
+  when: ansible_system == "Windows"

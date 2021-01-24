@@ -1,0 +1,35 @@
+- name: Get latest MongoDB Compass version
+  uri:
+    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
+    method: GET
+    return_content: yes
+  register: mongodb_compass_formula
+
+- name: Download MongoDB Compass for Debian distributions
+  get_url:
+    dest: /tmp/mongodb_compass.deb
+    mode: 0700
+    url: >-
+      https://downloads.mongodb.com/compass/mongodb-compass_{{
+      mongodb_compass_formula.json.version }}_amd64.deb
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install MongoDB Compass For Debian distributions
+  apt:
+    deb: /tmp/mongodb_compass.deb
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install MongoDB Compass for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: mongodb-compass
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install MongoDB Compass for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mongodb-compass-community
+  when: ansible_system == "Windows"
