@@ -1,0 +1,35 @@
+- name: Get latest MongoDB client release
+  uri:
+    url: https://api.github.com/repos/mongodb-js/mongosh/releases/latest
+    method: GET
+    return_content: yes
+  register: mongo_release
+
+- name: Install MongoDB client for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+    src:
+      https://downloads.mongodb.com/compass/mongosh-{{
+      mongo_release.json.tag_name }}-linux.tgz
+  when: ansible_system == "Linux"
+
+- name: Install MongoDB client for MacOS
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+    src:
+      https://downloads.mongodb.com/compass/mongosh-{{
+      mongo_release.json.tag_name }}-darwin.zip
+  when: ansible_system == "Darwin"
+
+- name: Install MongoDB client for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mongodb-database-tools
+  when: ansible_system == "Windows"

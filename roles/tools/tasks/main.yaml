@@ -1,11 +1,3 @@
-- name: Install database tools
-  import_tasks: database.yaml
-  tags:
-    - database
-    - mongodb
-    - postgresql
-    - sqlite
-
 - name: Install monitoring tools
   import_tasks: monitor.yaml
   tags:

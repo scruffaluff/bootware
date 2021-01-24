@@ -175,6 +175,17 @@
     - server
     - vm
 
+- name: Install MongoDB client
+  hosts: all
+  roles:
+    - mongo
+  tags:
+    - container
+    - database
+    - desktop
+    - mongo
+    - server
+
 - name: Install Neovim
   hosts: all
   roles:
@@ -207,6 +218,17 @@
     - desktop
     - hashicorp
     - packer
+    - server
+
+- name: Install PostgreSQL client
+  hosts: all
+  roles:
+    - postgres
+  tags:
+    - container
+    - database
+    - desktop
+    - postgres
     - server
 
 - name: Install PowerShell
@@ -272,6 +294,17 @@
     - server
     - shell
     - shfmt
+
+- name: Install SQLite
+  hosts: all
+  roles:
+    - sqlite
+  tags:
+    - container
+    - database
+    - desktop
+    - server
+    - sqlite
 
 - name: Install Terraform
   hosts: all
