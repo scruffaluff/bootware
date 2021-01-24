@@ -285,15 +285,16 @@
     - rust
     - server
 
-- name: Install shell tools
+- name: Install Starship shell prompt
   hosts: all
   roles:
-    - shell
+    - starship
   tags:
     - container
     - desktop
     - server
     - shell
+    - starship
 
 - name: Install Shfmt
   hosts: all

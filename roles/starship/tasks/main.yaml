@@ -1,21 +1,3 @@
-- name: Install shell packages for Linux
-  become: yes
-  package:
-    name:
-      - shellcheck
-      - tmate
-      - tmux
-  when: ansible_system == "Linux"
-
-- name: Install shell packages for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name:
-      - shellcheck
-      - tmate
-      - tmux
-  when: ansible_system == "Darwin"
-
 # Unable to find update instructions for Starship. Reinstalling will use a newer
 # version.
 - name: Install Starship shell prompt for Unix

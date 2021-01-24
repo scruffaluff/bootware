@@ -29,9 +29,11 @@
       - gnupg
       - openssl
       - pass
+      - shellcheck
       - sudo
       - tar
       - tmate
+      - tmux
       - unzip
       - zip
   when: ansible_system == "Linux"
@@ -56,6 +58,18 @@
       - ubuntu-dev-tools
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Install essential packages for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - openssh
+      - shellcheck
+      - tmate
+      - tmux
+      - unzip
+      - zip
+  when: ansible_system == "Darwin"
 
 - name: Install essential packages for Windows
   become_user: "{{ user_account }}"
