@@ -1,3 +1,5 @@
+# Ansible playbook for Bootware.
+
 - name: Update package managers and install essential packages
   hosts: all
   roles:

@@ -3,6 +3,7 @@
     name:
       - libvirt-clients
       - libvirt-daemon-system
+      - qemu-kvm
       - virtinst
   become: yes
   when: ansible_pkg_mgr == "apt"
