@@ -195,6 +195,8 @@ config() {
   local dst_file="${HOME}/.bootware/config.yaml"
   local empty_cfg=0
 
+  assert_cmd mkdir
+
   # Parse command line arguments.
   for arg in "$@"; do
     case "$arg" in
@@ -236,7 +238,7 @@ config() {
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
     #   -o <path>: Write output to path instead of stdout. 
-    curl -LSf "${src_url}" -o "${dst_file}"
+    curl -LSfs "${src_url}" -o "${dst_file}"
   fi
 }
 
@@ -282,6 +284,8 @@ find_config_path() {
 setup() {
   local arg
   local os_type
+
+  assert_cmd uname
 
   # Parse command line arguments.
   for arg in "$@"; do
@@ -378,10 +382,10 @@ setup_debian() {
 
 # Configure boostrapping services and utilities for Linux.
 setup_linux() {
-  local use_sudo=1
+  local use_sudo
 
-  if [[ $EUID == 0 ]]; then
-    use_sudo=0
+  if [[ $EUID != 0 ]]; then
+    use_sudo=1
   fi
 
   # Install dependencies for Bootware base on available package manager.
@@ -401,6 +405,8 @@ setup_linux() {
 
 # Configure boostrapping services and utilities for MacOS.
 setup_macos() {
+  assert_cmd curl
+
   # Install XCode command line tools if not already installed.
   #
   # Homebrew depends on the XCode command line tools.
@@ -517,39 +523,39 @@ version() {
 # Script entrypoint.
 #######################################
 main() {
-    # Parse command line arguments.
-    for arg in "$@"; do
-        case "$arg" in
-            config)
-                shift 1
-                config "$@"
-                exit 0
-                ;;
-            bootstrap)
-                shift 1
-                bootstrap "$@"
-                exit 0
-                ;;
-            setup)
-                shift 1
-                setup "$@"
-                exit 0
-                ;;
-            update)
-                shift 1
-                update "$@"
-                exit 0
-                ;;
-            -v|--version)
-                version
-                exit 0
-                ;;
-            *)
-                ;;
-        esac
-    done
+  # Parse command line arguments.
+  for arg in "$@"; do
+    case "$arg" in
+      config)
+        shift 1
+        config "$@"
+        exit 0
+        ;;
+      bootstrap)
+        shift 1
+        bootstrap "$@"
+        exit 0
+        ;;
+      setup)
+        shift 1
+        setup "$@"
+        exit 0
+        ;;
+      update)
+        shift 1
+        update "$@"
+        exit 0
+        ;;
+      -v|--version)
+        version
+        exit 0
+        ;;
+      *)
+        ;;
+    esac
+  done
 
-    usage "main"
+  usage "main"
 }
 
 main "$@"

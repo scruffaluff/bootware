@@ -33,7 +33,7 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
-          ignore: node_modules
+          ignore: node_modules roles
   build:
     runs-on: ubuntu-latest
     steps:
