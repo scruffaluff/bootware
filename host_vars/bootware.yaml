@@ -1,17 +1,34 @@
+apt_packages:
+  - gnome-tweaks
+dnf_packages:
+git_user_email: user.name@mail.com
+git_user_name: User Name
+homebrew_casks:
+  - 1password
+  - balenaetcher
+  - discord
+  - google-backup-and-sync
+  - postman
+  - slack
+  - spotify
+  - vlc
+homebrew_packages:
 node_versions:
   - "10"
   - "12"
   - "14"
   - "15"
 python_versions:
-  - "3.6"
   - "3.7"
   - "3.8"
   - "3.9"
+scoop_packages:
+  - discord
+  - postman
+  - slack
+  - vlc
 user_account: user-name
-user_email: user.name@gmail.com
 user_home_dir: /home/user-name
-user_name: User Name
 user_shell: /usr/bin/fish
 vscode_extensions:
   - "alefragnani.bookmarks"
@@ -37,3 +54,4 @@ vscode_extensions:
   - "vadimcn.vscode-lldb"
   - "vscode-icons-team.vscode-icons"
   - "yzhang.markdown-all-in-one"
+yum_packages:
