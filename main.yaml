@@ -3,12 +3,12 @@
 - name: Update package managers and install essential packages
   hosts: all
   roles:
-    - package
+    - update
   tags:
     - container
     - desktop
-    - package
     - server
+    - update
 
 - name: Install Alacritty terminal
   hosts: all
@@ -290,6 +290,14 @@
     - node
     - server
     - typescript
+
+- name: Install optional packages
+  hosts: all
+  roles:
+    - package
+  tags:
+    - desktop
+    - package
 
 - name: Install Packer image generator
   hosts: all
