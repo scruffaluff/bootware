@@ -57,44 +57,34 @@ jobs:
     needs: branch
     runs-on: macos-11.0
     steps:
-      - name: Code repository checkout
-        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
       - name: Copy Bootware configuration file
-        run: |
-          bootware config
-          cp ./.github/host_vars/ubuntu.yaml $HOME/.bootware/config.yaml
+        run: bootware config
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
+        run: bootware bootstrap --no-passwd --skip-tags docker,
   test-ubuntu:
     needs: branch
     runs-on: ubuntu-20.04
     steps:
-      - name: Code repository checkout
-        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
       - name: Copy Bootware configuration file
-        run: |
-          bootware config
-          cp ./.github/host_vars/ubuntu.yaml $HOME/.bootware/config.yaml
+        run: bootware config
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip-tags docker, --tags server,
+        run: bootware bootstrap --no-passwd --skip-tags docker,
   test-windows:
     needs:
       - branch
       - build
     runs-on: windows-latest
     steps:
-      - name: Code repository checkout
-        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
@@ -104,7 +94,5 @@ jobs:
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Copy Bootware configuration file
-        run: |
-          & "C:/Program Files/Bootware/bootware.ps1" config
-          Copy-Item -Path ./.github/host_vars/windows.yaml -Destination $HOME/.bootware/config.yaml
+        run: & "C:/Program Files/Bootware/bootware.ps1" config
         shell: powershell
