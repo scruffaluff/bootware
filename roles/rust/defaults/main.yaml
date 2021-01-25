@@ -1,0 +1,14 @@
+cargo_applications:
+  - cargo-binutils
+  - cargo-edit
+  - cargo-generate
+  - cargo-make
+  - cargo-tarpaulin
+  - cargo-watch
+rustup_components:
+  - clippy
+  - llvm-tools-preview
+  - rust-src
+  - rustfmt
+rustup_targets:
+  - wasm32-wasi

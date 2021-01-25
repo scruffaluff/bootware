@@ -1,5 +1,12 @@
 apt_packages:
   - gnome-tweaks
+cargo_applications:
+  - cargo-binutils
+  - cargo-edit
+  - cargo-generate
+  - cargo-make
+  - cargo-tarpaulin
+  - cargo-watch
 dnf_packages: []
 git_user_email: user.name@mail.com
 git_user_name: User Name
@@ -13,6 +20,10 @@ homebrew_casks:
   - spotify
   - vlc
 homebrew_packages: []
+node_applications:
+  - "@vue/cli"
+  - "gitmoji-cli"
+  - npx
 node_versions:
   - "10"
   - "12"
@@ -23,6 +34,13 @@ python_versions:
   - "3.7"
   - "3.8"
   - "3.9"
+rustup_components:
+  - clippy
+  - llvm-tools-preview
+  - rust-src
+  - rustfmt
+rustup_targets:
+  - wasm32-wasi
 scoop_packages:
   - discord
   - postman

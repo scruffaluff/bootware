@@ -62,8 +62,8 @@ jobs:
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
-      - name: Copy Bootware configuration file
-        run: bootware config
+      - name: Create Bootware configuration file
+        run: bootware config --empty
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip docker, --tags server,
   test-ubuntu:
@@ -75,8 +75,8 @@ jobs:
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
-      - name: Copy Bootware configuration file
-        run: bootware config
+      - name: Create Bootware configuration file
+        run: bootware config --empty
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip docker, --tags server,
   test-windows:
@@ -93,6 +93,6 @@ jobs:
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
-      - name: Copy Bootware configuration file
-        run: "& 'C:/Program Files/Bootware/bootware.ps1' config"
+      - name: Create Bootware configuration file
+        run: "& 'C:/Program Files/Bootware/bootware.ps1' config --empty"
         shell: powershell

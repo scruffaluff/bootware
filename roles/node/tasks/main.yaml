@@ -45,22 +45,24 @@
     cmd: nvm alias default {{ node_versions[-1] }}
   when: ansible_system == "Windows"
 
-- name: Install Node CLI applications for Unix
+- name: Install or update Node CLI applications for Unix
   become_user: "{{ user_account }}"
+  loop: "{{ node_applications }}"
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm use {{ node_versions[-1] }}
-      npm install -g gitmoji-cli @vue/cli
+      npm install -g {{ item }} || npm update -g {{ item }}
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Node CLI applications for Windows
+- name: Install or update Node CLI applications for Windows
   become_user: "{{ user_account }}"
+  loop: "{{ node_applications }}"
   shell:
     cmd: |
       nvm use {{ node_versions[-1] }}
-      npm install -g gitmoji-cli @vue/cli
+      npm install -g {{ item }} || npm update -g {{ item }}
   when: ansible_system == "Windows"
 
 - name: Create Fish functions directory for Linux
