@@ -1,4 +1,4 @@
-- name: Get latest Terrafrom version
+- name: Get latest Terraform version
   uri:
     url: https://formulae.brew.sh/api/formula/terraform.json
     method: GET

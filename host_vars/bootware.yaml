@@ -28,7 +28,6 @@ node_versions:
   - "10"
   - "12"
   - "14"
-  - "15"
 pacman_packages: []
 python_versions:
   - "3.7"

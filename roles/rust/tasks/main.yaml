@@ -34,16 +34,18 @@
       rustup update stable
     executable: /bin/bash
 
-- name: Install Rust components
+- name: Add Rust components
   become_user: "{{ user_account }}"
+  loop: "{{ rustup_components }}"
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
-      rustup component {{ item }}
+      rustup component add {{ item }}
     executable: /bin/bash
 
 - name: Add Rust targets
   become_user: "{{ user_account }}"
+  loop: "{{ rustup_targets }}"
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc

@@ -1,0 +1,33 @@
+- name: Get latest Mdbook version
+  uri:
+    url: https://formulae.brew.sh/api/formula/mdbook.json
+    method: GET
+    return_content: yes
+  register: mdbook_formula
+
+- name: Install Mdbook for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    group: root
+    mode: 0755
+    owner: root
+    remote_src: yes
+    src: >-
+      https://github.com/rust-lang/mdBook/releases/download/v{{
+      mdbook_formula.json.versions.stable }}/mdbook-v{{
+      mdbook_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  when: ansible_system == "Linux"
+
+- name: Install Mdbook for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: mdbook
+  when: ansible_system == "Darwin"
+
+- name: Install Mdbook for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: mdbook
+  when: ansible_system == "Windows"
