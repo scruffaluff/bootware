@@ -1,36 +1,3 @@
-- name: Install general applications for Debian distributions
-  become: yes
-  apt:
-    name:
-      - gnome-tweaks
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install general applications for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    name:
-      - 1password
-      - balenaetcher
-      - discord
-      - google-backup-and-sync
-      - postman
-      - slack
-      - spotify
-      - vlc
-    state: present
-  when: ansible_system == "Darwin"
-
-- name: Install general applications for Windows
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    name:
-      - discord
-      - postman
-      - slack
-      - vlc
-  when: ansible_system == "Windows"
-
 - name: Create background pictures directory
   become_user: "{{ user_account }}"
   file:
@@ -44,33 +11,25 @@
     mode: 0644
     url: https://r4.wallpaperflare.com/wallpaper/339/179/774/digital-art-low-poly-artwork-minimalism-wallpaper-7836ad3840b03c28007c615ef852941a.jpg
 
-- name: Change desktop settings for Linux
+- name: Find Linux desktop environment name
+  set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
+
+- name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user_account }}/Pictures/background/white_and_gray_mountains.jpg"
-      gsettings set org.gnome.desktop.interface gtk-theme Pop
-      gsettings set org.gnome.desktop.interface show-battery-percentage true
-      gsettings set org.gnome.desktop.notifications show-banners false
-      gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
-      gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
-      gsettings set org.gnome.nautilus.preferences show-hidden-files true
-      gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false  # Turn off automatic brightness
-  when: ansible_os_family in ["Debian", "Pop!_OS", "Ubuntu"]
+  script: gnome.sh
+  when: ansible_system == "Linux" and linux_desktop in ["gnome", "pop"]
 
 - name: Change desktop settings for MacOS
   become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      defaults write com.apple.dock autohide -bool true
-      defaults write com.apple.dock magnification -bool true
-      defaults write com.apple.dock show-recents 0
+  script: macos.sh
   when: ansible_system == "Darwin"
 
 - name: Change desktop settings for PopOS
   become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      gsettings set com.system76.hidpi enable false  # Remove HiDPI notifications
-      gsettings set com.system76.hidpi mode hidpi  # Turn on HiDPI mode
-  when: ansible_os_family == "Pop!_OS"
+  script: popos.sh
+  when: ansible_system == "Linux" and linux_desktop == "pop"
+
+- name: Change desktop settings for Windows
+  become_user: "{{ user_account }}"
+  script: windows.sh
+  when: ansible_system == "Windows"
