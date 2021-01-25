@@ -1,0 +1,33 @@
+- name: Install build tools for Linux
+  package:
+    name:
+      - clang
+      - gdb
+      - lld
+      - lldb
+      - llvm
+      - openocd
+  become: yes
+  when: ansible_system == "Linux"
+
+- name: Install build tools for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - gdb
+      - llvm
+      - openocd
+  when: ansible_system == "Darwin"
+
+- name: Install build tools for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - clang
+      - gdb
+      - lld
+      - lldb
+      - llvm
+      - openocd
+  when: ansible_system == "Windows"

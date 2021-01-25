@@ -63,6 +63,16 @@
     - monitor
     - server
 
+- name: Install build tools
+  hosts: all
+  roles:
+    - build
+  tags:
+    - build
+    - container
+    - desktop
+    - server
+
 - name: Install Google Chrome web browser
   hosts: all
   roles:

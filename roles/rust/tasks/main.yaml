@@ -1,15 +1,3 @@
-- name: Install Rust utility packages for Linux
-  package:
-    name:
-      - clang
-      - gdb
-      - lld
-      - lldb
-      - llvm
-      - openocd
-  become: yes
-  when: ansible_system == "Linux"
-
 - name: Install Rust for Unix
   become_user: "{{ user_account }}"
   shell:
