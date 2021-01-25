@@ -16,7 +16,7 @@
 
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
-  script: gnome.sh
+  script: "gnome.sh {{ user_account }}"
   when: ansible_system == "Linux" and linux_desktop in ["gnome", "pop"]
 
 - name: Change desktop settings for MacOS

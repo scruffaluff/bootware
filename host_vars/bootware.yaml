@@ -1,6 +1,6 @@
 apt_packages:
   - gnome-tweaks
-dnf_packages:
+dnf_packages: []
 git_user_email: user.name@mail.com
 git_user_name: User Name
 homebrew_casks:
@@ -12,12 +12,13 @@ homebrew_casks:
   - slack
   - spotify
   - vlc
-homebrew_packages:
+homebrew_packages: []
 node_versions:
   - "10"
   - "12"
   - "14"
   - "15"
+pacman_packages: []
 python_versions:
   - "3.7"
   - "3.8"
@@ -54,4 +55,4 @@ vscode_extensions:
   - "vadimcn.vscode-lldb"
   - "vscode-icons-team.vscode-icons"
   - "yzhang.markdown-all-in-one"
-yum_packages:
+yum_packages: []

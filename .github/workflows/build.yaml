@@ -94,5 +94,5 @@ jobs:
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Copy Bootware configuration file
-        run: & "C:/Program Files/Bootware/bootware.ps1" config
+        run: "& 'C:/Program Files/Bootware/bootware.ps1' config"
         shell: powershell

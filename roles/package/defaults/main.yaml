@@ -1,6 +1,6 @@
 apt_packages:
   - gnome-tweaks
-dnf_packages:
+dnf_packages: []
 homebrew_casks:
   - 1password
   - balenaetcher
@@ -10,11 +10,11 @@ homebrew_casks:
   - slack
   - spotify
   - vlc
-homebrew_packages:
-pacman_packages:
+homebrew_packages: []
+pacman_packages: []
 scoop_packges:
   - discord
   - postman
   - slack
   - vlc
-yum_packages:
+yum_packages: []

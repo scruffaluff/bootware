@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-gsettings set org.gnome.desktop.background picture-uri "file:///home/{{ user_account }}/Pictures/background/white_and_gray_mountains.jpg"
+gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures/background/white_and_gray_mountains.jpg"
 gsettings set org.gnome.desktop.interface gtk-theme Pop
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.desktop.notifications show-banners false
