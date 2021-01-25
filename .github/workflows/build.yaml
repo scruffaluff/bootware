@@ -65,7 +65,7 @@ jobs:
       - name: Copy Bootware configuration file
         run: bootware config
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip-tags docker,
+        run: bootware bootstrap --no-passwd --skip docker, --tags server,
   test-ubuntu:
     needs: branch
     runs-on: ubuntu-20.04
@@ -78,7 +78,7 @@ jobs:
       - name: Copy Bootware configuration file
         run: bootware config
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip-tags docker,
+        run: bootware bootstrap --no-passwd --skip docker, --tags server,
   test-windows:
     needs:
       - branch
