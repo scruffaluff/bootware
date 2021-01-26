@@ -52,9 +52,9 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm use {{ node_versions[-1] }}
-      npm install -g {{ item }} || npm update -g {{ item }}
+      npm install -g {{ item }}
     executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
 
 - name: Install or update Node CLI applications for Windows
   become_user: "{{ user_account }}"

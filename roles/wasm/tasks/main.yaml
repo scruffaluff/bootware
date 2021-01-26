@@ -1,7 +1,7 @@
 - name: Install Wasmtime for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: curl -Sfs https://wasmtime.dev/install.sh | bash
+    cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -11,3 +11,10 @@
     architecture: 64bit
     name: wasmtime
   when: ansible_system == "Windows"
+
+- name: Install Wasm Pack for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]

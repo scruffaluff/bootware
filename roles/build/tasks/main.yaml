@@ -2,10 +2,13 @@
   package:
     name:
       - clang
+      - cmake
+      - gcc
       - gdb
       - lld
       - lldb
       - llvm
+      - make
       - openocd
   become: yes
   when: ansible_system == "Linux"
@@ -14,8 +17,11 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
+      - cmake
+      - gcc
       - gdb
       - llvm
+      - make
       - openocd
   when: ansible_system == "Darwin"
 
@@ -24,10 +30,10 @@
   community.windows.win_scoop:
     architecture: 64bit
     name:
-      - clang
+      - cmake
       - gdb
-      - lld
-      - lldb
       - llvm
+      - make
       - openocd
+      - vcredist2019
   when: ansible_system == "Windows"

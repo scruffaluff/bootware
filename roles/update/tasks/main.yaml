@@ -82,17 +82,17 @@
   community.windows.win_scoop:
     architecture: 64bit
     name:
+      - 7zip
       - openssh
       - openssl
       - unzip
       - zip
-      - vcredist2019
   when: ansible_system == "Windows"
 
 - name: Add Flathub remote repository for Linux
   become: yes
   shell:
-    cmd:
+    cmd: >-
       flatpak remote-add --if-not-exists flathub
       https://flathub.org/repo/flathub.flatpakrepo
   when: ansible_system == "Linux"

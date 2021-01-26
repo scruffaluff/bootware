@@ -154,7 +154,10 @@ Function Setup() {
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
-        scoop bucket add extras fonts versions
+        scoop bucket add extras
+        scoop bucket add main
+        scoop bucket add nerd-fonts
+        scoop bucket add versions
     }
 
     # Install Scoop package manager.
