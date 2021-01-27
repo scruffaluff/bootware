@@ -1,20 +1,8 @@
-apt_packages:
-  - gnome-tweaks
+apt_packages: []
 dnf_packages: []
-homebrew_casks:
-  - 1password
-  - balenaetcher
-  - discord
-  - google-backup-and-sync
-  - postman
-  - slack
-  - spotify
-  - vlc
+flatpak_packages: []
+homebrew_casks: []
 homebrew_packages: []
 pacman_packages: []
-scoop_packges:
-  - discord
-  - postman
-  - slack
-  - vlc
+scoop_packges: []
 yum_packages: []
