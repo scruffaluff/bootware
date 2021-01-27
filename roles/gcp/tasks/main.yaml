@@ -1,9 +1,18 @@
-- name: Add Google Cloud key and distribution URI for Debian distributions
+- name: Add Google Cloud SDK package information for Debian distributions
+  become: yes
+  lineinfile:
+    path: /etc/apt/sources.list.d/google-cloud-sdk.list
+    # Check of line in file is dependent on whitespace such as newlines.
+    # prettier-ignore
+    line: deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main
+    create: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Google Cloud SDK key for Debian distributions
+  become: yes
   shell:
     cmd: |
-      echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Google Cloud SDK for Debian distributions

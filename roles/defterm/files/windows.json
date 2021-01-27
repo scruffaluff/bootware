@@ -1,0 +1,23 @@
+{
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "copyFormatting": false,
+  "copyOnSelect": false,
+  "keybindings": [],
+  "multiLinePasteWarning": false,
+  "profiles": {
+    "defaults": {
+      "colorScheme": "Solarized Light",
+      "fontFace": "Fira Code",
+      "fontSize": 11
+    },
+    "list": [
+      {
+        "hidden": false,
+        "name": "PowerShell",
+        "commandline": "pwsh.exe /NoLogo",
+        "source": "Windows.Terminal.PowershellCore"
+      }
+    ]
+  },
+  "schemes": []
+}
