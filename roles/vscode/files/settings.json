@@ -32,6 +32,9 @@
   "[terraform]": {
     "editor.tabSize": 2
   },
+  "[typescript]": {
+    "editor.tabSize": 2
+  },
   "[vue]": {
     "editor.tabSize": 2
   },
