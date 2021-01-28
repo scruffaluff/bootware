@@ -1,0 +1,8 @@
+- name: Install GNOME terminals
+  import_tasks: gnome.yaml
+
+- name: Install MacOS terminals
+  import_tasks: macos.yaml
+
+- name: Install Windows terminals
+  import_tasks: windows.yaml

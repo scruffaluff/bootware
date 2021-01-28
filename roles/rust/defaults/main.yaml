@@ -1,7 +1,8 @@
 cargo_applications:
   - cargo-binutils
   - cargo-edit
-  - cargo-generate
+  # Cargo Generate currently has compilation issues which break installations.
+  # - cargo-generate
   - cargo-make
   - cargo-tarpaulin
   - cargo-watch
