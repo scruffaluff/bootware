@@ -445,19 +445,19 @@ setup_redhat() {
   # Install dependencies for Bootware.
   if ! yum list installed ansible &>/dev/null ; then
     echo "Installing Ansible..."
-    ${1:+sudo} yum check-update
+    yum_check_update "$1"
     ${1:+sudo} yum install -y ansible
   fi
 
   if ! yum list installed curl &>/dev/null ; then
     echo "Installing Curl..."
-    ${1:+sudo} yum check-update
+    yum_check_update "$1"
     ${1:+sudo} yum install -y curl
   fi
 
   if ! yum list installed git &>/dev/null ; then
     echo "Installing Git..."
-    ${1:+sudo} yum check-update
+    yum_check_update "$1"
     ${1:+sudo} yum install git
   fi
 }
@@ -519,9 +519,27 @@ update() {
   echo "Updated to version $(bootware --version)."
 }
 
-# Get Bootware version string
+#######################################
+# Print Bootware version string.
+# Outputs:
+#   Bootware version string.
+#######################################
 version() {
   echo "Bootware 0.1.0"
+}
+
+#######################################
+# Update Yum package lists.
+#
+# Yum's check-update command will give a 100 exit code if there are packages
+# available to update. Thus both 0 and 100 must be treated as successfully
+# exit codes.
+#
+# Arguments:
+#   Whether to use sudo command.
+#######################################
+yum_check_update() {
+  ${1:+sudo} yum check-update || { code=$?; [ ${code} -eq 100 ] && return 0; return ${code}; }
 }
 
 #######################################
