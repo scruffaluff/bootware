@@ -1,4 +1,4 @@
-cargo_applications:
+_cargo_applications:
   always:
     - cargo-binutils
     - cargo-edit
@@ -6,12 +6,15 @@ cargo_applications:
     # - cargo-generate
     - cargo-make
     - cargo-watch
+  macos: []
   linux:
     - cargo-tarpaulin
+  windows: []
+cargo_applications: >-
+  {{ _cargo_applications.always + _cargo_applications[_ansible_system] }}
 rustup_components:
   - clippy
   - llvm-tools-preview
   - rust-src
   - rustfmt
-rustup_targets:
-  - wasm32-wasi
+rustup_targets: []

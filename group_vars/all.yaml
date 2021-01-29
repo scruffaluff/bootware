@@ -1,10 +1,11 @@
-linux_home_dir: >-
-  {{ '/root' if user_account == 'root' else '/home/' + user_account }}
-system_shell:
-  Darwin: /usr/local/bin/fish
-  Linux: /usr/bin/fish
-  Windows: C:\\Program Files\\PowerShell\\7pwsh.exe
-user_home_dir: >-
-  {{ linux_home_dir if ansible_system == 'Linux' else '/Users/' + user_account
-  }}
-user_shell: "{{ system_shell[ansible_system] }}"
+_ansible_system: "{{ ansible_system|lower|replace('darwin','macos') }}"
+_user_shell:
+  linux: /usr/bin/fish
+  macos: /usr/local/bin/fish
+  windows: C:/Program Files/PowerShell/7pwsh.exe
+_user_home_dir:
+  linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
+  macos: "{{ '/Users/' + user_account }}"
+  windows: "{{ '/Users/' + user_account }}"
+user_home_dir: "{{ _user_home_dir[_ansible_system] }}"
+user_shell: "{{ _user_shell[_ansible_system] }}"
