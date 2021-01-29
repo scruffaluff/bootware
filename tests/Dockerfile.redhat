@@ -1,0 +1,42 @@
+FROM centos:8.3.2011
+
+
+# Create non-priviledged user.
+#
+# Flags:
+#     -l: Do not add user to lastlog database.
+#     -m: Create user home directory if it does not exist.
+#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -u 1000: Give new user UID value 1000.
+RUN useradd -lm -s /bin/bash -u 1000 redhat
+
+# Update Yum package lists.
+RUN yum check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+
+# Install Bash, Curl and Sudo.  
+RUN yum install -y bash curl sudo
+
+# Create sudo group.
+RUN groupadd sudo
+
+# Add standard user to sudoers group.
+RUN usermod -a -G sudo redhat
+
+# Allow sudo commands with no password.
+RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+
+# Fix current sudo bug for containers.
+# https://github.com/sudo-project/sudo/issues/42
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+
+ENV USER=redhat
+USER redhat
+
+# Install Bootware.
+RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+
+# Generate default Bootware configuration file.
+RUN bootware config --empty
+
+# Run Bootware bootstrapping.
+RUN bootware bootstrap --no-passwd --tags container,
