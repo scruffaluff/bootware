@@ -458,7 +458,7 @@ setup_redhat() {
   if ! yum list installed git &>/dev/null ; then
     echo "Installing Git..."
     yum_check_update "$1"
-    ${1:+sudo} yum install git
+    ${1:+sudo} yum install -y git
   fi
 }
 
