@@ -10,7 +10,7 @@
   dnf:
     name: "{{ item }}"
   loop: "{{ dnf_packages }}"
-  when: ansible_pkg_mgr in ["dnf", "yum"]
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Flatpak packages for Linux
   become: yes
@@ -49,10 +49,3 @@
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
   when: ansible_system == "Windows"
-
-- name: Install Yum packages for Red Hat distributions
-  become: yes
-  loop: "{{ yum_packages }}"
-  when: ansible_pkg_mgr in ["dnf", "yum"]
-  yum:
-    name: "{{ item }}"

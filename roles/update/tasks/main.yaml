@@ -35,7 +35,6 @@
       - neofetch
       - openssl
       - pass
-      - shellcheck
       - sudo
       - tar
       - tmate
@@ -49,6 +48,8 @@
   pacman:
     name:
       - openssh
+      - pkgconf
+      - shellcheck
       - which
   when: ansible_pkg_mgr == "pacman"
 
@@ -61,6 +62,7 @@
       - openssh-client
       - openssh-server
       - pbuilder
+      - shellcheck
       - ubuntu-dev-tools
   become: yes
   when: ansible_pkg_mgr == "apt"
@@ -76,6 +78,13 @@
       - unzip
       - zip
   when: ansible_system == "Darwin"
+
+- name: Install essential packages for Red Hat distributions
+  become: yes
+  dnf:
+    name:
+      - ShellCheck
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install essential packages for Windows
   become_user: "{{ user_account }}"
