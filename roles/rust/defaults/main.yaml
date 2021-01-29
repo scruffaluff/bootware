@@ -1,13 +1,13 @@
 cargo_applications:
-  - cargo-binutils
-  - cargo-edit
-  # Cargo Generate currently has compilation issues which break installations.
-  # - cargo-generate
-  - cargo-make
-  # Cargo Tarpaulin is only supported on Linux.
-  # TODO: Conditionally include cargo-tarpaulin based on operating system.
-  # - cargo-tarpaulin
-  - cargo-watch
+  always:
+    - cargo-binutils
+    - cargo-edit
+    # Cargo Generate currently has compilation issues which break installations.
+    # - cargo-generate
+    - cargo-make
+    - cargo-watch
+  linux:
+    - cargo-tarpaulin
 rustup_components:
   - clippy
   - llvm-tools-preview

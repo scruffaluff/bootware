@@ -42,7 +42,8 @@
 
 - name: Update or install Cargo packges
   become_user: "{{ user_account }}"
-  loop: "{{ cargo_applications }}"
+  loop: >-
+    {{ cargo_applications.always + cargo_applications[ansible_system|lower] }}
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
