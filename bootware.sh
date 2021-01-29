@@ -243,6 +243,20 @@ config() {
 }
 
 #######################################
+# Update dnf package lists.
+#
+# DNF's check-update command will give a 100 exit code if there are packages
+# available to update. Thus both 0 and 100 must be treated as successfully
+# exit codes.
+#
+# Arguments:
+#   Whether to use sudo command.
+#######################################
+dnf_check_update() {
+  ${1:+sudo} dnf check-update || { code=$?; [ ${code} -eq 100 ] && return 0; return ${code}; }
+}
+
+#######################################
 # Print error message and exit script with error code.
 # Outputs:
 #   Writes error message to stderr if command is not in system path.
@@ -396,7 +410,7 @@ setup_linux() {
     setup_arch ${use_sudo}
   elif command -v apt-get &>/dev/null ; then
     setup_debian ${use_sudo}
-  elif command -v yum &>/dev/null ; then
+  elif command -v dnf &>/dev/null ; then
     setup_redhat ${use_sudo}
   else
     error "Unable to find supported package manager."
@@ -443,22 +457,22 @@ setup_macos() {
 # Configure boostrapping services and utilities for Red Hat distributions.
 setup_redhat() {
   # Install dependencies for Bootware.
-  if ! yum list installed ansible &>/dev/null ; then
+  if ! dnf list installed ansible &>/dev/null ; then
     echo "Installing Ansible..."
-    yum_check_update "$1"
-    ${1:+sudo} yum install -y ansible
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y ansible
   fi
 
-  if ! yum list installed curl &>/dev/null ; then
+  if ! dnf list installed curl &>/dev/null ; then
     echo "Installing Curl..."
-    yum_check_update "$1"
-    ${1:+sudo} yum install -y curl
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y curl
   fi
 
-  if ! yum list installed git &>/dev/null ; then
+  if ! dnf list installed git &>/dev/null ; then
     echo "Installing Git..."
-    yum_check_update "$1"
-    ${1:+sudo} yum install -y git
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y git
   fi
 }
 
@@ -526,20 +540,6 @@ update() {
 #######################################
 version() {
   echo "Bootware 0.1.0"
-}
-
-#######################################
-# Update Yum package lists.
-#
-# Yum's check-update command will give a 100 exit code if there are packages
-# available to update. Thus both 0 and 100 must be treated as successfully
-# exit codes.
-#
-# Arguments:
-#   Whether to use sudo command.
-#######################################
-yum_check_update() {
-  ${1:+sudo} yum check-update || { code=$?; [ ${code} -eq 100 ] && return 0; return ${code}; }
 }
 
 #######################################
