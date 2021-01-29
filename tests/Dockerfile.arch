@@ -36,4 +36,4 @@ RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/
 RUN bootware config --empty
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --tags container,
+RUN bootware bootstrap --no-passwd --skip python, --tags container,
