@@ -15,6 +15,8 @@
 - name: Install Wasm Pack for Unix
   become_user: "{{ user_account }}"
   shell:
-    cmd: curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
