@@ -16,3 +16,7 @@
     architecture: 64bit
     name: tldr
   when: ansible_system == "Windows"
+
+- name: Update TLDR documentation
+  shell:
+    cmd: tldr --update

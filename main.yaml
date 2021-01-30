@@ -460,6 +460,7 @@
     - desktop
     - server
     - shell
+    - tldr
 
 - name: Install Vault secrets manager
   hosts: all

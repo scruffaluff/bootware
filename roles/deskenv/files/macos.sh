@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 
+# Control Center settings.
+
+# Show do not disturb option in control center.
+defaults write com.apple.controlcenter "NSStatusItem Visible DoNotDisturb" -bool true
+
+
 # Dock settings.
 
 # Set dock to autohide.
