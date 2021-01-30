@@ -20,7 +20,7 @@
 # Pipx installs applications per user, so user_account is required.
 - name: Install Pipx command line applications
   become_user: "{{ user_account }}"
-  loop: "{{ python_applications }}"
+  loop: "{{ pipx_applications }}"
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc

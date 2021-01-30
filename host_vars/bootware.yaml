@@ -3,9 +3,7 @@ apt_packages:
 cargo_applications:
   - cargo-binutils
   - cargo-edit
-  - cargo-generate
   - cargo-make
-  - cargo-tarpaulin
   - cargo-watch
 dnf_packages: []
 git_user_email: user.name@mail.com
@@ -23,12 +21,14 @@ homebrew_packages: []
 node_applications:
   - "@vue/cli"
   - "gitmoji-cli"
-  - npx
 node_versions:
   - "10"
   - "12"
   - "14"
 pacman_packages: []
+pipx_applications:
+  - cookiecutter
+  - poetry
 python_versions:
   - "3.7"
   - "3.8"
@@ -38,8 +38,7 @@ rustup_components:
   - llvm-tools-preview
   - rust-src
   - rustfmt
-rustup_targets:
-  - wasm32-wasi
+rustup_targets: []
 scoop_packages:
   - discord
   - postman

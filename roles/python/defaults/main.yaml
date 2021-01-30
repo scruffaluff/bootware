@@ -9,7 +9,7 @@ _python_versions:
   macos: []
   windows:
     - "3.6"
-python_applications:
+pipx_applications:
   - cookiecutter
   - poetry
 python_versions: >-

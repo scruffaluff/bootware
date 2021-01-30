@@ -25,6 +25,16 @@
     name: hyper
   when: ansible_system == "Windows"
 
+# Hyper terminal lists ~/.hyper.js as deprecated path for its configuration
+# file, but seems to be the only path it will use.
+- name: Copy Hyper configuration file to backup location
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir }}/.hyper.js"
+    force: yes
+    mode: 0644
+    src: hyper.j2
+
 - name: Create Hyper configuration directory for Linux
   become_user: "{{ user_account }}"
   file:
