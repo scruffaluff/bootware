@@ -70,7 +70,7 @@
   file:
     path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Download Fast NVM Fish for Linux
   become_user: "{{ user_account }}"
@@ -78,4 +78,4 @@
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"
     mode: 0755
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
