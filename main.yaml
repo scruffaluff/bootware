@@ -451,6 +451,16 @@
     - server
     - terragrunt
 
+- name: Install TLDR documentation collection
+  hosts: all
+  roles:
+    - tldr
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+
 - name: Install Vault secrets manager
   hosts: all
   roles:
