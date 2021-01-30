@@ -10,7 +10,7 @@ defaults write com.apple.dock autohide-delay -float 0
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
 # Reset Dock to update.
-killall Dock
+# killall Dock
 
 
 # Finder settings.
@@ -30,7 +30,7 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Do not autosave files to iCloud.
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 # Reset Finder to update.
-killall Finder
+# killall Finder
 
 
 # TextEdit settings.
@@ -38,4 +38,4 @@ killall Finder
 # Save files to plain text by default.
 defaults write com.apple.textedit RichText -bool false
 # Reset TextEdit to update.
-killall TextEdit
+# killall TextEdit
