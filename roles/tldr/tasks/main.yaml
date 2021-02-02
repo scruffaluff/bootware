@@ -17,6 +17,13 @@
     name: tldr
   when: ansible_system == "Windows"
 
+- name: Create TLDR repository directory for Linux
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.local/share"
+    state: directory
+  when: ansible_system == "Linux"
+
 - name: Update TLDR documentation
   shell:
     cmd: tldr --update
