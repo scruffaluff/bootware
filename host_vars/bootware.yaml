@@ -6,6 +6,7 @@ cargo_applications:
   - cargo-make
   - cargo-watch
 dnf_packages: []
+flatpak_packages: []
 git_user_email: user.name@mail.com
 git_user_name: User Name
 homebrew_casks:

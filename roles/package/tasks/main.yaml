@@ -1,9 +1,16 @@
-- name: Install Apt packages for Debian distributions
+- name: Install Apt packages by name for Debian distributions
   become: yes
   apt:
     name: "{{ item }}"
   loop: "{{ apt_packages }}"
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and "/" not in item
+
+- name: Install Apt packages by path for Debian distributions
+  become: yes
+  apt:
+    deb: "{{ item }}"
+  loop: "{{ apt_packages }}"
+  when: ansible_pkg_mgr == "apt" and "/" in item
 
 - name: Install DNF packages for Red Hat distributions
   become: yes
