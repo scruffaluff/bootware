@@ -25,6 +25,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       pipx install {{ item }} || pipx upgrade {{ item }}
+    executable: /bin/bash
 
 - name: Update Pipx command line applications
   become_user: "{{ user_account }}"
