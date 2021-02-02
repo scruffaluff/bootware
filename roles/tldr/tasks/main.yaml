@@ -1,8 +1,8 @@
-- name: Install TLDR for Debian distributions
-  apt:
+- name: Install TLDR for Linux
+  package:
     name: tldr
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_system == "Linux"
 
 - name: Install TLDR for MacOS
   become_user: "{{ user_account }}"

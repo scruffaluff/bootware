@@ -28,6 +28,7 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
+ENV USER=debian
 USER debian
 
 # Install Bootware.
