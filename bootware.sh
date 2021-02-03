@@ -112,17 +112,27 @@ assert_cmd() {
   fi
 }
 
-# Bootstrap subcommand.
+#######################################
+# Subcommand to bootstrap software installations.
+# Globals:
+#   BOOTWARE_CONFIG
+#   BOOTWARE_NOPASSWD
+#   BOOTWARE_NOSETUP
+#   BOOTWARE_PLAYBOOK
+#   BOOTWARE_SKIP
+#   BOOTWARE_TAGS
+#   BOOTWARE_URL
+#######################################
 bootstrap() {
   # Dev null is never a normal file.
   local _cmd="pull"
-  local _config_path="/dev/null"
-  local _no_setup
-  local _playbook="main.yaml"
-  local _skip_tags
-  local _tags
-  local _url="https://github.com/wolfgangwazzlestrauss/bootware.git"
-  local _use_passwd=1
+  local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
+  local _no_setup=${BOOTWARE_NOSETUP:-""}
+  local _playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
+  local _skip=${BOOTWARE_SKIP:-""}
+  local _tags=${BOOTWARE_TAGS:-""}
+  local _url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
+  local _use_passwd=${BOOTWARE_NOPASSWD:-""}
   local _use_playbook
   local _use_pull=1
 
@@ -155,8 +165,8 @@ bootstrap() {
         _playbook="$2"
         shift 2
         ;;
-      -s|--skip|--skip-tags)
-        _skip_tags="$2"
+      -s|--skip)
+        _skip="$2"
         shift 2
         ;;
       -t|--tags)
@@ -189,9 +199,9 @@ bootstrap() {
     --extra-vars "user_account=${USER:-root}" \
     --extra-vars "@$_config_path" \
     --inventory 127.0.0.1, \
-    ${_skip_tags:+--skip-tags "$_skip_tags"} \
+    ${_skip:+--skip-tags "$_skip"} \
     ${_tags:+--tags "$_tags"} \
-    ${_use_pull:+--url "${_url}"} \
+    ${_use_pull:+--url "$_url"} \
     "${_playbook}"
 }
 
@@ -283,7 +293,6 @@ error() {
 #######################################
 # Find path of Bootware configuation file.
 # Globals:
-#   BOOTWARE_CONFIG
 #   HOME
 # Arguments:
 #   User supplied configuration path.
@@ -297,8 +306,6 @@ find_config_path() {
     RET_VAL="$1"
   elif test -f "$(pwd)/bootware.yaml" ; then
     RET_VAL="$(pwd)/bootware.yaml"
-  elif [[ -n "${BOOTWARE_CONFIG}" ]] ; then
-    RET_VAL="$BOOTWARE_CONFIG"
   elif test -f "$HOME/.bootware/config.yaml" ; then
     RET_VAL="$HOME/.bootware/config.yaml"
   else
