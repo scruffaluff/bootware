@@ -109,13 +109,13 @@ main() {
   # Parse command line arguments.
   for arg in "$@"; do
     case "${arg}" in
-      -h|--help)
-        usage
-        exit 0
-        ;;
       -d|--dest)
         shift
         dst_file="$2"
+        ;;
+      -h|--help)
+        usage
+        exit 0
         ;;
       -u|--user)
         dst_file="${HOME}/.local/bin/bootware"

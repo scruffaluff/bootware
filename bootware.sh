@@ -28,8 +28,10 @@ OPTIONS:
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Ansible installation
-    -s, --skip-tags <TAG-LIST>      Ansible playbook tag list
-    -t, --tags <TAG-LIST>           Ansible playbook tag list
+    -p, --playbook <FILE-NAME>      Name of play to execute
+    -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+    -t, --tags <TAG-LIST>           Ansible playbook tags to select
+    -u, --url <URL> URL             URL of playbook repository
 EOF
       ;;
     config)
@@ -113,13 +115,16 @@ assert_cmd() {
 # Bootstrap subcommand.
 bootstrap() {
   # Dev null is never a normal file.
+  local _cmd="pull"
   local _config_path="/dev/null"
   local _no_setup
-  local _playbook
-  local _pull="1"
+  local _playbook="main.yaml"
   local _skip_tags
   local _tags
-  local _use_passwd="1"
+  local _url="https://github.com/wolfgangwazzlestrauss/bootware.git"
+  local _use_passwd=1
+  local _use_playbook
+  local _use_pull=1
 
   # Parse command line arguments.
   for arg in "$@"; do
@@ -133,8 +138,9 @@ bootstrap() {
         shift 2
         ;;
       -d|--dev)
-        _pull=""
-        _playbook="playbook"
+        _cmd="playbook"
+        _use_playbook=1
+        _use_pull=""
         shift 1
         ;;
       --no-passwd)
@@ -142,8 +148,12 @@ bootstrap() {
         shift 1
         ;;
       --no-setup)
-        _no_setup="1"
+        _no_setup=1
         shift 1
+        ;;
+      -p|--playbook)
+        _playbook="$2"
+        shift 2
         ;;
       -s|--skip|--skip-tags)
         _skip_tags="$2"
@@ -151,6 +161,10 @@ bootstrap() {
         ;;
       -t|--tags)
         _tags="$2"
+        shift 2
+        ;;
+      -u|--url)
+        _url="$2"
         shift 2
         ;;
       *)
@@ -165,20 +179,20 @@ bootstrap() {
   find_config_path "$_config_path"
   _config_path="$RET_VAL"
 
-  echo "Executing Ansible ${_playbook:-pull}..."
+  echo "Executing Ansible ${_cmd:-pull}..."
   echo "Enter your user account password if prompted."
 
-  ansible-${_playbook:-pull}  \
+  ansible-${_cmd}  \
     ${_use_passwd:+--ask-become-pass} \
-    ${_playbook:+--connection local} \
+    ${_use_playbook:+--connection local} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
     --extra-vars "user_account=${USER:-root}" \
     --extra-vars "@$_config_path" \
     --inventory 127.0.0.1, \
     ${_skip_tags:+--skip-tags "$_skip_tags"} \
     ${_tags:+--tags "$_tags"} \
-    ${_pull:+--url "https://github.com/wolfgangwazzlestrauss/bootware.git"} \
-    main.yaml
+    ${_use_pull:+--url "${_url}"} \
+    "${_playbook}"
 }
 
 #######################################
