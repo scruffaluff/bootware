@@ -132,9 +132,13 @@ bootstrap() {
   local _skip=${BOOTWARE_SKIP:-""}
   local _tags=${BOOTWARE_TAGS:-""}
   local _url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
-  local _use_passwd=${BOOTWARE_NOPASSWD:-""}
+  local _use_passwd
   local _use_playbook
   local _use_pull=1
+
+  if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
+    _use_passwd=1
+  fi
 
   # Parse command line arguments.
   for arg in "$@"; do
