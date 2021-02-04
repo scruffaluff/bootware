@@ -2,7 +2,7 @@
 
 
 # Change background picture.
-gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures/background/white_and_gray_mountains.jpg"
+gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures/background/$2"
 # Show battery percentage in activity bar.
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 # Do not show pop up banners for notifications.
