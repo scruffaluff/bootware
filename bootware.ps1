@@ -35,7 +35,7 @@ OPTIONS:
         }
         "main" {
             Write-Output @'
-Bootware 0.0.5
+Bootware 0.1.1
 Boostrapping software installer
 
 USAGE:
@@ -199,7 +199,7 @@ Function Update() {
 }
 
 Function Version() {
-    Write-Output "Bootware 0.0.5"
+    Write-Output "Bootware 0.1.1"
 }
 
 Function Main() {
