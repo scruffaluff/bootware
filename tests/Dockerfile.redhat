@@ -10,11 +10,11 @@ FROM fedora:34
 #     -u 1000: Give new user UID value 1000.
 RUN useradd -lm -s /bin/bash -u 1000 redhat
 
-# Update Yum package lists.
-RUN yum check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+# Update DNF package lists.
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
 # Install Bash, Curl and Sudo.  
-RUN yum install -y bash curl sudo
+RUN dnf install -y bash curl sudo
 
 # Create sudo group.
 RUN groupadd sudo
@@ -39,4 +39,4 @@ RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/
 RUN bootware config --empty
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --skip node,python,rust,wasm --tags container,
+RUN bootware bootstrap --no-passwd --skip docker,node,python,rust,vscode,wasm
