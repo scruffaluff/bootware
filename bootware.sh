@@ -31,7 +31,7 @@ OPTIONS:
     -p, --playbook <FILE-NAME>      Name of play to execute
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
-    -u, --url <URL> URL             URL of playbook repository
+    -u, --url <URL>                 URL of playbook repository
 EOF
       ;;
     config)
@@ -43,9 +43,9 @@ USAGE:
     bootware config [OPTIONS]
 
 OPTIONS:
-    -h, --help              Print help information
     -d, --dest <PATH>       Path to alternate download destination
-        --empty             Write empty configuration file
+    -e, --empty             Write empty configuration file
+    -h, --help              Print help information
     -s, --source <URL>      URL to configuration file
 EOF
       ;;
@@ -143,10 +143,6 @@ bootstrap() {
   # Parse command line arguments.
   for arg in "$@"; do
     case "$arg" in
-      -h|--help)
-        usage "bootstrap"
-        exit 0
-        ;;
       -c|--config)
         _config_path="$2"
         shift 2
@@ -156,6 +152,10 @@ bootstrap() {
         _use_playbook=1
         _use_pull=""
         shift 1
+        ;;
+      -h|--help)
+        usage "bootstrap"
+        exit 0
         ;;
       --no-passwd)
         _use_passwd=""
@@ -228,10 +228,6 @@ config() {
   # Parse command line arguments.
   for arg in "$@"; do
     case "$arg" in
-      -h|--help)
-        usage "config"
-        exit 0
-        ;;
       -d|--dest)
         dst_file="$2"
         shift 2
@@ -239,6 +235,10 @@ config() {
       -e|--empty)
         empty_cfg=1
         shift 1
+        ;;
+      -h|--help)
+        usage "config"
+        exit 0
         ;;
       -s|--source)
         src_url="$2"
@@ -574,14 +574,14 @@ main() {
   # Parse command line arguments.
   for arg in "$@"; do
     case "$arg" in
-      config)
-        shift 1
-        config "$@"
-        exit 0
-        ;;
       bootstrap)
         shift 1
         bootstrap "$@"
+        exit 0
+        ;;
+      config)
+        shift 1
+        config "$@"
         exit 0
         ;;
       setup)
