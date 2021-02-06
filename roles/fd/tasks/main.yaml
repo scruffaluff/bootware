@@ -1,0 +1,28 @@
+- name: Get latest FD version
+  uri:
+    url: https://formulae.brew.sh/api/formula/fd.json
+    method: GET
+    return_content: yes
+  register: fd_formula
+
+- name: Install FD for Debian distributions
+  apt:
+    deb: >-
+      https://github.com/sharkdp/fd/releases/download/v{{
+      fd_formula.json.versions.stable }}/fd_{{ fd_formula.json.versions.stable
+      }}_amd64.deb
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install FD for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: fd
+  when: ansible_system == "Darwin"
+
+- name: Install FD for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: fd
+  when: ansible_system == "Windows"

@@ -163,6 +163,17 @@
     - server
     - shell
 
+- name: Install FD file searcher
+  hosts: all
+  roles:
+    - fd
+  tags:
+    - container
+    - desktop
+    - fd
+    - server
+    - shell
+
 - name: Install Firefox web browser
   hosts: all
   roles:
