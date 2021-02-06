@@ -13,6 +13,7 @@ gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
 
 # Show hidden files in Nautilus Files application.
+# gsettings set org.gnome.FileRoller.FileSelector show-hidden true
 gsettings set org.gtk.Settings.FileChooser show-hidden true
 gsettings set org.gnome.nautilus.preferences show-hidden-files true
 
