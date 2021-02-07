@@ -328,8 +328,10 @@
   roles:
     - package
   tags:
+    - container
     - desktop
     - package
+    - server
 
 - name: Install Packer image generator
   hosts: all
@@ -439,6 +441,16 @@
     - desktop
     - server
     - sqlite
+
+- name: Configure sudo settings
+  hosts: all
+  roles:
+    - sudo
+  tags:
+    - container
+    - desktop
+    - server
+    - sudo
 
 - name: Install Terraform infrastructure as code software
   hosts: all

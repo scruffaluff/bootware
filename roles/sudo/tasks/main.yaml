@@ -1,0 +1,10 @@
+- name: Enable passwordless sudo for Unix
+  become: yes
+  blockinfile:
+    block: |
+      # Enable passwordless sudo for group sudo.
+      %sudo ALL=(ALL) NOPASSWD:ALL
+    create: yes
+    path: /etc/sudoers
+    validate: /usr/sbin/visudo -cf %s
+  when: passwordless_sudo and ansible_system in ["Darwin", "Linux"]
