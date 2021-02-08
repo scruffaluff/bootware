@@ -4,16 +4,9 @@
     name: code
   when: ansible_pkg_mgr == "pacman"
 
-- name: Download VSCode for Debian distributions
-  get_url:
-    dest: /tmp/vscode_amd64.deb
-    mode: 0700
-    url: https://update.code.visualstudio.com/latest/linux-deb-x64/stable
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install VSCode for Debian distributions
   apt:
-    deb: /tmp/vscode_amd64.deb
+    deb: https://update.code.visualstudio.com/latest/linux-deb-x64/stable
   become: yes
   when: ansible_pkg_mgr == "apt"
 

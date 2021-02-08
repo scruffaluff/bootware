@@ -5,20 +5,13 @@
     return_content: yes
   register: bottom_release
 
-- name: Download Bottom for Debian distributions
-  get_url:
-    dest: /tmp/bottom.deb
-    mode: 0700
-    url: >-
-      https://github.com/ClementTsang/bottom/releases/download/{{
-      bottom_release.json.tag_name }}/bottom_{{ bottom_release.json.tag_name
-      }}_amd64.deb
-  when: ansible_pkg_mgr == "apt"
-
 # TODO: Install for Arch and RedHat.
 - name: Install Bottom For Debian distributions
   apt:
-    deb: /tmp/bottom.deb
+    deb: >-
+      https://github.com/ClementTsang/bottom/releases/download/{{
+      bottom_release.json.tag_name }}/bottom_{{ bottom_release.json.tag_name
+      }}_amd64.deb
   become: yes
   when: ansible_pkg_mgr == "apt"
 
