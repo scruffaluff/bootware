@@ -1,3 +1,4 @@
+# TODO: Install for Arch and RedHat.
 - name: Install JQ for Debian distributions
   apt:
     name: jq

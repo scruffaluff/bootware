@@ -5,6 +5,7 @@
     url: https://releases.hyper.is/download/deb
   when: ansible_pkg_mgr == "apt"
 
+# TODO: Install for Arch and RedHat.
 - name: Install Hyper for Debian distributions
   apt:
     deb: /tmp/hyper.deb

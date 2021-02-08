@@ -1,15 +1,15 @@
+- name: Install network security service libraries for Debian distributions
+  apt:
+    name: libnss3-tools
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
 - name: Get latest Mkcert version
   uri:
     url: https://formulae.brew.sh/api/formula/mkcert.json
     method: GET
     return_content: yes
   register: mkcert_formula
-
-- name: Install network security service libraries for Debian distributions
-  apt:
-    name: libnss3-tools
-  become: yes
-  when: ansible_pkg_mgr == "apt"
 
 - name: Install Mkcert for Linux
   become: yes

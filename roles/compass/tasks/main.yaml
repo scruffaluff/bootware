@@ -14,6 +14,7 @@
       mongodb_compass_formula.json.version }}_amd64.deb
   when: ansible_pkg_mgr == "apt"
 
+# TODO: Install for Arch and RedHat.
 - name: Install MongoDB Compass For Debian distributions
   apt:
     deb: /tmp/mongodb_compass.deb

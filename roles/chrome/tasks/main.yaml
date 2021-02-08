@@ -1,17 +1,18 @@
-- name: Install web browsers for Debian distributions
+# TODO: Install for Arch and RedHat.
+- name: Install Google Chrome for Debian distributions
   apt:
     deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install web browsers for MacOS
+- name: Install Google Chrome for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     name: google-chrome
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install web browsers for Windows
+- name: Install Google Chrome for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

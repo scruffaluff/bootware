@@ -1,3 +1,4 @@
+# TODO: Install for Arch and RedHat.
 - name: Install AWSCLI for Debian distributions
   apt:
     name: awscli

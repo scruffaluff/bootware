@@ -1,3 +1,4 @@
+# TODO: Install for Arch and RedHat.
 - name: Install Ripgrep for Debian distributions
   apt:
     name: ripgrep

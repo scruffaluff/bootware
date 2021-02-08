@@ -5,6 +5,7 @@
     upgrade: yes
   when: ansible_pkg_mgr == "pacman"
 
+# TODO: Update packages for RedHat and Windows.
 - name: Update packages for Debian distributions
   apt:
     autoremove: yes

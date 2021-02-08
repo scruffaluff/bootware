@@ -4,6 +4,7 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_os_family != "Pop!_OS"
 
+# TODO: Install for Arch and RedHat.
 - name: Install Alacritty for Debian distributions
   apt:
     name: alacritty

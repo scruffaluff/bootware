@@ -5,6 +5,7 @@
     return_content: yes
   register: fd_formula
 
+# TODO: Install for Arch and RedHat.
 - name: Install FD for Debian distributions
   apt:
     deb: >-

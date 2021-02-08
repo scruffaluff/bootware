@@ -17,6 +17,13 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install VSCode for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    name: visual-studio-code
+    state: present
+  when: ansible_system == "Darwin"
+
 - name: Download VSCode for Red Hat distributions
   get_url:
     dest: /tmp/vscode_amd64.rpm
@@ -29,13 +36,6 @@
   dnf:
     name: /tmp/vscode_amd64.rpm
   when: ansible_pkg_mgr == "dnf"
-
-- name: Install VSCode for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    name: visual-studio-code
-    state: present
-  when: ansible_system == "Darwin"
 
 - name: Install VSCode for Windows
   become_user: "{{ user_account }}"

@@ -1,3 +1,4 @@
+# TODO: Install for Arch and RedHat.
 - name: Install SQLite for Debian distributions
   apt:
     name: sqlite3

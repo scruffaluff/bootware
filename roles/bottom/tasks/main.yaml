@@ -15,6 +15,7 @@
       }}_amd64.deb
   when: ansible_pkg_mgr == "apt"
 
+# TODO: Install for Arch and RedHat.
 - name: Install Bottom For Debian distributions
   apt:
     deb: /tmp/bottom.deb

@@ -5,6 +5,7 @@
     return_content: yes
   register: bat_formula
 
+# TODO: Install for Arch and RedHat.
 - name: Install Bat for Debian distributions
   apt:
     deb: >-

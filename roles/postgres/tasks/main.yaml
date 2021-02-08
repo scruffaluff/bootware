@@ -1,3 +1,4 @@
+# TODO: Install for Arch, RedHat, and Windows.
 - name: Install PostgreSQL client for Debian distributions
   apt:
     name: postgresql-client
