@@ -35,5 +35,8 @@ RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/
 # Generate default Bootware configuration file.
 RUN bootware config --empty
 
+# Install dependencies for Bootware.
+RUN bootware setup
+
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --no-passwd --skip python,vscode

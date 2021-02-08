@@ -79,6 +79,8 @@ jobs:
           | bash
       - name: Create Bootware configuration file
         run: bootware config --empty
+      - name: Install dependencies for Bootware
+        run: bootware setup
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip docker, --tags server,
   test-redhat:
