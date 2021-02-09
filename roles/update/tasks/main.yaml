@@ -84,7 +84,9 @@
   become: yes
   dnf:
     name:
+      - python
       - ShellCheck
+      - which
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install essential packages for Windows

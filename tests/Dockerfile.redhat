@@ -42,4 +42,4 @@ RUN bootware config --empty
 RUN bootware setup
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --skip docker,node,python,rust,vscode,wasm
+RUN bootware bootstrap --no-passwd --skip python,rust,wasm

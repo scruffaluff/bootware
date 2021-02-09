@@ -1,4 +1,4 @@
-FROM archlinux:base-20210117.0.13798
+FROM archlinux:base-20210207.0.15200
 
 
 # Create non-priviledged user.

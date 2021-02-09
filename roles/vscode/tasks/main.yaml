@@ -17,17 +17,11 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Download VSCode for Red Hat distributions
-  get_url:
-    dest: /tmp/vscode_amd64.rpm
-    mode: 0700
-    url: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
-  when: ansible_pkg_mgr == "dnf"
-
 - name: Install VSCode for Red Hat distributions
   become: yes
   dnf:
-    name: /tmp/vscode_amd64.rpm
+    disable_gpg_check: yes
+    name: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for Windows
