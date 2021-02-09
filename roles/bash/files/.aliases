@@ -3,4 +3,4 @@
 
 alias btm="btm --color gruvbox-light"
 alias exa="exa -hl -s type --color auto"
-alias fd="fdfind --color auto"
+alias fd="fd --color auto"

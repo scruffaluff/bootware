@@ -1,4 +1,5 @@
 # Fish settings file.
+# shellcheck shell=fish
 
 
 # Docker settings.
@@ -28,10 +29,10 @@ set -x PATH "$HOME/.pyenv/bin" $PATH
 # Initialize Pyenv if available.
 #
 # Flags:
-#     -q: Only check for exit status by supressing output.
+#   -q: Only check for exit status by supressing output.
 if type -q pyenv
-    pyenv init - | source
-    pyenv virtualenv-init - | source
+  pyenv init - | source
+  pyenv virtualenv-init - | source
 end
 
 
@@ -44,25 +45,25 @@ set -x PATH "$HOME/.cargo/bin" $PATH
 # Load aliases if file exists.
 #
 # Flags:
-#     -f: Check if inode is a regular file.
+#   -f: Check if inode is a regular file.
 if test -f "$HOME/.aliases"
-    source "$HOME/.aliases"
+  source "$HOME/.aliases"
 end
 
 # Load environment variables if file exists.
 #
 # Flags:
-#     -f: Check if inode is a regular file.
+#   -f: Check if inode is a regular file.
 if test -f "$HOME/.env"
-    source "$HOME/.env"
+  source "$HOME/.env"
 end
 
 # Load secrets if file exists.
 #
 # Flags:
-#     -f: Check if inode is a regular file.
+#   -f: Check if inode is a regular file.
 if test -f "$HOME/.secrets"
-    source "$HOME/.secrets"
+  source "$HOME/.secrets"
 end
 
 
@@ -71,9 +72,9 @@ end
 # Initialize Starship if available.
 #
 # Flags:
-#     -q: Only check for exit status by supressing output.
+#   -q: Only check for exit status by supressing output.
 if type -q starship
-    starship init fish | source
+  starship init fish | source
 end
 
 
@@ -83,9 +84,9 @@ set -x BAT_THEME "Solarized (light)"
 # Initialize Zoxide if available.
 #
 # Flags:
-#     -q: Only check for exit status by supressing output.
+#   -q: Only check for exit status by supressing output.
 if type -q zoxide
-    zoxide init fish | source
+  zoxide init fish | source
 end
 
 
@@ -97,9 +98,9 @@ set -x PATH "$HOME/.npm-global/bin" $PATH
 # Initialize NVM default version of Node if available.
 #
 # Flags:
-#     -q: Only check for exit status by supressing output.
+#   -q: Only check for exit status by supressing output.
 if type -q nvm
-    nvm use default
+  nvm use default
 end
 
 # Deno settings.
