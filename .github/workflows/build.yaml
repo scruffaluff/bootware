@@ -82,7 +82,7 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip docker, --tags server,
+        run: bootware bootstrap --no-passwd --skip docker,
   test-redhat:
     needs: branch
     runs-on: ubuntu-latest

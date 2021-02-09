@@ -1,7 +1,7 @@
 # Pyenv dependencies are listed at
 # https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
 
-- name: Install ONNX dependencies for Arch distributions
+- name: Install Pyenv dependencies for Arch distributions
   become: yes
   pacman:
     name:
@@ -45,6 +45,24 @@
       - xz
       - zlib
   when: ansible_system == "Darwin"
+
+- name: Install Pyenv dependencies for Red Hat distributions
+  become: yes
+  dnf:
+    name:
+      - "@development"
+      - bzip2
+      - bzip2-devel
+      - findutils
+      - libffi-devel
+      - openssl-devel
+      - readline-devel
+      - sqlite
+      - sqlite-devel
+      - xz
+      - xz-devel
+      - zlib-devel
+  when: ansible_pkg_mgr == "dnf"
 
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
