@@ -1,14 +1,14 @@
 # Ansible playbook for Bootware.
 
-- name: Update package managers and install essential packages
+- name: Update system package managers and install essential packages
   hosts: all
   roles:
-    - update
+    - system
   tags:
     - container
     - desktop
     - server
-    - update
+    - System
 
 - name: Install Alacritty terminal
   hosts: all
