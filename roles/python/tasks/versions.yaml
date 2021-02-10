@@ -50,7 +50,6 @@
   become: yes
   dnf:
     name:
-      - "@development"
       - bzip2
       - bzip2-devel
       - findutils

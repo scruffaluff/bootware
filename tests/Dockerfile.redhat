@@ -1,13 +1,6 @@
 FROM fedora:33
 
 
-ENV \
-    TMPDIR="/alttmp" \
-    USER=redhat
-
-# Create alternative tmp directory to avoid noexec issues.
-RUN mkdir "${TMPDIR}" && chmod 777 "${TMPDIR}"
-
 # Create non-priviledged user.
 #
 # Flags:
@@ -36,8 +29,8 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-# Switch to standard user.
-USER "${USER}"
+ENV USER=redhat
+USER redhat
 
 # Install Bootware.
 RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
@@ -49,4 +42,4 @@ RUN bootware config --empty
 RUN bootware setup
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --skip node,python,
+RUN bootware bootstrap --no-passwd
