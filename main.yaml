@@ -30,6 +30,14 @@
     - desktop
     - server
 
+- name: Install audio tools
+  hosts: all
+  roles:
+    - audio
+  tags:
+    - audio
+    - desktop
+
 - name: Install Bash shell
   hosts: all
   roles:

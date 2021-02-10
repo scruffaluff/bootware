@@ -48,7 +48,6 @@
   become: yes
   pacman:
     name:
-      - alsa-lib
       - openssh
       - pkgconf
       - shellcheck
@@ -61,7 +60,6 @@
       - apt-file
       - apt-transport-https
       - gnupg2
-      - libasound2-dev
       - openssh-client
       - openssh-server
       - pbuilder
@@ -86,7 +84,6 @@
   become: yes
   dnf:
     name:
-      - alsa-lib-devel
       - findutils
       - openssl-devel
       - python
