@@ -1,9 +1,8 @@
-# TODO: Install for Arch and RedHat.
-- name: Install Ripgrep for Debian distributions
-  apt:
-    name: ripgrep
+- name: Install Ripgrep for Linux
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  package:
+    name: ripgrep
+  when: ansible_system == "Linux"
 
 - name: Install Ripgrep for MacOS
   become_user: "{{ user_account }}"

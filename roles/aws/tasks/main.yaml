@@ -1,4 +1,9 @@
-# TODO: Install for Arch and RedHat.
+- name: Install AWSCLI for Arch distributions
+  become: yes
+  pacman:
+    name: aws-cli
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install AWSCLI for Debian distributions
   apt:
     name: awscli
@@ -10,6 +15,12 @@
   community.general.homebrew:
     name: awscli
   when: ansible_system == "Darwin"
+
+- name: Install AWSCLI for Red Hat distributions
+  become: yes
+  dnf:
+    name: awscli
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install AWSCLI for Windows
   become_user: "{{ user_account }}"

@@ -1,4 +1,9 @@
-# TODO: Install for Arch and RedHat.
+- name: Install SQLite for Arch distributions
+  become: yes
+  pacman:
+    name: sqlite
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install SQLite for Debian distributions
   apt:
     name: sqlite3
@@ -10,6 +15,12 @@
   community.general.homebrew:
     name: sqlite
   when: ansible_system == "Darwin"
+
+- name: Install SQLite for Red Hat distributions
+  become: yes
+  dnf:
+    name: sqlite
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install SQLite for Windows
   become_user: "{{ user_account }}"

@@ -5,7 +5,12 @@
     return_content: yes
   register: bat_formula
 
-# TODO: Install for Arch and RedHat.
+- name: Install Bat for Arch distributions
+  become: yes
+  pacman:
+    name: bat
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install Bat for Debian distributions
   apt:
     deb: >-
@@ -20,6 +25,12 @@
   community.general.homebrew:
     name: bat
   when: ansible_system == "Darwin"
+
+- name: Install Bat for Red Hat distributions
+  become: yes
+  dnf:
+    name: bat
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Bat for Windows
   become_user: "{{ user_account }}"

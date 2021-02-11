@@ -5,7 +5,6 @@
     upgrade: yes
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Update packages for RedHat and Windows.
 - name: Update packages for Debian distributions
   apt:
     autoremove: yes
@@ -43,6 +42,14 @@
       - unzip
       - zip
   when: ansible_system == "Linux"
+
+- name: Update packages for Red Hat distributions
+  become: yes
+  dnf:
+    autoremove: yes
+    name: "*"
+    update_cache: yes
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install essential packages for Arch distributions
   become: yes

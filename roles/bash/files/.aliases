@@ -2,5 +2,6 @@
 
 
 alias btm="btm --color gruvbox-light"
+alias cargo-testpath="cargo test --no-run --message-format=json | jq -r 'select(.profile.test == true) | .filenames[]'"
 alias exa="exa -hl -s type --color auto"
 alias fd="fd --color auto"
