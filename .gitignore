@@ -1,5 +1,6 @@
 ./bootware.yaml
 .DS_Store
+.local/
 node_modules/
 package-lock.json
 site/
