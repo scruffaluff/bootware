@@ -26,7 +26,7 @@
 - name: Install Alacritty for Red Hat distributions
   become: yes
   dnf:
-    name: rust-alacritty
+    name: alacritty
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Alacritty for Windows
