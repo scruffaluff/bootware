@@ -2,8 +2,8 @@ _cargo_applications:
   always:
     - cargo-binutils
     - cargo-edit
-    # Cargo Generate currently has compilation issues which break installations.
-    # - cargo-generate
+    - cargo-expand
+    - cargo-generate
     - cargo-make
     - cargo-watch
   macos: []

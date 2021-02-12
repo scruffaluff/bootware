@@ -8,7 +8,7 @@
     - container
     - desktop
     - server
-    - System
+    - system
 
 - name: Install Alacritty terminal
   hosts: all
