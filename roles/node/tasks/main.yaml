@@ -47,7 +47,7 @@
 
 - name: Update NPM for Unix
   become_user: "{{ user_account }}"
-  shell: 
+  shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm install-latest-npm
