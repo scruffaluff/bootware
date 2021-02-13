@@ -1,4 +1,5 @@
-# TODO: Install for Arch and RedHat.
+# Google does not appear to provide an Arch release for Chrome.
+
 - name: Install Google Chrome for Debian distributions
   apt:
     deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -11,6 +12,12 @@
     name: google-chrome
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Google Chrome for Red Hat distributions
+  become: yes
+  dnf:
+    name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Google Chrome for Windows
   become_user: "{{ user_account }}"

@@ -1,9 +1,8 @@
-# TODO: Install for Arch and RedHat.
-- name: Install JQ for Debian distributions
-  apt:
-    name: jq
+- name: Install JQ for Linux
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  package:
+    name: jq
+  when: ansible_system == "Linux"
 
 - name: Install JQ for MacOS
   become_user: "{{ user_account }}"

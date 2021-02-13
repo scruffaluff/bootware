@@ -1,4 +1,5 @@
-# TODO: Install for Arch and RedHat.
+# TODO: Install AppImage for Arch distributions.
+
 - name: Install Hyper for Debian distributions
   apt:
     deb: https://releases.hyper.is/download/deb
@@ -11,6 +12,12 @@
     name: hyper
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Hyper for Red Hat distributions
+  become: yes
+  dnf:
+    name: https://releases.hyper.is/download/rpm
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Hyper for Windows
   become_user: "{{ user_account }}"

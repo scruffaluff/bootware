@@ -5,7 +5,12 @@
     return_content: yes
   register: fd_formula
 
-# TODO: Install for Arch and RedHat.
+- name: Install FD for Arch distributions
+  become: yes
+  pacman:
+    name: fd
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install FD for Debian distributions
   apt:
     deb: >-
@@ -20,6 +25,12 @@
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
+
+- name: Install FD for Red Hat distributions
+  become: yes
+  dnf:
+    name: fd-find
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install FD for Windows
   become_user: "{{ user_account }}"

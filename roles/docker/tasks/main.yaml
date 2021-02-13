@@ -4,7 +4,6 @@
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Install for RedHat.
 - name: Install Docker for Debian distributions
   apt:
     name: docker.io

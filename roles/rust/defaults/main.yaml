@@ -1,11 +1,14 @@
 _cargo_applications:
   always:
+    - cargo-audit
     - cargo-binutils
+    - cargo-bloat
+    - cargo-crev
+    - cargo-deb
     - cargo-edit
     - cargo-expand
     - cargo-generate
     - cargo-make
-    - cargo-watch
   macos: []
   linux:
     - cargo-tarpaulin

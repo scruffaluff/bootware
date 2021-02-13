@@ -5,7 +5,8 @@
     return_content: yes
   register: dvc_formula
 
-# TODO: Install for Arch and RedHat.
+# DVC does not appear to provide an Arch release.
+
 - name: Install DVC for Debian distributions
   apt:
     deb: >-
@@ -20,6 +21,15 @@
   community.general.homebrew:
     name: dvc
   when: ansible_system == "Darwin"
+
+- name: Install DVC for Red Hat distributions
+  become: yes
+  dnf:
+    name: >-
+      https://github.com/iterative/dvc/releases/download/{{
+      dvc_formula.json.versions.stable }}/dvc-{{
+      dvc_formula.json.versions.stable }}-1.x86_64.rpm
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install DVC for Windows
   become_user: "{{ user_account }}"

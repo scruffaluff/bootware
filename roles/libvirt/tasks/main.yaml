@@ -1,4 +1,9 @@
-# TODO: Install for Arch and RedHat.
+- name: Install Libvirt for arch distributions
+  become: yes
+  pacman:
+    name: libvirt
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install Libvirt for Debian distributions
   apt:
     name:
@@ -14,6 +19,12 @@
   community.general.homebrew:
     name: libvirt
   when: ansible_system == "Darwin"
+
+- name: Install Libvirt for Red Hat distributions
+  become: yes
+  dnf:
+    name: libvirt
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for Windows
   become_user: "{{ user_account }}"

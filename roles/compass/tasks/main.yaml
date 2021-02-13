@@ -5,7 +5,8 @@
     return_content: yes
   register: mongodb_compass_formula
 
-# TODO: Install for Arch and RedHat.
+# MongoDB appears to not have a Compass release for Arch distributions.
+
 - name: Install MongoDB Compass For Debian distributions
   apt:
     deb: >-
@@ -20,6 +21,14 @@
     name: mongodb-compass
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install MongoDB Compass For Red Hat distributions
+  become: yes
+  dnf:
+    name: >-
+      https://downloads.mongodb.com/compass/mongodb-compass-{{
+      mongodb_compass_formula.json.version }}.x86_64.rpm
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install MongoDB Compass for Windows
   become_user: "{{ user_account }}"

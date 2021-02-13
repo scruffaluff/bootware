@@ -4,7 +4,6 @@
     name: ttf-fira-code
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Install for RedHat.
 - name: Install Fira Code font for Debian distributions
   apt:
     name: fonts-firacode
@@ -23,6 +22,12 @@
     name: font-fira-code
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Fira Code for Red Hat distributions
+  become: yes
+  dnf:
+    name: fira-code-fonts
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for Windows
   become_user: "{{ user_account }}"

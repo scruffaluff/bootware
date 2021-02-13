@@ -25,7 +25,7 @@
   become: yes
   dnf:
     autoremove: yes
-    # Updating all packages in the fedora:33 container causes errors.
+    # TODO: Resolve update error in the fedora:33 container.
     # name: "*"
     update_cache: yes
   when: ansible_pkg_mgr == "dnf"

@@ -1,9 +1,8 @@
-# TODO: Install for Arch and RedHat.
-- name: Install Firefox for Debian distributions
+- name: Install Firefox for Linux
   apt:
     name: firefox
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_system == "Linux"
 
 - name: Install Firefox for MacOS
   become_user: "{{ user_account }}"
