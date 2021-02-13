@@ -25,6 +25,7 @@
 - name: Install DVC for Red Hat distributions
   become: yes
   dnf:
+    disable_gpg_check: yes
     name: >-
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc-{{

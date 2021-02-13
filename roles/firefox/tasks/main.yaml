@@ -1,7 +1,7 @@
 - name: Install Firefox for Linux
-  apt:
-    name: firefox
   become: yes
+  package:
+    name: firefox
   when: ansible_system == "Linux"
 
 - name: Install Firefox for MacOS

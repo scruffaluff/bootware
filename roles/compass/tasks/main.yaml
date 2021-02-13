@@ -25,6 +25,7 @@
 - name: Install MongoDB Compass For Red Hat distributions
   become: yes
   dnf:
+    disable_gpg_check: yes
     name: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       mongodb_compass_formula.json.version }}.x86_64.rpm

@@ -16,6 +16,7 @@
 - name: Install Hyper for Red Hat distributions
   become: yes
   dnf:
+    disable_gpg_check: yes
     name: https://releases.hyper.is/download/rpm
   when: ansible_pkg_mgr == "dnf"
 

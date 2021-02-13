@@ -94,6 +94,7 @@
     name:
       - findutils
       - openssl-devel
+      - perl-FindBin
       - python
       - ShellCheck
       - which

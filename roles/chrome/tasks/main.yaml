@@ -13,6 +13,12 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Add Google GPG key for Red Hat distributions
+  become: yes
+  rpm_key:
+    key: https://dl.google.com/linux/linux_signing_key.pub
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install Google Chrome for Red Hat distributions
   become: yes
   dnf:
