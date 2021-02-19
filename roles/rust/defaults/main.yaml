@@ -3,7 +3,8 @@ _cargo_applications:
     - cargo-audit
     - cargo-binutils
     - cargo-bloat
-    - cargo-crev
+    # TODO: Fix cargo crev build for Red Hat distributions.
+    # - cargo-crev
     - cargo-deb
     - cargo-edit
     - cargo-expand
