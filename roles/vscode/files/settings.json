@@ -14,6 +14,9 @@
   "editor.parameterHints.enabled": true,
   "editor.rulers": [80],
   "editor.tabSize": 4,
+  "[css]": {
+    "editor.tabSize": 2
+  },
   "[fish]": {
     "editor.tabSize": 2
   },
