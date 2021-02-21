@@ -26,7 +26,7 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV USER=arch
+ENV HOME=/home/arch USER=arch
 USER arch
 
 # Install Bootware.
@@ -37,6 +37,17 @@ RUN bootware config --empty
 
 # Install dependencies for Bootware.
 RUN bootware setup
+
+# Create bootware project directory.
+RUN mkdir $HOME/bootware
+WORKDIR $HOME/bootware
+
+# Copy bootware project files.
+COPY roles/ ./roles/
+COPY group_vars/ ./group_vars/
+COPY main.yaml ./
+
+ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --no-passwd --skip python,vscode

@@ -7,7 +7,9 @@ _cargo_applications:
     # - cargo-crev
     - cargo-deb
     - cargo-edit
+    # - cargo embed
     - cargo-expand
+    # - cargo flash
     - cargo-generate
     - cargo-make
   macos: []

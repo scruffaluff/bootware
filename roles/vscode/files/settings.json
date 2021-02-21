@@ -78,6 +78,7 @@
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
+  "liveServer.settings.donotShowInfoMsg": true,
   "powershell.integratedConsole.showOnStartup": false,
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
