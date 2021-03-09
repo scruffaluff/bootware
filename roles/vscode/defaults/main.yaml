@@ -2,6 +2,7 @@ vscode_extensions:
   - "alefragnani.bookmarks"
   - "bungcip.better-toml"
   - "coenraads.bracket-pair-colorizer-2"
+  - "dbaeumer.vscode-eslint"
   - "denoland.vscode-deno"
   - "eamodio.gitlens"
   - "esbenp.prettier-vscode"

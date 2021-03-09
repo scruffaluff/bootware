@@ -57,7 +57,12 @@
   "explorer.confirmDragAndDrop": false,
   "explorer.openEditors.visible": 0,
   "extensions.ignoreRecommendations": true,
-  "files.exclude": {},
+  "files.associations": {
+    "rust-toolchain": "toml"
+  },
+  "files.exclude": {
+    "**/.git": false
+  },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {
     "**/__pycache__/**": true,
