@@ -13,4 +13,15 @@
 ---
 
 Bootware is a set of shell scripts and Docker images for bootstrapping software
-installations on a computer with Ansible.
+installations with Ansible.
+
+## Contributing
+
+For guidance on setting up a development environment and how to make a
+contribution, see the
+[Contributing](https://wolfgangwazzlestrauss.github.io/bootware/contrib) section
+of the documentation.
+
+## License
+
+Bootware is distributed under the MIT license.

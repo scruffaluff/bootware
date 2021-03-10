@@ -3,5 +3,6 @@
 .local/
 node_modules/
 package-lock.json
+pkg/
 site/
 tmp/
