@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "prettier:format": "prettier --write **/*.{css,html,js,json,md,ts,vue,yaml,yml}",
-    "prettier:test": "prettier --check **/*.{css,html,js,json,md,ts,vue,yaml,yml}",
+    "prettier:format": "prettier --write .",
+    "prettier:test": "prettier --check .",
     "vuepress:build": "node scripts/build_docs.js",
     "vuepress:serve": "vuepress dev docs/"
   },
@@ -11,13 +11,5 @@
     "prettier": "^2.0.5",
     "vuepress": "^1.5.3",
     "vuepress-plugin-code-copy": "^1.0.6"
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "printWidth": 80,
-    "proseWrap": "always",
-    "semi": true,
-    "tabWidth": 2,
-    "trailingComma": "es5"
   }
 }

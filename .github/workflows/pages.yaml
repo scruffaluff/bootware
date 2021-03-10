@@ -7,7 +7,7 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Node
         uses: actions/setup-node@v1

@@ -18,7 +18,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Node
         uses: actions/setup-node@v1
@@ -37,7 +37,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -59,7 +59,7 @@ jobs:
   #   needs: branch
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - name: Code repository checkout
+  #     - name: Checkout code repository
   #       uses: actions/checkout@v2
   #     - name: Set up Docker Buildx
   #       uses: docker/setup-buildx-action@v1
@@ -89,7 +89,7 @@ jobs:
     needs: branch
     runs-on: ubuntu-latest
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -104,7 +104,7 @@ jobs:
     needs: branch
     runs-on: ubuntu-latest
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

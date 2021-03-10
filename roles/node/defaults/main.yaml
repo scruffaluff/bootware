@@ -1,6 +1,7 @@
 node_applications:
   - "@vue/cli"
   - "gitmoji-cli"
+  - prettier
 node_versions:
   - "10"
   - "12"

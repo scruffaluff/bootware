@@ -1,0 +1,6 @@
+arrowParens: always
+printWidth: 80
+proseWrap: always
+semi: true
+tabWidth: 2
+trailingComma: es5

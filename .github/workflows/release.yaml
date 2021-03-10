@@ -17,7 +17,7 @@ jobs:
     needs: tag
     runs-on: ubuntu-20.04
     steps:
-      - name: Code repository checkout
+      - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
