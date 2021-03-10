@@ -1,4 +1,6 @@
-FROM debian:sid-20210208
+# Debian 10.8 uses Ansible version 2.7, which does not support Ansible
+# collections. Ubuntu is used until Debian moves to Ansible 2.9.
+FROM ubuntu:20.10
 
 
 # Create non-priviledged user.
