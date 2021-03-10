@@ -23,7 +23,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Fira Code for Red Hat distributions
+- name: Install Fira Code for Fedora distributions
   become: yes
   dnf:
     name: fira-code-fonts

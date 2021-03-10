@@ -22,7 +22,7 @@
     name: dvc
   when: ansible_system == "Darwin"
 
-- name: Install DVC for Red Hat distributions
+- name: Install DVC for Fedora distributions
   become: yes
   dnf:
     disable_gpg_check: yes

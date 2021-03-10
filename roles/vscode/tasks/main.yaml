@@ -17,13 +17,13 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Add Microsoft GPG key for Red Hat distributions
+- name: Add Microsoft GPG key for Fedora distributions
   become: yes
   rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install VSCode for Red Hat distributions
+- name: Install VSCode for Fedora distributions
   become: yes
   dnf:
     name: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable

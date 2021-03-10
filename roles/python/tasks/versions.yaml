@@ -46,7 +46,7 @@
       - zlib
   when: ansible_system == "Darwin"
 
-- name: Install Pyenv dependencies for Red Hat distributions
+- name: Install Pyenv dependencies for Fedora distributions
   become: yes
   dnf:
     name:

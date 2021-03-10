@@ -16,7 +16,7 @@
     name: sqlite
   when: ansible_system == "Darwin"
 
-- name: Install SQLite for Red Hat distributions
+- name: Install SQLite for Fedora distributions
   become: yes
   dnf:
     name: sqlite

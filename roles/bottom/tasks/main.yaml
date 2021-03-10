@@ -5,7 +5,7 @@
     return_content: yes
   register: bottom_release
 
-# TODO: Install for Arch and RedHat.
+# TODO: Install for Arch and Fedora.
 - name: Install Bottom For Debian distributions
   apt:
     deb: >-

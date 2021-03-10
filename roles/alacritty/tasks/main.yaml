@@ -23,7 +23,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Alacritty for Red Hat distributions
+- name: Install Alacritty for Fedora distributions
   become: yes
   dnf:
     name: alacritty

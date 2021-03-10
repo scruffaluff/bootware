@@ -20,7 +20,7 @@
     name: libvirt
   when: ansible_system == "Darwin"
 
-- name: Install Libvirt for Red Hat distributions
+- name: Install Libvirt for Fedora distributions
   become: yes
   dnf:
     name: libvirt

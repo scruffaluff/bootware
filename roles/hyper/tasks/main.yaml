@@ -13,7 +13,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Hyper for Red Hat distributions
+- name: Install Hyper for Fedora distributions
   become: yes
   dnf:
     disable_gpg_check: yes

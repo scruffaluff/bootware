@@ -16,7 +16,7 @@
     name: awscli
   when: ansible_system == "Darwin"
 
-- name: Install AWSCLI for Red Hat distributions
+- name: Install AWSCLI for Fedora distributions
   become: yes
   dnf:
     name: awscli

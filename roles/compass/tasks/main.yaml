@@ -22,7 +22,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install MongoDB Compass For Red Hat distributions
+- name: Install MongoDB Compass For Fedora distributions
   become: yes
   dnf:
     disable_gpg_check: yes

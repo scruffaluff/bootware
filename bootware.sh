@@ -436,7 +436,7 @@ setup_linux() {
   elif command -v apt-get &>/dev/null ; then
     setup_debian ${use_sudo}
   elif command -v dnf &>/dev/null ; then
-    setup_redhat ${use_sudo}
+    setup_fedora ${use_sudo}
   else
     error "Unable to find supported package manager."
   fi
@@ -479,8 +479,8 @@ setup_macos() {
   fi
 }
 
-# Configure boostrapping services and utilities for Red Hat distributions.
-setup_redhat() {
+# Configure boostrapping services and utilities for Fedora distributions.
+setup_fedora() {
   # Install dependencies for Bootware.
   if ! dnf list installed ansible &>/dev/null ; then
     echo "Installing Ansible..."

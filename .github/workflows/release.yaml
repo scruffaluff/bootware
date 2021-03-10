@@ -1,8 +1,10 @@
 name: release
+
 on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+
 jobs:
   tag:
     runs-on: ubuntu-20.04
@@ -13,6 +15,7 @@ jobs:
         shell: bash
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
         id: extract_tag
+
   push:
     needs: tag
     runs-on: ubuntu-20.04

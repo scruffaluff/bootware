@@ -12,7 +12,7 @@
   loop: "{{ apt_packages }}"
   when: ansible_pkg_mgr == "apt" and "/" in item
 
-- name: Install DNF packages for Red Hat distributions
+- name: Install DNF packages for Fedora distributions
   become: yes
   dnf:
     name: "{{ item }}"

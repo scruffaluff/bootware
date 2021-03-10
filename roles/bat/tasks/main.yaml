@@ -26,7 +26,7 @@
     name: bat
   when: ansible_system == "Darwin"
 
-- name: Install Bat for Red Hat distributions
+- name: Install Bat for Fedora distributions
   become: yes
   dnf:
     name: bat

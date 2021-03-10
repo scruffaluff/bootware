@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM debian:sid-20210208
 
 
 # Create non-priviledged user.

@@ -16,7 +16,7 @@
     warn: no
   when: ansible_pkg_mgr == "apt"
 
-# TODO: Install for Arch and RedHat.
+# TODO: Install for Arch and Fedora.
 - name: Install Google Cloud SDK for Debian distributions
   apt:
     name: google-cloud-sdk

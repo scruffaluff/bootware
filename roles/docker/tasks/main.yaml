@@ -17,7 +17,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Docker for Red Hat distributions
+- name: Install Docker for Fedora distributions
   become: yes
   dnf:
     name: docker

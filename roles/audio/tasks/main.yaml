@@ -14,7 +14,7 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install audio packages for Red Hat distributions
+- name: Install audio packages for Fedora distributions
   become: yes
   dnf:
     name:
