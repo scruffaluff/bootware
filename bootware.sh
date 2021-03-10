@@ -419,6 +419,28 @@ setup_debian() {
   fi
 }
 
+# Configure boostrapping services and utilities for Fedora distributions.
+setup_fedora() {
+  # Install dependencies for Bootware.
+  if ! dnf list installed ansible &>/dev/null ; then
+    echo "Installing Ansible..."
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y ansible
+  fi
+
+  if ! dnf list installed curl &>/dev/null ; then
+    echo "Installing Curl..."
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y curl
+  fi
+
+  if ! dnf list installed git &>/dev/null ; then
+    echo "Installing Git..."
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y git
+  fi
+}
+
 # Configure boostrapping services and utilities for Linux.
 setup_linux() {
   local use_sudo
@@ -476,28 +498,6 @@ setup_macos() {
   if ! brew list git &>/dev/null ; then
     echo "Installing Git.."
     brew install git
-  fi
-}
-
-# Configure boostrapping services and utilities for Fedora distributions.
-setup_fedora() {
-  # Install dependencies for Bootware.
-  if ! dnf list installed ansible &>/dev/null ; then
-    echo "Installing Ansible..."
-    dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible
-  fi
-
-  if ! dnf list installed curl &>/dev/null ; then
-    echo "Installing Curl..."
-    dnf_check_update "$1"
-    ${1:+sudo} dnf install -y curl
-  fi
-
-  if ! dnf list installed git &>/dev/null ; then
-    echo "Installing Git..."
-    dnf_check_update "$1"
-    ${1:+sudo} dnf install -y git
   fi
 }
 

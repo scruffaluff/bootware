@@ -107,7 +107,6 @@
   "terminal.integrated.fontFamily": "Fira Code",
   "terminal.integrated.fontSize": 14,
   "terminal.integrated.inheritEnv": true,
-  "terminal.integrated.shell.linux": "/usr/bin/fish",
   "vsicons.dontShowNewVersionMessage": true,
   "workbench.colorTheme": "Solarized Light",
   "workbench.iconTheme": "vscode-icons",
