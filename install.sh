@@ -137,6 +137,7 @@ main() {
   #
   # Flags: 
   #   -O: True if file is owned by the current user.
+  #   -z: True if the string has zero length or is null.
   if [[ -z ${user_install} && ! -O "${dst_file}" && ${EUID} != 0 ]]; then
     assert_cmd sudo
     use_sudo=1
@@ -156,6 +157,17 @@ main() {
   if ! command -v bootware > /dev/null; then
     configure_shell "${dst_dir}"
     export PATH="${dst_dir}:${PATH}"
+  fi
+
+  # Installl man pages if a system install.
+  #
+  # Flags: 
+  #   -n: True if the string has nonzero length.
+  if [[ -n ${use_sudo} ]]; then
+    man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/pkg/man/bootware.1"
+    sudo mkdir -p /usr/local/share/man/man1
+    sudo curl -LSfs "${man_url}" -o /usr/local/share/man/man1/bootware.1
+    sudo mandb
   fi
 
   echo "Installed $(bootware --version)."
