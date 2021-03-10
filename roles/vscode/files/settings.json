@@ -29,6 +29,9 @@
   "[json]": {
     "editor.tabSize": 2
   },
+  "[ruby]": {
+    "editor.tabSize": 2
+  },
   "[rust]": {
     "editor.rulers": [100]
   },

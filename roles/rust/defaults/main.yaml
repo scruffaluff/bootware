@@ -5,7 +5,6 @@ _cargo_applications:
     - cargo-bloat
     # TODO: Fix cargo crev build for Red Hat distributions.
     # - cargo-crev
-    - cargo-deb
     - cargo-edit
     # - cargo embed
     - cargo-expand
@@ -14,6 +13,9 @@ _cargo_applications:
     - cargo-make
   macos: []
   linux:
+    # - cargo-arch
+    - cargo-deb
+    - cargo-rpm
     - cargo-tarpaulin
   windows: []
 cargo_applications: >-
