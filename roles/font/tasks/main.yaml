@@ -19,7 +19,9 @@
 - name: Install Fira Code font for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    # Force option is required to solve "It seems there is already a Font"
+    # error.
+    install_options: force
     name: font-fira-code
     state: present
   when: ansible_system == "Darwin"
