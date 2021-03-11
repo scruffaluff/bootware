@@ -167,7 +167,6 @@ main() {
     man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/pkg/man/bootware.1"
     sudo mkdir -p /usr/local/share/man/man1
     sudo curl -LSfs "${man_url}" -o /usr/local/share/man/man1/bootware.1
-    sudo mandb
   fi
 
   echo "Installed $(bootware --version)."
