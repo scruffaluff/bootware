@@ -29,6 +29,7 @@
 - name: Install Homebrew casks for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: "{{ item }}"
     state: present
   loop: "{{ homebrew_casks }}"

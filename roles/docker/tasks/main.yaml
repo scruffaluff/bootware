@@ -13,6 +13,7 @@
 - name: Install Docker for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: docker
     state: present
   when: ansible_system == "Darwin"

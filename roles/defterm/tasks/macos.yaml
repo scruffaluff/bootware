@@ -1,6 +1,7 @@
 - name: Install iTerm2 for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: iterm2
     state: present
   when: ansible_system == "Darwin"
