@@ -15,6 +15,38 @@
 Bootware is a set of shell scripts and Docker images for bootstrapping software
 installations with Ansible.
 
+## Install
+
+Bootware is invoked by shell scripts on the user's computer. The following
+commands will download the shell scripts and add them to the system path. Note
+that on Windows, PowerShell will need to run as administrator.
+
+<code-group>
+<code-block title="Linux" active>
+```bash
+curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+```
+</code-block>
+
+<code-block title="MacOS">
+```bash
+curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+```
+</code-block>
+
+<code-block title="Windows">
+```powershell
+Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1 | Invoke-Expression
+```
+</code-block>
+</code-group>
+
+## Usage
+
+Bootware will bootstrap the computer software by invoking `bootware bootstrap`
+after customizing the configuration file. To view the bootstrapping options,
+execute `bootware bootstrap --help`.
+
 ## Contributing
 
 For guidance on setting up a development environment and how to make a

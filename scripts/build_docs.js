@@ -12,7 +12,7 @@ function copyFiles() {
   fs.copyFileSync("README.md", "docs/index.md");
 }
 
-// copyFiles();
+copyFiles();
 vuepress.build({
   theme: "@vuepress/theme-default",
   dest: "site",

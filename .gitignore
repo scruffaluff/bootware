@@ -1,6 +1,8 @@
 ./bootware.yaml
 .DS_Store
 .local/
+dist/pkg/
+docs/index.md
 node_modules/
 package-lock.json
 pkg/
