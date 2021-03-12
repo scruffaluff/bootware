@@ -8,16 +8,6 @@ on:
       - master
 
 jobs:
-  branch:
-    runs-on: ubuntu-latest
-    outputs:
-      branch: ${{ steps.extract_tag.outputs.tag }}
-    steps:
-      - name: Extract branch
-        id: extract_branch
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        shell: bash
-
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +29,6 @@ jobs:
           ignore: node_modules
 
   build:
-    needs: branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -59,43 +48,9 @@ jobs:
           name: bootware
           path: /tmp/bootware.tar
 
-  # There is a bug in the Arch Linux Docker image which breaks pacman. See
-  # https://bugs.archlinux.org/task/69563 for more information.
-  # test-arch:
-  #   needs: branch
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code repository
-  #       uses: actions/checkout@v2
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
-  #     - name: Build Docker image
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         context: .
-  #         file: ./tests/Dockerfile.arch
-  #         tags: wolfgangwazzlestrauss/bootware:arch-latest
-  #         push: false
-
-  test-debian:
-    needs: branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./tests/Dockerfile.debian
-          tags: wolfgangwazzlestrauss/bootware:debian-latest
-          push: false
-
   test-macos:
-    needs: branch
-    runs-on: macos-11.0
+    name: Test bootstrapping software for MacOS
+    runs-on: macos-latest
     steps:
       - name: Install Bootware
         run: >
@@ -109,8 +64,14 @@ jobs:
       - name: Test bootstrapping
         run: bootware bootstrap --no-passwd --skip docker,
 
-  test-fedora:
-    needs: branch
+  test-linux:
+    name: Test bootstrapping software for ${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # There is a bug in the Arch Linux Docker image which breaks pacman. See
+        # https://bugs.archlinux.org/task/69563 for more information.
+        distro: [debian, fedora]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -121,8 +82,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.fedora
-          tags: wolfgangwazzlestrauss/bootware:fedora-latest
+          file: ./tests/Dockerfile.${{ matrix.distro }}
+          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
           push: false
 
   test-package:
@@ -146,9 +107,8 @@ jobs:
           push: false
 
   test-windows:
-    needs:
-      - branch
-      - build
+    name: Test bootstrapping software for Windows
+    needs: build
     runs-on: windows-latest
     steps:
       - name: Install Bootware
