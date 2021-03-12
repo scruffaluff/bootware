@@ -1,9 +1,8 @@
-Architecture: all
-Description: Bootstrap software installations with Ansible
-Essential: no
-Installed-Size: 1024
-Maintainer: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
 Package: bootware
-Priority: optional
-Section: custom
 Version: {{ version }}
+Architecture: all
+Essential: no
+Priority: optional
+Depends: ansible (>= 2.9.0), bash, curl, git
+Maintainer: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
+Description: Bootstrap software installations with Ansible

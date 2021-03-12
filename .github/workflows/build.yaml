@@ -39,6 +39,7 @@ jobs:
           ignore: node_modules
 
   build:
+    needs: branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -76,6 +77,22 @@ jobs:
   #         tags: wolfgangwazzlestrauss/bootware:arch-latest
   #         push: false
 
+  test-debian:
+    needs: branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./tests/Dockerfile.debian
+          tags: wolfgangwazzlestrauss/bootware:debian-latest
+          push: false
+
   test-macos:
     needs: branch
     runs-on: macos-11.0
@@ -108,8 +125,12 @@ jobs:
           tags: wolfgangwazzlestrauss/bootware:fedora-latest
           push: false
 
-  test-debian:
-    needs: branch
+  test-package:
+    name: Test building a ${{ matrix.format }} package
+    strategy:
+      fail-fast: false
+      matrix:
+        format: [deb]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -120,8 +141,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.debian
-          tags: wolfgangwazzlestrauss/bootware:debian-latest
+          file: ./tests/Dockerfile.${{ matrix.format }}
+          tags: bootware:${{ matrix.format }}
           push: false
 
   test-windows:

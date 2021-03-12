@@ -2,6 +2,9 @@
 
 /**
  * Copies and creates files to generate a Debian package.
+ *
+ * For the manual on creating Debian packages, visit
+ * https://www.debian.org/doc/debian-policy/index.html.
  */
 
 const fs = require("fs");
