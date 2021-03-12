@@ -13,6 +13,7 @@
 - name: Install VSCode for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: visual-studio-code
     state: present
   when: ansible_system == "Darwin"
@@ -45,11 +46,11 @@
 
 - name: Copy VSCode settings file for Linux
   become_user: "{{ user_account }}"
-  copy:
+  template:
     dest: "{{ user_home_dir }}/.config/Code/User/settings.json"
     force: yes
     mode: 0644
-    src: settings.json
+    src: settings.j2
   when: ansible_system == "Linux"
 
 - name: Create VSCode user directory for MacOS
@@ -61,21 +62,21 @@
 
 - name: Copy VSCode settings file for MacOS
   become_user: "{{ user_account }}"
-  copy:
+  template:
     dest:
       "{{ user_home_dir }}/Library/Application Support/Code/User/settings.json"
     force: yes
     mode: 0644
-    src: settings.json
+    src: settings.j2
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode settings file for Windows
   become_user: "{{ user_account }}"
-  copy:
+  template:
     dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/settings.json"
     force: yes
     mode: 0644
-    src: settings.json
+    src: settings.j2
   when: ansible_system == "Windows"
 
 - name: Install VSCode extensions

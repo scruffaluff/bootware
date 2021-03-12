@@ -9,6 +9,7 @@
 - name: Install Google Chrome for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: google-chrome
     state: present
   when: ansible_system == "Darwin"

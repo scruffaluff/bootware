@@ -18,6 +18,7 @@
 - name: Install MongoDB Compass for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
+    accept_external_apps: yes
     name: mongodb-compass
     state: present
   when: ansible_system == "Darwin"

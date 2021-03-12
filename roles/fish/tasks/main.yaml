@@ -44,7 +44,9 @@
   become: yes
   user:
     name: "{{ user_account }}"
-    shell: /usr/local/bin/fish
+    shell: >-
+      {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+      }}/bin/fish
   when: ansible_system == "Darwin"
 
 - name: Change user default shell to Fish for Linux
