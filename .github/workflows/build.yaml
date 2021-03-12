@@ -1,3 +1,8 @@
+# GitHub Actions workflow file.
+#
+# For more information, visit
+# https://docs.github.com/actions/learn-github-actions.
+
 name: build
 
 on:
@@ -9,6 +14,7 @@ on:
 
 jobs:
   lint:
+    name: Check code with formatter and linter
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -18,17 +24,16 @@ jobs:
         with:
           node-version: 14
       - name: Install Node dependencies
-        run: |
-          npm install
+        run: npm install
       - name: Check format of configuration files
-        run: |
-          npm run prettier:test
+        run: npm run prettier:test
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
           ignore: node_modules
 
   build:
+    name: Build Docker image of Bootware installer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository

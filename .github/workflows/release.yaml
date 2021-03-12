@@ -1,5 +1,11 @@
+# GitHub Actions workflow file.
+#
+# For more information, visit
+# https://docs.github.com/actions/learn-github-actions.
+
 name: release
 
+# Make workflow run only for pushed SemVer compatible tags.
 on:
   push:
     tags:
@@ -11,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.extract_tag.outputs.tag }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Extract tag
         id: extract_tag
@@ -51,7 +58,7 @@ jobs:
             wolfgangwazzlestrauss/bootware:${{ needs.release.outputs.tag }}
 
   package:
-    name: Create Debian package
+    name: Create and upload Debian package
     needs: release
     runs-on: ubuntu-latest
     steps:
