@@ -6,19 +6,30 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
-  tag:
-    runs-on: ubuntu-20.04
+  release:
+    name: Get Git tag and make GitHub release
+    runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.extract_tag.outputs.tag }}
     steps:
       - name: Extract tag
+        id: extract_tag
         shell: bash
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
-        id: extract_tag
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{ steps.github_release.outputs.changelog }}
 
-  push:
-    needs: tag
-    runs-on: ubuntu-20.04
+  image:
+    name: Create and push Docker image
+    needs: release
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -37,4 +48,31 @@ jobs:
           push: true
           tags: |
             wolfgangwazzlestrauss/bootware:latest
-            wolfgangwazzlestrauss/bootware:${{ needs.tag.outputs.tag }}
+            wolfgangwazzlestrauss/bootware:${{ needs.release.outputs.tag }}
+
+  package:
+    name: Create Debian package
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Node dependencies
+        run: |
+          npm install
+      - name: Build debian package
+        run: |
+          node scripts/package_debian.js ${{ needs.release.outputs.tag }}
+      - name: Upload release archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: tmp/bootware_${{ needs.release.outputs.tag }}_all.deb
+          asset_name: bootware_${{ needs.release.outputs.tag }}_all.deb
+          asset_content_type: application/octet-stream
