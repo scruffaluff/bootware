@@ -12,9 +12,13 @@ function copyFiles() {
   fs.copyFileSync("README.md", "docs/index.md");
 }
 
-copyFiles();
-vuepress.build({
-  theme: "@vuepress/theme-default",
-  dest: "site",
-  sourceDir: "docs",
-});
+function main() {
+  copyFiles();
+  vuepress.build({
+    theme: "@vuepress/theme-default",
+    dest: "site",
+    sourceDir: "docs",
+  });
+}
+
+main();
