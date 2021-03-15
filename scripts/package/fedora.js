@@ -9,17 +9,39 @@
 
 const fs = require("fs");
 const mustache = require("mustache");
+const os = require("os");
 const path = require("path");
 const childProcess = require("child_process");
 
-function archiveFiles(repoPath) {
-  childProcess.execSync(`tar -cvzf ${destPath} ${buildPath} `);
+function archiveFiles(repoPath, buildDirs, version) {
+  const tarName = `bootware-${version}.tar.gz`;
+  const destPath = path.join(buildDirs.source, tarName);
+
+  const tmpDir = os.tmpdir();
+  const copyDir = path.join(tmpDir, `bootware-${version}`);
+  fs.mkdirSync(copyDir, { recursive: true });
+
+  const bootwareScript = path.join(repoPath, "bootware.sh");
+  fs.copyFileSync(bootwareScript, path.join(copyDir, "bootware"));
+
+  const manPage = path.join(repoPath, "bootware.1");
+  fs.copyFileSync(manPage, path.join(copyDir, "bootware.1"));
+
+  const copyDirName = path.basename(copyDir);
+  childProcess.execSync(`tar -cvzf ${tarName} -C ${tmpDir} ${copyDirName}`);
+
+  fs.renameSync(tarName, destPath);
 }
 
-function buildPackage(buildPath, destPath) {
-  childProcess.execSync(
-    `rpmbuild -ba ${buildPath}/SPECS/bootware.spec ${destPath}`
+function buildPackage(buildDirs, destPath, version) {
+  const specPath = path.join(buildDirs.spec, "bootware.spec");
+  childProcess.execSync(`rpmbuild -ba ${specPath}`);
+
+  const rpmPath = path.join(
+    buildDirs.rpm,
+    `noarch/bootware-${version}-1.fc33.noarch.rpm`
   );
+  fs.renameSync(rpmPath, destPath);
 }
 
 function createDirectories(buildDirs) {
@@ -49,13 +71,14 @@ function templateSpec(repoPath, buildDirs, version) {
 
 function build(repoPath, destDir, version) {
   const packageName = `bootware-${version}-1.fc33.noarch`;
-  const buildPath = path.join(repoPath, "build", packageName);
+  const buildPath = path.join(os.homedir(), "rpmbuild");
   const destPath = path.join(destDir, `${packageName}.rpm`);
 
   const buildDirs = getBuildDirs(buildPath);
   createDirectories(buildDirs);
+  archiveFiles(repoPath, buildDirs, version);
   templateSpec(repoPath, buildDirs, version);
-  buildPackage(buildPath, destPath);
+  buildPackage(buildDirs, destPath, version);
 
   return destPath;
 }

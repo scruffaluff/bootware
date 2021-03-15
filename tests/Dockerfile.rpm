@@ -17,7 +17,7 @@ COPY package.json /bootware/
 WORKDIR /bootware
 RUN npm install
 
-# Build Debian package.
+# Build Fedora package.
 RUN node scripts/build_package.js rpm "${version}"
 
 

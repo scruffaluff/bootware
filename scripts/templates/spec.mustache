@@ -8,17 +8,20 @@ License: MIT
 Packager: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
 Source: %{name}-%{version}.tar.gz
 Summary: Bootstrap software installations with Ansible
-Release: 1%{?dist}
+Release: 1.fc33
+Requires: ansible, git
 URL: https://github.com/wolfgangwazzlestrauss/bootware
 Vendor: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
 
 %description
 Bootstrap software installations with Ansible
 
-%install
-rm -fr $RPM_BUILD_ROOT
+%prep
+%setup -q
 
+%install
+mkdir -p %{buildroot}/usr/local/bin/
+install -m 755 bootware %{buildroot}/usr/local/bin/bootware
 
 %files
-%doc README LICENSE CHANGELOG
 /usr/local/bin/%{name}
