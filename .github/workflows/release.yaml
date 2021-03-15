@@ -33,8 +33,12 @@ jobs:
         run: npm install
       - name: Get version changes
         id: version_changes
+        # GitHub will truncate multiline strings to the first line when setting
+        # outputs. Thus enconding newlines is required. For details, see
+        # https://github.community/t/set-output-truncates-multiline-strings/16852.
         run: |
           changes=$(node scripts/print_changes.js ${{ steps.extract_tag.outputs.tag }})
+          changes="${changes//$'\n'/'%0A'}"
           echo "::set-output name=change_log::$changes"
       - name: Create GitHub release
         id: create_release
