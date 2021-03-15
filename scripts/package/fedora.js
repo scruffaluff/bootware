@@ -39,10 +39,7 @@ function getBuildDirs(buildPath) {
 }
 
 function templateSpec(repoPath, buildDirs, version) {
-  const sourcePath = path.join(
-    repoPath,
-    "scripts/templates/spec.mustache"
-  );
+  const sourcePath = path.join(repoPath, "scripts/templates/spec.mustache");
   const template = fs.readFileSync(sourcePath, "utf8");
   const text = mustache.render(template, { version });
 
