@@ -91,6 +91,8 @@ jobs:
         id: build_package
         run: |
           package_path=$(node scripts/build_package.js ${{ matrix.package }} ${{ needs.release.outputs.tag }})
+          package_name=$(basename $package_path)
+          echo "::set-output name=package_name::$package_name"
           echo "::set-output name=package_path::$package_path"
       - name: Upload release archive
         uses: actions/upload-release-asset@v1
@@ -99,4 +101,5 @@ jobs:
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
           asset_path: ${{ steps.build_package.outputs.package_path }}
+          asset_name: ${{ steps.build_package.outputs.package_name }}
           asset_content_type: application/octet-stream
