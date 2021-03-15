@@ -36,6 +36,7 @@ jobs:
         run: |
           changes=$(node scripts/print_changes.js 0.2.3)
           echo "$changes"
+          changes="${changes//$'\n'/'%0A'}"
           echo "::set-output name=change_log::$changes"
       - name: Print version changes
         run: echo "${{ steps.version_changes.outputs.change_log }}"
