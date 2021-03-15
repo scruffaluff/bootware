@@ -34,7 +34,7 @@ jobs:
       - name: Get version changes
         id: version_changes
         run: |
-          changes=$(node scripts/print_changes.js ${{ steps.extract_tag.outputs.tag }})
+          changes=$(node scripts/print_changes.js 0.2.3)
           echo "$changes"
           echo "::set-output name=change_log::$changes"
       - name: Print version changes
