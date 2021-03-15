@@ -10,6 +10,7 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 ### Added
 
 - Changelog updates for GitHub releases.
+- Commands in man page.
 
 ## 0.2.2 - 2021-03-12
 
