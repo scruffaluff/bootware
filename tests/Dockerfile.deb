@@ -11,7 +11,7 @@ WORKDIR /bootware
 RUN npm install
 
 # Build Debian package.
-RUN node scripts/build_package.js deb 0.2.2
+RUN node scripts/build_package.js deb 0.2.3
 
 
 FROM ubuntu:20.10
@@ -21,10 +21,10 @@ FROM ubuntu:20.10
 RUN apt-get update
 
 # Pull Debian package from previous Docker stage.
-COPY --from=builder /bootware/dist/bootware_0.2.2_all.deb /tmp/
+COPY --from=builder /bootware/dist/bootware_0.2.3_all.deb /tmp/
 
 # Install Debian package.
-RUN apt-get install -y /tmp/bootware_0.2.2_all.deb
+RUN apt-get install -y /tmp/bootware_0.2.3_all.deb
 
 # Test package was installed successfully.
 RUN bootware --help

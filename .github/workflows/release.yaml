@@ -23,6 +23,19 @@ jobs:
         id: extract_tag
         shell: bash
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Node dependencies
+        run: npm install
+      - name: Get version changes
+        id: version_changes
+        run: |
+          changes=$(node scripts/print_changes.js ${{ steps.extract_tag.outputs.tag }})
+          echo "::set-output name=change_log::$changes"
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
@@ -31,7 +44,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{ steps.github_release.outputs.changelog }}
+          body: ${{ steps.version_changes.outputs.change_log }}
 
   image:
     name: Create and push Docker image
@@ -58,7 +71,11 @@ jobs:
             wolfgangwazzlestrauss/bootware:${{ needs.release.outputs.tag }}
 
   package:
-    name: Create and upload Debian package
+    name: Create and upload ${{ matrix.package }} package
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [deb]
     needs: release
     runs-on: ubuntu-latest
     steps:
@@ -69,17 +86,17 @@ jobs:
         with:
           node-version: 14
       - name: Install Node dependencies
+        run: npm install
+      - name: Build package
+        id: build_package
         run: |
-          npm install
-      - name: Build debian package
-        run: |
-          node scripts/package_debian.js ${{ needs.release.outputs.tag }}
+          package_path=$(node scripts/build_package.js ${{ matrix.package }} ${{ needs.release.outputs.tag }})
+          echo "::set-output name=package_path::$package_path"
       - name: Upload release archive
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: tmp/bootware_${{ needs.release.outputs.tag }}_all.deb
-          asset_name: bootware_${{ needs.release.outputs.tag }}_all.deb
+          asset_path: ${{ steps.build_package.outputs.package_path }}
           asset_content_type: application/octet-stream
