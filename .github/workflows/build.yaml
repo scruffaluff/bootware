@@ -31,6 +31,14 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           ignore: node_modules
+      - name: Get version changes
+        id: version_changes
+        run: |
+          changes=$(node scripts/print_changes.js ${{ steps.extract_tag.outputs.tag }})
+          echo "$changes"
+          echo "::set-output name=change_log::$changes"
+      - name: Print version changes
+        run: echo "${{ steps.version_changes.outputs.change_log }}"
 
   build:
     name: Build Docker image of Bootware installer

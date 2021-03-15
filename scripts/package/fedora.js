@@ -12,6 +12,10 @@ const mustache = require("mustache");
 const path = require("path");
 const childProcess = require("child_process");
 
+function archiveFiles(repoPath) {
+  childProcess.execSync(`tar -cvzf ${destPath} ${buildPath} `);
+}
+
 function buildPackage(buildPath, destPath) {
   childProcess.execSync(
     `rpmbuild -ba ${buildPath}/SPECS/bootware.spec ${destPath}`
@@ -48,7 +52,7 @@ function templateSpec(repoPath, buildDirs, version) {
 
 function build(repoPath, destDir, version) {
   const packageName = `bootware-${version}-1.fc33.noarch`;
-  const buildPath = path.join(repoPath, "tmp", packageName);
+  const buildPath = path.join(repoPath, "build", packageName);
   const destPath = path.join(destDir, `${packageName}.rpm`);
 
   const buildDirs = getBuildDirs(buildPath);

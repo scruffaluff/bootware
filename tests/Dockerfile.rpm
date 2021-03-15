@@ -1,0 +1,39 @@
+FROM fedora:33 AS builder
+
+
+# Update DNF package lists.
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+
+RUN dnf install -y nodejs rpm-build
+
+RUN mkdir /pkg
+
+WORKDIR /pkg
+
+# # Copy bootware package build files.
+# COPY dist/ /build/dist/
+# COPY scripts/ /build/scripts/
+# COPY package.json /build/
+# COPY bootware.sh /build/
+
+# WORKDIR /build
+# RUN npm install
+
+# # Build Fedora package.
+# RUN node scripts/build_package.js rpm 0.2.3
+
+
+# FROM fedora:33
+
+
+# # Update DNF package lists.
+# RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+
+# # Pull Fedora package from previous Docker stage.
+# COPY --from=builder /build/tmp/bootware_0.2.3_.rpm /tmp/
+
+# # Install Fedora package.
+# RUN dnf install -y /tmp/bootware_0.2.3_all.rpm
+
+# # Test package was installed successfully.
+# RUN bootware --help
