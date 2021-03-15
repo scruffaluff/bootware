@@ -1,0 +1,21 @@
+%define name bootware
+%define version {{ version }}
+
+Name: bootware
+Version: {{ version }}
+BuildArch: noarch
+License: MIT
+Packager: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
+Source: %{name}-%{version}.tar.gz
+Summary: Bootstrap software installations with Ansible
+Release: 1%{?dist}
+URL: https://github.com/wolfgangwazzlestrauss/bootware
+Vendor: Macklan Weinstein <wolfgang.wazzle.strauss@gmail.com>
+
+%install
+rm -fr $RPM_BUILD_ROOT
+
+
+%files
+%doc README LICENSE CHANGELOG
+/usr/local/bin/%{name}

@@ -12,8 +12,8 @@ const mustache = require("mustache");
 const path = require("path");
 const childProcess = require("child_process");
 
-function buildPackage(buildPath) {
-  childProcess.execSync(`dpkg-deb --build ${buildPath}`);
+function buildPackage(buildPath, destPath) {
+  childProcess.execSync(`dpkg-deb --build ${buildPath} ${destPath}`);
 }
 
 function createDirectories(buildDirs) {
@@ -26,7 +26,7 @@ function copyFiles(repoPath, buildDirs) {
   const bootwareScript = path.join(repoPath, "bootware.sh");
   fs.copyFileSync(bootwareScript, path.join(buildDirs.bin, "bootware"));
 
-  const manPage = path.join(repoPath, "dist/man/bootware.1");
+  const manPage = path.join(repoPath, "bootware.1");
   fs.copyFileSync(manPage, path.join(buildDirs.man, "bootware.1"));
 }
 
@@ -42,7 +42,7 @@ function getBuildDirs(buildPath) {
 }
 
 function templateControl(repoPath, buildDirs, version) {
-  const sourcePath = path.join(repoPath, "scripts/control.mustache");
+  const sourcePath = path.join(repoPath, "scripts/templates/control.mustache");
   const template = fs.readFileSync(sourcePath, "utf8");
   const text = mustache.render(template, { version });
 
@@ -50,17 +50,18 @@ function templateControl(repoPath, buildDirs, version) {
   fs.writeFileSync(destPath, text);
 }
 
-function main() {
-  const version = process.argv[2];
-  const repoPath = path.dirname(__dirname);
+function build(repoPath, destDir, version) {
   const packageName = `bootware_${version}_all`;
-  const buildPath = path.join(repoPath, "tmp", packageName);
+  const buildPath = path.join(repoPath, "build", packageName);
+  const destPath = path.join(destDir, `${packageName}.deb`);
 
   const buildDirs = getBuildDirs(buildPath);
   createDirectories(buildDirs);
   copyFiles(repoPath, buildDirs);
   templateControl(repoPath, buildDirs, version);
-  buildPackage(buildPath);
+  buildPackage(buildPath, destPath);
+
+  return destPath;
 }
 
-main();
+exports.build = build;

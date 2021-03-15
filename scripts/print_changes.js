@@ -4,7 +4,6 @@
  * Parses and prints changelog updates for the given version.
  */
 
-
 const parseChangelog = require("changelog-parser");
 const path = require("path");
 

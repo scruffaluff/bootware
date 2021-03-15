@@ -1,25 +1,27 @@
 FROM node:14.16.0 AS builder
 
-# Copy bootware package build files.
-COPY dist/ /build/dist/
-COPY scripts/ /build/scripts/
-COPY package.json /build/
-COPY bootware.sh /build/
 
-WORKDIR /build
+# Copy bootware package build files.
+COPY scripts/ /bootware/scripts/
+COPY bootware.1 /bootware/
+COPY bootware.sh /bootware/
+COPY package.json /bootware/
+
+WORKDIR /bootware
 RUN npm install
 
 # Build Debian package.
-RUN node scripts/package_debian.js 0.2.2
+RUN node scripts/build_package.js deb 0.2.2
 
 
 FROM ubuntu:20.10
+
 
 # Update Apt package cache.
 RUN apt-get update
 
 # Pull Debian package from previous Docker stage.
-COPY --from=builder /build/tmp/bootware_0.2.2_all.deb /tmp/
+COPY --from=builder /bootware/dist/bootware_0.2.2_all.deb /tmp/
 
 # Install Debian package.
 RUN apt-get install -y /tmp/bootware_0.2.2_all.deb
