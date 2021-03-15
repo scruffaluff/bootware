@@ -164,7 +164,7 @@ main() {
   # Flags: 
   #   -n: True if the string has nonzero length.
   if [[ -n ${use_sudo} ]]; then
-    man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/dist/man/bootware.1"
+    man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.1"
     sudo mkdir -p /usr/local/share/man/man1
     sudo curl -LSfs "${man_url}" -o /usr/local/share/man/man1/bootware.1
   fi
