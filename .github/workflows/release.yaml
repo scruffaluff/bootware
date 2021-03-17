@@ -25,21 +25,6 @@ jobs:
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
       - name: Checkout code repository
         uses: actions/checkout@v2
-      - name: Install Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - name: Install Node dependencies
-        run: npm install
-      - name: Get version changes
-        id: version_changes
-        # GitHub will truncate multiline strings to the first line when setting
-        # outputs. Thus enconding newlines is required. For details, see
-        # https://github.community/t/set-output-truncates-multiline-strings/16852.
-        run: |
-          changes=$(node scripts/print_changes.js ${{ steps.extract_tag.outputs.tag }})
-          changes="${changes//$'\n'/'%0A'}"
-          echo "::set-output name=change_log::$changes"
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
@@ -47,8 +32,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: ${{ steps.version_changes.outputs.change_log }}
+          release_name: Bootware ${{ steps.extract_tag.outputs.tag }}
+          body: >-
+            See the
+            [changelog](https://github.com/wolfgangwazzlestrauss/bootware/blob/${{
+            steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
 
   image:
     name: Create and push Docker image
