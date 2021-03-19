@@ -14,16 +14,24 @@
 - name: Find Linux desktop environment name
   set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
 
+- name: Install Pop shell for GNOME desktop Fedora distributions
+  become: yes
+  dnf:
+    name: gnome-shell-extension-pop-shell
+  when: ansible_pkg_mgr == "dnf" and linux_desktop in ["gnome"]
+
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
   script: "gnome.sh {{ user_account }} {{ background.name }}"
   when:
     ansible_system == "Linux" and linux_desktop in ["gnome", "pop", "ubuntu"]
 
-- name: Change desktop settings for MacOS
+# Linux distributions with GNOME desktops should be configured after general
+# GNOME settings in order to use overrides.
+- name: Change desktop settings for Fedora
   become_user: "{{ user_account }}"
-  script: macos.sh
-  when: ansible_system == "Darwin"
+  script: fedora.sh
+  when: ansible_pkg_mgr == "dnf" and linux_desktop in ["gnome"]
 
 - name: Change desktop settings for PopOS
   become_user: "{{ user_account }}"
@@ -34,6 +42,11 @@
   become_user: "{{ user_account }}"
   script: ubuntu.sh
   when: ansible_system == "Linux" and linux_desktop == "ubuntu"
+
+- name: Change desktop settings for MacOS
+  become_user: "{{ user_account }}"
+  script: macos.sh
+  when: ansible_system == "Darwin"
 
 - name: Change desktop settings for Windows
   become_user: "{{ user_account }}"
