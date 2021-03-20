@@ -1,15 +1,21 @@
 - name: Install Libvirt for arch distributions
   become: yes
   pacman:
-    name: libvirt
+    name:
+      - cockpit
+      - cockpit-machines
+      - libvirt
+      - virt-install
+      - virt-viewer
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian distributions
   apt:
     name:
+      - cockpit
+      - cockpit-machines
       - libvirt-clients
-      - libvirt-daemon-system
-      - qemu-kvm
+      - virt-viewer
       - virtinst
   become: yes
   when: ansible_pkg_mgr == "apt"
@@ -23,7 +29,10 @@
 - name: Install Libvirt for Fedora distributions
   become: yes
   dnf:
-    name: libvirt
+    name:
+      - cockpit
+      - libvirt
+      - virt-viewer
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for Windows

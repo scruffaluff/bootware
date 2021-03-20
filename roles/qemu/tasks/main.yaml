@@ -1,8 +1,7 @@
 - name: Install QEMU for Linux
   become: yes
   package:
-    name:
-      - qemu
+    name: qemu
   when: ansible_system == "Linux"
 
 - name: Install QEMU for MacOS
