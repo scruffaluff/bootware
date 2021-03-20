@@ -8,12 +8,6 @@
     cmd: gnome-extensions show pop-shell@system76.com
   when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
-- name: Install Pop shell dependencies for Debian distributions
-  apt:
-    name: node-typescript
-  become: yes
-  when: pop_shell_check is succeeded and ansible_pkg_mgr == "apt"
-
 - name: Install Pop Shell for GNOME desktops
   shell:
     cmd: |
@@ -22,7 +16,7 @@
       echo y | make -C "${tmp_dir}" local-install
       rm -fr "${tmp_dir}"
     executable: /bin/bash
-  when: pop_shell_check is succeeded
+  when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
 
 - name: Change Pop Shell settings for GNOME desktops
   become_user: "{{ user_account }}"

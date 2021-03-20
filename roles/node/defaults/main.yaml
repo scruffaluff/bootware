@@ -3,6 +3,7 @@ node_applications:
   - "gitmoji-cli"
   - prettier
   - speedscope
+  - typescript
 node_versions:
   - "10"
   - "12"
