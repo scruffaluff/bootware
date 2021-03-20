@@ -1,14 +1,19 @@
 - name: Find Linux desktop environment name
   set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
 
+- name: Install Pop shell dependencies for Debian distributions
+  apt:
+    name: node-typescript
+  become: yes
+  when: ansible_pkg_mgr == "apt" and linux_desktop in ["gnome", "ubuntu"]
+
 - name: Install Pop shell for GNOME desktops
   become: yes
   shell:
     cmd: |
-      tmp_dir=$(mktemp)
+      tmp_dir=$(mktemp -u)
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
-      cd "${tmp_dir}"
-      make install
+      make -C "${tmp_dir}" local-install
     executable: /bin/bash
   when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
