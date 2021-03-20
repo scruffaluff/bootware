@@ -1,0 +1,21 @@
+- name: Find Linux desktop environment name
+  set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
+
+- name: Install Pop shell for GNOME desktops
+  become: yes
+  shell:
+    cmd: |
+      tmp_dir=$(mktemp)
+      git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
+      cd "${tmp_dir}"
+      make install
+    executable: /bin/bash
+  when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
+
+- name: Install Amethyst for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: amethyst
+    state: present
+  when: ansible_system == "Darwin"

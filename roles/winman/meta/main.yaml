@@ -1,0 +1,4 @@
+dependencies:
+  - role: bash
+  - role: git
+  - role: node
