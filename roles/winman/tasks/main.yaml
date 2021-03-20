@@ -7,13 +7,12 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and linux_desktop in ["gnome", "ubuntu"]
 
-- name: Install Pop shell for GNOME desktops
-  become: yes
+- name: Install Pop Shell for GNOME desktops
   shell:
     cmd: |
-      tmp_dir=$(mktemp -u)
+      tmp_dir="${HOME}$(mktemp -u)"
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
-      make -C "${tmp_dir}" local-install
+      echo y | make -C "${tmp_dir}" local-install
     executable: /bin/bash
   when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
