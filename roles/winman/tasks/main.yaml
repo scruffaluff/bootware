@@ -1,7 +1,7 @@
 - name: Find Linux desktop environment name
   set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
 
-- name: Check if Pop Shell is installed
+- name: Check if Pop Shell is installed for GNOME desktops
   ignore_errors: yes
   register: pop_shell_check
   shell:
@@ -15,13 +15,14 @@
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
       echo y | make -C "${tmp_dir}" local-install
       rm -fr "${tmp_dir}"
+      gnome-extensions enable pop-shell@system76.com
     executable: /bin/bash
   when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
 
-- name: Change Pop Shell settings for GNOME desktops
+- name: Change Pop Shell settings for PopOS
   become_user: "{{ user_account }}"
-  script: pop_shell.sh
-  when: linux_desktop in ["gnome", "ubuntu", "pop"]
+  script: popos.sh
+  when: ansible_system == "Linux" and linux_desktop == "pop"
 
 - name: Install Amethyst for MacOS
   become_user: "{{ user_account }}"
