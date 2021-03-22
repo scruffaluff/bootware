@@ -8,16 +8,30 @@
     cmd: gnome-extensions show pop-shell@system76.com
   when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
+# Pop Shell requires TypeScript as a build dependency
+- name: Install Typescript for GNOME desktops
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      npm install -g typescript
+    executable: /bin/bash
+  when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
+
 - name: Install Pop Shell for GNOME desktops
   shell:
     cmd: |
+      source {{ user_home_dir }}/.bashrc
       tmp_dir="${HOME}$(mktemp -u)"
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
       echo y | make -C "${tmp_dir}" local-install
       rm -fr "${tmp_dir}"
-      gnome-extensions enable pop-shell@system76.com
     executable: /bin/bash
   when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
+
+- name: Enable Pop Shell extension for GNOME desktops
+  shell:
+    cmd: gnome-extensions enable pop-shell@system76.com
+  when: ansible_system== "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
 - name: Change Pop Shell settings for PopOS
   become_user: "{{ user_account }}"
