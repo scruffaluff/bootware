@@ -33,10 +33,11 @@
     cmd: gnome-extensions enable pop-shell@system76.com
   when: ansible_system== "Linux" and linux_desktop in ["gnome", "ubuntu"]
 
-- name: Change Pop Shell settings for PopOS
+- name: Change Pop Shell settings for GNOME desktops
   become_user: "{{ user_account }}"
-  script: popos.sh
-  when: ansible_system == "Linux" and linux_desktop == "pop"
+  script: pop_shell.sh
+  when: >-
+    ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu", "pop"]
 
 - name: Install Amethyst for MacOS
   become_user: "{{ user_account }}"
