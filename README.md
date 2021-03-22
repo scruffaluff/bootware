@@ -18,8 +18,7 @@ installations with Ansible.
 ## Install
 
 Bootware is invoked by shell scripts on the user's computer. The following
-commands will download the shell scripts and add them to the system path. Note
-that on Windows, PowerShell will need to run as administrator.
+commands will download the shell scripts and add them to the system path.
 
 <code-group>
 <code-block title="Linux" active>
@@ -40,6 +39,14 @@ Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfg
 ```
 </code-block>
 </code-group>
+
+On Windows, PowerShell will need to run as administrator and the security policy
+must allow for running remote PowerShell scripts. The following command will
+update the security policy, if needed.
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+```
 
 ## Usage
 

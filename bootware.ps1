@@ -172,6 +172,11 @@ Function Setup() {
         Start-Process -Wait $TempFile
     }
 
+    # Install WSL2 with Ubuntu.
+    # dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    # dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    # Then restart your system.
+
     # Make current network private.
     # Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
 
@@ -180,9 +185,9 @@ Function Setup() {
     # winrm quickconfig
 
     # Allow HTTP WinRM connection with password credentials.
-    winrm set winrm/config/client/auth '@{Basic="true"}'
-    winrm set winrm/config/service/auth '@{Basic="true"}'
-    winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+    # winrm set winrm/config/client/auth '@{Basic="true"}'
+    # winrm set winrm/config/service/auth '@{Basic="true"}'
+    # winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 }
 
 
@@ -194,8 +199,8 @@ Function Update() {
         }
     }
 
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1" -OutFile "/usr/local/bin/bootware"
-    bootware version
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1" -OutFile "$PSScriptRoot"
+    Version
 }
 
 Function Version() {
@@ -211,6 +216,7 @@ Function Main() {
             "--version" { Version; Exit 0 }
             "bootstrap" { Bootstrap Args[1:]; Exit 0 }
             "config" { Config Args[1:]; Exit 0 }
+            "setup" { Setup Args[1:]; Exit 0 }
             "update" { Update Args[1:]; Exit 0 }
         }
     }
