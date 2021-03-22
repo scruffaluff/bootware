@@ -154,23 +154,24 @@ Function Setup() {
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
+
+         # Git is required for addding Scoop buckets.
+        If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
+            scoop install git
+        }
+    
         scoop bucket add extras
         scoop bucket add main
         scoop bucket add nerd-fonts
         scoop bucket add versions
     }
 
-    # Install Scoop package manager.
-    If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
-        scoop install git
-    }
-
     # Install Docker Desktop.
-    If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
-        Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
-        Start-Process -Wait $TempFile
-    }
+    # If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
+    #     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
+    #     Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
+    #     Start-Process -Wait $TempFile
+    # }
 
     # Install WSL2 with Ubuntu.
     # dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
