@@ -76,6 +76,19 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install essential packages for Fedora distributions
+  become: yes
+  dnf:
+    name:
+      - dnf-plugins-core
+      - findutils
+      - openssl-devel
+      - perl-FindBin
+      - python
+      - ShellCheck
+      - which
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install essential packages for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
@@ -87,18 +100,6 @@
       - unzip
       - zip
   when: ansible_system == "Darwin"
-
-- name: Install essential packages for Fedora distributions
-  become: yes
-  dnf:
-    name:
-      - findutils
-      - openssl-devel
-      - perl-FindBin
-      - python
-      - ShellCheck
-      - which
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install essential packages for Windows
   become_user: "{{ user_account }}"

@@ -18,10 +18,24 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Add Docker repository for Fedora distributions
+  become: yes
+  shell:
+    cmd: >-
+      dnf config-manager --add-repo
+      https://download.docker.com/linux/fedora/docker-ce.repo
+    # Ansible dnf module does not have a command to add repositories.
+    warn: false
+  when: ansible_pkg_mgr == "dnf"
+
+# Command sudo systemctl start docker may need to be executed afterwards.
 - name: Install Docker for Fedora distributions
   become: yes
   dnf:
-    name: docker
+    name:
+      - containerd.io
+      - docker-ce
+      - docker-ce-cli
   when: ansible_pkg_mgr == "dnf"
 
 - name: Add user to Docker group for Linux
