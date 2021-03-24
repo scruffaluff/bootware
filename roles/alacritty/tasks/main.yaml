@@ -4,13 +4,14 @@
     name: alacritty
   when: ansible_pkg_mgr == "pacman"
 
-- name: Add Alacritty PPA for Debian distributions
+# TODO: Check if Apt has access to Ubuntu repositories.
+- name: Add Alacritty PPA for Ubuntu distributions
   apt_repository:
     repo: ppa:mmstick76/alacritty
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_os_family != "Pop!_OS"
 
-- name: Install Alacritty for Debian distributions
+- name: Install Alacritty for Ubuntu distributions
   apt:
     name: alacritty
   become: yes

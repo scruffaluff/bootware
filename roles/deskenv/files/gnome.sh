@@ -7,6 +7,8 @@ gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 # Do not show pop up banners for notifications.
 gsettings set org.gnome.desktop.notifications show-banners false
+# Do not show notifications in the lock screen.
+org.gnome.desktop.notifications show-in-lock-screen false
 # Use natural scroll orientation for mouse.
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 # Use natural scroll orientation for touchpad.

@@ -407,9 +407,10 @@ setup_debian() {
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
-    # Not Python installations have setuptools installed and it must be
-    # installed before other packages.
-    ${1:+sudo} python3 -m pip install --upgrade setuptools wheel pip ansible
+    # Not all Python installations have setuptools or wheel installed and it
+    # must be installed as a separate step before other packages.
+    ${1:+sudo} python3 -m pip install setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if ! dpkg -s curl &>/dev/null ; then
