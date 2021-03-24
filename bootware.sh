@@ -399,11 +399,17 @@ setup_debian() {
   # for more information.
   #
   # Flags:
-  #   -s:
-  if ! dpkg -s ansible &>/dev/null ; then
+  #   -x: Check if execute permission is granted.
+  if ! [ -x "$(command -v ansible)" ]; then
+    # Ansible is install with Python3, since many Debian systems package Ansible
+    # version 2.7, which does not support Ansible collections.
     echo "Installing Ansible..."
     ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y ansible python3-apt
+    ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
+
+    # Not Python installations have setuptools installed and it must be
+    # installed before other packages.
+    ${1:+sudo} python3 -m pip install --upgrade setuptools wheel pip ansible
   fi
 
   if ! dpkg -s curl &>/dev/null ; then
