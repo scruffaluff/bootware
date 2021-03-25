@@ -11,9 +11,6 @@
     mode: 0644
     url: "{{ background.url }}"
 
-- name: Find Linux desktop environment name
-  set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
-
 - name: Install Pop shell for GNOME desktop Fedora distributions
   become: yes
   dnf:

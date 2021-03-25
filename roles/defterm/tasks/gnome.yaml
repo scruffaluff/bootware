@@ -1,6 +1,3 @@
-- name: Find Linux desktop environment name
-  set_fact: linux_desktop="{{ lookup('env', 'DESKTOP_SESSION') }}"
-
 - name: Install Gnome Terminal for Debian distributions
   apt:
     name: gnome-terminal
