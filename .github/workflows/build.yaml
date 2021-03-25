@@ -76,7 +76,7 @@ jobs:
       matrix:
         # There is a bug in the Arch Linux Docker image which breaks pacman. See
         # https://bugs.archlinux.org/task/69563 for more information.
-        distro: [debian, fedora]
+        distro: [debian, fedora, ubuntu]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository

@@ -1,0 +1,55 @@
+FROM ubuntu:20.10
+
+
+# Create non-priviledged user.
+#
+# Flags:
+#     -l: Do not add user to lastlog database.
+#     -m: Create user home directory if it does not exist.
+#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -u 1000: Give new user UID value 1000.
+RUN useradd -lm -s /bin/bash -u 1000 ubuntu
+
+# Install Bash, Curl and Sudo.
+#
+# Flags:
+#     -m: Ignore missing packages and handle result.
+#     -q: Produce log suitable output by omitting progress indicators.
+#     -y: Assume "yes" as answer to all prompts and run non-interactively.
+RUN apt-get update -m && apt-get install -qy bash curl sudo
+
+# Add standard user to sudoers group.
+RUN usermod -a -G sudo ubuntu
+
+# Allow sudo commands with no password.
+RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+
+# Fix current sudo bug for containers.
+# https://github.com/sudo-project/sudo/issues/42
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+
+ENV HOME=/home/ubuntu USER=ubuntu
+USER ubuntu
+
+# Install Bootware.
+RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+
+# Generate default Bootware configuration file.
+RUN bootware config --empty
+
+# Install dependencies for Bootware.
+RUN bootware setup
+
+# Create bootware project directory.
+RUN mkdir $HOME/bootware
+WORKDIR $HOME/bootware
+
+# Copy bootware project files.
+COPY roles/ ./roles/
+COPY group_vars/ ./group_vars/
+COPY main.yaml ./
+
+ARG tags
+
+# Run Bootware bootstrapping.
+RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}
