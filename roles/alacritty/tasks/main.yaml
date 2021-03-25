@@ -1,21 +1,36 @@
+- name: Check if Apt source has lines containing ubuntu for Debian distributions
+  become: yes
+  ignore_errors: yes
+  # Ansible lineinfile under check_mode appears to still edit local files, so
+  # it cannot be used.
+  shell:
+    cmd: grep -P '^deb.*ubuntu' /etc/apt/sources.list
+  register: ubuntu_repo_lines
+  when: ansible_pkg_mgr == "apt"
+
+- name: Check if Apt has access to Ubuntu repositories for Debian distributions
+  set_fact: ubuntu_repos={{ not ubuntu_repo_lines.failed }}
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install Alacritty for Arch distributions
   become: yes
   pacman:
     name: alacritty
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Check if Apt has access to Ubuntu repositories.
+# TODO: Install Alacritty for Debian distributions.
 - name: Add Alacritty PPA for Ubuntu distributions
   apt_repository:
     repo: ppa:mmstick76/alacritty
   become: yes
-  when: ansible_pkg_mgr == "apt" and ansible_os_family != "Pop!_OS"
+  when: >-
+    ansible_pkg_mgr == "apt" and ubuntu_repos and ansible_os_family != "Pop!_OS"
 
 - name: Install Alacritty for Ubuntu distributions
   apt:
     name: alacritty
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ubuntu_repos
 
 - name: Install Alacritty for MacOS
   become_user: "{{ user_account }}"
