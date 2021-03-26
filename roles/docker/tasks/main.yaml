@@ -4,11 +4,17 @@
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
+- name: Get Ubuntu release name
+  register: ubuntu_release
+  shell:
+    cmd: lsb_release -cs
+  when: ansible_pkg_mgr == "apt"
+
 - name: Add Docker key for Ubuntu distributions
   become: yes
   shell:
     cmd: |
-      curl -LSfs https://download.docker.com/linux/ubuntu/gpg | sudo apt-key --keyring /usr/share/keyrings/docker-archive-keyring.gpg add -
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     warn: no
   when: ansible_pkg_mgr == "apt"
 
@@ -18,7 +24,7 @@
     path: /etc/apt/sources.list.d/docker.list
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
-    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu ubuntu stable
+    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ubuntu_release.stdout }} stable
     create: yes
   when: ansible_pkg_mgr == "apt"
 
@@ -60,12 +66,18 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Check if systemd is available for Linux
+  register: systemd_available
+  stat:
+    path: /usr/bin/systemctl
+  when: ansible_system == "Linux"
+
 - name: Start Containerd on system boot for Linux
   become: yes
   systemd:
     enabled: yes
     name: containerd
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Start Docker on system boot for Linux
   become: yes
@@ -80,7 +92,7 @@
     append: yes
     name: "{{ user_account }}"
     groups: docker
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Install Docker Compose for Linux
   become: yes

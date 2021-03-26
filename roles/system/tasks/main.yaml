@@ -68,6 +68,7 @@
       - apt-file
       - apt-transport-https
       - gnupg2
+      - lsb-release
       - openssh-client
       - openssh-server
       - pbuilder
