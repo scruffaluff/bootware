@@ -22,9 +22,11 @@
   become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
   shell:
+    # Pipx installation can break if associated Python interpreter is updated.
+    # If so a new installation should overwrite the current.
     cmd: |
       source {{ user_home_dir }}/.bashrc
-      pipx install {{ item }} || pipx upgrade {{ item }}
+      pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force {{ item }}
     executable: /bin/bash
 
 - name: Update Pipx command line applications
