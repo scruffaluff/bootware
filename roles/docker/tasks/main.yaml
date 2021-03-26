@@ -4,31 +4,50 @@
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
-- name: Get Ubuntu release name
-  register: ubuntu_release
+- name: Install repository dependencies for Debian distributions
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Get release name for Debian distributions
+  register: deb_distro_release
   shell:
     cmd: lsb_release -cs
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker key for Ubuntu distributions
+- name: Get base distrobution for Debian distributions
+  register: deb_distro_base
+  shell:
+    # Tr pipe converts output to lowercase. Taken from
+    # https://stackoverflow.com/a/2264537.
+    cmd: lsb_release -is | tr '[:upper:]' '[:lower:]'
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Docker key for Debian distributions
   become: yes
   shell:
     cmd: |
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base.stdout }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     warn: no
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker package information for Ubuntu distributions
+- name: Add Docker package information for Debian distributions
   become: yes
   lineinfile:
     path: /etc/apt/sources.list.d/docker.list
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
-    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ubuntu_release.stdout }} stable
+    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base.stdout }} {{ deb_distro_release.stdout }} stable
     create: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Docker for Ubuntu distributions
+- name: Install Docker for Debian distributions
   apt:
     name:
       - containerd.io
