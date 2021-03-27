@@ -34,6 +34,7 @@
   shell:
     cmd: |
       curl -fsSL https://download.docker.com/linux/{{ deb_distro_base.stdout }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    creates: /usr/share/keyrings/docker-archive-keyring.gpg
     warn: no
   when: ansible_pkg_mgr == "apt"
 

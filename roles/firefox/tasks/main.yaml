@@ -1,8 +1,20 @@
+- name: Get base distrobution for Debian distributions
+  register: deb_distro_base
+  shell:
+    cmd: lsb_release -is
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Firefox for Debian distributions
+  become: yes
+  apt:
+    name: firefox-esr
+  when: deb_distro_base.stdout == "Debian"
+
 - name: Install Firefox for Linux
   become: yes
   package:
     name: firefox
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and deb_distro_base.stdout != "Debian"
 
 - name: Install Firefox for MacOS
   become_user: "{{ user_account }}"
