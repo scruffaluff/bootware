@@ -8,13 +8,15 @@
   become: yes
   apt:
     name: firefox-esr
-  when: deb_distro_base.stdout == "Debian"
+  when: ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "Debian"
 
 - name: Install Firefox for Linux
   become: yes
   package:
     name: firefox
-  when: ansible_system == "Linux" and deb_distro_base.stdout != "Debian"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr == "apt" and
+    deb_distro_base.stdout != "Debian"
 
 - name: Install Firefox for MacOS
   become_user: "{{ user_account }}"
