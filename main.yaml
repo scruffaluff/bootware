@@ -81,6 +81,14 @@
     - desktop
     - server
 
+- name: Install Caffeine
+  hosts: all
+  roles:
+    - caffeine
+  tags:
+    - caffeine
+    - desktop
+
 - name: Install Google Chrome web browser
   hosts: all
   roles:
