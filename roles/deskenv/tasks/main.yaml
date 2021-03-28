@@ -11,6 +11,12 @@
     mode: 0644
     url: "{{ background.url }}"
 
+- name: Install Caffeine shell extension for GNOME desktop Debian distributions
+  become: yes
+  dnf:
+    name: gnome-shell-extension-caffeine
+  when: ansible_pkg_mgr == "apt" and linux_desktop in ["gnome", "pop", "ubuntu"]
+
 - name: Install Caffeine shell extension for GNOME desktop Fedora distributions
   become: yes
   dnf:
