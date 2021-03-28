@@ -575,7 +575,7 @@ version() {
 main() {
   # Parse command line arguments.
   for arg in "$@"; do
-    case "$arg" in
+    case "${arg}" in
       bootstrap)
         shift 1
         bootstrap "$@"

@@ -26,7 +26,17 @@
   shell:
     # Tr pipe converts output to lowercase. Taken from
     # https://stackoverflow.com/a/2264537.
-    cmd: lsb_release -is | tr '[:upper:]' '[:lower:]'
+    cmd: |
+      name=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+      case "${name}" in
+        pop)
+          echo "ubuntu"
+          ;;
+        *)
+          echo "${name}"
+          ;;
+      esac
+    executable: /bin/bash
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker key for Debian distributions
@@ -104,7 +114,7 @@
   systemd:
     enabled: yes
     name: docker
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Add user to Docker group for Linux
   become: yes
