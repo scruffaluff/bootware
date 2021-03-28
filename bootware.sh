@@ -364,26 +364,21 @@ setup() {
 setup_arch() {
   # Install dependencies for Bootware.
   #
-  # dpkg -l does not always return the correct exit code. dpkg -s does. See
-  # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
-  # for more information.
-  #
   # Flags:
-  #   -Q:
-  #   -i:
-  if ! pacman -Qi ansible &>/dev/null ; then
+  #   -x: Check if execute permission is granted.
+  if ! [ -x "$(command -v ansible)" ]; then
     echo "Installing Ansible..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman --noconfirm -S ansible
   fi
 
-  if ! pacman -Qi curl &>/dev/null ; then
+  if ! [ -x "$(command -v curl)" ]; then
     echo "Installing Curl..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
-  if ! pacman -Qi git &>/dev/null ; then
+  if ! [ -x "$(command -v git)" ]; then
     echo "Installing Git..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm git
@@ -393,10 +388,6 @@ setup_arch() {
 # Configure boostrapping services and utilities for Debian distributions.
 setup_debian() {
   # Install dependencies for Bootware.
-  #
-  # dpkg -l does not always return the correct exit code. dpkg -s does. See
-  # https://github.com/bitrise-io/bitrise/issues/433#issuecomment-256116057
-  # for more information.
   #
   # Flags:
   #   -x: Check if execute permission is granted.
@@ -413,13 +404,13 @@ setup_debian() {
     ${1:+sudo} python3 -m pip install ansible
   fi
 
-  if ! dpkg -s curl &>/dev/null ; then
+  if ! [ -x "$(command -v curl)" ]; then
     echo "Installing Curl..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y curl
   fi
 
-  if ! dpkg -s git &>/dev/null ; then
+  if ! [ -x "$(command -v git)" ]; then
     echo "Installing Git..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y git
@@ -429,19 +420,22 @@ setup_debian() {
 # Configure boostrapping services and utilities for Fedora distributions.
 setup_fedora() {
   # Install dependencies for Bootware.
-  if ! dnf list installed ansible &>/dev/null ; then
+  #
+  # Flags:
+  #   -x: Check if execute permission is granted.
+  if ! [ -x "$(command -v ansible)" ]; then
     echo "Installing Ansible..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y ansible
   fi
 
-  if ! dnf list installed curl &>/dev/null ; then
+  if ! [ -x "$(command -v curl)" ]; then
     echo "Installing Curl..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y curl
   fi
 
-  if ! dnf list installed git &>/dev/null ; then
+  if ! [ -x "$(command -v git)" ]; then
     echo "Installing Git..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y git
@@ -490,19 +484,20 @@ setup_macos() {
   #     -S: Show errors.
   #     -f: Fail silently on server errors.
   #     -s: Disable progress bars.
-  if ! command -v brew > /dev/null; then
+  #     -x: Check if execute permission is granted.
+  if ! [ -x "$(command -v brew)" ]; then
     echo "Installing Homebrew..."
     curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
   fi
 
   # Install Ansible if not already installed.
-  if ! brew list ansible &>/dev/null ; then
+  if ! [ -x "$(command -v ansible)" ]; then
     echo "Installing Ansible..."
     brew install ansible
   fi
 
   # Install Git if not already installed.
-  if ! brew list git &>/dev/null ; then
+  if ! [ -x "$(command -v git)" ]; then
     echo "Installing Git.."
     brew install git
   fi

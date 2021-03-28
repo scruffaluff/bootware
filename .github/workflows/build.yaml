@@ -57,6 +57,8 @@ jobs:
     name: Test bootstrapping software for MacOS
     runs-on: macos-latest
     steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
@@ -64,10 +66,13 @@ jobs:
           | bash
       - name: Create Bootware configuration file
         run: bootware config --empty
+      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
+      - name: Install Ansible since Brew installation appears to be broken
+        run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
-        run: bootware bootstrap --no-passwd --skip docker,
+        run: bootware bootstrap --dev --no-passwd --skip docker,
 
   test-linux:
     name: Test bootstrapping software for ${{ matrix.distro }}
@@ -116,6 +121,8 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
