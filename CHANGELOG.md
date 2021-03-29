@@ -5,11 +5,28 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.2.4 - 2021-03-15
+## Unreleased
+
+### Added
+
+- Caffeine installation role.
+- GNOME desktop UI customizations.
+- Pop Shell extension for all GNOME desktops.
+- Separate Debian and Ubuntu testing.
+
+### Changed
+
+- Made setup depenency checking more flexible.
+- Upgraded Ansible version for Debian distrobutions.
+- Upgraded Docker installation version.
 
 ### Fixed
 
 - Changelog notes for GitHub releases.
+- Debian base support for several packages.
+- Passwordless sudo configuration for MacOS.
+- Pipx package upgrades for updated Python interperter.
+- Scoop bucket additions for Windows.
 
 ## 0.2.3 - 2021-03-15
 

@@ -22,7 +22,7 @@ gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,m
 gsettings set org.gnome.mutter dynamic-workspaces true
 
 # Do not show notifications in the lock screen.
-org.gnome.desktop.notifications show-in-lock-screen false
+gsettings set org.gnome.desktop.notifications show-in-lock-screen false
 
 # Show hidden files in Nautilus Files application.
 gsettings set org.gtk.Settings.FileChooser show-hidden true
