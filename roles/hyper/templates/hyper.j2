@@ -140,6 +140,9 @@ module.exports = {
     // for advanced config flags please refer to https://hyper.is/#cfg
   },
 
+  // Plugin hyper-solarized-light must be the last list element in order for it
+  // to set the theme.
+  //
   // a list of plugins to fetch and install from npm
   // format: [@org/]project[#version]
   // examples:
@@ -148,9 +151,9 @@ module.exports = {
   //   `project#1.0.1`
   plugins: [
     "hyper-search",
-    "hyper-solarized-light",
     "hypercwd",
-    "hyperpanic"
+    "hyperpanic",
+    "hyper-solarized-light"
   ],
 
   // in development, you can create a directory under
