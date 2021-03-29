@@ -9,6 +9,7 @@ module.exports = {
     lastUpdated: "Last Updated",
     nav: [
       { text: "Home", link: "/" },
+      { text: "Installation", link: "/install/" },
       { text: "Configuration", link: "/config/" },
     ],
     repo: "https://github.com/wolfgangwazzlestrauss/bootware",

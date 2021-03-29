@@ -18,8 +18,8 @@ installations with Ansible.
 ## Install
 
 For instructions on installing Bootware for your operating system, see the
-[Install](https://wolfgangwazzlestrauss.github.io/bootware/install) section of
-the documentation.
+[Installation](https://wolfgangwazzlestrauss.github.io/bootware/install) section
+of the documentation.
 
 ## Usage
 
@@ -31,9 +31,9 @@ execute `bootware bootstrap --help`.
 
 For guidance on setting up a development environment and how to make a
 contribution, see the
-[Contributing](https://wolfgangwazzlestrauss.github.io/bootware/contrib) section
-of the documentation.
+[Contributing Guide](https://github.com/wolfgangwazzlestrauss/bootware/blob/master/CONTRIBUTING.md).
 
 ## License
 
-Bootware is distributed under the MIT license.
+Bootware is distributed under a
+[MIT license](https://github.com/wolfgangwazzlestrauss/bootware/blob/master/LICENSE.md).

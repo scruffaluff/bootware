@@ -42,6 +42,21 @@ set -x PATH "$HOME/.cargo/bin" $PATH
 
 # Shell settings
 
+# Custom environment variable function to faciliate other shell compatibility.
+#
+# Taken from https://unix.stackexchange.com/a/176331.
+#
+# Examples:
+#   setenv PATH "usr/local/bin"
+function setenv
+  if [ $argv[1] = PATH ]
+    # Replace colons and spaces with newlines.
+    set -gx PATH (echo $argv[2] | tr ': ' \n)
+  else
+    set -gx $argv
+  end
+end
+
 # Load aliases if file exists.
 #
 # Flags:
@@ -80,6 +95,7 @@ end
 
 # Tool settings.
 set -x BAT_THEME "Solarized (light)"
+set -x PATH "/usr/share/code/bin" $PATH
 
 # Initialize Zoxide if available.
 #

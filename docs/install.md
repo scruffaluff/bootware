@@ -1,4 +1,4 @@
-# Install
+# Installation
 
 Bootware is invoked by shell scripts on the user's computer. The following
 commands will download the shell scripts and add them to the system path.

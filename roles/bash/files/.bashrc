@@ -52,6 +52,16 @@ export PATH="${HOME}/.cargo/bin:${PATH}"
 
 # Shell settings.
 
+# Custom environment variable function to faciliate Fish shell compatibility.
+#
+# Taken from https://unix.stackexchange.com/a/176331.
+#
+# Examples:
+#   setenv PATH "usr/local/bin"
+function setenv() { 
+  export "$1=$2"
+}
+
 # Load aliases if file exists.
 #
 # Flags:
@@ -60,14 +70,21 @@ if [ -f "${HOME}/.aliases" ]; then
   source "${HOME}/.aliases"
 fi
 
-# Causes errors variables are exports using Fish syntax.
+# Load environment variables if file exists.
+#
+# Flags:
+#   -f: Check if inode is a regular file.
+if [ -f "${HOME}/.env" ]; then
+  source "$HOME/.env"
+fi
+
 # Load secrets if file exists.
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-# if [ -f "${HOME}/.secrets" ]; then
-#   source "${HOME}/.secrets"
-# fi
+if [ -f "${HOME}/.secrets" ]; then
+  source "${HOME}/.secrets"
+fi
 
 
 # Starship settings.
@@ -84,6 +101,7 @@ fi
 # Tool settings.
 export BAT_THEME="Solarized (light)"
 complete -C /usr/local/bin/terraform terraform
+export PATH="/usr/share/code/bin:${PATH}"
 
 # Initialize Zoxide if available.
 #
