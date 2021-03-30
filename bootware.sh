@@ -253,7 +253,7 @@ config() {
 
   if [[ ${empty_cfg} == 1 ]]; then
     echo "Writing empty configuration file to ${dst_file}..."
-    echo "mock_data: true" > "${dst_file}"
+    echo "passwordless_sudo: false" > "${dst_file}"
   else
     assert_cmd curl
 

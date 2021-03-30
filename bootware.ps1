@@ -193,15 +193,20 @@ Function Setup() {
 
 
 Function Update() {
+    $Version = "master"
+
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
-            "-h" { Usage "update"; Exit 0 }
-            "--help" { Usage "update"; Exit 0 }
+            {$_ -in "-h", "--help"} { Usage "update"; Exit 0 }
+            {$_ -in "-v", "--version"} { $Version = $Args[0][1]; }
         }
     }
 
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1" -OutFile "$PSScriptRoot"
-    Version
+    $DstFile = "$PSScriptRoot/bootware.ps1"
+    $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
+
+    Invoke-WebRequest -Uri "$SrcURL" -OutFile "$DstFile"
+    Write-Output "Updated to version $(bootware --version)."
 }
 
 Function Version() {
@@ -209,17 +214,15 @@ Function Version() {
 }
 
 Function Main() {
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
-            "-h" { Usage "main"; Exit 0 }
-            "--help" { Usage "main"; Exit 0 }
-            "-v" { Version; Exit 0 }
-            "--version" { Version; Exit 0 }
-            "bootstrap" { Bootstrap Args[1:]; Exit 0 }
-            "config" { Config Args[1:]; Exit 0 }
-            "setup" { Setup Args[1:]; Exit 0 }
-            "update" { Update Args[1:]; Exit 0 }
-        }
+    $Slice = $Args[0][1..($Args[0].Length-1)]
+
+    Switch ($Args[0][0]) {
+        {$_ -in "-h", "--help"} { Usage "main"; Exit 0 }
+        {$_ -in "-v", "--version"} { Version; Exit 0 }
+        "bootstrap" { Bootstrap $Slice; Exit 0 }
+        "config" { Config $Slice; Exit 0 }
+        "setup" { Setup $Slice; Exit 0 }
+        "update" { Update $Slice; Exit 0 }
     }
 
     Usage "main"
