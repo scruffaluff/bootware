@@ -197,7 +197,7 @@ Function Config() {
     # The progress bar updates every byte, which makes downloads slow. See
     # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
-    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+    Invoke-WebRequest -UseBasicParsing -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
 # Print error message and exit script with error code.
@@ -262,7 +262,7 @@ Function Setup() {
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
         $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
+        Invoke-WebRequest -UseBasicParsing -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
     }
 
      # Git is required for addding Scoop buckets.
@@ -305,18 +305,42 @@ Function SetupDocker {
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
         $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
+        Invoke-WebRequest -UseBasicParsing -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
         Start-Process -Wait $TempFile
     }
 }
 
 # Install WSL2 with Ubuntu.
+#
+# Implemented based on instructions at https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL {
     If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
         Write-Output "Restart your system to finish WSL installation."
+        Exit 0
+    }
+
+    If (-Not (Get-Command ubuntu -ErrorAction SilentlyContinue)) {
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
+        Write-Output "Downloading WSL update. Follow the GUI for installation."
+
+        # The progress bar updates every byte, which makes downloads slow. See
+        # https://stackoverflow.com/a/43477248 for an explanation.
+        $ProgressPreference = "SilentlyContinue"
+        Invoke-WebRequest -UseBasicParsing -Uri "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" -OutFile $TempFile
+        Start-Process -Wait $TempFile
+
+        wsl --set-default-version 2
+
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".appx"
+
+        # The progress bar updates every byte, which makes downloads slow. See
+        # https://stackoverflow.com/a/43477248 for an explanation.
+        $ProgressPreference = "SilentlyContinue"
+        Invoke-WebRequest -UseBasicParsing -Uri https://aka.ms/wslubuntu2004 -OutFile $TempFile
+        Add-AppxPackage $TempFile
     }
 }
 
@@ -344,7 +368,7 @@ Function Update() {
     # The progress bar updates every byte, which makes downloads slow. See
     # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
-    Invoke-WebRequest -Uri "$SrcURL" -OutFile "$DstFile"
+    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
     Write-Output "Updated to version $(bootware --version)."
 }
 
