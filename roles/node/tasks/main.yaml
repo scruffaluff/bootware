@@ -11,7 +11,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: nvm
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Install multiple Node versions for Unix
   become_user: "{{ user_account }}"
@@ -28,7 +28,7 @@
   loop: "{{ node_versions }}"
   shell:
     cmd: nvm install {{ item }}
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Set default Node version for Unix
   become_user: "{{ user_account }}"
@@ -43,7 +43,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: nvm alias default {{ node_versions[-1] }}
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Update NPM for Unix
   become_user: "{{ user_account }}"
@@ -58,7 +58,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: nvm install-latest-npm
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Install or update Node CLI applications for Unix
   become_user: "{{ user_account }}"
@@ -78,7 +78,7 @@
     cmd: |
       nvm use {{ node_versions[-1] }}
       npm install -g {{ item }} || npm update -g {{ item }}
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Create Fish functions directory for Linux
   become_user: "{{ user_account }}"

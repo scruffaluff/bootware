@@ -3,4 +3,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: mongodb-database-tools
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

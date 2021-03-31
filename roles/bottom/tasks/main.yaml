@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: bottom_release
+  when: ansible_system != "Win32NT"
 
 # TODO: Install for Arch and Fedora.
 - name: Install Bottom For Debian distributions
@@ -31,4 +32,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: bottom
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

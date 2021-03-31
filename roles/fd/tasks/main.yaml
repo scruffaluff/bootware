@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: fd_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install FD for Arch distributions
   become: yes
@@ -37,4 +38,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: fd
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

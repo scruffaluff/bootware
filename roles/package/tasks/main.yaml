@@ -56,4 +56,4 @@
     architecture: 64bit
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

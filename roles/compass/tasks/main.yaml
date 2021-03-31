@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: mongodb_compass_formula
+  when: ansible_system != "Win32NT"
 
 # MongoDB appears to not have a Compass release for Arch distributions.
 
@@ -37,4 +38,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: mongodb-compass-community
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: bat_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install Bat for Arch distributions
   become: yes
@@ -37,4 +38,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: bat
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

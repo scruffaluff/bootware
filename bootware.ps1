@@ -325,7 +325,7 @@ Function SetupDocker {
 
 
 Function SetupWinRM {
-    $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
+    $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
     Write-Output "Setting up WinRM..."
     DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
     & $TempFile

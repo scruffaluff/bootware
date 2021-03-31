@@ -6,4 +6,4 @@
     force: yes
     mode: 0755
     src: profile.ps1
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

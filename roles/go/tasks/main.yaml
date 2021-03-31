@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: go_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install Go for Linux
   become: yes
@@ -29,4 +30,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: go
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

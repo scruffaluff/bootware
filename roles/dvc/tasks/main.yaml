@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: dvc_formula
+  when: ansible_system != "Win32NT"
 
 # DVC does not appear to provide an Arch release.
 
@@ -37,4 +38,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: dvc
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: terraform_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install Terraform for Linux
   become: yes
@@ -30,4 +31,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: terraform
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

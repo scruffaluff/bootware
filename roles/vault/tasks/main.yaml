@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: vault_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install Vault for Linux
   become: yes
@@ -29,4 +30,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: vault
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

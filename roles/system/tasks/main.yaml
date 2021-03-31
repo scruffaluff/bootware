@@ -112,7 +112,7 @@
       - openssl
       - unzip
       - zip
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Add Flathub remote repository for Linux
   become: yes

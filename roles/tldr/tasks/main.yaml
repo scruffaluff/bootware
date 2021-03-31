@@ -15,7 +15,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: tldr
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Create TLDR repository directory for Linux
   become_user: "{{ user_account }}"

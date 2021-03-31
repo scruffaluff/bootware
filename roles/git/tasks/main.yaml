@@ -22,7 +22,7 @@
       - git
       - git-lfs
       - posh-git
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Copy Git configuration file
   become_user: "{{ user_account }}"

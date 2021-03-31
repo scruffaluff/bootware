@@ -144,7 +144,7 @@
     name:
       - docker-compose
       - posh-docker
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Install Docker Fish shell completions for Unix
   become_user: "{{ user_account }}"

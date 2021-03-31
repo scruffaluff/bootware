@@ -6,7 +6,7 @@ _user_shell:
 _user_home_dir:
   linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
   macos: "{{ '/Users/' + user_account }}"
-  windows: "{{ '/Users/' + user_account }}"
+  win32nt: "{{ '/Users/' + user_account }}"
 font_size: 14
 linux_desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 user_home_dir: "{{ _user_home_dir[_ansible_system] }}"

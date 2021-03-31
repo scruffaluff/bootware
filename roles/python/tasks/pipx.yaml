@@ -15,7 +15,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: pipx
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 # Pipx installs applications per user, so user_account is required.
 - name: Install Pipx command line applications

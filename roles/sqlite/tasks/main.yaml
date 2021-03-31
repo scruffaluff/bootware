@@ -27,7 +27,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: sqlite
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Copy SQLite settings file
   become_user: "{{ user_account }}"

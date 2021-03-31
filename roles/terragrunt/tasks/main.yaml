@@ -4,6 +4,7 @@
     method: GET
     return_content: yes
   register: terragrunt_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install Terragrunt for Linux
   become: yes
@@ -26,4 +27,4 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: terragrunt
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

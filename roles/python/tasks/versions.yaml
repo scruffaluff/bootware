@@ -115,7 +115,7 @@
     architecture: 64bit
     name: python{{ item | replace('.','') | replace('39','') }}
   loop: "{{ python_releases }}"
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix
   become_user: "{{ user_account }}"

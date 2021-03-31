@@ -10,7 +10,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: wasmtime
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"
 
 - name: Install Wasm Pack for Unix
   become_user: "{{ user_account }}"
