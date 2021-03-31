@@ -19,6 +19,14 @@ OPTIONS:
 '@
 }
 
+# Downloads file to destination efficiently.
+Function DownloadFile($SrcURL, $DstFile) {
+    # The progress bar updates every byte, which makes downloads slow. See
+    # https://stackoverflow.com/a/43477248 for an explanation.
+    $ProgressPreference = "SilentlyContinue"
+    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+}
+
 # Print error message and exit with error code.
 Function Error($Message) {
     Write-Error "Error: $Message"
@@ -27,16 +35,23 @@ Function Error($Message) {
 
 # Script entrypoint.
 Function Main() {
+    $ArgIdx = 0
     $Target = "Machine"
     $Version = "master"
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
-            "-h" { Usage; Exit 0 }
-            "--help" { Usage; Exit 0 }
-            "-v" { $Version = Args[1] }
-            "--version" { $Version = Args[1] }
-            "--user" { $Target = "User" }
+            {$_ -In "-h", "--help"} {
+                Usage
+                Exit 0
+            }
+            {$_ -In "-v", "--version"} {
+                $Version = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            "--user" {
+                $Target = "User"
+            }
         }
     }
 
@@ -54,12 +69,7 @@ Function Main() {
     Write-Output "Installing Bootware..."
 
     New-Item -Force -ItemType Directory -Path $DestDir
-
-    # The progress bar updates every byte, which makes downloads slow. See
-    # https://stackoverflow.com/a/43477248 for an explanation.
-    $ProgressPreference = "SilentlyContinue"
-    Invoke-WebRequest -UseBasicParsing -Uri "$Source" -OutFile "$Dest"
-
+    DownloadFile "$Source" "$Dest"
     Write-Output "Installed $(bootware --version)."
 }
 

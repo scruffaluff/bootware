@@ -43,7 +43,7 @@ OPTIONS:
         }
         "main" {
             Write-Output @'
-$(Version)
+Bootware 0.3.0
 Boostrapping software installer
 
 USAGE:
@@ -192,12 +192,16 @@ Function Config() {
     }
 
     New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent)
-
     Write-Output "Downloading default configuration file to $DstFile..."
+    DownloadFile "$SrcURL" "$DstFile"
+}
+
+# Downloads file to destination efficiently.
+Function DownloadFile($SrcURL, $DstFile) {
     # The progress bar updates every byte, which makes downloads slow. See
     # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
-    Invoke-WebRequest -UseBasicParsing -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
 # Print error message and exit script with error code.
@@ -262,7 +266,7 @@ Function Setup() {
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
         $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -UseBasicParsing -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
+        Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
     }
 
      # Git is required for addding Scoop buckets.
@@ -302,10 +306,7 @@ Function SetupDocker {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
         Write-Output "Downloading Docker Desktop. Follow the GUI for installation."
 
-        # The progress bar updates every byte, which makes downloads slow. See
-        # https://stackoverflow.com/a/43477248 for an explanation.
-        $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -UseBasicParsing -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
+        DownloadFile "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" $TempFile
         Start-Process -Wait $TempFile
     }
 }
@@ -325,21 +326,14 @@ Function SetupWSL {
     If (-Not (Get-Command ubuntu -ErrorAction SilentlyContinue)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
         Write-Output "Downloading WSL update. Follow the GUI for installation."
-
-        # The progress bar updates every byte, which makes downloads slow. See
-        # https://stackoverflow.com/a/43477248 for an explanation.
-        $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -UseBasicParsing -Uri "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" -OutFile $TempFile
+        DownloadFile "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" $TempFile
         Start-Process -Wait $TempFile
 
         wsl --set-default-version 2
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".appx"
-
-        # The progress bar updates every byte, which makes downloads slow. See
-        # https://stackoverflow.com/a/43477248 for an explanation.
-        $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest -UseBasicParsing -Uri https://aka.ms/wslubuntu2004 -OutFile $TempFile
+        Write-Output "Downloading Ubuntu image. Follow the prompt for installation."
+        DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
         Add-AppxPackage $TempFile
     }
 }
@@ -362,13 +356,8 @@ Function Update() {
         }
     }
 
-    $DstFile = "$PSScriptRoot/bootware.ps1"
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
-
-    # The progress bar updates every byte, which makes downloads slow. See
-    # https://stackoverflow.com/a/43477248 for an explanation.
-    $ProgressPreference = "SilentlyContinue"
-    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+    DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
     Write-Output "Updated to version $(bootware --version)."
 }
 
