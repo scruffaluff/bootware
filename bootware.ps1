@@ -191,9 +191,15 @@ Function Config() {
         }
     }
 
-    New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent)
-    Write-Output "Downloading default configuration file to $DstFile..."
-    DownloadFile "$SrcURL" "$DstFile"
+    New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent) | Out-Null
+
+    If ($EmptyCfg) {
+        Write-Output "Writing empty configuration file to $DstFile..."
+        Write-Output "passwordless_sudo: false" > "$DstFile"
+    } Else {
+        Write-Output "Downloading configuration file to $DstFile..."
+        DownloadFile "$SrcURL" "$DstFile"
+    }
 }
 
 # Downloads file to destination efficiently.
@@ -303,6 +309,10 @@ Function Setup() {
 # Install Docker Desktop.
 Function SetupDocker {
     If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        # Allows Docker to run without a WSL backend. Command taken from
+        # https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v.
+        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
         Write-Output "Downloading Docker Desktop. Follow the GUI for installation."
 
@@ -313,13 +323,15 @@ Function SetupDocker {
 
 # Install WSL2 with Ubuntu.
 #
-# Implemented based on instructions at https://docs.microsoft.com/en-us/windows/wsl/install-win10.
+# Implemented based on instructions at
+# https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL {
     If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
         Write-Output "Restart your system to finish WSL installation."
+        Write-Output "Then run bootware setup again to install Ubuntu."
         Exit 0
     }
 
@@ -331,10 +343,13 @@ Function SetupWSL {
 
         wsl --set-default-version 2
 
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".appx"
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
+        $TempDir = $TempFile -Replace ".zip", ""
         Write-Output "Downloading Ubuntu image. Follow the prompt for installation."
         DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
-        Add-AppxPackage $TempFile
+        
+        Expand-Archive "$TempFile" "$TmpDir"
+        & "$TmpDir/ubuntu2004.exe"
     }
 }
 

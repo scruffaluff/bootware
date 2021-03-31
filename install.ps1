@@ -68,7 +68,7 @@ Function Main() {
 
     Write-Output "Installing Bootware..."
 
-    New-Item -Force -ItemType Directory -Path $DestDir
+    New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
     DownloadFile "$Source" "$Dest"
     Write-Output "Installed $(bootware --version)."
 }
