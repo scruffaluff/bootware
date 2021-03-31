@@ -287,11 +287,13 @@ Function Setup() {
         }
     }
 
-    If ($Runner -Eq "docker") {
-        SetupDocker
-    } Else {
-        SetupWSL
-    }
+    SetupWinRM
+
+    # If ($Runner -Eq "docker") {
+    #     SetupDocker
+    # } Else {
+    #     SetupWSL
+    # }
 
     # Make current network private.
     # Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
@@ -319,6 +321,14 @@ Function SetupDocker {
         DownloadFile "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" $TempFile
         Start-Process -Wait $TempFile
     }
+}
+
+
+Function SetupWinRM {
+    $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
+    Write-Output "Setting up WinRM..."
+    DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
+    & $TempFile
 }
 
 # Install WSL2 with Ubuntu.
