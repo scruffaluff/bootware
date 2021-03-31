@@ -5,50 +5,72 @@
 # Show CLI help information.
 Function Usage() {
     Switch ($Args[0]) {
-        "config" { 
+        "bootstrap" {
             Write-Output @'
-Bootware config
-Generate default Bootware configuration file
-
-USAGE:
-    bootware config [FLAGS]
-
-FLAGS:
-    -h, --help       Print help information
-'@      
-        }
-        "install" {
-            Write-Output @'
-Bootware install
+Bootware bootstrap
 Boostrap install computer software
 
 USAGE:
-    bootware install [FLAGS] [OPTIONS]
-
-FLAGS:
-    -h, --help       Print help information
+    bootware bootstrap [OPTIONS]
 
 OPTIONS:
-    -c, --config     Path to bootware user configuation file
-        --tag        Ansible playbook tag
+    -c, --config <PATH>             Path to bootware user configuation file
+    -d, --dev                       Run bootstrapping in development mode
+    -h, --help                      Print help information
+        --no-passwd                 Do not ask for user password
+        --no-setup                  Skip Ansible installation
+    -p, --playbook <FILE-NAME>      Name of play to execute
+    -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+    -t, --tags <TAG-LIST>           Ansible playbook tags to select
+    -u, --url <URL>                 URL of playbook repository
+    --wsl                           Use WSL runner instead of Docker
 '@
+        }
+        "config" { 
+            Write-Output @'
+Bootware config
+Download default Bootware configuration file
+
+USAGE:
+    bootware config [OPTIONS]
+
+OPTIONS:
+    -d, --dest <PATH>       Path to alternate download destination
+    -e, --empty             Write empty configuration file
+    -h, --help              Print help information
+    -s, --source <URL>      URL to configuration file
+'@      
         }
         "main" {
             Write-Output @'
-Bootware 0.3.0
+$(Version)
 Boostrapping software installer
 
 USAGE:
-    bootware [FLAGS] [SUBCOMMAND]
+    bootware [OPTIONS] [SUBCOMMAND]
 
-FLAGS:
+OPTIONS:
     -h, --help       Print help information
     -v, --version    Print version information
 
 SUBCOMMANDS:
     bootstrap        Boostrap install computer software
     config           Generate default Bootware configuration file
+    setup            Install dependencies for Bootware
     update           Update Bootware to latest version
+'@
+        }
+        "setup" {
+            Write-Output @'
+Bootware setup
+Install dependencies for Bootware
+
+USAGE:
+    bootware setup [OPTIONS]
+
+OPTIONS:
+    -h, --help      Print help information
+    --wsl           Use WSL runner instead of Docker
 '@
         }
         "update" {
@@ -60,18 +82,65 @@ USAGE:
     bootware update [FLAGS]
 
 FLAGS:
-    -h, --help       Print help information
+    -h, --help                  Print help information
+    -v, --version <VERSION>     Version override for update
 '@
         }
     }
 }
 
-# Launch Docker container to boostrap software installation.
+# Subcommand to bootstrap software installations.
 Function Bootstrap() {
+    $ArgIdx = 0
+    $Cmd = "pull"
+    $NoSetup = 0
+    $Playbook = "main.yaml"
+    $Runner = "docker"
+    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
+    $UsePasswd = 1
+    $UsePlaybook = 0
+    $UsePull = 1
+
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
-            "-h" { Usage "install"; Exit 0 }
-            "--help" { Usage "install"; Exit 0 }
+            {$_ -In "-c", "--config"} {
+                $ConfigPath = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-d", "--dev"} {
+                $Cmd = "playbook"
+                $UsePlaybook = 1
+                $UsePull = 0
+                $ArgIdx += 1
+            }
+            {$_ -In "-h", "--help"} {
+                Usage "bootstrap"
+                Exit 0
+            }
+             "--no-passwd" {
+                $UsePasswd = 0
+                $ArgIdx += 1
+            }
+            {$_ -In "-p", "--playbook"} {
+                $Playbook = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-r", "--runner"} {
+                $Runner = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-s", "--skip"} {
+                $Skip = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-t", "--tags"} {
+                $Tags = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-u", "--url"} {
+                $URL = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
         }
     }
 
@@ -94,24 +163,41 @@ Function Bootstrap() {
         main.yaml
 }
 
-# Config subcommand.
+# Subcommand to generate or download Bootware configuration file.
 Function Config() {
-    $Dest = "$HOME/.bootware/config.yaml"
+    $ArgIdx = 0
+    $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
+    $DstFile = "$HOME/.bootware/config.yaml"
+    $EmptyCfg =0
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
-            "-h" { Usage "config"; Exit 0 }
-            "--help" { Usage "config"; Exit 0 }
+            {$_ -In "-d", "--dest"} {
+                $DstFile = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            {$_ -In "-e", "--empty"} {
+                $ArgIdx += 1
+                $EmptyCfg = 1
+            }
+            {$_ -In "-h", "--help"} {
+                Usage "config"
+                Exit 0
+            }
+            {$_ -In "-s", "--source"} {
+                $SrcURL = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
         }
     }
 
-    New-Item -Force -ItemType Directory -Path $(Split-Path -Path $Dest -Parent)
+    New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent)
 
-    Write-Output "Downloading default configuration file to $HOME/.bootware/config.yaml..."
-    Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml" -OutFile "$Dest"
+    Write-Output "Downloading default configuration file to $DstFile..."
+    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
-# Print error message and exit with error code.
+# Print error message and exit script with error code.
 Function Error($Message) {
     Write-Error "Error: $Message"
     Exit 1
@@ -149,34 +235,45 @@ Function FindDockerIp() {
     # RET_VAL="$_docker_ip"
 }
 
-# Configure boostrapping services and utilities.
+# Subcommand to configure boostrapping services and utilities.
 Function Setup() {
+    $Runner = "docker"
+
+    ForEach ($Arg in $Args) {
+        Switch ($Arg) {
+            {$_ -In "-h", "--help"} {
+                Usage "setup"
+                Exit 0
+            }
+            "--wsl" {
+                $Runner = "wsl"
+                $ArgIdx += 1
+            }
+        }
+    }
+
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
-
-         # Git is required for addding Scoop buckets.
-        If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
-            scoop install git
-        }
-    
-        scoop bucket add extras
-        scoop bucket add main
-        scoop bucket add nerd-fonts
-        scoop bucket add versions
     }
 
-    # Install Docker Desktop.
-    # If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
-    #     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
-    #     Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
-    #     Start-Process -Wait $TempFile
-    # }
+     # Git is required for addding Scoop buckets.
+    If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
+        scoop install git
+    }
+    
+    $ScoopBuckets = $(scoop bucket list)
+    ForEach ($Bucket in @("extras", "main", "nerd-fonts", "versions")) {
+        If ($Bucket -NotIn $ScoopBuckets) {
+            scoop bucket add "$Bucket"
+        }
+    }
 
-    # Install WSL2 with Ubuntu.
-    # dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-    # dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-    # Then restart your system.
+    If ($Runner -Eq "docker") {
+        SetupDocker
+    } Else {
+        SetupWSL
+    }
 
     # Make current network private.
     # Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
@@ -191,14 +288,37 @@ Function Setup() {
     # winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 }
 
+# Install Docker Desktop.
+Function SetupDocker {
+    If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
+        Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
+        Start-Process -Wait $TempFile
+    }
+}
 
+# Install WSL2 with Ubuntu.
+Function SetupWSL {
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    Write-Output "Restart your system to finish WSL installation."
+}
+
+# Subcommand to update Bootware script
 Function Update() {
+    $ArgIdx = 0
     $Version = "master"
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
-            {$_ -in "-h", "--help"} { Usage "update"; Exit 0 }
-            {$_ -in "-v", "--version"} { $Version = $Args[0][1]; }
+            {$_ -In "-h", "--help"} {
+                Usage "update"
+                Exit 0
+            }
+            {$_ -In "-v", "--version"} {
+                $Version = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
         }
     }
 
@@ -209,20 +329,40 @@ Function Update() {
     Write-Output "Updated to version $(bootware --version)."
 }
 
+# Print Bootware version string.
 Function Version() {
     Write-Output "Bootware 0.3.0"
 }
 
+# Script entrypoint.
 Function Main() {
     $Slice = $Args[0][1..($Args[0].Length-1)]
 
     Switch ($Args[0][0]) {
-        {$_ -in "-h", "--help"} { Usage "main"; Exit 0 }
-        {$_ -in "-v", "--version"} { Version; Exit 0 }
-        "bootstrap" { Bootstrap $Slice; Exit 0 }
-        "config" { Config $Slice; Exit 0 }
-        "setup" { Setup $Slice; Exit 0 }
-        "update" { Update $Slice; Exit 0 }
+        {$_ -In "-h", "--help"} {
+            Usage "main"
+            Exit 0
+        }
+        {$_ -In "-v", "--version"} {
+            Version
+            Exit 0
+        }
+        "bootstrap" {
+            Bootstrap $Slice
+            Exit 0
+        }
+        "config" {
+            Config $Slice
+            Exit 0
+        }
+        "setup" {
+            Setup $Slice
+            Exit 0
+        }
+        "update" {
+            Update $Slice
+            Exit 0
+        }
     }
 
     Usage "main"

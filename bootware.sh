@@ -124,7 +124,7 @@ assert_cmd() {
 #   BOOTWARE_URL
 #######################################
 bootstrap() {
-  # Dev null is never a normal file.
+  # /dev/null is never a normal file.
   local _cmd="pull"
   local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
   local _no_setup=${BOOTWARE_NOSETUP:-""}
@@ -319,7 +319,7 @@ find_config_path() {
   echo "Using $RET_VAL as configuration file."
 }
 
-# Configure boostrapping services and utilities.
+# Subcommand to configure boostrapping services and utilities.
 setup() {
   local arg
   local os_type
