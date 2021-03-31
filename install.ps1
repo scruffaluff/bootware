@@ -51,12 +51,16 @@ Function Main() {
     $Env:Path = "$DestDir" + ";$Env:Path"
     [System.Environment]::SetEnvironmentVariable("Path", "$Env:Path", "$Target")
 
-    echo "Installing Bootware..."
+    Write-Output "Installing Bootware..."
 
     New-Item -Force -ItemType Directory -Path $DestDir
+
+    # The progress bar updates every byte, which makes downloads slow. See
+    # https://stackoverflow.com/a/43477248 for an explanation.
+    $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -UseBasicParsing -Uri "$Source" -OutFile "$Dest"
 
-    echo "Installed $(bootware --version)."
+    Write-Output "Installed $(bootware --version)."
 }
 
 Main $Args

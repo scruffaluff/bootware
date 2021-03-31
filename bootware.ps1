@@ -194,6 +194,9 @@ Function Config() {
     New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent)
 
     Write-Output "Downloading default configuration file to $DstFile..."
+    # The progress bar updates every byte, which makes downloads slow. See
+    # https://stackoverflow.com/a/43477248 for an explanation.
+    $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
@@ -254,6 +257,11 @@ Function Setup() {
 
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+        Write-Output "Downloading Scoop package manager..."
+
+        # The progress bar updates every byte, which makes downloads slow. See
+        # https://stackoverflow.com/a/43477248 for an explanation.
+        $ProgressPreference = "SilentlyContinue"
         Invoke-WebRequest -UseBasicParsing -Uri "https://get.scoop.sh" | Invoke-Expression
     }
 
@@ -292,6 +300,11 @@ Function Setup() {
 Function SetupDocker {
     If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
+        Write-Output "Downloading Docker Desktop. Follow the GUI for installation."
+
+        # The progress bar updates every byte, which makes downloads slow. See
+        # https://stackoverflow.com/a/43477248 for an explanation.
+        $ProgressPreference = "SilentlyContinue"
         Invoke-WebRequest -Uri "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" -OutFile $TempFile
         Start-Process -Wait $TempFile
     }
@@ -299,9 +312,12 @@ Function SetupDocker {
 
 # Install WSL2 with Ubuntu.
 Function SetupWSL {
-    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-    Write-Output "Restart your system to finish WSL installation."
+    If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
+        dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+        dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+        Write-Output "Restart your system to finish WSL installation."
+    }
 }
 
 # Subcommand to update Bootware script
@@ -325,6 +341,9 @@ Function Update() {
     $DstFile = "$PSScriptRoot/bootware.ps1"
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
 
+    # The progress bar updates every byte, which makes downloads slow. See
+    # https://stackoverflow.com/a/43477248 for an explanation.
+    $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -Uri "$SrcURL" -OutFile "$DstFile"
     Write-Output "Updated to version $(bootware --version)."
 }
