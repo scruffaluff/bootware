@@ -12,7 +12,7 @@
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: rustup
+    name: rustup-msvc
   when: ansible_system == "Win32NT"
 
 - name: Update Rust for Unix

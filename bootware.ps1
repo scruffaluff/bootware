@@ -273,6 +273,11 @@ Function Setup() {
         # https://stackoverflow.com/a/43477248 for an explanation.
         $ProgressPreference = "SilentlyContinue"
         Invoke-WebRequest -UseBasicParsing -Uri "https://chocolatey.org/install.ps1" | Invoke-Expression
+
+        # Several packages require the Visual C++ build tools and Chocolatey
+        # requires user interaction yes prompt.
+        Write-Output "Installing Visual C++ build tools..."
+        choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.

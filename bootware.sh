@@ -30,10 +30,11 @@ OPTIONS:
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Ansible installation
     -p, --playbook <FILE-NAME>      Name of play to execute
+    --password                      Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
-    --user <USER-NAME>              Host user login name
+    --user <USER-NAME>              Remote host user login name
     --winrm                         Use WinRM connection instead of SSH
 EOF
       ;;
@@ -129,7 +130,7 @@ assert_cmd() {
 bootstrap() {
   # /dev/null is never a normal file.
   local _ask_passwd
-  local _ask_passwd_winrm=1
+  local _ask_passwd_winrm
   local _cmd="pull"
   local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
   local _inventory="127.0.0.1,"
@@ -144,6 +145,10 @@ bootstrap() {
   local _user_account=${USER:-root}
   local _winrm
 
+  # Check if Ansible should ask for user password.
+  #
+  # Flags:
+  #     -z: True if string has zero length.
   if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
     _ask_passwd=1
   fi
@@ -182,7 +187,6 @@ bootstrap() {
         shift 2
         ;;
       --password)
-        _ask_passwd_winrm=""
         _passwd="$2"
         shift 2
         ;;
@@ -214,7 +218,20 @@ bootstrap() {
     esac
   done
 
-  if [[ ! "$_no_setup" ]]; then
+  # Check if Ansible should ask for user password for WinRM connections.
+  #
+  # Flags:
+  #     -n: True if the string has nonzero length.
+  #     -z: True if string has zero length.
+  if [[ -n "${_winrm}" ]] && [[ -z "${_passwd}" ]]; then
+    _ask_passwd_winrm=1
+  fi
+
+  # Check if Bootware setup should be run.
+  #
+  # Flags:
+  #     -z: True if string has zero length.
+  if [[ -z "$_no_setup" ]]; then
     setup
   fi
 

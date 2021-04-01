@@ -25,7 +25,13 @@
       - openocd
   when: ansible_system == "Darwin"
 
-- name: Install build tools for Windows
+- name: Install build tools with Chocolatey for Windows
+  win_chocolatey:
+    name:
+      - visualstudio2019buildtools
+  when: ansible_system == "Win32NT"
+
+- name: Install build tools with Scoop for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -38,4 +44,4 @@
       - make
       - openocd
       - vcredist2019
-  when: ansible_system == "Windows"
+  when: ansible_system == "Win32NT"

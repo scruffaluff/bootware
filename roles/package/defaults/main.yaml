@@ -1,4 +1,5 @@
 apt_packages: []
+chocolatey_packages: []
 dnf_packages: []
 flatpak_packages: []
 homebrew_casks: []
