@@ -36,6 +36,13 @@
     src: init.vim
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Create Neovim standard user settings directory for Windows
+  become_user: "{{ user_account }}"
+  win_file:
+    path: "{{ user_home_dir }}/AppData/Local/nvim"
+    state: directory
+  when: ansible_system == "Win32NT"
+
 - name: Copy Neovim standard user settings file for Windows
   become_user: "{{ user_account }}"
   copy:
@@ -52,13 +59,6 @@
     state: directory
   when: ansible_system == "Linux"
 
-- name: Create Neovim root user settings directory for MacOS
-  become: yes
-  file:
-    path: /var/root/.config/nvim
-    state: directory
-  when: ansible_system == "Darwin"
-
 - name: Copy Neovim root user settings file for Linux
   become: yes
   copy:
@@ -67,6 +67,13 @@
     mode: 0644
     src: init.vim
   when: ansible_system == "Linux"
+
+- name: Create Neovim root user settings directory for MacOS
+  become: yes
+  file:
+    path: /var/root/.config/nvim
+    state: directory
+  when: ansible_system == "Darwin"
 
 - name: Copy Neovim root user settings file for MacOS
   become: yes

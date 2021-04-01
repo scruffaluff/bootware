@@ -12,12 +12,20 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Download desktop background picture
+- name: Download desktop background picture for Unix
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/Pictures/background/{{ background.name }}"
     mode: 0644
     url: "{{ background.url }}"
+  when: ansible_system != "Win32NT"
+
+- name: Download desktop background picture for Windows
+  become_user: "{{ user_account }}"
+  win_get_url:
+    dest: "{{ user_home_dir }}/Pictures/background/{{ background.name }}"
+    url: "{{ background.url }}"
+  when: ansible_system == "Win32NT"
 
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
@@ -49,5 +57,5 @@
 
 - name: Change desktop settings for Windows
   become_user: "{{ user_account }}"
-  script: windows.sh
+  script: windows.ps1
   when: ansible_system == "Win32NT"

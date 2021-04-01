@@ -24,6 +24,13 @@
     state: directory
   when: ansible_system == "Linux"
 
-- name: Update TLDR documentation
+- name: Update TLDR documentation for Unix
+  become_user: "{{ user_account }}"
   shell:
     cmd: tldr --update
+  when: ansible_system != "Win32NT"
+
+- name: Update TLDR documentation for Windows
+  become_user: "{{ user_account }}"
+  win_shell: tldr --update
+  when: ansible_system == "Win32NT"

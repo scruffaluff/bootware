@@ -265,6 +265,16 @@ Function Setup() {
         }
     }
 
+    # Install Chocolatey package manager.
+    If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
+        Write-Output "Downloading Chocolatey package manager..."
+
+        # The progress bar updates every byte, which makes downloads slow. See
+        # https://stackoverflow.com/a/43477248 for an explanation.
+        $ProgressPreference = "SilentlyContinue"
+        Invoke-WebRequest -UseBasicParsing -Uri "https://chocolatey.org/install.ps1" | Invoke-Expression
+    }
+
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Write-Output "Downloading Scoop package manager..."

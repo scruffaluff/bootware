@@ -26,8 +26,7 @@
 - name: Install multiple Node versions for Windows
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
-  shell:
-    cmd: nvm install {{ item }}
+  win_shell: nvm install {{ item }}
   when: ansible_system == "Win32NT"
 
 - name: Set default Node version for Unix
@@ -41,8 +40,7 @@
 
 - name: Set default Node version for Windows
   become_user: "{{ user_account }}"
-  shell:
-    cmd: nvm alias default {{ node_versions[-1] }}
+  win_shell: nvm alias default {{ node_versions[-1] }}
   when: ansible_system == "Win32NT"
 
 - name: Update NPM for Unix
@@ -56,8 +54,7 @@
 
 - name: Update NPM for Windows
   become_user: "{{ user_account }}"
-  shell:
-    cmd: nvm install-latest-npm
+  win_shell: nvm install-latest-npm
   when: ansible_system == "Win32NT"
 
 - name: Install or update Node CLI applications for Unix
@@ -71,13 +68,13 @@
     executable: /bin/bash
   when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
 
+# TODO: Fix for Windows.
 - name: Install or update Node CLI applications for Windows
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
-  shell:
-    cmd: |
-      nvm use {{ node_versions[-1] }}
-      npm install -g {{ item }} || npm update -g {{ item }}
+  win_shell: |
+    nvm use {{ node_versions[-1] }}
+    (npm install -g {{ item }}) -Or (npm update -g {{ item }})
   when: ansible_system == "Win32NT"
 
 - name: Create Fish functions directory for Linux

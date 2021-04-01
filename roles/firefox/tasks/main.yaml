@@ -26,7 +26,7 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install web browsers for Windows
+- name: Install Firefox for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -75,16 +75,15 @@
   template:
     dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/settings.json"
     force: yes
-    mode: 0644
     src: settings.j2
   when: ansible_system == "Win32NT"
 
-- name: Install VSCode extensions
+- name: Install VSCode extensions for Linux
   become_user: "{{ user_account }}"
   loop: "{{ vscode_extensions }}"
   shell:
     cmd: code --install-extension {{ item }}
-  when: ansible_system != "Darwin"
+  when: ansible_system == "Linux"
 
 - name: Install VSCode extensions for MacOS
   become_user: "{{ user_account }}"
@@ -92,3 +91,9 @@
   shell:
     cmd: /usr/local/bin/code --install-extension {{ item }}
   when: ansible_system == "Darwin"
+
+- name: Install VSCode extensions for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ vscode_extensions }}"
+  win_shell: code --install-extension {{ item }}
+  when: ansible_system == "Win32NT"
