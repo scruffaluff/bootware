@@ -15,7 +15,7 @@
     name: rustup
   when: ansible_system == "Win32NT"
 
-- name: Update Rust
+- name: Update Rust for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -23,8 +23,16 @@
       rustup self update
       rustup update stable
     executable: /bin/bash
+  when: ansible_system != "Win32NT"
 
-- name: Add Rust components
+- name: Update Rust for Windows
+  become_user: "{{ user_account }}"
+  win_shell: |
+    rustup self update
+    rustup update stable
+  when: ansible_system == "Win32NT"
+
+- name: Add Rust components for Unix
   become_user: "{{ user_account }}"
   loop: "{{ rustup_components }}"
   shell:
@@ -32,8 +40,15 @@
       source {{ user_home_dir }}/.bashrc
       rustup component add {{ item }}
     executable: /bin/bash
+  when: ansible_system != "Win32NT"
 
-- name: Add Rust targets
+- name: Add Rust components for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ rustup_components }}"
+  win_shell: rustup component add {{ item }}
+  when: ansible_system == "Win32NT"
+
+- name: Add Rust targets for Unix
   become_user: "{{ user_account }}"
   loop: "{{ rustup_targets }}"
   shell:
@@ -41,8 +56,15 @@
       source {{ user_home_dir }}/.bashrc
       rustup target add {{ item }}
     executable: /bin/bash
+  when: ansible_system != "Win32NT"
 
-- name: Update or install Cargo packges
+- name: Add Rust targets for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ rustup_targets }}"
+  win_shell: rustup target add {{ item }}
+  when: ansible_system == "Win32NT"
+
+- name: Update or install Cargo packges for Unix
   become_user: "{{ user_account }}"
   loop: "{{ cargo_applications }}"
   shell:
@@ -50,3 +72,10 @@
       source {{ user_home_dir }}/.bashrc
       cargo install {{ item }}
     executable: /bin/bash
+  when: ansible_system != "Win32NT"
+
+- name: Update or install Cargo packges for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ cargo_applications }}"
+  win_shell: cargo install {{ item }}
+  when: ansible_system == "Win32NT"

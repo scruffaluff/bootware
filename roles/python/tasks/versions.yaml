@@ -114,7 +114,7 @@
   community.windows.win_scoop:
     architecture: 64bit
     name: python{{ item | replace('.','') | replace('39','') }}
-  loop: "{{ python_releases }}"
+  loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix

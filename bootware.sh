@@ -128,22 +128,24 @@ assert_cmd() {
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
+  local _ask_passwd
+  local _ask_passwd_winrm=1
   local _cmd="pull"
   local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
   local _inventory="127.0.0.1,"
   local _no_setup=${BOOTWARE_NOSETUP:-""}
+  local _passwd
   local _playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
   local _skip=${BOOTWARE_SKIP:-""}
   local _tags=${BOOTWARE_TAGS:-""}
   local _url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
-  local _use_passwd
   local _use_playbook
   local _use_pull=1
   local _user_account=${USER:-root}
   local _winrm
 
   if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
-    _use_passwd=1
+    _ask_passwd=1
   fi
 
   # Parse command line arguments.
@@ -168,7 +170,7 @@ bootstrap() {
         shift 2
         ;;
       --no-passwd)
-        _use_passwd=""
+        _ask_passwd=""
         shift 1
         ;;
       --no-setup)
@@ -177,6 +179,11 @@ bootstrap() {
         ;;
       -p|--playbook)
         _playbook="$2"
+        shift 2
+        ;;
+      --password)
+        _ask_passwd_winrm=""
+        _passwd="$2"
         shift 2
         ;;
       -s|--skip)
@@ -196,6 +203,9 @@ bootstrap() {
         shift 2
         ;;
       --winrm)
+        _cmd="playbook"
+        _use_playbook=1
+        _use_pull=""
         _winrm=1
         shift 1
         ;;
@@ -215,10 +225,11 @@ bootstrap() {
   echo "Enter your user account password if prompted."
 
   ansible-${_cmd}  \
-    ${_use_passwd:+--ask-become-pass} \
-    ${_winrm:+--ask-pass} \
+    ${_ask_passwd:+--ask-become-pass} \
+    ${_ask_passwd_winrm:+--ask-pass} \
     ${_use_playbook:+--connection local} \
     ${_winrm:+--extra-vars "ansible_connection=winrm"} \
+    ${_passwd:+--extra-vars "ansible_password=$_passwd"} \
     ${_winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${_winrm:+--extra-vars "ansible_user=$_user_account"} \

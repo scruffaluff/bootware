@@ -17,7 +17,7 @@ _cargo_applications:
     - cargo-deb
     - cargo-rpm
     - cargo-tarpaulin
-  windows: []
+  win32nt: []
 cargo_applications: >-
   {{ _cargo_applications.always + _cargo_applications[_ansible_system] }}
 rustup_components:
