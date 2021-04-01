@@ -70,6 +70,13 @@
     src: settings.j2
   when: ansible_system == "Darwin"
 
+- name: Create VSCode user directory for Windows
+  become_user: "{{ user_account }}"
+  win_file:
+    path: "{{ user_home_dir }}/AppData/Roaming/Code/User"
+    state: directory
+  when: ansible_system == "Win32NT"
+
 - name: Copy VSCode settings file for Windows
   become_user: "{{ user_account }}"
   template:

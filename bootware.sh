@@ -26,12 +26,15 @@ OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
     -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
+    -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Ansible installation
     -p, --playbook <FILE-NAME>      Name of play to execute
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
+    --user <USER-NAME>              Host user login name
+    --winrm                         Use WinRM connection instead of SSH
 EOF
       ;;
     config)
@@ -127,6 +130,7 @@ bootstrap() {
   # /dev/null is never a normal file.
   local _cmd="pull"
   local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
+  local _inventory="127.0.0.1,"
   local _no_setup=${BOOTWARE_NOSETUP:-""}
   local _playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
   local _skip=${BOOTWARE_SKIP:-""}
@@ -135,6 +139,8 @@ bootstrap() {
   local _use_passwd
   local _use_playbook
   local _use_pull=1
+  local _user_account=${USER:-root}
+  local _winrm
 
   if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
     _use_passwd=1
@@ -156,6 +162,10 @@ bootstrap() {
       -h|--help)
         usage "bootstrap"
         exit 0
+        ;;
+      -i|--inventory)
+        _inventory="$2"
+        shift 2
         ;;
       --no-passwd)
         _use_passwd=""
@@ -181,6 +191,14 @@ bootstrap() {
         _url="$2"
         shift 2
         ;;
+      --user)
+        _user_account="$2"
+        shift 2
+        ;;
+      --winrm)
+        _winrm=1
+        shift 1
+        ;;
       *)
         ;;
     esac
@@ -198,11 +216,17 @@ bootstrap() {
 
   ansible-${_cmd}  \
     ${_use_passwd:+--ask-become-pass} \
+    ${_winrm:+--ask-pass} \
     ${_use_playbook:+--connection local} \
+    ${_winrm:+--extra-vars "ansible_connection=winrm"} \
+    ${_winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
-    --extra-vars "user_account=${USER:-root}" \
-    --extra-vars "@$_config_path" \
-    --inventory 127.0.0.1, \
+    ${_winrm:+--extra-vars "ansible_user=$_user_account"} \
+    ${_winrm:+--extra-vars "ansible_winrm_server_cert_validation=ignore"} \
+    ${_winrm:+--extra-vars "ansible_winrm_transport=basic"} \
+    --extra-vars "user_account=${_user_account}" \
+    --extra-vars "@${_config_path}" \
+    --inventory "${_inventory}" \
     ${_skip:+--skip-tags "$_skip"} \
     ${_tags:+--tags "$_tags"} \
     ${_use_pull:+--url "$_url"} \
