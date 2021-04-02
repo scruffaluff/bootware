@@ -17,12 +17,12 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Python packages for Fedora distributions
-  apt:
+  become: yes
+  dnf:
     name:
       - python3
       - python3-devel
       - python3-pip
-  become: yes
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install ONNX dependencies for Arch distributions
