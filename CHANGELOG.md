@@ -29,6 +29,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Command line help for Windows.
 - Debian base support for several packages.
 - Generate of empty configuration files for Windows.
+- Missing Pip system installation for Fedora.
 - Passwordless sudo configuration for MacOS.
 - Pipx package upgrades for updated Python interperter.
 - Scoop bucket additions for Windows.

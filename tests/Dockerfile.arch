@@ -1,4 +1,4 @@
-FROM archlinux:base-20210321.0.17674 
+FROM archlinux:base-20210328.0.18194
 
 
 # Create non-priviledged user.
@@ -50,4 +50,4 @@ COPY main.yaml ./
 ARG tags
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --skip python,vscode
+RUN bootware bootstrap --dev --no-passwd --skip python,vscode ${tags:+--tags $tags}

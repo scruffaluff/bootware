@@ -6,7 +6,6 @@
       - python-pip
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Install for Fedora.
 - name: Install Python packages for Debian distributions
   apt:
     name:
@@ -16,6 +15,15 @@
       - python3-venv
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Install Python packages for Fedora distributions
+  apt:
+    name:
+      - python3
+      - python3-devel
+      - python3-pip
+  become: yes
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install ONNX dependencies for Arch distributions
   become: yes
