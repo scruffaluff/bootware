@@ -70,7 +70,7 @@ USAGE:
 
 OPTIONS:
     -h, --help      Print help information
-    --wsl           Use WSL runner instead of Docker
+    --no-wsl        Do not configure WSL
 '@
         }
         "update" {
@@ -144,23 +144,7 @@ Function Bootstrap() {
         }
     }
 
-    Write-Output "Launching Bootware Docker container..."
-    Write-Output "Enter your user account password if prompted."
-
-    docker run `
-        -it `
-        -v "$Args[0]:/root/.ssh/bootware" `
-        -v "$Args[1]:/bootware/host_vars/host.docker.internal.yaml" `
-        --rm `
-        --add-host "host.docker.internal:$FindDockerIp" `
-        wolfgangwazzlestrauss/bootware:latest `
-        --ask-become-pass `
-        --extra-vars "ansible_connection=winrm" `
-        --extra-vars "ansible_user=$Env:UserName" `
-        --extra-vars "ansible_winrm_server_cert_validation=ignore" `
-        --extra-vars "ansible_winrm_transport=basic" `
-        --tags "$3" `
-        main.yaml
+    Write-Output "This command is not yet implemented."
 }
 
 # Subcommand to generate or download Bootware configuration file.
@@ -233,24 +217,9 @@ Function FindConfigPath($FilePath) {
     Write-Output "Using $ConfigPath as configuration file."
 }
 
-# Find IP address of host machine that is accessible from Docker.
-Function FindDockerIp() {
-    # _docker_ip=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
-
-    # # Check if Docker IP is not null.
-    # #
-    # # Flags:
-    # #     -z: True if string has zero length.
-    # if [ -z "$_docker_ip" ]; then
-    #     Error "Unable to find Docker host IP address. Restart Docker and try again."
-    # fi
-
-    # RET_VAL="$_docker_ip"
-}
-
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
-    $Runner = "docker"
+    $WSL = 1
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
@@ -258,8 +227,8 @@ Function Setup() {
                 Usage "setup"
                 Exit 0
             }
-            "--wsl" {
-                $Runner = "wsl"
+            "--no-wsl" {
+                $WSL = 0
                 $ArgIdx += 1
             }
         }
@@ -304,41 +273,12 @@ Function Setup() {
 
     SetupWinRM
 
-    # If ($Runner -Eq "docker") {
-    #     SetupDocker
-    # } Else {
-    #     SetupWSL
-    # }
-
-    # Make current network private.
-    # Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
-
-    # Start WinRM service.
-    # Enable-PSRemoting -Force -SkipNetworkProfileCheck
-    # winrm quickconfig
-
-    # Allow HTTP WinRM connection with password credentials.
-    # winrm set winrm/config/client/auth '@{Basic="true"}'
-    # winrm set winrm/config/service/auth '@{Basic="true"}'
-    # winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-}
-
-# Install Docker Desktop.
-Function SetupDocker {
-    If (-Not (Get-Command docker -ErrorAction SilentlyContinue)) {
-        # Allows Docker to run without a WSL backend. Command taken from
-        # https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v.
-        Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
-
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".exe"
-        Write-Output "Downloading Docker Desktop. Follow the GUI for installation."
-
-        DownloadFile "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe" $TempFile
-        Start-Process -Wait $TempFile
+    If ($WSL) {
+        SetupWSL
     }
 }
 
-
+# Launch WinRM and create inbound network rule.
 Function SetupWinRM {
     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
     Write-Output "Setting up WinRM..."

@@ -69,13 +69,13 @@
   when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
 
 # TODO: Fix for Windows.
-- name: Install or update Node CLI applications for Windows
-  become_user: "{{ user_account }}"
-  loop: "{{ node_applications }}"
-  win_shell: |
-    nvm use {{ node_versions[-1] }}
-    (npm install -g {{ item }}) -Or (npm update -g {{ item }})
-  when: ansible_system == "Win32NT"
+# - name: Install or update Node CLI applications for Windows
+#   become_user: "{{ user_account }}"
+#   loop: "{{ node_applications }}"
+#   win_shell: |
+#     nvm use {{ node_versions[-1] }}
+#     (npm install -g {{ item }}) -Or (npm update -g {{ item }})
+#   when: ansible_system == "Win32NT"
 
 - name: Create Fish functions directory for Linux
   become_user: "{{ user_account }}"
