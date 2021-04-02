@@ -211,7 +211,9 @@ Function FindConfigPath($FilePath) {
     } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
     } else {
-        Error "Unable to find Bootware configuation file."
+        Write-Output "Unable to find Bootware configuation file."
+        Config --empty
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
     Write-Output "Using $ConfigPath as configuration file."

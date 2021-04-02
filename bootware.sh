@@ -365,7 +365,9 @@ find_config_path() {
   elif test -f "$HOME/.bootware/config.yaml" ; then
     RET_VAL="$HOME/.bootware/config.yaml"
   else
-    error "Unable to find Bootware configuation file."
+    printf "Unable to find Bootware configuation file.\n"
+    config --empty
+    RET_VAL="$HOME/.bootware/config.yaml"
   fi
 
   echo "Using $RET_VAL as configuration file."
