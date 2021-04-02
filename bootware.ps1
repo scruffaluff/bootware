@@ -313,8 +313,8 @@ Function SetupWSL {
         Write-Output "Downloading Ubuntu image. Follow the prompt for installation."
         DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
         
-        Expand-Archive "$TempFile" "$TmpDir"
-        & "$TmpDir/ubuntu2004.exe"
+        Expand-Archive "$TempFile" "$TempDir"
+        & "$TempDir/ubuntu2004.exe"
     }
 }
 
