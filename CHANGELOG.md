@@ -10,6 +10,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Caffeine installation role.
+- Chocolatey package support for Windows.
+- Experimental bootstrapping via WinRM for remote Windows hosts.
+- Experimental WSL boostrapping for Windows.
 - GNOME desktop UI customizations.
 - Pop Shell extension for all GNOME desktops.
 - Separate Debian and Ubuntu testing.
@@ -25,6 +28,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Changelog notes for GitHub releases.
 - Command line help for Windows.
 - Debian base support for several packages.
+- Generate of empty configuration files for Windows.
 - Passwordless sudo configuration for MacOS.
 - Pipx package upgrades for updated Python interperter.
 - Scoop bucket additions for Windows.

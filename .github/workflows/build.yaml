@@ -135,5 +135,6 @@ jobs:
         run: "& 'C:/Program Files/Bootware/bootware.ps1' config --empty"
         shell: powershell
       - name: Install dependencies for Bootware
-        run: bootware setup --no-wsl
+        run: >-
+          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup --no-wsl"
         shell: powershell
