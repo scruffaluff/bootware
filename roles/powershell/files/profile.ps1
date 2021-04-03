@@ -27,4 +27,4 @@ Invoke-Expression (&starship init powershell)
 Import-Module posh-docker
 
 # Load Git autocompletion.
-Import-Module post-git
+Import-Module posh-git

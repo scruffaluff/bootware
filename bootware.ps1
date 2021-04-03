@@ -139,10 +139,7 @@ Function Bootstrap() {
         }
     }
 
-    $RepoPath = "$PSScriptRoot/repo"
-    If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
-        git clone --depth 1 "$URL" "$RepoPath"
-    }
+    Setup
 
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
@@ -278,6 +275,11 @@ Function Setup() {
         }
     }
 
+    $RepoPath = "$PSScriptRoot/repo"
+    If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
+        git clone --depth 1 "$URL" "$RepoPath"
+    }
+
     SetupWinRM
 
     If ($WSL) {
@@ -323,6 +325,12 @@ Function SetupWSL {
         Expand-Archive "$TempFile" "$TempDir"
         & "$TempDir/ubuntu2004.exe"
     }
+
+    If (-Not (wsl command -v bootware)) {
+        Write-Output "Installing a WSL copy of Bootware."
+        wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash
+
+    }
 }
 
 # Subcommand to update Bootware script
@@ -345,6 +353,18 @@ Function Update() {
 
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
     DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
+
+    # Update WSL copy of Bootware.
+    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+        wsl bootware update --version `> /dev/null
+    }
+
+    # Update playbook repository.
+    $RepoPath = "$PSScriptRoot/repo"
+    If (Test-Path -Path "$RepoPath" -PathType Container) {
+        git -C "$RepoPath" pull
+    }
+
     Write-Output "Updated to version $(bootware --version)."
 }
 

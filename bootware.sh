@@ -214,6 +214,7 @@ bootstrap() {
         shift 1
         ;;
       *)
+        shift 1
         ;;
     esac
   done
@@ -297,6 +298,7 @@ config() {
         shift 2
         ;;
       *)
+        shift 1
         ;;
     esac
   done
@@ -388,6 +390,7 @@ setup() {
         exit 0
         ;;
       *)
+        shift 1
         ;;
     esac
   done
@@ -587,10 +590,11 @@ update() {
         exit 0
         ;;
       -v|--version)
-        shift 1
         version="$2"
+        shift 2
         ;;
       *)
+        shift 1
         ;;
     esac
   done
@@ -655,6 +659,7 @@ main() {
         exit 0
         ;;
       *)
+        shift 1
         ;;
     esac
   done
