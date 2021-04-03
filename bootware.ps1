@@ -18,12 +18,11 @@ OPTIONS:
     -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
-        --no-setup                  Skip Ansible installation
+        --no-setup                  Skip Bootware dependency installation
     -p, --playbook <FILE-NAME>      Name of play to execute
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
-    --wsl                           Use WSL runner instead of Docker
 '@
         }
         "config" { 
@@ -125,10 +124,6 @@ Function Bootstrap() {
                 $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
             }
-            {$_ -In "-r", "--runner"} {
-                $Runner = $Args[0][$ArgIdx + 1]
-                $ArgIdx += 2
-            }
             {$_ -In "-s", "--skip"} {
                 $Skip = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
@@ -145,6 +140,11 @@ Function Bootstrap() {
     }
 
     Write-Output "This command is not yet implemented."
+
+    git clone --depth 1 "$URL" "$PSScriptRoot/repo"
+
+    $IPAdress = Get-NetIPAddress
+    wsl bootware bootstrap --winrm --inventory "$IPAdress,"--user "$Env:USER"
 }
 
 # Subcommand to generate or download Bootware configuration file.

@@ -28,14 +28,14 @@ OPTIONS:
     -h, --help                      Print help information
     -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
-        --no-setup                  Skip Ansible installation
+        --no-setup                  Skip Bootware dependency installation
     -p, --playbook <FILE-NAME>      Name of play to execute
-    --password                      Remote host user password
+        --password <PASSWORD>       Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
-    --user <USER-NAME>              Remote host user login name
-    --winrm                         Use WinRM connection instead of SSH
+        --user <USER-NAME>          Remote host user login name
+        --winrm                     Use WinRM connection instead of SSH
 EOF
       ;;
     config)

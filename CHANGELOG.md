@@ -7,7 +7,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-## Changed
+### Added
+
+- Direct WSL bootstrapping from PowerShell.
+- Fuzz testing for Ansible roles.
+
+### Changed
 
 - Generates default configuration file instead of throwing an error if missing.
 
