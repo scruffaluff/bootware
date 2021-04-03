@@ -1,7 +1,7 @@
 - name: Create PowerShell settings directory for Windows
   become_user: "{{ user_account }}"
   win_file:
-    path: "{{ user_home_dir }}/Documents/PowerShell"
+    path: "{{ user_home_dir }}/Documents/WindowsPowerShell"
     state: directory
   when: ansible_system == "Win32NT"
 

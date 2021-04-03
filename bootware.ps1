@@ -93,6 +93,7 @@ FLAGS:
 # Subcommand to bootstrap software installations.
 Function Bootstrap() {
     $ArgIdx = 0
+    $ConfigPath = ""
     $Playbook = "$PSScriptRoot\repo\main.yaml"
     $Skip = "none"
     $Tags = "desktop"
@@ -101,19 +102,18 @@ Function Bootstrap() {
     $UseSetup = 1
     $User = "$Env:UserName"
 
-    # Global variable is necessary since PowerShell can only return variables
-    # from a function via StdOut. Thus there is no way for a function to write
-    # messages to StdOut and return a variable, which FindConfigPath does.
-    $Global:ConfigPath = ""
-
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
-    $Inventory = "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+        $Inventory = "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+    } Else {
+        Error "The setup subcommand needs to be run before bootstrap"
+    }
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
             {$_ -In "-c", "--config"} {
-                $Global:ConfigPath = $Args[0][$ArgIdx + 1]
+                $ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
             }
             {$_ -In "-h", "--help"} {
@@ -159,8 +159,10 @@ Function Bootstrap() {
         Setup --url "$URL"
     }
 
-    FindConfigPath "$Global:ConfigPath"
-    $Global:ConfigPath = $(WSLPath "$Global:ConfigPath")
+    FindConfigPath "$ConfigPath"
+    $ConfigPath = "$Global:RetVal"
+
+    $ConfigPath = $(WSLPath "$ConfigPath")
     $PlaybookPath = $(WSLPath "$Playbook")
 
     # TODO: Fix encoding errors from Ubuntu using Windows configuration file.
@@ -223,20 +225,21 @@ Function Error($Message) {
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
-        $Global:ConfigPath = $FilePath
+        $ConfigPath = $FilePath
     } ElseIf (Test-Path -Path "$(Get-Location)\bootware.yaml" -PathType Leaf) {
-        $Global:ConfigPath = "$(Get-Location)\bootware.yaml"
+        $ConfigPath = "$(Get-Location)\bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
-        $Global:ConfigPath = "$Env:BOOTWARE_CONFIG"
+        $ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
-        $Global:ConfigPath = "$HOME\.bootware\config.yaml"
+        $ConfigPath = "$HOME\.bootware\config.yaml"
     } Else {
         Write-Output "Unable to find Bootware configuation file."
         Config --empty
-        $Global:ConfigPath = "$HOME\.bootware\config.yaml"
+        $ConfigPath = "$HOME\.bootware\config.yaml"
     }
 
-    Write-Output "Using $Global:ConfigPath as configuration file."
+    Write-Output "Using $ConfigPath as configuration file."
+    $Global:RetVal = "$ConfigPath"
 }
 
 # Subcommand to configure boostrapping services and utilities.

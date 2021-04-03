@@ -129,41 +129,41 @@ assert_cmd() {
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
-  local _ask_passwd
-  local _ask_passwd_winrm
-  local _cmd="pull"
-  local _config_path=${BOOTWARE_CONFIG:-"/dev/null"}
-  local _inventory="127.0.0.1,"
-  local _no_setup=${BOOTWARE_NOSETUP:-""}
-  local _passwd
-  local _playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
-  local _skip=${BOOTWARE_SKIP:-""}
-  local _tags=${BOOTWARE_TAGS:-""}
-  local _url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
-  local _use_playbook
-  local _use_pull=1
-  local _user_account=${USER:-root}
-  local _winrm
+  local ask_passwd
+  local ask_passwd_winrm
+  local cmd="pull"
+  local config_path=${BOOTWARE_CONFIG:-"/dev/null"}
+  local inventory="127.0.0.1,"
+  local no_setup=${BOOTWARE_NOSETUP:-""}
+  local passwd
+  local playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
+  local skip=${BOOTWARE_SKIP:-""}
+  local tags=${BOOTWARE_TAGS:-""}
+  local url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
+  local use_playbook
+  local use_pull=1
+  local user_account=${USER:-root}
+  local winrm
 
   # Check if Ansible should ask for user password.
   #
   # Flags:
   #     -z: True if string has zero length.
   if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
-    _ask_passwd=1
+    ask_passwd=1
   fi
 
   # Parse command line arguments.
   for arg in "$@"; do
     case "$arg" in
       -c|--config)
-        _config_path="$2"
+        config_path="$2"
         shift 2
         ;;
       -d|--dev)
-        _cmd="playbook"
-        _use_playbook=1
-        _use_pull=""
+        cmd="playbook"
+        use_playbook=1
+        use_pull=""
         shift 1
         ;;
       -h|--help)
@@ -171,46 +171,46 @@ bootstrap() {
         exit 0
         ;;
       -i|--inventory)
-        _inventory="$2"
+        inventory="$2"
         shift 2
         ;;
       --no-passwd)
-        _ask_passwd=""
+        ask_passwd=""
         shift 1
         ;;
       --no-setup)
-        _no_setup=1
+        no_setup=1
         shift 1
         ;;
       -p|--playbook)
-        _playbook="$2"
+        playbook="$2"
         shift 2
         ;;
       --password)
-        _passwd="$2"
+        passwd="$2"
         shift 2
         ;;
       -s|--skip)
-        _skip="$2"
+        skip="$2"
         shift 2
         ;;
       -t|--tags)
-        _tags="$2"
+        tags="$2"
         shift 2
         ;;
       -u|--url)
-        _url="$2"
+        url="$2"
         shift 2
         ;;
       --user)
-        _user_account="$2"
+        user_account="$2"
         shift 2
         ;;
       --winrm)
-        _cmd="playbook"
-        _use_playbook=1
-        _use_pull=""
-        _winrm=1
+        cmd="playbook"
+        use_playbook=1
+        use_pull=""
+        winrm=1
         shift 1
         ;;
       *)
@@ -223,42 +223,42 @@ bootstrap() {
   # Flags:
   #     -n: True if the string has nonzero length.
   #     -z: True if string has zero length.
-  if [[ -n "${_winrm}" ]] && [[ -z "${_passwd}" ]]; then
-    _ask_passwd_winrm=1
+  if [[ -n "${winrm}" ]] && [[ -z "${passwd}" ]]; then
+    ask_passwd_winrm=1
   fi
 
   # Check if Bootware setup should be run.
   #
   # Flags:
   #     -z: True if string has zero length.
-  if [[ -z "$_no_setup" ]]; then
+  if [[ -z "$no_setup" ]]; then
     setup
   fi
 
-  find_config_path "$_config_path"
-  _config_path="$RET_VAL"
+  find_config_path "$config_path"
+  config_path="$RET_VAL"
 
-  echo "Executing Ansible ${_cmd:-pull}..."
+  echo "Executing Ansible ${cmd:-pull}..."
   echo "Enter your user account password if prompted."
 
-  ansible-${_cmd}  \
-    ${_ask_passwd:+--ask-become-pass} \
-    ${_ask_passwd_winrm:+--ask-pass} \
-    ${_use_playbook:+--connection local} \
-    ${_winrm:+--extra-vars "ansible_connection=winrm"} \
-    ${_passwd:+--extra-vars "ansible_password=$_passwd"} \
-    ${_winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
+  ansible-${cmd}  \
+    ${ask_passwd:+--ask-become-pass} \
+    ${ask_passwd_winrm:+--ask-pass} \
+    ${use_playbook:+--connection local} \
+    ${winrm:+--extra-vars "ansible_connection=winrm"} \
+    ${passwd:+--extra-vars "ansible_password=$passwd"} \
+    ${winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
-    ${_winrm:+--extra-vars "ansible_user=$_user_account"} \
-    ${_winrm:+--extra-vars "ansible_winrm_server_cert_validation=ignore"} \
-    ${_winrm:+--extra-vars "ansible_winrm_transport=basic"} \
-    --extra-vars "user_account=${_user_account}" \
-    --extra-vars "@${_config_path}" \
-    --inventory "${_inventory}" \
-    ${_use_pull:+--url "$_url"} \
-    ${_tags:+--tags "$_tags"} \
-    ${_skip:+--skip-tags "$_skip"} \
-    "${_playbook}"
+    ${winrm:+--extra-vars "ansible_user=$user_account"} \
+    ${winrm:+--extra-vars "ansible_winrm_server_cert_validation=ignore"} \
+    ${winrm:+--extra-vars "ansible_winrm_transport=basic"} \
+    --extra-vars "user_account=${user_account}" \
+    --extra-vars "@${config_path}" \
+    --inventory "${inventory}" \
+    ${use_pull:+--url "$url"} \
+    ${tags:+--tags "$tags"} \
+    ${skip:+--skip-tags "$skip"} \
+    "${playbook}"
 }
 
 #######################################
