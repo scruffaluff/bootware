@@ -93,9 +93,9 @@ FLAGS:
 # Subcommand to bootstrap software installations.
 Function Bootstrap() {
     $ArgIdx = 0
-    $Playbook = "$PSScriptRoot/repo/main.yaml"
-    $Skip = ""
-    $Tags = ""
+    $Playbook = "$PSScriptRoot\repo\main.yaml"
+    $Skip = "none"
+    $Tags = "desktop"
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $UsePasswd = 1
     $UseSetup = 1
@@ -163,14 +163,15 @@ Function Bootstrap() {
     $Global:ConfigPath = $(WSLPath "$Global:ConfigPath")
     $PlaybookPath = $(WSLPath "$Playbook")
 
-    wsl bootware bootstrap --winrm --config "$Global:ConfigPath" --inventory "$Inventory" --playbook "$PlaybookPath" ---user "$User" --tags "$Tags" --skip "$Skip"
+    # TODO: Fix encoding errors from Ubuntu using Windows configuration file.
+    wsl bootware bootstrap --winrm --inventory "$Inventory" --playbook "$PlaybookPath" --tags "$Tags" --skip "$Skip" ---user "$User"
 }
 
 # Subcommand to generate or download Bootware configuration file.
 Function Config() {
     $ArgIdx = 0
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
-    $DstFile = "$HOME/.bootware/config.yaml"
+    $DstFile = "$HOME\.bootware\config.yaml"
     $EmptyCfg =0
 
     ForEach ($Arg in $Args) {
@@ -223,16 +224,16 @@ Function Error($Message) {
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $Global:ConfigPath = $FilePath
-    } ElseIf (Test-Path -Path "$(Get-Location)/bootware.yaml" -PathType Leaf) {
-        $Global:ConfigPath = "$(Get-Location)/bootware.yaml"
+    } ElseIf (Test-Path -Path "$(Get-Location)\bootware.yaml" -PathType Leaf) {
+        $Global:ConfigPath = "$(Get-Location)\bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
         $Global:ConfigPath = "$Env:BOOTWARE_CONFIG"
-    } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
-        $Global:ConfigPath = "$HOME/.bootware/config.yaml"
+    } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
+        $Global:ConfigPath = "$HOME\.bootware\config.yaml"
     } Else {
         Write-Output "Unable to find Bootware configuation file."
         Config --empty
-        $Global:ConfigPath = "$HOME/.bootware/config.yaml"
+        $Global:ConfigPath = "$HOME\.bootware\config.yaml"
     }
 
     Write-Output "Using $Global:ConfigPath as configuration file."
@@ -297,7 +298,7 @@ Function Setup() {
         }
     }
 
-    $RepoPath = "$PSScriptRoot/repo"
+    $RepoPath = "$PSScriptRoot\repo"
     If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
         git clone --depth 1 "$URL" "$RepoPath"
     }
@@ -350,6 +351,7 @@ Function SetupWSL() {
         
         Expand-Archive "$TempFile" "$TempDir"
         & "$TempDir/ubuntu2004.exe"
+        Exit 0
     }
 
     If (-Not (wsl command -v bootware)) {
@@ -378,7 +380,7 @@ Function Update() {
     }
 
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
-    DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
+    DownloadFile "$SrcURL" "$PSScriptRoot\bootware.ps1"
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
@@ -386,7 +388,7 @@ Function Update() {
     }
 
     # Update playbook repository.
-    $RepoPath = "$PSScriptRoot/repo"
+    $RepoPath = "$PSScriptRoot\repo"
     If (Test-Path -Path "$RepoPath" -PathType Container) {
         git -C "$RepoPath" pull
     }

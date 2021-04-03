@@ -214,7 +214,6 @@ bootstrap() {
         shift 1
         ;;
       *)
-        shift 1 || true
         ;;
     esac
   done
@@ -298,7 +297,6 @@ config() {
         shift 2
         ;;
       *)
-        shift 1 || true
         ;;
     esac
   done
@@ -390,7 +388,6 @@ setup() {
         exit 0
         ;;
       *)
-        shift 1 || true
         ;;
     esac
   done
@@ -458,7 +455,7 @@ setup_debian() {
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
     ${1:+sudo} python3 -m pip install setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} python3 -m pip install ansible pywinrm
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
@@ -594,7 +591,6 @@ update() {
         shift 2
         ;;
       *)
-        shift 1 || true
         ;;
     esac
   done
@@ -659,7 +655,6 @@ main() {
         exit 0
         ;;
       *)
-        shift 1 || true
         ;;
     esac
   done
