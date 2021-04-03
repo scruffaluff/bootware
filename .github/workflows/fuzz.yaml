@@ -74,7 +74,9 @@ jobs:
           build-args: tags=${{ matrix.tag }}
           context: .
           file: tests/Dockerfile.${{ matrix.distro }}
-          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-${{ matrix.tag }}-fuzz
+          tags: >-
+            wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-${{ matrix.tag
+            }}-fuzz
           push: false
 
   test-macos:
@@ -102,4 +104,6 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
-        run: bootware bootstrap --dev --no-passwd --skip docker, --tags ${{ matrix.tag }}
+        run:
+          bootware bootstrap --dev --no-passwd --skip docker, --tags ${{
+          matrix.tag }}

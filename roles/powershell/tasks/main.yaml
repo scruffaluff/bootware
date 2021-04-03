@@ -8,8 +8,9 @@
 - name: Copy PowerShell settings file for Windows
   become_user: "{{ user_account }}"
   copy:
-    dest:
-      "{{ user_home_dir }}/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+    dest: >-
+      "{{ user_home_dir
+      }}/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
     force: yes
     src: profile.ps1
   when: ansible_system == "Win32NT"

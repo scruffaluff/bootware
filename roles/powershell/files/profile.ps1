@@ -12,7 +12,7 @@ $Env:DOCKER_BUILDKIT = 1
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
 # Add scripts directory to system path.
-$Env:PATH = "$HOME/scoop/apps/python/current/Scripts" + $Env:PATH
+$Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
 
 
 # Starship settings.
