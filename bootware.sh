@@ -214,7 +214,7 @@ bootstrap() {
         shift 1
         ;;
       *)
-        shift 1
+        shift 1 || true
         ;;
     esac
   done
@@ -256,9 +256,9 @@ bootstrap() {
     --extra-vars "user_account=${_user_account}" \
     --extra-vars "@${_config_path}" \
     --inventory "${_inventory}" \
-    ${_skip:+--skip-tags "$_skip"} \
-    ${_tags:+--tags "$_tags"} \
     ${_use_pull:+--url "$_url"} \
+    ${_tags:+--tags "$_tags"} \
+    ${_skip:+--skip-tags "$_skip"} \
     "${_playbook}"
 }
 
@@ -298,7 +298,7 @@ config() {
         shift 2
         ;;
       *)
-        shift 1
+        shift 1 || true
         ;;
     esac
   done
@@ -390,7 +390,7 @@ setup() {
         exit 0
         ;;
       *)
-        shift 1
+        shift 1 || true
         ;;
     esac
   done
@@ -594,7 +594,7 @@ update() {
         shift 2
         ;;
       *)
-        shift 1
+        shift 1 || true
         ;;
     esac
   done
@@ -659,7 +659,7 @@ main() {
         exit 0
         ;;
       *)
-        shift 1
+        shift 1 || true
         ;;
     esac
   done

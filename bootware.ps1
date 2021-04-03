@@ -15,14 +15,16 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
-    -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
+    -i, --inventory <IP-List>       Ansible host IP addesses in quotes
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Bootware dependency installation
     -p, --playbook <FILE-NAME>      Name of play to execute
-    -s, --skip <TAG-LIST>           Ansible playbook tags to skip
-    -t, --tags <TAG-LIST>           Ansible playbook tags to select
+        --password <PASSWORD>       Remote host user password
+    -s, --skip <TAG-LIST>           Ansible playbook tags to skip in quotes
+    -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes
     -u, --url <URL>                 URL of playbook repository
+        --user <USER-NAME>          Remote host user login name
 '@
         }
         "config" { 
@@ -91,33 +93,43 @@ FLAGS:
 # Subcommand to bootstrap software installations.
 Function Bootstrap() {
     $ArgIdx = 0
-    $Cmd = "pull"
-    $NoSetup = 0
-    $Playbook = "main.yaml"
-    $Runner = "docker"
+    $Playbook = "$PSScriptRoot/repo/main.yaml"
+    $Skip = ""
+    $Tags = ""
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $UsePasswd = 1
-    $UsePlaybook = 0
-    $UsePull = 1
+    $UseSetup = 1
+    $User = "$Env:UserName"
+
+    # Global variable is necessary since PowerShell can only return variables
+    # from a function via StdOut. Thus there is no way for a function to write
+    # messages to StdOut and return a variable, which FindConfigPath does.
+    $Global:ConfigPath = ""
+
+    # Find IP address of Windows host relative from WSL. Taken from
+    # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
+    $Inventory = "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
             {$_ -In "-c", "--config"} {
-                $ConfigPath = $Args[0][$ArgIdx + 1]
+                $Global:ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
-            }
-            {$_ -In "-d", "--dev"} {
-                $Cmd = "playbook"
-                $UsePlaybook = 1
-                $UsePull = 0
-                $ArgIdx += 1
             }
             {$_ -In "-h", "--help"} {
                 Usage "bootstrap"
                 Exit 0
             }
-             "--no-passwd" {
+            {$_ -In "-i", "--inventory"} {
+                $Inventory = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
+            "--no-passwd" {
                 $UsePasswd = 0
+                $ArgIdx += 1
+            }
+            "--no-setup" {
+                $UseSetup = 0
                 $ArgIdx += 1
             }
             {$_ -In "-p", "--playbook"} {
@@ -136,17 +148,22 @@ Function Bootstrap() {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
             }
+            "--user" {
+                $User = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+            }
         }
     }
 
-    Setup
+    If ($UseSetup) {
+        Setup --url "$URL"
+    }
 
-    # Find IP address of Windows host relative from WSL. Taken from
-    # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
-    $IPAddress = $(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2)
+    FindConfigPath "$Global:ConfigPath"
+    $Global:ConfigPath = $(WSLPath "$Global:ConfigPath")
+    $PlaybookPath = $(WSLPath "$Playbook")
 
-    $Playbook = "$RepoPath/main.yaml" -Replace "\\","/" -Replace "C:","/mnt/c"
-    wsl bootware bootstrap --winrm --inventory "$IPAddress," --playbook "$Playbook" --user "$Env:UserName"
+    wsl bootware bootstrap --winrm --config "$Global:ConfigPath" --inventory "$Inventory" --playbook "$PlaybookPath" ---user "$User" --tags "$Tags" --skip "$Skip"
 }
 
 # Subcommand to generate or download Bootware configuration file.
@@ -204,25 +221,26 @@ Function Error($Message) {
 
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
-    If (Test-Path -Path "$1" -PathType Leaf) {
-        $ConfigPath = $FilePath
+    If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
+        $Global:ConfigPath = $FilePath
     } ElseIf (Test-Path -Path "$(Get-Location)/bootware.yaml" -PathType Leaf) {
-        $ConfigPath = "$(Get-Location)/bootware.yaml"
+        $Global:ConfigPath = "$(Get-Location)/bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
-        $ConfigPath = "$Env:BOOTWARE_CONFIG"
+        $Global:ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
-        $ConfigPath = "$HOME/.bootware/config.yaml"
-    } else {
+        $Global:ConfigPath = "$HOME/.bootware/config.yaml"
+    } Else {
         Write-Output "Unable to find Bootware configuation file."
         Config --empty
-        $ConfigPath = "$HOME/.bootware/config.yaml"
+        $Global:ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
-    Write-Output "Using $ConfigPath as configuration file."
+    Write-Output "Using $Global:ConfigPath as configuration file."
 }
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
+    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $WSL = 1
 
     ForEach ($Arg in $Args) {
@@ -234,6 +252,10 @@ Function Setup() {
             "--no-wsl" {
                 $WSL = 0
                 $ArgIdx += 1
+            }
+            {$_ -In "-u", "--url"} {
+                $URL = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
             }
         }
     }
@@ -288,7 +310,7 @@ Function Setup() {
 }
 
 # Launch WinRM and create inbound network rule.
-Function SetupWinRM {
+Function SetupWinRM() {
     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
     Write-Output "Setting up WinRM..."
     DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
@@ -299,7 +321,7 @@ Function SetupWinRM {
 #
 # Implemented based on instructions at
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
-Function SetupWSL {
+Function SetupWSL() {
     If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
@@ -309,11 +331,15 @@ Function SetupWSL {
         Exit 0
     }
 
-    If (-Not (Get-Command ubuntu -ErrorAction SilentlyContinue)) {
+    # Unable to figure a better way to check if a Linux distro is installed.
+    # Checking output of wsl list seems to never work.
+    $MatchString = "A WSL distro is installed"
+    $DistroCheck = "$(wsl echo $MatchString)"
+    If (-Not ("$DistroCheck" -Like "$MatchString")) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
-        Write-Output "Downloading WSL update. Follow the GUI for installation."
+        Write-Output "Downloading WSL update."
         DownloadFile "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" $TempFile
-        Start-Process -Wait $TempFile
+        Start-Process -Wait $TempFile /Passive
 
         wsl --set-default-version 2
 
@@ -371,6 +397,11 @@ Function Update() {
 # Print Bootware version string.
 Function Version() {
     Write-Output "Bootware 0.3.0"
+}
+
+ # Convert path to WSL relative path.
+Function WSLPath($FilePath) {
+    "$FilePath" -Replace "\\","/" -Replace "C:","/mnt/c"
 }
 
 # Script entrypoint.
