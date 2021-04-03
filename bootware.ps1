@@ -139,16 +139,15 @@ Function Bootstrap() {
         }
     }
 
-    Write-Output "This command is not yet implemented."
-
-    If (-Not (Test-Path -Path "$1" -PathType Any)) {
-        git clone --depth 1 "$URL" "$PSScriptRoot/repo"
+    $RepoPath = "$PSScriptRoot/repo"
+    If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
+        git clone --depth 1 "$URL" "$RepoPath"
     }
 
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
     $IPAddress = $(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2)
-    wsl bootware bootstrap --winrm --inventory "$IPAddress," --playbook "$PSScriptRoot/repo" --user "$Env:UserName"
+    wsl bootware bootstrap --winrm --inventory "$IPAddress," --playbook "$RepoPath/main.yaml" --user "$Env:UserName"
 }
 
 # Subcommand to generate or download Bootware configuration file.
