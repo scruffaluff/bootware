@@ -147,7 +147,9 @@ Function Bootstrap() {
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
     $IPAddress = $(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2)
-    wsl bootware bootstrap --winrm --inventory "$IPAddress," --playbook "$RepoPath/main.yaml" --user "$Env:UserName"
+
+    $Playbook = "$RepoPath/main.yaml" -Replace "\\","/" -Replace "C:","/mnt/c"
+    wsl bootware bootstrap --winrm --inventory "$IPAddress," --playbook "$Playbook" --user "$Env:UserName"
 }
 
 # Subcommand to generate or download Bootware configuration file.
