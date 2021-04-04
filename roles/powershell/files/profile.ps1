@@ -5,6 +5,19 @@
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
+# Load Docker autocompletion if available.
+if (Get-Module -ListAvailable -Name posh-docker) {
+    Import-Module posh-docker
+}
+
+
+# Git settings.
+
+# Load Git autocompletion if available.
+if (Get-Module -ListAvailable -Name posh-git) {
+    Import-Module posh-git
+}
+
 
 # Python settings.
 
@@ -17,14 +30,7 @@ $Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
 
 # Starship settings.
 
-# Initialize Starship.
-Invoke-Expression (&starship init powershell)
-
-
-# Tool settings.
-
-# Load Docker autocompletion.
-Import-Module posh-docker
-
-# Load Git autocompletion.
-Import-Module posh-git
+# Initialize Starship if available.
+If (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&starship init powershell)
+}

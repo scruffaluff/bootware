@@ -50,3 +50,13 @@
     mode: 0755
     state: link
   when: ansible_system == "Linux"
+
+- name: Remove Microsoft Store links masquerading as Python for Windows
+  become_user: "{{ user_account }}"
+  loop:
+    - python.exe
+    - python3.exe
+  win_file:
+    path: "{{ user_home_dir }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    state: absent
+  when: ansible_system == "Win32NT"
