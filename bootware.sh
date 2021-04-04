@@ -70,6 +70,8 @@ SUBCOMMANDS:
     config           Generate default Bootware configuration file
     setup            Install dependencies for Bootware
     update           Update Bootware to latest version
+
+See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     setup)
@@ -154,8 +156,8 @@ bootstrap() {
   fi
 
   # Parse command line arguments.
-  for arg in "$@"; do
-    case "$arg" in
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
       -c|--config)
         config_path="$2"
         shift 2
@@ -214,6 +216,7 @@ bootstrap() {
         shift 1
         ;;
       *)
+        error_usage "No such option '$1'."
         ;;
     esac
   done
@@ -278,8 +281,8 @@ config() {
   assert_cmd mkdir
 
   # Parse command line arguments.
-  for arg in "$@"; do
-    case "$arg" in
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
       -d|--dest)
         dst_file="$2"
         shift 2
@@ -297,6 +300,7 @@ config() {
         shift 2
         ;;
       *)
+        error_usage "No such option '$1'."
         ;;
     esac
   done
@@ -339,11 +343,28 @@ dnf_check_update() {
 #######################################
 # Print error message and exit script with error code.
 # Outputs:
-#   Writes error message to stderr if command is not in system path.
+#   Writes error message to stderr.
 #######################################
 error() {
-  printf 'Error: %s\n' "$1" >&2
+  local bold_red="\033[1;31m"
+  local default="\033[0m"
+
+  printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
+}
+
+#######################################
+# Print error message and exit script with usage error code.
+# Outputs:
+#   Writes error message to stderr.
+#######################################
+error_usage() {
+  local bold_red="\033[1;31m"
+  local default="\033[0m"
+
+  printf "${bold_red}error${default}: %s\n" "$1" >&2
+  printf "Run 'bootware --help' for usage.\n" >&2
+  exit 2
 }
 
 #######################################
@@ -381,13 +402,14 @@ setup() {
   assert_cmd uname
 
   # Parse command line arguments.
-  for arg in "$@"; do
-    case "${arg}" in
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
       -h|--help)
         usage "setup"
         exit 0
         ;;
       *)
+        error_usage "No such option '$1'."
         ;;
     esac
   done
@@ -580,8 +602,8 @@ update() {
   dst_file="$(cd "$(dirname "$0")"; pwd -P)/$(basename "$0")"
 
   # Parse command line arguments.
-  for arg in "$@"; do
-    case "${arg}" in
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
       -h|--help)
         usage "update"
         exit 0
@@ -591,6 +613,7 @@ update() {
         shift 2
         ;;
       *)
+        error_usage "No such option '$1'."
         ;;
     esac
   done
@@ -628,36 +651,35 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  for arg in "$@"; do
-    case "${arg}" in
-      bootstrap)
-        shift 1
-        bootstrap "$@"
-        exit 0
-        ;;
-      config)
-        shift 1
-        config "$@"
-        exit 0
-        ;;
-      setup)
-        shift 1
-        setup "$@"
-        exit 0
-        ;;
-      update)
-        shift 1
-        update "$@"
-        exit 0
-        ;;
-      -v|--version)
-        version
-        exit 0
-        ;;
-      *)
-        ;;
-    esac
-  done
+  case "$1" in
+    bootstrap)
+      shift 1
+      bootstrap "$@"
+      exit 0
+      ;;
+    config)
+      shift 1
+      config "$@"
+      exit 0
+      ;;
+    setup)
+      shift 1
+      setup "$@"
+      exit 0
+      ;;
+    update)
+      shift 1
+      update "$@"
+      exit 0
+      ;;
+    -v|--version)
+      version
+      exit 0
+      ;;
+    *)
+      error_usage "No such subcommand '$1'."
+      ;;
+  esac
 
   usage "main"
 }

@@ -59,6 +59,8 @@ SUBCOMMANDS:
     config           Generate default Bootware configuration file
     setup            Install dependencies for Bootware
     update           Update Bootware to latest version
+
+See 'bootware <subcommand> --help' for more information on a specific command.
 '@
         }
         "setup" {
