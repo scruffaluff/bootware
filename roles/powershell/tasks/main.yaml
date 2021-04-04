@@ -1,3 +1,24 @@
+- name: Get latest PowerShell Core version
+  win_uri:
+    url: https://formulae.brew.sh/api/cask/powershell.json
+    method: GET
+    return_content: yes
+  register: powershell_formula
+  when: ansible_system == "Win32NT"
+
+- name: Install PowerShell Core for Windows
+  win_package:
+    arguments:
+      - /quiet
+      - ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1
+      - ENABLE_PSREMOTING=1
+      - REGISTER_MANIFEST=1
+    path: >-
+      https://github.com/PowerShell/PowerShell/releases/download/v{{
+      powershell_formula.json.version }}/PowerShell-{{
+      powershell_formula.json.version }}-win-x64.msi
+  when: ansible_system == "Win32NT"
+
 - name: Create PowerShell settings directory for Windows
   become_user: "{{ user_account }}"
   win_file:

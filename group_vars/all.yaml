@@ -2,11 +2,11 @@ _ansible_system: "{{ ansible_system|lower|replace('darwin','macos') }}"
 _user_shell:
   linux: /usr/bin/fish
   macos: /usr/local/bin/fish
-  windows: C:/Program Files/PowerShell/7pwsh.exe
+  win32nt: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 _user_home_dir:
   linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
   macos: "{{ '/Users/' + user_account }}"
-  win32nt: "{{ '/Users/' + user_account }}"
+  win32nt: "{{ 'C:/Users/' + user_account }}"
 font_size: 14
 linux_desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 user_home_dir: "{{ _user_home_dir[_ansible_system] }}"

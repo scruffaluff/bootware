@@ -57,5 +57,5 @@
 
 - name: Change desktop settings for Windows
   become_user: "{{ user_account }}"
-  script: windows.ps1
+  script: "windows.ps1 {{ user_account }} {{ background.name }}"
   when: ansible_system == "Win32NT"
