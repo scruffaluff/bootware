@@ -81,7 +81,7 @@
 - name: Copy Hyper configuration file for Windows
   become_user: "{{ user_account }}"
   template:
-    dest: "{{ user_home_dir }}\\AppData\\Roaming\\Hyper\\.hyper.js"
+    dest: "{{ user_home_dir }}/AppData/Roaming/Hyper/.hyper.js"
     force: yes
     src: hyper.j2
   when: ansible_system == "Win32NT"

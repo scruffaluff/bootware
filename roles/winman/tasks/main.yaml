@@ -43,3 +43,10 @@
     name: amethyst
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Powertoys for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: powertoys
+  when: ansible_system == "Win32NT"
