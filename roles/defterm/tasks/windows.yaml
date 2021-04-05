@@ -14,9 +14,9 @@
 
 - name: Copy Windows Terminal configuration file for Windows
   become_user: "{{ user_account }}"
-  win_copy:
+  template:
     dest: >-
       {{ user_home_dir }}/AppData/Local/Microsoft/Windows Terminal/settings.json
     force: yes
-    src: windows.json
+    src: windows.j2
   when: ansible_system == "Win32NT"

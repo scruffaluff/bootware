@@ -19,19 +19,23 @@
       powershell_formula.json.version }}-win-x64.msi
   when: ansible_system == "Win32NT"
 
-- name: Create PowerShell settings directory for Windows
+- name: Create PowerShell settings directories for Windows
   become_user: "{{ user_account }}"
+  loop:
+    - Documents/PowerShell
+    - Documents/WindowsPowerShell
   win_file:
-    path: "{{ user_home_dir }}/Documents/WindowsPowerShell"
+    path: "{{ user_home_dir }}/{{ item }}"
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Copy PowerShell settings file for Windows
+- name: Copy PowerShell settings files for Windows
   become_user: "{{ user_account }}"
   copy:
-    dest: >-
-      {{ user_home_dir
-      }}/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+    dest: "{{ user_home_dir }}/{{ item }}"
     force: yes
     src: profile.ps1
+  loop:
+    - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+    - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
   when: ansible_system == "Win32NT"
