@@ -14,7 +14,7 @@
     remote_src: yes
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
-      exa_formula.json.versions.stable }}/exa-linux-x86_64-{{
+      exa_formula.json.versions.stable }}/exa-linux-x86_64-v{{
       exa_formula.json.versions.stable }}.zip
   when: ansible_system == "Linux"
 
@@ -24,7 +24,7 @@
     dest: /usr/local/bin/exa
     mode: 0755
     remote_src: yes
-    src: /tmp/exa-linux-x86_64
+    src: /tmp/bin/exa
   when: ansible_system == "Linux"
 
 - name: Install Exa for MacOS
