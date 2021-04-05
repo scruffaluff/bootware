@@ -396,7 +396,6 @@ find_config_path() {
 
 # Subcommand to configure boostrapping services and utilities.
 setup() {
-  local arg
   local os_type
 
   assert_cmd uname
@@ -672,6 +671,10 @@ main() {
       update "$@"
       exit 0
       ;;
+    -h|--help)
+        usage "main"
+        exit 0
+        ;;
     -v|--version)
       version
       exit 0
