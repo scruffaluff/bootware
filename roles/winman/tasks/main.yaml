@@ -3,7 +3,7 @@
   register: pop_shell_check
   shell:
     cmd: gnome-extensions show pop-shell@system76.com
-  when: ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu"]
+  when: ansible_system == "Linux" and gnome_desktop
 
 # Pop Shell requires TypeScript as a build dependency
 - name: Install Typescript for GNOME desktops
@@ -12,7 +12,7 @@
       source {{ user_home_dir }}/.bashrc
       npm install -g typescript
     executable: /bin/bash
-  when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
+  when: pop_shell_check is failed and gnome_desktop
 
 - name: Install Pop Shell for GNOME desktops
   shell:
@@ -23,18 +23,17 @@
       echo y | make -C "${tmp_dir}" local-install
       rm -fr "${tmp_dir}"
     executable: /bin/bash
-  when: pop_shell_check is failed and linux_desktop in ["gnome", "ubuntu"]
+  when: pop_shell_check is failed and gnome_desktop
 
 - name: Enable Pop Shell extension for GNOME desktops
   shell:
     cmd: gnome-extensions enable pop-shell@system76.com
-  when: ansible_system== "Linux" and linux_desktop in ["gnome", "ubuntu"]
+  when: ansible_system== "Linux" and gnome_desktop
 
 - name: Change Pop Shell settings for GNOME desktops
   become_user: "{{ user_account }}"
   script: pop_shell.sh
-  when: >-
-    ansible_system == "Linux" and linux_desktop in ["gnome", "ubuntu", "pop"]
+  when: ansible_system == "Linux" and gnome_desktop
 
 - name: Install Amethyst for MacOS
   become_user: "{{ user_account }}"

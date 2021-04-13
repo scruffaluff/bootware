@@ -1,22 +1,3 @@
-# TODO: Unify this check with the copy in the docker role.
-- name: Get base distrobution for Debian distributions
-  register: deb_distro_base
-  shell:
-    # Tr pipe converts output to lowercase. Taken from
-    # https://stackoverflow.com/a/2264537.
-    cmd: |
-      name=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-      case "${name}" in
-        pop)
-          echo "ubuntu"
-          ;;
-        *)
-          echo "${name}"
-          ;;
-      esac
-    executable: /bin/bash
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install Alacritty for Arch distributions
   become: yes
   pacman:
@@ -29,14 +10,14 @@
     repo: ppa:mmstick76/alacritty
   become: yes
   when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "ubuntu" and
-    ansible_os_family != "Pop!_OS"
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_distribution != "Pop!_OS"
 
 - name: Install Alacritty for Ubuntu distributions
   apt:
     name: alacritty
   become: yes
-  when: ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "ubuntu"
+  when: ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu"
 
 - name: Install Alacritty for MacOS
   become_user: "{{ user_account }}"

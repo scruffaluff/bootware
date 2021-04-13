@@ -8,7 +8,7 @@
   apt:
     deb: https://update.code.visualstudio.com/latest/linux-deb-x64/stable
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
 - name: Install VSCode for MacOS
   become_user: "{{ user_account }}"
@@ -29,6 +29,12 @@
   dnf:
     name: https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install VSCode for PopOS
+  apt:
+    name: code
+  become: yes
+  when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
 
 - name: Install VSCode for Windows
   become_user: "{{ user_account }}"

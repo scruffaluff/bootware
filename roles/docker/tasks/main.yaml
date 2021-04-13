@@ -15,35 +15,11 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Get release name for Debian distributions
-  register: deb_distro_release
-  shell:
-    cmd: lsb_release -cs
-  when: ansible_pkg_mgr == "apt"
-
-- name: Get base distrobution for Debian distributions
-  register: deb_distro_base
-  shell:
-    # Tr pipe converts output to lowercase. Taken from
-    # https://stackoverflow.com/a/2264537.
-    cmd: |
-      name=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-      case "${name}" in
-        pop)
-          echo "ubuntu"
-          ;;
-        *)
-          echo "${name}"
-          ;;
-      esac
-    executable: /bin/bash
-  when: ansible_pkg_mgr == "apt"
-
 - name: Add Docker key for Debian distributions
   become: yes
   shell:
     cmd: |
-      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base.stdout }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
     warn: no
   when: ansible_pkg_mgr == "apt"
@@ -54,7 +30,7 @@
     path: /etc/apt/sources.list.d/docker.list
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
-    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base.stdout }} {{ deb_distro_release.stdout }} stable
+    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
     create: yes
   when: ansible_pkg_mgr == "apt"
 

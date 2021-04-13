@@ -1,4 +1,14 @@
 _ansible_system: "{{ ansible_system|lower|replace('darwin','macos') }}"
+_gnome_desktops:
+  - elementary
+  - gnome
+  - pop
+  - ubuntu
+  - zorin
+_ubuntu_distros:
+  - "Elementary OS"
+  - "Pop!_OS"
+  - "Zorin OS"
 _user_shell:
   linux: /usr/bin/fish
   macos: /usr/local/bin/fish
@@ -7,7 +17,10 @@ _user_home_dir:
   linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
   macos: "{{ '/Users/' + user_account }}"
   win32nt: "{{ 'C:/Users/' + user_account }}"
+deb_distro_base:
+  "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
+desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 font_size: 14
-linux_desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
+gnome_desktop: desktop in _gnome_desktops
 user_home_dir: "{{ _user_home_dir[_ansible_system] }}"
 user_shell: "{{ _user_shell[_ansible_system] }}"
