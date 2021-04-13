@@ -6,12 +6,15 @@ _gnome_desktops:
   - ubuntu
   - zorin
 _ubuntu_distros:
-  - "Elementary OS"
+  - Elementary OS
   - "Pop!_OS"
-  - "Zorin OS"
+  - Ubuntu
+  - Zorin OS
 _user_shell:
   linux: /usr/bin/fish
-  macos: /usr/local/bin/fish
+  macos: >-
+    {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+    }}/bin/fish
   win32nt: C:/Program Files/PowerShell/7/pwsh.exe
 _user_home_dir:
   linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
