@@ -6,7 +6,12 @@
   register: bottom_release
   when: ansible_system != "Win32NT"
 
-# TODO: Install for Arch and Fedora.
+- name: Install TLDR for Arch distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: yay -Sy --noconfirm bottom-bin
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install Bottom For Debian distributions
   apt:
     deb: >-
@@ -15,6 +20,17 @@
       }}_amd64.deb
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Add Bottom package to Fedora repositories
+  community.general.copr:
+    name: atim/bottom
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Bottom for Fedora distributions
+  become: yes
+  dnf:
+    name: bottom
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Tap Bottom Homebrew repository
   community.general.homebrew_tap:
