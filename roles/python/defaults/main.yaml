@@ -13,4 +13,4 @@ pipx_applications:
   - cookiecutter
   - poetry
 python_versions: >-
-  {{ _python_versions.always + _python_versions[_ansible_system] }}
+  {{  _python_versions[_ansible_system] + _python_versions.always }}

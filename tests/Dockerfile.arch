@@ -47,4 +47,4 @@ COPY main.yaml ./
 ARG tags
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --dev --no-passwd --skip python,vscode ${tags:+--tags $tags}
+RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}

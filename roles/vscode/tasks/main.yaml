@@ -1,7 +1,11 @@
+# Arch package repository provides the open source version of Visual Studio
+# Code, which cannot install proprietary Microsoft extensions. For more
+# information, see
+# https://wiki.archlinux.org/index.php/Visual_Studio_Code#No_extensions_found.
 - name: Install VSCode for Arch distributions
-  become: yes
-  pacman:
-    name: code
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: yay -Sy --noconfirm visual-studio-code-bin
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install VSCode for Debian distributions

@@ -2,6 +2,21 @@
 # shellcheck shell=fish
 
 
+# System settings.
+
+# Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
+#
+# Pyenv system shell will work unless it is found in a bin directory. Archlinux
+# places a symlink in an sbin directory. For more information, see
+# https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
+set -x PATH "/usr/bin" $PATH
+
+# Add manually installed binary directory to PATH environment variable.
+#
+# Necessary since path is missing on some MacOS systems.
+set -x PATH "/usr/local/bin" $PATH
+
+
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
 set -x DOCKER_BUILDKIT 1
