@@ -397,6 +397,7 @@ find_config_path() {
 # Subcommand to configure boostrapping services and utilities.
 setup() {
   local os_type
+  local tmp_dir
 
   assert_cmd uname
 
@@ -457,6 +458,17 @@ setup_arch() {
     echo "Installing Git..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm git
+  fi
+
+  if ! [ -x "$(command -v yay)" ]; then
+    echo "Installing Yay package manager..."
+    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -S --noconfirm base-devel
+
+    tmp_dir=$(mktemp -u)
+    git clone --depth 1 https://aur.archlinux.org/yay.git "${tmp_dir}"
+    (cd "${tmp_dir}" && makepkg --noconfirm -is)
+    yay --noconfirm -Suy
   fi
 }
 

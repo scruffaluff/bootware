@@ -35,9 +35,6 @@ USER fedora
 # Install Bootware.
 RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 
-# Generate default Bootware configuration file.
-RUN bootware config --empty
-
 # Install dependencies for Bootware.
 RUN bootware setup
 

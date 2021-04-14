@@ -1,4 +1,4 @@
-FROM archlinux:base-20210328.0.18194
+FROM archlinux:base-20210404.0.18927
 
 
 # Create non-priviledged user.
@@ -31,9 +31,6 @@ USER arch
 
 # Install Bootware.
 RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
-
-# Generate default Bootware configuration file.
-RUN bootware config --empty
 
 # Install dependencies for Bootware.
 RUN bootware setup
