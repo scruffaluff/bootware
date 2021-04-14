@@ -22,6 +22,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Bottom package to Fedora repositories
+  become: yes
   community.general.copr:
     name: atim/bottom
   when: ansible_pkg_mgr == "dnf"

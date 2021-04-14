@@ -1,3 +1,9 @@
+- name: Install Google Cloud SDK for Arch distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: yay -Sy --noconfirm google-cloud-sdk
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Add Google Cloud SDK key for Debian distributions
   become: yes
   shell:
@@ -16,13 +22,34 @@
     create: yes
   when: ansible_pkg_mgr == "apt"
 
-# TODO: Install for Arch and Fedora.
 - name: Install Google Cloud SDK for Debian distributions
   apt:
     name: google-cloud-sdk
     update_cache: yes
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Add Google Cloud SDK package information for Fedora distributions
+  become: yes
+  blockinfile:
+    block: |
+      [google-cloud-sdk]
+      name=Google Cloud SDK
+      baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64
+      enabled=1
+      gpgcheck=1
+      repo_gpgcheck=0
+      gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+             https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    create: yes
+    path: /etc/yum.repos.d/google-cloud-sdk.repo
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Google Cloud SDK for Fedora distributions
+  become: yes
+  dnf:
+    name: google-cloud-sdk
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Google Cloud SDK for MacOS
   become_user: "{{ user_account }}"
