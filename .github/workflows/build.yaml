@@ -9,7 +9,6 @@ on:
   push:
     branches:
       - develop
-      - feature/*
       - master
 
 jobs:
