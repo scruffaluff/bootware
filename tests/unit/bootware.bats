@@ -6,6 +6,7 @@ load "../../node_modules/bats-assert/load"
 
 # Disable logging to simplify stdout for testing.
 export BOOTWARE_NOLOG=1
+export BOOTWARE_NOPASSWD=""
 
 # Mock ansible-pull for child processes by printing received arguments.
 #
@@ -34,7 +35,7 @@ export -f ansible-playbook
 
 @test "Check passing Ansible arguments" {
   local actual
-  local expected="ansible-playbook --connection local --extra-vars ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
+  local expected="ansible-playbook --ask-become-pass --connection local --extra-vars ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
 
   actual="$(./bootware.sh bootstrap --dev --tags none)"
   assert_equal "${actual}" "${expected}"
