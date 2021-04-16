@@ -128,6 +128,9 @@ assert_cmd() {
 #   BOOTWARE_SKIP
 #   BOOTWARE_TAGS
 #   BOOTWARE_URL
+#   USER
+# Outputs:
+#   Writes user instructions to stdout.
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
@@ -241,8 +244,8 @@ bootstrap() {
   find_config_path "$config_path"
   config_path="$RET_VAL"
 
-  echo "Executing Ansible ${cmd:-pull}..."
-  echo "Enter your user account password if prompted."
+  log "Executing Ansible ${cmd:-pull}..."
+  log "Enter your user account password if prompted."
 
   ansible-${cmd}  \
     ${ask_passwd:+--ask-become-pass} \
@@ -268,10 +271,8 @@ bootstrap() {
 # Subcommand to generate or download Bootware configuration file.
 # Globals:
 #   HOME
-# Arguments:
-#   Parent directory of Bootware script.
 # Outputs:
-#   Writes status information to stdout.
+#   Writes configuration file generate logs to stdout.
 #######################################
 config() {
   local src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
@@ -308,12 +309,12 @@ config() {
   mkdir -p "$(dirname "${dst_file}")"
 
   if [[ ${empty_cfg} == 1 ]]; then
-    echo "Writing empty configuration file to ${dst_file}..."
+    log "Writing empty configuration file to ${dst_file}..."
     echo "passwordless_sudo: false" > "${dst_file}"
   else
     assert_cmd curl
 
-    echo "Downloading configuration file to ${dst_file}..."
+    log "Downloading configuration file to ${dst_file}..."
 
     # Download default configuration file.
     #
@@ -374,8 +375,8 @@ error_usage() {
 # Arguments:
 #   User supplied configuration path.
 # Outputs:
-#   Writes error message to stderr if unable to find configuration file.
-# Retunrs:
+#   Writes found configuration file path to stdout.
+# Returns:
 #   Configuration file path.
 #######################################
 find_config_path() {
@@ -391,10 +392,29 @@ find_config_path() {
     RET_VAL="$HOME/.bootware/config.yaml"
   fi
 
-  echo "Using $RET_VAL as configuration file."
+  log "Using $RET_VAL as configuration file."
 }
 
+#######################################
+# Print log message to stdout if logging is enabled.
+# Globals:
+#   BOOTWARE_NOLOG
+# Outputs:
+#   Log message to stdout.
+#######################################
+log() {
+  # Log if environment variable is not set.
+  #
+  # Flags:
+  #     -z: True if string has zero length.
+  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
+    echo "${*}"
+  fi
+}
+
+#######################################
 # Subcommand to configure boostrapping services and utilities.
+#######################################
 setup() {
   local os_type
   local tmp_dir
@@ -436,32 +456,36 @@ setup() {
   ansible-galaxy collection install community.windows > /dev/null
 }
 
+#######################################
 # Configure boostrapping services and utilities for Arch distributions.
+# Outputs:
+#   Writes installation logs to stdout.
+#######################################
 setup_arch() {
   # Install dependencies for Bootware.
   #
   # Flags:
   #   -x: Check if execute permission is granted.
   if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
+    log "Installing Ansible..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman --noconfirm -S ansible
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
+    log "Installing Curl..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
+    log "Installing Git..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if ! [ -x "$(command -v yay)" ]; then
-    echo "Installing Yay package manager..."
+    log "Installing Yay package manager..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm base-devel
 
@@ -472,7 +496,11 @@ setup_arch() {
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Debian distributions.
+# Outputs:
+#   Writes installation logs to stdout.
+#######################################
 setup_debian() {
   # Install dependencies for Bootware.
   #
@@ -481,7 +509,7 @@ setup_debian() {
   if ! [ -x "$(command -v ansible)" ]; then
     # Ansible is install with Python3, since many Debian systems package Ansible
     # version 2.7, which does not support Ansible collections.
-    echo "Installing Ansible..."
+    log "Installing Ansible..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
@@ -492,44 +520,52 @@ setup_debian() {
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
+    log "Installing Curl..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
+    log "Installing Git..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y git
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Fedora distributions.
+# Outputs:
+#   Writes installation logs to stdout.
+#######################################
 setup_fedora() {
   # Install dependencies for Bootware.
   #
   # Flags:
   #   -x: Check if execute permission is granted.
   if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
+    log "Installing Ansible..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y ansible
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
+    log "Installing Curl..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
+    log "Installing Git..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y git
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Linux.
+# Globals:
+#   EUID
+#######################################
 setup_linux() {
   local use_sudo
 
@@ -552,7 +588,11 @@ setup_linux() {
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for MacOS.
+# Outputs:
+#   Writes installation logs to stdout.
+#######################################
 setup_macos() {
   assert_cmd curl
 
@@ -560,7 +600,7 @@ setup_macos() {
   #
   # Homebrew depends on the XCode command line tools.
   if ! xcode-select -p &>/dev/null ; then
-    echo "Installing command line tools for XCode..."
+    log "Installing command line tools for XCode..."
     sudo xcode-select --install
   fi
 
@@ -573,29 +613,31 @@ setup_macos() {
   #     -s: Disable progress bars.
   #     -x: Check if execute permission is granted.
   if ! [ -x "$(command -v brew)" ]; then
-    echo "Installing Homebrew..."
+    log "Installing Homebrew..."
     curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
   fi
 
   # Install Ansible if not already installed.
   if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
+    log "Installing Ansible..."
     brew install ansible
   fi
 
   # Install Git if not already installed.
   if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git.."
+    log "Installing Git.."
     brew install git
   fi
 }
 
 #######################################
-# Subcommand to update Bootware script
+# Subcommand to update Bootware script.
+# Globals:
+#   EUID
 # Arguments:
 #   Parent directory of Bootware script.
 # Outputs:
-#   Writes status information and updated Bootware version to stdout.
+#   Writes update logs and updated Bootware version to stdout.
 #######################################
 update() {
   local dst_file
@@ -640,12 +682,12 @@ update() {
     use_sudo=1
   fi
 
-  echo "Updating Bootware..."
+  log "Updating Bootware..."
 
   ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
-  echo "Updated to version $(bootware --version)."
+  log "Updated to version $(bootware --version)."
 }
 
 #######################################
