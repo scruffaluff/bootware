@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "bats:test": "bats -r tests/unit/",
     "prettier:format": "prettier --write .",
     "prettier:test": "prettier --check .",
     "vuepress:build": "node scripts/build_docs.js",
@@ -8,6 +9,8 @@
   },
   "devDependencies": {
     "bats": "^1.2.1",
+    "bats-assert": "https://github.com/ztombol/bats-assert",
+    "bats-support": "https://github.com/ztombol/bats-support",
     "mustache": "^4.1.0",
     "prettier": "^2.0.5",
     "vuepress": "^1.5.3",

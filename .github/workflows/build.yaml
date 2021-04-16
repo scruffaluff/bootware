@@ -28,7 +28,7 @@ jobs:
       - name: Check format of configuration files
         run: npm run prettier:test
       - name: Install Shfmt
-        run: sudo apt-get intall -y shfmt
+        run: sudo apt-get install -y shfmt
       - name: Check format of shell scripts
         run: |
           shfmt -d bootware.sh
@@ -67,10 +67,14 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
-      - name: Install Bats
-        run: sudo apt-get install -y bats
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Bats dependencies
+        run: npm install
       - name: Run Bash unit tests with Bats
-        run: bats -r tests/unit/
+        run: npm run bats:test
 
   test-macos:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'

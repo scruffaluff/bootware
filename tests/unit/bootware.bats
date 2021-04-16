@@ -1,6 +1,9 @@
 #!/usr/bin/env bats
 
 
+load "../../node_modules/bats-support/load"
+load "../../node_modules/bats-assert/load"
+
 # Disable logging to simplify stdout for testing.
 export BOOTWARE_NOLOG=1
 
@@ -25,11 +28,14 @@ export -f ansible-playbook
 
 @test "Throw error for unkown subcommand" {
   run ./bootware.sh notasubcommand
-  [ "${status}" -eq 2 ]
+  assert_equal "${status}" 2
+  assert_output --partial "No such subcommand 'notasubcommand'."
 }
 
 @test "Check passing Ansible arguments" {
-  expected="ansible-playbook --connection local --extra-vars ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
+  local actual
+  local expected="ansible-playbook --connection local --extra-vars ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
+
   actual="$(./bootware.sh bootstrap --dev --tags none)"
-  [ "${actual}" = "${expected}" ]
+  assert_equal "${actual}" "${expected}"
 }
