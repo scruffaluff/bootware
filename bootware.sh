@@ -13,8 +13,8 @@ set -e
 #######################################
 usage() {
   case "$1" in
-  bootstrap)
-    cat 1>&2 <<EOF
+    bootstrap)
+      cat 1>&2 << EOF
 Bootware bootstrap
 Boostrap install computer software
 
@@ -36,9 +36,9 @@ OPTIONS:
         --user <USER-NAME>          Remote host user login name
         --winrm                     Use WinRM connection instead of SSH
 EOF
-    ;;
-  config)
-    cat 1>&2 <<EOF
+      ;;
+    config)
+      cat 1>&2 << EOF
 Bootware config
 Download default Bootware configuration file
 
@@ -51,9 +51,9 @@ OPTIONS:
     -h, --help              Print help information
     -s, --source <URL>      URL to configuration file
 EOF
-    ;;
-  main)
-    cat 1>&2 <<EOF
+      ;;
+    main)
+      cat 1>&2 << EOF
 $(version)
 Boostrapping software installer
 
@@ -72,9 +72,9 @@ SUBCOMMANDS:
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
-    ;;
-  setup)
-    cat 1>&2 <<EOF
+      ;;
+    setup)
+      cat 1>&2 << EOF
 Bootware setup
 Install dependencies for Bootware
 
@@ -84,9 +84,9 @@ USAGE:
 OPTIONS:
     -h, --help      Print help information
 EOF
-    ;;
-  update)
-    cat 1>&2 <<EOF
+      ;;
+    update)
+      cat 1>&2 << EOF
 Bootware update
 Update Bootware to latest version
 
@@ -97,7 +97,7 @@ OPTIONS:
     -h, --help                  Print help information
     -v, --version <VERSION>     Version override for update
 EOF
-    ;;
+      ;;
   esac
 }
 
@@ -112,7 +112,7 @@ EOF
 assert_cmd() {
   # Flags:
   #   -v: Only show file path of command.
-  if ! command -v "$1" >/dev/null; then
+  if ! command -v "$1" > /dev/null; then
     error "Cannot find required $1 command on computer."
   fi
 }
@@ -160,66 +160,66 @@ bootstrap() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -c | --config)
-      config_path="$2"
-      shift 2
-      ;;
-    -d | --dev)
-      cmd="playbook"
-      use_playbook=1
-      use_pull=""
-      shift 1
-      ;;
-    -h | --help)
-      usage "bootstrap"
-      exit 0
-      ;;
-    -i | --inventory)
-      inventory="$2"
-      shift 2
-      ;;
-    --no-passwd)
-      ask_passwd=""
-      shift 1
-      ;;
-    --no-setup)
-      no_setup=1
-      shift 1
-      ;;
-    -p | --playbook)
-      playbook="$2"
-      shift 2
-      ;;
-    --password)
-      passwd="$2"
-      shift 2
-      ;;
-    -s | --skip)
-      skip="$2"
-      shift 2
-      ;;
-    -t | --tags)
-      tags="$2"
-      shift 2
-      ;;
-    -u | --url)
-      url="$2"
-      shift 2
-      ;;
-    --user)
-      user_account="$2"
-      shift 2
-      ;;
-    --winrm)
-      cmd="playbook"
-      use_playbook=1
-      use_pull=""
-      winrm=1
-      shift 1
-      ;;
-    *)
-      error_usage "No such option '$1'."
-      ;;
+      -c | --config)
+        config_path="$2"
+        shift 2
+        ;;
+      -d | --dev)
+        cmd="playbook"
+        use_playbook=1
+        use_pull=""
+        shift 1
+        ;;
+      -h | --help)
+        usage "bootstrap"
+        exit 0
+        ;;
+      -i | --inventory)
+        inventory="$2"
+        shift 2
+        ;;
+      --no-passwd)
+        ask_passwd=""
+        shift 1
+        ;;
+      --no-setup)
+        no_setup=1
+        shift 1
+        ;;
+      -p | --playbook)
+        playbook="$2"
+        shift 2
+        ;;
+      --password)
+        passwd="$2"
+        shift 2
+        ;;
+      -s | --skip)
+        skip="$2"
+        shift 2
+        ;;
+      -t | --tags)
+        tags="$2"
+        shift 2
+        ;;
+      -u | --url)
+        url="$2"
+        shift 2
+        ;;
+      --user)
+        user_account="$2"
+        shift 2
+        ;;
+      --winrm)
+        cmd="playbook"
+        use_playbook=1
+        use_pull=""
+        winrm=1
+        shift 1
+        ;;
+      *)
+        error_usage "No such option '$1'."
+        ;;
     esac
   done
 
@@ -240,8 +240,8 @@ bootstrap() {
     setup
   fi
 
-  find_config_path "$config_path"
-  config_path="$RET_VAL"
+  find_config_path "${config_path}"
+  config_path="${RET_VAL}"
 
   log "Executing Ansible ${cmd:-pull}..."
   log "Enter your user account password if prompted."
@@ -283,25 +283,25 @@ config() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -d | --dest)
-      dst_file="$2"
-      shift 2
-      ;;
-    -e | --empty)
-      empty_cfg=1
-      shift 1
-      ;;
-    -h | --help)
-      usage "config"
-      exit 0
-      ;;
-    -s | --source)
-      src_url="$2"
-      shift 2
-      ;;
-    *)
-      error_usage "No such option '$1'."
-      ;;
+      -d | --dest)
+        dst_file="$2"
+        shift 2
+        ;;
+      -e | --empty)
+        empty_cfg=1
+        shift 1
+        ;;
+      -h | --help)
+        usage "config"
+        exit 0
+        ;;
+      -s | --source)
+        src_url="$2"
+        shift 2
+        ;;
+      *)
+        error_usage "No such option '$1'."
+        ;;
     esac
   done
 
@@ -309,7 +309,7 @@ config() {
 
   if [[ ${empty_cfg} == 1 ]]; then
     log "Writing empty configuration file to ${dst_file}..."
-    echo "passwordless_sudo: false" >"${dst_file}"
+    echo "passwordless_sudo: false" > "${dst_file}"
   else
     assert_cmd curl
 
@@ -387,15 +387,15 @@ find_config_path() {
     RET_VAL="$1"
   elif test -f "$(pwd)/bootware.yaml"; then
     RET_VAL="$(pwd)/bootware.yaml"
-  elif test -f "$HOME/.bootware/config.yaml"; then
-    RET_VAL="$HOME/.bootware/config.yaml"
+  elif test -f "${HOME}/.bootware/config.yaml"; then
+    RET_VAL="${HOME}/.bootware/config.yaml"
   else
     log "Unable to find Bootware configuation file.\n"
     config --empty
-    RET_VAL="$HOME/.bootware/config.yaml"
+    RET_VAL="${HOME}/.bootware/config.yaml"
   fi
 
-  log "Using $RET_VAL as configuration file."
+  log "Using ${RET_VAL} as configuration file."
 }
 
 #######################################
@@ -427,13 +427,13 @@ setup() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -h | --help)
-      usage "setup"
-      exit 0
-      ;;
-    *)
-      error_usage "No such option '$1'."
-      ;;
+      -h | --help)
+        usage "setup"
+        exit 0
+        ;;
+      *)
+        error_usage "No such option '$1'."
+        ;;
     esac
   done
 
@@ -444,19 +444,19 @@ setup() {
   os_type=$(uname -s)
 
   case "${os_type}" in
-  Darwin)
-    setup_macos
-    ;;
-  Linux)
-    setup_linux
-    ;;
-  *)
-    error "Operting system ${os_type} is not supported."
-    ;;
+    Darwin)
+      setup_macos
+      ;;
+    Linux)
+      setup_linux
+      ;;
+    *)
+      error "Operting system ${os_type} is not supported."
+      ;;
   esac
 
-  ansible-galaxy collection install community.general >/dev/null
-  ansible-galaxy collection install community.windows >/dev/null
+  ansible-galaxy collection install community.general > /dev/null
+  ansible-galaxy collection install community.windows > /dev/null
 }
 
 #######################################
@@ -580,11 +580,11 @@ setup_linux() {
   #
   # Flags:
   #   -v: Only show file path of command.
-  if command -v pacman &>/dev/null; then
+  if command -v pacman &> /dev/null; then
     setup_arch ${use_sudo}
-  elif command -v apt-get &>/dev/null; then
+  elif command -v apt-get &> /dev/null; then
     setup_debian ${use_sudo}
-  elif command -v dnf &>/dev/null; then
+  elif command -v dnf &> /dev/null; then
     setup_fedora ${use_sudo}
   else
     error "Unable to find supported package manager."
@@ -602,7 +602,7 @@ setup_macos() {
   # Install XCode command line tools if not already installed.
   #
   # Homebrew depends on the XCode command line tools.
-  if ! xcode-select -p &>/dev/null; then
+  if ! xcode-select -p &> /dev/null; then
     log "Installing command line tools for XCode..."
     sudo xcode-select --install
   fi
@@ -663,17 +663,17 @@ update() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -h | --help)
-      usage "update"
-      exit 0
-      ;;
-    -v | --version)
-      version="$2"
-      shift 2
-      ;;
-    *)
-      error_usage "No such option '$1'."
-      ;;
+      -h | --help)
+        usage "update"
+        exit 0
+        ;;
+      -v | --version)
+        version="$2"
+        shift 2
+        ;;
+      *)
+        error_usage "No such option '$1'."
+        ;;
     esac
   done
 
@@ -711,37 +711,37 @@ version() {
 main() {
   # Parse command line arguments.
   case "$1" in
-  bootstrap)
-    shift 1
-    bootstrap "$@"
-    exit 0
-    ;;
-  config)
-    shift 1
-    config "$@"
-    exit 0
-    ;;
-  setup)
-    shift 1
-    setup "$@"
-    exit 0
-    ;;
-  update)
-    shift 1
-    update "$@"
-    exit 0
-    ;;
-  -h | --help)
-    usage "main"
-    exit 0
-    ;;
-  -v | --version)
-    version
-    exit 0
-    ;;
-  *)
-    error_usage "No such subcommand '$1'."
-    ;;
+    bootstrap)
+      shift 1
+      bootstrap "$@"
+      exit 0
+      ;;
+    config)
+      shift 1
+      config "$@"
+      exit 0
+      ;;
+    setup)
+      shift 1
+      setup "$@"
+      exit 0
+      ;;
+    update)
+      shift 1
+      update "$@"
+      exit 0
+      ;;
+    -h | --help)
+      usage "main"
+      exit 0
+      ;;
+    -v | --version)
+      version
+      exit 0
+      ;;
+    *)
+      error_usage "No such subcommand '$1'."
+      ;;
   esac
 
   usage "main"

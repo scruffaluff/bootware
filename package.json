@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "bats:test": "bats -r tests/unit/",
-    "prettier:format": "prettier --write . && prettier --write **/*.sh",
-    "prettier:test": "prettier --check . && prettier --check **/*.sh",
+    "prettier:format": "prettier --write .",
+    "prettier:test": "prettier --check .",
     "vuepress:build": "node scripts/build_docs.js",
     "vuepress:serve": "vuepress dev docs/"
   },
@@ -13,7 +13,6 @@
     "bats-support": "https://github.com/ztombol/bats-support",
     "mustache": "^4.1.0",
     "prettier": "^2.0.5",
-    "prettier-plugin-sh": "^0.6.1",
     "vuepress": "^1.5.3",
     "vuepress-plugin-code-copy": "^1.0.6"
   }

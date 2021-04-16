@@ -5,5 +5,8 @@
 # options, see
 # https://github.com/mvdan/sh/blob/master/cmd/shfmt/shfmt.1.scd#options.
 
-# Set indent length to 2 spaces.
--i 2
+[*.sh]
+indent_size = 2
+indent_style = space
+space_redirects = true
+switch_case_indent = true

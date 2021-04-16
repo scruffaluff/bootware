@@ -12,7 +12,7 @@ set -e
 #   Writes help information to stdout.
 #######################################
 usage() {
-  cat 1>&2 <<EOF
+  cat 1>&2 << EOF
 Bootware Installer
 Installer script for Bootware
 
@@ -38,7 +38,7 @@ EOF
 assert_cmd() {
   # Flags:
   #   -v: Only show file path of command.
-  if ! command -v "$1" >/dev/null; then
+  if ! command -v "$1" > /dev/null; then
     error "Cannot find required $1 command on computer."
   fi
 }
@@ -60,25 +60,25 @@ configure_shell() {
   shell_name=$(basename "${SHELL}")
 
   case "${shell_name}" in
-  bash)
-    profile="${HOME}/.bashrc"
-    ;;
-  zsh)
-    profile="${HOME}/.zshrc"
-    ;;
-  ksh)
-    profile="${HOME}/.profile"
-    ;;
-  fish)
-    export_cmd="set -x PATH \"$1\" \$PATH"
-    profile="${HOME}/.config/fish/config.fish"
-    ;;
-  *)
-    error "Shell ${shell_name} is not supported."
-    ;;
+    bash)
+      profile="${HOME}/.bashrc"
+      ;;
+    zsh)
+      profile="${HOME}/.zshrc"
+      ;;
+    ksh)
+      profile="${HOME}/.profile"
+      ;;
+    fish)
+      export_cmd="set -x PATH \"$1\" \$PATH"
+      profile="${HOME}/.config/fish/config.fish"
+      ;;
+    *)
+      error "Shell ${shell_name} is not supported."
+      ;;
   esac
 
-  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >>"${profile}"
+  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >> "${profile}"
 }
 
 #######################################
@@ -108,23 +108,23 @@ main() {
   # Parse command line arguments.
   for arg in "$@"; do
     case "${arg}" in
-    -d | --dest)
-      shift
-      dst_file="$2"
-      ;;
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    -u | --user)
-      dst_file="${HOME}/.local/bin/bootware"
-      user_install=1
-      ;;
-    -v | --version)
-      shift
-      version="$2"
-      ;;
-    *) ;;
+      -d | --dest)
+        shift
+        dst_file="$2"
+        ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
+      -u | --user)
+        dst_file="${HOME}/.local/bin/bootware"
+        user_install=1
+        ;;
+      -v | --version)
+        shift
+        version="$2"
+        ;;
+      *) ;;
 
     esac
   done
@@ -153,7 +153,7 @@ main() {
   #
   # Flags:
   #   -v: Only show file path of command.
-  if ! command -v bootware >/dev/null; then
+  if ! command -v bootware > /dev/null; then
     configure_shell "${dst_dir}"
     export PATH="${dst_dir}:${PATH}"
   fi
