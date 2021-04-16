@@ -25,15 +25,8 @@ jobs:
           node-version: 14
       - name: Install Node dependencies
         run: npm install
-      - name: Check format of configuration files
+      - name: Check format of configuration files and shell scripts
         run: npm run prettier:test
-      - name: Install Shfmt
-        run: sudo apt-get install -y shfmt
-      - name: Check format of shell scripts
-        run: |
-          shfmt -d bootware.sh
-          shfmt -d install.sh
-          shfmt -d roles/
       - name: Run ShellCheck on shell scripts
         uses: ludeeus/action-shellcheck@master
         with:
