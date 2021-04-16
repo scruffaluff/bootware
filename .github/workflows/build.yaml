@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - develop
+      - feature/*
       - master
 
 jobs:
@@ -39,6 +40,7 @@ jobs:
           ignore: node_modules
 
   build:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Build Docker image of Bootware installer
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +61,19 @@ jobs:
           name: bootware
           path: /tmp/bootware.tar
 
+  test-bash:
+    name: Run unit tests for Bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Bats
+        run: sudo apt-get install -y bats
+      - name: Run Bash unit tests with Bats
+        run: bats -r tests/unit/
+
   test-macos:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for MacOS
     runs-on: macos-latest
     steps:
@@ -81,6 +95,7 @@ jobs:
         run: bootware bootstrap --dev --no-passwd --skip docker,
 
   test-linux:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for ${{ matrix.distro }}
     strategy:
       fail-fast: false
@@ -101,6 +116,7 @@ jobs:
           push: false
 
   test-package:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test building a ${{ matrix.format }} package
     strategy:
       fail-fast: false
@@ -121,6 +137,7 @@ jobs:
           push: false
 
   test-windows:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for Windows
     needs: build
     runs-on: windows-latest
