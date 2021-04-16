@@ -439,6 +439,9 @@ Function Main() {
             Update $Slice
             Exit 0
         }
+        Default {
+            Error "No such subcommand '$($Args[0][0])'."
+        }
     }
 
     Usage "main"
