@@ -133,6 +133,19 @@ jobs:
           tags: bootware:${{ matrix.format }}
           push: false
 
+  test-powershell:
+    name: Run unit tests for PowerShell scripts
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Pester
+        run: Install-Module Pester -Force
+        shell: pwsh
+      - name: Run PowerShell unit tests with Pester
+        run: Invoke-Pester -Output Detailed ./tests/unit/
+        shell: pwsh
+
   test-windows:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for Windows

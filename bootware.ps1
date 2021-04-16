@@ -220,8 +220,7 @@ Function DownloadFile($SrcURL, $DstFile) {
 
 # Print error message and exit script with error code.
 Function Error($Message) {
-    Write-Error "Error: $Message"
-    Exit 1
+    Throw "Error: $Message"
 }
 
 # Find path of Bootware configuation file.
