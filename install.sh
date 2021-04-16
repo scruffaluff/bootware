@@ -2,7 +2,6 @@
 #
 # Install Bootware for MacOS or Linux systems.
 
-
 # Exit immediately if a command exists with a non-zero status.
 set -e
 
@@ -13,7 +12,7 @@ set -e
 #   Writes help information to stdout.
 #######################################
 usage() {
-    cat 1>&2 <<EOF
+	cat 1>&2 <<EOF
 Bootware Installer
 Installer script for Bootware
 
@@ -37,11 +36,11 @@ EOF
 #   Writes error message to stderr if command is not in system path.
 #######################################
 assert_cmd() {
-  # Flags:
-  #   -v: Only show file path of command.
-  if ! command -v "$1" > /dev/null; then
-    error "Cannot find required $1 command on computer."
-  fi
+	# Flags:
+	#   -v: Only show file path of command.
+	if ! command -v "$1" >/dev/null; then
+		error "Cannot find required $1 command on computer."
+	fi
 }
 
 #######################################
@@ -54,32 +53,32 @@ assert_cmd() {
 #   Parent directory of Bootware script.
 #######################################
 configure_shell() {
-  local export_cmd="export PATH=\"$1:\$PATH\""
-  local profile
-  local shell_name
+	local export_cmd="export PATH=\"$1:\$PATH\""
+	local profile
+	local shell_name
 
-  shell_name=$(basename "${SHELL}")
+	shell_name=$(basename "${SHELL}")
 
-  case "${shell_name}" in
-    bash)
-      profile="${HOME}/.bashrc"
-      ;;
-    zsh)
-      profile="${HOME}/.zshrc"
-      ;;
-    ksh)
-      profile="${HOME}/.profile"
-      ;;
-    fish)
-      export_cmd="set -x PATH \"$1\" \$PATH"
-      profile="${HOME}/.config/fish/config.fish"
-      ;;
-    *)
-      error "Shell ${shell_name} is not supported."
-      ;;
-  esac
+	case "${shell_name}" in
+	bash)
+		profile="${HOME}/.bashrc"
+		;;
+	zsh)
+		profile="${HOME}/.zshrc"
+		;;
+	ksh)
+		profile="${HOME}/.profile"
+		;;
+	fish)
+		export_cmd="set -x PATH \"$1\" \$PATH"
+		profile="${HOME}/.config/fish/config.fish"
+		;;
+	*)
+		error "Shell ${shell_name} is not supported."
+		;;
+	esac
 
-  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >> "${profile}"
+	printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >>"${profile}"
 }
 
 #######################################
@@ -88,88 +87,88 @@ configure_shell() {
 #   Writes error message to stderr if command is not in system path.
 #######################################
 error() {
-  printf 'Error: %s\n' "$1" >&2
-  exit 1
+	printf 'Error: %s\n' "$1" >&2
+	exit 1
 }
 
 #######################################
 # Script entrypoint.
 #######################################
 main() {
-  local arg
-  local dst_dir
-  local dst_file="/usr/local/bin/bootware"
-  local src_url
-  local use_sudo
-  local user_install
-  local version="master"
+	local arg
+	local dst_dir
+	local dst_file="/usr/local/bin/bootware"
+	local src_url
+	local use_sudo
+	local user_install
+	local version="master"
 
-  assert_cmd curl
+	assert_cmd curl
 
-  # Parse command line arguments.
-  for arg in "$@"; do
-    case "${arg}" in
-      -d|--dest)
-        shift
-        dst_file="$2"
-        ;;
-      -h|--help)
-        usage
-        exit 0
-        ;;
-      -u|--user)
-        dst_file="${HOME}/.local/bin/bootware"
-        user_install=1
-        ;;
-      -v|--version)
-        shift
-        version="$2"
-        ;;
-      *)
-        ;;
-    esac
-  done
+	# Parse command line arguments.
+	for arg in "$@"; do
+		case "${arg}" in
+		-d | --dest)
+			shift
+			dst_file="$2"
+			;;
+		-h | --help)
+			usage
+			exit 0
+			;;
+		-u | --user)
+			dst_file="${HOME}/.local/bin/bootware"
+			user_install=1
+			;;
+		-v | --version)
+			shift
+			version="$2"
+			;;
+		*) ;;
 
-  src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
+		esac
+	done
 
-  # Use sudo for system installation if user did not give the --user, does not
-  # own the file, and is not root.
-  #
-  # Flags: 
-  #   -O: True if file is owned by the current user.
-  #   -z: True if the string has zero length or is null.
-  if [[ -z ${user_install} && ! -O "${dst_file}" && ${EUID} != 0 ]]; then
-    assert_cmd sudo
-    use_sudo=1
-  fi
-  dst_dir=$(dirname "${dst_file}")
+	src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
 
-  echo "Installing Bootware..."
+	# Use sudo for system installation if user did not give the --user, does not
+	# own the file, and is not root.
+	#
+	# Flags:
+	#   -O: True if file is owned by the current user.
+	#   -z: True if the string has zero length or is null.
+	if [[ -z ${user_install} && ! -O "${dst_file}" && ${EUID} != 0 ]]; then
+		assert_cmd sudo
+		use_sudo=1
+	fi
+	dst_dir=$(dirname "${dst_file}")
 
-  ${use_sudo:+sudo} mkdir -p "${dst_dir}"
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
-  ${use_sudo:+sudo} chmod 755 "${dst_file}"
+	echo "Installing Bootware..."
 
-  # Add Bootware to shell profile if not in system path.
-  #
-  # Flags:
-  #   -v: Only show file path of command.
-  if ! command -v bootware > /dev/null; then
-    configure_shell "${dst_dir}"
-    export PATH="${dst_dir}:${PATH}"
-  fi
+	${use_sudo:+sudo} mkdir -p "${dst_dir}"
+	${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+	${use_sudo:+sudo} chmod 755 "${dst_file}"
 
-  # Installl man pages if a system install.
-  #
-  # Flags: 
-  #   -n: True if the string has nonzero length.
-  if [[ -n ${use_sudo} ]]; then
-    man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.1"
-    sudo mkdir -p /usr/local/share/man/man1
-    sudo curl -LSfs "${man_url}" -o /usr/local/share/man/man1/bootware.1
-  fi
+	# Add Bootware to shell profile if not in system path.
+	#
+	# Flags:
+	#   -v: Only show file path of command.
+	if ! command -v bootware >/dev/null; then
+		configure_shell "${dst_dir}"
+		export PATH="${dst_dir}:${PATH}"
+	fi
 
-  echo "Installed $(bootware --version)."
+	# Installl man pages if a system install.
+	#
+	# Flags:
+	#   -n: True if the string has nonzero length.
+	if [[ -n ${use_sudo} ]]; then
+		man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.1"
+		sudo mkdir -p /usr/local/share/man/man1
+		sudo curl -LSfs "${man_url}" -o /usr/local/share/man/man1/bootware.1
+	fi
+
+	echo "Installed $(bootware --version)."
 }
 
 main "$@"

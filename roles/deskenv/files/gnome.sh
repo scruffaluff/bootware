@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 # Change background picture.
 gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures/background/$2"
 # Show weekday in top bar date.

@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-
 # Control Center settings.
 
 # Show do not disturb option in control center.
 defaults write com.apple.controlcenter "NSStatusItem Visible DoNotDisturb" -bool true
-
 
 # Dock settings.
 
@@ -15,7 +13,6 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 0
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
-
 
 # Finder settings.
 
@@ -34,14 +31,12 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Do not autosave files to iCloud.
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
-
 # Keyboard settings.
 
 # Increase cursor movement to max speed.
 defaults write NSGlobalDomain KeyRepeat 2
 # Minimize delay for cursor movement to smallest time.
 defaults write NSGlobalDomain InitialKeyRepeat 15
-
 
 # TextEdit settings.
 

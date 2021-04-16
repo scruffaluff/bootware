@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 # Use Adwaita (Light) color desktop theme.
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
 # Use Adwaita (Light) color icon theme.
