@@ -89,7 +89,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.${{ matrix.distro }}
+          file: ./tests/integration/Dockerfile.${{ matrix.distro }}
           tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
           push: false
 
@@ -109,7 +109,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.${{ matrix.format }}
+          file: ./tests/integration/Dockerfile.${{ matrix.format }}
           tags: bootware:${{ matrix.format }}
           push: false
 
