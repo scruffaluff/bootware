@@ -227,8 +227,6 @@ Function Error($Message) {
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (Test-Path -Path "$(Get-Location)\bootware.yaml" -PathType Leaf) {
-        $ConfigPath = "$(Get-Location)\bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
