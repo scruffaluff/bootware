@@ -23,7 +23,7 @@ export PATH="/usr/local/bin:${PATH}"
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "/etc/bash_completion" ]; then
+if [[ -f "/etc/bash_completion" ]]; then
   source "/etc/bash_completion"
 fi
 
@@ -46,8 +46,8 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v pyenv)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v pyenv)" ]]; then
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
 
@@ -74,15 +74,15 @@ function setenv() {
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "${HOME}/.aliases" ]; then
+if [[ -f "${HOME}/.aliases" ]]; then
   source "${HOME}/.aliases"
 fi
 
 # Load environment variables if file exists.
 #
 # Flags:
-#   -f: Check if inode is a regular file.
-if [ -f "${HOME}/.env" ]; then
+#   -f: Check if file exists and is a regular file.
+if [[ -f "${HOME}/.env" ]]; then
   source "$HOME/.env"
 fi
 
@@ -90,7 +90,7 @@ fi
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "${HOME}/.secrets" ]; then
+if [[ -f "${HOME}/.secrets" ]]; then
   source "${HOME}/.secrets"
 fi
 
@@ -99,8 +99,8 @@ fi
 # Initialize Starship if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v starship)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v starship)" ]]; then
   eval "$(starship init bash)"
 fi
 
@@ -112,8 +112,8 @@ export PATH="/usr/share/code/bin:${PATH}"
 # Initialize Zoxide if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v zoxide)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v zoxide)" ]]; then
   eval "$(zoxide init bash)"
 fi
 
@@ -127,10 +127,10 @@ export PATH="${HOME}/.npm-global/bin:${PATH}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 export NVM_DIR="${HOME}/.nvm"
-if [ -f "$NVM_DIR/nvm.sh" ]; then
+if [[ -f "$NVM_DIR/nvm.sh" ]]; then
   source "$NVM_DIR/nvm.sh"
 fi
-if [ -f "$NVM_DIR/bash_completion" ]; then
+if [[ -f "$NVM_DIR/bash_completion" ]]; then
   source "$NVM_DIR/bash_completion"
 fi
 

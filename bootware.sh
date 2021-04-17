@@ -2,6 +2,7 @@
 #
 # Bootstrap software installations with Ansible.
 
+
 # Exit immediately if a command exists with a non-zero status.
 set -e
 
@@ -14,7 +15,7 @@ set -e
 usage() {
   case "$1" in
     bootstrap)
-      cat 1>&2 << EOF
+      cat 1>&2 <<EOF
 Bootware bootstrap
 Boostrap install computer software
 
@@ -38,7 +39,7 @@ OPTIONS:
 EOF
       ;;
     config)
-      cat 1>&2 << EOF
+      cat 1>&2 <<EOF
 Bootware config
 Download default Bootware configuration file
 
@@ -53,7 +54,7 @@ OPTIONS:
 EOF
       ;;
     main)
-      cat 1>&2 << EOF
+      cat 1>&2 <<EOF
 $(version)
 Boostrapping software installer
 
@@ -74,7 +75,7 @@ See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     setup)
-      cat 1>&2 << EOF
+      cat 1>&2 <<EOF
 Bootware setup
 Install dependencies for Bootware
 
@@ -86,7 +87,7 @@ OPTIONS:
 EOF
       ;;
     update)
-      cat 1>&2 << EOF
+      cat 1>&2 <<EOF
 Bootware update
 Update Bootware to latest version
 
@@ -127,9 +128,6 @@ assert_cmd() {
 #   BOOTWARE_SKIP
 #   BOOTWARE_TAGS
 #   BOOTWARE_URL
-#   USER
-# Outputs:
-#   Writes user instructions to stdout.
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
@@ -160,21 +158,21 @@ bootstrap() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -c | --config)
+      -c|--config)
         config_path="$2"
         shift 2
         ;;
-      -d | --dev)
+      -d|--dev)
         cmd="playbook"
         use_playbook=1
         use_pull=""
         shift 1
         ;;
-      -h | --help)
+      -h|--help)
         usage "bootstrap"
         exit 0
         ;;
-      -i | --inventory)
+      -i|--inventory)
         inventory="$2"
         shift 2
         ;;
@@ -186,7 +184,7 @@ bootstrap() {
         no_setup=1
         shift 1
         ;;
-      -p | --playbook)
+      -p|--playbook)
         playbook="$2"
         shift 2
         ;;
@@ -194,15 +192,15 @@ bootstrap() {
         passwd="$2"
         shift 2
         ;;
-      -s | --skip)
+      -s|--skip)
         skip="$2"
         shift 2
         ;;
-      -t | --tags)
+      -t|--tags)
         tags="$2"
         shift 2
         ;;
-      -u | --url)
+      -u|--url)
         url="$2"
         shift 2
         ;;
@@ -240,13 +238,13 @@ bootstrap() {
     setup
   fi
 
-  find_config_path "${config_path}"
-  config_path="${RET_VAL}"
+  find_config_path "$config_path"
+  config_path="$RET_VAL"
 
-  log "Executing Ansible ${cmd:-pull}..."
-  log "Enter your user account password if prompted."
+  echo "Executing Ansible ${cmd:-pull}..."
+  echo "Enter your user account password if prompted."
 
-  ansible-${cmd} \
+  ansible-${cmd}  \
     ${ask_passwd:+--ask-become-pass} \
     ${ask_passwd_winrm:+--ask-pass} \
     ${use_playbook:+--connection local} \
@@ -270,8 +268,10 @@ bootstrap() {
 # Subcommand to generate or download Bootware configuration file.
 # Globals:
 #   HOME
+# Arguments:
+#   Parent directory of Bootware script.
 # Outputs:
-#   Writes configuration file generate logs to stdout.
+#   Writes status information to stdout.
 #######################################
 config() {
   local src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
@@ -283,19 +283,19 @@ config() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -d | --dest)
+      -d|--dest)
         dst_file="$2"
         shift 2
         ;;
-      -e | --empty)
+      -e|--empty)
         empty_cfg=1
         shift 1
         ;;
-      -h | --help)
+      -h|--help)
         usage "config"
         exit 0
         ;;
-      -s | --source)
+      -s|--source)
         src_url="$2"
         shift 2
         ;;
@@ -308,12 +308,12 @@ config() {
   mkdir -p "$(dirname "${dst_file}")"
 
   if [[ ${empty_cfg} == 1 ]]; then
-    log "Writing empty configuration file to ${dst_file}..."
+    echo "Writing empty configuration file to ${dst_file}..."
     echo "passwordless_sudo: false" > "${dst_file}"
   else
     assert_cmd curl
 
-    log "Downloading configuration file to ${dst_file}..."
+    echo "Downloading configuration file to ${dst_file}..."
 
     # Download default configuration file.
     #
@@ -321,7 +321,7 @@ config() {
     #   -L: Follow redirect request.
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
-    #   -o <path>: Write output to path instead of stdout.
+    #   -o <path>: Write output to path instead of stdout. 
     curl -LSfs "${src_url}" -o "${dst_file}"
   fi
 }
@@ -337,11 +337,7 @@ config() {
 #   Whether to use sudo command.
 #######################################
 dnf_check_update() {
-  ${1:+sudo} dnf check-update || {
-    code=$?
-    [ ${code} -eq 100 ] && return 0
-    return ${code}
-  }
+  ${1:+sudo} dnf check-update || { code=$?; [ ${code} -eq 100 ] && return 0; return ${code}; }
 }
 
 #######################################
@@ -378,46 +374,27 @@ error_usage() {
 # Arguments:
 #   User supplied configuration path.
 # Outputs:
-#   Writes found configuration file path to stdout.
-# Returns:
+#   Writes error message to stderr if unable to find configuration file.
+# Retunrs:
 #   Configuration file path.
 #######################################
 find_config_path() {
-  if test -f "$1"; then
+  if test -f "$1" ; then
     RET_VAL="$1"
-  elif test -f "$(pwd)/bootware.yaml"; then
+  elif test -f "$(pwd)/bootware.yaml" ; then
     RET_VAL="$(pwd)/bootware.yaml"
-  elif test -f "${HOME}/.bootware/config.yaml"; then
-    RET_VAL="${HOME}/.bootware/config.yaml"
+  elif test -f "$HOME/.bootware/config.yaml" ; then
+    RET_VAL="$HOME/.bootware/config.yaml"
   else
-    log "Unable to find Bootware configuation file.\n"
+    printf "Unable to find Bootware configuation file.\n"
     config --empty
-    RET_VAL="${HOME}/.bootware/config.yaml"
+    RET_VAL="$HOME/.bootware/config.yaml"
   fi
 
-  log "Using ${RET_VAL} as configuration file."
+  echo "Using $RET_VAL as configuration file."
 }
 
-#######################################
-# Print log message to stdout if logging is enabled.
-# Globals:
-#   BOOTWARE_NOLOG
-# Outputs:
-#   Log message to stdout.
-#######################################
-log() {
-  # Log if environment variable is not set.
-  #
-  # Flags:
-  #     -z: True if string has zero length.
-  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
-    echo "${*}"
-  fi
-}
-
-#######################################
 # Subcommand to configure boostrapping services and utilities.
-#######################################
 setup() {
   local os_type
   local tmp_dir
@@ -427,7 +404,7 @@ setup() {
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h | --help)
+      -h|--help)
         usage "setup"
         exit 0
         ;;
@@ -459,36 +436,32 @@ setup() {
   ansible-galaxy collection install community.windows > /dev/null
 }
 
-#######################################
 # Configure boostrapping services and utilities for Arch distributions.
-# Outputs:
-#   Writes installation logs to stdout.
-#######################################
 setup_arch() {
   # Install dependencies for Bootware.
   #
   # Flags:
   #   -x: Check if execute permission is granted.
   if ! [ -x "$(command -v ansible)" ]; then
-    log "Installing Ansible..."
+    echo "Installing Ansible..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman --noconfirm -S ansible
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    log "Installing Curl..."
+    echo "Installing Curl..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    log "Installing Git..."
+    echo "Installing Git..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if ! [ -x "$(command -v yay)" ]; then
-    log "Installing Yay package manager..."
+    echo "Installing Yay package manager..."
     ${1:+sudo} pacman --noconfirm -Suy
     ${1:+sudo} pacman -S --noconfirm base-devel
 
@@ -499,11 +472,7 @@ setup_arch() {
   fi
 }
 
-#######################################
 # Configure boostrapping services and utilities for Debian distributions.
-# Outputs:
-#   Writes installation logs to stdout.
-#######################################
 setup_debian() {
   # Install dependencies for Bootware.
   #
@@ -512,7 +481,7 @@ setup_debian() {
   if ! [ -x "$(command -v ansible)" ]; then
     # Ansible is install with Python3, since many Debian systems package Ansible
     # version 2.7, which does not support Ansible collections.
-    log "Installing Ansible..."
+    echo "Installing Ansible..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
@@ -523,52 +492,44 @@ setup_debian() {
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    log "Installing Curl..."
+    echo "Installing Curl..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    log "Installing Git..."
+    echo "Installing Git..."
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y git
   fi
 }
 
-#######################################
 # Configure boostrapping services and utilities for Fedora distributions.
-# Outputs:
-#   Writes installation logs to stdout.
-#######################################
 setup_fedora() {
   # Install dependencies for Bootware.
   #
   # Flags:
   #   -x: Check if execute permission is granted.
   if ! [ -x "$(command -v ansible)" ]; then
-    log "Installing Ansible..."
+    echo "Installing Ansible..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y ansible
   fi
 
   if ! [ -x "$(command -v curl)" ]; then
-    log "Installing Curl..."
+    echo "Installing Curl..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y curl
   fi
 
   if ! [ -x "$(command -v git)" ]; then
-    log "Installing Git..."
+    echo "Installing Git..."
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y git
   fi
 }
 
-#######################################
 # Configure boostrapping services and utilities for Linux.
-# Globals:
-#   EUID
-#######################################
 setup_linux() {
   local use_sudo
 
@@ -580,30 +541,26 @@ setup_linux() {
   #
   # Flags:
   #   -v: Only show file path of command.
-  if command -v pacman &> /dev/null; then
+  if command -v pacman &>/dev/null ; then
     setup_arch ${use_sudo}
-  elif command -v apt-get &> /dev/null; then
+  elif command -v apt-get &>/dev/null ; then
     setup_debian ${use_sudo}
-  elif command -v dnf &> /dev/null; then
+  elif command -v dnf &>/dev/null ; then
     setup_fedora ${use_sudo}
   else
     error "Unable to find supported package manager."
   fi
 }
 
-#######################################
 # Configure boostrapping services and utilities for MacOS.
-# Outputs:
-#   Writes installation logs to stdout.
-#######################################
 setup_macos() {
   assert_cmd curl
 
   # Install XCode command line tools if not already installed.
   #
   # Homebrew depends on the XCode command line tools.
-  if ! xcode-select -p &> /dev/null; then
-    log "Installing command line tools for XCode..."
+  if ! xcode-select -p &>/dev/null ; then
+    echo "Installing command line tools for XCode..."
     sudo xcode-select --install
   fi
 
@@ -616,31 +573,29 @@ setup_macos() {
   #     -s: Disable progress bars.
   #     -x: Check if execute permission is granted.
   if ! [ -x "$(command -v brew)" ]; then
-    log "Installing Homebrew..."
+    echo "Installing Homebrew..."
     curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
   fi
 
   # Install Ansible if not already installed.
   if ! [ -x "$(command -v ansible)" ]; then
-    log "Installing Ansible..."
+    echo "Installing Ansible..."
     brew install ansible
   fi
 
   # Install Git if not already installed.
   if ! [ -x "$(command -v git)" ]; then
-    log "Installing Git.."
+    echo "Installing Git.."
     brew install git
   fi
 }
 
 #######################################
-# Subcommand to update Bootware script.
-# Globals:
-#   EUID
+# Subcommand to update Bootware script
 # Arguments:
 #   Parent directory of Bootware script.
 # Outputs:
-#   Writes update logs and updated Bootware version to stdout.
+#   Writes status information and updated Bootware version to stdout.
 #######################################
 update() {
   local dst_file
@@ -655,19 +610,16 @@ update() {
   #
   # Flags:
   #   -P: Resolve any symbolic links in the path.
-  dst_file="$(
-    cd "$(dirname "$0")"
-    pwd -P
-  )/$(basename "$0")"
+  dst_file="$(cd "$(dirname "$0")"; pwd -P)/$(basename "$0")"
 
   # Parse command line arguments.
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      -h | --help)
+      -h|--help)
         usage "update"
         exit 0
         ;;
-      -v | --version)
+      -v|--version)
         version="$2"
         shift 2
         ;;
@@ -688,12 +640,12 @@ update() {
     use_sudo=1
   fi
 
-  log "Updating Bootware..."
+  echo "Updating Bootware..."
 
   ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
-  log "Updated to version $(bootware --version)."
+  echo "Updated to version $(bootware --version)."
 }
 
 #######################################
@@ -731,11 +683,11 @@ main() {
       update "$@"
       exit 0
       ;;
-    -h | --help)
-      usage "main"
-      exit 0
-      ;;
-    -v | --version)
+    -h|--help)
+        usage "main"
+        exit 0
+        ;;
+    -v|--version)
       version
       exit 0
       ;;
@@ -747,7 +699,4 @@ main() {
   usage "main"
 }
 
-# Only run main if invoked as script. Otherwise import functions as library.
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  main "$@"
-fi
+main "$@"

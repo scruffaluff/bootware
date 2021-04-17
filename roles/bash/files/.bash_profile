@@ -5,6 +5,6 @@
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "${HOME}/.bashrc" ]; then
+if [[ -f "${HOME}/.bashrc" ]]; then
   source "${HOME}/.bashrc"
 fi
