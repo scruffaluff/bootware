@@ -208,7 +208,6 @@ main() {
   printf "Installed %s\n" "$(bootware --version)"
 }
 
-# Only run main if invoked as script. Otherwise import functions as library.
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  main "$@"
-fi
+# Variable BASH_SOURCE cannot be used to load script as a library. Piping the
+# script to Bash gives the same BASH_SOURCE result as sourcing the script.
+main "$@"
