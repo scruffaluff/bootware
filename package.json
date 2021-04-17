@@ -4,6 +4,8 @@
     "bats:test": "bats -r tests/unit/",
     "prettier:format": "prettier --write .",
     "prettier:test": "prettier --check .",
+    "shfmt:format": "node scripts/shfmt.js format",
+    "shfmt:test": "node scripts/shfmt.js test",
     "vuepress:build": "node scripts/build_docs.js",
     "vuepress:serve": "vuepress dev docs/"
   },

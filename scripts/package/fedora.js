@@ -28,14 +28,16 @@ function archiveFiles(repoPath, buildDirs, version) {
   fs.copyFileSync(manPage, path.join(copyDir, "bootware.1"));
 
   const copyDirName = path.basename(copyDir);
-  childProcess.execSync(`tar -cvzf ${tarName} -C ${tmpDir} ${copyDirName}`);
+  childProcess.execSync(`tar -cvzf ${tarName} -C ${tmpDir} ${copyDirName}`, {
+    stdio: "inherit",
+  });
 
   fs.renameSync(tarName, destPath);
 }
 
 function buildPackage(buildDirs, destPath, version) {
   const specPath = path.join(buildDirs.spec, "bootware.spec");
-  childProcess.execSync(`rpmbuild -ba ${specPath}`);
+  childProcess.execSync(`rpmbuild -ba ${specPath}`, { stdio: "inherit" });
 
   const rpmPath = path.join(
     buildDirs.rpm,

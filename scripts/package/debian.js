@@ -13,7 +13,9 @@ const path = require("path");
 const childProcess = require("child_process");
 
 function buildPackage(buildPath, destPath) {
-  childProcess.execSync(`dpkg-deb --build ${buildPath} ${destPath}`);
+  childProcess.execSync(`dpkg-deb --build ${buildPath} ${destPath}`, {
+    stdio: "inherit",
+  });
 }
 
 function createDirectories(buildDirs) {
