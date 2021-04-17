@@ -5,7 +5,7 @@ load "../../node_modules/bats-support/load"
 load "../../node_modules/bats-assert/load"
 
 # Disable logging to simplify stdout for testing.
-export BOOTWARE_NOLOG=1
+export BOOTWARE_NOLOG="true"
 export BOOTWARE_NOPASSWD=""
 
 # Mock ansible-pull for child processes by printing received arguments.
@@ -30,7 +30,7 @@ export -f ansible-playbook
 @test "Throw error for unkown subcommand" {
   run ./bootware.sh notasubcommand
   assert_equal "${status}" 2
-  assert_output --partial "No such subcommand 'notasubcommand'."
+  assert_output --partial "No such subcommand 'notasubcommand'"
 }
 
 @test "Find config returns given file if it is executable" {

@@ -114,7 +114,7 @@ assert_cmd() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v "$1")" ]]; then
-    error "Cannot find required $1 command on computer."
+    error "Cannot find required $1 command on computer"
   fi
 }
 
@@ -136,6 +136,7 @@ bootstrap() {
   local ask_passwd_winrm
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
+  local connection="local"
   local inventory="127.0.0.1,"
   local no_setup="${BOOTWARE_NOSETUP:-""}"
   local passwd
@@ -211,13 +212,14 @@ bootstrap() {
         ;;
       --winrm)
         cmd="playbook"
+        connection="winrm"
         use_playbook=1
         use_pull=""
         winrm=1
         shift 1
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -243,13 +245,12 @@ bootstrap() {
   config_path="${RET_VAL}"
 
   log "Executing Ansible ${cmd:-pull}"
-  log "Enter your user account password if prompted."
+  log "Enter your user account password if prompted"
 
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${ask_passwd_winrm:+--ask-pass} \
-    ${use_playbook:+--connection local} \
-    ${winrm:+--extra-vars "ansible_connection=winrm"} \
+    ${use_playbook:+--connection "$connection"} \
     ${passwd:+--extra-vars "ansible_password=$passwd"} \
     ${winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
@@ -277,7 +278,7 @@ bootstrap() {
 config() {
   local src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
   local dst_file="${HOME}/.bootware/config.yaml"
-  local empty_cfg=0
+  local empty_cfg
 
   assert_cmd mkdir
 
@@ -289,7 +290,7 @@ config() {
         shift 2
         ;;
       -e | --empty)
-        empty_cfg=1
+        empty_cfg="true"
         shift 1
         ;;
       -h | --help)
@@ -301,14 +302,14 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
 
   mkdir -p "$(dirname "${dst_file}")"
 
-  if [[ "${empty_cfg}" == 1 ]]; then
+  if [[ "${empty_cfg}" == "true" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf "passwordless_sudo: false" > "${dst_file}"
   else
@@ -331,8 +332,8 @@ config() {
 # Update dnf package lists.
 #
 # DNF's check-update command will give a 100 exit code if there are packages
-# available to update. Thus both 0 and 100 must be treated as successfully
-# exit codes.
+# available to update. Thus both 0 and 100 must be treated as successful exit
+# codes.
 #
 # Arguments:
 #   Whether to use sudo command.
@@ -340,7 +341,7 @@ config() {
 dnf_check_update() {
   "${1:+sudo}" dnf check-update || {
     code="$?"
-    [ "${code}" -eq 100 ] && return 0
+    [[ "${code}" -eq 100 ]] && return 0
     return "${code}"
   }
 }
@@ -400,7 +401,7 @@ find_config_path() {
     RET_VAL="${HOME}/.bootware/config.yaml"
   fi
 
-  log "Using ${RET_VAL} as configuration file."
+  log "Using ${RET_VAL} as configuration file"
 }
 
 #######################################
@@ -437,7 +438,7 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -456,7 +457,7 @@ setup() {
       setup_linux
       ;;
     *)
-      error "Operting system ${os_type} is not supported."
+      error "Operting system ${os_type} is not supported"
       ;;
   esac
 
@@ -572,7 +573,7 @@ setup_fedora() {
 setup_linux() {
   local use_sudo
 
-  if [[ "${EUID}" != 0 ]]; then
+  if [[ "${EUID}" -ne 0 ]]; then
     use_sudo=1
   fi
 
@@ -582,13 +583,13 @@ setup_linux() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ -x "$(command -v pacman)" ]]; then
-    setup_arch ${use_sudo}
+    setup_arch "${use_sudo}"
   elif [[ -x "$(command -v apt-get)" ]]; then
-    setup_debian ${use_sudo}
+    setup_debian "${use_sudo}"
   elif [[ -x "$(command -v dnf)" ]]; then
-    setup_fedora ${use_sudo}
+    setup_fedora "${use_sudo}"
   else
-    error "Unable to find supported package manager."
+    error "Unable to find supported package manager"
   fi
 }
 
@@ -602,7 +603,7 @@ setup_macos() {
   #
   # Homebrew depends on the XCode command line tools.
   # Flags:
-  #   -p: TODO
+  #   -p: Print path to active developer directory.
   if ! xcode-select -p &> /dev/null; then
     log "Installing command line tools for XCode"
     sudo xcode-select --install
@@ -671,7 +672,7 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -681,18 +682,18 @@ update() {
   # Use sudo for system installation if user is not root.
   #
   # Flags:
-  #   -O: Check if file is owned by the current user.
-  if [[ ! -O "${dst_file}" || ${EUID} != 0 ]]; then
+  #   -w: Check if file exists and it writable.
+  if [[ ! -w "${dst_file}" || "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo=1
   fi
 
   log "Updating Bootware"
 
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
-  ${use_sudo:+sudo} chmod 755 "${dst_file}"
+  "${use_sudo:+sudo}" curl -LSfs "${src_url}" -o "${dst_file}"
+  "${use_sudo:+sudo}" chmod 755 "${dst_file}"
 
-  log "Updated to version $(bootware --version)."
+  log "Updated to version $(bootware --version)"
 }
 
 #######################################
@@ -733,7 +734,7 @@ main() {
       version
       ;;
     *)
-      error_usage "No such subcommand '$1'."
+      error_usage "No such subcommand '$1'"
       ;;
   esac
 }

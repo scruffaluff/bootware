@@ -173,7 +173,7 @@ main() {
   # Flags:
   #   -w: Check if file exists and is writable.
   #   -z: Check if the string has zero length or is null.
-  if [[ -z "${user_install}" && ! -w "${dst_file}" && "${EUID}" != 0 ]]; then
+  if [[ -z "${user_install}" && ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo=1
   fi
