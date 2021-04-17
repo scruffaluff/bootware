@@ -39,3 +39,12 @@
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
     - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
   when: ansible_system == "Win32NT"
+
+- name: Install PowerShell modules
+  become_user: "{{ user_account }}"
+  community.windows.win_psmodule:
+    name: "{{ item }}"
+  loop:
+    - Pester
+    - PSScriptAnalyzer
+  when: ansible_system == "Win32NT"

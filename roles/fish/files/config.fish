@@ -1,7 +1,6 @@
 # Fish settings file.
 # shellcheck shell=fish
 
-
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
@@ -16,22 +15,18 @@ set -x PATH "/usr/bin" $PATH
 # Necessary since path is missing on some MacOS systems.
 set -x PATH "/usr/local/bin" $PATH
 
-
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
 set -x DOCKER_BUILDKIT 1
-
 
 # Fish settings.
 
 # Disable welcome message.
 set fish_greeting
 
-
 # Go settings.
 set -x GOROOT "/usr/local/go"
 set -x PATH "$GOROOT/bin" $PATH
-
 
 # Python settings.
 
@@ -50,10 +45,8 @@ if type -q pyenv
   pyenv virtualenv-init - | source
 end
 
-
 # Rust settings.
 set -x PATH "$HOME/.cargo/bin" $PATH
-
 
 # Shell settings
 
@@ -96,7 +89,6 @@ if test -f "$HOME/.secrets"
   source "$HOME/.secrets"
 end
 
-
 # Starship settings.
 
 # Initialize Starship if available.
@@ -106,7 +98,6 @@ end
 if type -q starship
   starship init fish | source
 end
-
 
 # Tool settings.
 set -x BAT_THEME "Solarized (light)"
@@ -119,7 +110,6 @@ set -x PATH "/usr/share/code/bin" $PATH
 if type -q zoxide
   zoxide init fish | source
 end
-
 
 # TypeScript settings.
 
@@ -138,12 +128,10 @@ end
 set -x DENO_INSTALL "$HOME/.deno"
 set -x PATH "$DENO_INSTALL/bin" $PATH
 
-
 # User settings.
 
 # Add scripts directory to system path.
 set -x PATH "$HOME/.local/bin" $PATH
-
 
 # Wasmtime settings.
 set -x WASMTIME_HOME "$HOME/.wasmtime"

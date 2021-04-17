@@ -73,7 +73,7 @@ jobs:
         with:
           build-args: tags=${{ matrix.tag }}
           context: .
-          file: tests/Dockerfile.${{ matrix.distro }}
+          file: tests/integration/Dockerfile.${{ matrix.distro }}
           tags: >-
             wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-${{ matrix.tag
             }}-fuzz

@@ -220,16 +220,13 @@ Function DownloadFile($SrcURL, $DstFile) {
 
 # Print error message and exit script with error code.
 Function Error($Message) {
-    Write-Error "Error: $Message"
-    Exit 1
+    Throw "Error: $Message"
 }
 
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (Test-Path -Path "$(Get-Location)\bootware.yaml" -PathType Leaf) {
-        $ConfigPath = "$(Get-Location)\bootware.yaml"
     } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
@@ -439,6 +436,9 @@ Function Main() {
         "update" {
             Update $Slice
             Exit 0
+        }
+        Default {
+            Error "No such subcommand '$($Args[0][0])'."
         }
     }
 

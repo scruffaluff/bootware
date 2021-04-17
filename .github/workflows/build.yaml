@@ -27,12 +27,22 @@ jobs:
         run: npm install
       - name: Check format of configuration files
         run: npm run prettier:test
-      - name: Run ShellCheck
+      - name: Install Shfmt
+        run: |
+          sudo curl -LSfs https://github.com/mvdan/sh/releases/download/v3.2.4/shfmt_v3.2.4_linux_amd64 -o /usr/local/bin/shfmt
+          sudo chmod 755 /usr/local/bin/shfmt
+      - name: Check format of shell scripts
+        run: |
+          shfmt -d install.sh
+          shfmt -d bootware.sh
+          shfmt -d roles/
+      - name: Run ShellCheck on shell scripts
         uses: ludeeus/action-shellcheck@master
         with:
           ignore: node_modules
 
   build:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Build Docker image of Bootware installer
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +63,23 @@ jobs:
           name: bootware
           path: /tmp/bootware.tar
 
+  test-bash:
+    name: Run unit tests for Bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install Bats dependencies
+        run: npm install
+      - name: Run Bash unit tests with Bats
+        run: npm run bats:test
+
   test-macos:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for MacOS
     runs-on: macos-latest
     steps:
@@ -75,6 +101,7 @@ jobs:
         run: bootware bootstrap --dev --no-passwd --skip docker,
 
   test-linux:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for ${{ matrix.distro }}
     strategy:
       fail-fast: false
@@ -90,11 +117,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.${{ matrix.distro }}
+          file: ./tests/integration/Dockerfile.${{ matrix.distro }}
           tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
           push: false
 
   test-package:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test building a ${{ matrix.format }} package
     strategy:
       fail-fast: false
@@ -110,11 +138,25 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/Dockerfile.${{ matrix.format }}
+          file: ./tests/integration/Dockerfile.${{ matrix.format }}
           tags: bootware:${{ matrix.format }}
           push: false
 
+  test-powershell:
+    name: Run unit tests for PowerShell scripts
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Pester
+        run: Install-Module Pester -Force
+        shell: pwsh
+      - name: Run PowerShell unit tests with Pester
+        run: Invoke-Pester -Output Detailed ./tests/unit/
+        shell: pwsh
+
   test-windows:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for Windows
     needs: build
     runs-on: windows-latest

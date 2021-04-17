@@ -1,4 +1,9 @@
+# Prettier configuration file for ignoring paths.
+#
+# For more information, visit https://prettier.io/docs/en/ignore.html.
+
 .git/
+*.bats
 node_modules/
 package-lock.json
 site/

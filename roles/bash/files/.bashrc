@@ -1,7 +1,6 @@
 # Bash settings file for non-login shells.
 # shellcheck disable=SC1090,SC1091 shell=bash
 
-
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
@@ -16,7 +15,6 @@ export PATH="/usr/bin:${PATH}"
 # Necessary since path is missing on some MacOS systems.
 export PATH="/usr/local/bin:${PATH}"
 
-
 # Bash settings
 
 # Load Bash completion if it exists.
@@ -25,20 +23,17 @@ export PATH="/usr/local/bin:${PATH}"
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "/etc/bash_completion" ]; then
+if [[ -f "/etc/bash_completion" ]]; then
   source "/etc/bash_completion"
 fi
-
 
 # Docker settings.
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
 
-
 # Go settings.
 export GOROOT="/usr/local/go"
 export PATH="${GOROOT}/bin:${PATH}"
-
 
 # Python settings.
 
@@ -51,8 +46,8 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v pyenv)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v pyenv)" ]]; then
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
 
@@ -60,10 +55,8 @@ if [ -x "$(command -v pyenv)" ]; then
   source "$(pyenv root)/completions/pyenv.bash"
 fi
 
-
 # Rust settings.
 export PATH="${HOME}/.cargo/bin:${PATH}"
-
 
 # Shell settings.
 
@@ -73,7 +66,7 @@ export PATH="${HOME}/.cargo/bin:${PATH}"
 #
 # Examples:
 #   setenv PATH "usr/local/bin"
-function setenv() { 
+function setenv() {
   export "$1=$2"
 }
 
@@ -81,15 +74,15 @@ function setenv() {
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "${HOME}/.aliases" ]; then
+if [[ -f "${HOME}/.aliases" ]]; then
   source "${HOME}/.aliases"
 fi
 
 # Load environment variables if file exists.
 #
 # Flags:
-#   -f: Check if inode is a regular file.
-if [ -f "${HOME}/.env" ]; then
+#   -f: Check if file exists and is a regular file.
+if [[ -f "${HOME}/.env" ]]; then
   source "$HOME/.env"
 fi
 
@@ -97,21 +90,19 @@ fi
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [ -f "${HOME}/.secrets" ]; then
+if [[ -f "${HOME}/.secrets" ]]; then
   source "${HOME}/.secrets"
 fi
-
 
 # Starship settings.
 
 # Initialize Starship if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v starship)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v starship)" ]]; then
   eval "$(starship init bash)"
 fi
-
 
 # Tool settings.
 export BAT_THEME="Solarized (light)"
@@ -121,11 +112,10 @@ export PATH="/usr/share/code/bin:${PATH}"
 # Initialize Zoxide if available.
 #
 # Flags:
-#   -x: Check if execute permission is granted.
-if [ -x "$(command -v zoxide)" ]; then
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v zoxide)" ]]; then
   eval "$(zoxide init bash)"
 fi
-
 
 # TypeScript settings.
 
@@ -137,10 +127,10 @@ export PATH="${HOME}/.npm-global/bin:${PATH}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 export NVM_DIR="${HOME}/.nvm"
-if [ -f "$NVM_DIR/nvm.sh" ]; then
-  source "$NVM_DIR/nvm.sh" 
+if [[ -f "$NVM_DIR/nvm.sh" ]]; then
+  source "$NVM_DIR/nvm.sh"
 fi
-if [ -f "$NVM_DIR/bash_completion" ]; then
+if [[ -f "$NVM_DIR/bash_completion" ]]; then
   source "$NVM_DIR/bash_completion"
 fi
 
@@ -148,12 +138,10 @@ fi
 export DENO_INSTALL="${HOME}/.deno"
 export PATH="$DENO_INSTALL/bin:${PATH}"
 
-
 # User settings.
 
 # Add scripts directory to PATH environment variable.
 export PATH="${HOME}/.local/bin:${PATH}"
-
 
 # Wasmtime settings.
 export WASMTIME_HOME="${HOME}/.wasmtime"

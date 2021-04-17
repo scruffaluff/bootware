@@ -2,7 +2,6 @@
 #
 # Bootstrap software installations with Ansible.
 
-
 # Exit immediately if a command exists with a non-zero status.
 set -e
 
@@ -15,7 +14,7 @@ set -e
 usage() {
   case "$1" in
     bootstrap)
-      cat 1>&2 <<EOF
+      cat 1>&2 << EOF
 Bootware bootstrap
 Boostrap install computer software
 
@@ -39,7 +38,7 @@ OPTIONS:
 EOF
       ;;
     config)
-      cat 1>&2 <<EOF
+      cat 1>&2 << EOF
 Bootware config
 Download default Bootware configuration file
 
@@ -54,7 +53,7 @@ OPTIONS:
 EOF
       ;;
     main)
-      cat 1>&2 <<EOF
+      cat 1>&2 << EOF
 $(version)
 Boostrapping software installer
 
@@ -75,7 +74,7 @@ See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     setup)
-      cat 1>&2 <<EOF
+      cat 1>&2 << EOF
 Bootware setup
 Install dependencies for Bootware
 
@@ -87,7 +86,7 @@ OPTIONS:
 EOF
       ;;
     update)
-      cat 1>&2 <<EOF
+      cat 1>&2 << EOF
 Bootware update
 Update Bootware to latest version
 
@@ -113,8 +112,9 @@ EOF
 assert_cmd() {
   # Flags:
   #   -v: Only show file path of command.
-  if ! command -v "$1" > /dev/null; then
-    error "Cannot find required $1 command on computer."
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v "$1")" ]]; then
+    error "Cannot find required $1 command on computer"
   fi
 }
 
@@ -128,51 +128,53 @@ assert_cmd() {
 #   BOOTWARE_SKIP
 #   BOOTWARE_TAGS
 #   BOOTWARE_URL
+#   USER
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
   local ask_passwd_winrm
   local cmd="pull"
-  local config_path=${BOOTWARE_CONFIG:-"/dev/null"}
+  local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
+  local connection="local"
   local inventory="127.0.0.1,"
-  local no_setup=${BOOTWARE_NOSETUP:-""}
+  local no_setup="${BOOTWARE_NOSETUP:-""}"
   local passwd
-  local playbook=${BOOTWARE_PLAYBOOK:-"main.yaml"}
-  local skip=${BOOTWARE_SKIP:-""}
-  local tags=${BOOTWARE_TAGS:-""}
-  local url=${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}
+  local playbook="${BOOTWARE_PLAYBOOK:-"main.yaml"}"
+  local skip="${BOOTWARE_SKIP:-""}"
+  local tags="${BOOTWARE_TAGS:-""}"
+  local url="${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}"
   local use_playbook
   local use_pull=1
-  local user_account=${USER:-root}
+  local user_account="${USER:-root}"
   local winrm
 
   # Check if Ansible should ask for user password.
   #
   # Flags:
-  #     -z: True if string has zero length.
+  #   -z: Check if string has zero length.
   if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
     ask_passwd=1
   fi
 
   # Parse command line arguments.
-  while [[ $# -gt 0 ]]; do
+  while [[ "$#" -gt 0 ]]; do
     case "$1" in
-      -c|--config)
+      -c | --config)
         config_path="$2"
         shift 2
         ;;
-      -d|--dev)
+      -d | --dev)
         cmd="playbook"
         use_playbook=1
         use_pull=""
         shift 1
         ;;
-      -h|--help)
+      -h | --help)
         usage "bootstrap"
         exit 0
         ;;
-      -i|--inventory)
+      -i | --inventory)
         inventory="$2"
         shift 2
         ;;
@@ -184,7 +186,7 @@ bootstrap() {
         no_setup=1
         shift 1
         ;;
-      -p|--playbook)
+      -p | --playbook)
         playbook="$2"
         shift 2
         ;;
@@ -192,15 +194,15 @@ bootstrap() {
         passwd="$2"
         shift 2
         ;;
-      -s|--skip)
+      -s | --skip)
         skip="$2"
         shift 2
         ;;
-      -t|--tags)
+      -t | --tags)
         tags="$2"
         shift 2
         ;;
-      -u|--url)
+      -u | --url)
         url="$2"
         shift 2
         ;;
@@ -210,13 +212,14 @@ bootstrap() {
         ;;
       --winrm)
         cmd="playbook"
+        connection="winrm"
         use_playbook=1
         use_pull=""
         winrm=1
         shift 1
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -224,31 +227,30 @@ bootstrap() {
   # Check if Ansible should ask for user password for WinRM connections.
   #
   # Flags:
-  #     -n: True if the string has nonzero length.
-  #     -z: True if string has zero length.
-  if [[ -n "${winrm}" ]] && [[ -z "${passwd}" ]]; then
+  #   -n: Check if the string has nonzero length.
+  #   -z: Check if string has zero length.
+  if [[ -n "${winrm}" && -z "${passwd}" ]]; then
     ask_passwd_winrm=1
   fi
 
   # Check if Bootware setup should be run.
   #
   # Flags:
-  #     -z: True if string has zero length.
-  if [[ -z "$no_setup" ]]; then
+  #   -z: Check if string has zero length.
+  if [[ -z "${no_setup}" ]]; then
     setup
   fi
 
-  find_config_path "$config_path"
-  config_path="$RET_VAL"
+  find_config_path "${config_path}"
+  config_path="${RET_VAL}"
 
-  echo "Executing Ansible ${cmd:-pull}..."
-  echo "Enter your user account password if prompted."
+  log "Executing Ansible ${cmd:-pull}"
+  log "Enter your user account password if prompted"
 
-  ansible-${cmd}  \
+  "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${ask_passwd_winrm:+--ask-pass} \
-    ${use_playbook:+--connection local} \
-    ${winrm:+--extra-vars "ansible_connection=winrm"} \
+    ${use_playbook:+--connection "$connection"} \
     ${passwd:+--extra-vars "ansible_password=$passwd"} \
     ${winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
@@ -276,44 +278,44 @@ bootstrap() {
 config() {
   local src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
   local dst_file="${HOME}/.bootware/config.yaml"
-  local empty_cfg=0
+  local empty_cfg
 
   assert_cmd mkdir
 
   # Parse command line arguments.
-  while [[ $# -gt 0 ]]; do
+  while [[ "$#" -gt 0 ]]; do
     case "$1" in
-      -d|--dest)
+      -d | --dest)
         dst_file="$2"
         shift 2
         ;;
-      -e|--empty)
-        empty_cfg=1
+      -e | --empty)
+        empty_cfg="true"
         shift 1
         ;;
-      -h|--help)
+      -h | --help)
         usage "config"
         exit 0
         ;;
-      -s|--source)
+      -s | --source)
         src_url="$2"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
 
   mkdir -p "$(dirname "${dst_file}")"
 
-  if [[ ${empty_cfg} == 1 ]]; then
-    echo "Writing empty configuration file to ${dst_file}..."
-    echo "passwordless_sudo: false" > "${dst_file}"
+  if [[ "${empty_cfg}" == "true" ]]; then
+    log "Writing empty configuration file to ${dst_file}"
+    printf "passwordless_sudo: false" > "${dst_file}"
   else
     assert_cmd curl
 
-    echo "Downloading configuration file to ${dst_file}..."
+    log "Downloading configuration file to ${dst_file}"
 
     # Download default configuration file.
     #
@@ -321,7 +323,7 @@ config() {
     #   -L: Follow redirect request.
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
-    #   -o <path>: Write output to path instead of stdout. 
+    #   -o <path>: Write output to path instead of stdout.
     curl -LSfs "${src_url}" -o "${dst_file}"
   fi
 }
@@ -330,14 +332,18 @@ config() {
 # Update dnf package lists.
 #
 # DNF's check-update command will give a 100 exit code if there are packages
-# available to update. Thus both 0 and 100 must be treated as successfully
-# exit codes.
+# available to update. Thus both 0 and 100 must be treated as successful exit
+# codes.
 #
 # Arguments:
 #   Whether to use sudo command.
 #######################################
 dnf_check_update() {
-  ${1:+sudo} dnf check-update || { code=$?; [ ${code} -eq 100 ] && return 0; return ${code}; }
+  "${1:+sudo}" dnf check-update || {
+    code="$?"
+    [[ "${code}" -eq 100 ]] && return 0
+    return "${code}"
+  }
 }
 
 #######################################
@@ -379,22 +385,45 @@ error_usage() {
 #   Configuration file path.
 #######################################
 find_config_path() {
-  if test -f "$1" ; then
+  # Flags:
+  #   -f: Check if file exists and is a regular file.
+  #   -n: Check if the string has nonzero length.
+  #   -v: Only show file path of command.
+  if [[ -f "$1" ]]; then
     RET_VAL="$1"
-  elif test -f "$(pwd)/bootware.yaml" ; then
-    RET_VAL="$(pwd)/bootware.yaml"
-  elif test -f "$HOME/.bootware/config.yaml" ; then
-    RET_VAL="$HOME/.bootware/config.yaml"
+  elif [[ -n "${BOOTWARE_CONFIG}" ]]; then
+    RET_VAL="${BOOTWARE_CONFIG}"
+  elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
+    RET_VAL="${HOME}/.bootware/config.yaml"
   else
-    printf "Unable to find Bootware configuation file.\n"
+    log "Unable to find Bootware configuation file.\n"
     config --empty
-    RET_VAL="$HOME/.bootware/config.yaml"
+    RET_VAL="${HOME}/.bootware/config.yaml"
   fi
 
-  echo "Using $RET_VAL as configuration file."
+  log "Using ${RET_VAL} as configuration file"
 }
 
+#######################################
+# Print log message to stdout if logging is enabled.
+# Globals:
+#   BOOTWARE_NOLOG
+# Outputs:
+#   Log message to stdout.
+#######################################
+log() {
+  # Log if environment variable is not set.
+  #
+  # Flags:
+  #   -z: Check if string has zero length.
+  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
+    echo "$@"
+  fi
+}
+
+#######################################
 # Subcommand to configure boostrapping services and utilities.
+#######################################
 setup() {
   local os_type
   local tmp_dir
@@ -402,14 +431,14 @@ setup() {
   assert_cmd uname
 
   # Parse command line arguments.
-  while [[ $# -gt 0 ]]; do
+  while [[ "$#" -gt 0 ]]; do
     case "$1" in
-      -h|--help)
+      -h | --help)
         usage "setup"
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -417,8 +446,8 @@ setup() {
   # Get operating system.
   #
   # FLAGS:
-  #     -s: Print the kernel name.
-  os_type=$(uname -s)
+  #   -s: Print the kernel name.
+  os_type="$(uname -s)"
 
   case "${os_type}" in
     Darwin)
@@ -428,7 +457,7 @@ setup() {
       setup_linux
       ;;
     *)
-      error "Operting system ${os_type} is not supported."
+      error "Operting system ${os_type} is not supported"
       ;;
   esac
 
@@ -436,104 +465,115 @@ setup() {
   ansible-galaxy collection install community.windows > /dev/null
 }
 
+#######################################
 # Configure boostrapping services and utilities for Arch distributions.
+#######################################
 setup_arch() {
   # Install dependencies for Bootware.
   #
   # Flags:
-  #   -x: Check if execute permission is granted.
-  if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman --noconfirm -S ansible
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
+    "${1:+sudo}" pacman --noconfirm -Suy
+    "${1:+sudo}" pacman --noconfirm -S ansible
   fi
 
-  if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman -S --noconfirm curl
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    "${1:+sudo}" pacman --noconfirm -Suy
+    "${1:+sudo}" pacman -S --noconfirm curl
   fi
 
-  if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman -S --noconfirm git
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    "${1:+sudo}" pacman --noconfirm -Suy
+    "${1:+sudo}" pacman -S --noconfirm git
   fi
 
-  if ! [ -x "$(command -v yay)" ]; then
-    echo "Installing Yay package manager..."
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman -S --noconfirm base-devel
+  if [[ ! -x "$(command -v yay)" ]]; then
+    log "Installing Yay package manager"
+    "${1:+sudo}" pacman --noconfirm -Suy
+    "${1:+sudo}" pacman -S --noconfirm base-devel
 
-    tmp_dir=$(mktemp -u)
-    git clone --depth 1 https://aur.archlinux.org/yay.git "${tmp_dir}"
+    tmp_dir="$(mktemp -u)"
+    git clone --depth 1 "https://aur.archlinux.org/yay.git" "${tmp_dir}"
     (cd "${tmp_dir}" && makepkg --noconfirm -is)
     yay --noconfirm -Suy
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Debian distributions.
+#######################################
 setup_debian() {
   # Install dependencies for Bootware.
   #
   # Flags:
-  #   -x: Check if execute permission is granted.
-  if ! [ -x "$(command -v ansible)" ]; then
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
     # Ansible is install with Python3, since many Debian systems package Ansible
     # version 2.7, which does not support Ansible collections.
-    echo "Installing Ansible..."
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
+    log "Installing Ansible"
+    "${1:+sudo}" apt-get -qq update
+    "${1:+sudo}" apt-get -qq install -y python3 python3-pip python3-apt
 
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
-    ${1:+sudo} python3 -m pip install setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pywinrm
+    "${1:+sudo}" python3 -m pip install setuptools wheel
+    "${1:+sudo}" python3 -m pip install ansible pywinrm
   fi
 
-  if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y curl
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    "${1:+sudo}" apt-get -qq update
+    "${1:+sudo}" apt-get -qq install -y curl
   fi
 
-  if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y git
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    "${1:+sudo}" apt-get -qq update
+    "${1:+sudo}" apt-get -qq install -y git
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Fedora distributions.
+#######################################
 setup_fedora() {
   # Install dependencies for Bootware.
   #
   # Flags:
-  #   -x: Check if execute permission is granted.
-  if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible
+    "${1:+sudo}" dnf install -y ansible
   fi
 
-  if ! [ -x "$(command -v curl)" ]; then
-    echo "Installing Curl..."
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y curl
+    "${1:+sudo}" dnf install -y curl
   fi
 
-  if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git..."
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y git
+    "${1:+sudo}" dnf install -y git
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for Linux.
+#######################################
 setup_linux() {
   local use_sudo
 
-  if [[ ${EUID} != 0 ]]; then
+  if [[ "${EUID}" -ne 0 ]]; then
     use_sudo=1
   fi
 
@@ -541,51 +581,56 @@ setup_linux() {
   #
   # Flags:
   #   -v: Only show file path of command.
-  if command -v pacman &>/dev/null ; then
-    setup_arch ${use_sudo}
-  elif command -v apt-get &>/dev/null ; then
-    setup_debian ${use_sudo}
-  elif command -v dnf &>/dev/null ; then
-    setup_fedora ${use_sudo}
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ -x "$(command -v pacman)" ]]; then
+    setup_arch "${use_sudo}"
+  elif [[ -x "$(command -v apt-get)" ]]; then
+    setup_debian "${use_sudo}"
+  elif [[ -x "$(command -v dnf)" ]]; then
+    setup_fedora "${use_sudo}"
   else
-    error "Unable to find supported package manager."
+    error "Unable to find supported package manager"
   fi
 }
 
+#######################################
 # Configure boostrapping services and utilities for MacOS.
+#######################################
 setup_macos() {
   assert_cmd curl
 
   # Install XCode command line tools if not already installed.
   #
   # Homebrew depends on the XCode command line tools.
-  if ! xcode-select -p &>/dev/null ; then
-    echo "Installing command line tools for XCode..."
+  # Flags:
+  #   -p: Print path to active developer directory.
+  if ! xcode-select -p &> /dev/null; then
+    log "Installing command line tools for XCode"
     sudo xcode-select --install
   fi
 
   # Install Homebrew if not already installed.
   #
   # FLAGS:
-  #     -L: Follow redirect request.
-  #     -S: Show errors.
-  #     -f: Fail silently on server errors.
-  #     -s: Disable progress bars.
-  #     -x: Check if execute permission is granted.
-  if ! [ -x "$(command -v brew)" ]; then
-    echo "Installing Homebrew..."
+  #   -L: Follow redirect request.
+  #   -S: Show errors.
+  #   -f: Fail silently on server errors.
+  #   -s: Disable progress bars.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v brew)" ]]; then
+    log "Installing Homebrew"
     curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
   fi
 
   # Install Ansible if not already installed.
-  if ! [ -x "$(command -v ansible)" ]; then
-    echo "Installing Ansible..."
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
     brew install ansible
   fi
 
   # Install Git if not already installed.
-  if ! [ -x "$(command -v git)" ]; then
-    echo "Installing Git.."
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
     brew install git
   fi
 }
@@ -610,21 +655,24 @@ update() {
   #
   # Flags:
   #   -P: Resolve any symbolic links in the path.
-  dst_file="$(cd "$(dirname "$0")"; pwd -P)/$(basename "$0")"
+  dst_file="$(
+    cd "$(dirname "$0")"
+    pwd -P
+  )/$(basename "$0")"
 
   # Parse command line arguments.
-  while [[ $# -gt 0 ]]; do
+  while [[ "$#" -gt 0 ]]; do
     case "$1" in
-      -h|--help)
+      -h | --help)
         usage "update"
         exit 0
         ;;
-      -v|--version)
+      -v | --version)
         version="$2"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '$1'"
         ;;
     esac
   done
@@ -634,18 +682,18 @@ update() {
   # Use sudo for system installation if user is not root.
   #
   # Flags:
-  #   -O: True if file is owned by the current user.
-  if [[ ! -O "${dst_file}" || ${EUID} != 0 ]]; then
+  #   -w: Check if file exists and it writable.
+  if [[ ! -w "${dst_file}" || "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo=1
   fi
 
-  echo "Updating Bootware..."
+  log "Updating Bootware"
 
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
-  ${use_sudo:+sudo} chmod 755 "${dst_file}"
+  "${use_sudo:+sudo}" curl -LSfs "${src_url}" -o "${dst_file}"
+  "${use_sudo:+sudo}" chmod 755 "${dst_file}"
 
-  echo "Updated to version $(bootware --version)."
+  log "Updated to version $(bootware --version)"
 }
 
 #######################################
@@ -666,37 +714,32 @@ main() {
     bootstrap)
       shift 1
       bootstrap "$@"
-      exit 0
       ;;
     config)
       shift 1
       config "$@"
-      exit 0
       ;;
     setup)
       shift 1
       setup "$@"
-      exit 0
       ;;
     update)
       shift 1
       update "$@"
-      exit 0
       ;;
-    -h|--help)
-        usage "main"
-        exit 0
-        ;;
-    -v|--version)
+    -h | --help)
+      usage "main"
+      ;;
+    -v | --version)
       version
-      exit 0
       ;;
     *)
-      error_usage "No such subcommand '$1'."
+      error_usage "No such subcommand '$1'"
       ;;
   esac
-
-  usage "main"
 }
 
-main "$@"
+# Only run main if invoked as script. Otherwise import functions as library.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
