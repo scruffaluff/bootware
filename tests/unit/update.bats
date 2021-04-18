@@ -23,7 +23,7 @@ setup() {
   export -f curl
 }
 
-@test "Check passing Ansible arguments for update subcommand" {
+@test "Update subcommand passes Bootware executable path to Curl" {
   local actual
   local expected
 
@@ -32,7 +32,7 @@ setup() {
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Update function uses sudo when file is not writable" {
+@test "Functon update uses sudo when destination is not writable" {
   local actual
   local expected
 

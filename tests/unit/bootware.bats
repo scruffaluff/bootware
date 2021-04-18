@@ -10,13 +10,13 @@ setup() {
   export BOOTWARE_NOLOG="true"
 }
 
-@test "Throw error for unkown subcommand" {
+@test "Bootware throws error for unkown subcommand" {
   run bootware.sh notasubcommand
   assert_equal "${status}" 2
   assert_output --partial "No such subcommand 'notasubcommand'"
 }
 
-@test "Find config returns given file if it is executable" {
+@test "Function find_config_path returns given executable files" {
   local actual
   local expected="/bin/bash"
 
@@ -25,7 +25,7 @@ setup() {
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Find config returns environment variable if set" {
+@test "Function find_config_path returns environment variable" {
   local actual
   local expected="/usr/bin/cat"
 
@@ -34,7 +34,7 @@ setup() {
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Find config returns default if given file is not executable" {
+@test "Function find_config_path returns default when given non-executable file" {
   local actual
   local expected="${HOME}/.bootware/config.yaml"
 

@@ -25,7 +25,7 @@ setup() {
   export -f ansible-pull
 }
 
-@test "Check passing Ansible arguments for bootstrap subcommand" {
+@test "Bootstrap subcommand passes dev arguments to Ansible" {
   local actual
   local expected="ansible-playbook --ask-become-pass --connection local --extra-vars ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
 
