@@ -211,6 +211,7 @@ bootstrap() {
         shift 2
         ;;
       --winrm)
+        ask_passwd=""
         cmd="playbook"
         connection="winrm"
         use_playbook=1
