@@ -7,16 +7,45 @@ setup() {
 
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG="true"
+
+  # Mock functions for child processes by printing received arguments.
+  #
+  # Args:
+  #   -f: Use override as a function instead of a variable.
+  command() {
+    echo "/bin/bash"
+  }
+  export -f command
+
+  curl() {
+    echo "curl $*"
+  }
+  export -f curl
 }
 
 @test "Check passing Ansible arguments for update subcommand" {
   local actual
   local expected
 
-  command() {
-    echo "/usr/bin/bash"
+  expected="curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh -o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
+  actual="$(bootware.sh update --version develop)"
+  assert_equal "${actual}" "${expected}"
+}
+
+@test "Update function uses sudo when file is not writable" {
+  local actual
+  local expected
+
+  source bootware.sh
+
+  # Mock functions for child processes by printing received arguments.
+  #
+  # Args:
+  #   -f: Use override as a function instead of a variable.
+  fullpath() {
+    echo "/bin/bash"
   }
-  export -f command
+  export -f fullpath
 
   sudo() {
     echo "sudo $*"
@@ -24,7 +53,7 @@ setup() {
   }
   export -f sudo
 
-  expected="sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh -o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
-  actual="$(bootware.sh update --version develop)"
+  expected="sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /bin/bash"
+  actual="$(update)"
   assert_equal "${actual}" "${expected}"
 }

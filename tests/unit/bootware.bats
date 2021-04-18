@@ -18,7 +18,7 @@ setup() {
 
 @test "Find config returns given file if it is executable" {
   local actual
-  local expected="/usr/bin/bash"
+  local expected="/bin/bash"
 
   find_config_path "${expected}"
   actual="${RET_VAL}"

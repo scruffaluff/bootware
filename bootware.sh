@@ -405,6 +405,20 @@ find_config_path() {
 }
 
 #######################################
+# Get full normalized path for file.
+# Alternative to realpath command, since it is not built into MacOS.
+#######################################
+fullpath() {
+  local working_dir
+
+  # Flags:
+  #   -P: Resolve any symbolic links in the path.
+  working_dir="$(cd "$(dirname "$1")" && pwd -P)"
+
+  echo "${working_dir}/$(basename "$1")"
+}
+
+#######################################
 # Print log message to stdout if logging is enabled.
 # Globals:
 #   BOOTWARE_NOLOG
@@ -412,8 +426,6 @@ find_config_path() {
 #   Log message to stdout.
 #######################################
 log() {
-  # Log if environment variable is not set.
-  #
   # Flags:
   #   -z: Check if string has zero length.
   if [[ -z "${BOOTWARE_NOLOG}" ]]; then
@@ -573,6 +585,7 @@ setup_fedora() {
 setup_linux() {
   local use_sudo
 
+  # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then
     use_sudo=1
   fi
@@ -651,15 +664,6 @@ update() {
   assert_cmd chmod
   assert_cmd curl
 
-  # Cannot use realpath command, since it is not built into MacOS.
-  #
-  # Flags:
-  #   -P: Resolve any symbolic links in the path.
-  dst_file="$(
-    cd "$(dirname "$0")"
-    pwd -P
-  )/$(basename "$0")"
-
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -677,21 +681,24 @@ update() {
     esac
   done
 
+  dst_file="$(fullpath "$0")"
   src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
 
   # Use sudo for system installation if user is not root.
   #
   # Flags:
   #   -w: Check if file exists and it writable.
-  if [[ ! -w "${dst_file}" || "${EUID}" -ne 0 ]]; then
+  if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo=1
   fi
 
   log "Updating Bootware"
 
-  "${use_sudo:+sudo}" curl -LSfs "${src_url}" -o "${dst_file}"
-  "${use_sudo:+sudo}" chmod 755 "${dst_file}"
+  # Do not quote the sudo parameter expansion. Bash will error due to be being
+  # unable to find the "" command.
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
   log "Updated to version $(bootware --version)"
 }
