@@ -12,7 +12,6 @@ USAGE:
     bootware-installer [OPTIONS]
 
 OPTIONS:
-    -d, --dest <PATH>           Path to install bootware
     -h, --help                  Print help information
     -u, --user                  Install bootware for current user
     -v, --version <VERSION>     Version of Bootware to install
@@ -25,6 +24,12 @@ Function DownloadFile($SrcURL, $DstFile) {
     # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+}
+
+# Print error message and exit script with usage error code.
+Function ErrorUsage($Message) {
+    Throw "Error: $Message"
+    Exit 2
 }
 
 # Print log message to stdout if logging is enabled.
@@ -57,7 +62,7 @@ Function Main() {
                 Break
             }
             Default {
-                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }

@@ -5,19 +5,23 @@ BeforeAll {
 
 Describe "Main" {
     It "Throw error for unkown subcommand" {
-        { & "$Bootware" notasubcommand } | Should -Throw "Error: No such subcommand 'notasubcommand'."
+        { & "$Bootware" notasubcommand } | Should -Throw "Error: No such subcommand 'notasubcommand'"
     }
 }
 
 Describe "FindConfigPath" {
     It "Return given executable files" {
-        $Expected="/bin/bash"
+        Mock Test-Path { Write-Output 1 }
+
+        $Expected="C:\Windows\regedit.exe"
         FindConfigPath "$Expected"
         $Global:RetVal | Should -Be $Expected
     }
 
     It "Return environment variable" {
-        $expected="/usr/bin/cat"
+        Mock Test-Path { Write-Output 1 }
+
+        $expected="C:\Windows\regedit.exe"
         $Env:BOOTWARE_CONFIG = "$Expected"; FindConfigPath
         $Global:RetVal | Should -Be $Expected
     }

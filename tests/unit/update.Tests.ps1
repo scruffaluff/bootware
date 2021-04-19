@@ -15,7 +15,7 @@ BeforeAll {
 
 Describe "Update" {
     It "Throw error for nonexistant option at end of call" {
-        { & "$Bootware" update -v develop notanoption } | Should -Throw "Error: No such option 'notanoption'."
+        { & "$Bootware" update -v develop notanoption } | Should -Throw "Error: No such option 'notanoption'"
     }
 
     It "Subcommand passes args to DownloadFile and Git" {

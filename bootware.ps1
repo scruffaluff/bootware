@@ -110,6 +110,7 @@ Function Bootstrap() {
         $Inventory = "$(FindRelativeIP)"
     } Else {
         Throw "Error: The setup subcommand needs to be run before bootstrap"
+        Exit 1
     }
 
     While ($ArgIdx -lt $Args[0].Count) {
@@ -164,7 +165,7 @@ Function Bootstrap() {
                 Break
             }
             Default {
-                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -212,7 +213,7 @@ Function Config() {
                 Break
             }
             Default {
-                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -236,6 +237,12 @@ Function DownloadFile($SrcURL, $DstFile) {
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
+# Print error message and exit script with usage error code.
+Function ErrorUsage($Message) {
+    Throw "Error: $Message"
+    Exit 2
+}
+
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
@@ -246,7 +253,9 @@ Function FindConfigPath($FilePath) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
     } Else {
         Log "Unable to find Bootware configuation file"
-        Config --empty
+        $Params = @()
+        $Params += @("--empty")
+        Config $Params
         $ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
@@ -292,7 +301,7 @@ Function Setup() {
                 Break
             }
             Default {
-                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -414,7 +423,7 @@ Function Update() {
                 Break
             }
             Default {
-                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -476,7 +485,7 @@ Function Main() {
             Break
         }
         Default {
-            Throw "Error: No such subcommand '$($Args[0][0])'."
+            ErrorUsage "No such subcommand '$($Args[0][0])'"
         }
     }
 }
