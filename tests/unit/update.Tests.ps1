@@ -4,7 +4,8 @@ BeforeAll {
     . "$Bootware"
 
     Mock DownloadFile { }
-    Mock git { Write-Output "git $Args" }
+    # Mocking Git appears to not work on Windows.
+    Function git { Write-Output "git $Args" }
     Mock Test-Path { Write-Output 1 }
 
     # Avoid overwriting WSL copy of Bootware during tests if installed.
@@ -22,17 +23,16 @@ Describe "Update" {
         If (Get-Command bootware -ErrorAction SilentlyContinue) {
             Mock bootware { Write-Output "" }
         } Else {
-            Function bootware() {
-                Write-Output ""
-            }
+            Function bootware() { Write-Output "" }
         }
 
         $Env:BOOTWARE_NOLOG=1
-        $Expected = "git -C $(Split-Path -Parent $Bootware)/repo pull"
+        $BootwareDir = "$(Split-Path -Parent $Bootware)"
+        $Expected = "git -C $BootwareDir/repo pull"
 
         $Actual = "$(& "$Bootware" update --version develop)"
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -eq "$Bootware" -And
+            $DstFile -eq "$BootwareDir/bootware.ps1" -And
             $SrcURL -eq "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.ps1"
         }
 

@@ -170,7 +170,7 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
-          set-as-default: 'true'
+          set-as-default: "true"
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
