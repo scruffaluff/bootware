@@ -160,13 +160,17 @@ jobs:
         shell: pwsh
 
   test-windows:
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    # if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for Windows
     needs: build
     runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          set-as-default: 'true'
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
@@ -175,10 +179,7 @@ jobs:
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
-      - name: Create Bootware configuration file
-        run: "& 'C:/Program Files/Bootware/bootware.ps1' config --empty"
-        shell: powershell
       - name: Install dependencies for Bootware
         run: >-
-          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup --no-wsl"
+          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup"
         shell: powershell

@@ -19,6 +19,8 @@ Describe "Update" {
     }
 
     It "Subcommand passes args to DownloadFile and Git" {
+        Mock bootware { }
+
         $Env:BOOTWARE_NOLOG=1
         $Expected = "git -C $(Split-Path -Parent $Bootware)/repo pull"
 
