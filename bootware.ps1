@@ -1,4 +1,4 @@
-# If unable to execute due to policy rules, run 
+# If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 
@@ -27,7 +27,7 @@ OPTIONS:
         --user <USER-NAME>          Remote host user login name
 '@
         }
-        "config" { 
+        "config" {
             Write-Output @'
 Bootware config
 Download default Bootware configuration file
@@ -40,7 +40,7 @@ OPTIONS:
     -e, --empty             Write empty configuration file
     -h, --help              Print help information
     -s, --source <URL>      URL to configuration file
-'@      
+'@
         }
         "main" {
             Write-Output @'
@@ -96,7 +96,7 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
-    $Playbook = "$PSScriptRoot\repo\main.yaml"
+    $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
@@ -107,16 +107,18 @@ Function Bootstrap() {
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        $Inventory = "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+        $Inventory = "$(FindRelativeIP)"
     } Else {
-        Error "The setup subcommand needs to be run before bootstrap"
+        Throw "Error: The setup subcommand needs to be run before bootstrap"
+        Exit 1
     }
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-c", "--config"} {
                 $ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-h", "--help"} {
                 Usage "bootstrap"
@@ -125,34 +127,45 @@ Function Bootstrap() {
             {$_ -In "-i", "--inventory"} {
                 $Inventory = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             "--no-passwd" {
                 $UsePasswd = 0
                 $ArgIdx += 1
+                Break
             }
             "--no-setup" {
                 $UseSetup = 0
                 $ArgIdx += 1
+                Break
             }
             {$_ -In "-p", "--playbook"} {
                 $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-s", "--skip"} {
                 $Skip = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-t", "--tags"} {
                 $Tags = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-u", "--url"} {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             "--user" {
                 $User = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -175,18 +188,20 @@ Function Bootstrap() {
 Function Config() {
     $ArgIdx = 0
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
-    $DstFile = "$HOME\.bootware\config.yaml"
-    $EmptyCfg =0
+    $DstFile = "$HOME/.bootware/config.yaml"
+    $EmptyCfg = 0
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-d", "--dest"} {
                 $DstFile = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-e", "--empty"} {
-                $ArgIdx += 1
                 $EmptyCfg = 1
+                $ArgIdx += 1
+                Break
             }
             {$_ -In "-h", "--help"} {
                 Usage "config"
@@ -195,6 +210,10 @@ Function Config() {
             {$_ -In "-s", "--source"} {
                 $SrcURL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -202,10 +221,10 @@ Function Config() {
     New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent) | Out-Null
 
     If ($EmptyCfg) {
-        Write-Output "Writing empty configuration file to $DstFile..."
+        Log "Writing empty configuration file to $DstFile"
         Write-Output "passwordless_sudo: false" > "$DstFile"
     } Else {
-        Write-Output "Downloading configuration file to $DstFile..."
+        # Log "Downloading configuration file to $DstFile"
         DownloadFile "$SrcURL" "$DstFile"
     }
 }
@@ -218,36 +237,55 @@ Function DownloadFile($SrcURL, $DstFile) {
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
-# Print error message and exit script with error code.
-Function Error($Message) {
+# Print error message and exit script with usage error code.
+Function ErrorUsage($Message) {
     Throw "Error: $Message"
+    Exit 2
 }
 
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
+    } ElseIf (Test-Path "$Env:BOOTWARE_CONFIG") {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
-    } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
-        $ConfigPath = "$HOME\.bootware\config.yaml"
+    } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     } Else {
-        Write-Output "Unable to find Bootware configuation file."
-        Config --empty
-        $ConfigPath = "$HOME\.bootware\config.yaml"
+        Log "Unable to find Bootware configuation file"
+        $Params = @()
+        $Params += @("--empty")
+        Config $Params
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
-    Write-Output "Using $ConfigPath as configuration file."
+    Log "Using $ConfigPath as configuration file"
     $Global:RetVal = "$ConfigPath"
+}
+
+# Find IP address of Windows host relative from WSL.
+#
+# Taken from
+# https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
+Function FindRelativeIP {
+    Write-Output "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+}
+
+# Print log message to stdout if logging is enabled.
+Function Log($Message) {
+    If (!"$Env:BOOTWARE_NOLOG") {
+        Write-Output "$Message"
+    }
 }
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
+    $ArgIdx = 0
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $WSL = 1
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-h", "--help"} {
                 Usage "setup"
                 Exit 0
@@ -255,17 +293,22 @@ Function Setup() {
             "--no-wsl" {
                 $WSL = 0
                 $ArgIdx += 1
+                Break
             }
             {$_ -In "-u", "--url"} {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
 
     # Install Chocolatey package manager.
     If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
-        Write-Output "Downloading Chocolatey package manager..."
+        Log "Downloading Chocolatey package manager"
 
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
@@ -274,13 +317,13 @@ Function Setup() {
 
         # Several packages require the Visual C++ build tools and Chocolatey
         # requires user interaction yes prompt.
-        Write-Output "Installing Visual C++ build tools..."
+        Log "Installing Visual C++ build tools"
         choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        Write-Output "Downloading Scoop package manager..."
+        Log "Downloading Scoop package manager"
 
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
@@ -292,7 +335,7 @@ Function Setup() {
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
         scoop install git
     }
-    
+
     $ScoopBuckets = $(scoop bucket list)
     ForEach ($Bucket in @("extras", "main", "nerd-fonts", "versions")) {
         If ($Bucket -NotIn $ScoopBuckets) {
@@ -300,7 +343,7 @@ Function Setup() {
         }
     }
 
-    $RepoPath = "$PSScriptRoot\repo"
+    $RepoPath = "$PSScriptRoot/repo"
     If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
         git clone --depth 1 "$URL" "$RepoPath"
     }
@@ -315,7 +358,7 @@ Function Setup() {
 # Launch WinRM and create inbound network rule.
 Function SetupWinRM() {
     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
-    Write-Output "Setting up WinRM..."
+    Log "Setting up WinRM"
     DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
     & $TempFile
 }
@@ -329,8 +372,8 @@ Function SetupWSL() {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
-        Write-Output "Restart your system to finish WSL installation."
-        Write-Output "Then run bootware setup again to install Ubuntu."
+        Log "Restart your system to finish WSL installation"
+        Log "Then run bootware setup again to install Ubuntu"
         Exit 0
     }
 
@@ -340,7 +383,7 @@ Function SetupWSL() {
     $DistroCheck = "$(wsl echo $MatchString)"
     If (-Not ("$DistroCheck" -Like "$MatchString")) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
-        Write-Output "Downloading WSL update."
+        Log "Downloading WSL update"
         DownloadFile "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" $TempFile
         Start-Process -Wait $TempFile /Passive
 
@@ -348,16 +391,16 @@ Function SetupWSL() {
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
         $TempDir = $TempFile -Replace ".zip", ""
-        Write-Output "Downloading Ubuntu image. Follow the prompt for installation."
+        Log "Downloading Ubuntu image. Follow the prompt for installation"
         DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
-        
+
         Expand-Archive "$TempFile" "$TempDir"
         & "$TempDir/ubuntu2004.exe"
         Exit 0
     }
 
     If (-Not (wsl command -v bootware)) {
-        Write-Output "Installing a WSL copy of Bootware."
+        Log "Installing a WSL copy of Bootware"
         wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash
 
     }
@@ -368,8 +411,8 @@ Function Update() {
     $ArgIdx = 0
     $Version = "master"
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-h", "--help"} {
                 Usage "update"
                 Exit 0
@@ -377,12 +420,16 @@ Function Update() {
             {$_ -In "-v", "--version"} {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
 
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
-    DownloadFile "$SrcURL" "$PSScriptRoot\bootware.ps1"
+    DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
@@ -390,12 +437,12 @@ Function Update() {
     }
 
     # Update playbook repository.
-    $RepoPath = "$PSScriptRoot\repo"
+    $RepoPath = "$PSScriptRoot/repo"
     If (Test-Path -Path "$RepoPath" -PathType Container) {
         git -C "$RepoPath" pull
     }
 
-    Write-Output "Updated to version $(bootware --version)."
+    Log "Updated to version $(bootware --version)"
 }
 
 # Print Bootware version string.
@@ -415,34 +462,35 @@ Function Main() {
     Switch ($Args[0][0]) {
         {$_ -In "-h", "--help"} {
             Usage "main"
-            Exit 0
+            Break
         }
         {$_ -In "-v", "--version"} {
             Version
-            Exit 0
+            Break
         }
         "bootstrap" {
             Bootstrap $Slice
-            Exit 0
+            Break
         }
         "config" {
             Config $Slice
-            Exit 0
+            Break
         }
         "setup" {
             Setup $Slice
-            Exit 0
+            Break
         }
         "update" {
             Update $Slice
-            Exit 0
+            Break
         }
         Default {
-            Error "No such subcommand '$($Args[0][0])'."
+            ErrorUsage "No such subcommand '$($Args[0][0])'"
         }
     }
-
-    Usage "main"
 }
 
-Main $Args
+# Only run Main if invoked as script. Otherwise import functions as library.
+If ($MyInvocation.InvocationName -ne '.') {
+    Main $Args
+}

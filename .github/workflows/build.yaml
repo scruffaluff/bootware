@@ -140,13 +140,20 @@ jobs:
           push: false
 
   test-powershell:
-    name: Run unit tests for PowerShell scripts
+    name: Run linter and unit tests for PowerShell scripts
     runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Install PSScriptAnalyzer
+        run: Install-Module -Name PSScriptAnalyzer -Force
+        shell: pwsh
+      # TODO: Resolve PowerShell lints
+      # - name: Run PSScriptAnalyzer on all PowerShell scripts
+      #   run: Invoke-ScriptAnalyzer -Path . -Recurse
+      #   shell: pwsh
       - name: Install Pester
-        run: Install-Module Pester -Force
+        run: Install-Module -Name Pester -Force
         shell: pwsh
       - name: Run PowerShell unit tests with Pester
         run: Invoke-Pester -Output Detailed ./tests/unit/
@@ -160,6 +167,10 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          set-as-default: "true"
       - name: Install Bootware
         run: >
           Invoke-WebRequest -UseBasicParsing -Uri
@@ -168,10 +179,7 @@ jobs:
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
-      - name: Create Bootware configuration file
-        run: "& 'C:/Program Files/Bootware/bootware.ps1' config --empty"
-        shell: powershell
       - name: Install dependencies for Bootware
         run: >-
-          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup --no-wsl"
+          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup"
         shell: powershell

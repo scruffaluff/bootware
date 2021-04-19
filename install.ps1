@@ -1,4 +1,4 @@
-# If unable to execute due to policy rules, run 
+# If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 
@@ -12,7 +12,6 @@ USAGE:
     bootware-installer [OPTIONS]
 
 OPTIONS:
-    -d, --dest <PATH>           Path to install bootware
     -h, --help                  Print help information
     -u, --user                  Install bootware for current user
     -v, --version <VERSION>     Version of Bootware to install
@@ -27,10 +26,17 @@ Function DownloadFile($SrcURL, $DstFile) {
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
-# Print error message and exit with error code.
-Function Error($Message) {
-    Write-Error "Error: $Message"
-    Exit 1
+# Print error message and exit script with usage error code.
+Function ErrorUsage($Message) {
+    Throw "Error: $Message"
+    Exit 2
+}
+
+# Print log message to stdout if logging is enabled.
+Function Log($Message) {
+    If (!"$Env:BOOTWARE_NOLOG") {
+        Write-Output "$Message"
+    }
 }
 
 # Script entrypoint.
@@ -39,8 +45,8 @@ Function Main() {
     $Target = "Machine"
     $Version = "master"
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-h", "--help"} {
                 Usage
                 Exit 0
@@ -48,9 +54,15 @@ Function Main() {
             {$_ -In "-v", "--version"} {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             "--user" {
                 $Target = "User"
+                $ArgIdx += 1
+                Break
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
@@ -66,11 +78,14 @@ Function Main() {
     $Env:Path = "$DestDir" + ";$Env:Path"
     [System.Environment]::SetEnvironmentVariable("Path", "$Env:Path", "$Target")
 
-    Write-Output "Installing Bootware..."
+    Log "Installing Bootware"
 
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
     DownloadFile "$Source" "$Dest"
-    Write-Output "Installed $(bootware --version)."
+    Log "Installed $(bootware --version)"
 }
 
-Main $Args
+# Only run Main if invoked as script. Otherwise import functions as library.
+If ($MyInvocation.InvocationName -ne '.') {
+    Main $Args
+}

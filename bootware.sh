@@ -340,7 +340,7 @@ config() {
 #   Whether to use sudo command.
 #######################################
 dnf_check_update() {
-  "${1:+sudo}" dnf check-update || {
+  ${1:+sudo} dnf check-update || {
     code="$?"
     [[ "${code}" -eq 100 ]] && return 0
     return "${code}"
@@ -489,26 +489,26 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    "${1:+sudo}" pacman --noconfirm -Suy
-    "${1:+sudo}" pacman --noconfirm -S ansible
+    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman --noconfirm -S ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    "${1:+sudo}" pacman --noconfirm -Suy
-    "${1:+sudo}" pacman -S --noconfirm curl
+    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    "${1:+sudo}" pacman --noconfirm -Suy
-    "${1:+sudo}" pacman -S --noconfirm git
+    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log "Installing Yay package manager"
-    "${1:+sudo}" pacman --noconfirm -Suy
-    "${1:+sudo}" pacman -S --noconfirm base-devel
+    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -S --noconfirm base-devel
 
     tmp_dir="$(mktemp -u)"
     git clone --depth 1 "https://aur.archlinux.org/yay.git" "${tmp_dir}"
@@ -530,25 +530,25 @@ setup_debian() {
     # Ansible is install with Python3, since many Debian systems package Ansible
     # version 2.7, which does not support Ansible collections.
     log "Installing Ansible"
-    "${1:+sudo}" apt-get -qq update
-    "${1:+sudo}" apt-get -qq install -y python3 python3-pip python3-apt
+    ${1:+sudo} apt-get -qq update
+    ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
-    "${1:+sudo}" python3 -m pip install setuptools wheel
-    "${1:+sudo}" python3 -m pip install ansible pywinrm
+    ${1:+sudo} python3 -m pip install setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible pywinrm
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    "${1:+sudo}" apt-get -qq update
-    "${1:+sudo}" apt-get -qq install -y curl
+    ${1:+sudo} apt-get -qq update
+    ${1:+sudo} apt-get -qq install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    "${1:+sudo}" apt-get -qq update
-    "${1:+sudo}" apt-get -qq install -y git
+    ${1:+sudo} apt-get -qq update
+    ${1:+sudo} apt-get -qq install -y git
   fi
 }
 
@@ -564,19 +564,19 @@ setup_fedora() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
     dnf_check_update "$1"
-    "${1:+sudo}" dnf install -y ansible
+    ${1:+sudo} dnf install -y ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
     dnf_check_update "$1"
-    "${1:+sudo}" dnf install -y curl
+    ${1:+sudo} dnf install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
     dnf_check_update "$1"
-    "${1:+sudo}" dnf install -y git
+    ${1:+sudo} dnf install -y git
   fi
 }
 
