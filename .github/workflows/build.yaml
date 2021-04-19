@@ -160,7 +160,7 @@ jobs:
         shell: pwsh
 
   test-windows:
-    # if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for Windows
     needs: build
     runs-on: windows-latest

@@ -6,7 +6,7 @@ BeforeAll {
     Mock Setup { }
 
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        Mock wsl { }
+        Mock wsl { Write-Output "wsl $Args" }
     } Else {
         Function wsl() {
             Write-Output "wsl $Args"

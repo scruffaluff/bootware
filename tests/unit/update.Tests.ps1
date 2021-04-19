@@ -19,7 +19,13 @@ Describe "Update" {
     }
 
     It "Subcommand passes args to DownloadFile and Git" {
-        Mock bootware { }
+        If (Get-Command bootware -ErrorAction SilentlyContinue) {
+            Mock bootware { Write-Output "" }
+        } Else {
+            Function bootware() {
+                Write-Output ""
+            }
+        }
 
         $Env:BOOTWARE_NOLOG=1
         $Expected = "git -C $(Split-Path -Parent $Bootware)/repo pull"
