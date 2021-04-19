@@ -176,7 +176,7 @@ Function Config() {
     $ArgIdx = 0
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
     $DstFile = "$HOME\.bootware\config.yaml"
-    $EmptyCfg =0
+    $EmptyCfg = 0
 
     ForEach ($Arg in $Args) {
         Switch ($Arg) {
@@ -202,10 +202,10 @@ Function Config() {
     New-Item -Force -ItemType Directory -Path $(Split-Path -Path $DstFile -Parent) | Out-Null
 
     If ($EmptyCfg) {
-        Write-Output "Writing empty configuration file to $DstFile..."
+        Log "Writing empty configuration file to $DstFile"
         Write-Output "passwordless_sudo: false" > "$DstFile"
     } Else {
-        Write-Output "Downloading configuration file to $DstFile..."
+        # Log "Downloading configuration file to $DstFile"
         DownloadFile "$SrcURL" "$DstFile"
     }
 }
@@ -227,19 +227,26 @@ Function Error($Message) {
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (Test-Path Env:BOOTWARE_CONFIG) {
+    } ElseIf (Test-Path "$Env:BOOTWARE_CONFIG") {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
         $ConfigPath = "$HOME\.bootware\config.yaml"
     } Else {
-        Write-Output "Unable to find Bootware configuation file."
+        Log "Unable to find Bootware configuation file"
         Config --empty
         $ConfigPath = "$HOME\.bootware\config.yaml"
     }
 
-    Write-Output "Using $ConfigPath as configuration file."
+    Log "Using $ConfigPath as configuration file"
     $Global:RetVal = "$ConfigPath"
 }
+
+# Print log message to stdout if logging is enabled.
+Function Log($Message) {
+    If (!"$BOOTWARE_NOLOG") {
+        Write-Output "$Message"
+    }
+  }
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
@@ -265,7 +272,7 @@ Function Setup() {
 
     # Install Chocolatey package manager.
     If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
-        Write-Output "Downloading Chocolatey package manager..."
+        Log "Downloading Chocolatey package manager"
 
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
@@ -274,13 +281,13 @@ Function Setup() {
 
         # Several packages require the Visual C++ build tools and Chocolatey
         # requires user interaction yes prompt.
-        Write-Output "Installing Visual C++ build tools..."
+        Log "Installing Visual C++ build tools"
         choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        Write-Output "Downloading Scoop package manager..."
+        Log "Downloading Scoop package manager"
 
         # The progress bar updates every byte, which makes downloads slow. See
         # https://stackoverflow.com/a/43477248 for an explanation.
@@ -315,7 +322,7 @@ Function Setup() {
 # Launch WinRM and create inbound network rule.
 Function SetupWinRM() {
     $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
-    Write-Output "Setting up WinRM..."
+    Log "Setting up WinRM"
     DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
     & $TempFile
 }
@@ -329,8 +336,8 @@ Function SetupWSL() {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
-        Write-Output "Restart your system to finish WSL installation."
-        Write-Output "Then run bootware setup again to install Ubuntu."
+        Log "Restart your system to finish WSL installation"
+        Log "Then run bootware setup again to install Ubuntu"
         Exit 0
     }
 
@@ -340,7 +347,7 @@ Function SetupWSL() {
     $DistroCheck = "$(wsl echo $MatchString)"
     If (-Not ("$DistroCheck" -Like "$MatchString")) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
-        Write-Output "Downloading WSL update."
+        Log "Downloading WSL update"
         DownloadFile "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" $TempFile
         Start-Process -Wait $TempFile /Passive
 
@@ -348,7 +355,7 @@ Function SetupWSL() {
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
         $TempDir = $TempFile -Replace ".zip", ""
-        Write-Output "Downloading Ubuntu image. Follow the prompt for installation."
+        Log "Downloading Ubuntu image. Follow the prompt for installation"
         DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
         
         Expand-Archive "$TempFile" "$TempDir"
@@ -357,7 +364,7 @@ Function SetupWSL() {
     }
 
     If (-Not (wsl command -v bootware)) {
-        Write-Output "Installing a WSL copy of Bootware."
+        Log "Installing a WSL copy of Bootware"
         wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash
 
     }
@@ -395,7 +402,7 @@ Function Update() {
         git -C "$RepoPath" pull
     }
 
-    Write-Output "Updated to version $(bootware --version)."
+    Log "Updated to version $(bootware --version)"
 }
 
 # Print Bootware version string.
@@ -441,8 +448,9 @@ Function Main() {
             Error "No such subcommand '$($Args[0][0])'."
         }
     }
-
-    Usage "main"
 }
 
-Main $Args
+# Only run Main if invoked as script. Otherwise import functions as library.
+If ($MyInvocation.InvocationName -ne '.') {
+    Main $Args
+}

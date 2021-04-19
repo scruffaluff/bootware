@@ -6,7 +6,7 @@
   register: bottom_release
   when: ansible_system != "Win32NT"
 
-- name: Install TLDR for Arch distributions
+- name: Install Bottom for Arch distributions
   become_user: "{{ user_account }}"
   shell:
     cmd: yay -Sy --noconfirm bottom-bin
