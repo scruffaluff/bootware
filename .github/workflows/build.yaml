@@ -172,10 +172,7 @@ jobs:
           distribution: Ubuntu-20.04
           set-as-default: "true"
       - name: Install Bootware
-        run: >
-          Invoke-WebRequest -UseBasicParsing -Uri
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1
-          | Invoke-Expression
+        run: "& ./install.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.

@@ -171,7 +171,9 @@ Function Bootstrap() {
     }
 
     If ($UseSetup) {
-        Setup --url "$URL"
+        $Params = @()
+        $Params += "--url", "$URL"
+        Setup $Params
     }
 
     FindConfigPath "$ConfigPath"
@@ -247,7 +249,7 @@ Function ErrorUsage($Message) {
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (Test-Path "$Env:BOOTWARE_CONFIG") {
+    } ElseIf (($Env:BOOTWARE_CONFIG) -And (Test-Path -Path "$Env:BOOTWARE_CONFIG")) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
     } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
