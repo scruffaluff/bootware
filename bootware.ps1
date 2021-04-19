@@ -457,7 +457,12 @@ Function WSLPath($FilePath) {
 
 # Script entrypoint.
 Function Main() {
-    $Slice = $Args[0][1..($Args[0].Length-1)]
+    # Get subcommand parameters.
+    If ($Args[0].Length -gt 1) {
+        $Slice = $Args[0][1..($Args[0].Length-1)]
+    } Else {
+        $Slice = @()
+    }
 
     Switch ($Args[0][0]) {
         {$_ -In "-h", "--help"} {

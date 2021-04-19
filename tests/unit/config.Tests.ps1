@@ -14,6 +14,16 @@ Describe "Config" {
         $Actual | Should -Be $Expected
     }
 
+    It "Subcommand parses no parameters correctly" {
+        $Env:BOOTWARE_NOLOG = 1
+
+        & "$Bootware" config
+        Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
+            $DstFile -eq "$HOME/.bootware/config.yaml" -And
+            $SrcURL -eq "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
+        }
+    }
+
     It "Subcommand passes source to DownloadFile" {
         $Env:BOOTWARE_NOLOG = 1
 

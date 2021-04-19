@@ -180,6 +180,12 @@ jobs:
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Install dependencies for Bootware
-        run: >-
-          "& 'C:/Program Files/Bootware/bootware.ps1' bootware setup"
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware setup
+        shell: powershell
+      - name: Test bootstrapping
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware bootstrap
         shell: powershell
