@@ -14,6 +14,12 @@ Describe "Install" {
     }
 
     It "Pass local path to DownloadFile" {
+        If (Get-Command bootware -ErrorAction SilentlyContinue) {
+            Mock bootware { Write-Output "" }
+        } Else {
+            Function bootware() { Write-Output "" }
+        }
+
         $Env:BOOTWARE_NOLOG=1
 
         & "$Install" --user --version develop
