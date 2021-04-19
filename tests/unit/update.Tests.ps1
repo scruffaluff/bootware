@@ -12,8 +12,12 @@ BeforeAll {
         Mock wsl { }
     }
 }
-    
+
 Describe "Update" {
+    It "Throw error for nonexistant option at end of call" {
+        { & "$Bootware" update -v develop notanoption } | Should -Throw "Error: No such option 'notanoption'."
+    }
+
     It "Subcommand passes args to DownloadFile and Git" {
         $Env:BOOTWARE_NOLOG=1
         $Expected = "git -C $(Split-Path -Parent $Bootware)/repo pull"

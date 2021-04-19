@@ -1,4 +1,4 @@
-# If unable to execute due to policy rules, run 
+# If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 
@@ -27,7 +27,7 @@ OPTIONS:
         --user <USER-NAME>          Remote host user login name
 '@
         }
-        "config" { 
+        "config" {
             Write-Output @'
 Bootware config
 Download default Bootware configuration file
@@ -40,7 +40,7 @@ OPTIONS:
     -e, --empty             Write empty configuration file
     -h, --help              Print help information
     -s, --source <URL>      URL to configuration file
-'@      
+'@
         }
         "main" {
             Write-Output @'
@@ -109,14 +109,15 @@ Function Bootstrap() {
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         $Inventory = "$(FindRelativeIP)"
     } Else {
-        Error "The setup subcommand needs to be run before bootstrap"
+        Throw "Error: The setup subcommand needs to be run before bootstrap"
     }
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-c", "--config"} {
                 $ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-h", "--help"} {
                 Usage "bootstrap"
@@ -125,34 +126,45 @@ Function Bootstrap() {
             {$_ -In "-i", "--inventory"} {
                 $Inventory = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             "--no-passwd" {
                 $UsePasswd = 0
                 $ArgIdx += 1
+                Break
             }
             "--no-setup" {
                 $UseSetup = 0
                 $ArgIdx += 1
+                Break
             }
             {$_ -In "-p", "--playbook"} {
                 $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-s", "--skip"} {
                 $Skip = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-t", "--tags"} {
                 $Tags = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-u", "--url"} {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             "--user" {
                 $User = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
             }
         }
     }
@@ -178,15 +190,17 @@ Function Config() {
     $DstFile = "$HOME/.bootware/config.yaml"
     $EmptyCfg = 0
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-d", "--dest"} {
                 $DstFile = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
             }
             {$_ -In "-e", "--empty"} {
-                $ArgIdx += 1
                 $EmptyCfg = 1
+                $ArgIdx += 1
+                Break
             }
             {$_ -In "-h", "--help"} {
                 Usage "config"
@@ -195,6 +209,10 @@ Function Config() {
             {$_ -In "-s", "--source"} {
                 $SrcURL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
             }
         }
     }
@@ -216,11 +234,6 @@ Function DownloadFile($SrcURL, $DstFile) {
     # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
-}
-
-# Print error message and exit script with error code.
-Function Error($Message) {
-    Throw "Error: $Message"
 }
 
 # Find path of Bootware configuation file.
@@ -258,11 +271,12 @@ Function Log($Message) {
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
+    $ArgIdx = 0
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $WSL = 1
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-h", "--help"} {
                 Usage "setup"
                 Exit 0
@@ -270,10 +284,15 @@ Function Setup() {
             "--no-wsl" {
                 $WSL = 0
                 $ArgIdx += 1
+                Break
             }
             {$_ -In "-u", "--url"} {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
             }
         }
     }
@@ -307,7 +326,7 @@ Function Setup() {
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
         scoop install git
     }
-    
+
     $ScoopBuckets = $(scoop bucket list)
     ForEach ($Bucket in @("extras", "main", "nerd-fonts", "versions")) {
         If ($Bucket -NotIn $ScoopBuckets) {
@@ -365,7 +384,7 @@ Function SetupWSL() {
         $TempDir = $TempFile -Replace ".zip", ""
         Log "Downloading Ubuntu image. Follow the prompt for installation"
         DownloadFile "https://aka.ms/wslubuntu2004" $TempFile
-        
+
         Expand-Archive "$TempFile" "$TempDir"
         & "$TempDir/ubuntu2004.exe"
         Exit 0
@@ -383,8 +402,8 @@ Function Update() {
     $ArgIdx = 0
     $Version = "master"
 
-    ForEach ($Arg in $Args) {
-        Switch ($Arg) {
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
             {$_ -In "-h", "--help"} {
                 Usage "update"
                 Exit 0
@@ -392,6 +411,10 @@ Function Update() {
             {$_ -In "-v", "--version"} {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
+                Break
+            }
+            Default {
+                Throw "Error: No such option '$($Args[0][$ArgIdx])'."
             }
         }
     }
@@ -430,30 +453,30 @@ Function Main() {
     Switch ($Args[0][0]) {
         {$_ -In "-h", "--help"} {
             Usage "main"
-            Exit 0
+            Break
         }
         {$_ -In "-v", "--version"} {
             Version
-            Exit 0
+            Break
         }
         "bootstrap" {
             Bootstrap $Slice
-            Exit 0
+            Break
         }
         "config" {
             Config $Slice
-            Exit 0
+            Break
         }
         "setup" {
             Setup $Slice
-            Exit 0
+            Break
         }
         "update" {
             Update $Slice
-            Exit 0
+            Break
         }
         Default {
-            Error "No such subcommand '$($Args[0][0])'."
+            Throw "Error: No such subcommand '$($Args[0][0])'."
         }
     }
 }

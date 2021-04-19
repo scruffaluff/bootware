@@ -1,4 +1,4 @@
-BeforeAll { 
+BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
     . "$Bootware"
 

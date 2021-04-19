@@ -140,13 +140,20 @@ jobs:
           push: false
 
   test-powershell:
-    name: Run unit tests for PowerShell scripts
+    name: Run linter and unit tests for PowerShell scripts
     runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Install PSScriptAnalyzer
+        run: Install-Module -Name PSScriptAnalyzer -Force
+        shell: pwsh
+      # TODO: Resolve PowerShell lints
+      # - name: Run PSScriptAnalyzer on all PowerShell scripts
+      #   run: Invoke-ScriptAnalyzer -Path . -Recurse
+      #   shell: pwsh
       - name: Install Pester
-        run: Install-Module Pester -Force
+        run: Install-Module -Name Pester -Force
         shell: pwsh
       - name: Run PowerShell unit tests with Pester
         run: Invoke-Pester -Output Detailed ./tests/unit/
