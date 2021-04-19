@@ -7,19 +7,19 @@ BeforeAll {
 
 Describe "Config" {
     It "Subcommand makes empty configuration log" {
-        $Env:BOOTWARE_NOLOG=0
+        $Env:BOOTWARE_NOLOG = ""
         $Expected = "Writing empty configuration file to /dev/null"
 
         $Actual = "$(& "$Bootware" config -e --dest /dev/null)"
         $Actual | Should -Be $Expected
     }
 
-    It "Subcommand passes source to Curl" {
-        $Env:BOOTWARE_NOLOG=1
+    It "Subcommand passes source to DownloadFile" {
+        $Env:BOOTWARE_NOLOG = 1
 
         & "$Bootware" config --source https://fakedomain.com
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -eq "$HOME\.bootware\config.yaml" -And
+            $DstFile -eq "$HOME/.bootware/config.yaml" -And
             $SrcURL -eq "https://fakedomain.com"
         }
     }

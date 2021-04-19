@@ -96,7 +96,7 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
-    $Playbook = "$PSScriptRoot\repo\main.yaml"
+    $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
@@ -107,7 +107,7 @@ Function Bootstrap() {
     # Find IP address of Windows host relative from WSL. Taken from
     # https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        $Inventory = "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+        $Inventory = "$(FindRelativeIP)"
     } Else {
         Error "The setup subcommand needs to be run before bootstrap"
     }
@@ -175,7 +175,7 @@ Function Bootstrap() {
 Function Config() {
     $ArgIdx = 0
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
-    $DstFile = "$HOME\.bootware\config.yaml"
+    $DstFile = "$HOME/.bootware/config.yaml"
     $EmptyCfg = 0
 
     ForEach ($Arg in $Args) {
@@ -229,24 +229,32 @@ Function FindConfigPath($FilePath) {
         $ConfigPath = $FilePath
     } ElseIf (Test-Path "$Env:BOOTWARE_CONFIG") {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
-    } ElseIf (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
-        $ConfigPath = "$HOME\.bootware\config.yaml"
+    } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     } Else {
         Log "Unable to find Bootware configuation file"
         Config --empty
-        $ConfigPath = "$HOME\.bootware\config.yaml"
+        $ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
     Log "Using $ConfigPath as configuration file"
     $Global:RetVal = "$ConfigPath"
 }
 
+# Find IP address of Windows host relative from WSL.
+#
+# Taken from
+# https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
+Function FindRelativeIP {
+    Write-Output "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+}
+
 # Print log message to stdout if logging is enabled.
 Function Log($Message) {
-    If (!"$BOOTWARE_NOLOG") {
+    If (!"$Env:BOOTWARE_NOLOG") {
         Write-Output "$Message"
     }
-  }
+}
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
@@ -307,7 +315,7 @@ Function Setup() {
         }
     }
 
-    $RepoPath = "$PSScriptRoot\repo"
+    $RepoPath = "$PSScriptRoot/repo"
     If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
         git clone --depth 1 "$URL" "$RepoPath"
     }
@@ -389,7 +397,7 @@ Function Update() {
     }
 
     $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
-    DownloadFile "$SrcURL" "$PSScriptRoot\bootware.ps1"
+    DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
@@ -397,7 +405,7 @@ Function Update() {
     }
 
     # Update playbook repository.
-    $RepoPath = "$PSScriptRoot\repo"
+    $RepoPath = "$PSScriptRoot/repo"
     If (Test-Path -Path "$RepoPath" -PathType Container) {
         git -C "$RepoPath" pull
     }

@@ -23,7 +23,7 @@ Describe "FindConfigPath" {
     }
     
     It "Return default when given non-existent file" {
-        $Expected="$HOME\.bootware\config.yaml"
+        $Expected="$HOME/.bootware/config.yaml"
         $Env:BOOTWARE_CONFIG = "/a/fake/nonsense/path";  FindConfigPath
         $Global:RetVal | Should -Be $Expected
     }
