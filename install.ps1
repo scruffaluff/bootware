@@ -85,4 +85,7 @@ Function Main() {
     Log "Installed $(bootware --version)"
 }
 
-Main $Args
+# Only run Main if invoked as script. Otherwise import functions as library.
+If ($MyInvocation.InvocationName -ne '.') {
+    Main $Args
+}

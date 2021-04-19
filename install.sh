@@ -153,7 +153,7 @@ main() {
       -u | --user)
         dst_file="${HOME}/.local/bin/bootware"
         user_install=1
-        shift 2
+        shift 1
         ;;
       -v | --version)
         version="$2"
@@ -179,11 +179,13 @@ main() {
   fi
   dst_dir="$(dirname "${dst_file}")"
 
-  printf "Installing Bootware\n"
+  log "Installing Bootware"
 
-  "${use_sudo:+sudo}" mkdir -p "${dst_dir}"
-  "${use_sudo:+sudo}" curl -LSfs "${src_url}" -o "${dst_file}"
-  "${use_sudo:+sudo}" chmod 755 "${dst_file}"
+  # Do not quote the sudo parameter expansion. Bash will error due to be being
+  # unable to find the "" command.
+  ${use_sudo:+sudo} mkdir -p "${dst_dir}"
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
   # Add Bootware to shell profile if not in system path.
   #
@@ -198,14 +200,14 @@ main() {
   # Installl man pages if a system install.
   #
   # Flags:
-  #   -n: Check if the string has nonzero length.
-  if [[ -n "${use_sudo}" ]]; then
+  #   -z: Check if the string has zero length or is null.
+  if [[ -z "${user_install}" ]]; then
     man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.1"
-    sudo mkdir -p "/usr/local/share/man/man1"
-    sudo curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
+    ${use_sudo:+sudo} mkdir -p "/usr/local/share/man/man1"
+    ${use_sudo:+sudo} curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
   fi
 
-  printf "Installed %s\n" "$(bootware --version)"
+  log "Installed $(bootware --version)"
 }
 
 # Variable BASH_SOURCE cannot be used to load script as a library. Piping the
