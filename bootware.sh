@@ -623,6 +623,16 @@ setup_macos() {
     sudo xcode-select --install
   fi
 
+  # Install Rosetta 2 for Apple Silicon if not already installed.
+  #
+  # TODO: Create better check to see if Rosetta 2 is already installed.
+  # Flags:
+  #   -d: Check if path exists and is a directory.
+  #   -m: Print machine architecture name.
+  if [[ "$(uname -p)" == "arm" && ! -d "/opt/homebrew" ]]; then
+    softwareupdate --agree-to-license  --install-rosetta
+  fi
+
   # Install Homebrew if not already installed.
   #
   # FLAGS:

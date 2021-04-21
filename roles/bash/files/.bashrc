@@ -146,3 +146,8 @@ export PATH="${HOME}/.local/bin:${PATH}"
 # Wasmtime settings.
 export WASMTIME_HOME="${HOME}/.wasmtime"
 export PATH="$WASMTIME_HOME/bin:${PATH}"
+
+# Apple Silicon support.
+
+# Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
+export PATH="/opt/homebrew/bin:${PATH}"

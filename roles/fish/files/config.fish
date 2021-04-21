@@ -136,3 +136,8 @@ set -x PATH "$HOME/.local/bin" $PATH
 # Wasmtime settings.
 set -x WASMTIME_HOME "$HOME/.wasmtime"
 set -x PATH "$WASMTIME_HOME/bin" $PATH
+
+# Apple Silicon support.
+
+# Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
+set -x PATH "/opt/homebrew/bin" $PATH

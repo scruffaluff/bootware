@@ -23,6 +23,9 @@ Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfg
 </code-block>
 </code-group>
 
+On an Apple Silicon system, unsure that the current terminal is not running
+under Rosetta 2, by confirming that the output of `uname -p` is `arm`.
+
 On Windows, PowerShell will need to run as administrator and the security policy
 must allow for running remote PowerShell scripts. The following command will
 update the security policy, if needed.

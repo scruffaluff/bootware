@@ -181,8 +181,8 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware setup
         shell: powershell
-      - name: Test bootstrapping
-        run: |
-          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap
-        shell: powershell
+      # - name: Test bootstrapping
+      #   run: |
+      #     $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+      #     bootware bootstrap
+      #   shell: powershell
