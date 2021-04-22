@@ -1,0 +1,52 @@
+FROM alpine:3.13.5
+
+
+# Create non-priviledged user.
+#
+# Alpine does contain the useradd command.
+#
+# Flags:
+#     -D: Do not assign the user a password.
+#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -u 1000: Give new user UID value 1000.
+RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
+
+# Install Bash, Curl and Sudo.
+RUN apk update && apk add bash curl sudo
+
+# Add standard user to sudoers group.
+RUN addgroup alpine wheel
+
+# Allow sudo commands with no password.
+RUN printf "%%wheel ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+
+# Fix current sudo bug for containers.
+# https://github.com/sudo-project/sudo/issues/42
+RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+
+ENV HOME=/home/alpine USER=alpine
+USER alpine
+
+# Ensure installer script works.
+COPY install.sh /tmp/install.sh
+RUN bash /tmp/install.sh
+
+# Copy local version of Bootware script.
+COPY bootware.sh /usr/local/bin/bootware
+
+# Install dependencies for Bootware.
+RUN bootware setup
+
+# Create bootware project directory.
+RUN mkdir $HOME/bootware
+WORKDIR $HOME/bootware
+
+# Copy bootware project files.
+COPY roles/ ./roles/
+COPY group_vars/ ./group_vars/
+COPY main.yaml ./
+
+ARG tags
+
+# Run Bootware bootstrapping.
+RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}

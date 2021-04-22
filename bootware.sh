@@ -479,6 +479,34 @@ setup() {
 }
 
 #######################################
+# Configure boostrapping services and utilities for Alpine distributions.
+#######################################
+setup_alpine() {
+  # Install dependencies for Bootware.
+  #
+  # Flags:
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add ansible
+  fi
+
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add curl
+  fi
+
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add git
+  fi
+}
+
+#######################################
 # Configure boostrapping services and utilities for Arch distributions.
 #######################################
 setup_arch() {
@@ -596,7 +624,9 @@ setup_linux() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ -x "$(command -v pacman)" ]]; then
+  if [[ -x "$(command -v apk)" ]]; then
+    setup_alpine "${use_sudo}"
+  elif [[ -x "$(command -v pacman)" ]]; then
     setup_arch "${use_sudo}"
   elif [[ -x "$(command -v apt-get)" ]]; then
     setup_debian "${use_sudo}"
@@ -630,7 +660,7 @@ setup_macos() {
   #   -d: Check if path exists and is a directory.
   #   -m: Print machine architecture name.
   if [[ "$(uname -p)" == "arm" && ! -d "/opt/homebrew" ]]; then
-    softwareupdate --agree-to-license  --install-rosetta
+    softwareupdate --agree-to-license --install-rosetta
   fi
 
   # Install Homebrew if not already installed.
