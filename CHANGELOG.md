@@ -5,16 +5,27 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.1 - 2021-04-23
 
 ### Added
 
+- Cursor settings for MacOS.
 - Direct WSL bootstrapping from PowerShell.
+- Early XFCE desktop support.
+- Error messaging for incorrect subcommands.
 - Fuzz testing for Ansible roles.
+- GCloud installation for Arch and Fedora distributions.
+- Windows terminal settings.
+- Yay AUR helper for Arch distributions.
 
 ### Changed
 
 - Generates default configuration file instead of throwing an error if missing.
+
+### Fixed
+
+- Python and VSCode installations for Arch distributions.
+- System path for Apple Silicon binaries.
 
 ## 0.3.0 - 2021-04-02
 
@@ -31,7 +42,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Made setup depenency checking more flexible.
-- Upgraded Ansible version for Debian distrobutions.
+- Upgraded Ansible version for Debian distributions.
 - Upgraded Docker installation version.
 
 ### Fixed
@@ -68,8 +79,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Several software installations for Fedora distrobutions.
+- Several software installations for Fedora ibutions.
 
 ### Fixed
 
-- Alacritty installation on Fedora distrobutions.
+- Alacritty installation on Fedora distributions.

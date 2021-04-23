@@ -630,7 +630,7 @@ setup_macos() {
   #   -d: Check if path exists and is a directory.
   #   -m: Print machine architecture name.
   if [[ "$(uname -p)" == "arm" && ! -d "/opt/homebrew" ]]; then
-    softwareupdate --agree-to-license  --install-rosetta
+    softwareupdate --agree-to-license --install-rosetta
   fi
 
   # Install Homebrew if not already installed.
@@ -720,7 +720,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.3.0"
+  echo "Bootware 0.3.1"
 }
 
 #######################################

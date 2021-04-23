@@ -2,8 +2,6 @@
   become: yes
   pacman:
     name:
-      - cockpit
-      - cockpit-machines
       - libvirt
       - virt-install
       - virt-viewer
@@ -12,8 +10,6 @@
 - name: Install Libvirt for Debian distributions
   apt:
     name:
-      - cockpit
-      - cockpit-machines
       - libvirt-clients
       - virt-viewer
       - virtinst
@@ -30,7 +26,6 @@
   become: yes
   dnf:
     name:
-      - cockpit
       - libvirt
       - virt-viewer
   when: ansible_pkg_mgr == "dnf"
