@@ -1,7 +1,7 @@
 # Bootware
 
-![](https://img.shields.io/github/repo-size/wolfgangwazzlestrauss/canvas)
-![](https://img.shields.io/github/license/wolfgangwazzlestrauss/canvas)
+![](https://img.shields.io/github/repo-size/wolfgangwazzlestrauss/bootware)
+![](https://img.shields.io/github/license/wolfgangwazzlestrauss/bootware)
 
 ---
 

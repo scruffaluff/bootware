@@ -1,5 +1,5 @@
 # Bash settings file for login shells.
-# shellcheck disable=SC1090 shell=bash
+# shellcheck disable=SC1091 shell=bash
 
 # Load non-login settings if file exists.
 #
