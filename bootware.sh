@@ -440,6 +440,7 @@ log() {
 setup() {
   local os_type
   local tmp_dir
+  local use_sudo
 
   assert_cmd uname
 
@@ -456,6 +457,11 @@ setup() {
     esac
   done
 
+  # Check if user is not root.
+  if [[ "${EUID}" -ne 0 ]]; then
+    use_sudo=1
+  fi
+
   # Get operating system.
   #
   # FLAGS:
@@ -466,11 +472,14 @@ setup() {
     Darwin)
       setup_macos
       ;;
+    FreeBSD)
+      setup_freebsd "${use_sudo}"
+      ;;
     Linux)
-      setup_linux
+      setup_linux "${use_sudo}"
       ;;
     *)
-      error "Operting system ${os_type} is not supported"
+      error "Operating system ${os_type} is not supported"
       ;;
   esac
 
@@ -609,29 +618,50 @@ setup_fedora() {
 }
 
 #######################################
+# Configure boostrapping services and utilities for FreeBSD.
+#######################################
+setup_freebsd() {
+  assert_cmd pkg
+
+  # Install Ansible if not already installed.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
+    ${1:+sudo} pkg update
+    ${1:+sudo} pkg install -y ansible
+  fi
+
+  # Install Curl if not already installed.
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    ${1:+sudo} pkg update
+    ${1:+sudo} pkg install -y curl
+  fi
+
+  # Install Git if not already installed.
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    ${1:+sudo} pkg update
+    ${1:+sudo} pkg install -y git
+  fi
+}
+
+#######################################
 # Configure boostrapping services and utilities for Linux.
 #######################################
 setup_linux() {
-  local use_sudo
-
-  # Check if user is not root.
-  if [[ "${EUID}" -ne 0 ]]; then
-    use_sudo=1
-  fi
-
   # Install dependencies for Bootware base on available package manager.
   #
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ -x "$(command -v apk)" ]]; then
-    setup_alpine "${use_sudo}"
+    setup_alpine "$1"
   elif [[ -x "$(command -v pacman)" ]]; then
-    setup_arch "${use_sudo}"
+    setup_arch "$1"
   elif [[ -x "$(command -v apt-get)" ]]; then
-    setup_debian "${use_sudo}"
+    setup_debian "$1"
   elif [[ -x "$(command -v dnf)" ]]; then
-    setup_fedora "${use_sudo}"
+    setup_fedora "$1"
   else
     error "Unable to find supported package manager"
   fi
@@ -750,7 +780,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.3.0"
+  echo "Bootware 0.3.1"
 }
 
 #######################################

@@ -1,9 +1,7 @@
-- name: Install Libvirt for arch distributions
+- name: Install Libvirt for Arch distributions
   become: yes
   pacman:
     name:
-      - cockpit
-      - cockpit-machines
       - libvirt
       - virt-install
       - virt-viewer
@@ -12,25 +10,30 @@
 - name: Install Libvirt for Debian distributions
   apt:
     name:
-      - cockpit
-      - cockpit-machines
       - libvirt-clients
       - virt-viewer
       - virtinst
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Tap Virt Manager Homebrew repository
+  community.general.homebrew_tap:
+    name: jeffreywildman/homebrew-virt-manager
+  when: ansible_system == "Darwin"
+
 - name: Install Libvirt for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
-    name: libvirt
+    name:
+      - libvirt
+      # - jeffreywildman/homebrew-virt-manager/virt-manager
+      - jeffreywildman/homebrew-virt-manager/virt-viewer
   when: ansible_system == "Darwin"
 
 - name: Install Libvirt for Fedora distributions
   become: yes
   dnf:
     name:
-      - cockpit
       - libvirt
       - virt-viewer
   when: ansible_pkg_mgr == "dnf"
