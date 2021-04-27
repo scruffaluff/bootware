@@ -88,6 +88,6 @@
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"
-    mode: 0755
+    mode: 0644
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
   when: ansible_system in ["Darwin", "Linux"]

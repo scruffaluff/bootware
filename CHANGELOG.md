@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fish completion script.
 
+### Changed
+
+- Permissions to be more restrictive for user files.
+
 ### Removed
 
 - Associated Docker images.

@@ -122,7 +122,7 @@ install_completions() {
 
   # Flags:
   #   -z: Check if the string has zero length or is null.
-  if [[ -n "$2" ]]; then
+  if [[ -z "$2" ]]; then
     ${1:+sudo} mkdir -p "/etc/fish/completions"
     ${1:+sudo} curl -LSfs "${fish_url}" -o "/etc/fish/completions/bootware.fish"
     ${1:+sudo} chmod 664 "/etc/fish/completions/bootware.fish"

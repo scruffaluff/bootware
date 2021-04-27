@@ -267,8 +267,9 @@ Function FindConfigPath($FilePath) {
 
 # Find IP address of Windows host relative from WSL.
 #
-# Taken from
-# https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024.
+# Taken from https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024
+# and documented at
+# https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
     Write-Output "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
 }
