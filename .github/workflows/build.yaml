@@ -76,6 +76,7 @@ jobs:
         run: npm run bats:test
 
   test-freebsd:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for FreeBSD
     runs-on: macos-latest
     steps:
@@ -87,7 +88,6 @@ jobs:
           prepare: pkg install -y bash curl
           run: |
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
-            cp bootware.sh /usr/local/bin/bootware
             bootware setup
             bootware bootstrap --dev --no-passwd --tags bash,fish
 
