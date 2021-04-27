@@ -75,6 +75,21 @@ jobs:
       - name: Run Bash unit tests with Bats
         run: npm run bats:test
 
+  test-freebsd:
+    name: Test bootstrapping software for FreeBSD
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Test installation, setup, and bootstrapping
+        uses: vmactions/freebsd-vm@v0.1.4
+        with:
+          prepare: pkg install -y bash curl
+          run: |
+            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/feature/alpine/install.sh | bash
+            bootware setup
+            bootware bootstrap
+
   test-macos:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for MacOS

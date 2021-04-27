@@ -16,7 +16,7 @@ RUN npm install
 RUN node scripts/build_package.js deb "${version}"
 
 
-FROM ubuntu:20.10
+FROM ubuntu:21.04
 
 
 ARG version=1.0.0

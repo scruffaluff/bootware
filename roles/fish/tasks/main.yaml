@@ -1,3 +1,9 @@
+- name: Install Fish for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: fish
+  when: ansible_system == "FreeBSD"
+
 - name: Install Fish for Linux
   become: yes
   package:
@@ -15,21 +21,21 @@
   file:
     path: "{{ user_home_dir }}/.config/fish"
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Create Fish completions directory for Unix
   become_user: "{{ user_account }}"
   file:
     path: "{{ user_home_dir }}/.config/fish/completions"
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Create Fish functions directory for Unix
   become_user: "{{ user_account }}"
   file:
     path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Copy Fish settings file for Unix
   become_user: "{{ user_account }}"
@@ -38,7 +44,7 @@
     force: yes
     mode: 0755
     src: config.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Change user default shell to Fish for MacOS
   become: yes
