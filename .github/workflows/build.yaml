@@ -5,11 +5,17 @@
 
 name: build
 
+# Make workflow run only for commits pushed to othe develop, feature, master
+# branches, or pull requests made to the develop and master branches.
 on:
   push:
     branches:
       - develop
       - feature/*
+      - master
+  pull_request:
+    branches:
+      - develop
       - master
 
 jobs:

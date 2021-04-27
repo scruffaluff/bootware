@@ -4,6 +4,12 @@ Bootware is invoked by shell scripts on the user's computer. The following
 commands will download the shell scripts and add them to the system path.
 
 <code-group>
+<code-block title="FreeBSD" active>
+```bash
+curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+```
+</code-block>
+
 <code-block title="Linux" active>
 ```bash
 curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash

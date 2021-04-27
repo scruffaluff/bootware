@@ -110,6 +110,45 @@ error_usage() {
 }
 
 #######################################
+# Install completion scripts for Bootware.
+# Arguments:
+#   Whether to use sudo for installation.
+#   Whether to install for entire system.
+#   GitHub version reference.
+#######################################
+install_completions() {
+  local fish_url
+  fish_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$3/completions/bootware.fish"
+
+  # Flags:
+  #   -z: Check if the string has zero length or is null.
+  if [[ -n "$2" ]]; then
+    ${1:+sudo} mkdir -p "/etc/fish/completions"
+    ${1:+sudo} curl -LSfs "${fish_url}" -o "/etc/fish/completions/bootware.fish"
+    ${1:+sudo} chmod 664 "/etc/fish/completions/bootware.fish"
+  else
+    mkdir -p "${HOME}/.config/fish/completions"
+    curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+  fi
+}
+
+#######################################
+# Install Man pages for Bootware.
+# Arguments:
+#   Whether to use sudo for installation.
+#   GitHub version reference.
+#######################################
+install_man() {
+  local man_url
+  man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$2/bootware.1"
+
+  ${1:+sudo} mkdir -p "/usr/local/share/man/man1"
+  ${1:+sudo} curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
+  ${1:+sudo} chmod 664 "/usr/local/share/man/man1/bootware.1"
+}
+
+#######################################
 # Print log message to stdout if logging is enabled.
 # Globals:
 #   BOOTWARE_NOLOG
@@ -197,14 +236,14 @@ main() {
     export PATH="${dst_dir}:${PATH}"
   fi
 
+  install_completions "${use_sudo}" "${user_install}" "${version}"
+
   # Installl man pages if a system install.
   #
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${user_install}" ]]; then
-    man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.1"
-    ${use_sudo:+sudo} mkdir -p "/usr/local/share/man/man1"
-    ${use_sudo:+sudo} curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
+    install_man "${use_sudo}" "${version}"
   fi
 
   log "Installed $(bootware --version)"

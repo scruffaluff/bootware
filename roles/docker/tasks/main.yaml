@@ -126,7 +126,7 @@
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/completions/docker.fish"
-    mode: 0755
+    mode: 0664
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -134,6 +134,6 @@
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/completions/docker-compose.fish"
-    mode: 0755
+    mode: 0664
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
   when: ansible_system in ["Darwin", "Linux"]

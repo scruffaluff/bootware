@@ -66,7 +66,7 @@ OPTIONS:
 
 SUBCOMMANDS:
     bootstrap        Boostrap install computer software
-    config           Generate default Bootware configuration file
+    config           Generate Bootware configuration file
     setup            Install dependencies for Bootware
     update           Update Bootware to latest version
 
