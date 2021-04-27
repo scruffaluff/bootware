@@ -86,9 +86,10 @@ jobs:
         with:
           prepare: pkg install -y bash curl
           run: |
-            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/feature/alpine/install.sh | bash
+            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+            cp bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap
+            bootware bootstrap --dev --no-passwd --tags bash,fish
 
   test-macos:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
@@ -102,8 +103,6 @@ jobs:
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
-      - name: Create Bootware configuration file
-        run: bootware config --empty
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: Install Ansible since Brew installation appears to be broken
         run: python3 -m pip install ansible
