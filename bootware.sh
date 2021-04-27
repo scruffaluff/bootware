@@ -488,6 +488,34 @@ setup() {
 }
 
 #######################################
+# Configure boostrapping services and utilities for Alpine distributions.
+#######################################
+setup_alpine() {
+  # Install dependencies for Bootware.
+  #
+  # Flags:
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add ansible
+  fi
+
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add curl
+  fi
+
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add git
+  fi
+}
+
+#######################################
 # Configure boostrapping services and utilities for Arch distributions.
 #######################################
 setup_arch() {
@@ -599,7 +627,13 @@ setup_freebsd() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y ansible
+    # Python's cryptography package requires a Rust compiler on FreeBSD.
+    ${1:+sudo} pkg install -y python3 py37-pip rust
+
+    # Not all Python installations have setuptools or wheel installed and it
+    # must be installed as a separate step before other packages.
+    ${1:+sudo} python3 -m pip install setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible pywinrm
   fi
 
   # Install Curl if not already installed.
@@ -626,7 +660,9 @@ setup_linux() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ -x "$(command -v pacman)" ]]; then
+  if [[ -x "$(command -v apk)" ]]; then
+    setup_alpine "$1"
+  elif [[ -x "$(command -v pacman)" ]]; then
     setup_arch "$1"
   elif [[ -x "$(command -v apt-get)" ]]; then
     setup_debian "$1"

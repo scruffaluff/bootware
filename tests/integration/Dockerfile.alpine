@@ -1,38 +1,38 @@
-FROM ubuntu:21.04
+FROM alpine:3.13.5
 
 
 # Create non-priviledged user.
 #
-# Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/fish: Set user login shell to Fish.
-#     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 ubuntu
-
-# Install Bash, Curl and Sudo.
+# Alpine does contain the useradd command.
 #
 # Flags:
-#     -m: Ignore missing packages and handle result.
-#     -q: Produce log suitable output by omitting progress indicators.
-#     -y: Assume "yes" as answer to all prompts and run non-interactively.
-RUN apt-get update -m && apt-get install -qy bash curl sudo
+#     -D: Do not assign the user a password.
+#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -u 1000: Give new user UID value 1000.
+RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
+
+# Install Bash, Curl and Sudo.
+RUN apk update && apk add bash curl sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo ubuntu
+RUN addgroup alpine wheel
 
 # Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+RUN printf "%%wheel ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 # Fix current sudo bug for containers.
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV HOME=/home/ubuntu USER=ubuntu
-USER ubuntu
+ENV HOME=/home/alpine USER=alpine
+USER alpine
 
-# Install Bootware.
-RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+# Ensure installer script works.
+COPY install.sh /tmp/install.sh
+RUN bash /tmp/install.sh
+
+# Copy local version of Bootware script.
+COPY bootware.sh /usr/local/bin/bootware
 
 # Install dependencies for Bootware.
 RUN bootware setup

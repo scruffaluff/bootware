@@ -11,12 +11,15 @@ _ubuntu_distros:
   - Ubuntu
   - Zorin OS
 _user_shell:
+  freebsd: /usr/local/bin/fish
   linux: /usr/bin/fish
   macos: >-
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
     }}/bin/fish
   win32nt: C:/Program Files/PowerShell/7/pwsh.exe
 _user_home_dir:
+  freebsd:
+    "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
   linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
   macos: "{{ '/Users/' + user_account }}"
   win32nt: "{{ 'C:/Users/' + user_account }}"

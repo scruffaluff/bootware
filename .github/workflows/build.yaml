@@ -75,6 +75,22 @@ jobs:
       - name: Run Bash unit tests with Bats
         run: npm run bats:test
 
+  test-freebsd:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    name: Test bootstrapping software for FreeBSD
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Test installation, setup, and bootstrapping
+        uses: vmactions/freebsd-vm@v0.1.4
+        with:
+          prepare: pkg install -y bash curl
+          run: |
+            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+            bootware setup
+            bootware bootstrap --dev --no-passwd --tags bash,fish
+
   test-macos:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     name: Test bootstrapping software for MacOS
@@ -87,8 +103,6 @@ jobs:
           curl -LSfs
           https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
           | bash
-      - name: Create Bootware configuration file
-        run: bootware config --empty
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: Install Ansible since Brew installation appears to be broken
         run: python3 -m pip install ansible

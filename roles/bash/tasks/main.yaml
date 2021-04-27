@@ -1,3 +1,9 @@
+- name: Install Bash for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: bash
+  when: ansible_system == "FreeBSD"
+
 - name: Install Bash for Linux
   become: yes
   package:
@@ -21,7 +27,7 @@
     force: yes
     mode: 0755
     src: .bashrc
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Copy Bash login settings file for Unix
   become_user: "{{ user_account }}"
@@ -30,7 +36,7 @@
     force: yes
     mode: 0755
     src: .bash_profile
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
 - name: Copy shell aliases file for Unix
   become_user: "{{ user_account }}"
@@ -39,4 +45,4 @@
     force: yes
     mode: 0755
     src: .aliases
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
