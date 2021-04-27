@@ -27,12 +27,8 @@ RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 ENV HOME=/home/alpine USER=alpine
 USER alpine
 
-# Ensure installer script works.
-COPY install.sh /tmp/install.sh
-RUN bash /tmp/install.sh
-
-# Copy local version of Bootware script.
-COPY bootware.sh /usr/local/bin/bootware
+# Install Bootware.
+RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
 
 # Install dependencies for Bootware.
 RUN bootware setup

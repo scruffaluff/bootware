@@ -558,6 +558,9 @@ setup_arch() {
 # Configure boostrapping services and utilities for Debian distributions.
 #######################################
 setup_debian() {
+  # Avoid APT interactively requesting to configure tzdata.
+  export DEBIAN_FRONTEND="noninteractive"
+
   # Install dependencies for Bootware.
   #
   # Flags:

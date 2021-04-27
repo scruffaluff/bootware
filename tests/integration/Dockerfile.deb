@@ -24,6 +24,9 @@ ARG version=1.0.0
 # Update Apt package cache.
 RUN apt-get update
 
+# Avoid APT interactively requesting to configure tzdata.
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+
 # Pull Debian package from previous Docker stage.
 COPY --from=builder "/bootware/dist/bootware_${version}_all.deb" /tmp/
 
