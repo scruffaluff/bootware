@@ -1,4 +1,7 @@
-./bootware.yaml
+# Git configuration file for ignoring untracked paths.
+#
+# For more information, visit https://git-scm.com/docs/gitignore.
+
 .DS_Store
 .local/
 build/

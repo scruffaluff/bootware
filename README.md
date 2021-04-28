@@ -5,7 +5,6 @@
 
 ---
 
-<!-- prettier-ignore -->
 **Documentation**: https://wolfgangwazzlestrauss.github.io/bootware
 
 **Source Code**: https://github.com/wolfgangwazzlestrauss/bootware

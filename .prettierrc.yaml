@@ -1,3 +1,7 @@
+# Prettier configuration file for formatting text.
+#
+# For more information, visit https://prettier.io/docs/en/configuration.html.
+
 arrowParens: always
 printWidth: 80
 proseWrap: always
