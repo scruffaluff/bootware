@@ -12,21 +12,27 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Build documentation and upload to GitHub Pages.
+  docs:
+    name: Build and publish documentation
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
-      - name: Install Node
-        uses: actions/setup-node@v1
+      - name: Install Node interpreter
+        uses: actions/setup-node@v2
         with:
           node-version: 16
-      - name: Install Node dependencies
+      - name: Cache Node packages
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key:
+            node-16_${{ os.runner }}_npm-${{ hashFiles('package-lock.json') }}
+      - name: Install Node packages
         run: npm install
       - name: Build documentation
         run: npm run vuepress:build
-      - name: Deploy
+      - name: Publish documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

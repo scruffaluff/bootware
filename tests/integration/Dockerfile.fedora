@@ -13,7 +13,7 @@ RUN useradd -lm -s /bin/bash -u 1000 fedora
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
-# Install Bash, Curl and Sudo.  
+# Install Bash, Curl, and Sudo.  
 RUN dnf install -y bash curl sudo
 
 # Create sudo group.

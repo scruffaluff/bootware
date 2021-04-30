@@ -10,13 +10,16 @@ FROM ubuntu:21.04
 #     -u 1000: Give new user UID value 1000.
 RUN useradd -lm -s /bin/bash -u 1000 ubuntu
 
-# Install Bash, Curl and Sudo.
+# Install Bash, Curl, and Sudo.
 #
 # Flags:
 #     -m: Ignore missing packages and handle result.
 #     -q: Produce log suitable output by omitting progress indicators.
 #     -y: Assume "yes" as answer to all prompts and run non-interactively.
 RUN apt-get update -m && apt-get install -qy bash curl sudo
+
+# Avoid APT interactively requesting to configure tzdata.
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
 
 # Add standard user to sudoers group.
 RUN usermod -a -G sudo ubuntu

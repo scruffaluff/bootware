@@ -23,4 +23,5 @@ vscode_extensions:
   - "timonwong.shellcheck"
   - "vadimcn.vscode-lldb"
   - "vscode-icons-team.vscode-icons"
+  - "vsls-contrib.gistfs"
   - "yzhang.markdown-all-in-one"

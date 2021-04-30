@@ -1,3 +1,8 @@
+# Bootware configuration file.
+#
+# For more information, visit
+# https://wolfgangwazzlestrauss.github.io/bootware/config.html.
+
 apt_packages:
   - gnome-tweaks
 cargo_applications:

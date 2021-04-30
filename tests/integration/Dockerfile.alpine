@@ -11,7 +11,7 @@ FROM alpine:3.13.5
 #     -u 1000: Give new user UID value 1000.
 RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
 
-# Install Bash, Curl and Sudo.
+# Install Bash, Curl, and Sudo.
 RUN apk update && apk add bash curl sudo
 
 # Add standard user to sudoers group.

@@ -1,4 +1,4 @@
-FROM archlinux:base-20210427.0.20774
+FROM archlinux:base-20210425.0.20608
 
 
 # Create non-priviledged user.
@@ -10,7 +10,7 @@ FROM archlinux:base-20210427.0.20774
 #     -u 1000: Give new user UID value 1000.
 RUN useradd -lm -s /bin/bash -u 1000 arch
 
-# Install Bash, Curl and Sudo.
+# Install Bash, Curl, and Sudo.
 RUN pacman --noconfirm -Suy && pacman --noconfirm -S bash curl sudo
 
 # Create sudo group.
