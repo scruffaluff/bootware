@@ -9,7 +9,7 @@ name: release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+      - "v?[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   release:
@@ -19,12 +19,10 @@ jobs:
       tag: ${{ steps.extract_tag.outputs.tag }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - name: Extract tag
+      - name: Extract Git tag
         id: extract_tag
         shell: bash
         run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
-      - name: Checkout code repository
-        uses: actions/checkout@v2
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
@@ -58,7 +56,7 @@ jobs:
         with:
           path: node_modules
           key: >-
-            node-16_${{ os.runner }}_npm-${{ hashFiles('package-lock.json') }}
+            node-16_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: npm install
       - name: Build package

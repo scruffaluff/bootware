@@ -34,7 +34,7 @@ jobs:
         with:
           path: node_modules
           key: >-
-            node-16_${{ os.runner }}_npm-${{ hashFiles('package-lock.json') }}
+            node-16_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: npm install
       - name: Check format of configuration files
@@ -65,7 +65,7 @@ jobs:
         with:
           path: node_modules
           key: >-
-            node-16_${{ os.runner }}_npm-${{ hashFiles('package-lock.json') }}
+            node-16_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: npm install
       - name: Run Bash unit tests with Bats

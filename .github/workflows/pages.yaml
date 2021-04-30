@@ -5,16 +5,17 @@
 
 name: pages
 
-# Make workflow run only for pushes to the master branch.
+# Make workflow run only for pushes to the main and master branch.
 on:
   push:
     branches:
+      - main
       - master
 
 jobs:
   docs:
     name: Build and publish documentation
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -26,8 +27,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          key:
-            node-16_${{ os.runner }}_npm-${{ hashFiles('package-lock.json') }}
+          key: >-
+            node-16_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: npm install
       - name: Build documentation
