@@ -97,7 +97,8 @@
   user:
     append: yes
     name: "{{ user_account }}"
-    groups: docker
+    groups:
+      - docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Install Docker Compose for Linux
@@ -121,6 +122,13 @@
       - docker-compose
       - posh-docker
   when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  become: yes
+  file:
+    path: /etc/fish/completions
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Docker Fish shell completions for Unix
   become: yes
