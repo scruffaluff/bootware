@@ -1,0 +1,101 @@
+# GitHub Actions workflow file.
+#
+# For more information, visit
+# https://docs.github.com/actions/learn-github-actions.
+
+name: test
+
+# Trigger workflow on push or pull request to the develop, main, and master
+# branches.
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+  push:
+    branches:
+      - develop
+      - main
+      - master
+
+jobs:
+  test-freebsd:
+    name: Test bootstrapping software for FreeBSD
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Test installation, setup, and bootstrapping
+        uses: vmactions/freebsd-vm@v0.1.4
+        with:
+          prepare: pkg install -y bash curl
+          run: |
+            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+            bootware setup
+            bootware bootstrap --dev --no-passwd --tags bash,fish
+
+  test-macos:
+    name: Test bootstrapping software for MacOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Bootware
+        run: >
+          curl -LSfs
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
+      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
+      - name: Install Ansible since Brew installation appears to be broken
+        run: python3 -m pip install ansible
+      - name: Install dependencies for Bootware
+        run: bootware setup
+      - name: Test bootstrapping
+        run: bootware bootstrap --dev --no-passwd --skip docker,
+
+  test-linux:
+    name: Test bootstrapping software for ${{ matrix.distro }}
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [arch, debian, fedora, ubuntu]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./tests/integration/Dockerfile.${{ matrix.distro }}
+          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
+          push: false
+
+  test-windows:
+    name: Test bootstrapping software for Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          set-as-default: "true"
+      - name: Install Bootware
+        run: "& ./install.ps1"
+        shell: powershell
+      # The GitHub Windows server does not seem to update its path correctly.
+      # Appears to work on other Windows servers.
+      - name: Install dependencies for Bootware
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware setup
+        shell: powershell
+      # - name: Test bootstrapping
+      #   run: |
+      #     $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+      #     bootware bootstrap
+      #   shell: powershell

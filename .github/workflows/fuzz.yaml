@@ -5,6 +5,7 @@
 
 name: fuzz
 
+# Trigger workflow on manual dispatch.
 on:
   workflow_dispatch:
     inputs:
@@ -15,7 +16,7 @@ on:
       macos:
         description: Boolean for running MacOS
         required: false
-        default: true
+        default: "true"
       tags:
         description: Space separated list of Ansible tags
         required: false

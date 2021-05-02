@@ -5,7 +5,7 @@
 
 name: pages
 
-# Make workflow run only for pushes to the main and master branch.
+# Trigger workflow on push or pull request to the main and master branches.
 on:
   push:
     branches:
