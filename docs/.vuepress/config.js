@@ -9,8 +9,8 @@ module.exports = {
     lastUpdated: "Last Updated",
     nav: [
       { text: "Home", link: "/" },
-      { text: "Installation", link: "/install/" },
-      { text: "Configuration", link: "/config/" },
+      { text: "Install", link: "/install/" },
+      { text: "Config", link: "/config/" },
     ],
     repo: "https://github.com/wolfgangwazzlestrauss/bootware",
     smoothScroll: true,

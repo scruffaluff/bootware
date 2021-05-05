@@ -14,8 +14,13 @@
     remote_src: yes
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
-      exa_formula.json.versions.stable }}/exa-linux-x86_64-v{{
-      exa_formula.json.versions.stable }}.zip
+      exa_formula.json.versions.stable }}/exa-linux-{{
+      exa_arch[ansible_architecture] }}-v{{ exa_formula.json.versions.stable
+      }}.zip
+  vars:
+    exa_arch:
+      aarch64: armv7
+      x86_64: x86_64
   when: ansible_system == "Linux"
 
 - name: Install Exa for Linux

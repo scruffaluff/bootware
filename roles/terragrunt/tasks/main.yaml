@@ -13,7 +13,12 @@
     mode: 0755
     url: >-
       https://github.com/gruntwork-io/terragrunt/releases/download/v{{
-      terragrunt_formula.json.versions.stable }}/terragrunt_linux_amd64
+      terragrunt_formula.json.versions.stable }}/terragrunt_linux_{{
+      terragrunt_arch[ansible_architecture] }}
+  vars:
+    terragrunt_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Terragrunt for MacOS

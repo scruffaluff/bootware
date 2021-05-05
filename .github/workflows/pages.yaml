@@ -5,7 +5,7 @@
 
 name: pages
 
-# Trigger workflow on push or pull request to the main and master branches.
+# Trigger workflow on push to the main and master branches.
 on:
   push:
     branches:

@@ -17,8 +17,13 @@
     deb: >-
       https://github.com/sharkdp/bat/releases/download/v{{
       bat_formula.json.versions.stable }}/bat_{{
-      bat_formula.json.versions.stable }}_amd64.deb
+      bat_formula.json.versions.stable }}_{{ bat_arch[ansible_architecture]
+      }}.deb
   become: yes
+  vars:
+    bat_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Bat for MacOS
