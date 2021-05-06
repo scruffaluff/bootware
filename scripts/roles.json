@@ -1,16 +1,24 @@
 [
   {
     "name": "alacritty",
-    "skip": [{ "architecture": "arm64", "system": "Linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["alacritty --version"]
   },
   { "name": "audio" },
   { "name": "aws", "tests": ["aws --version"] },
-  { "name": "bash", "tests": ["bash --version"] },
+  {
+    "name": "bash",
+    "skip": [{ "os": "windows" }],
+    "tests": ["bash --version"]
+  },
   { "name": "bat", "tests": ["bat --version"] },
   { "name": "bottom", "tests": ["btm --version"] },
   { "name": "caffeine" },
-  { "name": "chrome", "tests": ["google-chrome --version"] },
+  {
+    "name": "chrome",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["google-chrome --version"]
+  },
   { "name": "compass" },
   { "name": "defterm" },
   { "name": "deno", "tests": ["deno --version"] },
@@ -20,7 +28,11 @@
   { "name": "exa", "tests": ["exa --version"] },
   { "name": "fd", "tests": ["fd --version"] },
   { "name": "firefox", "tests": ["firefox --version"] },
-  { "name": "fish", "tests": ["fish --version"] },
+  {
+    "name": "fish",
+    "skip": [{ "os": "windows" }],
+    "tests": ["fish --version"]
+  },
   { "name": "font" },
   { "name": "gcp", "tests": ["gcloud --version"] },
   { "name": "git", "tests": ["git --version"] },
@@ -36,7 +48,11 @@
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "postgres" },
-  { "name": "powershell", "tests": ["pwsh --version"] },
+  {
+    "name": "powershell",
+    "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
+    "tests": ["pwsh --version"]
+  },
   {
     "name": "python",
     "tests": ["pipx --version", "pyenv --version", "python --version"]

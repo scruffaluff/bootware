@@ -8,10 +8,31 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-function test_role(system, architecture, role) {
+function shouldSkip(system, conditions) {
+  if (!conditions) {
+    return false;
+  }
+
+  for (const condition of conditions) {
+    let skipMatch = true;
+    for (const key in condition) {
+      if (condition[key] != system[key]) {
+        skipMatch = false;
+      }
+    }
+
+    if (skipMatch) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function test_role(system, role) {
   process.stdout.write(`testing: ${role.name}`);
 
-  if (role.tests) {
+  if (role.tests && !shouldSkip(system, role.skip)) {
     for (const test of role.tests) {
       childProcess.execSync(test);
     }
@@ -22,8 +43,8 @@ function test_role(system, architecture, role) {
 }
 
 function main() {
-  const system = process.argv[2];
-  const architecture = process.argv[3];
+  const os = process.argv[2];
+  const arch = process.argv[3];
   const nameList = process.argv[4];
 
   const rolesPath = path.join(__dirname, "roles.json");
@@ -35,7 +56,7 @@ function main() {
   }
 
   for (const role of roles) {
-    test_role(system, architecture, role);
+    test_role({ arch, os }, role);
   }
 }
 
