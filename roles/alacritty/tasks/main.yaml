@@ -17,7 +17,9 @@
   apt:
     name: alacritty
   become: yes
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu"
+  when: >-
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_architecture == "x86_64"
 
 - name: Install Alacritty for MacOS
   become_user: "{{ user_account }}"

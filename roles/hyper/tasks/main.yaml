@@ -18,7 +18,7 @@
   apt:
     deb: https://releases.hyper.is/download/deb
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for MacOS
   become_user: "{{ user_account }}"
