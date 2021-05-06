@@ -1,0 +1,140 @@
+- name: alacritty
+  skip:
+    - architecture: aarch64
+      system: Linux
+  tests:
+    - alacritty --version
+- name: audio
+- name: aws
+  tests:
+    - aws --version
+- name: bash
+  tests:
+    - bash --version
+- name: bat
+  tests:
+    - bat --version
+- name: bottom
+  tests:
+    - btm --version
+- name: caffeine
+- name: chrome
+  tests:
+    - google-chrome --version
+- name: compass
+- name: defterm
+- name: deno
+  tests:
+    - deno --version
+- name: doctl
+  tests:
+    - doctl version
+- name: docker
+  tests:
+    - docker --version
+- name: dvc
+  tests:
+    - dvc --version
+- name: exa
+  tests:
+    - exa --version
+- name: fd
+  tests:
+    - fd --version
+- name: firefox
+  tests:
+    - firefox --version
+- name: fish
+  tests:
+    - fish --version
+- name: font
+- name: gcp
+  tests:
+    - gcloud --version
+- name: git
+  tests:
+    - git --version
+- name: go
+  tests:
+    - go version
+- name: hyper
+  tests:
+    - hyper --version
+- name: jq
+  tests:
+    - jq --version
+- name: libvirt
+  tests:
+    - virsh --version
+- name: mdbook
+  tests:
+    - mdbook --version
+- name: mkcert
+  tests:
+    - mkcert --version
+- name: mongo
+- name: neovim
+  tests:
+    - nvim --version
+- name: node
+  tests:
+    - node --version
+- name: package
+- name: packer
+  tests:
+    - packer --version
+- name: postgres
+- name: powershell
+  tests:
+    - pwsh --version
+- name: python
+  tests:
+    - pipx --version
+    - pyenv --version
+    - python --version
+- name: qemu
+  tests:
+    - qemu-img --version
+- name: ripgrep
+  tests:
+    - rg --version
+- name: rust
+  tests:
+    - rustc --version
+    - cargo --version
+- name: shfmt
+  tests:
+    - shfmt --version
+- name: sqlite
+  tests:
+    - sqlite3 --version
+- name: starship
+  tests:
+    - starship --version
+- name: sudo
+- name: system
+- name: terraform
+  tests:
+    - terraform --version
+- name: terragrunt
+  tests:
+    - terragrunt --version
+- name: tldr
+  tests:
+    - tldr --version
+- name: vault
+  tests:
+    - vault --version
+- name: vscode
+  tests:
+    - code --version
+- name: wasm
+  tests:
+    - wasmtime --version
+- name: winman
+- name: xonsh
+  tests:
+    - xonsh --version
+- name: zola
+  tests:
+    - zola --version
