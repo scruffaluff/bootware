@@ -7,7 +7,6 @@
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const yaml = require("js-yaml");
 
 function test_role(system, architecture, role) {
   process.stdout.write(`testing: ${role.name}`);
@@ -23,11 +22,17 @@ function test_role(system, architecture, role) {
 }
 
 function main() {
-  const architecture = process.argv[2];
-  const system = process.argv[3];
+  const system = process.argv[2];
+  const architecture = process.argv[3];
+  const nameList = process.argv[4];
 
-  const rolesPath = path.join(__dirname, "roles.yaml");
-  const roles = yaml.load(fs.readFileSync(rolesPath, "utf8"));
+  const rolesPath = path.join(__dirname, "roles.json");
+  let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
+
+  if (nameList) {
+    const names = nameList.split(",");
+    roles = roles.filter((role) => names.includes(role.name));
+  }
 
   for (const role of roles) {
     test_role(system, architecture, role);
