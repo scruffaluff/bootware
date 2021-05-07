@@ -12,7 +12,11 @@
     "tests": ["bash --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  { "name": "bottom", "tests": ["btm --version"] },
+  {
+    "name": "bottom",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["btm --version"]
+  },
   { "name": "caffeine" },
   {
     "name": "chrome",
@@ -24,9 +28,21 @@
   { "name": "deno", "tests": ["deno --version"] },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version"] },
-  { "name": "dvc", "tests": ["dvc --version"] },
-  { "name": "exa", "tests": ["exa --version"] },
-  { "name": "fd", "tests": ["fd --version"] },
+  {
+    "name": "dvc",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["dvc --version"]
+  },
+  {
+    "name": "exa",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["exa --version"]
+  },
+  {
+    "name": "fd",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["fd --version"]
+  },
   { "name": "firefox", "tests": ["firefox --version"] },
   {
     "name": "fish",
@@ -37,10 +53,18 @@
   { "name": "gcp", "tests": ["gcloud --version"] },
   { "name": "git", "tests": ["git --version"] },
   { "name": "go", "tests": ["go version"] },
-  { "name": "hyper", "tests": ["hyper --version"] },
+  {
+    "name": "hyper",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["hyper --version"]
+  },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "libvirt", "tests": ["virsh --version"] },
-  { "name": "mdbook", "tests": ["mdbook --version"] },
+  {
+    "name": "mdbook",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["mdbook --version"]
+  },
   { "name": "mkcert", "tests": ["mkcert --version"] },
   { "name": "mongo" },
   { "name": "neovim", "tests": ["nvim --version"] },
@@ -73,5 +97,9 @@
   { "name": "wasm", "tests": ["wasmtime --version"] },
   { "name": "winman" },
   { "name": "xonsh", "tests": ["xonsh --version"] },
-  { "name": "zola", "tests": ["zola --version"] }
+  {
+    "name": "zola",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["zola --version"]
+  }
 ]

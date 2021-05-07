@@ -19,9 +19,9 @@
       }}.zip
   vars:
     exa_arch:
-      aarch64: armv7
+      arm: armv7
       x86_64: x86_64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_architecture in ["arm", "x86_64"]
 
 - name: Install Exa for Linux
   become: yes

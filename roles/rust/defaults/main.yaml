@@ -3,23 +3,36 @@ _cargo_applications:
     - cargo-audit
     - cargo-binutils
     - cargo-bloat
+    - cross
     # TODO: Fix cargo crev build for Fedora distributions.
     # - cargo-crev
-    - cargo-edit
-    # - cargo embed
-    - cargo-expand
-    # - cargo flash
-    - cargo-generate
-    - cargo-make
-  macos: []
+  freebsd:
+    aarch64: []
+    always: []
+    x86_64: []
+  macos:
+    aarch64: []
+    always: []
+    x86_64: []
   linux:
-    # - cargo-arch
-    - cargo-deb
-    - cargo-rpm
-    - cargo-tarpaulin
-  win32nt: []
+    aarch64: []
+    always:
+      # - cargo-arch
+      - cargo-deb
+      - cargo-rpm
+      - cargo-tarpaulin
+    x86_64:
+      - cargo-edit
+      - cargo-expand
+      - cargo-generate
+      - cargo-make
+  win32nt:
+    aarch64: []
+    always: []
+    x86_64: []
 cargo_applications: >-
-  {{ _cargo_applications.always + _cargo_applications[_ansible_system] }}
+  {{ _cargo_applications.always + _cargo_applications[_ansible_system].always +
+  _cargo_applications[_ansible_system][ansible_architecture] }}
 rustup_components:
   - clippy
   - llvm-tools-preview
