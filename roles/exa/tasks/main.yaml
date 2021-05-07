@@ -14,9 +14,15 @@
     remote_src: yes
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
-      exa_formula.json.versions.stable }}/exa-linux-x86_64-v{{
-      exa_formula.json.versions.stable }}.zip
-  when: ansible_system == "Linux"
+      exa_formula.json.versions.stable }}/exa-linux-{{
+      exa_arch[ansible_architecture] }}-v{{ exa_formula.json.versions.stable
+      }}.zip
+  vars:
+    exa_arch:
+      armv7l: armv7
+      x86_64: x86_64
+  when:
+    ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for Linux
   become: yes
@@ -25,7 +31,8 @@
     mode: 0755
     remote_src: yes
     src: /tmp/bin/exa
-  when: ansible_system == "Linux"
+  when:
+    ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for MacOS
   become_user: "{{ user_account }}"

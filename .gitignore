@@ -4,9 +4,9 @@
 
 .DS_Store
 .local/
-build/
+/build/
+/docs/index.md
 dist/
-docs/index.md
 node_modules/
 package-lock.json
 site/

@@ -1,6 +1,9 @@
 FROM alpine:3.13.5
 
 
+ARG TARGETARCH
+
+
 # Create non-priviledged user.
 #
 # Alpine does contain the useradd command.
@@ -46,3 +49,13 @@ ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}
+
+# Copy bootware script files for testing.
+COPY scripts/ ./scripts/
+
+# Set Bash as default shell.
+SHELL ["/bin/bash", "-c"]
+
+# Test installed binaries for roles.
+RUN source "${HOME}/.bashrc" \
+    && node scripts/test_roles.js "Linux" "${TARGETARCH}" "${tags:+--tags $tags}"

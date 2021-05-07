@@ -1,0 +1,105 @@
+[
+  {
+    "name": "alacritty",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["alacritty --version"]
+  },
+  { "name": "audio" },
+  { "name": "aws", "tests": ["aws --version"] },
+  {
+    "name": "bash",
+    "skip": [{ "os": "windows" }],
+    "tests": ["bash --version"]
+  },
+  { "name": "bat", "tests": ["bat --version"] },
+  {
+    "name": "bottom",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["btm --version"]
+  },
+  { "name": "caffeine" },
+  {
+    "name": "chrome",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["google-chrome --version"]
+  },
+  { "name": "compass" },
+  { "name": "defterm" },
+  { "name": "deno", "tests": ["deno --version"] },
+  { "name": "doctl", "tests": ["doctl version"] },
+  { "name": "docker", "tests": ["docker --version"] },
+  {
+    "name": "dvc",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["dvc --version"]
+  },
+  {
+    "name": "exa",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["exa --version"]
+  },
+  {
+    "name": "fd",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["fd --version"]
+  },
+  { "name": "firefox", "tests": ["firefox --version"] },
+  {
+    "name": "fish",
+    "skip": [{ "os": "windows" }],
+    "tests": ["fish --version"]
+  },
+  { "name": "font" },
+  { "name": "gcp", "tests": ["gcloud --version"] },
+  { "name": "git", "tests": ["git --version"] },
+  { "name": "go", "tests": ["go version"] },
+  {
+    "name": "hyper",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["hyper --version"]
+  },
+  { "name": "jq", "tests": ["jq --version"] },
+  { "name": "libvirt", "tests": ["virsh --version"] },
+  {
+    "name": "mdbook",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["mdbook --version"]
+  },
+  { "name": "mkcert", "tests": ["mkcert --version"] },
+  { "name": "mongo" },
+  { "name": "neovim", "tests": ["nvim --version"] },
+  { "name": "node", "tests": ["node --version"] },
+  { "name": "package" },
+  { "name": "packer", "tests": ["packer --version"] },
+  { "name": "postgres" },
+  {
+    "name": "powershell",
+    "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
+    "tests": ["pwsh --version"]
+  },
+  {
+    "name": "python",
+    "tests": ["pipx --version", "pyenv --version", "python --version"]
+  },
+  { "name": "qemu", "tests": ["qemu-img --version"] },
+  { "name": "ripgrep", "tests": ["rg --version"] },
+  { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
+  { "name": "shfmt", "tests": ["shfmt --version"] },
+  { "name": "sqlite", "tests": ["sqlite3 --version"] },
+  { "name": "starship", "tests": ["starship --version"] },
+  { "name": "sudo" },
+  { "name": "system" },
+  { "name": "terraform", "tests": ["terraform --version"] },
+  { "name": "terragrunt", "tests": ["terragrunt --version"] },
+  { "name": "tldr", "tests": ["tldr --version"] },
+  { "name": "vault", "tests": ["vault --version"] },
+  { "name": "vscode", "tests": ["code --version"] },
+  { "name": "wasm", "tests": ["wasmtime --version"] },
+  { "name": "winman" },
+  { "name": "xonsh", "tests": ["xonsh --version"] },
+  {
+    "name": "zola",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["zola --version"]
+  }
+]

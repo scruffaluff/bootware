@@ -15,7 +15,12 @@
     src: >-
       https://github.com/digitalocean/doctl/releases/download/v{{
       doctl_formula.json.versions.stable }}/doctl-{{
-      doctl_formula.json.versions.stable }}-linux-amd64.tar.gz
+      doctl_formula.json.versions.stable }}-linux-{{
+      doctl_arch[ansible_architecture] }}.tar.gz
+  vars:
+    doctl_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for MacOS

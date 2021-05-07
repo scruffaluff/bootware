@@ -1,5 +1,7 @@
 FROM ubuntu:21.04
 
+ARG TARGETARCH
+
 
 # Create non-priviledged user.
 #
@@ -45,11 +47,21 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY roles/ ./roles/
 COPY group_vars/ ./group_vars/
 COPY main.yaml ./
+COPY roles/ ./roles/
 
 ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}
+
+# Copy bootware script files for testing.
+COPY scripts/ ./scripts/
+
+# Set Bash as default shell.
+SHELL ["/bin/bash", "-c"]
+
+# Test installed binaries for roles.
+RUN source "${HOME}/.bashrc" \
+    && node scripts/test_roles.js "Linux" "${TARGETARCH}" "${tags:+--tags $tags}"

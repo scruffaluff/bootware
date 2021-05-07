@@ -14,8 +14,12 @@
     mode: 0755
     remote_src: yes
     src: >-
-      https://golang.org/dl/go{{ go_formula.json.versions.stable
-      }}.linux-amd64.tar.gz
+      https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{
+      go_arch[ansible_architecture] }}.tar.gz
+  vars:
+    go_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Go for MacOS

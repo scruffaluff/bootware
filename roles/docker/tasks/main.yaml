@@ -30,8 +30,12 @@
     path: /etc/apt/sources.list.d/docker.list
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
-    line: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
+    line: deb [arch={{ docker_arch[ansible_architecture] }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
     create: yes
+  vars:
+    docker_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Docker for Debian distributions

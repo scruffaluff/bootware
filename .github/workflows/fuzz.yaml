@@ -9,6 +9,10 @@ name: fuzz
 on:
   workflow_dispatch:
     inputs:
+      arches:
+        description: Space separated list of architectures
+        required: false
+        default: amd64 arm64
       distros:
         description: Space separated list of Linux distributions
         required: false
@@ -26,12 +30,22 @@ jobs:
   inputs:
     name: Convert user inputs to lists
     outputs:
+      arches: ${{ steps.convert_arches.outputs.arches }}
       distros: ${{ steps.convert_distros.outputs.distros }}
       tags: ${{ steps.convert_tags.outputs.tags }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Convert inputs arch if not null or defaults to JSON
+        id: convert_arches
+        # Xargs is used to trim whitespace and jq command is taken from
+        # https://stackoverflow.com/a/44477891.
+        run: |
+          input_arches=$(echo ${{ github.event.inputs.arches }} | xargs | tr " " "\n")
+          arches=$(jq -Rcn '[inputs]' <<< "${input_arches}")
+          echo "::set-output name=arches::$arches"
+        shell: bash
       - name: Convert inputs distros if not null or defaults to JSON
         id: convert_distros
         # Xargs is used to trim whitespace and jq command is taken from
@@ -56,17 +70,22 @@ jobs:
         shell: bash
 
   test-linux:
-    name: Test Ansible role ${{ matrix.tag }} on ${{ matrix.distro }}
+    name: >-
+      Test Ansible ${{ matrix.tag }} role for ${{ matrix.arch }} ${{
+      matrix.distro }}
     needs: inputs
     strategy:
       fail-fast: false
       matrix:
+        arch: ${{ fromJSON(needs.inputs.outputs.arches) }}
         distro: ${{ fromJSON(needs.inputs.outputs.distros) }}
         tag: ${{ fromJSON(needs.inputs.outputs.tags) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Build Docker image
@@ -75,10 +94,11 @@ jobs:
           build-args: tags=${{ matrix.tag }}
           context: .
           file: tests/integration/Dockerfile.${{ matrix.distro }}
+          platforms: linux/${{ matrix.arch }}
+          push: false
           tags: >-
             wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-${{ matrix.tag
             }}-fuzz
-          push: false
 
   test-macos:
     if: github.event.inputs.macos == true

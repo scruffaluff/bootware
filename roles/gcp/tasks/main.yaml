@@ -43,7 +43,7 @@
              https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     create: yes
     path: /etc/yum.repos.d/google-cloud-sdk.repo
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Cloud SDK for Fedora distributions
   become: yes

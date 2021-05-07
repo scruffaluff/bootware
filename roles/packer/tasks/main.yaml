@@ -17,7 +17,12 @@
     src: >-
       https://releases.hashicorp.com/packer/{{
       packer_formula.json.versions.stable }}/packer_{{
-      packer_formula.json.versions.stable }}_linux_amd64.zip
+      packer_formula.json.versions.stable }}_linux_{{
+      packer_arch[ansible_architecture] }}.zip
+  vars:
+    packer_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Packer for MacOS

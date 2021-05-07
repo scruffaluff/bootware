@@ -4,6 +4,14 @@
     name: qemu
   when: ansible_system == "Linux"
 
+- name: Install QEMU support libraries for Debian distributions
+  become: yes
+  apt:
+    name:
+      - binfmt-support
+      - qemu-user-static
+  when: ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "Debian"
+
 - name: Install QEMU for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

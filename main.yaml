@@ -139,17 +139,6 @@
     - deskenv
     - desktop
 
-- name: Install Digital Ocean development tools
-  hosts: all
-  roles:
-    - digiocn
-  tags:
-    - cloud
-    - container
-    - desktop
-    - digiocn
-    - server
-
 - name: Install Docker container platform
   hosts: all
   roles:
@@ -159,6 +148,17 @@
     - docker
     - server
     - vm
+
+- name: Install Digital Ocean development tools
+  hosts: all
+  roles:
+    - doctl
+  tags:
+    - cloud
+    - container
+    - desktop
+    - doctl
+    - server
 
 - name: Install Data Version Control
   hosts: all
@@ -311,7 +311,7 @@
 - name: Install Mdbook static website generator
   hosts: all
   roles:
-    - mkcert
+    - mdbook
   tags:
     - container
     - desktop

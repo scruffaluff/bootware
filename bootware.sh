@@ -23,6 +23,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
+        --checkout <REF>            Git reference to run against
     -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
     -i, --inventory <IP-List>       Ansible host IP addesses
@@ -134,6 +135,7 @@ bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
   local ask_passwd_winrm
+  local checkout
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
   local connection="local"
@@ -162,6 +164,10 @@ bootstrap() {
     case "$1" in
       -c | --config)
         config_path="$2"
+        shift 2
+        ;;
+      --checkout)
+        checkout="$2"
         shift 2
         ;;
       -d | --dev)
@@ -251,6 +257,7 @@ bootstrap() {
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${ask_passwd_winrm:+--ask-pass} \
+    ${checkout:+--checkout "$checkout"} \
     ${use_playbook:+--connection "$connection"} \
     ${passwd:+--extra-vars "ansible_password=$passwd"} \
     ${winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \

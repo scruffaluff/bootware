@@ -1,5 +1,7 @@
 FROM archlinux:base-20210425.0.20608
 
+ARG TARGETARCH
+
 
 # Create non-priviledged user.
 #
@@ -48,3 +50,13 @@ ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}
+
+# Copy bootware script files for testing.
+COPY scripts/ ./scripts/
+
+# Set Bash as default shell.
+SHELL ["/bin/bash", "-c"]
+
+# Test installed binaries for roles.
+RUN source "${HOME}/.bashrc" \
+    && node scripts/test_roles.js "Linux" "${TARGETARCH}" "${tags:+--tags $tags}"

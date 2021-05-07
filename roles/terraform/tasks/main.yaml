@@ -17,7 +17,12 @@
     src: >-
       https://releases.hashicorp.com/terraform/{{
       terraform_formula.json.versions.stable }}/terraform_{{
-      terraform_formula.json.versions.stable }}_linux_amd64.zip
+      terraform_formula.json.versions.stable }}_linux_{{
+      terraform_arch[ansible_architecture] }}.zip
+  vars:
+    terraform_arch:
+      aarch64: arm64
+      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Terraform for MacOS
