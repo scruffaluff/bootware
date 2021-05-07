@@ -20,12 +20,12 @@ _cargo_applications:
       # - cargo-arch
       - cargo-deb
       - cargo-rpm
-      - cargo-tarpaulin
     x86_64:
       - cargo-edit
       - cargo-expand
       - cargo-generate
       - cargo-make
+      - cargo-tarpaulin
   win32nt:
     aarch64: []
     always: []

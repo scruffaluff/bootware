@@ -1,9 +1,12 @@
+# Deno ARM support is in progress. See
+# https://github.com/denoland/deno/issues/1846.
 - name: Install Deno for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
 
 - name: Generate Deno Fish completions for Unix
   become_user: "{{ user_account }}"
@@ -12,7 +15,8 @@
       source {{ user_home_dir }}/.bashrc
       deno completions fish > {{ user_home_dir }}/.config/fish/completions/deno.fish
     executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"]
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
 
 - name: Install Deno for Windows
   become_user: "{{ user_account }}"

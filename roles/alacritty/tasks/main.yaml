@@ -11,7 +11,7 @@
   become: yes
   when: >-
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_distribution != "Pop!_OS"
+    ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
 
 - name: Install Alacritty for Ubuntu distributions
   apt:
