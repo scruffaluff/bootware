@@ -1,0 +1,20 @@
+[
+  { "key": "{{ _ctrl_key }}+`", "command": "workbench.action.terminal.toggleTerminal" },
+  {
+    "key": "{{ _ctrl_key }}+`",
+    "command": "workbench.action.focusActiveEditorGroup",
+    "when": "terminalFocus"
+  },
+  { "key": "alt+shift+p", "command": "workbench.action.showCommands" },
+  { "key": "{{ _ctrl_key }}+shift+p", "command": "workbench.action.showCommands" },
+  {
+    "key": "{{ _ctrl_key }}+pagedown",
+    "command": "workbench.action.terminal.focusNext",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "{{ _ctrl_key }}+pageup",
+    "command": "workbench.action.terminal.focusPrevious",
+    "when": "terminalFocus"
+  }
+]

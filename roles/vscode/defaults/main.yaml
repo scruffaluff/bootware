@@ -1,3 +1,4 @@
+_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_extensions:
   - "alefragnani.bookmarks"
   - "bungcip.better-toml"

@@ -66,12 +66,21 @@
     state: directory
   when: ansible_system == "Linux"
 
+- name: Copy VSCode keybindings file for Linux
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir }}/.config/Code/User/keybindings.json"
+    force: yes
+    mode: 0640
+    src: keybindings.j2
+  when: ansible_system == "Linux"
+
 - name: Copy VSCode settings file for Linux
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/Code/User/settings.json"
     force: yes
-    mode: 0644
+    mode: 0640
     src: settings.j2
   when: ansible_system == "Linux"
 
@@ -82,13 +91,23 @@
     state: directory
   when: ansible_system == "Darwin"
 
+- name: Copy VSCode keybindings file for MacOS
+  become_user: "{{ user_account }}"
+  template:
+    dest: >-
+      {{ user_home_dir }}/Library/Application Support/Code/User/keybindings.json
+    force: yes
+    mode: 0640
+    src: keybindings.j2
+  when: ansible_system == "Darwin"
+
 - name: Copy VSCode settings file for MacOS
   become_user: "{{ user_account }}"
   template:
-    dest:
-      "{{ user_home_dir }}/Library/Application Support/Code/User/settings.json"
+    dest: >-
+      {{ user_home_dir }}/Library/Application Support/Code/User/settings.json
     force: yes
-    mode: 0644
+    mode: 0640
     src: settings.j2
   when: ansible_system == "Darwin"
 
@@ -97,6 +116,14 @@
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/Code/User"
     state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy VSCode keybindings file for Windows
+  become_user: "{{ user_account }}"
+  template:
+    dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/keybindings.json"
+    force: yes
+    src: keybindings.j2
   when: ansible_system == "Win32NT"
 
 - name: Copy VSCode settings file for Windows
