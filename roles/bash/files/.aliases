@@ -1,7 +1,6 @@
 # Command line aliases.
 
 
-alias btm="btm --color gruvbox-light"
 alias cargo-expand="cargo expand --theme 'Solarized (light)'"
 alias cargo-testpath="cargo test --no-run --message-format=json | jq -r 'select(.profile.test == true) | .filenames[]'"
 alias diff="diff -u --color=always"

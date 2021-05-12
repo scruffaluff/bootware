@@ -63,17 +63,6 @@
     - server
     - shell
 
-- name: Install Bottom resource monitor
-  hosts: all
-  roles:
-    - bottom
-  tags:
-    - bottom
-    - container
-    - desktop
-    - monitor
-    - server
-
 - name: Install build tools
   hosts: all
   roles:

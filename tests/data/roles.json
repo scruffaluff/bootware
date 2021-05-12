@@ -12,15 +12,10 @@
     "tests": ["bash --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  {
-    "name": "bottom",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["btm --version"]
-  },
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "linux" }],
     "tests": ["google-chrome --version"]
   },
   { "name": "compass" },

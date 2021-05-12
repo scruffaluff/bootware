@@ -54,12 +54,12 @@ ARG tags
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${tags:+--tags $tags}
 
-# Copy bootware script files for testing.
-COPY scripts/ ./scripts/
+# Copy bootware test files for testing.
+COPY tests/ ./tests/
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
 # Test installed binaries for roles.
 RUN source "${HOME}/.bashrc" \
-    && node scripts/test_roles.js "Linux" "${TARGETARCH}" "${tags:+--tags $tags}"
+    && node tests/integration/roles.spec.js "linux" "${TARGETARCH}" "${tags:+--tags $tags}"

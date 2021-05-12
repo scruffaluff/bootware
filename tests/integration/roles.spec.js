@@ -47,7 +47,7 @@ function main() {
   const arch = process.argv[3];
   const nameList = process.argv[4];
 
-  const rolesPath = path.join(__dirname, "roles.json");
+  const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
   if (nameList) {

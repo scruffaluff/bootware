@@ -12,7 +12,7 @@
   apt:
     deb: >-
       https://update.code.visualstudio.com/latest/linux-deb-{{
-      vscode_arch[ansible_distribution] }}/stable
+      vscode_arch[ansible_architecture] }}/stable
   become: yes
   vars:
     vscode_arch:
@@ -39,7 +39,7 @@
   dnf:
     name: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
-      vscode_arch[ansible_distribution] }}/stable
+      vscode_arch[ansible_architecture] }}/stable
   vars:
     vscode_arch:
       aarch64: arm64
