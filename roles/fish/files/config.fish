@@ -5,7 +5,7 @@
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
 #
-# Pyenv system shell will work unless it is found in a bin directory. Archlinux
+# Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
 set -x PATH "/usr/bin" $PATH
@@ -41,8 +41,11 @@ set -x PATH "$HOME/.pyenv/bin" $PATH
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q pyenv
-  pyenv init - | source
-  pyenv virtualenv-init - | source
+  pyenv init --path | source
+
+  # It is currently unclear how to initialize pyenv-virtualenv after the latest
+  # major update.
+  # pyenv virtualenv-init - | source
 end
 
 # Rust settings.

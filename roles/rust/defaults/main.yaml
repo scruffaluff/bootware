@@ -4,8 +4,6 @@ _cargo_applications:
     - cargo-binutils
     - cargo-bloat
     - cross
-    # TODO: Fix cargo crev build for Fedora distributions.
-    # - cargo-crev
   freebsd:
     aarch64: []
     always: []

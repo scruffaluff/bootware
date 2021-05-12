@@ -5,7 +5,7 @@
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
 #
-# Pyenv system shell will work unless it is found in a bin directory. Archlinux
+# Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
 export PATH="/usr/bin:${PATH}"
@@ -48,8 +48,11 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+  eval "$(pyenv init --path)"
+
+  # It is currently unclear how to initialize pyenv-virtualenv after the latest
+  # major update.
+  # eval "$(pyenv virtualenv-init -)"
 
   # Load Pyenv completions.
   source "$(pyenv root)/completions/pyenv.bash"

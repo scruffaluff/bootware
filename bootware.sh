@@ -404,7 +404,7 @@ find_config_path() {
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
   else
-    log "Unable to find Bootware configuation file.\n"
+    log "Unable to find Bootware configuation file."
     config --empty
     RET_VAL="${HOME}/.bootware/config.yaml"
   fi
