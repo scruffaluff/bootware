@@ -3,12 +3,10 @@ _python_versions:
     - "3.7"
     - "3.8"
     - "3.9"
-  linux:
-    - "3.6"
+  linux: []
   # Python 3.6 is unable to install through Pyenv on MacOS.
   macos: []
-  win32nt:
-    - "3.6"
+  win32nt: []
 pipx_applications:
   - cookiecutter
   - poetry

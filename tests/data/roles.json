@@ -1,7 +1,7 @@
 [
   {
     "name": "alacritty",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
   { "name": "audio" },
@@ -25,7 +25,7 @@
   { "name": "docker", "tests": ["docker --version"] },
   {
     "name": "dvc",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["dvc --version"]
   },
   {
@@ -45,7 +45,11 @@
     "tests": ["fish --version"]
   },
   { "name": "font" },
-  { "name": "gcp", "tests": ["gcloud --version"] },
+  {
+    "name": "gcp",
+    "skip": [{ "arch": "arm64", "os": "fedora" }],
+    "tests": ["gcloud --version"]
+  },
   { "name": "git", "tests": ["git --version"] },
   { "name": "go", "tests": ["go version"] },
   {

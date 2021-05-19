@@ -49,7 +49,7 @@
   become: yes
   dnf:
     name: google-cloud-sdk
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Cloud SDK for MacOS
   become_user: "{{ user_account }}"
