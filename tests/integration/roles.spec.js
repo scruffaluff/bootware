@@ -8,15 +8,29 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
+/**
+ * Check if system matches any of the skip conditions.
+ * @param {Object} system - The host architecture and os information.
+ * @patam {Array<Object>} conditions - The skip conditions for the role.
+ * @return {boolean} Whether system should be skipped.
+ */
 function shouldSkip(system, conditions) {
   if (!conditions) {
     return false;
   }
 
+  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
   for (const condition of conditions) {
     let skipMatch = true;
     for (const key in condition) {
-      if (condition[key] != system[key]) {
+      // Skip if os condition is Linux and system is a Linux distro.
+      if (
+        key == "os" &&
+        condition[key] == "linux" &&
+        !distros.includes(system[key])
+      ) {
+        skipMatch = false;
+      } else if (condition[key] != system[key]) {
         skipMatch = false;
       }
     }
@@ -29,7 +43,12 @@ function shouldSkip(system, conditions) {
   return false;
 }
 
-function test_role(system, role) {
+/**
+ * Execute tests for the successfull installation of a role.
+ * @param {Object} system - The host architecture and os information.
+ * @patam {Object} role - Testing information for a role.
+ */
+function testRole(system, role) {
   process.stdout.write(`testing: ${role.name}`);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
@@ -43,20 +62,23 @@ function test_role(system, role) {
 }
 
 function main() {
-  const os = process.argv[2];
-  const arch = process.argv[3];
-  const nameList = process.argv[4];
+  const [os, arch, skipList, tagList] = process.argv.slice(2, 6);
 
   const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
-  if (nameList) {
-    const names = nameList.split(",");
-    roles = roles.filter((role) => names.includes(role.name));
+  if (tagList) {
+    const tags = tagList.split(",");
+    roles = roles.filter((role) => tags.includes(role.name));
+  }
+
+  if (skipList) {
+    const skips = skipList.split(",");
+    roles = roles.filter((role) => !skips.includes(role.name));
   }
 
   for (const role of roles) {
-    test_role({ arch, os }, role);
+    testRole({ arch, os }, role);
   }
 }
 

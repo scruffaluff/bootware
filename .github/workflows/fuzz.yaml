@@ -91,7 +91,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: tags=${{ matrix.tag }}
+          build-args: tags=node,${{ matrix.tag }}
           context: .
           file: tests/integration/Dockerfile.${{ matrix.distro }}
           platforms: linux/${{ matrix.arch }}
@@ -125,6 +125,10 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
-        run:
-          bootware bootstrap --dev --no-passwd --skip docker, --tags ${{
+        run: >-
+          bootware bootstrap --dev --no-passwd --skip docker, --tags node,${{
           matrix.tag }}
+      - name: Test installed binaries for roles
+        run: |
+          source ${HOME}/.bashrc
+          node tests/integration/roles.spec.js macos amd64 docker ${{ matrix.tag }}
