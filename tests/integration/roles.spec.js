@@ -24,13 +24,11 @@ function shouldSkip(system, conditions) {
     let skipMatch = true;
     for (const key in condition) {
       // Skip if os condition is Linux and system is a Linux distro.
-      if (
-        key == "os" &&
-        condition[key] == "linux" &&
-        !distros.includes(system[key])
-      ) {
-        skipMatch = false;
-      } else if (condition[key] != system[key]) {
+      if (key === "os" && condition[key] === "linux") {
+        if (!distros.includes(system[key])) {
+          skipMatch = false;
+        }
+      } else if (condition[key] !== system[key]) {
         skipMatch = false;
       }
     }
