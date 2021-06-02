@@ -15,7 +15,7 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "linux" }],
+    "skip": [{ "os": "linux" }, { "os": "macos" }],
     "tests": ["google-chrome --version"]
   },
   { "name": "compass" },
@@ -38,7 +38,11 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["fd --version"]
   },
-  { "name": "firefox", "tests": ["firefox --version"] },
+  {
+    "name": "firefox",
+    "skip": [{ "os": "arch" }, { "os": "fedora" }, { "os": "macos" }],
+    "tests": ["firefox --version"]
+  },
   {
     "name": "fish",
     "skip": [{ "os": "windows" }],

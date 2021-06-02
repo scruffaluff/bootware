@@ -3,7 +3,7 @@
   become: yes
   pacman:
     name: fuse3
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 # TODO: Run integrate with system step after download.
 - name: Install Hyper for Arch distributions
@@ -12,7 +12,7 @@
     dest: /usr/local/bin/hyper
     mode: 0755
     url: https://releases.hyper.is/download/AppImage
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for Debian distributions
   apt:
@@ -33,7 +33,7 @@
   dnf:
     disable_gpg_check: yes
     name: https://releases.hyper.is/download/rpm
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for Windows
   become_user: "{{ user_account }}"
