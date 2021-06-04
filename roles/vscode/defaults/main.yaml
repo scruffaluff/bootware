@@ -20,7 +20,6 @@ vscode_extensions:
   - "octref.vetur"
   - "redhat.vscode-yaml"
   - "ritwickdey.liveserver"
-  - "ryanluker.vscode-coverage-gutters"
   - "skyapps.fish-vscode"
   - "stkb.rewrap"
   - "tabnine.tabnine-vscode"

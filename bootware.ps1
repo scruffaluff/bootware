@@ -183,7 +183,7 @@ Function Bootstrap() {
     $PlaybookPath = $(WSLPath "$Playbook")
 
     # TODO: Fix encoding errors from Ubuntu using Windows configuration file.
-    wsl bootware bootstrap --winrm --inventory "$Inventory" --playbook "$PlaybookPath" --tags "$Tags" --skip "$Skip" ---user "$User"
+    wsl bootware bootstrap --winrm --inventory "$Inventory" --playbook "$PlaybookPath" --tags "$Tags" --skip "$Skip" --user "$User"
 }
 
 # Subcommand to generate or download Bootware configuration file.
