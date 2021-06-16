@@ -33,6 +33,16 @@
     - desktop
     - server
 
+- name: Install AppImage packages
+  hosts: all
+  roles:
+    - appimage
+  tags:
+    - appimage
+    - container
+    - desktop
+    - server
+
 - name: Install audio tools
   hosts: all
   roles:
@@ -201,6 +211,16 @@
     - fish
     - server
     - shell
+
+- name: Install Flatpak packages
+  hosts: all
+  roles:
+    - flatpak
+  tags:
+    - container
+    - desktop
+    - flatpak
+    - server
 
 - name: Install fonts
   hosts: all
@@ -416,6 +436,16 @@
     - language
     - rust
     - server
+
+- name: Install Snap packages
+  hosts: all
+  roles:
+    - snap
+  tags:
+    - container
+    - desktop
+    - server
+    - snap
 
 - name: Install Starship shell prompt
   hosts: all

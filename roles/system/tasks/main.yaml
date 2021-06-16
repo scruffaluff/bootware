@@ -113,11 +113,3 @@
       - unzip
       - zip
   when: ansible_system == "Win32NT"
-
-- name: Add Flathub remote repository for Linux
-  become: yes
-  shell:
-    cmd: >-
-      flatpak remote-add --if-not-exists flathub
-      https://flathub.org/repo/flathub.flatpakrepo
-  when: ansible_system == "Linux"

@@ -1,7 +1,6 @@
 apt_packages: []
 chocolatey_packages: []
 dnf_packages: []
-flatpak_packages: []
 homebrew_casks: []
 homebrew_packages: []
 pacman_packages: []
