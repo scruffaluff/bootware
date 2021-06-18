@@ -19,13 +19,6 @@
   loop: "{{ dnf_packages }}"
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install Flatpak packages for Linux
-  become: yes
-  community.general.flatpak:
-    name: "{{ item }}"
-  loop: "{{ flatpak_packages }}"
-  when: ansible_system == "Linux"
-
 - name: Install Homebrew casks for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:

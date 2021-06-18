@@ -70,10 +70,6 @@ jobs:
           # Docker Hub does not provide ARM64 Arch Linux images.
           - arch: arm64
             distro: arch
-        include:
-          - arch: ubuntu
-            distro: amd64
-            skip: alacritty
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
