@@ -25,7 +25,25 @@ set -x DOCKER_BUILDKIT 1
 set fish_greeting
 
 # Go settings.
-set -x GOROOT "/usr/local/go"
+
+# Find and export Go root directory.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
+  set ARM_GOROOT "/opt/homebrew/opt/go/libexec"
+  set INTEL_GOROOT "/usr/local/opt/go/libexec"
+
+  if test -d "$ARM_GOROOT"
+    set -x GOROOT "$ARM_GOROOT"
+  else if test -d "$INTEL_GOROOT"
+    set -x GOROOT "$INTEL_GOROOT"
+  end
+else
+  set -x GOROOT "/usr/local/go"
+end
 set -x PATH "$GOROOT/bin" $PATH
 
 # Python settings.
