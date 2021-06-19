@@ -70,7 +70,7 @@
   { "name": "libvirt", "tests": ["virsh --version"] },
   {
     "name": "mdbook",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64" }],
     "tests": ["mdbook --version"]
   },
   { "name": "mkcert", "tests": ["mkcert --version"] },
@@ -107,7 +107,11 @@
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "vault", "tests": ["vault --version"] },
   { "name": "vscode", "tests": ["code --version"] },
-  { "name": "wasm", "tests": ["wasmtime --version"] },
+  {
+    "name": "wasm",
+    "skip": [{ "arch": "arm64" }],
+    "tests": ["wasmtime --version"]
+  },
   { "name": "winman" },
   { "name": "xonsh", "tests": ["xonsh --version"] },
   {

@@ -24,11 +24,11 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mdbook
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
 
 - name: Install Mdbook for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: mdbook
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and ansible_architecture == "x86_64"

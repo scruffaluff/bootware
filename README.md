@@ -26,7 +26,7 @@ Bootware will bootstrap the computer software by invoking `bootware bootstrap`
 after customizing the configuration file. To view the bootstrapping options,
 execute `bootware bootstrap --help`.
 
-## Contributing
+## Contribute
 
 For guidance on setting up a development environment and how to make a
 contribution, see the

@@ -3,14 +3,15 @@
   shell:
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
 
 - name: Install Wasmtime for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: wasmtime
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and ansible_architecture == "x86_64"
 
 - name: Install Wasm Pack for Unix
   become_user: "{{ user_account }}"
@@ -20,4 +21,5 @@
       curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
     executable: /bin/bash
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
