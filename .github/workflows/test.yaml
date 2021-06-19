@@ -35,29 +35,6 @@ jobs:
             bootware setup
             bootware bootstrap --dev --no-passwd --tags bash,fish
 
-  test-macos:
-    name: Test bootstrapping software for MacOS
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v2
-      - name: Install Bootware
-        run: >
-          curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
-          | bash
-      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
-      - name: Install Ansible since Brew installation appears to be broken
-        run: python3 -m pip install ansible
-      - name: Install dependencies for Bootware
-        run: bootware setup
-      - name: Test bootstrapping
-        run: bootware bootstrap --dev --no-passwd --skip docker,
-      - name: Test installed binaries for roles
-        run: |
-          source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js macos amd64 docker
-
   test-linux:
     name: >-
       Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
@@ -87,6 +64,29 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           push: false
           tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
+
+  test-macos:
+    name: Test bootstrapping software for MacOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Install Bootware
+        run: >
+          curl -LSfs
+          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          | bash
+      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
+      - name: Install Ansible since Brew installation appears to be broken
+        run: python3 -m pip install ansible
+      - name: Install dependencies for Bootware
+        run: bootware setup
+      - name: Test bootstrapping
+        run: bootware bootstrap --dev --no-passwd --skip docker,
+      - name: Test installed binaries for roles
+        run: |
+          source ${HOME}/.bashrc
+          node tests/integration/roles.spec.js macos amd64 docker
 
   test-windows:
     name: Test bootstrapping software for Windows

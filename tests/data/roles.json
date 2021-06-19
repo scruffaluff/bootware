@@ -63,7 +63,7 @@
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hyper",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["hyper --version"]
   },
   { "name": "jq", "tests": ["jq --version"] },

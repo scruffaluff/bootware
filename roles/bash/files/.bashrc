@@ -112,6 +112,19 @@ export BAT_THEME="Solarized (light)"
 complete -C /usr/local/bin/terraform terraform
 export PATH="/usr/share/code/bin:${PATH}"
 
+# Initialize GCloud if on MacOS and available.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+#   -s: Print machine kernal name.
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  GCLOUD_PATH="$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+  if [[ -f "${GCLOUD_PATH}/path.bash.inc" ]]; then
+    source "${GCLOUD_PATH}/path.bash.inc"
+    source "${GCLOUD_PATH}/completion.bash.inc"
+  fi
+fi
+
 # Initialize Zoxide if available.
 #
 # Flags:
@@ -130,16 +143,16 @@ export PATH="${HOME}/.npm-global/bin:${PATH}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 export NVM_DIR="${HOME}/.nvm"
-if [[ -f "$NVM_DIR/nvm.sh" ]]; then
-  source "$NVM_DIR/nvm.sh"
+if [[ -f "${NVM_DIR}/nvm.sh" ]]; then
+  source "${NVM_DIR}/nvm.sh"
 fi
-if [[ -f "$NVM_DIR/bash_completion" ]]; then
-  source "$NVM_DIR/bash_completion"
+if [[ -f "${NVM_DIR}/bash_completion" ]]; then
+  source "${NVM_DIR}/bash_completion"
 fi
 
 # Deno settings.
 export DENO_INSTALL="${HOME}/.deno"
-export PATH="$DENO_INSTALL/bin:${PATH}"
+export PATH="${DENO_INSTALL}/bin:${PATH}"
 
 # User settings.
 
@@ -148,7 +161,7 @@ export PATH="${HOME}/.local/bin:${PATH}"
 
 # Wasmtime settings.
 export WASMTIME_HOME="${HOME}/.wasmtime"
-export PATH="$WASMTIME_HOME/bin:${PATH}"
+export PATH="${WASMTIME_HOME}/bin:${PATH}"
 
 # Apple Silicon support.
 

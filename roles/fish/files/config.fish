@@ -106,6 +106,23 @@ end
 set -x BAT_THEME "Solarized (light)"
 set -x PATH "/usr/share/code/bin" $PATH
 
+# Initialize GCloud if on MacOS and available.
+#
+# Flags:
+#   -f: Check if inode is a regular file.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
+  set ARM_GCLOUD_PATH "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+  set INTEL_GCLOUD_PATH "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+
+  if test -f "$ARM_GCLOUD_PATH/path.fish.inc"
+    source "$ARM_GCLOUD_PATH/path.fish.inc"
+  else if test -f "$INTEL_GCLOUD_PATH/path.fish.inc"
+    source "$INTEL_GCLOUD_PATH/path.fish.inc"
+  end
+end
+
 # Initialize Zoxide if available.
 #
 # Flags:
