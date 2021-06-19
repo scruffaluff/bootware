@@ -48,6 +48,11 @@
     "skip": [{ "os": "windows" }],
     "tests": ["fish --version"]
   },
+  {
+    "name": "flatpak",
+    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "tests": ["flatpak --version"]
+  },
   { "name": "font" },
   {
     "name": "gcp",
@@ -58,7 +63,7 @@
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hyper",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["hyper --version"]
   },
   { "name": "jq", "tests": ["jq --version"] },
@@ -88,6 +93,11 @@
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   { "name": "shfmt", "tests": ["shfmt --version"] },
+  {
+    "name": "snap",
+    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "tests": ["snap --version"]
+  },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
   { "name": "sudo" },

@@ -704,7 +704,7 @@ setup_macos() {
   # TODO: Create better check to see if Rosetta 2 is already installed.
   # Flags:
   #   -d: Check if path exists and is a directory.
-  #   -m: Print machine architecture name.
+  #   -p: Print machine processor name.
   if [[ "$(uname -p)" == "arm" && ! -d "/opt/homebrew" ]]; then
     softwareupdate --agree-to-license --install-rosetta
   fi

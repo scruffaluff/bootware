@@ -1,0 +1,8 @@
+- name: Install AppImage packages for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/{{ item.name }}
+    mode: 0755
+    url: "{{ item.url }}"
+  loop: "{{ appimage_packages }}"
+  when: ansible_system == "Linux"

@@ -62,4 +62,4 @@ SHELL ["/bin/bash", "-c"]
 
 # Test installed binaries for roles.
 RUN source "${HOME}/.bashrc" \
-    && node tests/integration/roles.spec.js "debian" "${TARGETARCH}" "${tags}" "${skip}" "${tags}"
+    && node tests/integration/roles.spec.js "debian" "${TARGETARCH}" "${skip}" "${tags}"

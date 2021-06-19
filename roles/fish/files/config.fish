@@ -25,7 +25,25 @@ set -x DOCKER_BUILDKIT 1
 set fish_greeting
 
 # Go settings.
-set -x GOROOT "/usr/local/go"
+
+# Find and export Go root directory.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
+  set ARM_GOROOT "/opt/homebrew/opt/go/libexec"
+  set INTEL_GOROOT "/usr/local/opt/go/libexec"
+
+  if test -d "$ARM_GOROOT"
+    set -x GOROOT "$ARM_GOROOT"
+  else if test -d "$INTEL_GOROOT"
+    set -x GOROOT "$INTEL_GOROOT"
+  end
+else
+  set -x GOROOT "/usr/local/go"
+end
 set -x PATH "$GOROOT/bin" $PATH
 
 # Python settings.
@@ -105,6 +123,23 @@ end
 # Tool settings.
 set -x BAT_THEME "Solarized (light)"
 set -x PATH "/usr/share/code/bin" $PATH
+
+# Initialize GCloud if on MacOS and available.
+#
+# Flags:
+#   -f: Check if inode is a regular file.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
+  set ARM_GCLOUD_PATH "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+  set INTEL_GCLOUD_PATH "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+
+  if test -f "$ARM_GCLOUD_PATH/path.fish.inc"
+    source "$ARM_GCLOUD_PATH/path.fish.inc"
+  else if test -f "$INTEL_GCLOUD_PATH/path.fish.inc"
+    source "$INTEL_GCLOUD_PATH/path.fish.inc"
+  end
+end
 
 # Initialize Zoxide if available.
 #
