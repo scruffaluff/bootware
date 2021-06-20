@@ -689,6 +689,9 @@ setup_linux() {
 setup_macos() {
   assert_cmd curl
 
+  # On Apple silicon, brew is not in the system path after installation.
+  export PATH="/opt/homebrew/bin:${PATH}"
+
   # Install XCode command line tools if not already installed.
   #
   # Homebrew depends on the XCode command line tools.

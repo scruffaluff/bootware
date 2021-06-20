@@ -13,13 +13,15 @@
   become: yes
   when: ansible_system == "Linux"
 
+# GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
+# available for Apple silicon.
+# TODO: Add back GDB when available for Apple silicon.
 - name: Install build tools for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - cmake
       - gcc
-      - gdb
       - llvm
       - make
       - openocd
