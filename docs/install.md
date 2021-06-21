@@ -29,6 +29,10 @@ Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfg
 </code-block>
 </code-group>
 
+On MacOS, some programs may need to be manually opened after installation, since
+third party applications require user review. Visit
+https://support.apple.com/en-us/HT202491, for more information.
+
 On an Apple Silicon system, ensure that the current terminal is not running
 under Rosetta 2, by confirming that the output of command `uname -p` is `arm`.
 

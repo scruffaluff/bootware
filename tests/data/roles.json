@@ -20,7 +20,11 @@
   },
   { "name": "compass" },
   { "name": "defterm" },
-  { "name": "deno", "tests": ["deno --version"] },
+  {
+    "name": "deno",
+    "skip": [{ "arch": "arm64" }],
+    "tests": ["deno --version"]
+  },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version"] },
   {

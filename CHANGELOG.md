@@ -9,15 +9,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Arm Linux support.
 - Fish completion script.
+- Linux Snap and AppImage support.
+- VSCode keybindings to change terminal tabs.
+- VSCode YAML extension.
 
 ### Changed
 
+- Digital Ocean role name.
+- Default background image.
 - Permissions to be more restrictive for user files.
+
+### Fixed
+
+- GCLoud initialization for MacOS.
+- Go root directory for MacOS.
 
 ### Removed
 
 - Associated Docker images.
+- VSCode bookmarks extension.
 
 ## 0.3.1 - 2021-04-26
 

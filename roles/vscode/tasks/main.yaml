@@ -134,19 +134,12 @@
     src: settings.j2
   when: ansible_system == "Win32NT"
 
-- name: Install VSCode extensions for Linux
+- name: Install VSCode extensions for Unix
   become_user: "{{ user_account }}"
   loop: "{{ vscode_extensions }}"
   shell:
     cmd: code --install-extension {{ item }}
-  when: ansible_system == "Linux"
-
-- name: Install VSCode extensions for MacOS
-  become_user: "{{ user_account }}"
-  loop: "{{ vscode_extensions }}"
-  shell:
-    cmd: /usr/local/bin/code --install-extension {{ item }}
-  when: ansible_system == "Darwin"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install VSCode extensions for Windows
   become_user: "{{ user_account }}"
