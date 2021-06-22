@@ -5,3 +5,13 @@
     name: iterm2
     state: present
   when: ansible_system == "Darwin"
+
+- name: Change iTerm2 default profile for MacOS
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      defaults write com.googlecode.iterm2 "Blinking Cursor" -bool 1
+      defaults write com.googlecode.iterm2 "Cursor Type" -float 1
+      defaults write com.googlecode.iterm2 PromptOnQuit -bool 0
+      defaults write com.googlecode.iterm2 QuitWhenAllWindowsClosed -float 1
+  when: ansible_system == "Darwin"
