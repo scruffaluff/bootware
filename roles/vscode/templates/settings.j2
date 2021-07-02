@@ -84,8 +84,10 @@
     "**/.mypy_cache/**": true,
     "**/.tox/**": true,
     "**/.venv/**": true,
+    "**/build/**": true,
     "**/node_modules/**": true,
-    "**/target/**": true
+    "**/target/**": true,
+    "**/venv/**": true
   },
   "gitlens.showWelcomeOnInstall": false,
   "jupyter.alwaysTrustNotebooks": true,
@@ -107,8 +109,18 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestPath": "tests",
   "redhat.telemetry.enabled": false,
+{% if vscode_extensions | length > 0 %}
+  "remote.SSH.defaultExtensions": [
+{% for extension in vscode_extensions[:-1] %}
+    "{{ extension }}",
+{% endfor %}
+    "{{ vscode_extensions[-1] }}"
+  ],
+{% endif %}
+  "remote.SSH.useLocalServer": false,
   "rust-analyzer.inlayHints.enable": false,
   "rust-analyzer.updates.askBeforeDownload": false,
+  "security.workspace.trust.enabled": false,
   "tabnine.experimentalAutoImports": true,
   "telemetry.enableTelemetry": false,
   "terminal.integrated.cursorStyle": "line",
@@ -118,12 +130,6 @@
   "update.mode": "none",
   "vsicons.dontShowNewVersionMessage": true,
   "workbench.colorTheme": "Solarized Light",
-  "workbench.editorAssociations": [
-    {
-      "viewType": "jupyter.notebook.ipynb",
-      "filenamePattern": "*.ipynb"
-    }
-  ],
   "workbench.iconTheme": "vscode-icons",
   "workbench.startupEditor": "welcomePage",
   "workbench.statusBar.visible": true

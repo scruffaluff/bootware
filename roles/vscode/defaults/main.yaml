@@ -1,5 +1,6 @@
 _ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_extensions:
+  - "bierner.markdown-mermaid"
   - "bungcip.better-toml"
   - "coenraads.bracket-pair-colorizer-2"
   - "dbaeumer.vscode-eslint"
