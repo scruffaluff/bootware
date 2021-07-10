@@ -1,0 +1,23 @@
+- name: Install Bats for Arch distributions
+  become: yes
+  pacman:
+    name: bash-bats
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Bats for Debian distributions
+  apt:
+    name: bats
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Bats for Fedora distributions
+  become: yes
+  dnf:
+    name: bats
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Bats for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: bats-core
+  when: ansible_system == "Darwin"

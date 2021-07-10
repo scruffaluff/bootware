@@ -9,7 +9,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Ansible check command line flag.
 - Arm Linux support.
+- Bass package manager for Fish.
 - Fish completion script.
 - Linux Snap and AppImage support.
 - VSCode keybindings to change terminal tabs.
@@ -17,13 +19,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Digital Ocean role name.
 - Default background image.
+- Digital Ocean role name.
 - Permissions to be more restrictive for user files.
 
 ### Fixed
 
-- GCLoud initialization for MacOS.
+- FD installation for Pop OS.
+- GCloud Bash and Fish completion.
 - Go root directory for MacOS.
 
 ### Removed

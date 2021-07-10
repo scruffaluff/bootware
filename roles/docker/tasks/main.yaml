@@ -55,7 +55,7 @@
       dnf config-manager --add-repo
       https://download.docker.com/linux/fedora/docker-ce.repo
     # Ansible dnf module does not have a command to add repositories.
-    warn: false
+    warn: no
   when: ansible_pkg_mgr == "dnf"
 
 # Command sudo systemctl start docker may need to be executed afterwards.

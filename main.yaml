@@ -73,6 +73,17 @@
     - server
     - shell
 
+- name: Install Bats test runner
+  hosts: all
+  roles:
+    - bats
+  tags:
+    - bats
+    - container
+    - desktop
+    - server
+    - shell
+
 - name: Install build tools
   hosts: all
   roles:
