@@ -46,18 +46,28 @@
     src: config.fish
   when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
 
+- name: Install Fisher package manager
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      curl -Ls https://git.io/fisher | source
+      fisher install jorgebucaran/fisher
+    executable: "{{ fish_executable }}"
+    warn: no
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+
+- name: Install Bass Bash compatibility utility for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.config/fish/config.fish
+      fisher install edc/bass
+    executable: "{{ fish_executable }}"
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+
 - name: Change user default shell to Fish for MacOS
   become: yes
   user:
     name: "{{ user_account }}"
-    shell: >-
-      {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
-      }}/bin/fish
-  when: ansible_system == "Darwin"
-
-- name: Change user default shell to Fish for Linux
-  become: yes
-  user:
-    name: "{{ user_account }}"
-    shell: /usr/bin/fish
-  when: ansible_system == "Linux"
+    shell: "{{ fish_executable }}"
+  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]

@@ -51,6 +51,15 @@
     name: google-cloud-sdk
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
+- name: Install Google Cloud SDK Fish completion for Linux
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.config/fish/config.fish
+      fisher install aliz-ai/google-cloud-sdk-fish-completion
+    executable: "{{ fish_executable }}"
+  when: ansible_system == "Linux"
+
 - name: Install Google Cloud SDK for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:

@@ -147,6 +147,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     source "${INTEL_GCLOUD_PATH}/path.bash.inc"
     source "${INTEL_GCLOUD_PATH}/completion.bash.inc"
   fi
+elif [[ "$(uname -s)" == "Linux" ]]; then
+  source "/usr/lib/google-cloud-sdk/completion.bash.inc"
 fi
 
 # Initialize Zoxide if available.

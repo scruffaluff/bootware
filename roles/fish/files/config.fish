@@ -126,6 +126,8 @@ set -x PATH "/usr/share/code/bin" $PATH
 
 # Initialize GCloud if on MacOS and available.
 #
+# GCloud completion is provided on Linux via a Fish package.
+#
 # Flags:
 #   -f: Check if inode is a regular file.
 #   -s: Print machine kernal name.

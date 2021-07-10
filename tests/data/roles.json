@@ -12,7 +12,11 @@
     "tests": ["bash --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  { "name": "bats", "skip": [{ "os": "windows" }], "tests": ["bats --version"] },
+  {
+    "name": "bats",
+    "skip": [{ "os": "windows" }],
+    "tests": ["bats --version"]
+  },
   { "name": "caffeine" },
   {
     "name": "chrome",

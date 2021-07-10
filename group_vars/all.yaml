@@ -1,4 +1,10 @@
 _ansible_system: "{{ ansible_system|lower|replace('darwin','macos') }}"
+_fish_executable:
+  freebsd: /usr/bin/fish
+  linux: /usr/bin/fish
+  macos: >-
+    {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+    }}/bin/fish
 _gnome_desktops:
   - elementary
   - gnome
@@ -26,6 +32,7 @@ _user_home_dir:
 deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
 desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
+fish_executable: "{{  _fish_executable[_ansible_system] }}"
 font_size: 14
 gnome_desktop: "{{ desktop in _gnome_desktops }}"
 user_home_dir: "{{ _user_home_dir[_ansible_system] }}"
