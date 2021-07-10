@@ -4,15 +4,15 @@ _cargo_applications:
     - cargo-binutils
     - cargo-bloat
     - cross
-  freebsd:
+  Darwin:
     aarch64: []
     always: []
     x86_64: []
-  macos:
+  FreeBSD:
     aarch64: []
     always: []
     x86_64: []
-  linux:
+  Linux:
     aarch64: []
     always:
       # - cargo-arch
@@ -24,13 +24,13 @@ _cargo_applications:
       - cargo-generate
       - cargo-make
       - cargo-tarpaulin
-  win32nt:
+  Win32NT:
     aarch64: []
     always: []
     x86_64: []
 cargo_applications: >-
-  {{ _cargo_applications.always + _cargo_applications[_ansible_system].always +
-  _cargo_applications[_ansible_system][ansible_architecture] }}
+  {{ _cargo_applications.always + _cargo_applications[ansible_system].always +
+  _cargo_applications[ansible_system][ansible_architecture] }}
 rustup_components:
   - clippy
   - llvm-tools-preview

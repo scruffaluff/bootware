@@ -3,12 +3,11 @@ _python_versions:
     - "3.7"
     - "3.8"
     - "3.9"
-  linux: []
-  # Python 3.6 is unable to install through Pyenv on MacOS.
-  macos: []
-  win32nt: []
+  Darwin: []
+  Linux: []
+  Win32NT: []
 pipx_applications:
   - cookiecutter
   - poetry
 python_versions: >-
-  {{  _python_versions[_ansible_system] + _python_versions.always }}
+  {{  _python_versions[ansible_system] + _python_versions.always }}
