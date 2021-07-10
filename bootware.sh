@@ -23,6 +23,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
+        --check                     Dry run and show possible changes
         --checkout <REF>            Git reference to run against
     -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
@@ -135,6 +136,7 @@ bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
   local ask_passwd_winrm
+  local check
   local checkout
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
@@ -165,6 +167,10 @@ bootstrap() {
       -c | --config)
         config_path="$2"
         shift 2
+        ;;
+      --check)
+        check=1
+        shift 1
         ;;
       --checkout)
         checkout="$2"
@@ -257,6 +263,7 @@ bootstrap() {
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${ask_passwd_winrm:+--ask-pass} \
+    ${check:+--check} \
     ${checkout:+--checkout "$checkout"} \
     ${use_playbook:+--connection "$connection"} \
     ${passwd:+--extra-vars "ansible_password=$passwd"} \
