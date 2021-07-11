@@ -645,7 +645,10 @@ setup_freebsd() {
     log "Installing Ansible"
     ${1:+sudo} pkg update
     # Python's cryptography package requires a Rust compiler on FreeBSD.
-    ${1:+sudo} pkg install -y python3 py37-pip rust
+    ${1:+sudo} pkg install -y python3 rust
+
+    py_ver="$(python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))')"
+    ${1:+sudo} pkg install -y "py${py_ver}-pip"
 
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
@@ -806,7 +809,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.3.1"
+  echo "Bootware 0.3.2"
 }
 
 #######################################

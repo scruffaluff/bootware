@@ -124,6 +124,14 @@ end
 set -x BAT_THEME "Solarized (light)"
 set -x PATH "/usr/share/code/bin" $PATH
 
+# Initialize Digital Ocean CLI if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q doctl
+  source (doctl completion fish|psub)
+end
+
 # Initialize GCloud if on MacOS and available.
 #
 # GCloud completion is provided on Linux via a Fish package.

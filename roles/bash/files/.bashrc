@@ -130,6 +130,14 @@ export BAT_THEME="Solarized (light)"
 complete -C /usr/local/bin/terraform terraform
 export PATH="/usr/share/code/bin:${PATH}"
 
+# Initialize Digital Ocean CLI if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v doctl)" ]]; then
+  source <(doctl completion bash)
+fi
+
 # Initialize GCloud if on MacOS and available.
 #
 # Flags:

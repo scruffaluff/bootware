@@ -86,7 +86,7 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
-        run: bootware bootstrap --dev --no-passwd --skip docker,
+        run: bootware bootstrap --dev --no-passwd --skip bats,docker
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc

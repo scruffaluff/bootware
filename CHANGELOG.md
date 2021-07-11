@@ -5,13 +5,14 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.1 - 2021-07-11
 
 ### Added
 
 - Ansible check command line flag.
 - Arm Linux support.
 - Bass package manager for Fish.
+- Digitial Ocean Bash and Fish completion.
 - Fish completion script.
 - Linux Snap and AppImage support.
 - VSCode keybindings to change terminal tabs.
