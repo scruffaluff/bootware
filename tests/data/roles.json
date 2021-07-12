@@ -76,6 +76,7 @@
     "tests": ["hyper --version"]
   },
   { "name": "jq", "tests": ["jq --version"] },
+  { "name": "kubectl", "tests": ["kubectl --version"] },
   { "name": "libvirt", "tests": ["virsh --version"] },
   {
     "name": "mdbook",

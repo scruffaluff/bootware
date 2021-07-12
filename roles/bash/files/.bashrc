@@ -159,6 +159,14 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   source "/usr/lib/google-cloud-sdk/completion.bash.inc"
 fi
 
+# Initialize Kubernetes CLI if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v kubectl)" ]]; then
+  source <(kubectl completion bash)
+fi
+
 # Initialize Zoxide if available.
 #
 # Flags:

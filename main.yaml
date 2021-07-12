@@ -296,6 +296,16 @@
     - server
     - shell
 
+- name: Install Kubectl Kubernetes manager
+  hosts: all
+  roles:
+    - kubectl
+  tags:
+    - desktop
+    - kubectl
+    - server
+    - vm
+
 - name: Install Libvirt virtualization API
   hosts: all
   roles:
