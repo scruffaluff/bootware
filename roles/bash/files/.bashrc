@@ -156,7 +156,11 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     source "${INTEL_GCLOUD_PATH}/completion.bash.inc"
   fi
 elif [[ "$(uname -s)" == "Linux" ]]; then
-  source "/usr/lib/google-cloud-sdk/completion.bash.inc"
+  GCLOUD_BASH_COMPLETION="/usr/lib/google-cloud-sdk/completion.bash.inc"
+
+  if [[ -f "${GCLOUD_BASH_COMPLETION}" ]]; then
+    source "${GCLOUD_BASH_COMPLETION}"
+  fi
 fi
 
 # Initialize Kubernetes CLI if available.

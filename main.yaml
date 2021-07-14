@@ -276,6 +276,16 @@
     - language
     - server
 
+- name: Install Helm Kubernetes manager
+  hosts: all
+  roles:
+    - helm
+  tags:
+    - desktop
+    - helm
+    - server
+    - vm
+
 - name: Install Hyper terminal
   hosts: all
   roles:

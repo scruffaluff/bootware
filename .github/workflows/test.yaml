@@ -85,6 +85,7 @@ jobs:
         run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
+      # Bats is already installed with NPM and causes a conflict.
       - name: Test bootstrapping
         run: bootware bootstrap --dev --no-passwd --skip bats,docker
       - name: Test installed binaries for roles

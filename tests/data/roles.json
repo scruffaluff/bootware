@@ -70,6 +70,7 @@
   },
   { "name": "git", "tests": ["git --version"] },
   { "name": "go", "tests": ["go version"] },
+  { "name": "helm", "tests": ["helm version --short"] },
   {
     "name": "hyper",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],

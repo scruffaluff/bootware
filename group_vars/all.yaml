@@ -2,7 +2,7 @@ _fish_executable:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
     }}/bin/fish
-  FreeBSD: /usr/bin/fish
+  FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
 _gnome_desktops:
   - elementary

@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Helm role.
 - Kubectl role.
 
 ## 0.3.1 - 2021-07-11

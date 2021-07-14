@@ -1,0 +1,47 @@
+- name: Get latest Helm version
+  uri:
+    url: https://formulae.brew.sh/api/formula/helm.json
+    method: GET
+    return_content: yes
+  register: helm_formula
+  when: ansible_system != "Win32NT"
+
+- name: Download Helm for Linux
+  become: yes
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
+      helm_arch[ansible_architecture] }}.tar.gz
+  vars:
+    helm_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Helm for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/helm
+    mode: 0755
+    src: /tmp/linux-{{ helm_arch[ansible_architecture] }}/helm
+  vars:
+    helm_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Helm for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: helm
+  when: ansible_system == "Darwin"
+
+- name: Install Helm for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: helm
+  when: ansible_system == "Win32NT"

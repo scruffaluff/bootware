@@ -29,7 +29,6 @@
   copy:
     dest: /usr/local/bin/exa
     mode: 0755
-    remote_src: yes
     src: /tmp/bin/exa
   when:
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
