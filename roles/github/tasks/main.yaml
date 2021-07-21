@@ -1,0 +1,44 @@
+- name: Get latest Act version
+  uri:
+    url: https://formulae.brew.sh/api/formula/act.json
+    method: GET
+    return_content: yes
+  register: act_formula
+  when: ansible_system == "Linux"
+
+- name: Download Act for Linux
+  become: yes
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://github.com/nektos/act/releases/download/v{{
+      act_formula.json.versions.stable }}/act_Linux_{{
+      act_arch[ansible_architecture] }}.tar.gz
+  vars:
+    act_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
+
+- name: Install Act for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/act
+    mode: 0755
+    src: /tmp/act
+  when: ansible_system == "Linux"
+
+- name: Install Act for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: act
+  when: ansible_system == "Darwin"
+
+- name: Install Act for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: act
+  when: ansible_system == "Win32NT"

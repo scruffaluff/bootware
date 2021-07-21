@@ -265,6 +265,26 @@
     - server
     - vcs
 
+- name: Install GitHub helper tools
+  hosts: all
+  roles:
+    - github
+  tags:
+    - desktop
+    - github
+    - server
+    - vcs
+
+- name: Install GitLab helper tools
+  hosts: all
+  roles:
+    - gitlab
+  tags:
+    - desktop
+    - gitlab
+    - server
+    - vcs
+
 - name: Install Go language
   hosts: all
   roles:

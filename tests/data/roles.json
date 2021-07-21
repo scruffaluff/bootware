@@ -69,6 +69,8 @@
     "tests": ["gcloud --version"]
   },
   { "name": "git", "tests": ["git --version"] },
+  { "name": "github", "tests": ["act --version"] },
+  { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "go", "tests": ["go version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   {
