@@ -53,6 +53,7 @@ COPY roles/ ./roles/
 
 ARG skip
 ARG tags
+ARG test
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
@@ -64,5 +65,10 @@ COPY tests/ ./tests/
 SHELL ["/bin/bash", "-c"]
 
 # Test installed binaries for roles.
-RUN source "${HOME}/.bashrc" \
-    && node tests/integration/roles.spec.js "ubuntu" "${TARGETARCH}" "${skip}" "${tags}"
+#
+# Flags:
+#   -n: Check if the string has nonzero length.
+RUN if [[ -n "$test" ]]; then \
+        source "${HOME}/.bashrc"; \
+        node tests/integration/roles.spec.js "ubuntu" "${TARGETARCH}" "${skip}" "${tags}"; \
+    fi
