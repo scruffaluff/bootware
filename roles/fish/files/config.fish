@@ -46,6 +46,10 @@ else
 end
 set -x PATH "$GOROOT/bin" $PATH
 
+# Add Go local binaries to system path.
+set -x GOPATH "$HOME/go"
+set -x PATH "$GOPATH/bin" $PATH
+
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.

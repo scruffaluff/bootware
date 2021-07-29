@@ -53,6 +53,10 @@ else
 fi
 export PATH="${GOROOT}/bin:${PATH}"
 
+# Add Go local binaries to system path.
+export GOPATH="${HOME}/go"
+export PATH="${GOPATH}/bin:${PATH}"
+
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
@@ -66,8 +70,8 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
+  export PYENV_ROOT="${HOME}/.pyenv"
+  export PATH="${PYENV_ROOT}/bin:${PATH}"
   eval "$(pyenv init --path)"
 
   # Load Pyenv completions.
