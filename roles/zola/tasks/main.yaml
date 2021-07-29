@@ -4,7 +4,7 @@
     method: GET
     return_content: yes
   register: zola_formula
-  when: ansible_system != "Win32NT"
+  when: ansible_system == "Linux"
 
 - name: Install Zola for Linux
   become: yes

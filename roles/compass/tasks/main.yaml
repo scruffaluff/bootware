@@ -4,7 +4,7 @@
     method: GET
     return_content: yes
   register: mongodb_compass_formula
-  when: ansible_system != "Win32NT"
+  when: ansible_system == "Linux"
 
 # MongoDB appears to not have a Compass release for Arch distributions.
 
