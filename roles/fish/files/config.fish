@@ -59,11 +59,8 @@ set -x PATH "$HOME/.pyenv/bin" $PATH
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q pyenv
-  pyenv init --path | source
-
-  # It is currently unclear how to initialize pyenv-virtualenv after the latest
-  # major update.
-  # pyenv virtualenv-init - | source
+  status is-interactive; and pyenv init --path | source
+  pyenv init - | source
 end
 
 # Rust settings.
@@ -80,7 +77,7 @@ set -x PATH "$HOME/.cargo/bin" $PATH
 function setenv
   if [ $argv[1] = PATH ]
     # Replace colons and spaces with newlines.
-    set -gx PATH (echo $argv[2] | tr ': ' \n)
+    set -gx PATH (echo "$argv[2]" | tr ": " \n)
   else
     set -gx $argv
   end
@@ -98,16 +95,18 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.env"
-  source "$HOME/.env"
+#   -q: Only check for exit status by supressing output.
+if test -f "$HOME/.env"; and type -q bass
+  bass source "$HOME/.env"
 end
 
 # Load secrets if file exists.
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.secrets"
-  source "$HOME/.secrets"
+#   -q: Only check for exit status by supressing output.
+if test -f "$HOME/.secrets"; and type -q bass
+  bass source "$HOME/.secrets"
 end
 
 # Starship settings.

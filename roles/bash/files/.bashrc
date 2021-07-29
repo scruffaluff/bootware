@@ -66,11 +66,9 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init --path)"
-
-  # It is currently unclear how to initialize pyenv-virtualenv after the latest
-  # major update.
-  # eval "$(pyenv virtualenv-init -)"
 
   # Load Pyenv completions.
   source "$(pyenv root)/completions/pyenv.bash"

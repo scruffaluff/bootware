@@ -1,8 +1,4 @@
 {
-  "coverage-gutters.showLineCoverage": true,
-  "coverage-gutters.noHighlightLight": "rgba(220, 50, 47, 0.1)",
-  "coverage-gutters.highlightlight": "rgba(133, 153, 0, 0.1)",
-  "coverage-gutters.showGutterCoverage": false,
   "docker.showStartPage": false,
   "editor.acceptSuggestionOnEnter": "off",
   "editor.autoClosingBrackets": "never",
@@ -69,8 +65,12 @@
     "rust-toolchain": "toml"
   },
   "files.exclude": {
+    "**/.DS_Store": true,
     "**/.git": true,
-    "**/.DS_Store": true
+    "**/.hg": true,
+    "**/.svn": true,
+    "**/*.olean": true,
+    "**/CVS": true
   },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {
@@ -130,6 +130,9 @@
   "update.mode": "none",
   "vsicons.dontShowNewVersionMessage": true,
   "workbench.colorTheme": "Solarized Light",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
   "workbench.iconTheme": "vscode-icons",
   "workbench.startupEditor": "welcomePage",
   "workbench.statusBar.visible": true
