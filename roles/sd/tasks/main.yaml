@@ -1,0 +1,31 @@
+- name: Get latest SD version
+  uri:
+    url: https://formulae.brew.sh/api/formula/sd.json
+    method: GET
+    return_content: yes
+  register: sd_formula
+  when: ansible_system == "Linux"
+
+- name: Install SD for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/sd
+    mode: 0755
+    url: >-
+      https://github.com/chmln/sd/releases/download/v{{
+      sd_formula.json.versions.stable }}/sd-v{{ sd_formula.json.versions.stable
+      }}-x86_64-unknown-linux-gnu
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install SD for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: sd
+  when: ansible_system == "Darwin"
+
+- name: Install SD for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: sd
+  when: ansible_system == "Win32NT"
