@@ -181,6 +181,8 @@ set -x PATH "$DENO_INSTALL/bin" $PATH
 
 # User settings.
 
+set -x EDITOR "nvim"
+
 # Add scripts directory to system path.
 set -x PATH "$HOME/.local/bin" $PATH
 

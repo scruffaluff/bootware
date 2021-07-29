@@ -204,6 +204,8 @@ export PATH="${DENO_INSTALL}/bin:${PATH}"
 
 # User settings.
 
+export EDITOR="nvim"
+
 # Add scripts directory to PATH environment variable.
 export PATH="${HOME}/.local/bin:${PATH}"
 
