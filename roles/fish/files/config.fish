@@ -124,7 +124,13 @@ if type -q starship
 end
 
 # Tool settings.
+
 set -x BAT_THEME "Solarized (light)"
+
+# Disable pagination for Bat.
+set -x BAT_PAGER ""
+
+# Add Visual Studio Code binary to PATH for Linux.
 set -x PATH "/usr/share/code/bin" $PATH
 
 # Initialize Digital Ocean CLI if available.

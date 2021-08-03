@@ -128,8 +128,14 @@ if [[ -x "$(command -v starship)" ]]; then
 fi
 
 # Tool settings.
+
 export BAT_THEME="Solarized (light)"
 complete -C /usr/local/bin/terraform terraform
+
+# Disable pagination for Bat.
+export BAT_PAGER=""
+
+# Add Visual Studio Code binary to PATH for Linux.
 export PATH="/usr/share/code/bin:${PATH}"
 
 # Initialize Digital Ocean CLI if available.
