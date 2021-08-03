@@ -44,7 +44,6 @@
   },
   {
     "name": "fd",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["fd --version"]
   },
   {

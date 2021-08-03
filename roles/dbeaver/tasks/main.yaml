@@ -2,13 +2,13 @@
   apt:
     deb: https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install DBeaver for Fedora distributions
   become: yes
   dnf:
     name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DBeaver for MacOS
   become_user: "{{ user_account }}"
