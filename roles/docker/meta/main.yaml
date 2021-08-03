@@ -1,3 +1,0 @@
-dependencies:
-  - role: bash
-  - role: fish

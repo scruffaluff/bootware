@@ -1,5 +1,9 @@
 dependencies:
   - role: bash
+    when: ansible_system != "Win32NT"
   - role: build
+    when: ansible_system == "Linux" and gnome_desktop
   - role: git
+    when: ansible_system == "Linux" and gnome_desktop
   - role: node
+    when: ansible_system == "Linux" and gnome_desktop
