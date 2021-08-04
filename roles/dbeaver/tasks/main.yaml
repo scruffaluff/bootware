@@ -7,6 +7,7 @@
 - name: Install DBeaver for Fedora distributions
   become: yes
   dnf:
+    disable_gpg_check: yes
     name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
