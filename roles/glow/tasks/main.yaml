@@ -29,6 +29,7 @@
 - name: Install Glow for Fedora distributions
   become: yes
   dnf:
+    disable_gpg_check: yes
     name: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_{{

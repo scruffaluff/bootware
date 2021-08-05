@@ -293,7 +293,7 @@
     - server
     - vcs
 
-- name: Install GLow
+- name: Install Glow
   hosts: all
   roles:
     - glow

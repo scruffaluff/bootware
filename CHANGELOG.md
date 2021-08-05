@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- GitHub, GitLab, DBeaver, Glow, Helm, Kubectl, SD, and Usql roles.
+- DBeaver, GitHub, GitLab, Glow, Helm, Kubectl, SD, and Usql roles.
 
 ### Changed
 
