@@ -44,7 +44,7 @@
       usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
       }}-linux-amd64.tar.bz2
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base == "ubuntu" and
+    ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base != "debian" and
     ansible_architecture == "x86_64"
 
 - name: Tap Usql for MacOS
