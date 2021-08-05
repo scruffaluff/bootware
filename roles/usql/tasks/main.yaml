@@ -14,7 +14,7 @@
       - libicu
   when: ansible_pkg_mgr == "dnf"
 
-# Pre-built Usql binaries require a libicu version that is differnt from the
+# Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Arch.
 - name: Install Usql for Arch distributions
   become_user: "{{ user_account }}"
@@ -22,10 +22,10 @@
     cmd: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
 
-# Pre-built Usql binaries require a libicu version that is differnt from the
+# Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Debian.
 - name: Install Usql for Debian distributions
-  become: "{{ user_account }}"
+  become_user: "{{ user_account }}"
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
@@ -43,7 +43,9 @@
       https://github.com/xo/usql/releases/download/v{{
       usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
       }}-linux-amd64.tar.bz2
-  when: ansible_pkg_mgr in ["apt", "dnf"] and ansible_architecture == "x86_64"
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base == "ubuntu" and
+    ansible_architecture == "x86_64"
 
 - name: Tap Usql for MacOS
   become_user: "{{ user_account }}"

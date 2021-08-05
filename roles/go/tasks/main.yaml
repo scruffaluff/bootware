@@ -35,3 +35,19 @@
     architecture: 64bit
     name: go
   when: ansible_system == "Win32NT"
+
+- name: Install Go command line applications for Unix
+  become_user: "{{ user_account }}"
+  loop: "{{ go_applications }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      go get {{ item }}
+    executable: /bin/bash
+  when: ansible_system != "Win32NT"
+
+- name: Install Go command line applications for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ go_applications }}"
+  when: ansible_system == "Win32NT"
+  win_shell: go get {{ item }}
