@@ -1,0 +1,25 @@
+- name: Install DBeaver for Debian distributions
+  apt:
+    deb: https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
+  become: yes
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install DBeaver for Fedora distributions
+  become: yes
+  dnf:
+    disable_gpg_check: yes
+    name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
+- name: Install DBeaver for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: dbeaver-community
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install DBeaver for Windows
+  win_chocolatey:
+    name: dbeaver
+  when: ansible_system == "Win32NT"

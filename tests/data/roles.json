@@ -44,7 +44,6 @@
   },
   {
     "name": "fd",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["fd --version"]
   },
   {
@@ -71,6 +70,7 @@
   { "name": "git", "tests": ["git --version"] },
   { "name": "github", "tests": ["act --version"] },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
+  { "name": "glow", "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   {
@@ -105,6 +105,7 @@
   { "name": "qemu", "tests": ["qemu-img --version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
+  { "name": "sd", "tests": ["sd --version"] },
   { "name": "shfmt", "tests": ["shfmt --version"] },
   {
     "name": "snap",
@@ -118,6 +119,7 @@
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
   { "name": "tldr", "tests": ["tldr --version"] },
+  { "name": "usql", "tests": ["usql --version"] },
   { "name": "vault", "tests": ["vault --version"] },
   { "name": "vscode", "tests": ["code --version"] },
   {

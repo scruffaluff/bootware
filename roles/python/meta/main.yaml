@@ -1,2 +1,3 @@
 dependencies:
   - role: bash
+    when: ansible_system != "Win32NT"

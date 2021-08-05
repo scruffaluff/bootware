@@ -4,44 +4,44 @@
     method: GET
     return_content: yes
   register: fd_formula
-  when: ansible_system != "Win32NT"
+  when: ansible_system == "Linux"
 
-- name: Install FD for Arch distributions
+- name: Download FD for Linux
   become: yes
-  pacman:
-    name: fd
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install FD for Debian distributions
-  apt:
-    deb: >-
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
-      fd_formula.json.versions.stable }}/fd_{{ fd_formula.json.versions.stable
-      }}_amd64.deb
+      fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
+      }}-{{ ansible_architecture }}-unknown-linux-{{
+      fd_abi[ansible_architecture] }}.tar.gz
+  vars:
+    fd_abi:
+      aarch64: gnueabihf
+      x86_64: gnu
+  when: ansible_system == "Linux"
+
+- name: Install FD for Linux
   become: yes
-  when: >-
-    ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64" and
-    ansible_distribution != "Pop!_OS"
+  copy:
+    dest: /usr/local/bin/fd
+    mode: 0755
+    src: >-
+      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ ansible_architecture
+      }}-unknown-linux-{{ fd_abi[ansible_architecture] }}/fd
+  vars:
+    fd_abi:
+      aarch64: gnueabihf
+      x86_64: gnu
+  when: ansible_system == "Linux"
 
 - name: Install FD for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
-
-- name: Install FD for Fedora distributions
-  become: yes
-  dnf:
-    name: fd-find
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Install FD for PopOS
-  apt:
-    name: fd-find
-  become: yes
-  when: >-
-    ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64" and
-    ansible_distribution == "Pop!_OS"
 
 - name: Install FD for Windows
   become_user: "{{ user_account }}"

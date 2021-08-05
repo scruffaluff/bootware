@@ -1,8 +1,16 @@
+- name: Get latest NVM version
+  uri:
+    url: https://formulae.brew.sh/api/formula/nvm.json
+    method: GET
+    return_content: yes
+  register: nvm_formula
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install Node version manager for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: |
-      curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash
+      curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_formula.json.versions.stable }}/install.sh | bash
     warn: no
   when: ansible_system in ["Darwin", "Linux"]
 

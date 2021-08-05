@@ -4,7 +4,7 @@
     method: GET
     return_content: yes
   register: doctl_formula
-  when: ansible_system != "Win32NT"
+  when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for Linux
   become: yes

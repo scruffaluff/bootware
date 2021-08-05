@@ -1,0 +1,3 @@
+dependencies:
+  - role: go
+    when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"

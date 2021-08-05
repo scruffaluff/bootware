@@ -120,6 +120,14 @@
     - database
     - desktop
 
+- name: Install DBeaver
+  hosts: all
+  roles:
+    - dbeaver
+  tags:
+    - dbeaver
+    - desktop
+
 - name: Configure default system terminal
   hosts: all
   roles:
@@ -285,6 +293,16 @@
     - server
     - vcs
 
+- name: Install Glow
+  hosts: all
+  roles:
+    - glow
+  tags:
+    - container
+    - desktop
+    - glow
+    - server
+
 - name: Install Go language
   hosts: all
   roles:
@@ -423,17 +441,6 @@
     - packer
     - server
 
-- name: Install PostgreSQL database client
-  hosts: all
-  roles:
-    - postgres
-  tags:
-    - container
-    - database
-    - desktop
-    - postgres
-    - server
-
 - name: Install PowerShell shell
   hosts: all
   roles:
@@ -488,26 +495,15 @@
     - rust
     - server
 
-- name: Install Snap packages
+- name: Install SD
   hosts: all
   roles:
-    - snap
+    - sd
   tags:
     - container
     - desktop
     - server
-    - snap
-
-- name: Install Starship shell prompt
-  hosts: all
-  roles:
-    - starship
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - starship
+    - sd
 
 - name: Install Shfmt shell file formatter
   hosts: all
@@ -520,6 +516,16 @@
     - shell
     - shfmt
 
+- name: Install Snap packages
+  hosts: all
+  roles:
+    - snap
+  tags:
+    - container
+    - desktop
+    - server
+    - snap
+
 - name: Install SQLite database
   hosts: all
   roles:
@@ -530,6 +536,17 @@
     - desktop
     - server
     - sqlite
+
+- name: Install Starship shell prompt
+  hosts: all
+  roles:
+    - starship
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - starship
 
 - name: Configure sudo settings
   hosts: all
@@ -573,6 +590,16 @@
     - server
     - shell
     - tldr
+
+- name: Install USQL
+  hosts: all
+  roles:
+    - usql
+  tags:
+    - container
+    - desktop
+    - server
+    - usql
 
 - name: Install Vault secrets manager
   hosts: all

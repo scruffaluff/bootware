@@ -124,7 +124,13 @@ if type -q starship
 end
 
 # Tool settings.
+
 set -x BAT_THEME "Solarized (light)"
+
+# Disable pagination for Bat.
+set -x BAT_PAGER ""
+
+# Add Visual Studio Code binary to PATH for Linux.
 set -x PATH "/usr/share/code/bin" $PATH
 
 # Initialize Digital Ocean CLI if available.
@@ -180,6 +186,8 @@ set -x DENO_INSTALL "$HOME/.deno"
 set -x PATH "$DENO_INSTALL/bin" $PATH
 
 # User settings.
+
+set -x EDITOR "nvim"
 
 # Add scripts directory to system path.
 set -x PATH "$HOME/.local/bin" $PATH

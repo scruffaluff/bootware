@@ -9,7 +9,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- GitHub, GitLab, Helm, and Kubectl roles.
+- DBeaver, GitHub, GitLab, Glow, Helm, Kubectl, SD, and Usql roles.
+- Support for installing user defined Go applications.
+
+### Changed
+
+- Disabled pagination for Bat.
+- Set EDITOR environment variable to Neovim.
+- Switched to binary installer for FD.
+
+### Fixed
+
+- Removed unnecessary HTTP requests to formulae.brew.sh for MacOS.
+- Reduced repeated roles with conditional depedencies.
+
+### Removed
+
+- Postgres SQL clients.
 
 ## 0.3.2 - 2021-07-11
 

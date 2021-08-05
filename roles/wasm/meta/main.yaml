@@ -1,2 +1,3 @@
 dependencies:
   - role: rust
+    when: ansible_system != "Win32NT"
