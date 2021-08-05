@@ -33,7 +33,7 @@
     executable: /bin/bash
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
-- name: Install Usql for Ubuntu distributions
+- name: Install Usql for Fedora and Ubuntu distributions
   become: yes
   unarchive:
     dest: /usr/local/bin/
