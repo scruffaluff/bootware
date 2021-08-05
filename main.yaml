@@ -51,6 +51,16 @@
     - audio
     - desktop
 
+- name: Install Avro helper tools
+  hosts: all
+  roles:
+    - avro
+  tags:
+    - avro
+    - container
+    - desktop
+    - server
+
 - name: Install Bash shell
   hosts: all
   roles:
@@ -312,6 +322,16 @@
     - desktop
     - go
     - language
+    - server
+
+- name: Install HDF5 helper tools
+  hosts: all
+  roles:
+    - hdf5
+  tags:
+    - container
+    - desktop
+    - hdf5
     - server
 
 - name: Install Helm Kubernetes manager

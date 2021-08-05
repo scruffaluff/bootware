@@ -1,0 +1,66 @@
+- name: Get latest Avro version
+  uri:
+    url: https://formulae.brew.sh/api/formula/avro-tools.json
+    method: GET
+    return_content: yes
+  register: avro_formula
+  when: ansible_system == "Linux"
+
+- name: Install Java for Arch distributions
+  become: yes
+  pacman:
+    name: jre11-openjdk
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Java for Debian distributions
+  apt:
+    name: java-common
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Java for Fedora distributions
+  become: yes
+  dnf:
+    name: java-11-openjdk
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Create Java Jar directory for Linux
+  become: yes
+  file:
+    path: /usr/local/share/java/jar/
+    state: directory
+  when: ansible_system == "Linux"
+
+# TODO: Evaluate avro-bin package as replacement.
+- name: Download Avro Jar for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/share/java/jar/avro-tools.jar
+    mode: 0755
+    url: >-
+      https://archive.apache.org/dist/avro/avro-{{
+      avro_formula.json.versions.stable }}/java/avro-tools-{{
+      avro_formula.json.versions.stable }}.jar
+  when: ansible_system == "Linux"
+
+- name: Copy Avro Jar script for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/avro-tools
+    force: yes
+    mode: 0755
+    src: avro-tools.sh
+  when: ansible_system == "Linux"
+
+- name: Install Avro for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: avro-tools
+  when: ansible_system == "Darwin"
+
+- name: Install Avro for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: avro-tools
+  when: ansible_system == "Win32NT"

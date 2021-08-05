@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- DBeaver, GitHub, GitLab, Glow, Helm, Kubectl, SD, and Usql roles.
+- Avro, DBeaver, GitHub, GitLab, Glow, HDF5, Helm, Kubectl, SD, and Usql roles.
 - Support for installing user defined Go applications.
 
 ### Changed

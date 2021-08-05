@@ -5,6 +5,7 @@
     "tests": ["alacritty --version"]
   },
   { "name": "audio" },
+  { "name": "avro-tools", "tests": ["avro-tools --version"] },
   { "name": "aws", "tests": ["aws --version"] },
   {
     "name": "bash",
@@ -72,6 +73,11 @@
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "glow", "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
+  {
+    "name": "hdf5",
+    "skip": [{ "os": "windows" }],
+    "tests": ["h5dump --version", "h5ls --version"]
+  },
   { "name": "helm", "tests": ["helm version --short"] },
   {
     "name": "hyper",
