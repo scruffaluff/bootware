@@ -70,5 +70,8 @@ SHELL ["/bin/bash", "-c"]
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
+        if [[ ! -x "$(command -v node)" ]]; then \
+            sudo apt-get install -qy nodejs; \
+        fi; \
         node tests/integration/roles.spec.js "ubuntu" "${TARGETARCH}" "${skip}" "${tags}"; \
     fi

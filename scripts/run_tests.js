@@ -19,7 +19,7 @@ function main() {
     args = args + ` --build-arg tags=${tags}`;
   }
 
-  const distros = ["arch", "fedora", "debian", "ubuntu"];
+  const distros = ["arch", "debian", "fedora", "ubuntu"];
 
   for (const distro of distros) {
     const command = `docker build -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform=linux/${architecture}`;
