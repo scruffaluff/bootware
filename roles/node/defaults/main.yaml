@@ -4,6 +4,4 @@ node_applications:
   - prettier
   - speedscope
 node_versions:
-  - "12"
-  - "14"
   - "16"

@@ -85,13 +85,6 @@
 #     (npm install -g {{ item }}) -Or (npm update -g {{ item }})
 #   when: ansible_system == "Win32NT"
 
-- name: Create Fish functions directory for Linux
-  become_user: "{{ user_account }}"
-  file:
-    path: "{{ user_home_dir }}/.config/fish/functions"
-    state: directory
-  when: ansible_system in ["Darwin", "Linux"]
-
 - name: Download Fast NVM Fish for Linux
   become_user: "{{ user_account }}"
   get_url:

@@ -1,13 +1,5 @@
-_python_versions:
-  always:
-    - "3.7"
-    - "3.8"
-    - "3.9"
-  Darwin: []
-  Linux: []
-  Win32NT: []
 pipx_applications:
   - cookiecutter
   - poetry
-python_versions: >-
-  {{  _python_versions[ansible_system] + _python_versions.always }}
+python_versions:
+  - "3.9"

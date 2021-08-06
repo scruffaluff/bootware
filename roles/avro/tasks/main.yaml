@@ -14,7 +14,7 @@
 
 - name: Install Java for Debian distributions
   apt:
-    name: java-common
+    name: openjdk-11-jre
   become: yes
   when: ansible_pkg_mgr == "apt"
 
