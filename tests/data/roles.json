@@ -5,7 +5,7 @@
     "tests": ["alacritty --version"]
   },
   { "name": "audio" },
-  { "name": "avro-tools", "tests": ["avro-tools --version"] },
+  { "name": "avro-tools", "tests": ["avro-tools cat"] },
   { "name": "aws", "tests": ["aws --version"] },
   {
     "name": "bash",
@@ -78,6 +78,7 @@
     "skip": [{ "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
+  { "name": "hadolint", "tests": ["hadolint --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   {
     "name": "hyper",

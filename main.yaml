@@ -324,6 +324,16 @@
     - language
     - server
 
+- name: Install Hadolint linter
+  hosts: all
+  roles:
+    - hadolint
+  tags:
+    - desktop
+    - hadolint
+    - server
+    - vm
+
 - name: Install HDF5 helper tools
   hosts: all
   roles:
