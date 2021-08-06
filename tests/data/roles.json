@@ -111,6 +111,7 @@
   },
   { "name": "qemu", "tests": ["qemu-img --version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
+  { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   { "name": "shfmt", "tests": ["shfmt --version"] },

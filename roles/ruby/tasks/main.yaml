@@ -1,0 +1,58 @@
+- name: Install RVM GPG keys for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: >-
+      gpg --keyserver keys.openpgp.org --recv-keys
+      409B6B1796C275462A1703113804BB82D39DC0E3
+      7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Ruby Environment Manager for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: curl -sSL https://get.rvm.io | bash -s stable
+    warn: no
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install multiple Ruby versions for Unix
+  become_user: "{{ user_account }}"
+  loop: "{{ ruby_versions }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      rvm install {{ item }}
+    executable: /bin/bash
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install multiple Ruby versions for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      ruby{{ item | replace('ruby-','') | replace('.','') | replace('30','') }}
+  loop: "{{ ruby_versions }}"
+  when: ansible_system == "Win32NT"
+
+- name: Install or update Ruby CLI applications for Unix
+  become_user: "{{ user_account }}"
+  loop: "{{ ruby_applications }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      gem install {{ item }}
+    executable: /bin/bash
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install or update Ruby CLI applications for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ ruby_applications }}"
+  win_shell: gem install {{ item }}
+  when: ansible_system == "Win32NT"
+
+- name: Download RVM Fish for Unix
+  become_user: "{{ user_account }}"
+  get_url:
+    dest: "{{ user_home_dir }}/.config/fish/functions/rvm.fish"
+    mode: 0644
+    url: https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish
+  when: ansible_system in ["Darwin", "Linux"]

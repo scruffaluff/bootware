@@ -22,7 +22,7 @@ function main() {
   const distros = ["arch", "debian", "fedora", "ubuntu"];
 
   for (const distro of distros) {
-    const command = `docker build -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform=linux/${architecture}`;
+    const command = `docker build --no-cache -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform=linux/${architecture}`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });
 
     console.log(`Integration test ${distro} passed.`);

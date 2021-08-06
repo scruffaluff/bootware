@@ -514,6 +514,17 @@
     - server
     - shell
 
+- name: Install Ruby language
+  hosts: all
+  roles:
+    - ruby
+  tags:
+    - container
+    - desktop
+    - language
+    - ruby
+    - server
+
 - name: Install Rust language
   hosts: all
   roles:

@@ -78,6 +78,18 @@ if [[ -x "$(command -v pyenv)" ]]; then
   source "$(pyenv root)/completions/pyenv.bash"
 fi
 
+# Ruby settings.
+
+export PATH="${HOME}/.rvm/bin:${PATH}"
+
+# Initialize RVM if available.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+if [[ -f "${HOME}/.rvm/scripts/rvm" ]]; then
+  source "${HOME}/.rvm/scripts/rvm"
+fi
+
 # Rust settings.
 export PATH="${HOME}/.cargo/bin:${PATH}"
 

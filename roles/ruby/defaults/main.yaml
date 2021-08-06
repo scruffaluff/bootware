@@ -1,0 +1,4 @@
+ruby_applications:
+  - rubocop
+ruby_versions:
+  - "3.0"
