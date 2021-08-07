@@ -51,11 +51,17 @@ function testRole(system, role) {
 
   if (role.tests && !shouldSkip(system, role.skip)) {
     for (const test of role.tests) {
-      childProcess.execSync(test);
+      try {
+        childProcess.execSync(test, { stdio: "pipe" });
+      } catch (error) {
+        console.log("-> fail\n");
+        console.error(error.stderr.toString());
+        process.exit(1);
+      }
     }
-    console.log(`-> pass`);
+    console.log("-> pass");
   } else {
-    console.log(`-> skip`);
+    console.log("-> skip");
   }
 }
 
