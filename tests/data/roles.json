@@ -32,7 +32,10 @@
     "tests": ["deno --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
-  { "name": "docker", "tests": ["docker --version"] },
+  {
+    "name": "docker",
+    "tests": ["docker --version", "docker-compose --version"]
+  },
   {
     "name": "dvc",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
@@ -66,9 +69,9 @@
   {
     "name": "gcp",
     "skip": [{ "arch": "arm64", "os": "fedora" }],
-    "tests": ["gcloud --version"]
+    "tests": ["gcloud --version", "gsutil --version"]
   },
-  { "name": "git", "tests": ["git --version"] },
+  { "name": "git", "tests": ["git --version", "git-lfs --version"] },
   { "name": "github", "tests": ["act --version"] },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "glow", "tests": ["glow --version"] },
@@ -96,7 +99,7 @@
   { "name": "mkcert", "tests": ["mkcert --version"] },
   { "name": "mongo" },
   { "name": "neovim", "tests": ["nvim --version"] },
-  { "name": "node", "tests": ["node --version"] },
+  { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "postgres" },
@@ -122,7 +125,11 @@
   },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
-  { "name": "sudo" },
+  {
+    "name": "sudo",
+    "skip": [{ "os": "windows" }],
+    "tests": ["sudo --version"]
+  },
   { "name": "system" },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
