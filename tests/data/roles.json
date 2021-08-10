@@ -134,7 +134,7 @@
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
   { "name": "tldr", "tests": ["tldr --version"] },
-  { "name": "usql", "tests": ["usql --version"] },
+  { "name": "usql", "skip": [{ "os": "debian" }], "tests": ["usql --version"] },
   { "name": "vault", "tests": ["vault --version"] },
   { "name": "vscode", "tests": ["code --version"] },
   {

@@ -5,7 +5,7 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.3 - 2021-08-06
 
 ### Added
 
@@ -26,6 +26,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Legacy Node and Python default versions.
 - Postgres SQL clients.
 
 ## 0.3.2 - 2021-07-11
