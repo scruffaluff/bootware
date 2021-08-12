@@ -7,7 +7,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-- Ruby role.
+- GitHub CLI installation.
+- OTS and Ruby role.
 
 ## 0.3.3 - 2021-08-06
 

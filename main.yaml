@@ -450,6 +450,16 @@
     - server
     - typescript
 
+- name: Install OTS secret sharer
+  hosts: all
+  roles:
+    - ots
+  tags:
+    - container
+    - desktop
+    - ots
+    - server
+
 - name: Install optional packages
   hosts: all
   roles:

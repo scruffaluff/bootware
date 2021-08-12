@@ -72,7 +72,11 @@
     "tests": ["gcloud --version", "gsutil --version"]
   },
   { "name": "git", "tests": ["git --version", "git-lfs --version"] },
-  { "name": "github", "tests": ["act --version"] },
+  {
+    "name": "github",
+    "skip": [{ "os": "arch" }],
+    "tests": ["act --version", "gh --version"]
+  },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "glow", "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
@@ -100,6 +104,11 @@
   { "name": "mongo" },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
+  {
+    "name": "ots",
+    "skip": [{ "os": "windows" }],
+    "tests": ["ots --version"]
+  },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "postgres" },
