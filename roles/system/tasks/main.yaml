@@ -70,7 +70,6 @@
       - gnupg2
       - lsb-release
       - openssh-client
-      - openssh-server
       - pbuilder
       - shellcheck
       - ubuntu-dev-tools
