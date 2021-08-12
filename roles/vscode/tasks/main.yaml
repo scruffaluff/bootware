@@ -20,14 +20,6 @@
       x86_64: x64
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
-- name: Install VSCode for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    accept_external_apps: yes
-    name: visual-studio-code
-    state: present
-  when: ansible_system == "Darwin"
-
 - name: Add Microsoft GPG key for Fedora distributions
   become: yes
   rpm_key:
@@ -45,6 +37,14 @@
       aarch64: arm64
       x86_64: x64
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install VSCode for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: visual-studio-code
+    state: present
+  when: ansible_system == "Darwin"
 
 - name: Install VSCode for PopOS
   apt:

@@ -450,6 +450,16 @@
     - server
     - typescript
 
+- name: Install OTS secret sharer
+  hosts: all
+  roles:
+    - ots
+  tags:
+    - container
+    - desktop
+    - ots
+    - server
+
 - name: Install optional packages
   hosts: all
   roles:
@@ -513,6 +523,17 @@
     - ripgrep
     - server
     - shell
+
+- name: Install Ruby language
+  hosts: all
+  roles:
+    - ruby
+  tags:
+    - container
+    - desktop
+    - language
+    - ruby
+    - server
 
 - name: Install Rust language
   hosts: all

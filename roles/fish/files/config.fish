@@ -67,6 +67,16 @@ if type -q pyenv
   pyenv init - | source
 end
 
+# Ruby settings.
+
+# Initialize RVM if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q rvm
+  rvm default
+end
+
 # Rust settings.
 set -x PATH "$HOME/.cargo/bin" $PATH
 
