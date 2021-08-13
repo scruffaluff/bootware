@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Deno support for Apple ARM64.
 - GitHub CLI installation.
 - OTS and Ruby role.
 - Support for more operating systems on Mongo Shell.
