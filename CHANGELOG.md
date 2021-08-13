@@ -7,8 +7,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added
+
 - GitHub CLI installation.
 - OTS and Ruby role.
+- Support for more operating systems on Mongo Shell.
 
 ## 0.3.3 - 2021-08-06
 

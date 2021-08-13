@@ -101,7 +101,7 @@
     "tests": ["mdbook --version"]
   },
   { "name": "mkcert", "tests": ["mkcert --version"] },
-  { "name": "mongo" },
+  { "name": "mongo", "tests": ["mongosh --version"] },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   {

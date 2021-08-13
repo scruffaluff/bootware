@@ -1,4 +1,48 @@
-- name: Install MongoDB client for Windows
+- name: Get latest Mongo Shell version
+  uri:
+    url: https://formulae.brew.sh/api/formula/mongosh.json
+    method: GET
+    return_content: yes
+  register: mongosh_formula
+  when: ansible_system == "Linux"
+
+- name: Download Mongo Shell for Linux
+  become: yes
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://downloads.mongodb.com/compass/mongosh-{{
+      mongosh_formula.json.versions.stable }}-linux-{{
+      mongosh_arch[ansible_architecture] }}.tgz
+  vars:
+    mongosh_arch:
+      armv64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Mongo Shell for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/mongosh
+    mode: 0755
+    src: >-
+      /tmp/mongosh-{{ mongosh_formula.json.versions.stable }}-linux-{{
+      mongosh_arch[ansible_architecture] }}/bin/mongosh
+  vars:
+    mongosh_arch:
+      armv64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Mongo Shell for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: mongosh
+  when: ansible_system == "Darwin"
+
+- name: Install Mongo Shell for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
