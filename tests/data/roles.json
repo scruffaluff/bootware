@@ -28,7 +28,7 @@
   { "name": "defterm" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["deno --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
