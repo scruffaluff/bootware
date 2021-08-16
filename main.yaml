@@ -199,6 +199,16 @@
     - server
     - vcs
 
+- name: Install Dust disk space analyzer
+  hosts: all
+  roles:
+    - dust
+  tags:
+    - container
+    - desktop
+    - dust
+    - server
+
 - name: Install Exa file lister
   hosts: all
   roles:

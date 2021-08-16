@@ -31,6 +31,11 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["deno --version"]
   },
+  {
+    "name": "dust",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["dust --version"]
+  },
   { "name": "doctl", "tests": ["doctl version"] },
   {
     "name": "docker",

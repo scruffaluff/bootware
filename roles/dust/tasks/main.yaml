@@ -1,0 +1,43 @@
+- name: Get latest Dust version
+  uri:
+    url: https://formulae.brew.sh/api/formula/dust.json
+    method: GET
+    return_content: yes
+  register: dust_formula
+  when: ansible_system == "Linux"
+
+- name: Download Dust for Linux
+  become: yes
+  unarchive:
+    dest: /tmp/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://github.com/bootandy/dust/releases/download/v{{
+      dust_formula.json.versions.stable }}/dust-v{{
+      dust_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install Dust for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/dust
+    mode: 0755
+    src: >-
+      /tmp/dust-v{{ dust_formula.json.versions.stable
+      }}-x86_64-unknown-linux-gnu/dust
+  when: >-
+    ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install Dust for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: dust
+  when: ansible_system == "Darwin"
+
+- name: Install Dust for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: dust
+  when: ansible_system == "Win32NT"
