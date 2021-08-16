@@ -67,6 +67,10 @@
   },
   { "name": "font" },
   {
+    "name": "fzf",
+    "tests": ["fzf --version"]
+  },
+  {
     "name": "gcp",
     "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gcloud --version", "gsutil --version"]
@@ -92,6 +96,14 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["hyper --version"]
   },
+  {
+    "name": "hyperfine",
+    "skip": [
+      { "arch": "arm64", "os": "debian" },
+      { "arch": "arm64", "os": "ubuntu" }
+    ],
+    "tests": ["hyperfine --version"]
+  },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
   { "name": "libvirt", "tests": ["virsh --version"] },
@@ -102,6 +114,11 @@
   },
   { "name": "mkcert", "tests": ["mkcert --version"] },
   { "name": "mongo", "tests": ["mongosh --version"] },
+  {
+    "name": "navi",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["navi --version"]
+  },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   {
@@ -118,6 +135,14 @@
     "tests": ["pwsh --version"]
   },
   {
+    "name": "procs",
+    "skip": [
+      { "arch": "arm64", "os": "debian" },
+      { "arch": "arm64", "os": "ubuntu" }
+    ],
+    "tests": ["procs --version"]
+  },
+  {
     "name": "python",
     "tests": ["pipx --version", "pyenv --version", "python --version"]
   },
@@ -125,6 +150,11 @@
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
+  {
+    "name": "scc",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["scc --version"]
+  },
   { "name": "sd", "tests": ["sd --version"] },
   { "name": "shfmt", "tests": ["shfmt --version"] },
   {

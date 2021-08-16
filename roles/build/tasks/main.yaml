@@ -1,4 +1,5 @@
 - name: Install build tools for Linux
+  become: yes
   package:
     name:
       - clang
@@ -10,7 +11,6 @@
       - llvm
       - make
       - openocd
-  become: yes
   when: ansible_system == "Linux"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
