@@ -14,6 +14,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - OTS and Ruby role.
 - Support for more operating systems on Mongo Shell.
 
+### Fixed
+
+- Missing Xonsh settings file.
+
 ## 0.3.3 - 2021-08-06
 
 ### Added
