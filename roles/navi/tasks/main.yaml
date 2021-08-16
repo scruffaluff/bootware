@@ -1,0 +1,31 @@
+- name: Get latest Navi version
+  uri:
+    url: https://formulae.brew.sh/api/formula/navi.json
+    method: GET
+    return_content: yes
+  register: navi_formula
+  when: ansible_system == "Linux"
+
+- name: Install Navi for Linux
+  become: yes
+  unarchive:
+    dest: /usr/local/bin/
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://github.com/denisidoro/navi/releases/download/v{{
+      navi_formula.json.versions.stable }}/navi-v{{
+      navi_formula.json.versions.stable }}-x86_64-unknown-linux-musl.tar.gz
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install Navi for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: navi
+  when: ansible_system == "Darwin"
+
+- name: Install Navi for Windows
+  win_chocolatey:
+    name:
+      - navi
+  when: ansible_system == "Win32NT"

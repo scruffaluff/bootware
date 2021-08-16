@@ -183,6 +183,14 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   fi
 fi
 
+# Add Navi widget if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v navi)" ]]; then
+  eval "$(navi widget bash)"
+fi
+
 # Initialize Kubernetes CLI if available.
 #
 # Flags:
