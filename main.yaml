@@ -261,6 +261,16 @@
     - font
     - server
 
+- name: Install FzF fuzzy searcher
+  hosts: all
+  roles:
+    - fzf
+  tags:
+    - container
+    - desktop
+    - fzf
+    - server
+
 - name: Install Google Cloud Platform development tools
   hosts: all
   roles:
@@ -363,6 +373,16 @@
     - hyper
     - terminal
 
+- name: Install Hyperfine benchmarking tool
+  hosts: all
+  roles:
+    - hyperfine
+  tags:
+    - container
+    - desktop
+    - hyperfine
+    - server
+
 - name: Install Jq JSON parser
   hosts: all
   roles:
@@ -438,6 +458,16 @@
     - network
     - server
 
+- name: Install Navi interactive documentation tool
+  hosts: all
+  roles:
+    - navi
+  tags:
+    - container
+    - desktop
+    - navi
+    - server
+
 - name: Install Node JavaScript runtime
   hosts: all
   roles:
@@ -491,6 +521,16 @@
     - powershell
     - server
     - shell
+
+- name: Install Procs process viewer
+  hosts: all
+  roles:
+    - procs
+  tags:
+    - container
+    - desktop
+    - procs
+    - server
 
 - name: Install Python language
   hosts: all
@@ -546,7 +586,17 @@
     - rust
     - server
 
-- name: Install SD
+- name: Install Scc code line counter
+  hosts: all
+  roles:
+    - scc
+  tags:
+    - container
+    - desktop
+    - scc
+    - server
+
+- name: Install SD find and replace tool
   hosts: all
   roles:
     - sd
