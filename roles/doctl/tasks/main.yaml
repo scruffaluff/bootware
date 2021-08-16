@@ -35,3 +35,10 @@
     architecture: 64bit
     name: doctl
   when: ansible_system == "Win32NT"
+
+- name: Install Digital Ocean CLI Fish completion for Unix
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: |
+      doctl completion fish > {{ user_home_dir }}/.config/fish/completions/doctl.fish
+  when: ansible_system in ["Darwin", "Linux"]

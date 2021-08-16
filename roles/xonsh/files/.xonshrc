@@ -1,7 +1,1 @@
 # Xonsh settings file.
-
-
-# Starship settings.
-
-# Initialize Starship.
-$PROMPT = $(starship prompt)

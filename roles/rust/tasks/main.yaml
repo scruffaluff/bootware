@@ -64,7 +64,7 @@
   win_shell: rustup target add {{ item }}
   when: ansible_system == "Win32NT"
 
-- name: Update or install Cargo packges for Unix
+- name: Update or install Cargo packages for Unix
   become_user: "{{ user_account }}"
   loop: "{{ cargo_applications }}"
   shell:
@@ -74,7 +74,7 @@
     executable: /bin/bash
   when: ansible_system != "Win32NT"
 
-- name: Update or install Cargo packges for Windows
+- name: Update or install Cargo packages for Windows
   become_user: "{{ user_account }}"
   loop: "{{ cargo_applications }}"
   win_shell: cargo install {{ item }}

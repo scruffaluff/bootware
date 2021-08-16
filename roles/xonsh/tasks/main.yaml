@@ -16,3 +16,11 @@
     architecture: 64bit
     name: xonsh
   when: ansible_system == "Win32NT"
+
+- name: Copy Xonsh settings file
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.xonshrc"
+    force: yes
+    mode: 0754
+    src: .xonshrc

@@ -170,14 +170,6 @@ if test (uname -s) = "Darwin"
   end
 end
 
-# Initialize Zoxide if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q zoxide
-  zoxide init fish | source
-end
-
 # TypeScript settings.
 
 # Add NPM global binaries to system path.

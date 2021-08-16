@@ -191,14 +191,6 @@ if [[ -x "$(command -v kubectl)" ]]; then
   source <(kubectl completion bash)
 fi
 
-# Initialize Zoxide if available.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v zoxide)" ]]; then
-  eval "$(zoxide init bash)"
-fi
-
 # TypeScript settings.
 
 # Add NPM global binaries to system path.
