@@ -17,12 +17,6 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
-- name: Install DVC for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: dvc
-  when: ansible_system == "Darwin"
-
 - name: Install DVC for Fedora distributions
   become: yes
   dnf:
@@ -32,6 +26,12 @@
       dvc_formula.json.versions.stable }}/dvc-{{
       dvc_formula.json.versions.stable }}-1.x86_64.rpm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
+- name: Install DVC for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: dvc
+  when: ansible_system == "Darwin"
 
 - name: Install DVC for Windows
   become_user: "{{ user_account }}"

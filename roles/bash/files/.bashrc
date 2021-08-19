@@ -183,6 +183,18 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   fi
 fi
 
+# Add Navi widget if available and line editing is enabled.
+#
+# The Navi widget requires line editing and will otherwise cause the warning:
+#     bind: warning: line editing not enabled. 
+# One can start a no line editing shell with the command: bash --noediting.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
+  eval "$(navi widget bash)"
+fi
+
 # Initialize Kubernetes CLI if available.
 #
 # Flags:

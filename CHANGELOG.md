@@ -11,7 +11,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Deno support for Apple ARM64.
 - GitHub CLI installation.
-- OTS and Ruby role.
+- Dust, FzF, Hyperfine, Navi, OTS, Procs, Ruby and Scc roles.
 - Support for more operating systems on Mongo Shell.
 
 ### Fixed

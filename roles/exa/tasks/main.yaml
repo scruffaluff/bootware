@@ -21,7 +21,7 @@
     exa_arch:
       armv7l: armv7
       x86_64: x86_64
-  when:
+  when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for Linux
@@ -30,7 +30,7 @@
     dest: /usr/local/bin/exa
     mode: 0755
     src: /tmp/bin/exa
-  when:
+  when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for MacOS

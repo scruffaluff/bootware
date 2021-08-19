@@ -7,9 +7,9 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install TLDR for Linux
+  become: yes
   package:
     name: tldr
-  become: yes
   when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
 
 - name: Install TLDR for MacOS

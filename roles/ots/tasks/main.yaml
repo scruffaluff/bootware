@@ -6,10 +6,10 @@
   register: ots_formula
   when: ansible_system == "Linux"
 
-- name: Install OTS for Linux
+- name: Download OTS for Linux
   become: yes
   unarchive:
-    dest: /usr/local/bin/
+    dest: /tmp/
     mode: 0755
     remote_src: yes
     src: >-
@@ -21,6 +21,15 @@
       aarch64: arm64
       x86_64: amd64
   when: ansible_system == "Linux"
+
+- name: Install OTS for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/ots
+    mode: 0755
+    src: /tmp/ots
+  when: >-
+    ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Tap OTS Homebrew repository
   community.general.homebrew_tap:
