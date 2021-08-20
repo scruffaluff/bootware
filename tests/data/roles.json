@@ -56,6 +56,11 @@
     "tests": ["fd --version"]
   },
   {
+    "name": "ffsend",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["ffsend --version"]
+  },
+  {
     "name": "firefox",
     "skip": [{ "os": "arch" }, { "os": "fedora" }, { "os": "macos" }],
     "tests": ["firefox --version"]

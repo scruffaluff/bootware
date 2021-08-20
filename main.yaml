@@ -231,6 +231,16 @@
     - server
     - shell
 
+- name: Install FFSend secure file sharer
+  hosts: all
+  roles:
+    - ffsend
+  tags:
+    - container
+    - desktop
+    - ffsend
+    - server
+
 - name: Install Firefox web browser
   hosts: all
   roles:
