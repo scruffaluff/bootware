@@ -139,7 +139,7 @@
   loop: "{{ vscode_extensions }}"
   shell:
     cmd: code --install-extension {{ item }}
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install VSCode extensions for Windows
   become_user: "{{ user_account }}"

@@ -5,7 +5,7 @@
   shell:
     cmd: curl -LSfs https://starship.rs/install.sh | bash -s -- -y
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Starship shell prompt for Windows
   become_user: "{{ user_account }}"

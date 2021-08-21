@@ -47,7 +47,7 @@
   file:
     path: "{{ user_home_dir }}/.config/alacritty/"
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
   become_user: "{{ user_account }}"
@@ -63,7 +63,7 @@
     force: yes
     mode: 0644
     src: alacritty.j2
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
   become_user: "{{ user_account }}"

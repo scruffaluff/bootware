@@ -132,7 +132,7 @@
   file:
     path: /etc/fish/completions
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Docker Fish shell completions for Unix
   become: yes
@@ -140,7 +140,7 @@
     dest: /etc/fish/completions/docker.fish
     mode: 0664
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Docker Compose Fish shell completions for Unix
   become: yes
@@ -148,4 +148,4 @@
     dest: /etc/fish/completions/docker-compose.fish
     mode: 0664
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"

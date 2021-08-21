@@ -6,7 +6,7 @@
       --no-modify-path
     creates: "{{ user_home_dir }}/.cargo/bin/rustup"
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Rust for Windows
   become_user: "{{ user_account }}"

@@ -15,12 +15,15 @@
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
-      }}-{{ ansible_architecture }}-unknown-linux-{{
+      }}-{{ fd_arch[ansible_architecture] }}-unknown-linux-{{
       fd_abi[ansible_architecture] }}.tar.gz
   vars:
     fd_abi:
       aarch64: gnueabihf
       x86_64: gnu
+    fd_arch:
+      aarch64: arm
+      x86_64: x86_64
   when: ansible_system == "Linux"
 
 - name: Install FD for Linux
@@ -29,12 +32,16 @@
     dest: /usr/local/bin/fd
     mode: 0755
     src: >-
-      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ ansible_architecture
-      }}-unknown-linux-{{ fd_abi[ansible_architecture] }}/fd
+      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{
+      fd_arch[ansible_architecture] }}-unknown-linux-{{
+      fd_abi[ansible_architecture] }}/fd
   vars:
     fd_abi:
       aarch64: gnueabihf
       x86_64: gnu
+    fd_arch:
+      aarch64: arm
+      x86_64: x86_64
   when: ansible_system == "Linux"
 
 - name: Install FD for MacOS
