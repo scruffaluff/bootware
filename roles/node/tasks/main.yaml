@@ -28,7 +28,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm install {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install multiple Node versions for Windows
@@ -43,7 +43,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc 
       nvm alias default {{ node_versions[-1] }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Set default Node version for Windows
@@ -57,7 +57,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm install-latest-npm
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
 
 - name: Update NPM for Windows
@@ -73,7 +73,7 @@
       source {{ user_home_dir }}/.bashrc
       nvm use {{ node_versions[-1] }}
       npm install -g {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
 
 # TODO: Fix for Windows.

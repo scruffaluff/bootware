@@ -25,7 +25,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 # Pipx installs applications per user, so user_account is required.
@@ -44,7 +44,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       pipx upgrade-all
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows

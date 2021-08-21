@@ -44,7 +44,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       rvm install {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install multiple Ruby versions for Windows
@@ -63,7 +63,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       gem install {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install or update Ruby CLI applications for Windows
