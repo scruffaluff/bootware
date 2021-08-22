@@ -1,3 +1,10 @@
+# Shell installer for Deno accidentally install ARM64 version on FreeBSD.
+- name: Install Deno for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: deno
+  when: ansible_system == "FreeBSD"
+
 # Deno Linux ARM support is in progress. See
 # https://github.com/denoland/deno/issues/1846.
 - name: Install Deno for Unix
@@ -6,7 +13,7 @@
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
     warn: no
   when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    ansible_system == "Darwin" or (ansible_system == "Linux" and
     ansible_architecture == "x86_64")
 
 - name: Generate Deno Fish completions for Unix

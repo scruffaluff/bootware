@@ -99,7 +99,11 @@
     "skip": [{ "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
-  { "name": "hadolint", "tests": ["hadolint --version"] },
+  {
+    "name": "hadolint",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["hadolint --version"]
+  },
   { "name": "helm", "tests": ["helm version --short"] },
   {
     "name": "hyper",

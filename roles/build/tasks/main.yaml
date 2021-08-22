@@ -5,6 +5,7 @@
       - cmake
       - gcc
       - gdb
+      - gmake
       - llvm
       - openocd
   when: ansible_system == "FreeBSD"

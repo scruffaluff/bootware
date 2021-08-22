@@ -6,14 +6,14 @@
   register: hadolint_formula
   when: ansible_system == "Linux"
 
-# TODO: Switch to formula version after Hadolint fixes latest release.
 - name: Install Hadolint for Linux
   become: yes
   get_url:
     dest: /usr/local/bin/hadolint
     mode: 0755
     url: >-
-      https://github.com/hadolint/hadolint/releases/download/v2.6.0/hadolint-Linux-x86_64
+      https://github.com/hadolint/hadolint/releases/download/v{{
+      hadolint_formula.json.versions.stable }}/hadolint-Linux-x86_64
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Hadolint for MacOS
