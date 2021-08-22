@@ -6,6 +6,12 @@
   register: go_formula
   when: ansible_system == "Linux"
 
+- name: Install Go for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: go
+  when: ansible_system == "FreeBSD"
+
 - name: Install Go for Linux
   become: yes
   unarchive:

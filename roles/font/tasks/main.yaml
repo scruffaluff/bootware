@@ -10,6 +10,12 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install Fira Code for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: firacode
+  when: ansible_system == "FreeBSD"
+
 - name: Tap Homebrew fonts for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:

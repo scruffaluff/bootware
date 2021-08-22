@@ -47,6 +47,12 @@
     ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base != "debian" and
     ansible_architecture == "x86_64"
 
+- name: Install Usql for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: usql
+  when: ansible_system == "FreeBSD"
+
 - name: Tap Usql for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:

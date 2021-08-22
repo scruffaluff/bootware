@@ -1,3 +1,9 @@
+- name: Install Qemu for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: qemu
+  when: ansible_system == "FreeBSD"
+
 - name: Install QEMU for Linux
   become: yes
   package:

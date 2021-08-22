@@ -17,6 +17,12 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install Libvirt for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: libvirt
+  when: ansible_system == "FreeBSD"
+
 - name: Tap Virt Manager Homebrew repository
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager

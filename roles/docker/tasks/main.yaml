@@ -68,6 +68,12 @@
       - docker-ce-cli
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Docker for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: docker
+  when: ansible_system == "FreeBSD"
+
 - name: Install Docker for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -104,6 +110,12 @@
     groups:
       - docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
+
+- name: Install Docker Compose for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: docker-compose
+  when: ansible_system == "FreeBSD"
 
 - name: Install Docker Compose for Linux
   become: yes

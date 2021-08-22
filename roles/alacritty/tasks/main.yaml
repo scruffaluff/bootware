@@ -13,6 +13,12 @@
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
     ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
 
+- name: Install Alacritty for FreeBSD
+  become: yes
+  community.general.pkgng:
+    - name: alacritty
+  when: ansible_system == "FreeBSD"
+
 - name: Install Alacritty for Ubuntu distributions
   apt:
     name: alacritty

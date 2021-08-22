@@ -10,6 +10,12 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install AWSCLI for FreeBSD
+  become: yes
+  community.general.pkgng:
+    - name: awscli
+  when: ansible_system == "FreeBSD"
+
 - name: Install AWSCLI for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

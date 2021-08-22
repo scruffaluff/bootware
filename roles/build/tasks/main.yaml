@@ -1,3 +1,14 @@
+- name: Install build tools for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - cmake
+      - gcc
+      - gdb
+      - llvm
+      - openocd
+  when: ansible_system == "FreeBSD"
+
 - name: Install build tools for Linux
   become: yes
   package:

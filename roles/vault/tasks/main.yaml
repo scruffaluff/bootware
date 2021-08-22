@@ -6,6 +6,12 @@
   register: vault_formula
   when: ansible_system == "Linux"
 
+- name: Install Vault for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: vault
+  when: ansible_system == "FreeBSD"
+
 - name: Install Vault for Linux
   become: yes
   unarchive:

@@ -1,3 +1,9 @@
+- name: Install Neovim for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: neovim
+  when: ansible_system == "FreeBSD"
+
 - name: Install Neovim for Linux
   become: yes
   package:

@@ -6,6 +6,12 @@
   register: exa_formula
   when: ansible_system == "Linux"
 
+- name: Install Exa for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: exa
+  when: ansible_system == "FreeBSD"
+
 - name: Download Exa for Linux
   become: yes
   unarchive:

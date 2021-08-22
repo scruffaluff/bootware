@@ -6,6 +6,12 @@
   register: zola_formula
   when: ansible_system == "Linux"
 
+- name: Install Zola for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: zola
+  when: ansible_system == "FreeBSD"
+
 - name: Install Zola for Linux
   become: yes
   unarchive:

@@ -51,6 +51,12 @@
     name: google-cloud-sdk
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
+- name: Install Google Cloud SDK for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: google-cloud-sdk
+  when: ansible_system == "FreeBSD"
+
 - name: Install Google Cloud SDK Fish completion for Linux
   become_user: "{{ user_account }}"
   shell:

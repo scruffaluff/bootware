@@ -6,7 +6,7 @@
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
     warn: no
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     ansible_architecture == "x86_64")
 
 - name: Generate Deno Fish completions for Unix
@@ -17,7 +17,7 @@
       deno completions fish > {{ user_home_dir }}/.config/fish/completions/deno.fish
     executable: "{{ bash_executable }}"
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     ansible_architecture == "x86_64")
 
 - name: Install Deno for Windows

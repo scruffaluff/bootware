@@ -41,6 +41,12 @@
       x86_64: amd64
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Glow for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: glow
+  when: ansible_system == "FreeBSD"
+
 - name: Install Glow for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

@@ -1,3 +1,9 @@
+- name: Install Pipx for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: py38-pipx
+  when: ansible_system == "FreeBSD"
+
 - name: Install Pipx for Linux
   become: yes
   shell:

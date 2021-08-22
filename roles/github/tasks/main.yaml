@@ -78,6 +78,12 @@
       x86_64: amd64
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
+- name: Install GitHub CLI for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: gh
+  when: ansible_system == "FreeBSD"
+
 - name: Install GitHub CLI for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

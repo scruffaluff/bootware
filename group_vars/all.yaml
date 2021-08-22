@@ -3,7 +3,7 @@ _bash_executable:
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
     }}/bin/bash
   FreeBSD: /usr/local/bin/bash
-  Linux: /usr/bin/bash
+  Linux: /bin/bash
 _fish_executable:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'

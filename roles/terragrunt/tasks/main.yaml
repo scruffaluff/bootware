@@ -6,6 +6,12 @@
   register: terragrunt_formula
   when: ansible_system == "Linux"
 
+- name: Install Terragrunt for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: terragrunt
+  when: ansible_system == "FreeBSD"
+
 - name: Install Terragrunt for Linux
   become: yes
   get_url:

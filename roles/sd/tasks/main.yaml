@@ -6,6 +6,12 @@
   register: sd_formula
   when: ansible_system == "Linux"
 
+- name: Install SD for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: sd
+  when: ansible_system == "FreeBSD"
+
 - name: Install SD for Linux
   become: yes
   get_url:

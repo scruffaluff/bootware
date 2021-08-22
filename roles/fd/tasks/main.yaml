@@ -6,6 +6,12 @@
   register: fd_formula
   when: ansible_system == "Linux"
 
+- name: Install FD for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: fd
+  when: ansible_system == "FreeBSD"
+
 - name: Download FD for Linux
   become: yes
   unarchive:

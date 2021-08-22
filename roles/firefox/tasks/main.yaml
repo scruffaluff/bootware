@@ -10,6 +10,12 @@
     name: firefox-esr
   when: ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "Debian"
 
+- name: Install Firefox for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: firefox
+  when: ansible_system == "FreeBSD"
+
 - name: Install Firefox for Linux
   become: yes
   package:

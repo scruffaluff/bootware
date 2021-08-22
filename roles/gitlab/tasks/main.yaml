@@ -31,6 +31,12 @@
       x86_64: amd64
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install GitLab Runner for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: gitlab-runner
+  when: ansible_system == "FreeBSD"
+
 - name: Install GitLab Runner for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:

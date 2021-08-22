@@ -16,6 +16,12 @@
     name: kubectl
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Kubectl for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: kubectl
+  when: ansible_system == "FreeBSD"
+
 - name: Install Kubectl for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
