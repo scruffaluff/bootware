@@ -16,7 +16,7 @@
 - name: Install Alacritty for FreeBSD
   become: yes
   community.general.pkgng:
-    - name: alacritty
+    name: alacritty
   when: ansible_system == "FreeBSD"
 
 - name: Install Alacritty for Ubuntu distributions

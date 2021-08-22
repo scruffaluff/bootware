@@ -9,7 +9,7 @@
 - name: Install TLDR for FreeBSD
   become: yes
   community.general.pkgng:
-    - name: tealdeer
+    name: tealdeer
   when: ansible_system == "FreeBSD"
 
 - name: Install TLDR for Linux
