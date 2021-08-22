@@ -13,14 +13,6 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Update packages for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    update_homebrew: yes
-    # TODO: Resolve brew link error for upgrade_all.
-    # upgrade_all: yes
-  when: ansible_system == "Darwin"
-
 - name: Update packages for Fedora distributions
   become: yes
   dnf:
@@ -30,27 +22,13 @@
     update_cache: yes
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install essential packages for Linux
-  become: yes
-  package:
-    name:
-      - ca-certificates
-      - flatpak
-      - glances
-      - gnupg
-      - htop
-      - iftop
-      - iotop
-      - neofetch
-      - openssl
-      - pass
-      - sudo
-      - tar
-      - tmate
-      - tmux
-      - unzip
-      - zip
-  when: ansible_system == "Linux"
+- name: Update packages for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    update_homebrew: yes
+    # TODO: Resolve brew link error for upgrade_all.
+    # upgrade_all: yes
+  when: ansible_system == "Darwin"
 
 - name: Install essential packages for Arch distributions
   become: yes
@@ -88,6 +66,28 @@
       - ShellCheck
       - which
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install essential packages for Linux
+  become: yes
+  package:
+    name:
+      - ca-certificates
+      - flatpak
+      - glances
+      - gnupg
+      - htop
+      - iftop
+      - iotop
+      - neofetch
+      - openssl
+      - pass
+      - sudo
+      - tar
+      - tmate
+      - tmux
+      - unzip
+      - zip
+  when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
   become_user: "{{ user_account }}"

@@ -6,14 +6,6 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
-- name: Install Google Chrome for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    accept_external_apps: yes
-    name: google-chrome
-    state: present
-  when: ansible_system == "Darwin"
-
 - name: Add Google GPG key for Fedora distributions
   become: yes
   rpm_key:
@@ -27,6 +19,14 @@
       https://dl.google.com/linux/direct/google-chrome-stable_current_{{
       ansible_architecture }}.rpm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
+- name: Install Google Chrome for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: google-chrome
+    state: present
+  when: ansible_system == "Darwin"
 
 - name: Install Google Chrome for Windows
   become_user: "{{ user_account }}"

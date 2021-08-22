@@ -1,3 +1,10 @@
+- name: Install Pacman packages for Arch distributions
+  become: yes
+  pacman:
+    name: "{{ item }}"
+  loop: "{{ pacman_packages }}"
+  when: ansible_pkg_mgr == "pacman"
+
 - name: Install Apt packages by name for Debian distributions
   become: yes
   apt:
@@ -19,6 +26,13 @@
   loop: "{{ dnf_packages }}"
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Pkg packages for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: "{{ item }}"
+  loop: "{{ pkg_packages }}"
+  when: ansible_system == "FreeBSD"
+
 - name: Install Homebrew casks for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -35,13 +49,6 @@
     state: present
   loop: "{{ homebrew_packages }}"
   when: ansible_system == "Darwin"
-
-- name: Install Pacman packages for Arch distributions
-  become: yes
-  pacman:
-    name: "{{ item }}"
-  loop: "{{ pacman_packages }}"
-  when: ansible_pkg_mgr == "pacman"
 
 - name: Install build tools with Chocolatey for Windows
   win_chocolatey:

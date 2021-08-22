@@ -23,6 +23,14 @@
     name: libvirt
   when: ansible_system == "FreeBSD"
 
+- name: Install Libvirt for Fedora distributions
+  become: yes
+  dnf:
+    name:
+      - libvirt
+      - virt-viewer
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Tap Virt Manager Homebrew repository
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager
@@ -36,14 +44,6 @@
       # - jeffreywildman/homebrew-virt-manager/virt-manager
       - jeffreywildman/homebrew-virt-manager/virt-viewer
   when: ansible_system == "Darwin"
-
-- name: Install Libvirt for Fedora distributions
-  become: yes
-  dnf:
-    name:
-      - libvirt
-      - virt-viewer
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for Windows
   become_user: "{{ user_account }}"

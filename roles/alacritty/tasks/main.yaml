@@ -27,6 +27,12 @@
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
     ansible_architecture == "x86_64"
 
+- name: Install Alacritty for Fedora distributions
+  become: yes
+  dnf:
+    name: alacritty
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install Alacritty for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -34,12 +40,6 @@
     name: alacritty
     state: present
   when: ansible_system == "Darwin"
-
-- name: Install Alacritty for Fedora distributions
-  become: yes
-  dnf:
-    name: alacritty
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Alacritty for Windows
   become_user: "{{ user_account }}"

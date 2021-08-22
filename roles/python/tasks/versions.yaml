@@ -35,17 +35,6 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Pyenv dependencies for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name:
-      - openssl
-      - readline
-      - sqlite3
-      - xz
-      - zlib
-  when: ansible_system == "Darwin"
-
 - name: Install Pyenv dependencies for Fedora distributions
   become: yes
   dnf:
@@ -62,6 +51,17 @@
       - xz-devel
       - zlib-devel
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install Pyenv dependencies for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - openssl
+      - readline
+      - sqlite3
+      - xz
+      - zlib
+  when: ansible_system == "Darwin"
 
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.

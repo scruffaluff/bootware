@@ -22,6 +22,12 @@
     name: homebrew/cask-fonts
   when: ansible_system == "Darwin"
 
+- name: Install Fira Code for Fedora distributions
+  become: yes
+  dnf:
+    name: fira-code-fonts
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install Fira Code font for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -31,12 +37,6 @@
     name: font-fira-code
     state: present
   when: ansible_system == "Darwin"
-
-- name: Install Fira Code for Fedora distributions
-  become: yes
-  dnf:
-    name: fira-code-fonts
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for Windows
   become_user: "{{ user_account }}"

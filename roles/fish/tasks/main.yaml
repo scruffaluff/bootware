@@ -21,21 +21,21 @@
   file:
     path: "{{ user_home_dir }}/.config/fish"
     state: directory
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
   become_user: "{{ user_account }}"
   file:
     path: "{{ user_home_dir }}/.config/fish/completions"
     state: directory
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Create Fish functions directory for Unix
   become_user: "{{ user_account }}"
   file:
     path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Copy Fish settings file for Unix
   become_user: "{{ user_account }}"
@@ -44,7 +44,7 @@
     force: yes
     mode: 0644
     src: config.fish
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager
   become_user: "{{ user_account }}"
@@ -54,7 +54,7 @@
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
     warn: no
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Bass Bash compatibility utility for Unix
   become_user: "{{ user_account }}"
@@ -63,11 +63,11 @@
       source {{ user_home_dir }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"
 
-- name: Change user default shell to Fish for MacOS
+- name: Change user default shell to Fish for Unix
   become: yes
   user:
     name: "{{ user_account }}"
     shell: "{{ fish_executable }}"
-  when: ansible_system in ["Darwin", "FreeBSD", "Linux"]
+  when: ansible_system != "Win32NT"

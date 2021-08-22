@@ -16,17 +16,17 @@
     name: awscli
   when: ansible_system == "FreeBSD"
 
-- name: Install AWSCLI for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: awscli
-  when: ansible_system == "Darwin"
-
 - name: Install AWSCLI for Fedora distributions
   become: yes
   dnf:
     name: awscli
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install AWSCLI for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: awscli
+  when: ansible_system == "Darwin"
 
 - name: Install AWSCLI for Windows
   become_user: "{{ user_account }}"
