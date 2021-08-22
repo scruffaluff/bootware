@@ -34,7 +34,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv
-            bash -c "node tests/integration/roles.spec.js freebsd amd64"
+            bash --login -c "node tests/integration/roles.spec.js freebsd amd64"
 
   test-linux:
     name: >-

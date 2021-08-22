@@ -25,6 +25,13 @@
       - python3-pip
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Python packages for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - python3
+  when: ansible_system == "FreeBSD"
+
 - name: Install ONNX dependencies for Arch distributions
   become: yes
   pacman:
@@ -42,14 +49,15 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Make system Python interpreter discoverable by Pyenv for Linux
+- name:
+    Make system Python interpreter discoverable by Pyenv for FreeBSD and Linux
   become: yes
   file:
     src: /usr/bin/python3
     dest: /usr/bin/python
     mode: 0755
     state: link
-  when: ansible_system == "Linux"
+  when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
   become_user: "{{ user_account }}"

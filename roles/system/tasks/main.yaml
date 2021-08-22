@@ -67,13 +67,28 @@
       - which
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install essential packages for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - gnupg
+      - gtar
+      - htop
+      - iftop
+      - neofetch
+      - sudo
+      - tmate
+      - tmux
+      - unzip
+      - zip
+  when: ansible_system == "FreeBSD"
+
 - name: Install essential packages for Linux
   become: yes
   package:
     name:
       - ca-certificates
       - flatpak
-      - glances
       - gnupg
       - htop
       - iftop
