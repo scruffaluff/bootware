@@ -27,15 +27,15 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.1.4
+        uses: vmactions/freebsd-vm@v0.1.5
         with:
           prepare: pkg install -y bash curl
           run: |
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
-            bootware bootstrap --dev --no-passwd
+            bootware bootstrap --dev --no-passwd --skip deskenv
             source "${HOME}/.bashrc"
-            node tests/integration/roles.spec.js freebsd amd64
+            node tests/integration/roles.spec.js freebsd amd64 deskenv
 
   test-linux:
     name: >-

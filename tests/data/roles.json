@@ -5,7 +5,11 @@
     "tests": ["alacritty --version"]
   },
   { "name": "audio" },
-  { "name": "avro-tools", "tests": ["avro-tools cat"] },
+  {
+    "name": "avro",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["avro-tools cat"]
+  },
   { "name": "aws", "tests": ["aws --version"] },
   {
     "name": "bash",
@@ -21,7 +25,7 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "os": "linux" }, { "os": "macos" }],
+    "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
     "tests": ["google-chrome --version"]
   },
   { "name": "compass" },
@@ -33,7 +37,7 @@
   },
   {
     "name": "dust",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["dust --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
@@ -88,7 +92,7 @@
   { "name": "git", "tests": ["git --version", "git-lfs --version"] },
   {
     "name": "github",
-    "skip": [{ "os": "arch" }],
+    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
     "tests": ["act --version", "gh --version"]
   },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
@@ -101,13 +105,17 @@
   },
   {
     "name": "hadolint",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
   { "name": "helm", "tests": ["helm version --short"] },
   {
     "name": "hyper",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
+    "skip": [
+      { "arch": "arm64", "os": "linux" },
+      { "os": "arch" },
+      { "os": "freebsd" }
+    ],
     "tests": ["hyper --version"]
   },
   {
@@ -126,18 +134,26 @@
     "skip": [{ "arch": "arm64" }],
     "tests": ["mdbook --version"]
   },
-  { "name": "mkcert", "tests": ["mkcert --version"] },
-  { "name": "mongo", "tests": ["mongosh --version"] },
+  {
+    "name": "mkcert",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["mkcert --version"]
+  },
+  {
+    "name": "mongo",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["mongosh --version"]
+  },
   {
     "name": "navi",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["navi --version"]
   },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   {
     "name": "ots",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["ots --version"]
   },
   { "name": "package" },
@@ -152,7 +168,8 @@
     "name": "procs",
     "skip": [
       { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" }
+      { "arch": "arm64", "os": "ubuntu" },
+      { "os": "freebsd" }
     ],
     "tests": ["procs --version"]
   },
@@ -166,10 +183,14 @@
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   {
     "name": "scc",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["scc --version"]
   },
-  { "name": "sd", "tests": ["sd --version"] },
+  {
+    "name": "sd",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["sd --version"]
+  },
   { "name": "shfmt", "tests": ["shfmt --version"] },
   {
     "name": "snap",
@@ -189,10 +210,14 @@
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "usql", "skip": [{ "os": "debian" }], "tests": ["usql --version"] },
   { "name": "vault", "tests": ["vault --version"] },
-  { "name": "vscode", "tests": ["code --version"] },
+  {
+    "name": "vscode",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["code --version"]
+  },
   {
     "name": "wasm",
-    "skip": [{ "arch": "arm64" }],
+    "skip": [{ "arch": "arm64" }, { "os": "freebsd" }],
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },

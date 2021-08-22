@@ -9,7 +9,7 @@
 - name: Install FD for FreeBSD
   become: yes
   community.general.pkgng:
-    name: fd
+    name: fd-find
   when: ansible_system == "FreeBSD"
 
 - name: Download FD for Linux
