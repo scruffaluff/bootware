@@ -4,6 +4,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
+  { "name": "appimage" },
   { "name": "audio" },
   {
     "name": "avro",
@@ -22,6 +23,7 @@
     "skip": [{ "os": "windows" }],
     "tests": ["bats --version"]
   },
+  { "name": "build" },
   { "name": "caffeine" },
   {
     "name": "chrome",
@@ -35,6 +37,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["deno --version"]
   },
+  { "name": "deskenv" },
   {
     "name": "dust",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
@@ -57,6 +60,7 @@
   },
   {
     "name": "fd",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["fd --version"]
   },
   {
