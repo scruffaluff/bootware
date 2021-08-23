@@ -4,7 +4,7 @@
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
     warn: no
   when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
+    ansible_system != "Win32NT" and ansible_architecture == "x86_64"
 
 - name: Install Wasmtime for Windows
   become_user: "{{ user_account }}"
@@ -19,7 +19,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
     warn: no
   when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_architecture == "x86_64"
+    ansible_system != "Win32NT" and ansible_architecture == "x86_64"

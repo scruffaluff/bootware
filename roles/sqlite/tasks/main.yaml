@@ -10,17 +10,23 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name: Install SQLite for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: sqlite
-  when: ansible_system == "Darwin"
+- name: Install SQLite for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: sqlite3
+  when: ansible_system == "FreeBSD"
 
 - name: Install SQLite for Fedora distributions
   become: yes
   dnf:
     name: sqlite
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install SQLite for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: sqlite
+  when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows
   become_user: "{{ user_account }}"

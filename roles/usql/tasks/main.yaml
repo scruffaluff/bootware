@@ -30,7 +30,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       go get github.com/xo/usql
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Usql for Fedora and Ubuntu distributions
@@ -46,6 +46,12 @@
   when: >-
     ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base != "debian" and
     ansible_architecture == "x86_64"
+
+- name: Install Usql for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: usql
+  when: ansible_system == "FreeBSD"
 
 - name: Tap Usql for MacOS
   become_user: "{{ user_account }}"

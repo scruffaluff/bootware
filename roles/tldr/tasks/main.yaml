@@ -6,6 +6,12 @@
     cmd: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"
 
+- name: Install TLDR for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: tealdeer
+  when: ansible_system == "FreeBSD"
+
 - name: Install TLDR for Linux
   become: yes
   package:

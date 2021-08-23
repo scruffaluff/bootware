@@ -6,6 +6,12 @@
   register: helm_formula
   when: ansible_system == "Linux"
 
+- name: Install Helm for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: helm
+  when: ansible_system == "FreeBSD"
+
 - name: Download Helm for Linux
   become: yes
   unarchive:

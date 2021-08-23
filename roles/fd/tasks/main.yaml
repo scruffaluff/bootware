@@ -6,6 +6,12 @@
   register: fd_formula
   when: ansible_system == "Linux"
 
+- name: Install FD for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: fd-find
+  when: ansible_system == "FreeBSD"
+
 - name: Download FD for Linux
   become: yes
   unarchive:
@@ -15,13 +21,8 @@
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
-      }}-{{ ansible_architecture }}-unknown-linux-{{
-      fd_abi[ansible_architecture] }}.tar.gz
-  vars:
-    fd_abi:
-      aarch64: gnueabihf
-      x86_64: gnu
-  when: ansible_system == "Linux"
+      }}-x86_64-unknown-linux-gnu.tar.gz
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
   become: yes
@@ -29,13 +30,8 @@
     dest: /usr/local/bin/fd
     mode: 0755
     src: >-
-      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ ansible_architecture
-      }}-unknown-linux-{{ fd_abi[ansible_architecture] }}/fd
-  vars:
-    fd_abi:
-      aarch64: gnueabihf
-      x86_64: gnu
-  when: ansible_system == "Linux"
+      /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
   become_user: "{{ user_account }}"

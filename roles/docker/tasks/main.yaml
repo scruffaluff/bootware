@@ -68,6 +68,12 @@
       - docker-ce-cli
   when: ansible_pkg_mgr == "dnf"
 
+- name: Install Docker for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: docker
+  when: ansible_system == "FreeBSD"
+
 - name: Install Docker for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -105,6 +111,12 @@
       - docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
+- name: Install Docker Compose for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: docker-compose
+  when: ansible_system == "FreeBSD"
+
 - name: Install Docker Compose for Linux
   become: yes
   package:
@@ -132,7 +144,7 @@
   file:
     path: /etc/fish/completions
     state: directory
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Docker Fish shell completions for Unix
   become: yes
@@ -140,7 +152,7 @@
     dest: /etc/fish/completions/docker.fish
     mode: 0664
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Docker Compose Fish shell completions for Unix
   become: yes
@@ -148,4 +160,4 @@
     dest: /etc/fish/completions/docker-compose.fish
     mode: 0664
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"

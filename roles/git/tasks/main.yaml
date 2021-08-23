@@ -1,3 +1,11 @@
+- name: Install Git for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - git
+      - git-lfs
+  when: ansible_system == "FreeBSD"
+
 - name: Install Git for Linux
   become: yes
   package:

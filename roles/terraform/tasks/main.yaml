@@ -6,6 +6,12 @@
   register: terraform_formula
   when: ansible_system == "Linux"
 
+- name: Install Terraform for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: terraform
+  when: ansible_system == "FreeBSD"
+
 - name: Install Terraform for Linux
   become: yes
   unarchive:

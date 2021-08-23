@@ -29,7 +29,7 @@
     mode: 0755
     src: /tmp/ots
   when: >-
-    ansible_system == "Linux" and ansible_architecture == "x86_64"
+    ansible_system == "Linux"
 
 - name: Tap OTS Homebrew repository
   community.general.homebrew_tap:

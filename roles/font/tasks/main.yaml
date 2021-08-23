@@ -10,11 +10,23 @@
   become: yes
   when: ansible_pkg_mgr == "apt"
 
+- name: Install Fira Code for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: firacode
+  when: ansible_system == "FreeBSD"
+
 - name: Tap Homebrew fonts for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: homebrew/cask-fonts
   when: ansible_system == "Darwin"
+
+- name: Install Fira Code for Fedora distributions
+  become: yes
+  dnf:
+    name: fira-code-fonts
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for MacOS
   become_user: "{{ user_account }}"
@@ -25,12 +37,6 @@
     name: font-fira-code
     state: present
   when: ansible_system == "Darwin"
-
-- name: Install Fira Code for Fedora distributions
-  become: yes
-  dnf:
-    name: fira-code-fonts
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for Windows
   become_user: "{{ user_account }}"

@@ -6,7 +6,7 @@
       --no-modify-path
     creates: "{{ user_home_dir }}/.cargo/bin/rustup"
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Rust for Windows
   become_user: "{{ user_account }}"
@@ -22,7 +22,7 @@
       source {{ user_home_dir }}/.bashrc
       rustup self update
       rustup update stable
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Update Rust for Windows
@@ -39,7 +39,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       rustup component add {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Add Rust components for Windows
@@ -55,7 +55,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       rustup target add {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Add Rust targets for Windows
@@ -71,7 +71,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       cargo install {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Update or install Cargo packages for Windows

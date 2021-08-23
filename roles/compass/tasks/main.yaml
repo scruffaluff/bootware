@@ -16,14 +16,6 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
-- name: Install MongoDB Compass for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew_cask:
-    accept_external_apps: yes
-    name: mongodb-compass
-    state: present
-  when: ansible_system == "Darwin"
-
 - name: Install MongoDB Compass For Fedora distributions
   become: yes
   dnf:
@@ -32,6 +24,14 @@
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       mongodb_compass_formula.json.version }}.x86_64.rpm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
+- name: Install MongoDB Compass for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: mongodb-compass
+    state: present
+  when: ansible_system == "Darwin"
 
 - name: Install MongoDB Compass for Windows
   become_user: "{{ user_account }}"

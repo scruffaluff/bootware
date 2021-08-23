@@ -6,6 +6,12 @@
   register: ffsend_formula
   when: ansible_system == "Linux"
 
+- name: Install FFSend for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: ffsend
+  when: ansible_system == "FreeBSD"
+
 - name: Install FFSend for Linux
   become: yes
   get_url:

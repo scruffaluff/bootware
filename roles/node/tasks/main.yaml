@@ -4,7 +4,16 @@
     method: GET
     return_content: yes
   register: nvm_formula
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+# NVM does not provide binaries for FreeBSD.
+- name: Install Node for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - node
+      - npm
+  when: ansible_system == "FreeBSD"
 
 - name: Install Node version manager for Unix
   become_user: "{{ user_account }}"
@@ -12,7 +21,7 @@
     cmd: |
       curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_formula.json.versions.stable }}/install.sh | bash
     warn: no
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Node version manager for Windows
   become_user: "{{ user_account }}"
@@ -28,8 +37,8 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm install {{ item }}
-    executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"]
+    executable: "{{ bash_executable }}"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install multiple Node versions for Windows
   become_user: "{{ user_account }}"
@@ -43,8 +52,8 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc 
       nvm alias default {{ node_versions[-1] }}
-    executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"]
+    executable: "{{ bash_executable }}"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Set default Node version for Windows
   become_user: "{{ user_account }}"
@@ -57,13 +66,23 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       nvm install-latest-npm
-    executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
+    executable: "{{ bash_executable }}"
+  when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
 
 - name: Update NPM for Windows
   become_user: "{{ user_account }}"
   win_shell: nvm install-latest-npm
   when: ansible_system == "Win32NT"
+
+- name: Install or update Node CLI applications for FreeBSD
+  become_user: "{{ user_account }}"
+  loop: "{{ node_applications }}"
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      npm install -g {{ item }}
+    executable: "{{ bash_executable }}"
+  when: ansible_system == "FreeBSD" and user_account != "root"
 
 - name: Install or update Node CLI applications for Unix
   become_user: "{{ user_account }}"
@@ -73,8 +92,8 @@
       source {{ user_home_dir }}/.bashrc
       nvm use {{ node_versions[-1] }}
       npm install -g {{ item }}
-    executable: /bin/bash
-  when: ansible_system in ["Darwin", "Linux"] and user_account != "root"
+    executable: "{{ bash_executable }}"
+  when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
 
 # TODO: Fix for Windows.
 # - name: Install or update Node CLI applications for Windows
@@ -91,4 +110,4 @@
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"
     mode: 0644
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system not in ["FreeBSD", "Win32NT"]

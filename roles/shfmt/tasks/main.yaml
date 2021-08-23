@@ -6,6 +6,12 @@
   register: shfmt_formula
   when: ansible_system == "Linux"
 
+- name: Install Shfmt for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: shfmt
+  when: ansible_system == "FreeBSD"
+
 - name: Install Shfmt for Linux
   become: yes
   get_url:

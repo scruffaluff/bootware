@@ -8,9 +8,12 @@ _cargo_applications:
     aarch64: []
     always: []
     x86_64: []
+  # On some FreeBSD servers Ansible discovers the architecture as AMD64 instead
+  # of x86_64.
   FreeBSD:
     aarch64: []
     always: []
+    amd64: []
     x86_64: []
   Linux:
     aarch64: []

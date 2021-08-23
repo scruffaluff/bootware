@@ -1,3 +1,9 @@
+- name: Install Pipx for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: py38-pipx
+  when: ansible_system == "FreeBSD"
+
 - name: Install Pipx for Linux
   become: yes
   shell:
@@ -25,7 +31,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 # Pipx installs applications per user, so user_account is required.
@@ -44,7 +50,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       pipx upgrade-all
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows

@@ -15,6 +15,12 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
+- name: Install Hyperfine for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: hyperfine
+  when: ansible_system == "FreeBSD"
+
 - name: Install Hyperfine for Linux
   become: yes
   package:

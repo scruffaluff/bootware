@@ -18,7 +18,7 @@
       mongosh_arch[ansible_architecture] }}.tgz
   vars:
     mongosh_arch:
-      armv64: arm64
+      aarch64: arm64
       x86_64: x64
   when: ansible_system == "Linux"
 
@@ -32,7 +32,7 @@
       mongosh_arch[ansible_architecture] }}/bin/mongosh
   vars:
     mongosh_arch:
-      armv64: arm64
+      aarch64: arm64
       x86_64: x64
   when: ansible_system == "Linux"
 

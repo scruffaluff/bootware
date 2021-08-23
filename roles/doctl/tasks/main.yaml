@@ -6,6 +6,12 @@
   register: doctl_formula
   when: ansible_system == "Linux"
 
+- name: Install Digital Ocean CLI for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: doctl
+  when: ansible_system == "FreeBSD"
+
 - name: Install Digital Ocean CLI for Linux
   become: yes
   unarchive:
@@ -41,4 +47,4 @@
   shell:
     cmd: |
       doctl completion fish > {{ user_home_dir }}/.config/fish/completions/doctl.fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"

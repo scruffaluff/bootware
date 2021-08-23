@@ -6,6 +6,12 @@
   register: mdbook_formula
   when: ansible_system == "Linux"
 
+- name: Install Mdbook for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: mdbook
+  when: ansible_system == "FreeBSD"
+
 - name: Install Mdbook for Linux
   become: yes
   unarchive:

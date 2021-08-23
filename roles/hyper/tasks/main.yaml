@@ -20,6 +20,13 @@
   become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
+- name: Install Hyper for Fedora distributions
+  become: yes
+  dnf:
+    disable_gpg_check: yes
+    name: https://releases.hyper.is/download/rpm
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
 - name: Install Hyper for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
@@ -27,13 +34,6 @@
     name: hyper
     state: present
   when: ansible_system == "Darwin"
-
-- name: Install Hyper for Fedora distributions
-  become: yes
-  dnf:
-    disable_gpg_check: yes
-    name: https://releases.hyper.is/download/rpm
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for Windows
   become_user: "{{ user_account }}"

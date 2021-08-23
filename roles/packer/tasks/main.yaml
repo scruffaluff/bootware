@@ -6,6 +6,12 @@
   register: packer_formula
   when: ansible_system == "Linux"
 
+- name: Install Packer for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: packer
+  when: ansible_system == "FreeBSD"
+
 - name: Install Packer for Linux
   become: yes
   unarchive:

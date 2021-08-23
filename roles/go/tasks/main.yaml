@@ -6,6 +6,12 @@
   register: go_formula
   when: ansible_system == "Linux"
 
+- name: Install Go for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: go
+  when: ansible_system == "FreeBSD"
+
 - name: Install Go for Linux
   become: yes
   unarchive:
@@ -43,7 +49,7 @@
     cmd: |
       source {{ user_home_dir }}/.bashrc
       go get {{ item }}
-    executable: /bin/bash
+    executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Install Go command line applications for Windows

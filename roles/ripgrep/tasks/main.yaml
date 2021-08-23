@@ -1,3 +1,9 @@
+- name: Install Ripgrep for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: ripgrep
+  when: ansible_system == "FreeBSD"
+
 - name: Install Ripgrep for Linux
   become: yes
   package:
