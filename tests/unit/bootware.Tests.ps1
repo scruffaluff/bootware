@@ -32,3 +32,17 @@ Describe "FindConfigPath" {
         $Global:RetVal | Should -Be $Expected
     }
 }
+
+Describe "WSLPath" {
+    It "Map C Drive correctly" {
+        $Expected="/mnt/c/Windows/regedit.exe"
+        $Actual = $(WSLPath "C:\Windows\regedit.exe")
+        $Actual | Should -Be $Expected
+    }
+
+    It "Map HK Drive correctly" {
+        $Expected="/mnt/hk/ProgramData/Bootware/config.yaml"
+        $Actual = $(WSLPath "HK:\ProgramData/Bootware\config.yaml")
+        $Actual | Should -Be $Expected
+    }
+}

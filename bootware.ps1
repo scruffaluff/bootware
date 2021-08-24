@@ -453,9 +453,11 @@ Function Version() {
     Write-Output "Bootware 0.3.3"
 }
 
- # Convert path to WSL relative path.
+# Convert path to WSL relative path.
 Function WSLPath($FilePath) {
-    "$FilePath" -Replace "\\","/" -Replace "C:","/mnt/c"
+    $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':',''
+    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/"
+    Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
 # Script entrypoint.

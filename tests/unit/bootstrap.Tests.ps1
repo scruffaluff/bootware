@@ -2,6 +2,7 @@ BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
     . "$Bootware"
 
+    Mock FindConfigPath { $Global:RetVal = "C:\Users\Administrator\.bootware\config.yaml" }
     Mock FindRelativeIP { Write-Output "192.48.16.0" }
     Mock Setup { }
 

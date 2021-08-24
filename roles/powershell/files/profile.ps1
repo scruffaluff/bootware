@@ -34,3 +34,11 @@ $Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
 If (Get-Command starship -ErrorAction SilentlyContinue) {
     Invoke-Expression (&starship init powershell)
 }
+
+
+# Typescript settings.
+
+# Initialize NVM if available.
+If (Get-Command nvm -ErrorAction SilentlyContinue) {
+    nvm on  | Out-Null
+}
