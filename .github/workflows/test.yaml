@@ -107,8 +107,13 @@ jobs:
           set-as-default: "true"
       - name: Install Bootware
         run: |
-          "& ./install.ps1"
+          ./install.ps1
           Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
+        shell: powershell
+      - name: Turn on Windows Update and TrustedInstaller services
+        run: |
+          Set-Service -Name wuauserv -StartupType Manual
+          Start-Service -name wuauserv
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
@@ -120,7 +125,7 @@ jobs:
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap
+          bootware bootstrap --no-setup
         shell: powershell
       - name: Test installed binaries for roles
         run: node tests/integration/roles.spec.js windows amd64

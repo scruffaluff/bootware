@@ -364,8 +364,6 @@ Function Setup() {
 
 # Launch OpenSSH server and create inbound network rule.
 Function SetupSSH() {
-    Log "Setting up OpenSSH server"
-
     $KeyPath = $(FindKeyPath)
     $SSHPath = $(Split-Path $KeyPath -Parent)
 

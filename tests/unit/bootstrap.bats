@@ -43,10 +43,10 @@ setup() {
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand passes WinRM arguments to Ansible" {
+@test "Bootstrap subcommand passes Windows SSH arguments to Ansible" {
   local actual
-  local expected="ansible-playbook --ask-pass --connection winrm --extra-vars ansible_pkg_mgr=scoop --extra-vars ansible_python_interpreter=auto_silent --extra-vars ansible_user=fakeuser --extra-vars ansible_winrm_server_cert_validation=ignore --extra-vars ansible_winrm_transport=basic --extra-vars user_account=fakeuser --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, --skip-tags sometag main.yaml"
+  local expected="ansible-playbook --connection ssh --extra-vars ansible_pkg_mgr=scoop --extra-vars ansible_python_interpreter=auto_silent --extra-vars ansible_shell_type=powershell --extra-vars ansible_ssh_private_key_file=/fake/key/path --extra-vars user_account=fakeuser --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, --skip-tags sometag main.yaml"
 
-  actual="$(bootware.sh bootstrap --winrm -i 192.23.0.5, --skip sometag --user fakeuser)"
+  actual="$(bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag --ssh-key /fake/key/path --user fakeuser)"
   assert_equal "${actual}" "${expected}"
 }

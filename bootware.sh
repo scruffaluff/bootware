@@ -237,7 +237,7 @@ bootstrap() {
         shift 1
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "bootstrap"
         ;;
     esac
   done
@@ -275,7 +275,6 @@ bootstrap() {
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
     ${windows:+--extra-vars "ansible_ssh_private_key_file=$ssh_key"} \
-    ${windows:+--extra-vars "ansible_user=$user_account"} \
     --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
@@ -321,7 +320,7 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "config"
         ;;
     esac
   done
@@ -388,7 +387,7 @@ error_usage() {
   local default="\033[0m"
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
-  printf "Run 'bootware --help' for usage.\n" >&2
+  printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
   exit 2
 }
 
@@ -470,7 +469,7 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "setup"
         ;;
     esac
   done
@@ -503,7 +502,6 @@ setup() {
 
   ansible-galaxy collection install community.general > /dev/null
   ansible-galaxy collection install community.windows > /dev/null
-  ansible-galaxy collection install jborean93.win_openssh > /dev/null
 }
 
 #######################################
@@ -781,7 +779,7 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "update"
         ;;
     esac
   done
