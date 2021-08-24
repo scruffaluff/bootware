@@ -34,7 +34,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv
-            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python"
+            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python,qemu"
 
   test-linux:
     name: >-
@@ -106,7 +106,9 @@ jobs:
           distribution: Ubuntu-20.04
           set-as-default: "true"
       - name: Install Bootware
-        run: "& ./install.ps1"
+        run: |
+          "& ./install.ps1"
+          Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
@@ -115,8 +117,11 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware setup
         shell: powershell
-      # - name: Test bootstrapping
-      #   run: |
-      #     $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-      #     bootware bootstrap
-      #   shell: powershell
+      - name: Test bootstrapping
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware bootstrap
+        shell: powershell
+      - name: Test installed binaries for roles
+        run: node tests/integration/roles.spec.js windows amd64
+        shell: powershell

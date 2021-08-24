@@ -177,13 +177,12 @@ Function Bootstrap() {
     }
 
     FindConfigPath "$ConfigPath"
-    $ConfigPath = "$Global:RetVal"
-
-    $ConfigPath = $(WSLPath "$ConfigPath")
+    $ConfigPath = $(WSLPath "$Global:RetVal")
+    $KeyPath = $(WSLPath "$(FindKeyPath)")
     $PlaybookPath = $(WSLPath "$Playbook")
 
     # TODO: Fix encoding errors from Ubuntu using Windows configuration file.
-    wsl bootware bootstrap --winrm --inventory "$Inventory" --playbook "$PlaybookPath" --tags "$Tags" --skip "$Skip" --user "$User"
+    wsl bootware bootstrap --windows --inventory "$Inventory" --playbook "$PlaybookPath" --tags "$Tags" --skip "$Skip" --ssh-key "$KeyPath" --user "$User"
 }
 
 # Subcommand to generate or download Bootware configuration file.
@@ -263,6 +262,11 @@ Function FindConfigPath($FilePath) {
 
     Log "Using $ConfigPath as configuration file"
     $Global:RetVal = "$ConfigPath"
+}
+
+# Find path of Bootware private SSH key.
+Function FindKeyPath() {
+    Write-Output "$PSScriptRoot/ssh/bootware"
 }
 
 # Find IP address of Windows host relative from WSL.
@@ -351,19 +355,34 @@ Function Setup() {
         git clone --depth 1 "$URL" "$RepoPath"
     }
 
-    SetupWinRM
+    SetupSSH
 
     If ($WSL) {
         SetupWSL
     }
 }
 
-# Launch WinRM and create inbound network rule.
-Function SetupWinRM() {
-    $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".ps1"
-    Log "Setting up WinRM"
-    DownloadFile "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1" $TempFile
-    & $TempFile
+# Launch OpenSSH server and create inbound network rule.
+Function SetupSSH() {
+    Log "Setting up OpenSSH server"
+
+    $KeyPath = $(FindKeyPath)
+    $SSHPath = $(Split-Path $KeyPath -Parent)
+
+    If (-Not (Test-Path -Path "$SSHPath" -PathType Container)) {
+        Log "Setting up OpenSSH server"
+        New-Item -Force -ItemType Directory -Path "$SSHPath"
+
+        Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+        New-NetFirewallRule -Name sshd -DisplayName "OpenSSH Server" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+
+        ssh-keygen -N "" -q -f "$KeyPath" -t ed25519
+        $PublicKey = Get-Content -Path "$KeyPath.pub"
+        Add-Content -Path "C:/ProgramData/ssh/administrators_authorized_keys" -Value $PublicKey
+        icacls.exe "C:/ProgramData/ssh/administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+    }
+
+    Start-Service sshd
 }
 
 # Install WSL2 with Ubuntu.
@@ -456,7 +475,7 @@ Function Version() {
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
     $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':',''
-    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/"
+    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/" -Replace " ",'\ '
     Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
