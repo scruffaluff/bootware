@@ -35,7 +35,7 @@ Describe "FindConfigPath" {
 
 Describe "WSLPath" {
     It "Map C Drive correctly" {
-        $Expected="/mnt/c/Program\ Files/regedit.exe"
+        $Expected="/mnt/c/Program Files/regedit.exe"
         $Actual = $(WSLPath "C:\Program Files\regedit.exe")
         $Actual | Should -Be $Expected
     }

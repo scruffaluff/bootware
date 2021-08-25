@@ -19,7 +19,7 @@ BeforeAll {
 Describe "Bootstrap" {
     It "Subcommand passes arguments to WSL copy of Bootware" {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --inventory 192.48.16.0 --playbook /mnt/c/Fake/path/repo/main.yaml --tags desktop --skip none --ssh-key /mnt/c/Program\ Files/Bootware/ssh/bootware --user $Env:UserName"
+        $Expected = "wsl bootware bootstrap --windows --inventory 192.48.16.0 --playbook /mnt/c/Fake/path/repo/main.yaml --tags desktop --skip none --ssh-key /mnt/c/Program Files/Bootware/ssh/bootware --user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml)"
         $Actual | Should -Be $Expected

@@ -288,6 +288,7 @@ Function Log($Message) {
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
+    $Branch = "master"
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
     $WSL = 1
 
@@ -296,6 +297,11 @@ Function Setup() {
             {$_ -In "-h", "--help"} {
                 Usage "setup"
                 Exit 0
+            }
+            {$_ -In "-b", "--branch"} {
+                $Branch = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+                Break
             }
             "--no-wsl" {
                 $WSL = 0
@@ -352,13 +358,13 @@ Function Setup() {
 
     $RepoPath = "$PSScriptRoot/repo"
     If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
-        git clone --depth 1 "$URL" "$RepoPath"
+        git clone --single-branch --branch "$Branch" --depth 1 "$URL" "$RepoPath"
     }
 
     SetupSSH
 
     If ($WSL) {
-        SetupWSL
+        SetupWSL "$Branch"
     }
 }
 
@@ -387,7 +393,7 @@ Function SetupSSH() {
 #
 # Implemented based on instructions at
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
-Function SetupWSL() {
+Function SetupWSL($Branch) {
     If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
         dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
         dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
@@ -421,7 +427,7 @@ Function SetupWSL() {
 
     If (-Not (wsl command -v bootware)) {
         Log "Installing a WSL copy of Bootware"
-        wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash
+        wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash -s -- --version "$Branch"
 
     }
 }
@@ -473,7 +479,7 @@ Function Version() {
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
     $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':',''
-    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/" -Replace " ",'\ '
+    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/"
     Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
