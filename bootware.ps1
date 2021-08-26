@@ -271,11 +271,12 @@ Function FindKeyPath() {
 
 # Find IP address of Windows host relative from WSL.
 #
-# Taken from https://github.com/Microsoft/WSL/issues/1032#issuecomment-677727024
-# and documented at
+# The first "nameserver <ip-address>" section of /etc/resolv.conf contains the
+# IP address of the windows host. Note that there can be several namserver
+# sections. For more information, visit
 # https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
-    Write-Output "$(wsl cat /etc/resolv.conf `| grep nameserver `| cut -d ' ' -f 2),"
+    Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1),"
 }
 
 # Print log message to stdout if logging is enabled.

@@ -34,7 +34,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv
-            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python,qemu"
+            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python,qemu,ripgrep,ruby,sd"
 
   test-linux:
     name: >-
@@ -105,6 +105,11 @@ jobs:
         with:
           distribution: Ubuntu-20.04
           set-as-default: "true"
+      - name: Ping test from WSL to Windows host
+        run: |
+          $Address = $(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)
+          wsl ping -c 10 "$Address"
+        shell: powershell
       - name: Install Bootware
         run: |
           ./install.ps1
@@ -121,6 +126,14 @@ jobs:
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware setup
+        shell: powershell
+      - name: Log all firewall rules on Windows host
+        run: Get-NetFirewallRule -All
+        shell: powershell
+      - name: Test SSH connection from WSL to Windows host
+        run: |
+          $Address = $(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)
+          wsl ssh -vvv -i "'/mnt/c/Program Files/Bootware/ssh/bootware'" $Env:UserName@$Address exit 0
         shell: powershell
       - name: Test bootstrapping
         run: |
