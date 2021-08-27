@@ -72,8 +72,10 @@ USAGE:
     bootware setup [OPTIONS]
 
 OPTIONS:
-    -h, --help      Print help information
-    --no-wsl        Do not configure WSL
+    -h, --help              Print help information
+        --checkout <REF>    Git reference to run against
+    --no-wsl                Do not configure WSL
+    -u, --url <URL>         URL of playbook repository
 '@
         }
         "update" {
@@ -299,7 +301,7 @@ Function Setup() {
                 Usage "setup"
                 Exit 0
             }
-            {$_ -In "-b", "--branch"} {
+            "--checkout" {
                 $Branch = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break

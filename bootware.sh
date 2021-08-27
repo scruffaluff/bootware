@@ -275,6 +275,7 @@ bootstrap() {
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
     ${windows:+--extra-vars "ansible_ssh_private_key_file=$ssh_key"} \
+    ${windows:+--extra-vars "ansible_user=$user_account"} \
     --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
