@@ -3,7 +3,6 @@ BeforeAll {
     . "$Bootware"
 
     Mock FindConfigPath { $Global:RetVal = "C:\Users\Administrator\.bootware\config.yaml" }
-    Mock FindKeyPath { Write-Output "C:\Program Files\Bootware\ssh\bootware" }
     Mock FindRelativeIP { Write-Output "192.48.16.0" }
     Mock Setup { }
 
@@ -17,11 +16,19 @@ BeforeAll {
 }
 
 Describe "Bootstrap" {
-    It "Subcommand passes arguments to WSL copy of Bootware" {
+    It "Subcommand passes default arguments to WSL copy of Bootware" {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --inventory 192.48.16.0 --playbook /mnt/c/Fake/path/repo/main.yaml --tags desktop --skip none --ssh-key /mnt/c/Program Files/Bootware/ssh/bootware --user $Env:UserName"
+        $Expected = "wsl bootware bootstrap --windows --inventory 192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml --skip none --ssh-key /etc/ssh/bootware --tags desktop --user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml)"
+        $Actual | Should -Be $Expected
+    }
+
+    It "Subcommand passes list arguments to WSL copy of Bootware" {
+        $Env:BOOTWARE_NOLOG = 1
+        $Expected = "wsl bootware bootstrap --windows --inventory 192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml --skip python,rust --ssh-key /etc/ssh/bootware --tags fd,go --user $Env:UserName"
+
+        $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml --skip python,rust --tags fd,go)"
         $Actual | Should -Be $Expected
     }
 }
