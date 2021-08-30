@@ -402,6 +402,7 @@ Function SetupSSHKeys {
         
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
         wsl mv "$WSLKeyPath" "/etc/ssh/bootware"
+        wsl chmod 600 "/etc/ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "/etc/ssh/bootware.pub"
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "/etc/ssh/ssh_known_hosts"
 

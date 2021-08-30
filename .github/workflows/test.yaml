@@ -120,10 +120,13 @@ jobs:
       - name: Log all firewall rules on Windows host
         run: Get-NetFirewallRule -All
         shell: powershell
+      # IdentitiesOnly is required to avoid an infinite wait for user password
+      # input if the private key is rejected.
       - name: Test SSH connection from WSL to Windows host
         run: >-
-          wsl ssh -vvv -i /etc/ssh/bootware -o StrictHostKeyChecking=no -o
-          UserKnownHostsFile=/dev/null $Env:UserName@127.0.0.1 dir
+          wsl ssh -vvv -i /etc/ssh/bootware -o IdentitiesOnly=yes -o
+          StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+          $Env:UserName@127.0.0.1 dir
         shell: powershell
       - name: Test bootstrapping
         run: |
