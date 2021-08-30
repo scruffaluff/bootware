@@ -10,7 +10,8 @@ BeforeAll {
 
 Describe "Install" {
     It "Throw error for nonexistant option at end of call" {
-        { & "$Install" -v develop notanoption } | Should -Throw "Error: No such option 'notanoption'"
+        { & "$Install" -v develop notanoption } `
+        | Should -Throw "Error: No such option 'notanoption'"
     }
 
     It "Pass local path to DownloadFile" {

@@ -5,7 +5,8 @@ BeforeAll {
 
 Describe "Main" {
     It "Throw error for unkown subcommand" {
-        { & "$Bootware" notasubcommand } | Should -Throw "Error: No such subcommand 'notasubcommand'"
+        { & "$Bootware" notasubcommand } `
+        | Should -Throw "Error: No such subcommand 'notasubcommand'"
     }
 }
 

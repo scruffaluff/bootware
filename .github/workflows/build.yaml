@@ -102,7 +102,7 @@ jobs:
       #   run: Invoke-ScriptAnalyzer -Path . -Recurse
       #   shell: pwsh
       - name: Install Pester
-        run: Install-Module -Name Pester -Force
+        run: Install-Module -Force -Name Pester
         shell: pwsh
       - name: Run PowerShell unit tests with Pester
         run: Invoke-Pester -Output Detailed ./tests/unit/
