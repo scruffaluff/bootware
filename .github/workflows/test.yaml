@@ -101,6 +101,9 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Get current branch
+        id: branch
+        uses: tj-actions/branch-names@v4
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
@@ -115,7 +118,7 @@ jobs:
       - name: Install dependencies for Bootware
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware setup
+          bootware setup --checkout ${{ steps.branch.outputs.current_branch }}
         shell: powershell
       - name: Log all firewall rules on Windows host
         run: Get-NetFirewallRule -All

@@ -95,7 +95,7 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install PSScriptAnalyzer
-        run: Install-Module -Name PSScriptAnalyzer -Force
+        run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
       # TODO: Resolve PowerShell lints
       # - name: Run PSScriptAnalyzer on all PowerShell scripts

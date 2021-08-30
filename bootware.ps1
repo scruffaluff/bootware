@@ -511,7 +511,9 @@ Function SetupWSL($Branch) {
 
     If (-Not (wsl command -v bootware)) {
         Log "Installing a WSL copy of Bootware"
-        wsl curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `| bash -s -- --version "$Branch"
+        wsl curl -LSfs `
+            https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `
+            `| bash -s -- --version "$Branch"
         wsl bootware setup
     }
 }
