@@ -33,8 +33,8 @@ jobs:
           run: |
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
-            bootware bootstrap --dev --no-passwd --skip deskenv
-            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python,qemu,ripgrep,ruby,sd"
+            bootware bootstrap --dev --no-passwd --skip deskenv,starship
+            node tests/integration/roles.spec.js --arch amd64 --skip python,starship freebsd
 
   test-linux:
     name: >-
@@ -93,7 +93,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js macos amd64 docker
+          node tests/integration/roles.spec.js --arch amd64 --skip docker macos
 
   test-windows:
     name: Test bootstrapping software for Windows
@@ -137,4 +137,4 @@ jobs:
           bootware bootstrap --no-setup --skip defterm
         shell: powershell
       - name: Test installed binaries for roles
-        run: node tests/integration/roles.spec.js windows amd64
+        run: node tests/integration/roles.spec.js --arch amd64 windows

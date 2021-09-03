@@ -71,5 +71,5 @@ RUN if [[ -n "$test" ]]; then \
         if [[ ! -x "$(command -v node)" ]]; then \
             sudo dnf install -y nodejs; \
         fi; \
-        node tests/integration/roles.spec.js "fedora" "${TARGETARCH}" "${skip}" "${tags}"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi

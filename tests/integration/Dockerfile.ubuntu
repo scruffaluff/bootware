@@ -73,5 +73,5 @@ RUN if [[ -n "$test" ]]; then \
         if [[ ! -x "$(command -v node)" ]]; then \
             sudo apt-get install -qy nodejs; \
         fi; \
-        node tests/integration/roles.spec.js "ubuntu" "${TARGETARCH}" "${skip}" "${tags}"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
     fi

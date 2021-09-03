@@ -8,6 +8,61 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
+function parse_args(args) {
+  let params = {
+    architecture: "amd64",
+    os: null,
+    skips: null,
+    shell: {
+      darwin: "/bin/bash",
+      freebsd: "/usr/local/bin/bash",
+      linux: "/bin/bash",
+      win32: "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    }[process.platform],
+    tags: null,
+  };
+
+  let index = 0;
+  while (index < args.length) {
+    switch (args[index]) {
+      case "-a":
+      case "--arch":
+        params.architecture = args[index + 1];
+        index += 2;
+        break;
+      case "--shell":
+        params.shell = args[index + 1];
+        index += 2;
+        break;
+      case "-s":
+      case "--skip":
+        params.skips = args[index + 1];
+        index += 2;
+        break;
+      case "-t":
+      case "--tags":
+        params.tags = args[index + 1];
+        index += 2;
+        break;
+      default:
+        if (params.os === null) {
+          params.os = args[index];
+          index += 1;
+        } else {
+          console.error(`error: No such option ${args[index]}`);
+          process.exit(2);
+        }
+    }
+  }
+
+  if (params.os === null) {
+    console.error(`error: The os argument is required`);
+    process.exit(2);
+  }
+
+  return params;
+}
+
 /**
  * Check if system matches any of the skip conditions.
  * @param {Object} system - The host architecture and os information.
@@ -52,7 +107,7 @@ function testRole(system, role) {
   if (role.tests && !shouldSkip(system, role.skip)) {
     for (const test of role.tests) {
       try {
-        childProcess.execSync(test, { stdio: "pipe" });
+        childProcess.execSync(test, { shell: system.shell, stdio: "pipe" });
       } catch (error) {
         console.log("-> fail\n");
         console.error(error.stderr.toString());
@@ -66,23 +121,24 @@ function testRole(system, role) {
 }
 
 function main() {
-  const [os, arch, skipList, tagList] = process.argv.slice(2, 6);
+  const config = parse_args(process.argv.slice(2));
 
   const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
-  if (tagList) {
-    const tags = tagList.split(",");
-    roles = roles.filter((role) => tags.includes(role.name));
+  if (config.tags) {
+    roles = roles.filter((role) => config.tags.includes(role.name));
   }
 
-  if (skipList) {
-    const skips = skipList.split(",");
-    roles = roles.filter((role) => !skips.includes(role.name));
+  if (config.skips) {
+    roles = roles.filter((role) => !config.skips.includes(role.name));
   }
 
   for (const role of roles) {
-    testRole({ arch, os }, role);
+    testRole(
+      { arch: config.architecture, os: config.os, shell: config.shell },
+      role
+    );
   }
 }
 
