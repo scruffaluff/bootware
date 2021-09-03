@@ -28,6 +28,7 @@ _cargo_applications:
       - cargo-make
       - cargo-tarpaulin
   Win32NT:
+    64-bit: []
     aarch64: []
     always: []
     x86_64: []
