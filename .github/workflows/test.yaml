@@ -33,8 +33,8 @@ jobs:
           run: |
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
-            bootware bootstrap --dev --no-passwd --skip deskenv
-            bash --login -c "node tests/integration/roles.spec.js freebsd amd64 python"
+            bootware bootstrap --dev --no-passwd --skip deskenv,starship
+            node tests/integration/roles.spec.js --arch amd64 --skip python,starship freebsd
 
   test-linux:
     name: >-
@@ -93,7 +93,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js macos amd64 docker
+          node tests/integration/roles.spec.js --arch amd64 --skip docker macos
 
   test-windows:
     name: Test bootstrapping software for Windows
@@ -101,22 +101,44 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Get current branch
+        id: branch
+        uses: tj-actions/branch-names@v4
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
           set-as-default: "true"
       - name: Install Bootware
-        run: "& ./install.ps1"
+        run: |
+          ./install.ps1
+          Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Install dependencies for Bootware
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware setup
+          bootware setup --checkout ${{ steps.branch.outputs.current_branch }}
         shell: powershell
-      # - name: Test bootstrapping
-      #   run: |
-      #     $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-      #     bootware bootstrap
-      #   shell: powershell
+      - name: Log all firewall rules on Windows host
+        run: Get-NetFirewallRule -All
+        shell: powershell
+      # IdentitiesOnly is required to avoid an infinite wait for user password
+      # input if the private key is rejected.
+      - name: Test SSH connection from WSL to Windows host
+        run: >-
+          wsl ssh -vvv -i /etc/ssh/bootware -o IdentitiesOnly=yes -o
+          StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+          $Env:UserName@127.0.0.1 dir
+        shell: powershell
+      - name: Test bootstrapping
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware bootstrap --no-setup --skip defterm
+        shell: powershell
+      # The GitHub Windows server does not seem to update its path correctly.
+      # Appears to work on other Windows servers.
+      - name: Test installed binaries for roles
+        run: |
+          $Env:Path = "$HOME\scoop\shims;$Env:Path"
+          node tests/integration/roles.spec.js --arch amd64 --skip chrome,libvirt,mdbook,mongo,python,wasm,xonsh windows

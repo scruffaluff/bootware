@@ -5,7 +5,8 @@ BeforeAll {
 
 Describe "Main" {
     It "Throw error for unkown subcommand" {
-        { & "$Bootware" notasubcommand } | Should -Throw "Error: No such subcommand 'notasubcommand'"
+        { & "$Bootware" notasubcommand } `
+        | Should -Throw "Error: No such subcommand 'notasubcommand'"
     }
 }
 
@@ -35,8 +36,8 @@ Describe "FindConfigPath" {
 
 Describe "WSLPath" {
     It "Map C Drive correctly" {
-        $Expected="/mnt/c/Windows/regedit.exe"
-        $Actual = $(WSLPath "C:\Windows\regedit.exe")
+        $Expected="/mnt/c/Program Files/regedit.exe"
+        $Actual = $(WSLPath "C:\Program Files\regedit.exe")
         $Actual | Should -Be $Expected
     }
 

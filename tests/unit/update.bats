@@ -26,15 +26,20 @@ setup() {
 @test "Update subcommand passes Bootware executable path to Curl" {
   local actual
   local expected
+  
+  expected="curl -LSfs \
+https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh \
+-o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
 
-  expected="curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh -o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
   actual="$(bootware.sh update --version develop)"
   assert_equal "${actual}" "${expected}"
 }
 
 @test "Functon update uses sudo when destination is not writable" {
   local actual
-  local expected
+  local expected="sudo curl -LSfs \
+https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh \
+-o /bin/bash"
 
   source bootware.sh
 
@@ -53,7 +58,6 @@ setup() {
   }
   export -f sudo
 
-  expected="sudo curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh -o /bin/bash"
   actual="$(update)"
   assert_equal "${actual}" "${expected}"
 }

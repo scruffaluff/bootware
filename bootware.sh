@@ -33,10 +33,11 @@ OPTIONS:
     -p, --playbook <FILE-NAME>      Name of play to execute
         --password <PASSWORD>       Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+        --ssh-key <FILE-NAME>       Path to SSH private key
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
-        --winrm                     Use WinRM connection instead of SSH
+        --windows                   Connect to a Windows host with SSH
 EOF
       ;;
     config)
@@ -135,7 +136,6 @@ assert_cmd() {
 bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
-  local ask_passwd_winrm
   local check
   local checkout
   local cmd="pull"
@@ -146,12 +146,13 @@ bootstrap() {
   local passwd
   local playbook="${BOOTWARE_PLAYBOOK:-"main.yaml"}"
   local skip="${BOOTWARE_SKIP:-""}"
+  local ssh_key
   local tags="${BOOTWARE_TAGS:-""}"
   local url="${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}"
   local use_playbook
   local use_pull=1
   local user_account="${USER:-root}"
-  local winrm
+  local windows
 
   # Check if Ansible should ask for user password.
   #
@@ -214,6 +215,10 @@ bootstrap() {
         tags="$2"
         shift 2
         ;;
+      --ssh-key)
+        ssh_key="$2"
+        shift 2
+        ;;
       -u | --url)
         url="$2"
         shift 2
@@ -222,28 +227,28 @@ bootstrap() {
         user_account="$2"
         shift 2
         ;;
-      --winrm)
+      --windows)
         ask_passwd=""
         cmd="playbook"
-        connection="winrm"
+        connection="ssh"
         use_playbook=1
         use_pull=""
-        winrm=1
+        windows=1
         shift 1
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "bootstrap"
         ;;
     esac
   done
 
-  # Check if Ansible should ask for user password for WinRM connections.
+  # Check if Ansible has data required if using a Windows connection.
   #
   # Flags:
   #   -n: Check if the string has nonzero length.
   #   -z: Check if string has zero length.
-  if [[ -n "${winrm}" && -z "${passwd}" ]]; then
-    ask_passwd_winrm=1
+  if [[ -n "${windows}" && -z "${ssh_key}" ]]; then
+    error "An SSH key must be provided for Windows connection"
   fi
 
   # Check if Bootware setup should be run.
@@ -262,16 +267,15 @@ bootstrap() {
 
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
-    ${ask_passwd_winrm:+--ask-pass} \
     ${check:+--check} \
     ${checkout:+--checkout "$checkout"} \
     ${use_playbook:+--connection "$connection"} \
     ${passwd:+--extra-vars "ansible_password=$passwd"} \
-    ${winrm:+--extra-vars "ansible_pkg_mgr=scoop"} \
+    ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
-    ${winrm:+--extra-vars "ansible_user=$user_account"} \
-    ${winrm:+--extra-vars "ansible_winrm_server_cert_validation=ignore"} \
-    ${winrm:+--extra-vars "ansible_winrm_transport=basic"} \
+    ${windows:+--extra-vars "ansible_shell_type=powershell"} \
+    ${windows:+--extra-vars "ansible_ssh_private_key_file=$ssh_key"} \
+    ${windows:+--extra-vars "ansible_user=$user_account"} \
     --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
@@ -317,7 +321,7 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "config"
         ;;
     esac
   done
@@ -384,7 +388,7 @@ error_usage() {
   local default="\033[0m"
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
-  printf "Run 'bootware --help' for usage.\n" >&2
+  printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
   exit 2
 }
 
@@ -466,7 +470,7 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "setup"
         ;;
     esac
   done
@@ -590,7 +594,7 @@ setup_debian() {
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
     ${1:+sudo} python3 -m pip install setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pywinrm
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -653,7 +657,7 @@ setup_freebsd() {
     # Not all Python installations have setuptools or wheel installed and it
     # must be installed as a separate step before other packages.
     ${1:+sudo} python3 -m pip install setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pywinrm
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   # Install Curl if not already installed.
@@ -776,7 +780,7 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'"
+        error_usage "No such option '$1'" "update"
         ;;
     esac
   done

@@ -1,4 +1,4 @@
-FROM debian:10.10
+FROM debian:11.0
 
 ARG TARGETARCH
 
@@ -70,5 +70,5 @@ RUN if [[ -n "$test" ]]; then \
         if [[ ! -x "$(command -v node)" ]]; then \
             sudo apt-get install -qy nodejs; \
         fi; \
-        node tests/integration/roles.spec.js "debian" "${TARGETARCH}" "${skip}" "${tags}"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

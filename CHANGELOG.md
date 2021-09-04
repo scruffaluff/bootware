@@ -9,10 +9,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Ability to choose Bootware branch for automatic WSL installation.
 - Deno support for Apple ARM64.
-- GitHub CLI installation.
 - Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, Ruby and Scc roles.
+- GitHub CLI installation.
 - Support for more operating systems on Mongo Shell.
+
+### Changed
+
+- VSCode keybindings for switching between terminal tabs.
+- Windows connections from WinRM to SSH.
 
 ### Fixed
 

@@ -4,7 +4,7 @@
     name:
       - binfmt-support
       - qemu-user-static
-  when: ansible_pkg_mgr == "apt" and deb_distro_base.stdout == "Debian"
+  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Qemu for FreeBSD
   become: yes

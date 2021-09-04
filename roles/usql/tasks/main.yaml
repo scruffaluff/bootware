@@ -44,8 +44,8 @@
       usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
       }}-linux-amd64.tar.bz2
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf"] and deb_distro_base != "debian" and
-    ansible_architecture == "x86_64"
+    ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
+    ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
 
 - name: Install Usql for FreeBSD
   become: yes

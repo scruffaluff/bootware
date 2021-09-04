@@ -8,6 +8,61 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
+function parse_args(args) {
+  let params = {
+    architecture: "amd64",
+    os: null,
+    skips: null,
+    shell: {
+      darwin: "/bin/bash",
+      freebsd: "/usr/local/bin/bash",
+      linux: "/bin/bash",
+      win32: "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    }[process.platform],
+    tags: null,
+  };
+
+  let index = 0;
+  while (index < args.length) {
+    switch (args[index]) {
+      case "-a":
+      case "--arch":
+        params.architecture = args[index + 1];
+        index += 2;
+        break;
+      case "--shell":
+        params.shell = args[index + 1];
+        index += 2;
+        break;
+      case "-s":
+      case "--skip":
+        params.skips = args[index + 1];
+        index += 2;
+        break;
+      case "-t":
+      case "--tags":
+        params.tags = args[index + 1];
+        index += 2;
+        break;
+      default:
+        if (params.os === null) {
+          params.os = args[index];
+          index += 1;
+        } else {
+          console.error(`error: No such option ${args[index]}`);
+          process.exit(2);
+        }
+    }
+  }
+
+  if (params.os === null) {
+    console.error(`error: The os argument is required`);
+    process.exit(2);
+  }
+
+  return params;
+}
+
 /**
  * Check if system matches any of the skip conditions.
  * @param {Object} system - The host architecture and os information.
@@ -47,42 +102,58 @@ function shouldSkip(system, conditions) {
  * @patam {Object} role - Testing information for a role.
  */
 function testRole(system, role) {
+  let error = false;
   process.stdout.write(`testing: ${role.name}`);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
     for (const test of role.tests) {
       try {
-        childProcess.execSync(test, { stdio: "pipe" });
-      } catch (error) {
+        childProcess.execSync(test, { shell: system.shell, stdio: "pipe" });
+      } catch (exception) {
+        error = true;
         console.log("-> fail\n");
-        console.error(error.stderr.toString());
-        process.exit(1);
+        console.error(exception.stderr.toString());
       }
     }
-    console.log("-> pass");
+
+    if (!error) {
+      console.log("-> pass");
+    }
   } else {
     console.log("-> skip");
   }
+
+  return error;
 }
 
 function main() {
-  const [os, arch, skipList, tagList] = process.argv.slice(2, 6);
+  const config = parse_args(process.argv.slice(2));
 
   const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
-  if (tagList) {
-    const tags = tagList.split(",");
-    roles = roles.filter((role) => tags.includes(role.name));
+  if (config.tags) {
+    roles = roles.filter((role) => config.tags.includes(role.name));
   }
 
-  if (skipList) {
-    const skips = skipList.split(",");
-    roles = roles.filter((role) => !skips.includes(role.name));
+  if (config.skips) {
+    roles = roles.filter((role) => !config.skips.includes(role.name));
   }
 
+  let error = false;
   for (const role of roles) {
-    testRole({ arch, os }, role);
+    error =
+      testRole(
+        { arch: config.architecture, os: config.os, shell: config.shell },
+        role
+      ) || error;
+  }
+
+  if (error) {
+    console.error("\nIntegration tests failed.");
+    process.exit(1);
+  } else {
+    console.log("\nIntegration tests passed.");
   }
 }
 

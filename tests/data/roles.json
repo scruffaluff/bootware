@@ -55,7 +55,7 @@
   },
   {
     "name": "exa",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
     "tests": ["exa --version"]
   },
   {

@@ -131,4 +131,4 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js macos amd64 docker ${{ matrix.tag }}
+          node tests/integration/roles.spec.js --arch amd64 --skip docker --tags "node,${{ matrix.tag }}" macos

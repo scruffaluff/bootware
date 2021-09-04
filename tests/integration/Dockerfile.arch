@@ -1,4 +1,4 @@
-FROM archlinux:base-20210815.0.31571
+FROM archlinux:base-20210822.0.32033
 
 ARG TARGETARCH
 
@@ -68,5 +68,5 @@ RUN if [[ -n "$test" ]]; then \
         if [[ ! -x "$(command -v node)" ]]; then \
             sudo pacman -S --noconfirm nodejs; \
         fi; \
-        node tests/integration/roles.spec.js "arch" "${TARGETARCH}" "${skip}" "${tags}"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

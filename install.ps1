@@ -18,10 +18,12 @@ OPTIONS:
 '@
 }
 
-# Downloads file to destination efficiently.
+# Download file to destination efficiently.
+#
+# Required as a seperate function, since the default progress bar updates every
+# byte, making downloads slow. For more information, visit
+# https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
-    # The progress bar updates every byte, which makes downloads slow. See
-    # https://stackoverflow.com/a/43477248 for an explanation.
     $ProgressPreference = "SilentlyContinue"
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
