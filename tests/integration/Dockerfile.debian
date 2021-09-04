@@ -1,5 +1,4 @@
-# TODO: Upgrade to Debian 11 once Hyper terminal supports it.
-FROM debian:10.10
+FROM debian:11.0
 
 ARG TARGETARCH
 
