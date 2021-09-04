@@ -102,22 +102,28 @@ function shouldSkip(system, conditions) {
  * @patam {Object} role - Testing information for a role.
  */
 function testRole(system, role) {
+  let error = false;
   process.stdout.write(`testing: ${role.name}`);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
     for (const test of role.tests) {
       try {
         childProcess.execSync(test, { shell: system.shell, stdio: "pipe" });
-      } catch (error) {
+      } catch (exception) {
+        error = true;
         console.log("-> fail\n");
-        console.error(error.stderr.toString());
-        process.exit(1);
+        console.error(exception.stderr.toString());
       }
     }
-    console.log("-> pass");
+
+    if (!error) {
+      console.log("-> pass");
+    }
   } else {
     console.log("-> skip");
   }
+
+  return error;
 }
 
 function main() {
@@ -134,11 +140,20 @@ function main() {
     roles = roles.filter((role) => !config.skips.includes(role.name));
   }
 
+  let error = false;
   for (const role of roles) {
-    testRole(
-      { arch: config.architecture, os: config.os, shell: config.shell },
-      role
-    );
+    error =
+      testRole(
+        { arch: config.architecture, os: config.os, shell: config.shell },
+        role
+      ) || error;
+  }
+
+  if (error) {
+    console.error("\nIntegration tests failed.");
+    process.exit(1);
+  } else {
+    console.log("\nIntegration tests passed.");
   }
 }
 

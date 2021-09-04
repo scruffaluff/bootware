@@ -136,5 +136,9 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware bootstrap --no-setup --skip defterm
         shell: powershell
+      # The GitHub Windows server does not seem to update its path correctly.
+      # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
-        run: node tests/integration/roles.spec.js --arch amd64 windows
+        run: |
+          $Env:Path = "$HOME\scoop\shims;$Env:Path"
+          node tests/integration/roles.spec.js --arch amd64 --skip chrome,libvirt,mdbook,mongo,python,wasm,xonsh windows
