@@ -13,6 +13,7 @@
     "bats": "^1.2.1",
     "bats-assert": "https://github.com/ztombol/bats-assert",
     "bats-support": "https://github.com/ztombol/bats-support",
+    "commander": "^8.1.0",
     "mustache": "^4.1.0",
     "prettier": "^2.0.5",
     "vuepress": "^1.5.3",

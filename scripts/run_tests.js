@@ -5,9 +5,22 @@
  */
 
 const childProcess = require("child_process");
+const { Command } = require("commander");
 
 function main() {
-  const config = parse_args(process.argv.slice(2));
+  const program = new Command();
+  program
+    .option("-a, --arch <architecture>", "chip architecture", "amd64")
+    .option("-d, --distros <distributions...>", "Linux distributions list", [
+      "arch",
+      "debian",
+      "fedora",
+      "ubuntu",
+    ])
+    .option("-s, --skip <roles...>", "Ansible roles to skip", null)
+    .option("-t, --tags <roles...>", "Ansible roles to keep", null)
+    .parse();
+  const config = program.opts();
 
   let args = `--build-arg test=true`;
   if (config.skip) {
@@ -25,46 +38,6 @@ function main() {
   }
 
   console.log(`All integration tests passed.`);
-}
-
-function parse_args(args) {
-  let params = {
-    architecture: "amd64",
-    distros: ["arch", "debian", "fedora", "ubuntu"],
-    skip: null,
-    tags: null,
-  };
-
-  let index = 0;
-  while (index < args.length) {
-    switch (args[index]) {
-      case "-a":
-      case "--arch":
-        params.architecture = args[index + 1];
-        index += 2;
-        break;
-      case "-d":
-      case "--distros":
-        params.distros = args[index + 1].split(",");
-        index += 2;
-        break;
-      case "-s":
-      case "--skip":
-        params.skip = args[index + 1];
-        index += 2;
-        break;
-      case "-t":
-      case "--tags":
-        params.tags = args[index + 1];
-        index += 2;
-        break;
-      default:
-        console.error(`error: No such option ${args[index]}`);
-        process.exit(2);
-    }
-  }
-
-  return params;
 }
 
 main();
