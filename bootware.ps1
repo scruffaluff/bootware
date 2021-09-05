@@ -101,47 +101,41 @@ Function Bootstrap() {
     $Skip = "none"
     $Tags = "desktop"
     $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
-    $UsePasswd = 1
     $UseSetup = 1
     $User = "$Env:UserName"
 
     While ($ArgIdx -lt $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            {$_ -In "-c", "--config"} {
+            { $_ -In "-c", "--config" } {
                 $ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            {$_ -In "-h", "--help"} {
+            { $_ -In "-h", "--help" } {
                 Usage "bootstrap"
                 Exit 0
-            }
-            "--no-passwd" {
-                $UsePasswd = 0
-                $ArgIdx += 1
-                Break
             }
             "--no-setup" {
                 $UseSetup = 0
                 $ArgIdx += 1
                 Break
             }
-            {$_ -In "-p", "--playbook"} {
+            { $_ -In "-p", "--playbook" } {
                 $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            {$_ -In "-s", "--skip"} {
+            { $_ -In "-s", "--skip" } {
                 $Skip = $Args[0][$ArgIdx + 1] -Join ","
                 $ArgIdx += 2
                 Break
             }
-            {$_ -In "-t", "--tags"} {
+            { $_ -In "-t", "--tags" } {
                 $Tags = $Args[0][$ArgIdx + 1] -Join ","
                 $ArgIdx += 2
                 Break
             }
-            {$_ -In "-u", "--url"} {
+            { $_ -In "-u", "--url" } {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -161,7 +155,8 @@ Function Bootstrap() {
         $Params = @()
         $Params += "--url", "$URL"
         Setup $Params
-    } ElseIf (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
+    }
+    ElseIf (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
         Throw "Error: The WSL needs to be setup before bootstrapping"
         Exit 1
     }
@@ -190,21 +185,21 @@ Function Config() {
 
     While ($ArgIdx -lt $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            {$_ -In "-d", "--dest"} {
+            { $_ -In "-d", "--dest" } {
                 $DstFile = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            {$_ -In "-e", "--empty"} {
+            { $_ -In "-e", "--empty" } {
                 $EmptyCfg = 1
                 $ArgIdx += 1
                 Break
             }
-            {$_ -In "-h", "--help"} {
+            { $_ -In "-h", "--help" } {
                 Usage "config"
                 Exit 0
             }
-            {$_ -In "-s", "--source"} {
+            { $_ -In "-s", "--source" } {
                 $SrcURL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -217,13 +212,14 @@ Function Config() {
 
     $DstDir = "$(Split-Path -Path $DstFile -Parent)"
     If (-Not (Test-Path -Path "$DstDir" -PathType Container)) {
-        New-Item -ItemType Directory -Path "$DstDir"
+        New-Item -ItemType Directory -Path "$DstDir" | Out-Null
     }
 
     If ($EmptyCfg) {
         Log "Writing empty configuration file to $DstFile"
         Write-Output "passwordless_sudo: false" > "$DstFile"
-    } Else {
+    }
+    Else {
         # Log "Downloading configuration file to $DstFile"
         DownloadFile "$SrcURL" "$DstFile"
     }
@@ -249,11 +245,14 @@ Function ErrorUsage($Message) {
 Function FindConfigPath($FilePath) {
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
-    } ElseIf (($Env:BOOTWARE_CONFIG) -And (Test-Path -Path "$Env:BOOTWARE_CONFIG")) {
+    }
+    ElseIf (($Env:BOOTWARE_CONFIG) -And (Test-Path -Path "$Env:BOOTWARE_CONFIG")) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
-    } ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
+    }
+    ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
-    } Else {
+    }
+    Else {
         Log "Unable to find Bootware configuation file"
         $Params = @()
         $Params += @("--empty")
@@ -277,7 +276,8 @@ Function FindRelativeIP {
 
     If ($LastExitCode) {
         Write-Output "127.0.0.1"
-    } Else {
+    }
+    Else {
         Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
     }
 }
@@ -308,7 +308,7 @@ Function Setup() {
 
     While ($ArgIdx -lt $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            {$_ -In "-h", "--help"} {
+            { $_ -In "-h", "--help" } {
                 Usage "setup"
                 Exit 0
             }
@@ -322,7 +322,7 @@ Function Setup() {
                 $ArgIdx += 1
                 Break
             }
-            {$_ -In "-u", "--url"} {
+            { $_ -In "-u", "--url" } {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -350,7 +350,7 @@ Function Setup() {
         RemoteScript "https://get.scoop.sh"
     }
 
-     # Git is required for addding Scoop buckets.
+    # Git is required for addding Scoop buckets.
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
         Log "Downloading Git version control"
         scoop install git
@@ -401,7 +401,7 @@ Function SetupSSHKeys {
         Add-Content `
             -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
             -Value $PublicKey
-        
+
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
         wsl mkdir -p -m 700 "`${HOME}/.ssh/"
         wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
@@ -414,7 +414,7 @@ Function SetupSSHKeys {
             -Path "$Env:ProgramData/ssh/sshd_config" `
             -Value "PasswordAuthentication no"
 
-        New-Item -ItemType File -Path "$SetupSSHKeysComplete"
+        New-Item -ItemType File -Path "$SetupSSHKeysComplete" | Out-Null
     }
 }
 
@@ -460,14 +460,14 @@ Function SetupSSHServer() {
         # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#administrative-user.
         $AuthKeys = "C:/ProgramData/ssh/administrators_authorized_keys"
         If (-Not (Test-Path -Path "$AuthKeys" -PathType Leaf)) {
-            New-Item -ItemType File -Path "$AuthKeys"
+            New-Item -ItemType File -Path "$AuthKeys" | Out-Null
         }
         icacls.exe "$AuthKeys" `
             /grant "Administrators:F" `
             /grant "SYSTEM:F" `
             /inheritance:r
 
-        New-Item -ItemType File -Path "$SetupSSHServerComplete"
+        New-Item -ItemType File -Path "$SetupSSHServerComplete" | Out-Null
     }
 
     Start-Service sshd
@@ -537,11 +537,11 @@ Function Update() {
 
     While ($ArgIdx -lt $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            {$_ -In "-h", "--help"} {
+            { $_ -In "-h", "--help" } {
                 Usage "update"
                 Exit 0
             }
-            {$_ -In "-v", "--version"} {
+            { $_ -In "-v", "--version" } {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -576,8 +576,8 @@ Function Version() {
 
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
-    $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':',''
-    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\","/"
+    $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':', ''
+    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\", "/"
     Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
@@ -585,17 +585,18 @@ Function WSLPath($FilePath) {
 Function Main() {
     # Get subcommand parameters.
     If ($Args[0].Length -gt 1) {
-        $Slice = $Args[0][1..($Args[0].Length-1)]
-    } Else {
+        $Slice = $Args[0][1..($Args[0].Length - 1)]
+    }
+    Else {
         $Slice = @()
     }
 
     Switch ($Args[0][0]) {
-        {$_ -In "-h", "--help"} {
+        { $_ -In "-h", "--help" } {
             Usage "main"
             Break
         }
-        {$_ -In "-v", "--version"} {
+        { $_ -In "-v", "--version" } {
             Version
             Break
         }

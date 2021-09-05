@@ -97,10 +97,9 @@ jobs:
       - name: Install PSScriptAnalyzer
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
-      # TODO: Resolve PowerShell lints
-      # - name: Run PSScriptAnalyzer on all PowerShell scripts
-      #   run: Invoke-ScriptAnalyzer -Path . -Recurse
-      #   shell: pwsh
+      - name: Run PSScriptAnalyzer format lints on all PowerShell scripts
+        run: Invoke-ScriptAnalyzer -Recurse -Path . -Settings CodeFormatting
+        shell: pwsh
       - name: Install Pester
         run: Install-Module -Force -Name Pester
         shell: pwsh

@@ -127,7 +127,7 @@ jobs:
       # input if the private key is rejected.
       - name: Test SSH connection from WSL to Windows host
         run: >-
-          wsl ssh -vvv -i '${HOME}/.shh/bootware' -o IdentitiesOnly=yes -o
+          wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o
           StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
           $Env:UserName@127.0.0.1 dir
         shell: powershell

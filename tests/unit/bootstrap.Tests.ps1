@@ -2,7 +2,7 @@ BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
     . "$Bootware"
 
-    Mock FindConfigPath { 
+    Mock FindConfigPath {
         $Global:RetVal = "C:\Users\Administrator\.bootware\config.yaml"
     }
     Mock FindRelativeIP { Write-Output "192.48.16.0" }
@@ -10,7 +10,8 @@ BeforeAll {
 
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         Mock wsl { Write-Output "wsl $Args" }
-    } Else {
+    } 
+    Else {
         Function wsl() {
             Write-Output "wsl $Args"
         }

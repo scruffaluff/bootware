@@ -49,11 +49,11 @@ Function Main() {
 
     While ($ArgIdx -lt $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            {$_ -In "-h", "--help"} {
+            { $_ -In "-h", "--help" } {
                 Usage
                 Exit 0
             }
-            {$_ -In "-v", "--version"} {
+            { $_ -In "-v", "--version" } {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -72,7 +72,8 @@ Function Main() {
     $Source = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
     If ($Target -Eq "User") {
         $Dest = "$Env:AppData/Bootware/bootware.ps1"
-    } Else {
+    }
+    Else {
         $Dest = "C:/Program Files/Bootware/bootware.ps1"
     }
 

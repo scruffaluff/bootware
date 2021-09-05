@@ -10,18 +10,19 @@ BeforeAll {
 
 Describe "Install" {
     It "Throw error for nonexistant option at end of call" {
-        { & "$Install" -v develop notanoption } `
-        | Should -Throw "Error: No such option 'notanoption'"
+        { & "$Install" -v develop notanoption } |
+            Should -Throw "Error: No such option 'notanoption'"
     }
 
     It "Pass local path to DownloadFile" {
         If (Get-Command bootware -ErrorAction SilentlyContinue) {
             Mock bootware { Write-Output "" }
-        } Else {
+        }
+        Else {
             Function bootware() { Write-Output "" }
         }
 
-        $Env:BOOTWARE_NOLOG=1
+        $Env:BOOTWARE_NOLOG = 1
 
         & "$Install" --user --version develop
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {

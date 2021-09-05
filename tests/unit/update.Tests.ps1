@@ -16,18 +16,19 @@ BeforeAll {
 
 Describe "Update" {
     It "Throw error for nonexistant option at end of call" {
-        { & "$Bootware" update -v develop notanoption } `
-        | Should -Throw "Error: No such option 'notanoption'"
+        { & "$Bootware" update -v develop notanoption } |
+            Should -Throw "Error: No such option 'notanoption'"
     }
 
     It "Subcommand passes args to DownloadFile and Git" {
         If (Get-Command bootware -ErrorAction SilentlyContinue) {
             Mock bootware { Write-Output "" }
-        } Else {
+        }
+        Else {
             Function bootware() { Write-Output "" }
         }
 
-        $Env:BOOTWARE_NOLOG=1
+        $Env:BOOTWARE_NOLOG = 1
         $BootwareDir = "$(Split-Path -Parent $Bootware)"
         $Expected = "git -C $BootwareDir/repo pull"
 
