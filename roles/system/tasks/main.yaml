@@ -116,13 +116,22 @@
       - zip
   when: ansible_system == "Darwin"
 
+- name: Add essential Scoop buckets for Windows
+  community.windows.win_scoop_bucket:
+    name: "{{ item }}"
+  loop:
+    - extras
+    - main
+    - nerd-fonts
+    - versions
+  when: ansible_system == "Win32NT"
+
 - name: Install essential packages for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name:
       - 7zip
-      - openssh
       - openssl
       - unzip
       - zip

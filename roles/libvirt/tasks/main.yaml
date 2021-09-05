@@ -51,3 +51,8 @@
     architecture: 64bit
     name: libvirt
   when: ansible_system == "Win32NT"
+
+- name: Install Virt Viewer for Windows
+  win_chocolatey:
+    name: virt-viewer
+  when: ansible_system == "Win32NT"
