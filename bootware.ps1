@@ -403,11 +403,16 @@ Function SetupSSHKeys {
             -Value $PublicKey
         
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        wsl mkdir -p -m 700 "${HOME}/.ssh/"
+        wsl mkdir -p -m 700 "`${HOME}/.ssh/"
         wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
-        wsl chmod 600 "${HOME}/.ssh/bootware"
-        wsl mv "$WSLKeyPath.pub" "${HOME}/.ssh/bootware.pub"
-        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "${HOME}/.ssh/known_hosts"
+        wsl chmod 600 "`${HOME}/.ssh/bootware"
+        wsl mv "$WSLKeyPath.pub" "`${HOME}/.ssh/bootware.pub"
+        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`${HOME}/.ssh/known_hosts"
+
+        # Disable password based logins for SSH.
+        Add-Content `
+            -Path "$Env:ProgramData/ssh/sshd_config" `
+            -Value "PasswordAuthentication no"
 
         New-Item -ItemType File -Path "$SetupSSHKeysComplete"
     }
@@ -422,8 +427,12 @@ Function SetupSSHServer() {
     If (-Not (Test-Path -Path "$SetupSSHServerComplete" -PathType Leaf)) {
         Log "Setting up OpenSSH server"
 
-        # Turn on Windows Update and TrustedInstaller services
-        Start-Service -name wuauserv
+        # Turn on Windows Update and TrustedInstaller services.
+        Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+        If ($? -Eq $False) {
+            Set-Service -Name wuauserv -StartupType Manual
+            Start-Service -Name wuauserv
+        }
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
         New-NetFirewallRule `

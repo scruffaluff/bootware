@@ -22,7 +22,7 @@ Describe "Bootstrap" {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = "wsl bootware bootstrap --windows --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
-            + "--skip none --ssh-key /etc/ssh/bootware --tags desktop --user " `
+            + "--skip none --ssh-key `${HOME}/.ssh/bootware --tags desktop --user " `
             + "$Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml)"
@@ -33,7 +33,7 @@ Describe "Bootstrap" {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = "wsl bootware bootstrap --windows --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
-            + "--skip python,rust --ssh-key /etc/ssh/bootware --tags fd,go " `
+            + "--skip python,rust --ssh-key `${HOME}/.ssh/bootware --tags fd,go " `
             + "--user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook `
