@@ -130,7 +130,11 @@
   },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
-  { "name": "libvirt", "tests": ["virsh --version"] },
+  {
+    "name": "libvirt",
+    "skip": [{ "os": "windows" }],
+    "tests": ["virsh --version"]
+  },
   {
     "name": "mdbook",
     "skip": [{ "arch": "arm64" }],
@@ -177,7 +181,7 @@
   },
   {
     "name": "python",
-    "tests": ["pipx --version", "pyenv --version", "python --version"]
+    "tests": ["pipx --version", "python --version"]
   },
   { "name": "qemu", "tests": ["qemu-img --version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },

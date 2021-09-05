@@ -3,7 +3,7 @@
     url: https://formulae.brew.sh/api/formula/mongosh.json
     method: GET
     return_content: yes
-  register: mongosh_formula
+  register: mongosh_formula_linux
   when: ansible_system == "Linux"
 
 - name: Get latest Mongo Shell version for Windows
@@ -11,7 +11,7 @@
     url: https://formulae.brew.sh/api/formula/mongosh.json
     method: GET
     return_content: yes
-  register: mongosh_formula
+  register: mongosh_formula_windows
   when: ansible_system == "Win32NT"
 
 - name: Download Mongo Shell for Linux
@@ -22,7 +22,7 @@
     remote_src: yes
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
-      mongosh_formula.json.versions.stable }}-linux-{{
+      mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch[ansible_architecture] }}.tgz
   vars:
     mongosh_arch:
@@ -36,7 +36,7 @@
     dest: /usr/local/bin/mongosh
     mode: 0755
     src: >-
-      /tmp/mongosh-{{ mongosh_formula.json.versions.stable }}-linux-{{
+      /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch[ansible_architecture] }}/bin/mongosh
   vars:
     mongosh_arch:
@@ -61,5 +61,5 @@
   win_package:
     path: >-
       https://downloads.mongodb.com/compass/mongosh-{{
-      mongosh_formula.json.versions.stable }}-x64.msi
+      mongosh_formula_windows.json.versions.stable }}-x64.msi
   when: ansible_system == "Win32NT"

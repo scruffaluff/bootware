@@ -141,4 +141,4 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "$HOME\scoop\shims;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 --skip libvirt,python windows
+          node tests/integration/roles.spec.js --arch amd64 windows
