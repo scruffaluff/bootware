@@ -176,7 +176,7 @@ Function Bootstrap() {
         --inventory "$Inventory," `
         --playbook "$PlaybookPath" `
         --skip "$Skip" `
-        --ssh-key "/etc/ssh/bootware" `
+        --ssh-key "`${HOME}/.ssh/bootware" `
         --tags "$Tags" `
         --user "$User"
 }
@@ -215,10 +215,10 @@ Function Config() {
         }
     }
 
-    New-Item -Force `
-        -ItemType Directory `
-        -Path $(Split-Path -Path $DstFile -Parent) `
-        | Out-Null
+    $DstDir = "$(Split-Path -Path $DstFile -Parent)"
+    If (-Not (Test-Path -Path "$DstDir" -PathType Container)) {
+        New-Item -ItemType Directory -Path "$DstDir"
+    }
 
     If ($EmptyCfg) {
         Log "Writing empty configuration file to $DstFile"
@@ -273,10 +273,12 @@ Function FindConfigPath($FilePath) {
 # can be several namserver sections. For more information, visit
 # https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
-    If (wsl --list --version -ErrorAction SilentlyContinue | Out-Null) {
-        Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
-    } Else {
+    wsl -l -v 2>&1 | Out-Null
+
+    If ($LastExitCode) {
         Write-Output "127.0.0.1"
+    } Else {
+        Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
     }
 }
 
@@ -401,12 +403,13 @@ Function SetupSSHKeys {
             -Value $PublicKey
         
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        wsl mv "$WSLKeyPath" "/etc/ssh/bootware"
-        wsl chmod 600 "/etc/ssh/bootware"
-        wsl mv "$WSLKeyPath.pub" "/etc/ssh/bootware.pub"
-        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "/etc/ssh/ssh_known_hosts"
+        wsl mkdir -p -m 700 "${HOME}/.ssh/"
+        wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
+        wsl chmod 600 "${HOME}/.ssh/bootware"
+        wsl mv "$WSLKeyPath.pub" "${HOME}/.ssh/bootware.pub"
+        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "${HOME}/.ssh/known_hosts"
 
-        New-Item -ItemType File "SetupSSHKeysComplete"
+        New-Item -ItemType File -Path "$SetupSSHKeysComplete"
     }
 }
 
@@ -420,14 +423,13 @@ Function SetupSSHServer() {
         Log "Setting up OpenSSH server"
 
         # Turn on Windows Update and TrustedInstaller services
-        Set-Service -Name wuauserv -StartupType Manual
         Start-Service -name wuauserv
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
         New-NetFirewallRule `
             -Action Allow `
             -Direction Inbound `
-            -DisplayName "OpenSSH Server" `
+            -DisplayName "Bootware SSH" `
             -Enabled True `
             -LocalPort 22 `
             -Name sshd `
@@ -447,15 +449,16 @@ Function SetupSSHServer() {
         # stored in C:/ProgramData/ssh/administrators_authorized_keys with
         # specific permissions. For more information, visit
         # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#administrative-user.
-        New-Item `
-            -ItemType File `
-            "C:/ProgramData/ssh/administrators_authorized_keys"
-        icacls.exe "C:/ProgramData/ssh/administrators_authorized_keys" `
+        $AuthKeys = "C:/ProgramData/ssh/administrators_authorized_keys"
+        If (-Not (Test-Path -Path "$AuthKeys" -PathType Leaf)) {
+            New-Item -ItemType File -Path "$AuthKeys"
+        }
+        icacls.exe "$AuthKeys" `
             /grant "Administrators:F" `
             /grant "SYSTEM:F" `
             /inheritance:r
 
-        New-Item -ItemType File "SetupSSHServerComplete"
+        New-Item -ItemType File -Path "$SetupSSHServerComplete"
     }
 
     Start-Service sshd
