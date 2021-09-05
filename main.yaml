@@ -762,17 +762,6 @@
     - desktop
     - winman
 
-- name: Install Xonsh shell
-  hosts: all
-  roles:
-    - xonsh
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - xonsh
-
 - name: Install Zola static website generator
   hosts: all
   roles:

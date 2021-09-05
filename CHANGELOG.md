@@ -20,9 +20,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - VSCode keybindings for switching between terminal tabs.
 - Windows connections from WinRM to SSH.
 
-### Fixed
+### Removed
 
-- Missing Xonsh settings file.
+- Xonsh role.
 
 ## 0.3.3 - 2021-08-06
 

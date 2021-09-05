@@ -26,9 +26,7 @@
   { "name": "build" },
   { "name": "caffeine" },
   {
-    "name": "chrome",
-    "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
-    "tests": ["google-chrome --version"]
+    "name": "chrome"
   },
   { "name": "compass" },
   { "name": "defterm" },
@@ -229,7 +227,6 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
-  { "name": "xonsh", "tests": ["xonsh --version"] },
   {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],
