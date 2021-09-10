@@ -1,6 +1,8 @@
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
+# Exit immediately if a PowerShell Cmdlet encounters an error.
+$ErrorActionPreference = "Stop"
 
 # Show CLI help information.
 Function Usage() {

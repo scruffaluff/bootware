@@ -1,6 +1,8 @@
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
+# Exit immediately if a PowerShell Cmdlet encounters an error.
+$ErrorActionPreference = "Stop"
 
 # Show CLI help information.
 Function Usage() {
@@ -15,6 +17,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
+    -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Bootware dependency installation
@@ -111,6 +114,12 @@ Function Bootstrap() {
                 $ArgIdx += 2
                 Break
             }
+            { $_ -In "-d", "--dev" } {
+                $Playbook = "$(Get-Location)/main.yaml"
+                $UseSetup = 0
+                $ArgIdx += 1
+                Break
+            }
             { $_ -In "-h", "--help" } {
                 Usage "bootstrap"
                 Exit 0
@@ -166,12 +175,14 @@ Function Bootstrap() {
     $Inventory = "$(FindRelativeIP)"
     $PlaybookPath = $(WSLPath "$Playbook")
 
-    # TODO: Fix errors when Ubuntu uses Windows encoded configuration file.
+    # Home variable cannot be wrapped in brackets in case the default WSL shell
+    # is Fish.
     wsl bootware bootstrap --windows `
+        --config "$ConfigPath" `
         --inventory "$Inventory," `
         --playbook "$PlaybookPath" `
         --skip "$Skip" `
-        --ssh-key "`${HOME}/.ssh/bootware" `
+        --ssh-key "`$HOME/.ssh/bootware" `
         --tags "$Tags" `
         --user "$User"
 }

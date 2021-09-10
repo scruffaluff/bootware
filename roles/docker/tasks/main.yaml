@@ -82,6 +82,11 @@
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Docker for Windows
+  win_chocolatey:
+    name: docker-desktop
+  when: ansible_system == "Win32NT"
+
 - name: Check if systemd is available for Linux
   register: systemd_available
   stat:

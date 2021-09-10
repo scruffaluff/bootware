@@ -1,6 +1,12 @@
-# Change desktop background image.
-#
-# Taken from https://stackoverflow.com/a/43188780.
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\Users\$1\Pictures\background\$2" /f
-Start-Sleep -s 10
-rundll32.exe user32.dll, UpdatePerUserSystemParameters, 0, $false
+# Taken from https://superuser.com/a/896408.
+Function ShowFileExtensions() {
+    Push-Location
+    Set-Location HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    Set-ItemProperty . HideFileExt "0"
+    Pop-Location
+
+    # Restart File Explorer sfor changes to take effect.
+    Stop-Process -Force -ProcessName: Explorer
+}
+ 
+ShowFileExtensions
