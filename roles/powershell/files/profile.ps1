@@ -6,7 +6,7 @@ $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
 # Load Docker autocompletion if available.
-if (Get-Module -ListAvailable -Name posh-docker) {
+If (Get-Module -ListAvailable -Name posh-docker) {
     Import-Module posh-docker
 }
 
@@ -14,8 +14,18 @@ if (Get-Module -ListAvailable -Name posh-docker) {
 # Git settings.
 
 # Load Git autocompletion if available.
-if (Get-Module -ListAvailable -Name posh-git) {
+If (Get-Module -ListAvailable -Name posh-git) {
     Import-Module posh-git
+}
+
+
+# PowerShell settings.
+
+# Load PowerShell modules if available.
+ForEach ($Module in @("Posh-SSH", "PoshColor", "PSReadLine")) {
+    If (Get-Module -ListAvailable -Name $Module) {
+        Import-Module $Module
+    }
 }
 
 
