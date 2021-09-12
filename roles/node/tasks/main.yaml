@@ -23,13 +23,6 @@
     warn: no
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
-- name: Install Node version manager for Windows
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    name: nvm
-  when: ansible_system == "Win32NT"
-
 - name: Install multiple Node versions for Unix
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
@@ -40,10 +33,14 @@
     executable: "{{ bash_executable }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
+# NVM is not used for Windows due to its frustrating launch checks that require
+# administrator permissions.
 - name: Install multiple Node versions for Windows
   become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: nodejs{{ item | replace('16','') }}
   loop: "{{ node_versions }}"
-  win_shell: nvm install {{ item }}
   when: ansible_system == "Win32NT"
 
 - name: Set default Node version for Unix
@@ -55,11 +52,6 @@
     executable: "{{ bash_executable }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
-- name: Set default Node version for Windows
-  become_user: "{{ user_account }}"
-  win_shell: nvm alias default {{ node_versions[-1] }}
-  when: ansible_system == "Win32NT"
-
 - name: Update NPM for Unix
   become_user: "{{ user_account }}"
   shell:
@@ -68,11 +60,6 @@
       nvm install-latest-npm
     executable: "{{ bash_executable }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
-
-- name: Update NPM for Windows
-  become_user: "{{ user_account }}"
-  win_shell: nvm install-latest-npm
-  when: ansible_system == "Win32NT"
 
 - name: Install or update Node CLI applications for FreeBSD
   become_user: "{{ user_account }}"
@@ -95,14 +82,11 @@
     executable: "{{ bash_executable }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
 
-# TODO: Fix for Windows.
-# - name: Install or update Node CLI applications for Windows
-#   become_user: "{{ user_account }}"
-#   loop: "{{ node_applications }}"
-#   win_shell: |
-#     nvm use {{ node_versions[-1] }}
-#     (npm install -g {{ item }}) -Or (npm update -g {{ item }})
-#   when: ansible_system == "Win32NT"
+- name: Install or update Node CLI applications for Windows
+  become_user: "{{ user_account }}"
+  loop: "{{ node_applications }}"
+  win_shell: (npm install -g {{ item }}) -Or (npm update -g {{ item }})
+  when: ansible_system == "Win32NT"
 
 - name: Download Fast NVM Fish for Unix
   become_user: "{{ user_account }}"

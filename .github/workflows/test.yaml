@@ -20,81 +20,6 @@ on:
       - master
 
 jobs:
-  test-freebsd:
-    name: Test bootstrapping software for FreeBSD
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v2
-      - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.1.5
-        with:
-          prepare: pkg install -y bash curl
-          run: |
-            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
-            bootware setup
-            bootware bootstrap --dev --no-passwd --skip deskenv,starship
-            node tests/integration/roles.spec.js --arch amd64 --skip python,starship freebsd
-
-  test-linux:
-    name: >-
-      Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
-    strategy:
-      fail-fast: false
-      # Arm64 tests are currently removed since they cannot complete within
-      # GitHub's job limit of 6 hours.
-      # TODO: Resolve job time limit for Arm64 tests.
-      matrix:
-        arch: ["amd64"]
-        distro: [arch, debian, fedora, ubuntu]
-        # exclude:
-        #   # Docker Hub does not provide ARM64 Arch Linux images.
-        #   - arch: arm64
-        #     distro: arch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v2
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
-        with:
-          build-args: test=true
-          context: .
-          file: ./tests/integration/Dockerfile.${{ matrix.distro }}
-          platforms: linux/${{ matrix.arch }}
-          push: false
-          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
-
-  test-macos:
-    name: Test bootstrapping software for MacOS
-    runs-on: macos-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v2
-      - name: Install Bootware
-        run: >
-          curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
-          | bash
-      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
-      - name: >-
-          Install Ansible with Python since Brew installation appears to be
-          broken
-        run: python3 -m pip install ansible
-      - name: Install dependencies for Bootware
-        run: bootware setup
-      # Bats is already installed with NPM and causes a conflict.
-      - name: Test bootstrapping
-        run: bootware bootstrap --dev --no-passwd --skip bats,docker
-      - name: Test installed binaries for roles
-        run: |
-          source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip docker macos
-
   test-windows:
     name: Test bootstrapping software for Windows
     runs-on: windows-latest
@@ -130,6 +55,14 @@ jobs:
           wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o
           StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
           $Env:UserName@127.0.0.1 dir
+        shell: powershell
+      # Default configuration file causes UTF-8 codec on Windows GitHub CI
+      # servers. Unable to repeat on any other Windows system.
+      - name: Copy Bootware configuration file
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware config --empty
+          Copy-Item "./tests/data/config.yaml" -Destination "$HOME/.bootware/config.yaml"
         shell: powershell
       - name: Test bootstrapping
         run: |
