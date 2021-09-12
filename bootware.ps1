@@ -176,7 +176,7 @@ Function Bootstrap() {
     $PlaybookPath = $(WSLPath "$Playbook")
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
-    # is Fish.
+    # is Fish. No need to wrap command in RunExe since it is the last command.
     wsl bootware bootstrap --windows `
         --config "$ConfigPath" `
         --inventory "$Inventory," `
@@ -310,6 +310,19 @@ Function RemoteScript($URL) {
     Invoke-WebRequest -UseBasicParsing -Uri "$URL" | Invoke-Expression
 }
 
+# Run executable with correct error handling.
+#
+# With ErrorActionPreference set to Stop, PowerShell will exit when a cmdlet
+# encounters an error. However, PowerShell will still continue if an executable
+# throws an error.
+Function RunExe() {
+    Invoke-Expression "$Args"
+
+    If ($LastExitCode) {
+        Throw "Error: Command '$Args' exited with code $LastExitCode"
+    }
+}
+
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
@@ -352,7 +365,7 @@ Function Setup() {
         # Several packages require the Visual C++ build tools and Chocolatey
         # requires user interaction yes prompt.
         Log "Installing Visual C++ build tools"
-        choco install -y microsoft-visual-cpp-build-tools
+        RunExe choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.
@@ -364,19 +377,19 @@ Function Setup() {
     # Git is required for addding Scoop buckets.
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
         Log "Downloading Git version control"
-        scoop install git
+        RunExe scoop install git
     }
 
     $ScoopBuckets = $(scoop bucket list)
     ForEach ($Bucket in @("extras", "main", "nerd-fonts", "versions")) {
         If ($Bucket -NotIn $ScoopBuckets) {
-            scoop bucket add "$Bucket"
+            RunExe scoop bucket add "$Bucket"
         }
     }
 
     $RepoPath = "$PSScriptRoot/repo"
     If (-Not (Test-Path -Path "$RepoPath" -PathType Any)) {
-        git clone `
+        RunExe git clone `
             --single-branch `
             --branch "$Branch" `
             --depth 1 "$URL" `
@@ -407,18 +420,18 @@ Function SetupSSHKeys {
         $WindowsKeyPath = [System.IO.Path]::GetTempFileName()
         Remove-Item -Force -Path "$WindowsKeyPath"
 
-        ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519
+        RunExe ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
             -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
             -Value $PublicKey
 
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        wsl mkdir -p -m 700 "`${HOME}/.ssh/"
-        wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
-        wsl chmod 600 "`${HOME}/.ssh/bootware"
-        wsl mv "$WSLKeyPath.pub" "`${HOME}/.ssh/bootware.pub"
-        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`${HOME}/.ssh/known_hosts"
+        RunExe wsl mkdir -p -m 700 "`${HOME}/.ssh/"
+        RunExe wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
+        RunExe wsl chmod 600 "`${HOME}/.ssh/bootware"
+        RunExe wsl mv "$WSLKeyPath.pub" "`${HOME}/.ssh/bootware.pub"
+        RunExe wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`${HOME}/.ssh/known_hosts"
 
         # Disable password based logins for SSH.
         Add-Content `
@@ -446,14 +459,16 @@ Function SetupSSHServer() {
         }
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-        New-NetFirewallRule `
-            -Action Allow `
-            -Direction Inbound `
-            -DisplayName "Bootware SSH" `
-            -Enabled True `
-            -LocalPort 22 `
-            -Name sshd `
-            -Protocol TCP
+        If (-Not (Get-NetFirewallRule -DisplayName "Bootware SSH" -ErrorAction SilentlyContinue)) {
+            New-NetFirewallRule `
+                -Action Allow `
+                -Direction Inbound `
+                -DisplayName "Bootware SSH" `
+                -Enabled True `
+                -LocalPort 22 `
+                -Name sshd `
+                -Protocol TCP
+        }
 
         # OpenSSH default shell needs to match the shell used by Ansible. For
         # more information, visit
@@ -473,10 +488,10 @@ Function SetupSSHServer() {
         If (-Not (Test-Path -Path "$AuthKeys" -PathType Leaf)) {
             New-Item -ItemType File -Path "$AuthKeys" | Out-Null
         }
-        icacls.exe "$AuthKeys" `
-            /grant "Administrators:F" `
-            /grant "SYSTEM:F" `
-            /inheritance:r
+        RunExe icacls "$AuthKeys" `
+            /Grant "Administrators:F" `
+            /Grant "SYSTEM:F" `
+            /Inheritance:r
 
         New-Item -ItemType File -Path "$SetupSSHServerComplete" | Out-Null
     }
@@ -490,18 +505,19 @@ Function SetupSSHServer() {
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL($Branch) {
     If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
-        dism.exe `
-            /all `
-            /enable-feature `
-            /featurename:Microsoft-Windows-Subsystem-Linux `
-            /norestart `
-            /online
-        dism.exe `
-            /all `
-            /enable-feature `
-            /featurename:VirtualMachinePlatform `
-            /norestart `
-            /online
+        # Dism appears to require arguments in a specific order.
+        RunExe dism `
+            /Online `
+            /Enable-Feature `
+            /FeatureName:Microsoft-Windows-Subsystem-Linux `
+            /All `
+            /NoRestart
+        RunExe dism `
+            /Online `
+            /Enable-Feature `
+            /FeatureName:VirtualMachinePlatform `
+            /All `
+            /NoRestart
 
         Log "Restart your system to finish WSL installation"
         Log "Then run bootware setup again to install Ubuntu"
@@ -521,7 +537,7 @@ Function SetupWSL($Branch) {
         Start-Process -Wait $TempFile /Passive
 
         # TODO: Add logic for WSL 1 case.
-        wsl --set-default-version 2
+        RunExe wsl --set-default-version 2
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
         $TempDir = $TempFile -Replace ".zip", ""
@@ -534,10 +550,10 @@ Function SetupWSL($Branch) {
 
     If (-Not (wsl command -v bootware)) {
         Log "Installing a WSL copy of Bootware"
-        wsl curl -LSfs `
+        RunExe wsl curl -LSfs `
             https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `
             `| bash -s -- --version "$Branch"
-        wsl bootware setup
+        RunExe wsl bootware setup
     }
 }
 
@@ -568,13 +584,13 @@ Function Update() {
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        wsl bootware update --version `> /dev/null
+        RunExe wsl bootware update --version "$Version"
     }
 
     # Update playbook repository.
     $RepoPath = "$PSScriptRoot/repo"
     If (Test-Path -Path "$RepoPath" -PathType Container) {
-        git -C "$RepoPath" pull
+        RunExe git -C "$RepoPath" pull
     }
 
     Log "Updated to version $(bootware --version)"
