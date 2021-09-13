@@ -413,12 +413,14 @@ Function SetupSSHKeys {
             -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
             -Value $PublicKey
 
+        # Home variable cannot be wrapped in brackets in case the default WSL
+        # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        wsl mkdir -p -m 700 "`${HOME}/.ssh/"
-        wsl mv "$WSLKeyPath" "`${HOME}/.ssh/bootware"
-        wsl chmod 600 "`${HOME}/.ssh/bootware"
-        wsl mv "$WSLKeyPath.pub" "`${HOME}/.ssh/bootware.pub"
-        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`${HOME}/.ssh/known_hosts"
+        wsl mkdir -p -m 700 "`$HOME/.ssh/"
+        wsl mv "$WSLKeyPath" "`$HOME/.ssh/bootware"
+        wsl chmod 600 "`$HOME/.ssh/bootware"
+        wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
+        wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
         # Disable password based logins for SSH.
         Add-Content `
@@ -447,14 +449,14 @@ Function SetupSSHServer() {
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
         If (-Not (Get-NetFirewallRule -DisplayName "Bootware SSH" -ErrorAction SilentlyContinue)) {
-        New-NetFirewallRule `
-            -Action Allow `
-            -Direction Inbound `
-            -DisplayName "Bootware SSH" `
-            -Enabled True `
-            -LocalPort 22 `
-            -Name sshd `
-            -Protocol TCP
+            New-NetFirewallRule `
+                -Action Allow `
+                -Direction Inbound `
+                -DisplayName "Bootware SSH" `
+                -Enabled True `
+                -LocalPort 22 `
+                -Name sshd `
+                -Protocol TCP
         }
 
         # OpenSSH default shell needs to match the shell used by Ansible. For
@@ -491,7 +493,11 @@ Function SetupSSHServer() {
 # Implemented based on instructions at
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL($Branch) {
-    If (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
+    $WSLExe = $(Get-Command wsl -ErrorAction SilentlyContinue)
+    $MWSL = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
+    $VMP = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
+
+    If ((-Not $WSLExe) -Or ($MWSL.State -NE "Enabled") -Or ($VMP.State -NE "Enabled")) {
         # Dism appears to require arguments in a specific order.
         dism `
             /Online `
