@@ -2,10 +2,8 @@
   become: yes
   blockinfile:
     block: |
-      # Enable passwordless sudo for admin, sudo, and wheel groups.
-      %admin      ALL = (ALL) NOPASSWD: ALL
-      %sudo       ALL = (ALL) NOPASSWD: ALL
-      %wheel      ALL = (ALL) NOPASSWD: ALL
+      # Enable passwordless sudo for {{ user_account}} user.
+      {{ user_account }} ALL=(ALL) NOPASSWD:ALL
     create: yes
     path: /etc/sudoers
     validate: /usr/sbin/visudo -cf %s

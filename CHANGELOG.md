@@ -17,6 +17,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Passwordless sudo setting for only main user.
 - VSCode keybindings for switching between terminal tabs.
 - Windows connections from WinRM to SSH.
 

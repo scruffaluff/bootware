@@ -11,8 +11,17 @@
 
 ---
 
-Bootware is a set of shell scripts and Docker images for bootstrapping software
-installations with Ansible.
+Bootware is a set of shell scripts for bootstrapping software installations with
+Ansible. Bootware makes it easy to install software, settings, and configuration
+files for a new computer by providing uniform commands to install Ansible and
+execute playbooks for the local computer. Bootware requires no dependencies and
+works on FreeBSD, Linux, MacOS, and Windows operating systems.
+
+Bootware is designed for my personal usage, but can be configured for anyone to
+use. All of the Bootware default settings point to this repository, but most
+settings can be changed with environment variables, a configuration file, or
+command line flags. If you want your own version of Bootware with different
+defaults, just fork this repository and edit away.
 
 ## Install
 
@@ -23,8 +32,15 @@ of the documentation.
 ## Usage
 
 Bootware will bootstrap the computer software by invoking `bootware bootstrap`
-after customizing the configuration file. To view the bootstrapping options,
-execute `bootware bootstrap --help`.
+after customizing the optional configuration file. To view the bootstrapping
+options, execute `bootware bootstrap --help`.
+
+To only install Ansible on the system, execute `bootware setup`.
+
+Since Ansible cannot be installed on Windows, Bootware will install OpenSSH
+server and the Windows Subsystem for Linux. Bootware will automatically execute
+all software bootstrapping from the Linux subsystem and provision the Windows
+configurations via an SSH connection.
 
 ## Contribute
 
