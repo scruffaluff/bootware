@@ -176,8 +176,6 @@ main() {
   local user_install
   local version="master"
 
-  assert_cmd curl
-
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -203,6 +201,8 @@ main() {
         ;;
     esac
   done
+
+  assert_cmd curl
 
   src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
 

@@ -28,10 +28,13 @@
       x86_64: amd64
   when: ansible_system == "Linux"
 
+# Certificate generation requires NSS on MacOS.
 - name: Install Mkcert for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
-    name: mkcert
+    name:
+      - mkcert
+      - nss
   when: ansible_system == "Darwin"
 
 - name: Install Mkcert for Windows

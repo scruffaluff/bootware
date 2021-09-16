@@ -299,8 +299,6 @@ config() {
   local dst_file="${HOME}/.bootware/config.yaml"
   local empty_cfg
 
-  assert_cmd mkdir
-
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -325,6 +323,8 @@ config() {
         ;;
     esac
   done
+
+  assert_cmd mkdir
 
   mkdir -p "$(dirname "${dst_file}")"
 
@@ -464,8 +464,6 @@ setup() {
   local tmp_dir
   local use_sudo
 
-  assert_cmd uname
-
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -478,6 +476,8 @@ setup() {
         ;;
     esac
   done
+
+  assert_cmd uname
 
   # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then
@@ -769,9 +769,6 @@ update() {
   local use_sudo
   local version="master"
 
-  assert_cmd chmod
-  assert_cmd curl
-
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -788,6 +785,9 @@ update() {
         ;;
     esac
   done
+
+  assert_cmd chmod
+  assert_cmd curl
 
   dst_file="$(fullpath "$0")"
   src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
