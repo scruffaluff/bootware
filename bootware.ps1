@@ -190,7 +190,7 @@ Function Bootstrap() {
 # Subcommand to generate or download Bootware configuration file.
 Function Config() {
     $ArgIdx = 0
-    $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
+    $SrcURL = ""
     $DstFile = "$HOME/.bootware/config.yaml"
     $EmptyCfg = 0
 
@@ -226,7 +226,7 @@ Function Config() {
         New-Item -ItemType Directory -Path "$DstDir" | Out-Null
     }
 
-    If ($EmptyCfg) {
+    If ($EmptyCfg -Or (-Not $SrcURL)) {
         Log "Writing empty configuration file to $DstFile"
         Write-Output "font_size: 14" > "$DstFile"
     }

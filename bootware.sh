@@ -295,7 +295,7 @@ bootstrap() {
 #   Writes status information to stdout.
 #######################################
 config() {
-  local src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/host_vars/bootware.yaml"
+  local src_url
   local dst_file="${HOME}/.bootware/config.yaml"
   local empty_cfg
 
@@ -328,7 +328,11 @@ config() {
 
   mkdir -p "$(dirname "${dst_file}")"
 
-  if [[ "${empty_cfg}" == "true" ]]; then
+  # Check if empty configuration file should be generated.
+  #
+  # Flags:
+  #   -z: Check if string has zero length.
+  if [[ "${empty_cfg}" == "true" || -z "${src_url}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf "passwordless_sudo: false" > "${dst_file}"
   else
@@ -336,7 +340,7 @@ config() {
 
     log "Downloading configuration file to ${dst_file}"
 
-    # Download default configuration file.
+    # Download configuration file.
     #
     # FLAGS:
     #   -L: Follow redirect request.

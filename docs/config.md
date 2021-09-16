@@ -10,5 +10,3 @@ Bootware uses the first available path option as its configuration file.
 
 Bootware can generate a default configuration file in the user's home directory,
 by executing `bootware config`.
-
-<<< @/host_vars/bootware.yaml

@@ -44,3 +44,9 @@ $Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
 If (Get-Command starship -ErrorAction SilentlyContinue) {
     Invoke-Expression (&starship init powershell)
 }
+
+
+# User settings.
+
+# Add scripts directory to PATH environment variable.
+$Env:PATH = "$HOME/.local/bin;" + $Env:PATH
