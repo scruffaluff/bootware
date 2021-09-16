@@ -60,6 +60,7 @@ SUBCOMMANDS:
     bootstrap        Boostrap install computer software
     config           Generate Bootware configuration file
     setup            Install dependencies for Bootware
+    uninstall        Remove Bootware files
     update           Update Bootware to latest version
 
 See 'bootware <subcommand> --help' for more information on a specific command.
@@ -78,6 +79,18 @@ OPTIONS:
         --checkout <REF>    Git reference to run against
     --no-wsl                Do not configure WSL
     -u, --url <URL>         URL of playbook repository
+'@
+        }
+        "uninstall" {
+            Write-Output @'
+Bootware uninstall
+Remove Bootware files
+
+USAGE:
+    bootware uninstall
+
+FLAGS:
+    -h, --help      Print help information
 '@
         }
         "update" {
@@ -550,7 +563,32 @@ Function SetupWSL($Branch) {
     }
 }
 
-# Subcommand to update Bootware script
+# Subcommand to remove Bootware files.
+Function Uninstall() {
+    $ArgIdx = 0
+
+    While ($ArgIdx -lt $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
+            { $_ -In "-h", "--help" } {
+                Usage "uninstall"
+                Exit 0
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+            }
+        }
+    }
+
+    # Uninstall WSL copy of Bootware.
+    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+        wsl bootware uninstall `> /dev/null
+    }
+
+    Remove-Item -Force -Recurse "$PSScriptRoot"
+    Log "Uninstalled Bootware"
+}
+
+# Subcommand to update Bootware script.
 Function Update() {
     $ArgIdx = 0
     $Version = "master"
@@ -630,6 +668,10 @@ Function Main() {
         }
         "setup" {
             Setup $Slice
+            Break
+        }
+        "uninstall" {
+            Uninstall $Slice
             Break
         }
         "update" {

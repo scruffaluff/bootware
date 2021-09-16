@@ -71,6 +71,7 @@ SUBCOMMANDS:
     bootstrap        Boostrap install computer software
     config           Generate Bootware configuration file
     setup            Install dependencies for Bootware
+    uninstall        Remove Bootware files
     update           Update Bootware to latest version
 
 See 'bootware <subcommand> --help' for more information on a specific command.
@@ -86,6 +87,18 @@ USAGE:
 
 OPTIONS:
     -h, --help      Print help information
+EOF
+      ;;
+    uninstall)
+      cat 1>&2 << EOF
+Bootware uninstall
+Remove Bootware files
+
+USAGE:
+    bootware uninstall
+
+OPTIONS:
+    -h, --help                  Print help information
 EOF
       ;;
     update)
@@ -757,7 +770,49 @@ setup_macos() {
 }
 
 #######################################
-# Subcommand to update Bootware script
+# Subcommand to remove Bootware files.
+# Outputs:
+#   Writes status information about removed files.
+#######################################
+uninstall() {
+  local dst_file
+  local use_sudo
+
+  # Parse command line arguments.
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      -h | --help)
+        usage "uninstall"
+        exit 0
+        ;;
+      *)
+        error_usage "No such option '$1'" "update"
+        ;;
+    esac
+  done
+
+  assert_cmd chmod
+
+  dst_file="$(fullpath "$0")"
+
+  # Use sudo for system installation if user is not root.
+  #
+  # Flags:
+  #   -w: Check if file exists and it writable.
+  if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+    assert_cmd sudo
+    use_sudo=1
+  fi
+
+  # Do not quote the sudo parameter expansion. Bash will error due to be being
+  # unable to find the "" command.
+  ${use_sudo:+sudo} rm "${dst_file}"
+
+  log "Uninstalled Bootware"
+}
+
+#######################################
+# Subcommand to update Bootware script.
 # Arguments:
 #   Parent directory of Bootware script.
 # Outputs:
@@ -837,6 +892,10 @@ main() {
     setup)
       shift 1
       setup "$@"
+      ;;
+    uninstall)
+      shift 1
+      uninstall "$@"
       ;;
     update)
       shift 1

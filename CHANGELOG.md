@@ -14,10 +14,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, Ruby and Scc roles.
 - GitHub CLI installation.
 - Support for more operating systems on Mongo Shell.
+- Uninstall command.
 
 ### Changed
 
-- Passwordless sudo setting for only main user.
+- Passwordless sudo setting for only current user.
 - VSCode keybindings for switching between terminal tabs.
 - Windows connections from WinRM to SSH.
 

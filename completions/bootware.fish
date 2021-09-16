@@ -7,7 +7,7 @@
 #
 # Flags:
 #   -l: Make variable scope local to current block.
-set -l bootware_subcommands bootstrap config setup update
+set -l bootware_subcommands bootstrap config setup uninstall update
 
 # Add Bootware subcommands as current completions if not already typed.
 #
@@ -25,4 +25,5 @@ complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommand
 complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommands" -a bootstrap -d "Boostrap install computer software"
 complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommands" -a config -d "Generate Bootware configuration file"
 complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommands" -a setup -d "Install dependencies for Bootware"
+complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommands" -a uninstall -d "Remove Bootware files"
 complete -f -c bootware -n "not __fish_seen_subcommand_from $bootware_subcommands" -a update -d "Update Bootware to latest version"
