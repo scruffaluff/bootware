@@ -1,5 +1,6 @@
 pipx_applications:
   - cookiecutter
+  - jupytext
   - poetry
 python_versions:
   - "3.9"

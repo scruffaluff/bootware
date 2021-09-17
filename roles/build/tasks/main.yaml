@@ -42,6 +42,7 @@
 - name: Install build tools with Chocolatey for Windows
   win_chocolatey:
     name:
+      - dotnetcore-sdk
       - visualstudio2019buildtools
   when: ansible_system == "Win32NT"
 
