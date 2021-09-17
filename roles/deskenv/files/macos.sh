@@ -20,6 +20,10 @@ defaults write com.apple.dock show-recents -bool false
 defaults write com.apple.finder AppleShowAllFiles -bool true
 # Disable file extension change warning.
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+# Show items in Finder via icon view.
+defaults write com.apple.Finder FXPreferredViewStyle icnv
+# Sort items in Finder by name.
+defaults write com.apple.Finder FXPreferredGroupBy Name
 # Show path bar in Finder folder window.
 defaults write com.apple.finder ShowPathbar -bool true
 # Do not show removable media on the desktop.
@@ -34,9 +38,9 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 # Keyboard settings.
 
 # Increase cursor movement to max speed.
-defaults write NSGlobalDomain KeyRepeat 2
+defaults write NSGlobalDomain KeyRepeat 1
 # Minimize delay for cursor movement to smallest time.
-defaults write NSGlobalDomain InitialKeyRepeat 15
+defaults write NSGlobalDomain InitialKeyRepeat 10
 
 # TextEdit settings.
 

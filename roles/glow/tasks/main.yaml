@@ -1,4 +1,4 @@
-- name: Get latest Bat version
+- name: Get latest Glow version
   uri:
     url: https://formulae.brew.sh/api/formula/glow.json
     method: GET

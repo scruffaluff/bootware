@@ -31,7 +31,7 @@ function main() {
   }
 
   for (const distro of config.distros) {
-    const command = `docker build --no-cache -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform linux/${config.architecture}`;
+    const command = `docker build --no-cache -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform linux/${config.arch}`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });
 
     console.log(`Integration test ${distro} passed.`);
