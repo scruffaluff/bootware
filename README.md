@@ -42,6 +42,13 @@ server and the Windows Subsystem for Linux. Bootware will automatically execute
 all software bootstrapping from the Linux subsystem and provision the Windows
 configurations via an SSH connection.
 
+## Software
+
+Bootware uses a collection of Ansible roles to install and manage a wide variety
+of software. For a complete list of the available roles see the
+[Software](https://wolfgangwazzlestrauss.github.io/bootware/software) section of
+the documentation.
+
 ## Contribute
 
 For guidance on setting up a development environment and how to make a

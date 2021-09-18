@@ -10,6 +10,7 @@ module.exports = {
     nav: [
       { text: "Home", link: "/" },
       { text: "Install", link: "/install/" },
+      { text: "Software", link: "/software/" },
       { text: "Config", link: "/config/" },
     ],
     repo: "https://github.com/wolfgangwazzlestrauss/bootware",

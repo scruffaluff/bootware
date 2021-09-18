@@ -6,6 +6,7 @@
 .local/
 /build/
 /docs/index.md
+/docs/software.md
 dist/
 node_modules/
 package-lock.json
