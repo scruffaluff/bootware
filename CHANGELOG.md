@@ -11,8 +11,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Ability to choose Bootware branch for automatic WSL installation.
 - Deno support for Apple ARM64.
-- Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, Ruby and Scc roles.
+- Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, RClone, Ruby and Scc roles.
 - GitHub CLI installation.
+- Software installation roles table in the documentation website.
 - Support for more operating systems on Mongo Shell.
 - Uninstall command.
 

@@ -184,6 +184,7 @@
     "tests": ["pipx --version", "python --version"]
   },
   { "name": "qemu", "tests": ["qemu-img --version"] },
+  { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },

@@ -573,6 +573,16 @@
     - server
     - vm
 
+- name: Install RClone cloud storage utility
+  hosts: all
+  roles:
+    - rclone
+  tags:
+    - container
+    - desktop
+    - rclone
+    - server
+
 - name: Install Ripgrep text searcher
   hosts: all
   roles:
