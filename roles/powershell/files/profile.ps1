@@ -1,6 +1,5 @@
 # PowerShell settings file.
 
-
 # Docker settings.
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
@@ -10,6 +9,17 @@ If (Get-Module -ListAvailable -Name posh-docker) {
     Import-Module posh-docker
 }
 
+# Load Kubectl autocompletion if available.
+If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
+    Import-Module PSKubectlCompletion
+}
+
+# GCloud settings.
+
+# Load GCloud autocompletion if available.
+If (Get-Module -ListAvailable -Name GcloudTabComplete) {
+    Import-Module GcloudTabComplete
+}
 
 # Git settings.
 
@@ -18,16 +28,25 @@ If (Get-Module -ListAvailable -Name posh-git) {
     Import-Module posh-git
 }
 
-
 # PowerShell settings.
 
-# Load PowerShell modules if available.
-ForEach ($Module in @("Posh-SSH", "PoshColor", "PSReadLine")) {
-    If (Get-Module -ListAvailable -Name $Module) {
-        Import-Module $Module
-    }
+# Configure console theme if available.
+If (Get-Module -ListAvailable -Name PSConsoleTheme) {
+    Import-Module PSConsoleTheme
+    Set-ConsoleTheme "Solarized Light"
 }
 
+# Configure PSReadLine settings if available.
+If (Get-Module -ListAvailable -Name PSReadLine) {
+    Import-Module PSReadLine
+
+    # Use Bash style tab completion.
+    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+
+    # Add history based autocompletion to arrow keys.
+    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+}
 
 # Python settings.
 
@@ -37,7 +56,6 @@ $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 # Add scripts directory to system path.
 $Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
 
-
 # Starship settings.
 
 # Initialize Starship if available.
@@ -45,6 +63,19 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
     Invoke-Expression (&starship init powershell)
 }
 
+# Tool settings.
+
+# Load SSH autocompletion if available.
+If (Get-Module -ListAvailable -Name Posh-SSH) {
+    Import-Module Posh-SSH
+}
+
+# TypeScript settings.
+
+# Load NPM autocompletion if available.
+If (Get-Module -ListAvailable -Name npm-completion) {
+    Import-Module npm-completion
+}
 
 # User settings.
 

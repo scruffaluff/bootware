@@ -46,11 +46,5 @@
     name: "{{ item }}"
     skip_publisher_check: yes
     state: latest
-  loop:
-    - Pester
-    - Posh-SSH
-    - PoshColor
-    - PowerShellGet
-    - PSReadLine
-    - PSScriptAnalyzer
+  loop: "{{ powershell_modules }}"
   when: ansible_system == "Win32NT"

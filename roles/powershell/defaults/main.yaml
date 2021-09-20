@@ -1,0 +1,10 @@
+powershell_modules:
+  - GcloudTabComplete
+  - npm-completion
+  - Pester
+  - Posh-SSH
+  - PowerShellGet
+  - PSConsoleTheme
+  - PSKubectlCompletion
+  - PSReadLine
+  - PSScriptAnalyzer

@@ -13,6 +13,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Deno support for Apple ARM64.
 - Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, RClone, Ruby and Scc roles.
 - GitHub CLI installation.
+- History and menu autocompletion to PowerShell.
+- Several PowerShell autocompletion modules.
 - Software installation roles table in the documentation website.
 - Support for more operating systems on Mongo Shell.
 - Uninstall command.
@@ -22,6 +24,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Passwordless sudo setting for only current user.
 - VSCode keybindings for switching between terminal tabs.
 - Windows connections from WinRM to SSH.
+
+### Fixed
+
+- Commmand assertions to occur after argument parsing.
 
 ### Removed
 
