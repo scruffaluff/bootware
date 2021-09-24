@@ -1,6 +1,20 @@
 # Fish settings file.
 # shellcheck shell=fish
 
+# Prepend directory to the system path.
+#
+# Fish version 2 will not add nonexistant inodes to be added to the system path.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -x: Export variable for current and child processes.
+function prepend_path
+  if test -d "$argv[1]"
+    set -x PATH "$argv[1]" $PATH
+  end
+end
+
+
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
@@ -8,12 +22,12 @@
 # Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
-set -x PATH "/usr/bin" $PATH
+prepend_path "/usr/bin"
 
 # Add manually installed binary directory to PATH environment variable.
 #
 # Necessary since path is missing on some MacOS systems.
-set -x PATH "/usr/local/bin" $PATH
+prepend_path "/usr/local/bin"
 
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
@@ -44,11 +58,11 @@ if test (uname -s) = "Darwin"
 else
   set -x GOROOT "/usr/local/go"
 end
-set -x PATH "$GOROOT/bin" $PATH
+prepend_path "$GOROOT/bin"
 
 # Add Go local binaries to system path.
 set -x GOPATH "$HOME/go"
-set -x PATH "$GOPATH/bin" $PATH
+prepend_path "$GOPATH/bin"
 
 # Python settings.
 
@@ -56,7 +70,7 @@ set -x PATH "$GOPATH/bin" $PATH
 set -x POETRY_VIRTUALENVS_IN_PROJECT 1
 
 # Add Pyenv binaries to system path.
-set -x PATH "$HOME/.pyenv/bin" $PATH
+prepend_path "$HOME/.pyenv/bin"
 
 # Initialize Pyenv if available.
 #
@@ -78,7 +92,7 @@ if type -q rvm
 end
 
 # Rust settings.
-set -x PATH "$HOME/.cargo/bin" $PATH
+prepend_path "$HOME/.cargo/bin"
 
 # Shell settings
 
@@ -91,7 +105,7 @@ set -x PATH "$HOME/.cargo/bin" $PATH
 function setenv
   if [ $argv[1] = PATH ]
     # Replace colons and spaces with newlines.
-    set -gx PATH (echo "$argv[2]" | tr ": " \n)
+    set -x PATH (echo "$argv[2]" | tr ": " \n)
   else
     set -gx $argv
   end
@@ -141,7 +155,7 @@ set -x BAT_THEME "Solarized (light)"
 set -x BAT_PAGER ""
 
 # Add Visual Studio Code binary to PATH for Linux.
-set -x PATH "/usr/share/code/bin" $PATH
+prepend_path "/usr/share/code/bin"
 
 # Initialize Digital Ocean CLI if available.
 #
@@ -181,7 +195,7 @@ end
 # TypeScript settings.
 
 # Add NPM global binaries to system path.
-set -x PATH "$HOME/.npm-global/bin" $PATH
+prepend_path "$HOME/.npm-global/bin"
 
 # Initialize NVM default version of Node if available.
 #
@@ -193,20 +207,20 @@ end
 
 # Deno settings.
 set -x DENO_INSTALL "$HOME/.deno"
-set -x PATH "$DENO_INSTALL/bin" $PATH
+prepend_path "$DENO_INSTALL/bin"
 
 # User settings.
 
 set -x EDITOR "nvim"
 
 # Add scripts directory to system path.
-set -x PATH "$HOME/.local/bin" $PATH
+prepend_path "$HOME/.local/bin"
 
 # Wasmtime settings.
 set -x WASMTIME_HOME "$HOME/.wasmtime"
-set -x PATH "$WASMTIME_HOME/bin" $PATH
+prepend_path "$WASMTIME_HOME/bin"
 
 # Apple Silicon support.
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
-set -x PATH "/opt/homebrew/bin" $PATH
+prepend_path "/opt/homebrew/bin"

@@ -80,6 +80,10 @@ Function Main() {
     }
 
     $DestDir = Split-Path -Path $Dest -Parent
+    # Explicit path update needed, since SetEnvironmentVariable does not seem to
+    # instantly take effect.
+    $Env:Path = "$DestDir" + ";$Env:Path"
+
     $Path = [Environment]::GetEnvironmentVariable("Path", "$Target")
     If (-Not ($Path -Like "*$DestDir*")) {
         [System.Environment]::SetEnvironmentVariable(
