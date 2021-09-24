@@ -108,6 +108,7 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
+      - neofetch
       - openssh
       - shellcheck
       - tmate
@@ -122,6 +123,7 @@
   loop:
     - extras
     - main
+    - neofetch
     - nerd-fonts
     - versions
   when: ansible_system == "Win32NT"

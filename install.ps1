@@ -80,8 +80,12 @@ Function Main() {
     }
 
     $DestDir = Split-Path -Path $Dest -Parent
-    $Env:Path = "$DestDir" + ";$Env:Path"
-    [System.Environment]::SetEnvironmentVariable("Path", "$Env:Path", "$Target")
+    $Path = [Environment]::GetEnvironmentVariable("Path", "$Target")
+    If (-Not ($Path -Like "*$DestDir*")) {
+        [System.Environment]::SetEnvironmentVariable(
+            "Path", "$DestDir" + ";$Path", "$Target"
+        )
+    }
 
     Log "Installing Bootware"
 
