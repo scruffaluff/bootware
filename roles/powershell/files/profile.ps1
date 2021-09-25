@@ -46,6 +46,9 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Add history based autocompletion to arrow keys.
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+    # Show history based autocompletion for every typed character.
+    Set-PSReadLineOption -PredictionSource History
 }
 
 # Python settings.

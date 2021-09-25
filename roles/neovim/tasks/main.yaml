@@ -26,11 +26,15 @@
       - neovim
   when: ansible_system == "Win32NT"
 
-- name: Create Neovim standard user settings directory for Unix
+- name: Create Neovim standard user settings directories for Unix
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir }}/.config/nvim"
+    path: "{{ user_home_dir }}/.config/{{ item }}"
     state: directory
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
   when: ansible_system != "Win32NT"
 
 - name: Copy Neovim standard user settings file for Unix
@@ -42,10 +46,31 @@
     src: init.vim
   when: ansible_system != "Win32NT"
 
-- name: Create Neovim standard user settings directory for Windows
+- name: Install NeoSolarized color scheme for Unix
   become_user: "{{ user_account }}"
+  get_url:
+    dest: "{{ user_home_dir }}/.config/nvim/colors/NeoSolarized.vim"
+    mode: 0644
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system != "Win32NT"
+
+- name: Install Packer Neovim plugin manager for Unix
+  become_user: "{{ user_account }}"
+  git:
+    depth: 1
+    dest: >-
+      {{ user_home_dir }}/.config/nvim-data/site/pack/packer/start/packer.nvim
+    repo: https://github.com/wbthomason/packer.nvim
+  when: ansible_system != "Win32NT"
+
+- name: Create Neovim standard user settings directories for Windows
+  become_user: "{{ user_account }}"
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
   win_file:
-    path: "{{ user_home_dir }}/AppData/Local/nvim"
+    path: "{{ user_home_dir }}/AppData/Local/{{ item }}"
     state: directory
   when: ansible_system == "Win32NT"
 
@@ -58,12 +83,31 @@
     src: init.vim
   when: ansible_system == "Win32NT"
 
-- name: Create Neovim root user settings directory for Linux
+- name: Install NeoSolarized color scheme for Windows
+  become_user: "{{ user_account }}"
+  win_get_url:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/colors/NeoSolarized.vim"
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system == "Win32NT"
+
+# Ansible does not provide a Git module for Windows.
+- name: Install Packer Neovim plugin manager for Windows
+  become_user: "{{ user_account }}"
+  win_shell: >-
+    git clone --depth 1 https://github.com/wbthomason/packer.nvim {{
+    user_home_dir }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
+  when: ansible_system == "Win32NT"
+
+- name: Create Neovim root user settings directories for Linux
   become: yes
   file:
-    path: /root/.config/nvim
+    path: "/root/.config/{{ item }}"
     state: directory
-  when: ansible_system == "Linux"
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
+  when: ansible_system == "Linux" and neovim_root
 
 - name: Copy Neovim root user settings file for Linux
   become: yes
@@ -72,14 +116,26 @@
     force: yes
     mode: 0644
     src: init.vim
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and neovim_root
 
-- name: Create Neovim root user settings directory for MacOS
+- name: Install NeoSolarized color scheme for Linux
+  become: yes
+  get_url:
+    dest: /root/.config/nvim/colors/NeoSolarized.vim"
+    mode: 0644
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system == "Linux" and neovim_root
+
+- name: Create Neovim root user settings directories for MacOS
   become: yes
   file:
-    path: /var/root/.config/nvim
+    path: "/var/root/.config/{{ item }}"
     state: directory
-  when: ansible_system == "Darwin"
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
+  when: ansible_system == "Darwin" and neovim_root
 
 - name: Copy Neovim root user settings file for MacOS
   become: yes
@@ -88,4 +144,12 @@
     force: yes
     mode: 0644
     src: init.vim
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and neovim_root
+
+- name: Install NeoSolarized color scheme for MacOS
+  become: yes
+  get_url:
+    dest: /var/root/.config/nvim/colors/NeoSolarized.vim"
+    mode: 0644
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system == "Darwin" and neovim_root

@@ -14,6 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, RClone, Ruby and Scc roles.
 - GitHub CLI installation.
 - History and menu autocompletion to PowerShell.
+- Neosolarized and Packer installations for Neovim.
 - Several PowerShell autocompletion modules.
 - Software installation roles table in the documentation website.
 - Support for more operating systems on Mongo Shell.
