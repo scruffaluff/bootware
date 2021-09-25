@@ -1,24 +1,24 @@
-- name: Install JQ for FreeBSD
+- name: Install Lua for FreeBSD
   become: yes
   community.general.pkgng:
-    name: jq
+    name: lua54
   when: ansible_system == "FreeBSD"
 
-- name: Install JQ for Linux
+- name: Install Lua for Linux
   become: yes
   package:
-    name: jq
+    name: "{{ 'lua5.4' if ansible_pkg_mgr == 'apt' else 'lua' }}"
   when: ansible_system == "Linux"
 
-- name: Install JQ for MacOS
+- name: Install Lua for MacOS
   become_user: "{{ user_account }}"
   community.general.homebrew:
-    name: jq
+    name: lua
   when: ansible_system == "Darwin"
 
-- name: Install JQ for Windows
+- name: Install Lua for Windows
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: jq
+    name: lua
   when: ansible_system == "Win32NT"
