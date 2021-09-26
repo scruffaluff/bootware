@@ -16,7 +16,7 @@
     force: yes
     mode: 0644
     src: init.vim
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and not nvchad
 
 - name: Install NeoSolarized color scheme for Unix
   become_user: "{{ user_account }}"
@@ -34,6 +34,14 @@
       {{ user_home_dir }}/.config/nvim-data/site/pack/packer/start/packer.nvim
     repo: https://github.com/wbthomason/packer.nvim
   when: ansible_system != "Win32NT"
+
+# TODO: Make headless Neovim error exit instead of waiting for user input.
+# - name: Run Neovim Packer updates for Unix
+#   become_user: "{{ user_account }}"
+#   shell:
+#     cmd: |
+#       nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
+#   when: ansible_system != "Win32NT"
 
 - name: Create Neovim standard user settings directories for Windows
   become_user: "{{ user_account }}"
@@ -53,7 +61,7 @@
     force: yes
     mode: 0644
     src: init.vim
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and not nvchad
 
 - name: Install NeoSolarized color scheme for Windows
   become_user: "{{ user_account }}"
@@ -69,3 +77,10 @@
     git clone --depth 1 https://github.com/wbthomason/packer.nvim {{
     user_home_dir }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
   when: ansible_system == "Win32NT"
+
+# TODO: Make headless Neovim error exit instead of waiting for user input.
+# - name: Run Neovim Packer updates for Windows
+#   become_user: "{{ user_account }}"
+#   win_shell: |
+#     nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
+#   when: ansible_system == "Win32NT"

@@ -8,7 +8,16 @@
   become: yes
   package:
     name: neovim
+    state: "{{ 'absent' if nvchad else 'present' }}"
   when: ansible_system == "Linux"
+
+- name: Install Neovim for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/bin/neovim
+    mode: 0755
+    url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+  when: ansible_system == "Linux" and nvchad
 
 - name: Install Neovim for MacOS
   become_user: "{{ user_account }}"

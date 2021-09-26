@@ -1,0 +1,26 @@
+- name: Download NvChad for Unix
+  become_user: "{{ user_account }}"
+  git:
+    depth: 1
+    dest: /tmp/nvchad
+    repo: https://github.com/NvChad/NvChad
+  when: ansible_system != "Win32NT"
+
+- name: Install NvChad for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.config/nvim/{{ item }}"
+    mode: 0755
+    src: /tmp/nvchad
+  loop:
+    - init.lua
+    - lua
+  when: ansible_system != "Win32NT"
+
+- name: Install NvChad configuration file for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.config/nvim/lua/custom/"
+    mode: 0664
+    src: chadrc.lua
+  when: ansible_system != "Win32NT"

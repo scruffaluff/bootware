@@ -3,3 +3,7 @@
 
 - name: Configure Neovim settings
   import_tasks: settings.yaml
+
+- name: Install and configure NvChad
+  import_tasks: nvchad.yaml
+  when: nvchad
