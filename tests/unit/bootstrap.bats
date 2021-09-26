@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# shellcheck shell=bash
+
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
   load "../../node_modules/bats-support/load"
@@ -30,6 +32,7 @@ setup() {
   local expected
 
   export BOOTWARE_NOPASSWD=1
+  export BOOTWARE_TAGS=""
 
   expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml \
@@ -56,6 +59,8 @@ main.yaml"
 @test "Bootstrap subcommand passes Windows SSH arguments to Ansible" {
   local actual
   local expected
+
+  export BOOTWARE_TAGS=""
   
   expected="ansible-playbook --connection ssh --extra-vars \
 ansible_pkg_mgr=scoop --extra-vars ansible_python_interpreter=auto_silent \

@@ -114,6 +114,9 @@ OPTIONS:
     -v, --version <VERSION>     Version override for update
 EOF
       ;;
+    *)
+      error "No such usage option '$1'"
+      ;;
   esac
 }
 

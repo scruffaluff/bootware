@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# shellcheck shell=bash
+
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
   load "../../node_modules/bats-support/load"
