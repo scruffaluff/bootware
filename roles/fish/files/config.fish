@@ -3,8 +3,6 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
-# shellcheck shell=fish
-
 # Prepend directory to the system path.
 #
 # Fish version 2 will not add nonexistant inodes to be added to the system path.

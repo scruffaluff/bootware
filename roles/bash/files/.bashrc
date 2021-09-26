@@ -1,9 +1,8 @@
 # Bash settings file for non-login shells.
+# shellcheck disable=SC1090,SC1091 shell=bash
 #
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
-
-# shellcheck disable=SC1090,SC1091 shell=bash
 
 # System settings.
 
@@ -122,7 +121,7 @@ fi
 # Flags:
 #   -f: Check if file exists and is a regular file.
 if [[ -f "${HOME}/.env" ]]; then
-  source "$HOME/.env"
+  source "${HOME}/.env"
 fi
 
 # Load secrets if file exists.

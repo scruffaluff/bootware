@@ -1,5 +1,4 @@
 #!/usr/bin/env bats
-
 # shellcheck shell=bash
 
 setup() {

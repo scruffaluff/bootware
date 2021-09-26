@@ -7,8 +7,7 @@
 /build/
 /docs/index.md
 /docs/software.md
+/site/
+/tmp/
 dist/
 node_modules/
-package-lock.json
-site/
-tmp/

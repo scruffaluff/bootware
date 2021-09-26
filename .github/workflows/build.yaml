@@ -45,7 +45,9 @@ jobs:
       - name: Run ShellCheck on shell scripts
         uses: ludeeus/action-shellcheck@master
         with:
+          additional_files: .bash_profile .bashrc '*.bats'
           ignore: node_modules
+          severity: style
 
   test-bash:
     name: Run unit tests for Bash scripts
