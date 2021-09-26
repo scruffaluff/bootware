@@ -1,0 +1,71 @@
+- name: Create Neovim standard user settings directories for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/{{ item }}"
+    state: directory
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
+  when: ansible_system != "Win32NT"
+
+- name: Copy Neovim standard user settings file for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.config/nvim/init.vim"
+    force: yes
+    mode: 0644
+    src: init.vim
+  when: ansible_system != "Win32NT"
+
+- name: Install NeoSolarized color scheme for Unix
+  become_user: "{{ user_account }}"
+  get_url:
+    dest: "{{ user_home_dir }}/.config/nvim/colors/NeoSolarized.vim"
+    mode: 0644
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system != "Win32NT"
+
+- name: Install Packer Neovim plugin manager for Unix
+  become_user: "{{ user_account }}"
+  git:
+    depth: 1
+    dest: >-
+      {{ user_home_dir }}/.config/nvim-data/site/pack/packer/start/packer.nvim
+    repo: https://github.com/wbthomason/packer.nvim
+  when: ansible_system != "Win32NT"
+
+- name: Create Neovim standard user settings directories for Windows
+  become_user: "{{ user_account }}"
+  loop:
+    - nvim
+    - nvim/colors
+    - nvim-data/site/pack/packer/start
+  win_file:
+    path: "{{ user_home_dir }}/AppData/Local/{{ item }}"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Neovim standard user settings file for Windows
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"
+    force: yes
+    mode: 0644
+    src: init.vim
+  when: ansible_system == "Win32NT"
+
+- name: Install NeoSolarized color scheme for Windows
+  become_user: "{{ user_account }}"
+  win_get_url:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/colors/NeoSolarized.vim"
+    url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
+  when: ansible_system == "Win32NT"
+
+# Ansible does not provide a Git module for Windows.
+- name: Install Packer Neovim plugin manager for Windows
+  become_user: "{{ user_account }}"
+  win_shell: >-
+    git clone --depth 1 https://github.com/wbthomason/packer.nvim {{
+    user_home_dir }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
+  when: ansible_system == "Win32NT"
