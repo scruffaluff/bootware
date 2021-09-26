@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck shell=bash
+# shellcheck disable=SC2030,SC2031 shell=bash
 
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"

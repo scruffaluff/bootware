@@ -284,20 +284,20 @@ bootstrap() {
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${check:+--check} \
-    ${checkout:+--checkout "$checkout"} \
-    ${use_playbook:+--connection "$connection"} \
-    ${passwd:+--extra-vars "ansible_password=$passwd"} \
+    ${checkout:+--checkout "${checkout}"} \
+    ${use_playbook:+--connection "${connection}"} \
+    ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
-    ${windows:+--extra-vars "ansible_ssh_private_key_file=$ssh_key"} \
-    ${windows:+--extra-vars "ansible_user=$user_account"} \
+    ${windows:+--extra-vars "ansible_ssh_private_key_file=${ssh_key}"} \
+    ${windows:+--extra-vars "ansible_user=${user_account}"} \
     --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
-    ${use_pull:+--url "$url"} \
-    ${tags:+--tags "$tags"} \
-    ${skip:+--skip-tags "$skip"} \
+    ${use_pull:+--url "${url}"} \
+    ${tags:+--tags "${tags}"} \
+    ${skip:+--skip-tags "${skip}"} \
     "${playbook}"
 }
 
