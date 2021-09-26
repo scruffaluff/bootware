@@ -1,4 +1,8 @@
 # Bash settings file for non-login shells.
+#
+# For more information, visit
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
+
 # shellcheck disable=SC1090,SC1091 shell=bash
 
 # System settings.

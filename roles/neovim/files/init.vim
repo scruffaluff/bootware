@@ -1,4 +1,6 @@
 " Neovim configuration file.
+"
+" For more information, execute ":help config" inside of Neovim.
 
 
 " General settings.

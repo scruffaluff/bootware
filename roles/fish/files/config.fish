@@ -1,4 +1,8 @@
 # Fish settings file.
+#
+# For more information, visit
+# https://fishshell.com/docs/current/index.html#configuration-files.
+
 # shellcheck shell=fish
 
 # Prepend directory to the system path.
@@ -13,7 +17,6 @@ function prepend_path
     set -x PATH "$argv[1]" $PATH
   end
 end
-
 
 # System settings.
 

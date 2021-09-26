@@ -1,2 +1,6 @@
+-- SQLite configuration file.
+--
+-- For more information, visit .
+
 .headers on
 .mode column

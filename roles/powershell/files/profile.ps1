@@ -1,4 +1,7 @@
 # PowerShell settings file.
+#
+# For more information, visit
+# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
 # Docker settings.
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1

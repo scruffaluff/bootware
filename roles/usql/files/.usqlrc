@@ -1,1 +1,6 @@
+-- Usql configuration file.
+--
+-- For more information, visit
+-- https://github.com/xo/usql#runtime-configuration-rc-file.
+
 \set SYNTAX_HL_STYLE solarized-light
