@@ -3,15 +3,16 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
-# Prepend directory to the system path if it exists.
+# Prepend directory to the system path if it exists and is not already there.
 #
-# Fish version 2 will not add nonexistant inodes to be added to the system path.
+# Fish version 2 errors if nonexistant inodes are added to the system path and
+# does not support the prepend_path function.
 #
 # Flags:
 #   -d: Check if inode is a directory.
 #   -x: Export variable for current and child processes.
 function prepend_path
-  if test -d "$argv[1]"
+  if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
     set -x PATH "$argv[1]" $PATH
   end
 end

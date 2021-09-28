@@ -6,6 +6,7 @@
   loop:
     - .config/nvim
     - .config/nvim/colors
+    - .config/nvim/lua
     - .local/share/nvim/site/pack/packer/start
   when: ansible_system != "Win32NT"
 
@@ -48,18 +49,17 @@
   loop:
     - nvim
     - nvim/colors
+    - nvim/lua
     - nvim-data/site/pack/packer/start
   win_file:
     path: "{{ user_home_dir }}/AppData/Local/{{ item }}"
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Copy Neovim settings file for Windows
+- name: Copy Neovim settings files for Windows
   become_user: "{{ user_account }}"
-  copy:
+  win_copy:
     dest: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"
-    force: yes
-    mode: 0644
     src: init.vim
   when: ansible_system == "Win32NT" and not nvchad
 

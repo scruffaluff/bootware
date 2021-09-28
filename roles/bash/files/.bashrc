@@ -4,12 +4,12 @@
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
 
-# Prepend directory to the system path if it exists.
+# Prepend directory to the system path if it exists and is not already there.
 #
 # Flags:
 #   -d: Check if inode is a directory.
 prepend_path() {
-  if [[ -d "$1" ]]; then
+  if [[ -d "$1" && ":${PATH}:" != *":$1:"* ]]; then
     export PATH="$1:${PATH}"
   fi
 }
