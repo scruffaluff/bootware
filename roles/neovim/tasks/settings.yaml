@@ -31,7 +31,7 @@
   git:
     depth: 1
     dest: >-
-      {{ user_home_dir }}/.config/nvim-data/site/pack/packer/start/packer.nvim
+      {{ user_home_dir }}/.local/share/nvim/site/pack/packer/start/packer.nvim
     repo: https://github.com/wbthomason/packer.nvim
   when: ansible_system != "Win32NT"
 
