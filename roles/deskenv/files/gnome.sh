@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# Change background picture.
-gsettings set org.gnome.desktop.background picture-uri "file:///home/$1/Pictures/background/$2"
 # Show weekday in top bar date.
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 # Show battery percentage in activity bar.
@@ -10,8 +8,6 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 # Use natural scroll orientation for touchpad.
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
-# Change lock screen picture.
-gsettings set org.gnome.desktop.screensaver picture-uri "file:///home/$1/Pictures/background/$2"
 # Maximize application windows when double clicking the title bar.
 gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar "toggle-maximize"
 # Add maximize and minimize buttons to application window title bars.

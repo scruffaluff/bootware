@@ -33,6 +33,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Desktop background picture automation.
 - Xonsh role.
 
 ## 0.3.3 - 2021-08-06
