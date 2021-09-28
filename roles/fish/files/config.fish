@@ -3,7 +3,7 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
-# Prepend directory to the system path.
+# Prepend directory to the system path if it exists.
 #
 # Fish version 2 will not add nonexistant inodes to be added to the system path.
 #
@@ -111,6 +111,9 @@ function setenv
     set -gx $argv
   end
 end
+
+# Use VI mode for command line editing.
+fish_vi_key_bindings
 
 # Load aliases if file exists.
 #
