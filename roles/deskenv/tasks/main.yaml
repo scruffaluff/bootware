@@ -1,6 +1,6 @@
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
-  script: "gnome.sh {{ user_account }} {{ background.name }}"
+  script: gnome.sh
   when: ansible_system == "Linux" and gnome_desktop
 
 # Linux distributions with GNOME desktops should be configured after general
@@ -27,10 +27,10 @@
 
 - name: Change desktop settings for Windows
   become_user: "{{ user_account }}"
-  script: "windows.ps1 {{ user_account }} {{ background.name }}"
+  script: windows.ps1
   when: ansible_system == "Win32NT"
 
 - name: Change desktop settings for XFCE
   become_user: "{{ user_account }}"
-  script: "xfce.sh {{ user_account }} {{ background.name }}"
+  script: xfce.sh
   when: ansible_system == "Linux" and desktop == "xfce"

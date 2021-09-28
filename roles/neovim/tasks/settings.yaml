@@ -1,15 +1,15 @@
-- name: Create Neovim standard user settings directories for Unix
+- name: Create Neovim settings directories for Unix
   become_user: "{{ user_account }}"
   file:
-    path: "{{ user_home_dir }}/.config/{{ item }}"
+    path: "{{ user_home_dir }}/{{ item }}"
     state: directory
   loop:
-    - nvim
-    - nvim/colors
-    - nvim-data/site/pack/packer/start
+    - .config/nvim
+    - .config/nvim/colors
+    - .local/share/nvim/site/pack/packer/start
   when: ansible_system != "Win32NT"
 
-- name: Copy Neovim standard user settings file for Unix
+- name: Copy Neovim settings file for Unix
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/nvim/init.vim"
@@ -43,7 +43,7 @@
 #       nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
 #   when: ansible_system != "Win32NT"
 
-- name: Create Neovim standard user settings directories for Windows
+- name: Create Neovim settings directories for Windows
   become_user: "{{ user_account }}"
   loop:
     - nvim
@@ -54,7 +54,7 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Copy Neovim standard user settings file for Windows
+- name: Copy Neovim settings file for Windows
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"

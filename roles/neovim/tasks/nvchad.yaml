@@ -2,7 +2,7 @@
   become_user: "{{ user_account }}"
   git:
     depth: 1
-    dest: /tmp/nvchad
+    dest: /tmp/NvChad
     repo: https://github.com/NvChad/NvChad
   when: ansible_system != "Win32NT"
 
@@ -11,10 +11,17 @@
   copy:
     dest: "{{ user_home_dir }}/.config/nvim/{{ item }}"
     mode: 0755
-    src: /tmp/nvchad
+    src: "/tmp/NvChad/{{ item }}"
   loop:
     - init.lua
     - lua
+  when: ansible_system != "Win32NT"
+
+- name: Remove Neovim settings file for Unix
+  become_user: "{{ user_account }}"
+  file:
+    path: "{{ user_home_dir }}/.config/nvim/init.vim"
+    state: absent
   when: ansible_system != "Win32NT"
 
 - name: Install NvChad configuration file for Unix
@@ -24,3 +31,34 @@
     mode: 0664
     src: chadrc.lua
   when: ansible_system != "Win32NT"
+
+- name: Download NvChad for Windows
+  become_user: "{{ user_account }}"
+  win_shell: >-
+    git clone --depth 1 https://github.com/NvChad/NvChad {{ user_home_dir
+    }}/AppData/Local/Temp/NvChad
+  when: ansible_system == "Win32NT"
+
+- name: Install NvChad for Windows
+  become_user: "{{ user_account }}"
+  loop:
+    - init.lua
+    - lua
+  win_copy:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/{{ item }}"
+    src: "{{ user_home_dir }}/AppData/Local/Temp/NvChad/{{ item }}"
+  when: ansible_system == "Win32NT"
+
+- name: Remove Neovim settings file for Windows
+  become_user: "{{ user_account }}"
+  win_file:
+    path: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"
+    state: absent
+  when: ansible_system == "Win32NT"
+
+- name: Install NvChad configuration file for Windows
+  become_user: "{{ user_account }}"
+  win_copy:
+    dest: "{{ user_home_dir }}/AppData/Local/nvim/lua/custom/"
+    src: chadrc.lua
+  when: ansible_system == "Win32NT"
