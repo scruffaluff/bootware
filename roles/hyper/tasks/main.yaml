@@ -8,11 +8,13 @@
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 # Hyper is not yet supported on Debian 11.
-# - name: Install Hyper for Debian distributions
-#   apt:
-#     deb: https://releases.hyper.is/download/deb
-#   become: yes
-#   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+- name: Install Hyper for Debian distributions
+  apt:
+    deb: https://releases.hyper.is/download/deb
+  become: yes
+  when: >-
+    ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64" and
+    deb_distro_base == "ubuntu"
 
 - name: Install Hyper for Fedora distributions
   become: yes
