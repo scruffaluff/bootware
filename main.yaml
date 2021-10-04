@@ -209,6 +209,14 @@
     - dust
     - server
 
+- name: Install Balena Etcher ISO flasher
+  hosts: all
+  roles:
+    - etcher
+  tags:
+    - desktop
+    - etcher
+
 - name: Install Exa file lister
   hosts: all
   roles:

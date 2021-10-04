@@ -110,11 +110,7 @@ function testRole(system, role) {
     if (Array.isArray(role.tests)) {
       tests = role.tests;
     } else {
-      try {
-        tests = role.tests[system.os];
-      } catch (exception) {
-        test = role.tests.default;
-      }
+      tests = role.tests[system.os] || role.tests.default;
     }
 
     for (const test of tests) {

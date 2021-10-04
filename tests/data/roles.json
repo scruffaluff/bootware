@@ -10,7 +10,7 @@
       { "os": "arch" },
       { "os": "debian" },
       { "os": "fedora" },
-      { "arch": "freebsd" },
+      { "os": "freebsd" },
       { "os": "macos" },
       { "os": "ubuntu" },
       { "os": "windows" }
