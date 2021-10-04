@@ -1,15 +1,8 @@
-# AppImages requires FUSE.
-- name: Install FUSE for Arch distributions
-  become: yes
-  pacman:
-    name: fuse3
-  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
-
 # TODO: Run integrate with system step after download.
 - name: Install Hyper for Arch distributions
   become: yes
   get_url:
-    dest: /usr/local/bin/hyper
+    dest: /usr/local/appimages/hyper.appimage
     mode: 0755
     url: https://releases.hyper.is/download/AppImage
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"

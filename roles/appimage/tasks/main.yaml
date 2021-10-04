@@ -1,3 +1,31 @@
+# AppImages requires FUSE.
+- name: Install FUSE for Arch distributions
+  become: yes
+  pacman:
+    name: fuse3
+  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
+
+- name: Install AppImage Launcher for Linux
+  become: yes
+  package:
+    name: appimagelauncher
+  when: ansible_system == "Linux"
+
+- name: Create AppImages directory for Linux
+  become: yes
+  file:
+    path: /usr/local/appimages
+    state: directory
+  when: ansible_system == "Linux"
+
+- name: Copy AppImage Launcher settings file for Linux
+  become: yes
+  copy:
+    dest: "{{ user_home_dir }}/.config/appimagelauncher.cfg"
+    mode: 0644
+    src: appimagelauncher.cfg
+  when: ansible_system == "Linux"
+
 - name: Install AppImage packages for Linux
   become: yes
   get_url:

@@ -4,7 +4,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
-  { "name": "appimage" },
+  { "name": "appimage", "tests": ["ail-cli --version"] },
   { "name": "audio" },
   {
     "name": "avro",

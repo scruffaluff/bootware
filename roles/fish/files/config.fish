@@ -85,6 +85,8 @@ end
 
 # Ruby settings.
 
+prepend_path "$HOME/.rvm/bin"
+
 # Initialize RVM if available.
 #
 # Flags:
@@ -115,6 +117,14 @@ end
 
 # Use VI mode for command line editing.
 fish_vi_key_bindings
+# VI command mode remappings.
+bind -s -M default j backward-char
+bind -s -M default ';' forward-char
+# VI visual mode remappings.
+bind -s -M visual j backward-char
+bind -s -M visual ';' forward-char
+bind -s -M visual l up-line
+bind -s -M visual k down-line
 
 # Load aliases if file exists.
 #
