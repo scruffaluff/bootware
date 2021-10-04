@@ -5,11 +5,11 @@
     name: fuse3
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
-- name: Install AppImage Launcher for Linux
-  become: yes
-  package:
-    name: appimagelauncher
-  when: ansible_system == "Linux"
+- name: Install AppImageLauncher for Arch distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: yay -Sy --noconfirm appimagelauncher-git
+  when: ansible_pkg_mgr == "pacman"
 
 - name: Create AppImages directory for Linux
   become: yes
@@ -18,7 +18,7 @@
     state: directory
   when: ansible_system == "Linux"
 
-- name: Copy AppImage Launcher settings file for Linux
+- name: Copy AppImageLauncher settings file for Linux
   become: yes
   copy:
     dest: "{{ user_home_dir }}/.config/appimagelauncher.cfg"
@@ -29,7 +29,7 @@
 - name: Install AppImage packages for Linux
   become: yes
   get_url:
-    dest: /usr/local/bin/{{ item.name }}
+    dest: /usr/local/appimages/{{ item.name }}
     mode: 0755
     url: "{{ item.url }}"
   loop: "{{ appimage_packages }}"

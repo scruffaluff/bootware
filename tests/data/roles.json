@@ -4,7 +4,18 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
-  { "name": "appimage", "tests": ["ail-cli --version"] },
+  {
+    "name": "appimage",
+    "skip": [
+      { "os": "debian" },
+      { "os": "fedora" },
+      { "arch": "freebsd" },
+      { "os": "macos" },
+      { "os": "ubuntu" },
+      { "os": "windows" }
+    ],
+    "tests": ["ail-cli --version"]
+  },
   { "name": "audio" },
   {
     "name": "avro",
@@ -26,9 +37,20 @@
   { "name": "build" },
   { "name": "caffeine" },
   {
-    "name": "chrome"
+    "name": "chrome",
+    "tests": {
+      "macos": [
+        "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
+      ]
+    }
   },
   { "name": "compass" },
+  {
+    "name": "dbeaver",
+    "tests": {
+      "macos": ["/Applications/DBeaver.app/Contents/MacOS/dbeaver -help"]
+    }
+  },
   { "name": "defterm" },
   {
     "name": "deno",
@@ -68,8 +90,10 @@
   },
   {
     "name": "firefox",
-    "skip": [{ "os": "arch" }, { "os": "fedora" }, { "os": "macos" }],
-    "tests": ["firefox --version"]
+    "tests": {
+      "default": ["firefox --version"],
+      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"]
+    }
   },
   {
     "name": "fish",
@@ -134,6 +158,10 @@
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
     "tests": ["virsh --version"]
+  },
+  {
+    "name": "lua",
+    "tests": ["lua -v"]
   },
   {
     "name": "mdbook",

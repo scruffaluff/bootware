@@ -46,6 +46,9 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Use Bash style tab completion.
     Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 
+    # Use VI mode for command line editing.
+    Set-PSReadlineOption -EditMode vi
+
     # Add history based autocompletion to arrow keys.
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
