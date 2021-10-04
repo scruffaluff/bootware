@@ -5,11 +5,12 @@
     name: fuse3
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
-- name: Install AppImageLauncher for Arch distributions
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm appimagelauncher-git
-  when: ansible_pkg_mgr == "pacman"
+# TODO: Figure out stable method to install AppImageLauncher.
+# - name: Install AppImageLauncher for Arch distributions
+#   become_user: "{{ user_account }}"
+#   shell:
+#     cmd: yay -Sy --noconfirm appimagelauncher-git
+#   when: ansible_pkg_mgr == "pacman"
 
 - name: Create AppImages directory for Linux
   become: yes

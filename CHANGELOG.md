@@ -11,8 +11,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Ability to choose Bootware branch for automatic WSL installation.
 - Deno support for Apple ARM64.
-- Dust, FFSend, FzF, Hyperfine, Lua, Navi, OTS, Procs, RClone, Ruby and Scc
-  roles.
+- Dust, Etcher, FFSend, FzF, Hyperfine, Lua, Navi, OTS, Procs, RClone, Ruby and
+  Scc roles.
 - GitHub CLI installation.
 - History and menu autocompletion to PowerShell.
 - Neosolarized and Packer installations for Neovim.

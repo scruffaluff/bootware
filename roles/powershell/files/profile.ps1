@@ -36,7 +36,8 @@ If (Get-Module -ListAvailable -Name posh-git) {
 # Configure console theme if available.
 If (Get-Module -ListAvailable -Name PSConsoleTheme) {
     Import-Module PSConsoleTheme
-    Set-ConsoleTheme "Solarized Light"
+    # TODO: Figure out installation method for GitHub Actions.
+    # Set-ConsoleTheme "Solarized Light"
 }
 
 # Configure PSReadLine settings if available.
@@ -54,7 +55,10 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
     # Show history based autocompletion for every typed character.
-    Set-PSReadLineOption -PredictionSource History
+    # Feature is only available for PowerShell 7.0 and later.
+    If ($PSVersionTable.PSVersion.Major -GE 7) {
+        Set-PSReadLineOption -PredictionSource History
+    }
 }
 
 # Python settings.

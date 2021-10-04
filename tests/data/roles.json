@@ -7,6 +7,7 @@
   {
     "name": "appimage",
     "skip": [
+      { "os": "arch" },
       { "os": "debian" },
       { "os": "fedora" },
       { "arch": "freebsd" },
@@ -38,7 +39,9 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
+    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
     "tests": {
+      "default": ["google-chrome --version"],
       "macos": [
         "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
       ]
@@ -48,7 +51,10 @@
   {
     "name": "dbeaver",
     "tests": {
-      "macos": ["/Applications/DBeaver.app/Contents/MacOS/dbeaver -help"]
+      "default": ["dbeaver -help -nosplash"],
+      "macos": [
+        "/Applications/DBeaver.app/Contents/MacOS/dbeaver -help -nosplash"
+      ]
     }
   },
   { "name": "defterm" },
@@ -73,6 +79,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["dvc --version"]
   },
+  { "name": "etcher", "skip": [{ "os": "freebsd" }] },
   {
     "name": "exa",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
@@ -140,6 +147,7 @@
     "skip": [
       { "arch": "arm64", "os": "linux" },
       { "os": "arch" },
+      { "os": "debian" },
       { "os": "freebsd" }
     ],
     "tests": ["hyper --version"]

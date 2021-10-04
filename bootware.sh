@@ -564,25 +564,25 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman --noconfirm -S ansible
+    ${1:+sudo} pacman -Suy --noconfirm
+    ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log "Installing Yay package manager"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm base-devel
 
     tmp_dir="$(mktemp -u)"
