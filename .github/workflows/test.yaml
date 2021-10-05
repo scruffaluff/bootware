@@ -45,14 +45,21 @@ jobs:
       # GitHub's job limit of 6 hours.
       # TODO: Resolve job time limit for Arm64 tests.
       matrix:
-        arch: ["amd64", "arm64"]
+        arch: ["amd64"]
         distro: [arch, debian, fedora, ubuntu]
-        exclude:
-          # Docker Hub does not provide ARM64 Arch Linux images.
+        # exclude:
+        #   # Docker Hub does not provide ARM64 Arch Linux images.
+        #   - arch: arm64
+        #     distro: arch
+        #   - arch: arm64
+        #     distro: debian
+        include:
           - arch: arm64
-            distro: arch
+            distro: fedora
+            skip: rust
           - arch: arm64
-            distro: debian
+            distro: ubuntu
+            skip: rust
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -64,7 +71,9 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: test=true
+          build-args: |
+            skip=${{ matrix.skip || 'none' }}
+            test=true
           context: .
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}
           platforms: linux/${{ matrix.arch }}

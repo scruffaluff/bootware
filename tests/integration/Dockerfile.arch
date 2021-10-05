@@ -42,9 +42,9 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY roles/ ./roles/
-COPY group_vars/ ./group_vars/
-COPY main.yaml ./
+COPY --chown="${USER}" roles/ ./roles/
+COPY --chown="${USER}" group_vars/ ./group_vars/
+COPY --chown="${USER}" main.yaml ./
 
 ARG skip
 ARG tags
@@ -54,7 +54,7 @@ ARG test
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
 
 # Copy bootware test files for testing.
-COPY tests/ ./tests/
+COPY --chown="${USER}" tests/ ./tests/
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]

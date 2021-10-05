@@ -54,7 +54,8 @@
 
 - name: Parse Fish version
   set_fact:
-    fish_version: "{{ fish_version_text | regex_search('(\\d+\\.)+\\d+') }}"
+    fish_version: >-
+      {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager
