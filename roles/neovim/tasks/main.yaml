@@ -1,91 +1,9 @@
-- name: Install Neovim for FreeBSD
-  become: yes
-  community.general.pkgng:
-    name: neovim
-  when: ansible_system == "FreeBSD"
+- name: Install Neovim
+  import_tasks: install.yaml
 
-- name: Install Neovim for Linux
-  become: yes
-  package:
-    name: neovim
-  when: ansible_system == "Linux"
+- name: Configure Neovim settings
+  import_tasks: settings.yaml
 
-- name: Install Neovim for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name: neovim
-  when: ansible_system == "Darwin"
-
-- name: Install Neovim for Windows
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    # Without the C++ Redistributable, Neovim will not launch.
-    name:
-      - extras/vcredist2015
-      - neovim
-  when: ansible_system == "Win32NT"
-
-- name: Create Neovim standard user settings directory for Unix
-  become_user: "{{ user_account }}"
-  file:
-    path: "{{ user_home_dir }}/.config/nvim"
-    state: directory
-  when: ansible_system != "Win32NT"
-
-- name: Copy Neovim standard user settings file for Unix
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.config/nvim/init.vim"
-    force: yes
-    mode: 0644
-    src: init.vim
-  when: ansible_system != "Win32NT"
-
-- name: Create Neovim standard user settings directory for Windows
-  become_user: "{{ user_account }}"
-  win_file:
-    path: "{{ user_home_dir }}/AppData/Local/nvim"
-    state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Copy Neovim standard user settings file for Windows
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/AppData/Local/nvim/init.vim"
-    force: yes
-    mode: 0644
-    src: init.vim
-  when: ansible_system == "Win32NT"
-
-- name: Create Neovim root user settings directory for Linux
-  become: yes
-  file:
-    path: /root/.config/nvim
-    state: directory
-  when: ansible_system == "Linux"
-
-- name: Copy Neovim root user settings file for Linux
-  become: yes
-  copy:
-    dest: /root/.config/nvim/init.vim
-    force: yes
-    mode: 0644
-    src: init.vim
-  when: ansible_system == "Linux"
-
-- name: Create Neovim root user settings directory for MacOS
-  become: yes
-  file:
-    path: /var/root/.config/nvim
-    state: directory
-  when: ansible_system == "Darwin"
-
-- name: Copy Neovim root user settings file for MacOS
-  become: yes
-  copy:
-    dest: /var/root/.config/nvim/init.vim
-    force: yes
-    mode: 0644
-    src: init.vim
-  when: ansible_system == "Darwin"
+- name: Install and configure NvChad
+  import_tasks: nvchad.yaml
+  when: nvchad

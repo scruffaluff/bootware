@@ -1,35 +1,6 @@
-- name: Create background pictures directory for Unix
-  become_user: "{{ user_account }}"
-  file:
-    path: "{{ user_home_dir }}/Pictures/background"
-    state: directory
-  when: ansible_system != "Win32NT"
-
-- name: Create background pictures directory for Windows
-  become_user: "{{ user_account }}"
-  win_file:
-    path: "{{ user_home_dir }}/Pictures/background"
-    state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Download desktop background picture for Unix
-  become_user: "{{ user_account }}"
-  get_url:
-    dest: "{{ user_home_dir }}/Pictures/background/{{ background.name }}"
-    mode: 0644
-    url: "{{ background.url }}"
-  when: ansible_system != "Win32NT"
-
-- name: Download desktop background picture for Windows
-  become_user: "{{ user_account }}"
-  win_get_url:
-    dest: "{{ user_home_dir }}/Pictures/background/{{ background.name }}"
-    url: "{{ background.url }}"
-  when: ansible_system == "Win32NT"
-
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
-  script: "gnome.sh {{ user_account }} {{ background.name }}"
+  script: gnome.sh
   when: ansible_system == "Linux" and gnome_desktop
 
 # Linux distributions with GNOME desktops should be configured after general
@@ -56,10 +27,10 @@
 
 - name: Change desktop settings for Windows
   become_user: "{{ user_account }}"
-  script: "windows.ps1 {{ user_account }} {{ background.name }}"
+  script: windows.ps1
   when: ansible_system == "Win32NT"
 
 - name: Change desktop settings for XFCE
   become_user: "{{ user_account }}"
-  script: "xfce.sh {{ user_account }} {{ background.name }}"
+  script: xfce.sh
   when: ansible_system == "Linux" and desktop == "xfce"

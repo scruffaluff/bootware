@@ -15,8 +15,8 @@
   package:
     name: firefox
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr == "apt" and deb_distro_base
-    != "debian"
+    ansible_system == "Linux" and (ansible_pkg_mgr != "apt" or deb_distro_base
+    != "debian")
 
 - name: Install Firefox for MacOS
   become_user: "{{ user_account }}"

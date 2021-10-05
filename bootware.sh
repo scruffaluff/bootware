@@ -114,6 +114,9 @@ OPTIONS:
     -v, --version <VERSION>     Version override for update
 EOF
       ;;
+    *)
+      error "No such usage option '$1'"
+      ;;
   esac
 }
 
@@ -281,20 +284,20 @@ bootstrap() {
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${check:+--check} \
-    ${checkout:+--checkout "$checkout"} \
-    ${use_playbook:+--connection "$connection"} \
-    ${passwd:+--extra-vars "ansible_password=$passwd"} \
+    ${checkout:+--checkout "${checkout}"} \
+    ${use_playbook:+--connection "${connection}"} \
+    ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
-    ${windows:+--extra-vars "ansible_ssh_private_key_file=$ssh_key"} \
-    ${windows:+--extra-vars "ansible_user=$user_account"} \
+    ${windows:+--extra-vars "ansible_ssh_private_key_file=${ssh_key}"} \
+    ${windows:+--extra-vars "ansible_user=${user_account}"} \
     --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
-    ${use_pull:+--url "$url"} \
-    ${tags:+--tags "$tags"} \
-    ${skip:+--skip-tags "$skip"} \
+    ${use_pull:+--url "${url}"} \
+    ${tags:+--tags "${tags}"} \
+    ${skip:+--skip-tags "${skip}"} \
     "${playbook}"
 }
 
@@ -561,25 +564,25 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    ${1:+sudo} pacman --noconfirm -Suy
-    ${1:+sudo} pacman --noconfirm -S ansible
+    ${1:+sudo} pacman -Suy --noconfirm
+    ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log "Installing Yay package manager"
-    ${1:+sudo} pacman --noconfirm -Suy
+    ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm base-devel
 
     tmp_dir="$(mktemp -u)"

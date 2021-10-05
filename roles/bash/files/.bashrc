@@ -1,5 +1,18 @@
 # Bash settings file for non-login shells.
 # shellcheck disable=SC1090,SC1091 shell=bash
+#
+# For more information, visit
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
+
+# Prepend directory to the system path if it exists and is not already there.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+prepend_path() {
+  if [[ -d "$1" && ":${PATH}:" != *":$1:"* ]]; then
+    export PATH="$1:${PATH}"
+  fi
+}
 
 # System settings.
 
@@ -8,12 +21,12 @@
 # Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
-export PATH="/usr/bin:${PATH}"
+prepend_path "/usr/bin"
 
 # Add manually installed binary directory to PATH environment variable.
 #
 # Necessary since path is missing on some MacOS systems.
-export PATH="/usr/local/bin:${PATH}"
+prepend_path "/usr/local/bin"
 
 # Bash settings
 
@@ -51,11 +64,11 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 else
   export GOROOT="/usr/local/go"
 fi
-export PATH="${GOROOT}/bin:${PATH}"
+prepend_path "${GOROOT}/bin"
 
 # Add Go local binaries to system path.
 export GOPATH="${HOME}/go"
-export PATH="${GOPATH}/bin:${PATH}"
+prepend_path "${GOPATH}/bin"
 
 # Python settings.
 
@@ -63,7 +76,7 @@ export PATH="${GOPATH}/bin:${PATH}"
 export POETRY_VIRTUALENVS_IN_PROJECT=1
 
 # Add Pyenv binaries to system path.
-export PATH="${HOME}/.pyenv/bin:${PATH}"
+prepend_path "${HOME}/.pyenv/bin"
 
 # Initialize Pyenv if available.
 #
@@ -71,7 +84,7 @@ export PATH="${HOME}/.pyenv/bin:${PATH}"
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
   export PYENV_ROOT="${HOME}/.pyenv"
-  export PATH="${PYENV_ROOT}/bin:${PATH}"
+  prepend_path "${PYENV_ROOT}/bin"
   eval "$(pyenv init --path)"
 
   # Load Pyenv completions.
@@ -80,7 +93,7 @@ fi
 
 # Ruby settings.
 
-export PATH="${HOME}/.rvm/bin:${PATH}"
+prepend_path "${HOME}/.rvm/bin"
 
 # Initialize RVM if available.
 #
@@ -91,7 +104,7 @@ if [[ -f "${HOME}/.rvm/scripts/rvm" ]]; then
 fi
 
 # Rust settings.
-export PATH="${HOME}/.cargo/bin:${PATH}"
+prepend_path "${HOME}/.cargo/bin"
 
 # Shell settings.
 
@@ -104,6 +117,9 @@ export PATH="${HOME}/.cargo/bin:${PATH}"
 function setenv() {
   export "$1=$2"
 }
+
+# Use VI mode for command line editing.
+set -o vi
 
 # Load aliases if file exists.
 #
@@ -118,7 +134,7 @@ fi
 # Flags:
 #   -f: Check if file exists and is a regular file.
 if [[ -f "${HOME}/.env" ]]; then
-  source "$HOME/.env"
+  source "${HOME}/.env"
 fi
 
 # Load secrets if file exists.
@@ -148,7 +164,7 @@ complete -C /usr/local/bin/terraform terraform
 export BAT_PAGER=""
 
 # Add Visual Studio Code binary to PATH for Linux.
-export PATH="/usr/share/code/bin:${PATH}"
+prepend_path "/usr/share/code/bin"
 
 # Initialize Digital Ocean CLI if available.
 #
@@ -206,7 +222,7 @@ fi
 # TypeScript settings.
 
 # Add NPM global binaries to system path.
-export PATH="${HOME}/.npm-global/bin:${PATH}"
+prepend_path "${HOME}/.npm-global/bin"
 
 # Load Node version manager and its bash completion.
 #
@@ -222,20 +238,21 @@ fi
 
 # Deno settings.
 export DENO_INSTALL="${HOME}/.deno"
-export PATH="${DENO_INSTALL}/bin:${PATH}"
+prepend_path "${DENO_INSTALL}/bin"
 
 # User settings.
 
 export EDITOR="nvim"
 
 # Add scripts directory to PATH environment variable.
-export PATH="${HOME}/.local/bin:${PATH}"
+prepend_path "${HOME}/.local/bin"
 
 # Wasmtime settings.
 export WASMTIME_HOME="${HOME}/.wasmtime"
-export PATH="${WASMTIME_HOME}/bin:${PATH}"
+
+prepend_path "${WASMTIME_HOME}/bin"
 
 # Apple Silicon support.
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
-export PATH="/opt/homebrew/bin:${PATH}"
+prepend_path "/opt/homebrew/bin"

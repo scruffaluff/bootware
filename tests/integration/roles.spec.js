@@ -103,10 +103,17 @@ function shouldSkip(system, conditions) {
  */
 function testRole(system, role) {
   let error = false;
+  let tests;
   process.stdout.write(`testing: ${role.name}`);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
-    for (const test of role.tests) {
+    if (Array.isArray(role.tests)) {
+      tests = role.tests;
+    } else {
+      tests = role.tests[system.os] || role.tests.default;
+    }
+
+    for (const test of tests) {
       try {
         childProcess.execSync(test, { shell: system.shell, stdio: "pipe" });
       } catch (exception) {

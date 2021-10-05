@@ -1,4 +1,6 @@
 " Neovim configuration file.
+"
+" For more information, execute ":help config" inside of Neovim.
 
 
 " General settings.
@@ -31,3 +33,10 @@ noremap ; l
 noremap l k
 noremap k j
 noremap j h
+
+
+" Neosolarized settings.
+
+colorscheme NeoSolarized
+set background=light
+set termguicolors

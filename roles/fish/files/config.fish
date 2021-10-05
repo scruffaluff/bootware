@@ -1,19 +1,21 @@
 # Fish settings file.
-# shellcheck shell=fish
-
-# Prepend directory to the system path.
 #
-# Fish version 2 will not add nonexistant inodes to be added to the system path.
+# For more information, visit
+# https://fishshell.com/docs/current/index.html#configuration-files.
+
+# Prepend directory to the system path if it exists and is not already there.
+#
+# Fish version 2 errors if nonexistant inodes are added to the system path and
+# does not support the prepend_path function.
 #
 # Flags:
 #   -d: Check if inode is a directory.
 #   -x: Export variable for current and child processes.
 function prepend_path
-  if test -d "$argv[1]"
+  if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
     set -x PATH "$argv[1]" $PATH
   end
 end
-
 
 # System settings.
 
@@ -83,6 +85,8 @@ end
 
 # Ruby settings.
 
+prepend_path "$HOME/.rvm/bin"
+
 # Initialize RVM if available.
 #
 # Flags:
@@ -110,6 +114,17 @@ function setenv
     set -gx $argv
   end
 end
+
+# Use VI mode for command line editing.
+fish_vi_key_bindings
+# VI command mode remappings.
+bind -s -M default j backward-char
+bind -s -M default ';' forward-char
+# VI visual mode remappings.
+bind -s -M visual j backward-char
+bind -s -M visual ';' forward-char
+bind -s -M visual l up-line
+bind -s -M visual k down-line
 
 # Load aliases if file exists.
 #

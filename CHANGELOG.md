@@ -11,9 +11,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Ability to choose Bootware branch for automatic WSL installation.
 - Deno support for Apple ARM64.
-- Dust, FFSend, FzF, Hyperfine, Navi, OTS, Procs, RClone, Ruby and Scc roles.
+- Dust, Etcher, FFSend, FzF, Hyperfine, Lua, Navi, OTS, Procs, RClone, Ruby and
+  Scc roles.
 - GitHub CLI installation.
 - History and menu autocompletion to PowerShell.
+- Neosolarized and Packer installations for Neovim.
 - Several PowerShell autocompletion modules.
 - Software installation roles table in the documentation website.
 - Support for more operating systems on Mongo Shell.
@@ -31,6 +33,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Desktop background picture automation.
 - Xonsh role.
 
 ## 0.3.3 - 2021-08-06

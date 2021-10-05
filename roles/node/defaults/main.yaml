@@ -1,6 +1,7 @@
 node_applications:
   - "@vue/cli"
   - "gitmoji-cli"
+  - neovim
   - prettier
   - speedscope
 node_versions:

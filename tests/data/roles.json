@@ -4,7 +4,19 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
-  { "name": "appimage" },
+  {
+    "name": "appimage",
+    "skip": [
+      { "os": "arch" },
+      { "os": "debian" },
+      { "os": "fedora" },
+      { "os": "freebsd" },
+      { "os": "macos" },
+      { "os": "ubuntu" },
+      { "os": "windows" }
+    ],
+    "tests": ["ail-cli --version"]
+  },
   { "name": "audio" },
   {
     "name": "avro",
@@ -26,9 +38,28 @@
   { "name": "build" },
   { "name": "caffeine" },
   {
-    "name": "chrome"
+    "name": "chrome",
+    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
+    "tests": {
+      "default": ["google-chrome --version"],
+      "macos": [
+        "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
+      ],
+      "windows": ["scoop which chrome"]
+    }
   },
   { "name": "compass" },
+  {
+    "name": "dbeaver",
+    "skip": [{ "os": "freebsd" }],
+    "tests": {
+      "default": ["dbeaver -help -nosplash"],
+      "macos": [
+        "/Applications/DBeaver.app/Contents/MacOS/dbeaver -help -nosplash"
+      ],
+      "windows": ["Test-Path -PathType Container 'C:/Program Files/DBeaver'"]
+    }
+  },
   { "name": "defterm" },
   {
     "name": "deno",
@@ -51,6 +82,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["dvc --version"]
   },
+  { "name": "etcher", "skip": [{ "os": "freebsd" }] },
   {
     "name": "exa",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
@@ -68,8 +100,10 @@
   },
   {
     "name": "firefox",
-    "skip": [{ "os": "arch" }, { "os": "fedora" }, { "os": "macos" }],
-    "tests": ["firefox --version"]
+    "tests": {
+      "default": ["firefox --version"],
+      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"]
+    }
   },
   {
     "name": "fish",
@@ -116,6 +150,7 @@
     "skip": [
       { "arch": "arm64", "os": "linux" },
       { "os": "arch" },
+      { "os": "debian" },
       { "os": "freebsd" }
     ],
     "tests": ["hyper --version"]
@@ -134,6 +169,13 @@
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
     "tests": ["virsh --version"]
+  },
+  {
+    "name": "lua",
+    "tests": {
+      "default": ["lua -v"],
+      "freebsd": ["lua54 -v"]
+    }
   },
   {
     "name": "mdbook",

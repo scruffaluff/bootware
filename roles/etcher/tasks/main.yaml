@@ -1,0 +1,50 @@
+- name: Add Balena Etcher RPM repository for Debian distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: >-
+      curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh |
+      sudo -E bash
+    warn: no
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Balena Etcher RPM repository for Fedora distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: >-
+      curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
+      sudo -E bash
+    warn: no
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Balena Etcher for Arch distributions
+  become_user: "{{ user_account }}"
+  shell:
+    cmd: yay -Sy --noconfirm balena-etcher
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Balena Etcher for Debian distributions
+  apt:
+    name: balena-etcher-electron
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Balena Etcher for Fedora distributions
+  become: yes
+  dnf:
+    name: balena-etcher-electron
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Balena Etcher for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: balenaetcher
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Balena Etcher for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: etcher
+  when: ansible_system == "Win32NT"

@@ -209,6 +209,14 @@
     - dust
     - server
 
+- name: Install Balena Etcher ISO flasher
+  hosts: all
+  roles:
+    - etcher
+  tags:
+    - desktop
+    - etcher
+
 - name: Install Exa file lister
   hosts: all
   roles:
@@ -434,26 +442,15 @@
     - server
     - vm
 
-- name: Install MongoDB database client
+- name: Install Lua language
   hosts: all
   roles:
-    - mongo
-  tags:
-    - container
-    - database
-    - desktop
-    - mongo
-    - server
-
-- name: Install Neovim terminal text editor
-  hosts: all
-  roles:
-    - neovim
+    - lua
   tags:
     - container
     - desktop
-    - editor
-    - neovim
+    - language
+    - lua
     - server
 
 - name: Install Mdbook static website generator
@@ -478,6 +475,17 @@
     - network
     - server
 
+- name: Install MongoDB database client
+  hosts: all
+  roles:
+    - mongo
+  tags:
+    - container
+    - database
+    - desktop
+    - mongo
+    - server
+
 - name: Install Navi interactive documentation tool
   hosts: all
   roles:
@@ -486,6 +494,17 @@
     - container
     - desktop
     - navi
+    - server
+
+- name: Install Neovim terminal text editor
+  hosts: all
+  roles:
+    - neovim
+  tags:
+    - container
+    - desktop
+    - editor
+    - neovim
     - server
 
 - name: Install Node JavaScript runtime

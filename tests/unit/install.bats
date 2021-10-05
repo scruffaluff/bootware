@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck shell=bash
 
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"

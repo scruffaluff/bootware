@@ -1,0 +1,24 @@
+- name: Install Lua for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: lua54
+  when: ansible_system == "FreeBSD"
+
+- name: Install Lua for Linux
+  become: yes
+  package:
+    name: "{{ 'lua5.4' if ansible_pkg_mgr == 'apt' else 'lua' }}"
+  when: ansible_system == "Linux"
+
+- name: Install Lua for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: lua
+  when: ansible_system == "Darwin"
+
+- name: Install Lua for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: lua
+  when: ansible_system == "Win32NT"
