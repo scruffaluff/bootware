@@ -5,7 +5,7 @@
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh |
       sudo -E bash
     warn: no
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
   become_user: "{{ user_account }}"
@@ -14,7 +14,7 @@
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
       sudo -E bash
     warn: no
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for Arch distributions
   become_user: "{{ user_account }}"
@@ -26,13 +26,13 @@
   apt:
     name: balena-etcher-electron
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for Fedora distributions
   become: yes
   dnf:
     name: balena-etcher-electron
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for MacOS
   become_user: "{{ user_account }}"

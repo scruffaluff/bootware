@@ -17,7 +17,8 @@
   become: yes
   dnf:
     autoremove: yes
-    name: "*"
+    # Updating all packages causes an error since dnf would be removed.
+    # name: "*"
     update_cache: yes
   when: ansible_pkg_mgr == "dnf"
 

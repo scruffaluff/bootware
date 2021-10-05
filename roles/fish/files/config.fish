@@ -116,15 +116,18 @@ function setenv
 end
 
 # Use VI mode for command line editing.
+#
+# Flags:
+#   -M <mode>: Set key bind for Fish mode.
 fish_vi_key_bindings
 # VI command mode remappings.
-bind -s -M default j backward-char
-bind -s -M default ';' forward-char
+bind -M default j backward-char
+bind -M default ';' forward-char
 # VI visual mode remappings.
-bind -s -M visual j backward-char
-bind -s -M visual ';' forward-char
-bind -s -M visual l up-line
-bind -s -M visual k down-line
+bind -M visual j backward-char
+bind -M visual ';' forward-char
+bind -M visual l up-line
+bind -M visual k down-line
 
 # Load aliases if file exists.
 #

@@ -46,6 +46,17 @@
     src: config.fish
   when: ansible_system != "Win32NT"
 
+- name: Get installed Fish version
+  register: fish_version_text
+  shell:
+    cmd: fish --version
+  when: ansible_system != "Win32NT"
+
+- name: Parse Fish version
+  set_fact:
+    fish_version: "{{ fish_version_text | regex_search('(\\d+\\.)+\\d+') }}"
+  when: ansible_system != "Win32NT"
+
 - name: Install Fisher package manager
   become_user: "{{ user_account }}"
   shell:
@@ -54,7 +65,7 @@
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
     warn: no
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix
   become_user: "{{ user_account }}"
@@ -63,7 +74,7 @@
       source {{ user_home_dir }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
   become: yes

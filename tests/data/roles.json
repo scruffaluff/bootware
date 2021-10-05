@@ -82,7 +82,10 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
     "tests": ["dvc --version"]
   },
-  { "name": "etcher", "skip": [{ "os": "freebsd" }] },
+  {
+    "name": "etcher",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
+  },
   {
     "name": "exa",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
