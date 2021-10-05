@@ -17,8 +17,7 @@
   become: yes
   dnf:
     autoremove: yes
-    # TODO: Resolve update error in the fedora:33 container.
-    # name: "*"
+    name: "*"
     update_cache: yes
   when: ansible_pkg_mgr == "dnf"
 
@@ -26,8 +25,7 @@
   become_user: "{{ user_account }}"
   community.general.homebrew:
     update_homebrew: yes
-    # TODO: Resolve brew link error for upgrade_all.
-    # upgrade_all: yes
+    upgrade_all: yes
   when: ansible_system == "Darwin"
 
 - name: Install essential packages for Arch distributions

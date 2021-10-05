@@ -1,4 +1,3 @@
-# TODO: Run integrate with system step after download.
 - name: Install Hyper for Arch distributions
   become: yes
   get_url:

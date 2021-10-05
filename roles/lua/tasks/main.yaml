@@ -4,10 +4,11 @@
     name: lua54
   when: ansible_system == "FreeBSD"
 
+# Lua 5.4 is not available on all LTS Ubuntu releases.
 - name: Install Lua for Linux
   become: yes
   package:
-    name: "{{ 'lua5.4' if ansible_pkg_mgr == 'apt' else 'lua' }}"
+    name: "{{ 'lua5.3' if ansible_pkg_mgr == 'apt' else 'lua' }}"
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS

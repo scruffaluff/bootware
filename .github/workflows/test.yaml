@@ -41,16 +41,18 @@ jobs:
       Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
     strategy:
       fail-fast: false
-      # Arm64 tests are currently removed since they cannot complete within
+      # Some Arm64 tests are currently removed since they cannot complete within
       # GitHub's job limit of 6 hours.
       # TODO: Resolve job time limit for Arm64 tests.
       matrix:
-        arch: ["amd64"]
+        arch: ["amd64", "arm64"]
         distro: [arch, debian, fedora, ubuntu]
-        # exclude:
-        #   # Docker Hub does not provide ARM64 Arch Linux images.
-        #   - arch: arm64
-        #     distro: arch
+        exclude:
+          # Docker Hub does not provide ARM64 Arch Linux images.
+          - arch: arm64
+            distro: arch
+          - arch: arm64
+            distro: debian
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository

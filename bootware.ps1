@@ -542,7 +542,6 @@ Function SetupWSL($Branch) {
             $TempFile
         Start-Process -Wait $TempFile /Passive
 
-        # TODO: Add logic for WSL 1 case.
         wsl --set-default-version 2
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
