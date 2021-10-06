@@ -536,8 +536,13 @@ setup_alpine() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
+    # Install Ansible with Python3 since most package managers provide an old
+    # version of Ansible.
     ${1:+sudo} apk update
-    ${1:+sudo} apk add ansible
+    ${1:+sudo} apk add python3
+
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -564,8 +569,13 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
+    # Install Ansible with Python3 since most package managers provide an old
+    # version of Ansible.
     ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm ansible
+    ${1:+sudo} pacman -S --noconfirm python3
+
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -605,15 +615,13 @@ setup_debian() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    # Ansible is install with Python3, since many Debian systems package Ansible
-    # version 2.7, which does not support Ansible collections.
+    # Install Ansible with Python3 since most package managers provide an old
+    # version of Ansible.
     log "Installing Ansible"
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
-    # Not all Python installations have setuptools or wheel installed and it
-    # must be installed as a separate step before other packages.
-    ${1:+sudo} python3 -m pip install setuptools wheel
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
   fi
 
@@ -641,8 +649,13 @@ setup_fedora() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
+    # Install Ansible with Python3 since most package managers provide an old
+    # version of Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible
+    ${1:+sudo} dnf install -y python3
+
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -667,6 +680,8 @@ setup_freebsd() {
   # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
+    # Install Ansible with Python3 since most package managers provide an old
+    # version of Ansible.
     ${1:+sudo} pkg update
     # Python's cryptography package requires a Rust compiler on FreeBSD.
     ${1:+sudo} pkg install -y python3 rust
@@ -674,9 +689,7 @@ setup_freebsd() {
     py_ver="$(python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))')"
     ${1:+sudo} pkg install -y "py${py_ver}-pip"
 
-    # Not all Python installations have setuptools or wheel installed and it
-    # must be installed as a separate step before other packages.
-    ${1:+sudo} python3 -m pip install setuptools wheel
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
   fi
 
