@@ -3,7 +3,7 @@
 # Bootstrap software installations with Ansible.
 
 # Exit immediately if a command exists with a non-zero status.
-set -eou pipefail
+set -eo pipefail
 
 #######################################
 # Show CLI help information.
