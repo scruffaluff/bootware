@@ -7,12 +7,9 @@
   {
     "name": "appimage",
     "skip": [
-      { "os": "arch" },
-      { "os": "debian" },
-      { "os": "fedora" },
       { "os": "freebsd" },
+      { "os": "linux" },
       { "os": "macos" },
-      { "os": "ubuntu" },
       { "os": "windows" }
     ],
     "tests": ["ail-cli --version"]

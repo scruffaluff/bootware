@@ -3,7 +3,7 @@
 # Bootstrap software installations with Ansible.
 
 # Exit immediately if a command exists with a non-zero status.
-set -e
+set -eou pipefail
 
 #######################################
 # Show CLI help information.
@@ -539,7 +539,7 @@ setup_alpine() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} apk update
-    ${1:+sudo} apk add python3
+    ${1:+sudo} apk add python3 py3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -572,7 +572,7 @@ setup_arch() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm python3
+    ${1:+sudo} pacman -S --noconfirm python python-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -652,7 +652,7 @@ setup_fedora() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y python3
+    ${1:+sudo} dnf install -y python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible

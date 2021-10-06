@@ -12,6 +12,7 @@ function main() {
   program
     .option("-a, --arch <architecture>", "chip architecture", "amd64")
     .option("-d, --distros <distributions...>", "Linux distributions list", [
+      "alpine",
       "arch",
       "debian",
       "fedora",
