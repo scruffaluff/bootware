@@ -741,6 +741,17 @@
     - shell
     - tldr
 
+- name: Install Tmux terminal multiplexer
+  hosts: all
+  roles:
+    - tmux
+  tags:
+    - container
+    - desktop
+    - server
+    - terminal
+    - tmux
+
 - name: Install USQL
   hosts: all
   roles:

@@ -539,8 +539,11 @@ setup_alpine() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} apk update
-    ${1:+sudo} apk add python3 py3-pip
+    ${1:+sudo} apk add python3 python3-dev py3-pip
 
+    # There are no Alpine Ansible wheels. Additional libraries are required to
+    # build Ansible from scratch.
+    ${1:+sudo} apk add gcc libffi-dev musl-dev openssl-dev
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
   fi
