@@ -11,6 +11,7 @@ function main() {
   const program = new Command();
   program
     .option("-a, --arch <architecture>", "chip architecture", "amd64")
+    .option("-c, --cache", "Use Docker cache")
     .option("-d, --distros <distributions...>", "Linux distributions list", [
       "alpine",
       "arch",
@@ -32,7 +33,11 @@ function main() {
   }
 
   for (const distro of config.distros) {
-    const command = `docker build --no-cache -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform linux/${config.arch}`;
+    const command = `docker build ${
+      config.cache ? "--no-cache" : ""
+    } -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform linux/${
+      config.arch
+    }`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });
 
     console.log(`Integration test ${distro} passed.`);

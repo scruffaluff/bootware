@@ -569,13 +569,9 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
+    # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm python python-pip
-
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then

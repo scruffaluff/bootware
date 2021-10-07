@@ -53,13 +53,20 @@ jobs:
         #     distro: arch
         #   - arch: arm64
         #     distro: debian
+        # TODO: Find methods to reduce the Rust applications installation time.
         include:
+          # TODO: Find out why Fedora thinks GitLab Arm64 package is not Arm64
+          # compatible.
           - arch: arm64
             distro: fedora
-            skip: rust
+            skip: gitlab,rust
+          # VSCode in Ubuntu Arm64 package is missing libxshmfence1 and other
+          # deb dependencies. Visit
+          # https://github.com/microsoft/vscode/issues/121640, for more
+          # information.
           - arch: arm64
             distro: ubuntu
-            skip: rust
+            skip: rust,vscode
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
