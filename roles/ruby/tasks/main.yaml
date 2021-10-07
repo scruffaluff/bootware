@@ -21,13 +21,21 @@
     name: gpg
   when: ansible_system == "Darwin"
 
+# RVM does not appear to be compatible with Busybox..
+- name: Install Ruby for Alpine
+  become: yes
+  community.general.apk:
+    name: ruby
+  when: ansible_pkg_mgr == "apk"
+
 # RVM does not provide binaries for FreeBSD.
 - name: Install Ruby for FreeBSD
   become: yes
   community.general.pkgng:
     name:
-      - ruby27-gems
       - ruby
+      - ruby-dev
+      - ruby27-gems
   when: ansible_system == "FreeBSD"
 
 - name: Install RVM GPG keys for Unix
@@ -37,14 +45,16 @@
       curl -LSfs https://rvm.io/mpapis.asc | gpg --import -
       curl -LSfs https://rvm.io/pkuczynski.asc | gpg --import -
     warn: no
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install Ruby Environment Manager for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://get.rvm.io | bash -s stable
     warn: no
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Unix
   become_user: "{{ user_account }}"
@@ -54,7 +64,8 @@
       source {{ user_home_dir }}/.bashrc
       rvm install {{ item }}
     executable: "{{ bash_executable }}"
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Windows
   become_user: "{{ user_account }}"
@@ -71,14 +82,14 @@
   shell:
     cmd: |
       source {{ user_home_dir }}/.bashrc
-      gem install {{ item }}
+      gem install --user-install {{ item }}
     executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
 - name: Install or update Ruby CLI applications for Windows
   become_user: "{{ user_account }}"
   loop: "{{ ruby_applications }}"
-  win_shell: gem install {{ item }}
+  win_shell: gem install --user-install {{ item }}
   when: ansible_system == "Win32NT"
 
 - name: Download RVM Fish for Unix
@@ -87,4 +98,5 @@
     dest: "{{ user_home_dir }}/.config/fish/functions/rvm.fish"
     mode: 0644
     url: https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"

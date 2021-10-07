@@ -16,7 +16,7 @@
   become: yes
   package:
     name: tldr
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Install TLDR for MacOS
   become_user: "{{ user_account }}"

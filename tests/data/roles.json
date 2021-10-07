@@ -36,7 +36,7 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
     "tests": {
       "default": ["google-chrome --version"],
       "macos": [
@@ -48,7 +48,7 @@
   { "name": "compass" },
   {
     "name": "dbeaver",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": {
       "default": ["dbeaver -help -nosplash"],
       "macos": [
@@ -60,7 +60,7 @@
   { "name": "defterm" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["deno --version"]
   },
   { "name": "deskenv" },
@@ -189,7 +189,7 @@
   },
   {
     "name": "mongo",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
   },
   {
@@ -217,6 +217,7 @@
     "skip": [
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "ubuntu" },
+      { "os": "alpine" },
       { "os": "freebsd" }
     ],
     "tests": ["procs --version"]
@@ -243,7 +244,12 @@
   { "name": "shfmt", "tests": ["shfmt --version"] },
   {
     "name": "snap",
-    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "skip": [
+      { "os": "alpine" },
+      { "os": "freebsd" },
+      { "os": "macos" },
+      { "os": "windows" }
+    ],
     "tests": ["snap --version"]
   },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
@@ -257,6 +263,7 @@
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
   { "name": "tldr", "tests": ["tldr --version"] },
+  { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
     "skip": [{ "arch": "arm64", "os": "linux" }],
@@ -265,7 +272,7 @@
   { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "vscode",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["code --version"]
   },
   {

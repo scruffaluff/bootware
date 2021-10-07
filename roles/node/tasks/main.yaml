@@ -52,6 +52,7 @@
     executable: "{{ bash_executable }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
+# NVM cannot find compatible versions of NPM for Alpine.
 - name: Update NPM for Unix
   become_user: "{{ user_account }}"
   shell:
@@ -59,7 +60,9 @@
       source {{ user_home_dir }}/.bashrc
       nvm install-latest-npm
     executable: "{{ bash_executable }}"
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root" and
+    ansible_pkg_mgr != "apk"
 
 - name: Install or update Node CLI applications for FreeBSD
   become_user: "{{ user_account }}"

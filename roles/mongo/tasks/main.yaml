@@ -28,7 +28,7 @@
     mongosh_arch:
       aarch64: arm64
       x86_64: x64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for Linux
   become: yes
@@ -42,7 +42,7 @@
     mongosh_arch:
       aarch64: arm64
       x86_64: x64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for MacOS
   become_user: "{{ user_account }}"

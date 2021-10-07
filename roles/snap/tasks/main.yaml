@@ -8,7 +8,7 @@
   become: yes
   package:
     name: snapd
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Install Snap packages for Linux
   become: yes
