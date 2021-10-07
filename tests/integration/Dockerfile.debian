@@ -34,7 +34,7 @@ ENV HOME=/home/debian USER=debian
 USER debian
 
 # Install Bootware.
-RUN curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+COPY bootware.sh /usr/local/bin/bootware
 
 # Install dependencies for Bootware.
 RUN bootware setup
