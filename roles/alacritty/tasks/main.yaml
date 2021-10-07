@@ -1,3 +1,9 @@
+- name: Install Alacritty for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: alacritty
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Alacritty for Arch distributions
   become: yes
   pacman:

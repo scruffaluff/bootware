@@ -6,15 +6,16 @@
   when: ansible_system == "FreeBSD"
 
 # Deno Linux ARM support is in progress. See
-# https://github.com/denoland/deno/issues/1846.
+# https://github.com/denoland/deno/issues/1846. Deno requires glibc, which is
+# not available on Alpine.
 - name: Install Deno for Unix
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
     warn: no
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and
-    ansible_architecture == "x86_64")
+    ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
+    != "apk" and ansible_architecture == "x86_64")
 
 - name: Generate Deno Fish completions for Unix
   become_user: "{{ user_account }}"
@@ -25,7 +26,7 @@
     executable: "{{ bash_executable }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    ansible_architecture == "x86_64")
+    ansible_pkg_mgr != "apk" and ansible_architecture == "x86_64")
 
 - name: Install Deno for Windows
   become_user: "{{ user_account }}"

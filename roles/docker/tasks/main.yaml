@@ -1,3 +1,9 @@
+- name: Install Docker for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: docker
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Docker for Arch distributions
   become: yes
   pacman:

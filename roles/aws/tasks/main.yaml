@@ -1,3 +1,9 @@
+- name: Install AWSCLI for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: aws-cli
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install AWSCLI for Arch distributions
   become: yes
   pacman:
