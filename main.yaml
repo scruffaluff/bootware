@@ -790,6 +790,17 @@
     - desktop
     - winman
 
+- name: Install Zellij terminal multiplexer
+  hosts: all
+  roles:
+    - zellij
+  tags:
+    - container
+    - desktop
+    - server
+    - termianl
+    - zellij
+
 - name: Install Zola static website generator
   hosts: all
   roles:

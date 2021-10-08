@@ -1,4 +1,4 @@
-- name: Add Balena Etcher RPM repository for Debian distributions
+- name: Add Balena Etcher Deb repository for Debian distributions
   become_user: "{{ user_account }}"
   shell:
     cmd: >-
