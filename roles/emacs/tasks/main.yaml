@@ -1,0 +1,40 @@
+- name: Install Emacs for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: emacs
+  when: ansible_system == "FreeBSD"
+
+- name: Install Emacs for Linux
+  become: yes
+  package:
+    name: emacs
+  when: ansible_system == "Linux"
+
+- name: Install Emacs for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: emacs
+  when: ansible_system == "Darwin"
+
+- name: Install Emacs for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: emacs
+  when: ansible_system == "Win32NT"
+
+- name: Copy Emacs settings file for Unix
+  become_user: "{{ user_account }}"
+  copy:
+    dest: "{{ user_home_dir }}/.emacs"
+    force: yes
+    mode: 0644
+    src: .emacs
+  when: ansible_system != "Win32NT"
+
+- name: Copy Emacs settings files for Windows
+  become_user: "{{ user_account }}"
+  win_copy:
+    dest: "{{ user_home_dir }}/.emacs"
+    src: .emacs
+  when: ansible_system == "Win32NT"

@@ -1,4 +1,4 @@
-" Neovim configuration file.
+" Neovim configuration file for text editing.
 "
 " For more information, execute ":help config" inside of Neovim.
 

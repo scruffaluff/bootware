@@ -18,6 +18,7 @@ vscode_extensions:
   - "ms-python.vscode-pylance"
   - "ms-vscode-remote.vscode-remote-extensionpack"
   - "octref.vetur"
+  - "rebornix.Ruby"
   - "redhat.vscode-yaml"
   - "ritwickdey.liveserver"
   - "skyapps.fish-vscode"

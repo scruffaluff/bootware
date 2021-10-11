@@ -209,6 +209,17 @@
     - dust
     - server
 
+- name: Install Emacs terminal text editor
+  hosts: all
+  roles:
+    - emacs
+  tags:
+    - container
+    - desktop
+    - editor
+    - emacs
+    - server
+
 - name: Install Balena Etcher ISO flasher
   hosts: all
   roles:

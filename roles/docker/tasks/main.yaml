@@ -1,3 +1,11 @@
+- name: Get latest Docker Compose version
+  uri:
+    url: https://formulae.brew.sh/api/formula/docker-compose.json
+    method: GET
+    return_content: yes
+  register: docker_compose_formula
+  when: ansible_system == "Linux"
+
 - name: Install Docker for Arch distributions
   become: yes
   pacman:
@@ -125,6 +133,17 @@
   become: yes
   package:
     name: docker-compose
+  when: ansible_system == "Linux"
+
+- name: Install Docker Compose plugin for Linux
+  become: yes
+  get_url:
+    dest: /usr/libexec/docker/cli-plugins/docker-compose
+    mode: 0755
+    url: >-
+      https://github.com/docker/compose/releases/download/v{{
+      docker_compose_formula.json.versions.stable }}/docker-compose-linux-{{
+      ansible_architecture }}
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS

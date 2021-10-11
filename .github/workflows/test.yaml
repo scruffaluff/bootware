@@ -41,32 +41,11 @@ jobs:
       Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
     strategy:
       fail-fast: false
-      # Some Arm64 tests are currently removed since they cannot complete within
+      # Arm64 tests are currently removed since they cannot complete within
       # GitHub's job limit of 6 hours.
-      # TODO: Resolve job time limit for Arm64 tests.
       matrix:
         arch: ["amd64"]
         distro: [arch, debian, fedora, ubuntu]
-        # exclude:
-        #   # Docker Hub does not provide ARM64 Arch Linux images.
-        #   - arch: arm64
-        #     distro: arch
-        #   - arch: arm64
-        #     distro: debian
-        # TODO: Find methods to reduce the Rust applications installation time.
-        include:
-          # TODO: Find out why Fedora thinks GitLab Arm64 package is not Arm64
-          # compatible.
-          - arch: arm64
-            distro: fedora
-            skip: gitlab,rust
-          # VSCode in Ubuntu Arm64 package is missing libxshmfence1 and other
-          # deb dependencies. Visit
-          # https://github.com/microsoft/vscode/issues/121640, for more
-          # information.
-          - arch: arm64
-            distro: ubuntu
-            skip: rust,vscode
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
