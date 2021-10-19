@@ -1,6 +1,7 @@
 pipx_applications:
+  - black
   - cookiecutter
   - jupytext
   - poetry
 python_versions:
-  - "3.9"
+  - "3.10"

@@ -2,7 +2,7 @@
 #
 # Bootstrap software installations with Ansible.
 
-# Exit immediately if a command exists with a non-zero status.
+# Exit immediately if a command exits or pipes a non-zero return code.
 set -eo pipefail
 
 #######################################
