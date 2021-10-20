@@ -48,6 +48,11 @@ jobs:
       matrix:
         arch: ["amd64"]
         distro: [arch, debian, fedora, ubuntu]
+        include:
+          # TODO: Fix Hyper RPM package for Fedora.
+          - arch: amd64
+            distro: fedora
+            skip: beekeeper,hyper
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository

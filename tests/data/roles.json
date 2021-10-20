@@ -73,7 +73,7 @@
   { "name": "doctl", "tests": ["doctl version"] },
   {
     "name": "docker",
-    "tests": ["docker --version", "docker-compose --version"]
+    "tests": ["docker --version", "docker compose --help"]
   },
   {
     "name": "dvc",

@@ -135,10 +135,17 @@
     name: docker-compose
   when: ansible_system == "Linux"
 
+- name: Create Docker Compose plugin directory for Linux
+  become: yes
+  file:
+    path: /usr/lib/docker/cli-plugins
+    state: directory
+  when: ansible_system == "Linux"
+
 - name: Install Docker Compose plugin for Linux
   become: yes
   get_url:
-    dest: /usr/libexec/docker/cli-plugins/docker-compose
+    dest: /usr/lib/docker/cli-plugins/docker-compose
     mode: 0755
     url: >-
       https://github.com/docker/compose/releases/download/v{{

@@ -72,6 +72,7 @@
       - htop
       - iftop
       - neofetch
+      - openssl
       - sudo
       - tmate
       - tmux
