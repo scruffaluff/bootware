@@ -83,17 +83,6 @@
     - server
     - shell
 
-- name: Install Bats test runner
-  hosts: all
-  roles:
-    - bats
-  tags:
-    - bats
-    - container
-    - desktop
-    - server
-    - shell
-
 - name: Install build tools
   hosts: all
   roles:
@@ -665,17 +654,6 @@
     - desktop
     - server
     - sd
-
-- name: Install Shfmt shell file formatter
-  hosts: all
-  roles:
-    - shfmt
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - shfmt
 
 - name: Install Snap packages
   hosts: all

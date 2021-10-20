@@ -35,7 +35,6 @@
     name:
       - openssh
       - pkgconf
-      - shellcheck
       - which
   when: ansible_pkg_mgr == "pacman"
 
@@ -48,7 +47,6 @@
       - lsb-release
       - openssh-client
       - pbuilder
-      - shellcheck
       - ubuntu-dev-tools
   become: yes
   when: ansible_pkg_mgr == "apt"
@@ -62,7 +60,6 @@
       - openssl-devel
       - perl-FindBin
       - python
-      - ShellCheck
       - which
   when: ansible_pkg_mgr == "dnf"
 
@@ -109,7 +106,6 @@
     name:
       - neofetch
       - openssh
-      - shellcheck
       - tmate
       - tmux
       - unzip

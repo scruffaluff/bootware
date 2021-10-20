@@ -24,14 +24,14 @@
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],
-    "tests": ["bash --version"]
+    "tests": [
+      "bash --version",
+      "bats --version",
+      "shellcheck --version",
+      "shfmt --version"
+    ]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  {
-    "name": "bats",
-    "skip": [{ "os": "windows" }],
-    "tests": ["bats --version"]
-  },
   { "name": "build" },
   { "name": "caffeine" },
   {
@@ -240,7 +240,6 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["sd --version"]
   },
-  { "name": "shfmt", "tests": ["shfmt --version"] },
   {
     "name": "snap",
     "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
