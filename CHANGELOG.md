@@ -11,8 +11,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Ability to choose Bootware branch for automatic WSL installation.
 - Deno support for Apple ARM64.
-- Dust, Emacs, Etcher, FFSend, FzF, Hyperfine, Lua, Navi, OTS, Procs, RClone,
-  Ruby and Scc, Zellij roles.
+- Beekeeper, Dust, Emacs, Etcher, FFSend, FzF, Hyperfine, Lua, Navi, OTS, Procs,
+  RClone, Ruby and Scc, Zellij roles.
 - GitHub CLI installation.
 - History and menu autocompletion to PowerShell.
 - Neosolarized and Packer installations for Neovim.
@@ -23,6 +23,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Merged Bash, Bats, and Shfmt roles.
 - Passwordless sudo setting for only current user.
 - VSCode keybindings for switching between terminal tabs.
 - Windows connections from WinRM to SSH.

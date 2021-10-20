@@ -4,7 +4,7 @@
     method: GET
     return_content: yes
   register: bashdb_formula
-  when: ansible_system == Linux
+  when: ansible_system == "Linux"
 
 - name: Install BashDB for FreeBSD
   become: yes
@@ -23,7 +23,7 @@
 #       https://sourceforge.net/projects/bashdb/files/bashdb/{{
 #       bashdb_formula.json.versions.stable }}/bashdb-{{
 #       bashdb_formula.json.versions.stable }}.tar.gz/download
-#   when: ansible_system == Linux
+#   when: ansible_system == "Linux"
 
 # - name: Install BashDB for Linux
 #   shell:
@@ -32,7 +32,7 @@
 #       ./configure
 #       make && make check
 #       sudo make install
-#   when: ansible_system == Linux
+#   when: ansible_system == "Linux"
 
 - name: Install BashDB for MacOS
   become_user: "{{ user_account }}"

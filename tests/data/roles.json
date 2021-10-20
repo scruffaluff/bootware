@@ -32,6 +32,7 @@
     ]
   },
   { "name": "bat", "tests": ["bat --version"] },
+  { "name": "beekeeper" },
   { "name": "build" },
   { "name": "caffeine" },
   {

@@ -83,6 +83,14 @@
     - server
     - shell
 
+- name: Install Beekeeper database client
+  hosts: all
+  roles:
+    - beekeeper
+  tags:
+    - beekeeper
+    - desktop
+
 - name: Install build tools
   hosts: all
   roles:
@@ -119,7 +127,7 @@
     - database
     - desktop
 
-- name: Install DBeaver
+- name: Install DBeaver database client
   hosts: all
   roles:
     - dbeaver
