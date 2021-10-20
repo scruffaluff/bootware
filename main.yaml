@@ -668,9 +668,7 @@
   roles:
     - snap
   tags:
-    - container
     - desktop
-    - server
     - snap
 
 - name: Install SQLite database

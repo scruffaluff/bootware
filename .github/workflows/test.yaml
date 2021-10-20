@@ -20,9 +20,11 @@ on:
       - master
 
 jobs:
+  # Node is currently broken for FreeBSD. For more information, visit
+  # https://github.com/nodejs/node/issues/40467#issuecomment-946902776.
   test-freebsd:
     name: Test bootstrapping software for FreeBSD
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -58,7 +60,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           build-args: |
-            skip=${{ matrix.skip || 'none' }}
+            skip=${{ matrix.skip || 'beekeeper' }}
             test=true
           context: .
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}
@@ -68,7 +70,7 @@ jobs:
 
   test-macos:
     name: Test bootstrapping software for MacOS
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -94,7 +96,7 @@ jobs:
 
   test-windows:
     name: Test bootstrapping software for Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
