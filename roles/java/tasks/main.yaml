@@ -1,0 +1,44 @@
+- name: Install Java for Arch distributions
+  become: yes
+  pacman:
+    name: jre11-openjdk
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Java for Debian distributions
+  apt:
+    name:
+      - openjdk-17-jre
+      - maven
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Java for Fedora distributions
+  become: yes
+  dnf:
+    name: java-11-openjdk
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Java for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - java
+      - maven
+      - openjdk
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Java for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - maven
+  when: ansible_system == "Win32NT"
+
+- name: Create Java Jar directory for Linux
+  become: yes
+  file:
+    path: /usr/local/share/java/jar/
+    state: directory
+  when: ansible_system == "Linux"
