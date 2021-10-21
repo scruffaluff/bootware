@@ -34,7 +34,7 @@ function main() {
 
   for (const distro of config.distros) {
     const command = `docker build ${
-      config.cache ? "--no-cache" : ""
+      config.cache ? "" : "--no-cache"
     } -f tests/integration/Dockerfile.${distro} -t bootware:${distro} --platform linux/${
       config.arch
     }`;

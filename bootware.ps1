@@ -426,6 +426,8 @@ Function SetupSSHKeys {
             -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
             -Value $PublicKey
 
+        Log "Moving SSH keys to WSL"
+
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
@@ -434,6 +436,8 @@ Function SetupSSHKeys {
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
+
+        Log "Disabling SSH password authentication"
 
         # Disable password based logins for SSH.
         Add-Content `

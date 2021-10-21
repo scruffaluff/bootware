@@ -161,7 +161,7 @@
     ],
     "tests": ["hyperfine --version"]
   },
-  { "name": "java", "tests": ["java --version", "maven --version"] },
+  { "name": "java", "tests": ["java --version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "julia", "tests": ["julia --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
@@ -206,7 +206,7 @@
   },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
-  { "name": "parquet", "tests": ["parquet --version"] },
+  { "name": "parquet" },
   { "name": "postgres" },
   {
     "name": "powershell",
