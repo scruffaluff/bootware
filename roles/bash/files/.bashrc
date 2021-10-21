@@ -70,6 +70,10 @@ prepend_path "${GOROOT}/bin"
 export GOPATH="${HOME}/go"
 prepend_path "${GOPATH}/bin"
 
+# Julia settings.
+
+prepend_path "/usr/local/julia/bin"
+
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.

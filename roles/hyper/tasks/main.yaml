@@ -6,6 +6,12 @@
     url: https://releases.hyper.is/download/AppImage
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
+- name: Install Hyper dependencies for Fedora distributions
+  become: yes
+  dnf:
+    name: mesa-libgbm
+  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+
 # Hyper is not yet supported on Debian 11.
 - name: Install Hyper for Debian distributions
   apt:

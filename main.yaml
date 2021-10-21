@@ -51,7 +51,7 @@
     - audio
     - desktop
 
-- name: Install Avro helper tools
+- name: Install Avro file serialization tools
   hosts: all
   roles:
     - avro
@@ -380,7 +380,7 @@
     - server
     - vm
 
-- name: Install HDF5 helper tools
+- name: Install HDF5 file serialization tools
   hosts: all
   roles:
     - hdf5
@@ -419,6 +419,17 @@
     - hyperfine
     - server
 
+- name: Install Java language
+  hosts: all
+  roles:
+    - java
+  tags:
+    - container
+    - desktop
+    - java
+    - language
+    - server
+
 - name: Install Jq JSON parser
   hosts: all
   roles:
@@ -429,6 +440,17 @@
     - jq
     - server
     - shell
+
+- name: Install Julia language
+  hosts: all
+  roles:
+    - julia
+  tags:
+    - container
+    - desktop
+    - julia
+    - language
+    - server
 
 - name: Install Kubectl Kubernetes manager
   hosts: all
@@ -556,6 +578,16 @@
     - desktop
     - hashicorp
     - packer
+    - server
+
+- name: Install Parquet file serialization tools
+  hosts: all
+  roles:
+    - parquet
+  tags:
+    - container
+    - desktop
+    - parquet
     - server
 
 - name: Install PowerShell shell

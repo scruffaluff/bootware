@@ -1,0 +1,49 @@
+- name: Get latest Julia version
+  uri:
+    url: https://formulae.brew.sh/api/formula/julia.json
+    method: GET
+    return_content: yes
+  register: julia_formula
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Parse Julia major-minor version
+  set_fact:
+    julia_version: >-
+      {{ julia_formula.json.versions.stable | regex_search('(\d+\.\d+)\.+\d+',
+      '\1') | first }}
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Install Julia for FreeBSD and Linux
+  become: yes
+  unarchive:
+    creates: /usr/local/julia
+    dest: /usr/local/
+    extra_opts:
+      - --transform
+      - "s/julia-{{ julia_formula.json.versions.stable }}/julia/"
+    mode: 0755
+    remote_src: yes
+    src: >-
+      https://julialang-s3.julialang.org/bin/{{ ansible_system | lower }}/{{
+      julia_arch[ansible_architecture] }}/{{ julia_version }}/julia-{{
+      julia_formula.json.versions.stable }}-{{ ansible_system | lower }}-{{
+      ansible_architecture }}.tar.gz
+  vars:
+    julia_arch:
+      aarch64: aarch64
+      x86_64: x64
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Install Julia for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: julia
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Julia for Windows
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: julia
+  when: ansible_system == "Win32NT"

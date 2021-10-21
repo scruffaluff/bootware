@@ -117,10 +117,7 @@
     "tests": ["flatpak --version"]
   },
   { "name": "font" },
-  {
-    "name": "fzf",
-    "tests": ["fzf --version"]
-  },
+  { "name": "fzf", "tests": ["fzf --version"] },
   {
     "name": "gcp",
     "skip": [{ "arch": "arm64", "os": "fedora" }],
@@ -164,7 +161,9 @@
     ],
     "tests": ["hyperfine --version"]
   },
+  { "name": "java", "tests": ["java --version", "maven --version"] },
   { "name": "jq", "tests": ["jq --version"] },
+  { "name": "julia", "tests": ["julia --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
   {
     "name": "libvirt",
@@ -207,6 +206,7 @@
   },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
+  { "name": "parquet", "tests": ["parquet --version"] },
   { "name": "postgres" },
   {
     "name": "powershell",

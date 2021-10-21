@@ -645,13 +645,10 @@ setup_fedora() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
+    # Installing Ansible via Python causes issues installing remote DNF packages
+    # with Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y python3 python3-pip
-
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} dnf install -y ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
