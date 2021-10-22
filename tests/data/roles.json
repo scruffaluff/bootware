@@ -275,6 +275,11 @@
   },
   { "name": "winman" },
   {
+    "name": "xsv",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["xsv --version"]
+  },
+  {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["zola --version"]

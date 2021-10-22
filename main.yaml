@@ -817,6 +817,17 @@
     - desktop
     - winman
 
+- name: Install Xsv CSV parser
+  hosts: all
+  roles:
+    - xsv
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - xsv
+
 - name: Install Zellij terminal multiplexer
   hosts: all
   roles:

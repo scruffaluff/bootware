@@ -96,7 +96,7 @@ jobs:
 
   test-windows:
     name: Test bootstrapping software for Windows
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2

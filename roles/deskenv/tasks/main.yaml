@@ -1,3 +1,9 @@
+- name: Install desktop management dependencies for MacOS
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: duti
+  when: ansible_system == "Darwin"
+
 - name: Change desktop settings for GNOME
   become_user: "{{ user_account }}"
   script: gnome.sh

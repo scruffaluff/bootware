@@ -14,6 +14,13 @@ defaults write com.apple.dock autohide-delay -float 0
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
 
+# File extension settings.
+
+duti -s com.microsoft.VSCode md all
+duti -s com.microsoft.VSCode js all
+duti -s com.microsoft.VSCode ts all
+duti -s com.microsoft.VSCode py all
+
 # Finder settings.
 
 # Show hidden files in Finder.

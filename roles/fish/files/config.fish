@@ -66,6 +66,21 @@ prepend_path "$GOROOT/bin"
 set -x GOPATH "$HOME/go"
 prepend_path "$GOPATH/bin"
 
+# Java settings.
+
+# Find and add Java OpenJDK directory to path.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  if test -d "/opt/homebrew/opt/openjdk/bin"
+    prepend_path "/opt/homebrew/opt/openjdk/bin"
+  else if test -d "/usr/local/opt/openjdk/bin"
+    prepend_path "/usr/local/opt/openjdk/bin"
+  end
+end
+
 # Julia settings.
 
 prepend_path "/usr/local/julia/bin"

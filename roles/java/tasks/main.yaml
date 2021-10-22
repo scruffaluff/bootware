@@ -47,6 +47,20 @@
       - openjdk
   when: ansible_system == "Win32NT"
 
+- name: Make Java discover OpenJDK on MacOS
+  become: yes
+  file:
+    src: "{{ openjdk_path[ansible_architecture] }}"
+    dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
+    force: yes
+    mode: 0755
+    state: link
+  vars:
+    openjdk_path:
+      arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
+      x86_64: /usr/local/opt/openjdk/libexec/openjdk.jdk
+  when: ansible_system == "Darwin"
+
 - name: Create Java Jar directory for Linux
   become: yes
   file:
