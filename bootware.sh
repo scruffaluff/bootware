@@ -3,6 +3,10 @@
 # Bootstrap software installations with Ansible.
 
 # Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -o: Persist nonzero exit codes through a Bash pipe.
 set -eo pipefail
 
 #######################################

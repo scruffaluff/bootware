@@ -16,10 +16,47 @@ defaults write com.apple.dock show-recents -bool false
 
 # File extension settings.
 
-duti -s com.microsoft.VSCode md all
+duti -s com.microsoft.VSCode bash all
+duti -s com.microsoft.VSCode c all
+duti -s com.microsoft.VSCode cfg all
+duti -s com.microsoft.VSCode class all
+duti -s com.microsoft.VSCode cpp all
+duti -s com.microsoft.VSCode cs all
+duti -s com.microsoft.VSCode css all
+duti -s com.microsoft.VSCode csv all
+duti -s com.microsoft.VSCode fish all
+duti -s com.microsoft.VSCode go all
+duti -s com.microsoft.VSCode h all
+duti -s com.microsoft.VSCode ini all
+duti -s com.microsoft.VSCode java all
+duti -s com.microsoft.VSCode jl all
 duti -s com.microsoft.VSCode js all
-duti -s com.microsoft.VSCode ts all
+duti -s com.microsoft.VSCode json all
+duti -s com.microsoft.VSCode log all
+duti -s com.microsoft.VSCode lua all
+duti -s com.microsoft.VSCode md all
+duti -s com.microsoft.VSCode ps1 all
 duti -s com.microsoft.VSCode py all
+duti -s com.microsoft.VSCode rb all
+duti -s com.microsoft.VSCode rs all
+duti -s com.microsoft.VSCode sh all
+duti -s com.microsoft.VSCode sql all
+duti -s com.microsoft.VSCode swift all
+duti -s com.microsoft.VSCode tf all
+duti -s com.microsoft.VSCode tmp all
+duti -s com.microsoft.VSCode toml all
+duti -s com.microsoft.VSCode ts all
+duti -s com.microsoft.VSCode tsv all
+duti -s com.microsoft.VSCode txt all
+duti -s com.microsoft.VSCode vue all
+duti -s com.microsoft.VSCode xml all
+duti -s com.microsoft.VSCode yaml all
+duti -s org.mozilla.firefox html all
+duti -s org.videolan.vlc avi all
+duti -s org.videolan.vlc m4v all
+duti -s org.videolan.vlc mov all
+duti -s org.videolan.vlc mp4 all
+duti -s org.videolan.vlc wmv all
 
 # Finder settings.
 
