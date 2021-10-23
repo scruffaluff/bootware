@@ -7,7 +7,8 @@
 # Flags:
 #   -e: Exit immediately when a command pipeline fails.
 #   -o: Persist nonzero exit codes through a Bash pipe.
-set -eo pipefail
+#   -u: Throw an error when an unset variable is encountered.
+set -eou pipefail
 
 #######################################
 # Show CLI help information.
@@ -178,7 +179,7 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
+  if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
     ask_passwd=1
   fi
 
@@ -267,7 +268,7 @@ bootstrap() {
   # Flags:
   #   -n: Check if the string has nonzero length.
   #   -z: Check if string has zero length.
-  if [[ -n "${windows}" && -z "${ssh_key}" ]]; then
+  if [[ -n "${windows:-}" && -z "${ssh_key:-}" ]]; then
     error "An SSH key must be provided for Windows connection"
   fi
 
@@ -275,7 +276,7 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${no_setup}" ]]; then
+  if [[ -z "${no_setup:-}" ]]; then
     setup
   fi
 
@@ -352,7 +353,7 @@ config() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ "${empty_cfg}" == "true" || -z "${src_url}" ]]; then
+  if [[ "${empty_cfg:-}" == "true" || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf "passwordless_sudo: false" > "${dst_file}"
   else
@@ -432,9 +433,9 @@ find_config_path() {
   #   -f: Check if file exists and is a regular file.
   #   -n: Check if the string has nonzero length.
   #   -v: Only show file path of command.
-  if [[ -f "$1" ]]; then
+  if [[ -f "${1:-}" ]]; then
     RET_VAL="$1"
-  elif [[ -n "${BOOTWARE_CONFIG}" ]]; then
+  elif [[ -n "${BOOTWARE_CONFIG:-}" ]]; then
     RET_VAL="${BOOTWARE_CONFIG}"
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
@@ -471,7 +472,7 @@ fullpath() {
 log() {
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
+  if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
     echo "$@"
   fi
 }
@@ -893,7 +894,7 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  case "$1" in
+  case "${1:-}" in
     bootstrap)
       shift 1
       bootstrap "$@"
@@ -921,7 +922,7 @@ main() {
       version
       ;;
     *)
-      error_usage "No such subcommand '$1'"
+      error_usage "No such subcommand '${1:-}'"
       ;;
   esac
 }

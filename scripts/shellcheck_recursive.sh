@@ -6,9 +6,13 @@
 # Script entrypoint.
 #######################################
 main() {
-  files="$(find . -type f -name '.bash_profile' -o -name '.bashrc' -o -name '*.bats' -o -name '*.sh')";
+  bats_files="$(find . -type f -name '*.bats' -not -path '*/node_modules/*')";
+  for file in ${bats_files}; do
+    shellcheck "${file}"
+  done
 
-  for file in ${files}; do
+  sh_files="$(find . -type f -name '*.sh' -not -path '*/node_modules/*')";
+  for file in ${sh_files}; do
     shellcheck "${file}"
   done
 }

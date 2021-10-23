@@ -7,7 +7,8 @@
 # Flags:
 #   -e: Exit immediately when a command pipeline fails.
 #   -o: Persist nonzero exit codes through a Bash pipe.
-set -eo pipefail
+#   -u: Throw an error when an unset variable is encountered.
+set -eou pipefail
 
 #######################################
 # Show CLI help information.
@@ -126,7 +127,7 @@ install_completions() {
 
   # Flags:
   #   -z: Check if the string has zero length or is null.
-  if [[ -z "$2" ]]; then
+  if [[ -z "${2:-}" ]]; then
     ${1:+sudo} mkdir -p "/etc/fish/completions"
     ${1:+sudo} curl -LSfs "${fish_url}" -o "/etc/fish/completions/bootware.fish"
     ${1:+sudo} chmod 664 "/etc/fish/completions/bootware.fish"
@@ -164,7 +165,7 @@ log() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
+  if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
     echo "$@"
   fi
 }
@@ -216,7 +217,7 @@ main() {
   # Flags:
   #   -w: Check if file exists and is writable.
   #   -z: Check if the string has zero length or is null.
-  if [[ -z "${user_install}" && ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+  if [[ -z "${user_install:-}" && ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo=1
   fi
@@ -240,13 +241,13 @@ main() {
     export PATH="${dst_dir}:${PATH}"
   fi
 
-  install_completions "${use_sudo}" "${user_install}" "${version}"
+  install_completions "${use_sudo}" "${user_install:-}" "${version}"
 
   # Installl man pages if a system install.
   #
   # Flags:
   #   -z: Check if the string has zero length or is null.
-  if [[ -z "${user_install}" ]]; then
+  if [[ -z "${user_install:-}" ]]; then
     install_man "${use_sudo}" "${version}"
   fi
 
