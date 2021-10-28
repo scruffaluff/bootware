@@ -177,7 +177,7 @@ main() {
   local dst_dir
   local dst_file="/usr/local/bin/bootware"
   local src_url
-  local use_sudo
+  local use_sudo=""
   local user_install
   local version="master"
 

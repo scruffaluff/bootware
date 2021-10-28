@@ -483,7 +483,7 @@ log() {
 setup() {
   local os_type
   local tmp_dir
-  local use_sudo
+  local use_sudo=""
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -790,7 +790,7 @@ setup_macos() {
 #######################################
 uninstall() {
   local dst_file
-  local use_sudo
+  local use_sudo=""
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -835,7 +835,7 @@ uninstall() {
 update() {
   local dst_file
   local src_url
-  local use_sudo
+  local use_sudo=""
   local version="master"
 
   # Parse command line arguments.
