@@ -34,7 +34,6 @@
   when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
 
 - name: Install DBeaver for Windows
-  become: yes
   when: ansible_system == "Win32NT"
   win_chocolatey:
     name: dbeaver

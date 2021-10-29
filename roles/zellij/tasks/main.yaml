@@ -27,7 +27,7 @@
 - name: Create Zellij settings directory for Unix
   become_user: "{{ user_account }}"
   file:
-    mode: "644"
+    mode: "755"
     path: "{{ user_home_dir }}/.config/zellij"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]

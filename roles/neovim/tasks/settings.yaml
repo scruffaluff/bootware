@@ -1,7 +1,7 @@
 - name: Create Neovim settings directories for Unix
   become_user: "{{ user_account }}"
   file:
-    mode: "644"
+    mode: "755"
     path: "{{ user_home_dir }}/{{ item }}"
     state: directory
   loop:

@@ -60,7 +60,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           build-args: |
-            skip=${{ matrix.skip || 'beekeeper' }}
+            skip=${{ matrix.skip }}
             test=true
           context: .
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}

@@ -49,7 +49,7 @@ jobs:
           ignore: node_modules
           severity: style
       - name: Lint Ansible playbook and roles
-        uses: ansible/ansible-lint-action@v4
+        uses: ansible/ansible-lint-action@v4.1.0
         with:
           targets: main.yaml
 
