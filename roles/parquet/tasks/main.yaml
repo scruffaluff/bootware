@@ -10,7 +10,7 @@
   become: yes
   get_url:
     dest: /usr/local/share/java/jar/parquet.jar
-    mode: 0755
+    mode: "755"
     url: >-
       https://search.maven.org/remotecontent?filepath=org/apache/parquet/parquet-cli/{{
       parquet_formula.json.versions.stable }}/parquet-cli-{{
@@ -22,7 +22,7 @@
   copy:
     dest: /usr/local/bin/parquet
     force: yes
-    mode: 0755
+    mode: "755"
     src: parquet.sh
   when: ansible_system == "Linux"
 

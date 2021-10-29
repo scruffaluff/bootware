@@ -1,6 +1,6 @@
 - name: Install Alacritty for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: alacritty
   when: ansible_pkg_mgr == "pacman"
 
@@ -51,31 +51,31 @@
 - name: Create Alacritty configuration directory for Unix
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/alacritty/"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/alacritty/"
     state: directory
-  when: ansible_system == "Win32NT"
 
 - name: Copy Alacritty configuration file for Unix
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/alacritty/alacritty.yml"
     force: yes
-    mode: 0644
+    mode: "644"
     src: alacritty.j2
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
   become_user: "{{ user_account }}"
-  template:
+  when: ansible_system == "Win32NT"
+  win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/alacritty/alacritty.yml"
     force: yes
-    mode: 0644
     src: alacritty.j2
-  when: ansible_system == "Win32NT"

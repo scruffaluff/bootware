@@ -1,6 +1,6 @@
 - name: Install Java for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - jdk-openjdk
       - maven
@@ -41,11 +41,11 @@
   when: ansible_system == "Darwin"
 
 - name: Install Java for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name:
       - maven
       - openjdk
-  when: ansible_system == "Win32NT"
 
 - name: Make Java discover OpenJDK on MacOS
   become: yes
@@ -53,7 +53,7 @@
     src: "{{ openjdk_path[ansible_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: yes
-    mode: 0755
+    mode: "755"
     state: link
   vars:
     openjdk_path:
@@ -64,6 +64,7 @@
 - name: Create Java Jar directory for Linux
   become: yes
   file:
+    mode: "755"
     path: /usr/local/share/java/jar/
     state: directory
   when: ansible_system == "Linux"

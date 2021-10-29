@@ -18,8 +18,8 @@
 
 - name: Install Pipx for Windows
   become_user: "{{ user_account }}"
-  win_shell: python -m pip install --upgrade pipx
   when: ansible_system == "Win32NT"
+  win_shell: python -m pip install --upgrade pipx
 
 # Pipx installs applications per user, so user_account is required.
 - name: Install Pipx command line applications for Unix
@@ -38,11 +38,11 @@
 - name: Install Pipx command line applications for Windows
   become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
+  when: ansible_system == "Win32NT"
   # Pipx installation can break if associated Python interpreter is updated.
   # If so a new installation should overwrite the current.
   win_shell: |
     (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install --force {{ item }})
-  when: ansible_system == "Win32NT"
 
 - name: Update Pipx command line applications for Unix
   become_user: "{{ user_account }}"
@@ -55,5 +55,5 @@
 
 - name: Update Pipx command line applications for Windows
   become_user: "{{ user_account }}"
-  win_shell: pipx upgrade-all
   when: ansible_system == "Win32NT"
+  win_shell: pipx upgrade-all

@@ -37,7 +37,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/xo/usql/releases/download/v{{
@@ -77,5 +77,5 @@
   copy:
     dest: "{{ user_home_dir }}/.usqlrc"
     force: yes
-    mode: 0644
+    mode: "644"
     src: .usqlrc

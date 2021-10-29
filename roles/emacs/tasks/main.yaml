@@ -28,13 +28,13 @@
   copy:
     dest: "{{ user_home_dir }}/.emacs"
     force: yes
-    mode: 0644
+    mode: "644"
     src: .emacs
   when: ansible_system != "Win32NT"
 
 - name: Copy Emacs settings files for Windows
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_copy:
     dest: "{{ user_home_dir }}/.emacs"
     src: .emacs
-  when: ansible_system == "Win32NT"

@@ -1,6 +1,6 @@
 - name: Install Libvirt for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - libvirt
       - virt-install
@@ -53,6 +53,6 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Virt Viewer for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name: virt-viewer
-  when: ansible_system == "Win32NT"

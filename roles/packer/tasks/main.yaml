@@ -17,7 +17,7 @@
   unarchive:
     dest: /usr/local/bin/
     group: root
-    mode: 0755
+    mode: "755"
     owner: root
     remote_src: yes
     src: >-

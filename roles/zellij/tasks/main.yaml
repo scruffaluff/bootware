@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/zellij-org/zellij/releases/download/v{{
@@ -27,6 +27,7 @@
 - name: Create Zellij settings directory for Unix
   become_user: "{{ user_account }}"
   file:
+    mode: "644"
     path: "{{ user_home_dir }}/.config/zellij"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
@@ -36,6 +37,6 @@
   copy:
     dest: "{{ user_home_dir }}/.config/zellij/config.yaml"
     force: yes
-    mode: 0644
+    mode: "644"
     src: config.yaml
   when: ansible_system in ["Darwin", "Linux"]

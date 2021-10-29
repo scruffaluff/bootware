@@ -17,7 +17,7 @@
 #   become: yes
 #   unarchive:
 #     dest: /tmp/
-#     mode: 0755
+#     mode: "755"
 #     remote_src: yes
 #     src: >-
 #       https://sourceforge.net/projects/bashdb/files/bashdb/{{

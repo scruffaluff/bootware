@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/bootandy/dust/releases/download/v{{
@@ -22,7 +22,7 @@
   become: yes
   copy:
     dest: /usr/local/bin/dust
-    mode: 0755
+    mode: "755"
     src: >-
       /tmp/dust-v{{ dust_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu/dust

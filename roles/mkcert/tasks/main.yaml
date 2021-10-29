@@ -16,7 +16,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/mkcert
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/FiloSottile/mkcert/releases/download/v{{
       mkcert_formula.json.versions.stable }}/mkcert-v{{

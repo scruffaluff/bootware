@@ -16,7 +16,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/BurntSushi/xsv/releases/download/{{

@@ -1,6 +1,6 @@
 - name: Install AWSCLI for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: aws-cli
   when: ansible_pkg_mgr == "pacman"
 

@@ -22,7 +22,7 @@
     extra_opts:
       - --transform
       - "s/julia-{{ julia_formula.json.versions.stable }}/julia/"
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://julialang-s3.julialang.org/bin/{{ julia_os }}/{{

@@ -8,7 +8,7 @@
 
 - name: Install Docker for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
@@ -34,11 +34,12 @@
 - name: Add Docker package information for Debian distributions
   become: yes
   lineinfile:
-    path: /etc/apt/sources.list.d/docker.list
+    create: yes
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
     line: deb [arch={{ docker_arch[ansible_architecture] }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
-    create: yes
+    mode: "644"
+    path: /etc/apt/sources.list.d/docker.list
   vars:
     docker_arch:
       aarch64: arm64
@@ -90,9 +91,9 @@
   when: ansible_system == "Darwin"
 
 - name: Install Docker for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name: docker-desktop
-  when: ansible_system == "Win32NT"
 
 - name: Check if systemd is available for Linux
   register: systemd_available
@@ -138,6 +139,7 @@
 - name: Create Docker Compose plugin directory for Linux
   become: yes
   file:
+    mode: "755"
     path: /usr/lib/docker/cli-plugins
     state: directory
   when: ansible_system == "Linux"
@@ -146,7 +148,7 @@
   become: yes
   get_url:
     dest: /usr/lib/docker/cli-plugins/docker-compose
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/docker/compose/releases/download/v{{
       docker_compose_formula.json.versions.stable }}/docker-compose-linux-{{
@@ -172,6 +174,7 @@
 - name: Create Fish completions directory for Unix
   become: yes
   file:
+    mode: "755"
     path: /etc/fish/completions
     state: directory
   when: ansible_system != "Win32NT"
@@ -180,7 +183,7 @@
   become: yes
   get_url:
     dest: /etc/fish/completions/docker.fish
-    mode: 0664
+    mode: "664"
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
   when: ansible_system != "Win32NT"
 
@@ -188,6 +191,6 @@
   become: yes
   get_url:
     dest: /etc/fish/completions/docker-compose.fish
-    mode: 0664
+    mode: "664"
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
   when: ansible_system != "Win32NT"

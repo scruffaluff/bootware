@@ -48,6 +48,10 @@ jobs:
           additional_files: .bash_profile .bashrc '*.bats'
           ignore: node_modules
           severity: style
+      - name: Lint Ansible playbook and roles
+        uses: ansible/ansible-lint-action@v4
+        with:
+          targets: main.yaml
 
   test-bash:
     name: Run unit tests for Bash scripts

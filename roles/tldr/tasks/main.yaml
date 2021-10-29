@@ -34,6 +34,7 @@
 - name: Create TLDR repository directory for Linux
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.local/share"
     state: directory
   when: ansible_system == "Linux"
@@ -46,5 +47,5 @@
 
 - name: Update TLDR documentation for Windows
   become_user: "{{ user_account }}"
-  win_shell: tldr --update
   when: ansible_system == "Win32NT"
+  win_shell: tldr --update

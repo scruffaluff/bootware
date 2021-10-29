@@ -2,7 +2,7 @@
   become: yes
   get_url:
     dest: /usr/local/appimages/hyper.appimage
-    mode: 0755
+    mode: "755"
     url: https://releases.hyper.is/download/AppImage
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
@@ -50,13 +50,14 @@
   template:
     dest: "{{ user_home_dir }}/.hyper.js"
     force: yes
-    mode: 0644
+    mode: "644"
     src: hyper.j2
   when: ansible_system != "Win32NT"
 
 - name: Create Hyper configuration directory for Linux
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/Hyper/"
     state: directory
   when: ansible_system == "Linux"
@@ -64,23 +65,24 @@
 - name: Create Hyper configuration directory for MacOS
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/Library/Application Support/Hyper/"
     state: directory
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/Hyper/"
     state: directory
-  when: ansible_system == "Win32NT"
 
 - name: Copy Hyper configuration file for Linux
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/Hyper/.hyper.js"
     force: yes
-    mode: 0644
+    mode: "644"
     src: hyper.j2
   when: ansible_system == "Linux"
 
@@ -89,14 +91,14 @@
   template:
     dest: "{{ user_home_dir }}/Library/Application Support/Hyper/.hyper.js"
     force: yes
-    mode: 0644
+    mode: "644"
     src: hyper.j2
   when: ansible_system == "Darwin"
 
 - name: Copy Hyper configuration file for Windows
   become_user: "{{ user_account }}"
-  template:
+  when: ansible_system == "Win32NT"
+  win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/Hyper/.hyper.js"
     force: yes
     src: hyper.j2
-  when: ansible_system == "Win32NT"

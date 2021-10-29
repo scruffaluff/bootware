@@ -1,6 +1,6 @@
 - name: Update packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     update_cache: yes
     upgrade: yes
   when: ansible_pkg_mgr == "pacman"
@@ -31,7 +31,7 @@
 
 - name: Install essential packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - openssh
       - pkgconf

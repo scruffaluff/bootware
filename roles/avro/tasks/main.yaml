@@ -11,7 +11,7 @@
   become: yes
   get_url:
     dest: /usr/local/share/java/jar/avro-tools.jar
-    mode: 0755
+    mode: "755"
     url: >-
       https://archive.apache.org/dist/avro/avro-{{
       avro_formula.json.versions.stable }}/java/avro-tools-{{
@@ -23,7 +23,7 @@
   copy:
     dest: /usr/local/bin/avro-tools
     force: yes
-    mode: 0755
+    mode: "755"
     src: avro-tools.sh
   when: ansible_system == "Linux"
 

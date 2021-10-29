@@ -1,6 +1,6 @@
 - name: Install Fira Code for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: ttf-fira-code
   when: ansible_pkg_mgr == "pacman"
 

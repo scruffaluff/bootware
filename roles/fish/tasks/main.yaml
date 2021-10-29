@@ -19,6 +19,7 @@
 - name: Create Fish configuration directory for Unix
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/fish"
     state: directory
   when: ansible_system != "Win32NT"
@@ -26,6 +27,7 @@
 - name: Create Fish completions directory for Unix
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/fish/completions"
     state: directory
   when: ansible_system != "Win32NT"
@@ -33,6 +35,7 @@
 - name: Create Fish functions directory for Unix
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
   when: ansible_system != "Win32NT"
@@ -42,7 +45,7 @@
   copy:
     dest: "{{ user_home_dir }}/.config/fish/config.fish"
     force: yes
-    mode: 0644
+    mode: "644"
     src: config.fish
   when: ansible_system != "Win32NT"
 

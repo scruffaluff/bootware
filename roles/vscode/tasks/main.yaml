@@ -62,6 +62,7 @@
 - name: Create VSCode user directory for Linux
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.config/Code/User/"
     state: directory
   when: ansible_system == "Linux"
@@ -71,7 +72,7 @@
   template:
     dest: "{{ user_home_dir }}/.config/Code/User/keybindings.json"
     force: yes
-    mode: 0640
+    mode: "640"
     src: keybindings.j2
   when: ansible_system == "Linux"
 
@@ -80,13 +81,14 @@
   template:
     dest: "{{ user_home_dir }}/.config/Code/User/settings.json"
     force: yes
-    mode: 0640
+    mode: "640"
     src: settings.j2
   when: ansible_system == "Linux"
 
 - name: Create VSCode user directory for MacOS
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/Library/Application Support/Code/User/"
     state: directory
   when: ansible_system == "Darwin"
@@ -97,7 +99,7 @@
     dest: >-
       {{ user_home_dir }}/Library/Application Support/Code/User/keybindings.json
     force: yes
-    mode: 0640
+    mode: "640"
     src: keybindings.j2
   when: ansible_system == "Darwin"
 
@@ -107,32 +109,33 @@
     dest: >-
       {{ user_home_dir }}/Library/Application Support/Code/User/settings.json
     force: yes
-    mode: 0640
+    mode: "640"
     src: settings.j2
   when: ansible_system == "Darwin"
 
 - name: Create VSCode user directory for Windows
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/Code/User"
     state: directory
-  when: ansible_system == "Win32NT"
 
 - name: Copy VSCode keybindings file for Windows
   become_user: "{{ user_account }}"
-  template:
+  when: ansible_system == "Win32NT"
+  win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/keybindings.json"
     force: yes
     src: keybindings.j2
-  when: ansible_system == "Win32NT"
 
 - name: Copy VSCode settings file for Windows
   become_user: "{{ user_account }}"
-  template:
+  when: ansible_system == "Win32NT"
+  win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/settings.json"
     force: yes
+    mode: "644"
     src: settings.j2
-  when: ansible_system == "Win32NT"
 
 - name: Install VSCode extensions for Unix
   become_user: "{{ user_account }}"
@@ -144,5 +147,5 @@
 - name: Install VSCode extensions for Windows
   become_user: "{{ user_account }}"
   loop: "{{ vscode_extensions }}"
-  win_shell: code --install-extension {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: code --install-extension {{ item }}

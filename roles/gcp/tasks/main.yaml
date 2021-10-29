@@ -15,11 +15,12 @@
 - name: Add Google Cloud SDK package information for Debian distributions
   become: yes
   lineinfile:
-    path: /etc/apt/sources.list.d/google-cloud-sdk.list
+    create: yes
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
     line: deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main
-    create: yes
+    mode: "644"
+    path: /etc/apt/sources.list.d/google-cloud-sdk.list
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Google Cloud SDK for Debian distributions
@@ -42,6 +43,7 @@
       gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
              https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     create: yes
+    mode: "644"
     path: /etc/yum.repos.d/google-cloud-sdk.repo
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 

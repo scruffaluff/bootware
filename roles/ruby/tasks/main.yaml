@@ -78,13 +78,13 @@
 - name: Install or update Ruby CLI applications for Windows
   become_user: "{{ user_account }}"
   loop: "{{ ruby_applications }}"
-  win_shell: gem install {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: gem install {{ item }}
 
 - name: Download RVM Fish for Unix
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/rvm.fish"
-    mode: 0644
+    mode: "644"
     url: https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish
   when: ansible_system not in ["FreeBSD", "Win32NT"]

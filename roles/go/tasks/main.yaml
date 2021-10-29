@@ -17,7 +17,7 @@
   unarchive:
     creates: /usr/local/go
     dest: /usr/local/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{

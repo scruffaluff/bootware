@@ -40,11 +40,11 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name:
       - dotnetcore-sdk
       - visualstudio2019buildtools
-  when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
   become_user: "{{ user_account }}"

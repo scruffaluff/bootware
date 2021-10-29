@@ -1,6 +1,6 @@
 - name: Install Bats for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: bash-bats
   when: ansible_pkg_mgr == "pacman"
 

@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/sniptt-official/ots/releases/download/v{{
@@ -26,7 +26,7 @@
   become: yes
   copy:
     dest: /usr/local/bin/ots
-    mode: 0755
+    mode: "755"
     src: /tmp/ots
   when: >-
     ansible_system == "Linux"

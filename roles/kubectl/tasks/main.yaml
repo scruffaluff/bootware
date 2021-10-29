@@ -1,6 +1,6 @@
 - name: Install Kubectl for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: kubectl
   when: ansible_pkg_mgr == "pacman"
 

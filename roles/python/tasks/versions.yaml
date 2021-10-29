@@ -3,7 +3,7 @@
 
 - name: Install Pyenv dependencies for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - base-devel
       - openssl

@@ -10,7 +10,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/hadolint
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/hadolint/hadolint/releases/download/v{{
       hadolint_formula.json.versions.stable }}/hadolint-Linux-x86_64

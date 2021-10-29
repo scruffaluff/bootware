@@ -1,6 +1,6 @@
 - name: Install SQLite for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: sqlite
   when: ansible_pkg_mgr == "pacman"
 
@@ -40,5 +40,5 @@
   copy:
     dest: "{{ user_home_dir }}/.sqliterc"
     force: yes
-    mode: 0644
+    mode: "644"
     src: .sqliterc

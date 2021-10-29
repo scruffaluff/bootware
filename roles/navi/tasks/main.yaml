@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/denisidoro/navi/releases/download/v{{
@@ -25,7 +25,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Navi for Windows
-  win_chocolatey:
-    name:
-      - navi
   when: ansible_system == "Win32NT"
+  win_chocolatey:
+    name: navi

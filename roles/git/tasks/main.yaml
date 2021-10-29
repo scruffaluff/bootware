@@ -37,5 +37,5 @@
   template:
     dest: "{{ user_home_dir }}/.gitconfig"
     force: yes
-    mode: 0644
+    mode: "644"
     src: gitconfig.j2

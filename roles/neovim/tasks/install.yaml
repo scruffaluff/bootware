@@ -15,7 +15,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/neovim
-    mode: 0755
+    mode: "755"
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
   when: ansible_system == "Linux" and nvchad
 

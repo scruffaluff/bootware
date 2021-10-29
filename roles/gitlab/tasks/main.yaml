@@ -1,6 +1,6 @@
 - name: Install GitLab Runner for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: gitlab-runner
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
