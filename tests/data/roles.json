@@ -264,7 +264,7 @@
   },
   {
     "name": "vagrant",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "os": "linux" }],
     "tests": ["vagrant version"]
   },
   { "name": "vault", "tests": ["vault --version"] },

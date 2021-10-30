@@ -13,7 +13,8 @@
 
 - name: Install TLDR for Linux
   become: yes
-  command: tldr
+  package:
+    name: tldr
   when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
 
 - name: Install TLDR for MacOS
