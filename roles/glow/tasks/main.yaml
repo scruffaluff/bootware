@@ -8,8 +8,7 @@
 
 - name: Install Glow for Arch distributions
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm glow
+  command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Glow for Debian distributions

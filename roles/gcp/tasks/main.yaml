@@ -1,15 +1,11 @@
 - name: Install Google Cloud SDK for Arch distributions
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm google-cloud-sdk
+  command: yay -Sy --noconfirm google-cloud-sdk
   when: ansible_pkg_mgr == "pacman"
 
 - name: Add Google Cloud SDK key for Debian distributions
   become: yes
-  shell:
-    cmd: |
-      curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    warn: no
+  command: curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Google Cloud SDK package information for Debian distributions

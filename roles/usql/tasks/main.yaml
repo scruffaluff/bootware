@@ -18,8 +18,7 @@
 # supported version on Arch.
 - name: Install Usql for Arch distributions
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm usql
+  command: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
 
 # Pre-built Usql binaries require a libicu version that is different from the

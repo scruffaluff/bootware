@@ -48,10 +48,12 @@ jobs:
           additional_files: .bash_profile .bashrc '*.bats'
           ignore: node_modules
           severity: style
+      - name: Install Ansible and Ansible Lint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible ansible-lint
       - name: Lint Ansible playbook and roles
-        uses: ansible/ansible-lint-action@v4.1.0
-        with:
-          targets: main.yaml
+        run: ansible-lint main.yaml
 
   test-bash:
     name: Run unit tests for Bash scripts

@@ -51,8 +51,7 @@
 
 - name: Get installed Fish version
   register: fish_version_text
-  shell:
-    cmd: fish --version
+  command: fish --version
   when: ansible_system != "Win32NT"
 
 - name: Parse Fish version

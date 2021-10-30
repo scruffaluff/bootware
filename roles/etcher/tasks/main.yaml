@@ -18,8 +18,7 @@
 
 - name: Install Balena Etcher for Arch distributions
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm balena-etcher
+  command: yay -Sy --noconfirm balena-etcher
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions

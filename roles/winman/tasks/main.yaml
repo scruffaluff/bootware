@@ -1,8 +1,7 @@
 - name: Check if Pop Shell is installed for GNOME desktops
+  command: gnome-extensions show pop-shell@system76.com
   ignore_errors: yes
   register: pop_shell_check
-  shell:
-    cmd: gnome-extensions show pop-shell@system76.com
   when: ansible_system == "Linux" and gnome_desktop
 
 # Pop Shell requires TypeScript as a build dependency
@@ -26,8 +25,7 @@
   when: pop_shell_check is failed and gnome_desktop
 
 - name: Enable Pop Shell extension for GNOME desktops
-  shell:
-    cmd: gnome-extensions enable pop-shell@system76.com
+  command: gnome-extensions enable pop-shell@system76.com
   when: ansible_system== "Linux" and gnome_desktop
 
 - name: Change Pop Shell settings for GNOME desktops

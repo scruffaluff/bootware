@@ -6,8 +6,7 @@
 
 - name: Install Pipx for Linux
   become: yes
-  shell:
-    cmd: /usr/bin/python3 -m pip install --upgrade pipx
+  command: /usr/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "Linux"
 
 - name: Install Pipx for MacOS

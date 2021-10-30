@@ -6,10 +6,9 @@
 
 # Zorin is not supported since it is based on a old version of Ubuntu.
 - name: Check if Caffeine shell extension is installed for GNOME desktops
+  command: gnome-extensions show caffeine@patapon.info
   ignore_errors: yes
   register: caffeine_shell_check
-  shell:
-    cmd: gnome-extensions show caffeine@patapon.info
   when: ansible_system == "Linux" and gnome_desktop
 
 - name: Install Caffeine shell extension for GNOME desktop Debian distributions
@@ -41,7 +40,6 @@
 
 - name: Enable Caffeine shell extension for GNOME desktops
   become_user: "{{ user_account }}"
-  shell:
-    cmd: gnome-extensions enable caffeine@patapon.info
+  command: gnome-extensions enable caffeine@patapon.info
   when: >-
     ansible_system == "Linux" and gnome_desktop
