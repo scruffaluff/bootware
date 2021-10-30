@@ -778,6 +778,16 @@
     - server
     - usql
 
+- name: Install Vagrant virtualization manager
+  hosts: all
+  roles:
+    - vagrant
+  tags:
+    - desktop
+    - hashicorp
+    - server
+    - vagrant
+
 - name: Install Vault secrets manager
   hosts: all
   roles:
@@ -788,6 +798,16 @@
     - hashicorp
     - server
     - vault
+
+- name: Install Virtualbox virtualization manager
+  hosts: all
+  roles:
+    - virtualbox
+  tags:
+    - desktop
+    - hashicorp
+    - server
+    - virtualbox
 
 - name: Install VSCode text exitor
   hosts: all

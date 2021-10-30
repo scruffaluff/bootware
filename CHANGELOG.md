@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Java, Julia, Parquet, and Xsv roles.
+- Java, Julia, Parquet, Vagrant, Virtualbox, and Xsv roles.
 
 ## 0.3.4 - 2021-10-20
 
