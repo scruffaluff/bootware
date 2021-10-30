@@ -59,6 +59,7 @@
       - findutils
       - openssl-devel
       - perl-FindBin
+      - procps
       - python
       - which
   when: ansible_pkg_mgr == "dnf"

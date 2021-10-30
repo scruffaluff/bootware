@@ -161,7 +161,7 @@
     ],
     "tests": ["hyperfine --version"]
   },
-  { "name": "java", "tests": ["java --version", "mvn --version"] },
+  { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "julia", "tests": ["julia --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },

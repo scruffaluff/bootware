@@ -1,7 +1,16 @@
 - name: Add Virtualbox GPG key for Fedora distributions
+  become: yes
   rpm_key:
     key: https://www.virtualbox.org/download/oracle_vbox.asc
     state: present
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Copy Virtualbox repository file for Fedora distributions
+  become: yes
+  copy:
+    dest: /etc/yum.repos.d/virtualbox.repo
+    mode: "644"
+    src: virtualbox.repo
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for Arch distributions
@@ -15,6 +24,12 @@
     name: virtualbox
   become: yes
   when: ansible_pkg_mgr == "apt"
+
+- name: Install Virtualbox for Fedora distributions
+  become: yes
+  dnf:
+    name: VirtualBox-6.1
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for FreeBSD
   become: yes

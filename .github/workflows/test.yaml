@@ -33,6 +33,8 @@ jobs:
         with:
           prepare: pkg install -y bash curl
           run: |
+            sudo freebsd-update fetch
+            sudo freebsd-update install
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
