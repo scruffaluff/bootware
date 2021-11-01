@@ -268,7 +268,11 @@
     "tests": ["vagrant version"]
   },
   { "name": "vault", "tests": ["vault --version"] },
-  { "name": "virtualbox", "tests": ["virtualbox --help"] },
+  {
+    "name": "virtualbox",
+    "skip": [{ "os": "debian" }],
+    "tests": ["virtualbox --help"]
+  },
   {
     "name": "vscode",
     "skip": [{ "os": "freebsd" }],

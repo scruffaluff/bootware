@@ -24,7 +24,7 @@ curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/mast
 
 <code-block title="Windows">
 ```powershell
-Invoke-WebRequest -UseBasicParsing -Uri  https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1 | Invoke-Expression
+iwr -useb https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1 | iex
 ```
 </code-block>
 </code-group>
@@ -53,7 +53,7 @@ curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/mast
 
 <code-block title="Windows">
 ```powershell
-powershell { & ([ScriptBlock]::Create((Invoke-WebRequest -UseBasicParsing -Uri https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1))) "--help" }
+powershell { & ([ScriptBlock]::Create((iwr -useb https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1))) "--help" }
 ```
 </code-block>
 </code-group>

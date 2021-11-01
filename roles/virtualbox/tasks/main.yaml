@@ -5,12 +5,12 @@
     state: present
   when: ansible_pkg_mgr == "dnf"
 
-- name: Copy Virtualbox repository file for Fedora distributions
+- name: Add Virtualbox repository for Fedora distributions
   become: yes
-  copy:
+  get_url:
     dest: /etc/yum.repos.d/virtualbox.repo
     mode: "644"
-    src: virtualbox.repo
+    url: https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for Arch distributions
@@ -18,12 +18,6 @@
   community.general.pacman:
     name: virtualbox
   when: ansible_pkg_mgr == "pacman"
-
-- name: Install Virtualbox for Debian distributions
-  apt:
-    name: virtualbox
-  become: yes
-  when: ansible_pkg_mgr == "apt"
 
 - name: Install Virtualbox for Fedora distributions
   become: yes
@@ -44,6 +38,12 @@
     name: virtualbox
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Virtualbox for Ubuntu distributions
+  apt:
+    name: virtualbox
+  become: yes
+  when: ansible_pkg_mgr == "apt" and deb_distro_base != "debian"
 
 - name: Install Virtualbox for Windows
   when: ansible_system == "Win32NT"

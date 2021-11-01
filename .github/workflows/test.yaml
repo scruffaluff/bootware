@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           build-args: |
-            skip=${{ matrix.skip }}
+            skip=${{ matrix.skip || 'none' }}
             test=true
           context: .
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}
@@ -140,12 +140,12 @@ jobs:
           bootware config --empty
           Copy-Item "./tests/data/config.yaml" -Destination "$HOME/.bootware/config.yaml"
         shell: powershell
-      # TODO: Remove build from skip tags when visualstudio2019buildtools
-      # becomes reliable again.
+      # TODO: Remove build and dbeaver from skip tags when
+      # visualstudio2019buildtools becomes reliable again.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip build,defterm
+          bootware bootstrap --no-setup --skip build,dbeaver,defterm
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.

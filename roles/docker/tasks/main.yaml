@@ -58,12 +58,12 @@
 
 - name: Add Docker repository for Fedora distributions
   become: yes
-  command: >-
-    dnf config-manager --add-repo
-    https://download.docker.com/linux/fedora/docker-ce.repo
+  get_url:
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: "644"
+    url: https://download.docker.com/linux/fedora/docker-ce.repo
   when: ansible_pkg_mgr == "dnf"
 
-# Command sudo systemctl start docker may need to be executed afterwards.
 - name: Install Docker for Fedora distributions
   become: yes
   dnf:

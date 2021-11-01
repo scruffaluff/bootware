@@ -64,6 +64,8 @@
       - which
   when: ansible_pkg_mgr == "dnf"
 
+# Adding openssl to the package list causes Node to throw the error 'version
+# OPENSSL_1_1_1e required by /usr/local/bin/node not found' in the CI tests.
 - name: Install essential packages for FreeBSD
   become: yes
   community.general.pkgng:
@@ -73,7 +75,6 @@
       - htop
       - iftop
       - neofetch
-      - openssl
       - sudo
       - tmate
       - tmux
