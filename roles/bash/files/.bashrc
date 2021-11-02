@@ -240,6 +240,10 @@ fi
 
 # TypeScript settings.
 
+# Add Deno binaries to system path.
+export DENO_INSTALL="${HOME}/.deno"
+prepend_path "${DENO_INSTALL}/bin"
+
 # Add NPM global binaries to system path.
 prepend_path "${HOME}/.npm-global/bin"
 
@@ -254,10 +258,6 @@ fi
 if [[ -f "${NVM_DIR}/bash_completion" ]]; then
   source "${NVM_DIR}/bash_completion"
 fi
-
-# Deno settings.
-export DENO_INSTALL="${HOME}/.deno"
-prepend_path "${DENO_INSTALL}/bin"
 
 # User settings.
 

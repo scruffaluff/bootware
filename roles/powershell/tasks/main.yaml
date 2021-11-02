@@ -24,6 +24,7 @@
   loop:
     - Documents/PowerShell
     - Documents/WindowsPowerShell
+    - Documents/WindowsPowerShell/Modules
   when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/{{ item }}"

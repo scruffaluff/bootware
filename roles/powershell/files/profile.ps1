@@ -85,6 +85,11 @@ If (Get-Module -ListAvailable -Name Posh-SSH) {
 
 # TypeScript settings.
 
+# Load Deno autocompletion if available.
+If (Get-Module -ListAvailable -Name DenoCompletion) {
+    Import-Module DenoCompletion
+}
+
 # Load NPM autocompletion if available.
 If (Get-Module -ListAvailable -Name npm-completion) {
     Import-Module npm-completion

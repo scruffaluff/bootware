@@ -231,6 +231,10 @@ end
 
 # TypeScript settings.
 
+# Add Deno binaries to system path.
+set -x DENO_INSTALL "$HOME/.deno"
+prepend_path "$DENO_INSTALL/bin"
+
 # Add NPM global binaries to system path.
 prepend_path "$HOME/.npm-global/bin"
 
@@ -241,10 +245,6 @@ prepend_path "$HOME/.npm-global/bin"
 if type -q nvm
   nvm use default
 end
-
-# Deno settings.
-set -x DENO_INSTALL "$HOME/.deno"
-prepend_path "$DENO_INSTALL/bin"
 
 # User settings.
 

@@ -270,7 +270,7 @@
   { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "virtualbox",
-    "skip": [{ "os": "debian" }],
+    "skip": [{ "os": "debian" }, { "os": "windows" }],
     "tests": ["virtualbox --help"]
   },
   {
