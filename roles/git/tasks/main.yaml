@@ -15,6 +15,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Git for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -23,6 +24,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -33,6 +35,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Git configuration file
+  become: yes
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.gitconfig"

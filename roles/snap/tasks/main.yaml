@@ -1,4 +1,5 @@
 - name: Install Snap for Arch distributions
+  become: yes
   become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm snapd
   when: ansible_pkg_mgr == "pacman"
@@ -7,6 +8,7 @@
   become: yes
   package:
     name: snapd
+    state: present
   when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
 
 - name: Check if Snap daemon socket is available for Linux

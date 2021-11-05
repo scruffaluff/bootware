@@ -1,4 +1,5 @@
 - name: Create Jupyter settings directory for Unix
+  become: yes
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -7,6 +8,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Jupyter settings directory for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
@@ -14,6 +16,7 @@
     state: directory
 
 - name: Copy Jupyter notebook settings file
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.jupyter/jupyter_notebook_config.py"

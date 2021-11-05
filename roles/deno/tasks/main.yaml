@@ -8,6 +8,7 @@
 # Deno Linux ARM support is in progress. See
 # https://github.com/denoland/deno/issues/1846.
 - name: Install Deno for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
@@ -17,6 +18,7 @@
     ansible_architecture == "x86_64")
 
 - name: Generate Deno Fish completions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -28,6 +30,7 @@
     ansible_architecture == "x86_64")
 
 - name: Install Deno for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -35,6 +38,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Create Deno PowerShell completions directory for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
@@ -43,6 +47,7 @@
     state: directory
 
 - name: Generate Deno PowerShell completions module for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: >-

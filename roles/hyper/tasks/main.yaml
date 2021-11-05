@@ -29,6 +29,7 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -37,6 +38,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Hyper for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -46,6 +48,7 @@
 # Hyper terminal lists ~/.hyper.js as deprecated path for its configuration
 # file, but seems to be the only path it will use for Unix.
 - name: Copy Hyper configuration file to backup location
+  become: yes
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.hyper.js"
@@ -55,6 +58,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Hyper configuration directory for Linux
+  become: yes
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -63,6 +67,7 @@
   when: ansible_system == "Linux"
 
 - name: Create Hyper configuration directory for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -71,6 +76,7 @@
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
@@ -78,6 +84,7 @@
     state: directory
 
 - name: Copy Hyper configuration file for Linux
+  become: yes
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/Hyper/.hyper.js"
@@ -87,6 +94,7 @@
   when: ansible_system == "Linux"
 
 - name: Copy Hyper configuration file for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/Library/Application Support/Hyper/.hyper.js"
@@ -96,6 +104,7 @@
   when: ansible_system == "Darwin"
 
 - name: Copy Hyper configuration file for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_template:

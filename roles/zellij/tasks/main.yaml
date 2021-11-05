@@ -19,12 +19,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zellij
   when: ansible_system == "Darwin"
 
 - name: Create Zellij settings directory for Unix
+  become: yes
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -33,6 +35,7 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/zellij/config.yaml"

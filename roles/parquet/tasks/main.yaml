@@ -27,6 +27,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Parquet CLI for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: parquet-cli

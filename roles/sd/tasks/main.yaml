@@ -24,12 +24,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install SD for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sd
   when: ansible_system == "Darwin"
 
 - name: Install SD for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

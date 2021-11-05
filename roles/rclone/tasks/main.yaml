@@ -8,15 +8,18 @@
   become: yes
   package:
     name: rclone
+    state: present
   when: ansible_system == "Linux"
 
 - name: Install RClone for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: rclone
   when: ansible_system == "Darwin"
 
 - name: Install RClone for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

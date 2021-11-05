@@ -30,6 +30,7 @@
 
 # Certificate generation requires NSS on MacOS.
 - name: Install Mkcert for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -38,6 +39,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Mkcert for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

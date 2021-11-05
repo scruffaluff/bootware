@@ -16,15 +16,18 @@
   become: yes
   package:
     name: qemu
+    state: present
   when: ansible_system == "Linux"
 
 - name: Install QEMU for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"
 
 - name: Install QEMU for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

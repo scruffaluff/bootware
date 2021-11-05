@@ -25,12 +25,14 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Procs for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: procs
   when: ansible_system == "Darwin"
 
 - name: Install Procs for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

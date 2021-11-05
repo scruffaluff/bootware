@@ -12,12 +12,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: lua
   when: ansible_system == "Darwin"
 
 - name: Install Lua for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -35,6 +35,7 @@
 #   when: ansible_system == "Linux"
 
 - name: Install BashDB for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: bashdb

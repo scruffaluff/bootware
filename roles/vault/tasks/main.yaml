@@ -31,12 +31,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"
 
 - name: Install Vault for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

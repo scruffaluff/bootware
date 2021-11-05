@@ -23,6 +23,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     update_homebrew: yes
@@ -101,9 +102,11 @@
       - tmux
       - unzip
       - zip
+    state: present
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -127,6 +130,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

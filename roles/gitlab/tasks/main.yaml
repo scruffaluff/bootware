@@ -38,12 +38,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install GitLab Runner for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"
 
 - name: Install GitLab Runner for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

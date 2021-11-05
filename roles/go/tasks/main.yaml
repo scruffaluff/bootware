@@ -29,6 +29,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Go for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: go
@@ -36,6 +37,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Go for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -43,6 +45,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Go command line applications for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ go_applications }}"
   shell:
@@ -53,6 +56,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Go command line applications for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ go_applications }}"
   when: ansible_system == "Win32NT"

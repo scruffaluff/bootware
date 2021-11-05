@@ -31,12 +31,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Act for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: act
   when: ansible_system == "Darwin"
 
 - name: Install Act for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -85,12 +87,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install GitHub CLI for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gh
   when: ansible_system == "Darwin"
 
 - name: Install GitHub CLI for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -26,6 +26,7 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Vagrant for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -34,6 +35,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Vagrant for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

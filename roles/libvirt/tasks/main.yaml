@@ -37,6 +37,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Libvirt for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -46,6 +47,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Libvirt for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -40,6 +40,7 @@
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: exa

@@ -39,6 +39,7 @@
     caffeine_shell_check is failed and gnome_desktop
 
 - name: Enable Caffeine shell extension for GNOME desktops
+  become: yes
   become_user: "{{ user_account }}"
   command: gnome-extensions enable caffeine@patapon.info
   when: >-

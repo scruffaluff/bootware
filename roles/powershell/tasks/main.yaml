@@ -20,6 +20,7 @@
       powershell_formula.json.version }}-win-x64.msi
 
 - name: Create PowerShell settings directories for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop:
     - Documents/PowerShell
@@ -31,6 +32,7 @@
     state: directory
 
 - name: Copy PowerShell settings files for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop:
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
@@ -42,6 +44,7 @@
     src: profile.ps1
 
 - name: Install PowerShell modules
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_psmodule:
     name: "{{ item }}"

@@ -32,12 +32,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Packer for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: packer
   when: ansible_system == "Darwin"
 
 - name: Install Packer for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

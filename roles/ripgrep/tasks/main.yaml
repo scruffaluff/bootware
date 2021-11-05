@@ -8,15 +8,18 @@
   become: yes
   package:
     name: ripgrep
+    state: present
   when: ansible_system == "Linux"
 
 - name: Install Ripgrep for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: ripgrep
   when: ansible_system == "Darwin"
 
 - name: Install Ripgrep for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

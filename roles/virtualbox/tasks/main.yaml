@@ -32,6 +32,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Virtualbox for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes

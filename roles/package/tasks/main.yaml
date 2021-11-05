@@ -34,6 +34,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Homebrew casks for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -43,6 +44,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: "{{ item }}"
@@ -57,6 +59,7 @@
     name: "{{ item }}"
 
 - name: Install Scoop packages for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -11,12 +11,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Emacs for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: emacs
   when: ansible_system == "Darwin"
 
 - name: Install Emacs for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -24,6 +26,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Emacs settings file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.emacs"
@@ -33,6 +36,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Emacs settings files for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_copy:

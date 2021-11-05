@@ -17,6 +17,7 @@
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Arch.
 - name: Install Usql for Arch distributions
+  become: yes
   become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
@@ -24,6 +25,7 @@
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Debian.
 - name: Install Usql for Debian distributions
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -53,18 +55,21 @@
   when: ansible_system == "FreeBSD"
 
 - name: Tap Usql for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: xo/xo
   when: ansible_system == "Darwin"
 
 - name: Install Usql for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: xo/xo/usql
   when: ansible_system == "Darwin"
 
 - name: Install Usql for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -72,6 +77,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Usql settings file
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.usqlrc"

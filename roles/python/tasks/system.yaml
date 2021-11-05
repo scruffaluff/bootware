@@ -61,6 +61,7 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop:
     - python.exe

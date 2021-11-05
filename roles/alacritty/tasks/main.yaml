@@ -34,6 +34,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Alacritty for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -42,6 +43,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Alacritty for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -49,6 +51,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Create Alacritty configuration directory for Unix
+  become: yes
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -57,6 +60,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
@@ -64,6 +68,7 @@
     state: directory
 
 - name: Copy Alacritty configuration file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/alacritty/alacritty.yml"
@@ -73,6 +78,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
+  become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_template:

@@ -34,12 +34,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

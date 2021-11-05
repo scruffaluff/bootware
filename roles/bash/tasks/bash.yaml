@@ -13,6 +13,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Bash for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -21,6 +22,7 @@
   when: ansible_system == "Darwin"
 
 - name: Copy Bash non-login settings file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.bashrc"
@@ -30,6 +32,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Bash login settings file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.bash_profile"
@@ -39,6 +42,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy shell aliases file for Unix
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.aliases"

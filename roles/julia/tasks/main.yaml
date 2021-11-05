@@ -37,6 +37,7 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Julia for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: julia
@@ -44,6 +45,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Julia for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

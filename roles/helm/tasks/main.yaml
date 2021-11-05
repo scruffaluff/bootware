@@ -40,12 +40,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: helm
   when: ansible_system == "Darwin"
 
 - name: Install Helm for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -31,6 +31,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Java for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:

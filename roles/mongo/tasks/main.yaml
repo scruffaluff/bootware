@@ -45,12 +45,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Mongo Shell for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mongosh
   when: ansible_system == "Darwin"
 
 - name: Install Mongo tools for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

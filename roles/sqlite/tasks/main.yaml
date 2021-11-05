@@ -23,12 +23,14 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install SQLite for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sqlite
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -36,6 +38,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy SQLite settings file
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.sqliterc"

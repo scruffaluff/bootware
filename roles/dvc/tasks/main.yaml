@@ -34,12 +34,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install DVC for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dvc
   when: ansible_system == "Darwin"
 
 - name: Install DVC for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -19,12 +19,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Scc for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: scc
   when: ansible_system == "Darwin"
 
 - name: Install Scc for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

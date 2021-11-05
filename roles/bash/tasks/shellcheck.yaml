@@ -17,6 +17,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install ShellCheck for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: shellcheck

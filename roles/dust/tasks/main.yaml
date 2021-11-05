@@ -30,12 +30,14 @@
     ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Dust for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dust
   when: ansible_system == "Darwin"
 
 - name: Install Dust for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

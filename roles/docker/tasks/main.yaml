@@ -80,6 +80,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -153,6 +154,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: docker-compose
@@ -160,6 +162,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Docker Compose for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
