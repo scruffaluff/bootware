@@ -127,6 +127,15 @@
     - database
     - desktop
 
+- name: Install Nvidia CUDA CPU acceleration toolkit
+  hosts: all
+  roles:
+    - cuda
+  tags:
+    - cuda
+    - desktop
+    - server
+
 - name: Install DBeaver database client
   hosts: all
   roles:
