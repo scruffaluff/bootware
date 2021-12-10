@@ -241,7 +241,10 @@ Function Config() {
 
     If ($EmptyCfg -Or (-Not $SrcURL)) {
         Log "Writing empty configuration file to $DstFile"
-        Write-Output "font_size: 14" > "$DstFile"
+        # Do not use Write-Ouput. On PowerShell 5, it will add a byte order
+        # marker to the file, which makes WSL Ansible throw UTF-8 errors.
+        # Solution was taken from https://stackoverflow.com/a/32951824.
+        [System.IO.File]::WriteAllLines("$DstFile", "font_size: 14")
     }
     Else {
         # Log "Downloading configuration file to $DstFile"

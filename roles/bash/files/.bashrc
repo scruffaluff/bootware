@@ -94,6 +94,19 @@ prepend_path "/usr/local/julia/bin"
 # Make Poetry create virutal environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT=1
 
+# Make numerical compute libraries findable on MacOS.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  if [[ -d "/opt/homebrew/opt/openblas" ]]; then
+    export OPENBLAS="/opt/homebrew/opt/openblas"
+  elif [[ -d "/usr/local/opt/openblas" ]]; then
+    export OPENBLAS="/usr/local/opt/openblas"
+  fi
+fi
+
 # Add Pyenv binaries to system path.
 prepend_path "${HOME}/.pyenv/bin"
 
@@ -112,6 +125,7 @@ fi
 
 # Ruby settings.
 
+prepend_path "${HOME}/bin"
 prepend_path "${HOME}/.rvm/bin"
 
 # Initialize RVM if available.

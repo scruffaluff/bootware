@@ -43,6 +43,12 @@
     force: yes
     src: profile.ps1
 
+- name: Trust default PowerShell repository
+  community.windows.win_psrepository:
+    name: PSGallery
+    installation_policy: trusted
+  when: ansible_system == "Win32NT"
+
 - name: Install PowerShell modules
   become: yes
   become_user: "{{ user_account }}"
