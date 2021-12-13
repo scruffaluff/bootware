@@ -38,7 +38,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
-            node tests/integration/roles.spec.js --arch amd64 --skip python,starship freebsd
+            node tests/integration/roles.spec.js --arch amd64 freebsd
 
   test-linux:
     name: >-
@@ -132,20 +132,15 @@ jobs:
           StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
           $Env:UserName@127.0.0.1 dir
         shell: powershell
-      # Default configuration file causes UTF-8 codec on Windows GitHub CI
-      # servers. Unable to repeat on any other Windows system.
       - name: Copy Bootware configuration file
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
-          Copy-Item "./tests/data/config.yaml" -Destination "$HOME/.bootware/config.yaml"
         shell: powershell
-      # TODO: Remove build and dbeaver from skip tags when
-      # visualstudio2019buildtools becomes reliable again.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip build,dbeaver,defterm
+          bootware bootstrap --no-setup --skip defterm,mongo
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.

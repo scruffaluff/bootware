@@ -18,11 +18,12 @@
     warn: no
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
-- name: Install Balena Etcher for Arch distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  command: yay -Sy --noconfirm balena-etcher
-  when: ansible_pkg_mgr == "pacman"
+# Balena Etcher package conflicts with NodeJS.
+# - name: Install Balena Etcher for Arch distributions
+#   become: yes
+#   become_user: "{{ user_account }}"
+#   command: yay -Sy --noconfirm balena-etcher
+#   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions
   apt:
