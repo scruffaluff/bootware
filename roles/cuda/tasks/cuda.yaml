@@ -1,0 +1,46 @@
+- name: Add Nvidia CUDA APT preferences for Ubuntu distributions
+  become: yes
+  get_url:
+    dest: /etc/apt/preferences.d/cuda-repository-pin-600
+    mode: "644"
+    url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Download Nvidia CUDA repository key for Ubuntu distributions
+  become: yes
+  get_url:
+    dest: /tmp/cuda-archive-keyring.pub
+    mode: "644"
+    url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Nvidia CUDA repository key for Ubuntu distributions
+  become: yes
+  command: >-
+    gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg
+    /tmp/cuda-archive-keyring.pub
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Add Nvidia CUDA repository for Ubuntu distributions
+  become: yes
+  template:
+    dest: /etc/apt/sources.list.d/cuda.list
+    force: yes
+    mode: "644"
+    src: cuda.list.j2
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Nvidia CUDA for Ubuntu distributions
+  apt:
+    name: cuda
+    update_cache: yes
+  become: yes
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Nvidia CUDA for Windows
+  become: yes
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: cuda
+  when: cuda and ansible_system == "Win32NT"

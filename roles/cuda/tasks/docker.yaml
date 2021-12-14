@@ -1,0 +1,30 @@
+- name: Download Nvidia Docker repository key for Ubuntu distributions
+  become: yes
+  get_url:
+    dest: /tmp/nvidia-docker-archive-keyring.pub
+    mode: "644"
+    url: https://nvidia.github.io/nvidia-docker/gpgkey
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Nvidia Docker repository key for Ubuntu distributions
+  become: yes
+  command: >-
+    gpg --dearmor -o /usr/share/keyrings/nvidia-docker-archive-keyring.gpg
+    /tmp/nvidia-docker-archive-keyring.pub
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Add Nvidia Docker repository for Ubuntu distributions
+  become: yes
+  template:
+    dest: /etc/apt/sources.list.d/nvidia-docker.list
+    force: yes
+    mode: "644"
+    src: nvidia-docker.list.j2
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Nvidia Docker for Ubuntu distributions
+  apt:
+    name: nvidia-docker2
+    update_cache: yes
+  become: yes
+  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
