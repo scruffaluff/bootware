@@ -151,7 +151,9 @@
 - name: Install VSCode extensions for Unix
   become: yes
   become_user: "{{ user_account }}"
-  command: code --install-extension {{ item }}
+  command: >-
+    {{ user_home_dir }}/scoop/apps/vscode/current/bin/code.cmd
+    --install-extension {{ item }}
   loop: "{{ vscode_extensions }}"
   when: ansible_system in ["Darwin", "Linux"]
 

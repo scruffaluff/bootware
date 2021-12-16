@@ -119,7 +119,7 @@
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: python{{ item | replace('.','') | replace('39','') }}
+    name: python{{ item | replace('.','') | replace('310','') }}
   loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"
 

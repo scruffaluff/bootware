@@ -478,7 +478,6 @@
   tags:
     - desktop
     - libvirt
-    - server
     - vm
 
 - name: Install Lua language
@@ -638,7 +637,6 @@
   tags:
     - desktop
     - qemu
-    - server
     - vm
 
 - name: Install RClone cloud storage utility
@@ -794,7 +792,6 @@
   tags:
     - desktop
     - hashicorp
-    - server
     - vagrant
 
 - name: Install Vault secrets manager
@@ -815,7 +812,6 @@
   tags:
     - desktop
     - hashicorp
-    - server
     - virtualbox
 
 - name: Install VSCode text exitor

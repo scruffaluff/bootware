@@ -51,13 +51,15 @@
     name: mongosh
   when: ansible_system == "Darwin"
 
-- name: Install Mongo tools for Windows
-  become: yes
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    name: mongodb-database-tools
-  when: ansible_system == "Win32NT"
+# As of 12/14/2021, Scoop installation of mongodb-database-tools always results
+# in a fetch error.
+# - name: Install Mongo tools for Windows
+#   become: yes
+#   become_user: "{{ user_account }}"
+#   community.windows.win_scoop:
+#     architecture: 64bit
+#     name: mongodb-database-tools
+#   when: ansible_system == "Win32NT"
 
 - name: Install Mongo Shell for Windows
   when: ansible_system == "Win32NT"
