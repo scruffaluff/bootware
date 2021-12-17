@@ -1,4 +1,4 @@
-# Shfmt configuration file.
+# Shfmt configuration file for formatting text.
 #
 # Options are chosen to follow Google shell style guide,
 # https://google.github.io/styleguide/shellguide.html. For a list of shfmt

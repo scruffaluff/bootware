@@ -10,7 +10,7 @@
 
 - name: Install Pyenv dependencies for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - base-devel
       - openssl
@@ -60,6 +60,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pyenv dependencies for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -73,6 +74,7 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
@@ -81,6 +83,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Update Pyenv for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -90,6 +93,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Get latest patch release for each Python minor version for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
@@ -107,6 +111,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install multiple Python versions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ python_releases }}"
   shell:
@@ -117,14 +122,16 @@
   when: ansible_system != "Win32NT"
 
 - name: Install multiple Python versions for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: python{{ item | replace('.','') | replace('39','') }}
+    name: python{{ item | replace('.','') | replace('310','') }}
   loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |

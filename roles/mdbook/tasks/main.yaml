@@ -17,7 +17,7 @@
   unarchive:
     dest: /usr/local/bin/
     group: root
-    mode: 0755
+    mode: "755"
     owner: root
     remote_src: yes
     src: >-
@@ -27,12 +27,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Mdbook for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mdbook
   when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
 
 - name: Install Mdbook for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

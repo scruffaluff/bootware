@@ -8,6 +8,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Starship shell prompt for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

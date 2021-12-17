@@ -1,4 +1,4 @@
-# ShellCheck configuration file.
+# ShellCheck configuration file for settings shell script rules.
 #
 # For more information, visit 
 # https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files.

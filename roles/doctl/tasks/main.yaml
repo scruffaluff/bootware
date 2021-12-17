@@ -16,7 +16,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/digitalocean/doctl/releases/download/v{{
@@ -30,12 +30,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: doctl
   when: ansible_system == "Darwin"
 
 - name: Install Digital Ocean CLI for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -43,6 +45,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Digital Ocean CLI Fish completion for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |

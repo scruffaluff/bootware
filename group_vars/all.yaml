@@ -37,6 +37,7 @@ _user_home_dir:
 bash_executable: "{{  _bash_executable[ansible_system] }}"
 deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
+cuda: false
 desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 fish_executable: "{{  _fish_executable[ansible_system] }}"
 font_size: 14

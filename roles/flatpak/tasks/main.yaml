@@ -7,10 +7,9 @@
 
 - name: Add Flathub remote repository for Linux
   become: yes
-  shell:
-    cmd: >-
-      flatpak remote-add --if-not-exists flathub
-      https://flathub.org/repo/flathub.flatpakrepo
+  command: >-
+    flatpak remote-add --if-not-exists flathub
+    https://flathub.org/repo/flathub.flatpakrepo
   when: ansible_system == "Linux"
 
 - name: Install Flatpak packages for Linux

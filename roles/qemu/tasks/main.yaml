@@ -27,14 +27,29 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install QEMU for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"
 
 - name: Install QEMU for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: qemu
   when: ansible_system == "Win32NT"
+
+- name: Install Quickemu for Linux
+  become: yes
+  get_url:
+    dest: "/usr/local/bin/{{ item }}"
+    mode: "755"
+    url: >-
+      https://raw.githubusercontent.com/wimpysworld/quickemu/master/{{ item }}
+  loop:
+    - macrecovery
+    - quickemu
+    - quickget
+  when: ansible_system == "Linux"

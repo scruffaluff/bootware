@@ -16,7 +16,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
@@ -31,7 +31,7 @@
   become: yes
   copy:
     dest: /usr/local/bin/helm
-    mode: 0755
+    mode: "755"
     src: /tmp/linux-{{ helm_arch[ansible_architecture] }}/helm
   vars:
     helm_arch:
@@ -40,12 +40,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: helm
   when: ansible_system == "Darwin"
 
 - name: Install Helm for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

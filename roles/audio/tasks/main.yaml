@@ -1,6 +1,6 @@
 - name: Install audio packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - alsa-lib
       - alsa-utils

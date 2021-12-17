@@ -22,7 +22,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
@@ -36,7 +36,7 @@
   become: yes
   copy:
     dest: /usr/local/bin/fd
-    mode: 0755
+    mode: "755"
     src: >-
       /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
   when: >-
@@ -44,12 +44,14 @@
     ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

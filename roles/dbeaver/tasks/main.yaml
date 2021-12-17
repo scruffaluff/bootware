@@ -1,6 +1,6 @@
 - name: Install DBeaver for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: dbeaver
   when: ansible_pkg_mgr == "pacman"
 
@@ -20,6 +20,7 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DBeaver for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -34,6 +35,6 @@
   when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
 
 - name: Install DBeaver for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name: dbeaver
-  when: ansible_system == "Win32NT"

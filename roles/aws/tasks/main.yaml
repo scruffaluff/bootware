@@ -6,7 +6,7 @@
 
 - name: Install AWSCLI for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: aws-cli
   when: ansible_pkg_mgr == "pacman"
 
@@ -29,12 +29,14 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install AWSCLI for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: awscli
   when: ansible_system == "Darwin"
 
 - name: Install AWSCLI for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

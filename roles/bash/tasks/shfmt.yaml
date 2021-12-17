@@ -16,7 +16,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/shfmt
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
@@ -29,12 +29,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: shfmt
   when: ansible_system == "Darwin"
 
 - name: Install Shfmt for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

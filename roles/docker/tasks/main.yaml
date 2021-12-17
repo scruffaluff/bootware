@@ -1,3 +1,11 @@
+- name: Get latest Docker Compose version
+  uri:
+    url: https://formulae.brew.sh/api/formula/docker-compose.json
+    method: GET
+    return_content: yes
+  register: docker_compose_formula
+  when: ansible_system == "Linux"
+
 - name: Install Docker for Alpine distributions
   become: yes
   community.general.apk:
@@ -6,7 +14,7 @@
 
 - name: Install Docker for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
@@ -32,11 +40,12 @@
 - name: Add Docker package information for Debian distributions
   become: yes
   lineinfile:
-    path: /etc/apt/sources.list.d/docker.list
+    create: yes
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
     line: deb [arch={{ docker_arch[ansible_architecture] }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
-    create: yes
+    mode: "644"
+    path: /etc/apt/sources.list.d/docker.list
   vars:
     docker_arch:
       aarch64: arm64
@@ -55,15 +64,12 @@
 
 - name: Add Docker repository for Fedora distributions
   become: yes
-  shell:
-    cmd: >-
-      dnf config-manager --add-repo
-      https://download.docker.com/linux/fedora/docker-ce.repo
-    # Ansible dnf module does not have a command to add repositories.
-    warn: no
+  get_url:
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: "644"
+    url: https://download.docker.com/linux/fedora/docker-ce.repo
   when: ansible_pkg_mgr == "dnf"
 
-# Command sudo systemctl start docker may need to be executed afterwards.
 - name: Install Docker for Fedora distributions
   become: yes
   dnf:
@@ -80,6 +86,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -88,9 +95,9 @@
   when: ansible_system == "Darwin"
 
 - name: Install Docker for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name: docker-desktop
-  when: ansible_system == "Win32NT"
 
 - name: Check if systemd is available for Linux
   register: systemd_available
@@ -133,7 +140,27 @@
     name: docker-compose
   when: ansible_system == "Linux"
 
+- name: Create Docker Compose plugin directory for Linux
+  become: yes
+  file:
+    mode: "755"
+    path: /usr/lib/docker/cli-plugins
+    state: directory
+  when: ansible_system == "Linux"
+
+- name: Install Docker Compose plugin for Linux
+  become: yes
+  get_url:
+    dest: /usr/lib/docker/cli-plugins/docker-compose
+    mode: "755"
+    url: >-
+      https://github.com/docker/compose/releases/download/v{{
+      docker_compose_formula.json.versions.stable }}/docker-compose-linux-{{
+      ansible_architecture }}
+  when: ansible_system == "Linux"
+
 - name: Install Docker Compose for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: docker-compose
@@ -141,6 +168,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Docker Compose for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -152,6 +180,7 @@
 - name: Create Fish completions directory for Unix
   become: yes
   file:
+    mode: "755"
     path: /etc/fish/completions
     state: directory
   when: ansible_system != "Win32NT"
@@ -160,7 +189,7 @@
   become: yes
   get_url:
     dest: /etc/fish/completions/docker.fish
-    mode: 0664
+    mode: "664"
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
   when: ansible_system != "Win32NT"
 
@@ -168,6 +197,6 @@
   become: yes
   get_url:
     dest: /etc/fish/completions/docker-compose.fish
-    mode: 0664
+    mode: "664"
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
   when: ansible_system != "Win32NT"

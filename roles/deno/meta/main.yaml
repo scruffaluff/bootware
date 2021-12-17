@@ -3,3 +3,5 @@ dependencies:
     when: ansible_system != "Win32NT"
   - role: fish
     when: ansible_system != "Win32NT"
+  - role: powershell
+    when: ansible_system == "Win32NT"

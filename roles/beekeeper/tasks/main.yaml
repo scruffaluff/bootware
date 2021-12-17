@@ -1,0 +1,28 @@
+- name: Check if Snap daemon socket is available for Linux
+  register: snapd_available
+  stat:
+    path: /run/snapd.socket
+  when: ansible_system == "Linux"
+
+- name: Install Beekeeper for Linux
+  become: yes
+  community.general.snap:
+    name: beekeeper-studio
+  when: ansible_system == "Linux" and snapd_available.stat.exists
+
+- name: Install Beekeeper for MacOS
+  become: yes
+  become_user: "{{ user_account }}"
+  community.general.homebrew_cask:
+    accept_external_apps: yes
+    name: beekeeper-studio
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Beekeeper for Windows
+  become: yes
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: beekeeper-studio
+  when: ansible_system == "Win32NT"

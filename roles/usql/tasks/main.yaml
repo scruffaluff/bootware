@@ -17,14 +17,15 @@
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Arch.
 - name: Install Usql for Arch distributions
+  become: yes
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm usql
+  command: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
 
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Debian.
 - name: Install Usql for Debian distributions
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -37,7 +38,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/xo/usql/releases/download/v{{
@@ -47,6 +48,33 @@
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
     ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
 
+- name: Gather installed package facts for Fedora distributions
+  ansible.builtin.package_facts:
+    manager: rpm
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Get Libicu major version for Fedora distributions
+  set_fact:
+    libicu_major_version: >-
+      {{ ansible_facts.packages.libicu[0].version.split('.')[0] }}
+  when: ansible_pkg_mgr == "dnf"
+
+# Usql as of 12/10/2021 depends on Libicu version 67 which is outdated on Fedora
+# distributions. For more information, visit
+# https://github.com/xo/usql/issues/117.
+- name: Make libicu symlinks for Fedora distributions
+  become: yes
+  file:
+    src: "/usr/lib64/{{ item }}.so.{{ libicu_major_version }}"
+    dest: "/usr/lib64/{{ item }}.so.67"
+    force: yes
+    mode: "755"
+    state: link
+  loop:
+    - libicuuc
+    - libicui18n
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install Usql for FreeBSD
   become: yes
   community.general.pkgng:
@@ -54,18 +82,21 @@
   when: ansible_system == "FreeBSD"
 
 - name: Tap Usql for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: xo/xo
   when: ansible_system == "Darwin"
 
 - name: Install Usql for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: xo/xo/usql
   when: ansible_system == "Darwin"
 
 - name: Install Usql for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -73,9 +104,10 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Usql settings file
+  become: yes
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.usqlrc"
     force: yes
-    mode: 0644
+    mode: "644"
     src: .usqlrc

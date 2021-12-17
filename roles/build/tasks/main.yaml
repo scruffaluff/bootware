@@ -29,6 +29,7 @@
 # available for Apple silicon.
 # TODO: Add back GDB when available for Apple silicon.
 - name: Install build tools for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -40,13 +41,14 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
+  when: ansible_system == "Win32NT"
   win_chocolatey:
     name:
       - dotnetcore-sdk
       - visualstudio2019buildtools
-  when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

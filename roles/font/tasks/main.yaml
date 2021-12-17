@@ -1,6 +1,6 @@
 - name: Install Fira Code for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: ttf-fira-code
   when: ansible_pkg_mgr == "pacman"
 
@@ -17,6 +17,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Tap Homebrew fonts for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: homebrew/cask-fonts
@@ -29,6 +30,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     # Force option is required to solve "It seems there is already a Font"
@@ -39,6 +41,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Fira Code font for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

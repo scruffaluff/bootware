@@ -7,7 +7,7 @@
 
 - name: Update packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     update_cache: yes
     upgrade: yes
   when: ansible_pkg_mgr == "pacman"
@@ -30,6 +30,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     update_homebrew: yes
@@ -38,11 +39,10 @@
 
 - name: Install essential packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - openssh
       - pkgconf
-      - shellcheck
       - which
   when: ansible_pkg_mgr == "pacman"
 
@@ -55,7 +55,6 @@
       - lsb-release
       - openssh-client
       - pbuilder
-      - shellcheck
       - ubuntu-dev-tools
   become: yes
   when: ansible_pkg_mgr == "apt"
@@ -68,11 +67,13 @@
       - findutils
       - openssl-devel
       - perl-FindBin
+      - procps
       - python
-      - ShellCheck
       - which
   when: ansible_pkg_mgr == "dnf"
 
+# Adding openssl to the package list causes Node to throw the error 'version
+# OPENSSL_1_1_1e required by /usr/local/bin/node not found' in the CI tests.
 - name: Install essential packages for FreeBSD
   become: yes
   community.general.pkgng:
@@ -104,15 +105,19 @@
       - tar
       - unzip
       - zip
+    state: present
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - neofetch
       - openssh
       - shellcheck
+      - tmate
+      - tmux
       - unzip
       - zip
   when: ansible_system == "Darwin"
@@ -129,6 +134,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -8,7 +8,7 @@
 
 - name: Install Python packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - python
       - python-pip
@@ -42,7 +42,7 @@
 
 - name: Install ONNX dependencies for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name:
       - cmake
       - protobuf
@@ -64,16 +64,17 @@
     src: /usr/bin/python3
     dest: /usr/bin/python
     force: yes
-    mode: 0755
+    mode: "755"
     state: link
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop:
     - python.exe
     - python3.exe
+  when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
     state: absent
-  when: ansible_system == "Win32NT"

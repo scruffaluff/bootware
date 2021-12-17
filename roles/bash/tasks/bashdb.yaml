@@ -1,0 +1,42 @@
+- name: Get latest BashDB version
+  uri:
+    url: https://formulae.brew.sh/api/formula/bashdb.json
+    method: GET
+    return_content: yes
+  register: bashdb_formula
+  when: ansible_system == "Linux"
+
+- name: Install BashDB for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name: bashdb
+  when: ansible_system == "FreeBSD"
+
+# BashDB installer does not yet support Bash 5.1.
+# - name: Download BashDB for Linux
+#   become: yes
+#   unarchive:
+#     dest: /tmp/
+#     mode: "755"
+#     remote_src: yes
+#     src: >-
+#       https://sourceforge.net/projects/bashdb/files/bashdb/{{
+#       bashdb_formula.json.versions.stable }}/bashdb-{{
+#       bashdb_formula.json.versions.stable }}.tar.gz/download
+#   when: ansible_system == "Linux"
+
+# - name: Install BashDB for Linux
+#   shell:
+#     chdir: "/tmp/bashdb-{{ bashdb_formula.json.versions.stable }}"
+#     cmd: |
+#       ./configure
+#       make && make check
+#       sudo make install
+#   when: ansible_system == "Linux"
+
+- name: Install BashDB for MacOS
+  become: yes
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: bashdb
+  when: ansible_system == "Darwin"

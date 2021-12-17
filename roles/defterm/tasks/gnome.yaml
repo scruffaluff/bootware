@@ -5,6 +5,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Change GNOME terminal default profile for GNOME desktops
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |

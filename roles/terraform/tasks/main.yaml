@@ -17,7 +17,7 @@
   unarchive:
     dest: /usr/local/bin/
     group: root
-    mode: 0755
+    mode: "755"
     owner: root
     remote_src: yes
     src: >-
@@ -32,12 +32,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Terraform for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: terraform
   when: ansible_system == "Darwin"
 
 - name: Install Terraform for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

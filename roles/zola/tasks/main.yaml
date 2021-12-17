@@ -23,7 +23,7 @@
   unarchive:
     dest: /usr/local/bin/
     group: root
-    mode: 0755
+    mode: "755"
     owner: root
     remote_src: yes
     src: >-
@@ -35,12 +35,14 @@
     ansible_architecture == "x86_64"
 
 - name: Install Zola for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zola
   when: ansible_system == "Darwin"
 
 - name: Install Zola for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

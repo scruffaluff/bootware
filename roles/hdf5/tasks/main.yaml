@@ -11,6 +11,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install H5Dump for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: hdf5

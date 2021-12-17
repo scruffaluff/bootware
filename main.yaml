@@ -51,7 +51,7 @@
     - audio
     - desktop
 
-- name: Install Avro helper tools
+- name: Install Avro file serialization tools
   hosts: all
   roles:
     - avro
@@ -83,16 +83,13 @@
     - server
     - shell
 
-- name: Install Bats test runner
+- name: Install Beekeeper database client
   hosts: all
   roles:
-    - bats
+    - beekeeper
   tags:
-    - bats
-    - container
+    - beekeeper
     - desktop
-    - server
-    - shell
 
 - name: Install build tools
   hosts: all
@@ -130,7 +127,16 @@
     - database
     - desktop
 
-- name: Install DBeaver
+- name: Install Nvidia CUDA CPU acceleration toolkit
+  hosts: all
+  roles:
+    - cuda
+  tags:
+    - cuda
+    - desktop
+    - server
+
+- name: Install DBeaver database client
   hosts: all
   roles:
     - dbeaver
@@ -207,6 +213,17 @@
     - container
     - desktop
     - dust
+    - server
+
+- name: Install Emacs terminal text editor
+  hosts: all
+  roles:
+    - emacs
+  tags:
+    - container
+    - desktop
+    - editor
+    - emacs
     - server
 
 - name: Install Balena Etcher ISO flasher
@@ -372,7 +389,7 @@
     - server
     - vm
 
-- name: Install HDF5 helper tools
+- name: Install HDF5 file serialization tools
   hosts: all
   roles:
     - hdf5
@@ -411,6 +428,17 @@
     - hyperfine
     - server
 
+- name: Install Java language
+  hosts: all
+  roles:
+    - java
+  tags:
+    - container
+    - desktop
+    - java
+    - language
+    - server
+
 - name: Install Jq JSON parser
   hosts: all
   roles:
@@ -421,6 +449,17 @@
     - jq
     - server
     - shell
+
+- name: Install Julia language
+  hosts: all
+  roles:
+    - julia
+  tags:
+    - container
+    - desktop
+    - julia
+    - language
+    - server
 
 - name: Install Kubectl Kubernetes manager
   hosts: all
@@ -439,7 +478,6 @@
   tags:
     - desktop
     - libvirt
-    - server
     - vm
 
 - name: Install Lua language
@@ -550,6 +588,16 @@
     - packer
     - server
 
+- name: Install Parquet file serialization tools
+  hosts: all
+  roles:
+    - parquet
+  tags:
+    - container
+    - desktop
+    - parquet
+    - server
+
 - name: Install PowerShell shell
   hosts: all
   roles:
@@ -589,7 +637,6 @@
   tags:
     - desktop
     - qemu
-    - server
     - vm
 
 - name: Install RClone cloud storage utility
@@ -655,25 +702,12 @@
     - server
     - sd
 
-- name: Install Shfmt shell file formatter
-  hosts: all
-  roles:
-    - shfmt
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - shfmt
-
 - name: Install Snap packages
   hosts: all
   roles:
     - snap
   tags:
-    - container
     - desktop
-    - server
     - snap
 
 - name: Install SQLite database
@@ -762,6 +796,15 @@
     - server
     - usql
 
+- name: Install Vagrant virtualization manager
+  hosts: all
+  roles:
+    - vagrant
+  tags:
+    - desktop
+    - hashicorp
+    - vagrant
+
 - name: Install Vault secrets manager
   hosts: all
   roles:
@@ -772,6 +815,15 @@
     - hashicorp
     - server
     - vault
+
+- name: Install Virtualbox virtualization manager
+  hosts: all
+  roles:
+    - virtualbox
+  tags:
+    - desktop
+    - hashicorp
+    - virtualbox
 
 - name: Install VSCode text exitor
   hosts: all
@@ -800,6 +852,28 @@
   tags:
     - desktop
     - winman
+
+- name: Install Xsv CSV parser
+  hosts: all
+  roles:
+    - xsv
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - xsv
+
+- name: Install Zellij terminal multiplexer
+  hosts: all
+  roles:
+    - zellij
+  tags:
+    - container
+    - desktop
+    - server
+    - termianl
+    - zellij
 
 - name: Install Zola static website generator
   hosts: all

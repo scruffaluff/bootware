@@ -11,12 +11,14 @@
   when: ansible_system == "Linux"
 
 - name: Install JQ for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: jq
   when: ansible_system == "Darwin"
 
 - name: Install JQ for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

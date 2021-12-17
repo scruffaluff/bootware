@@ -1,4 +1,5 @@
-- name: Add Balena Etcher RPM repository for Debian distributions
+- name: Add Balena Etcher Deb repository for Debian distributions
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: >-
@@ -8,6 +9,7 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: >-
@@ -16,11 +18,12 @@
     warn: no
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
-- name: Install Balena Etcher for Arch distributions
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm balena-etcher
-  when: ansible_pkg_mgr == "pacman"
+# Balena Etcher package conflicts with NodeJS.
+# - name: Install Balena Etcher for Arch distributions
+#   become: yes
+#   become_user: "{{ user_account }}"
+#   command: yay -Sy --noconfirm balena-etcher
+#   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions
   apt:
@@ -35,6 +38,7 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -43,6 +47,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Balena Etcher for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

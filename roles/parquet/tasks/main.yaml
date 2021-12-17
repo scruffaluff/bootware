@@ -1,0 +1,35 @@
+- name: Get latest Parquet CLI version
+  uri:
+    url: https://formulae.brew.sh/api/formula/parquet-cli.json
+    method: GET
+    return_content: yes
+  register: parquet_formula
+  when: ansible_system == "Linux"
+
+- name: Download Parquet Jar for Linux
+  become: yes
+  get_url:
+    dest: /usr/local/share/java/jar/parquet.jar
+    mode: "755"
+    url: >-
+      https://search.maven.org/remotecontent?filepath=org/apache/parquet/parquet-cli/{{
+      parquet_formula.json.versions.stable }}/parquet-cli-{{
+      parquet_formula.json.versions.stable }}-runtime.jar
+  when: ansible_system == "Linux"
+
+- name: Copy Parquet Jar script for Linux
+  become: yes
+  copy:
+    dest: /usr/local/bin/parquet
+    force: yes
+    mode: "755"
+    src: parquet.sh
+  when: ansible_system == "Linux"
+
+- name: Install Parquet CLI for MacOS
+  become: yes
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name: parquet-cli
+    state: present
+  when: ansible_system == "Darwin"

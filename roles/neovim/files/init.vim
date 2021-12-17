@@ -1,4 +1,4 @@
-" Neovim configuration file.
+" Neovim configuration file for text editing.
 "
 " For more information, execute ":help config" inside of Neovim.
 
@@ -40,3 +40,8 @@ noremap j h
 colorscheme NeoSolarized
 set background=light
 set termguicolors
+
+
+" Experimental settings.
+
+imap jj <Esc>  " Remap escape key to jj.

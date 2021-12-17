@@ -24,14 +24,15 @@
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],
-    "tests": ["bash --version"]
+    "tests": [
+      "bash --version",
+      "bats --version",
+      "shellcheck --version",
+      "shfmt --version"
+    ]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  {
-    "name": "bats",
-    "skip": [{ "os": "windows" }],
-    "tests": ["bats --version"]
-  },
+  { "name": "beekeeper" },
   { "name": "build" },
   { "name": "caffeine" },
   {
@@ -72,7 +73,7 @@
   { "name": "doctl", "tests": ["doctl version"] },
   {
     "name": "docker",
-    "tests": ["docker --version", "docker-compose --version"]
+    "tests": ["docker --version", "docker compose --help"]
   },
   {
     "name": "dvc",
@@ -116,10 +117,7 @@
     "tests": ["flatpak --version"]
   },
   { "name": "font" },
-  {
-    "name": "fzf",
-    "tests": ["fzf --version"]
-  },
+  { "name": "fzf", "tests": ["fzf --version"] },
   {
     "name": "gcp",
     "skip": [{ "arch": "arm64", "os": "fedora" }],
@@ -163,7 +161,9 @@
     ],
     "tests": ["hyperfine --version"]
   },
+  { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
+  { "name": "julia", "tests": ["julia --version"] },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
   {
     "name": "libvirt",
@@ -206,6 +206,7 @@
   },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
+  { "name": "parquet" },
   { "name": "postgres" },
   {
     "name": "powershell",
@@ -241,7 +242,6 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["sd --version"]
   },
-  { "name": "shfmt", "tests": ["shfmt --version"] },
   {
     "name": "snap",
     "skip": [
@@ -269,7 +269,17 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["usql --version"]
   },
+  {
+    "name": "vagrant",
+    "skip": [{ "os": "linux" }],
+    "tests": ["vagrant version"]
+  },
   { "name": "vault", "tests": ["vault --version"] },
+  {
+    "name": "virtualbox",
+    "skip": [{ "os": "debian" }, { "os": "windows" }],
+    "tests": ["virtualbox --help"]
+  },
   {
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
@@ -281,6 +291,11 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
+  {
+    "name": "xsv",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["xsv --version"]
+  },
   {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],

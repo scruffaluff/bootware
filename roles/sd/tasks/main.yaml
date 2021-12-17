@@ -16,7 +16,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/sd
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/chmln/sd/releases/download/v{{
       sd_formula.json.versions.stable }}/sd-v{{ sd_formula.json.versions.stable
@@ -24,12 +24,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install SD for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sd
   when: ansible_system == "Darwin"
 
 - name: Install SD for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

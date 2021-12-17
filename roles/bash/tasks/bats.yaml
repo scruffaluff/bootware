@@ -6,7 +6,7 @@
 
 - name: Install Bats for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: bash-bats
   when: ansible_pkg_mgr == "pacman"
 
@@ -29,6 +29,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Bats for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: bats-core

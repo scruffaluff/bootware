@@ -1,6 +1,6 @@
 - name: Install Kubectl for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: kubectl
   when: ansible_pkg_mgr == "pacman"
 
@@ -23,12 +23,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Kubectl for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: kubernetes-cli
   when: ansible_system == "Darwin"
 
 - name: Install Kubectl for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -36,6 +38,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl Fish completion for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |

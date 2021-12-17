@@ -46,7 +46,7 @@ OPTIONS:
         }
         "main" {
             Write-Output @'
-Bootware 0.3.3
+Bootware 0.3.4
 Boostrapping software installer
 
 USAGE:
@@ -241,7 +241,10 @@ Function Config() {
 
     If ($EmptyCfg -Or (-Not $SrcURL)) {
         Log "Writing empty configuration file to $DstFile"
-        Write-Output "font_size: 14" > "$DstFile"
+        # Do not use Write-Ouput. On PowerShell 5, it will add a byte order
+        # marker to the file, which makes WSL Ansible throw UTF-8 errors.
+        # Solution was taken from https://stackoverflow.com/a/32951824.
+        [System.IO.File]::WriteAllLines("$DstFile", "font_size: 14")
     }
     Else {
         # Log "Downloading configuration file to $DstFile"
@@ -426,6 +429,8 @@ Function SetupSSHKeys {
             -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
             -Value $PublicKey
 
+        Log "Moving SSH keys to WSL"
+
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
@@ -434,6 +439,8 @@ Function SetupSSHKeys {
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
+
+        Log "Disabling SSH password authentication"
 
         # Disable password based logins for SSH.
         Add-Content `
@@ -628,7 +635,7 @@ Function Update() {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output "Bootware 0.3.3"
+    Write-Output "Bootware 0.3.4"
 }
 
 # Convert path to WSL relative path.

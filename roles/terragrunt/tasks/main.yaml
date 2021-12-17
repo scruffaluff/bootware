@@ -16,7 +16,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/terragrunt
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/gruntwork-io/terragrunt/releases/download/v{{
       terragrunt_formula.json.versions.stable }}/terragrunt_linux_{{
@@ -28,12 +28,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Terragrunt for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: terragrunt
   when: ansible_system == "Darwin"
 
 - name: Install Terragrunt for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

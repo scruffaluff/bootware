@@ -1,4 +1,5 @@
 - name: Install Windows Terminal for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -6,17 +7,19 @@
   when: ansible_system == "Win32NT"
 
 - name: Create Windows Terminal configuration directory for Windows
+  become: yes
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Local/Microsoft/Windows Terminal"
     state: directory
-  when: ansible_system == "Win32NT"
 
 - name: Copy Windows Terminal configuration file for Windows
+  become: yes
   become_user: "{{ user_account }}"
-  template:
+  when: ansible_system == "Win32NT"
+  win_template:
     dest: >-
       {{ user_home_dir }}/AppData/Local/Microsoft/Windows Terminal/settings.json
     force: yes
     src: windows.j2
-  when: ansible_system == "Win32NT"

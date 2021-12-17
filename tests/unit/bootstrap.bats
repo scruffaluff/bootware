@@ -31,6 +31,7 @@ setup() {
   local expected
 
   export BOOTWARE_NOPASSWD=1
+  export BOOTWARE_SKIP=""
   export BOOTWARE_TAGS=""
 
   expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
@@ -45,6 +46,9 @@ https://github.com/wolfgangwazzlestrauss/bootware.git main.yaml"
 @test "Bootstrap subcommand passes dev arguments to Ansible" {
   local actual
   local expected
+
+  export BOOTWARE_SKIP=""
+  export BOOTWARE_TAGS=""
   
   expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} \

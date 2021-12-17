@@ -1,48 +1,14 @@
-- name: Install Bash for FreeBSD
-  become: yes
-  community.general.pkgng:
-    name: bash
-  when: ansible_system == "FreeBSD"
+- name: Install Bash shell
+  import_tasks: bash.yaml
 
-- name: Install Bash for Linux
-  become: yes
-  package:
-    name:
-      - bash
-      - bash-completion
-  when: ansible_system == "Linux"
+- name: Install BashDB shell debugger
+  import_tasks: bashdb.yaml
 
-- name: Install Bash for MacOS
-  become_user: "{{ user_account }}"
-  community.general.homebrew:
-    name:
-      - bash
-      - bash-completion
-  when: ansible_system == "Darwin"
+- name: Install Bats shell test runner
+  import_tasks: bats.yaml
 
-- name: Copy Bash non-login settings file for Unix
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.bashrc"
-    force: yes
-    mode: 0754
-    src: .bashrc
-  when: ansible_system != "Win32NT"
+- name: Install ShellCheck shell linter
+  import_tasks: shellcheck.yaml
 
-- name: Copy Bash login settings file for Unix
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.bash_profile"
-    force: yes
-    mode: 0754
-    src: .bash_profile
-  when: ansible_system != "Win32NT"
-
-- name: Copy shell aliases file for Unix
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.aliases"
-    force: yes
-    mode: 0754
-    src: .aliases
-  when: ansible_system != "Win32NT"
+- name: Install Shfmt shell file formatter
+  import_tasks: shfmt.yaml

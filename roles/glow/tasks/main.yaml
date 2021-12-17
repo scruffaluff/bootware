@@ -7,9 +7,9 @@
   when: ansible_system == "Linux"
 
 - name: Install Glow for Arch distributions
+  become: yes
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm glow
+  command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Glow for Debian distributions
@@ -48,12 +48,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Glow for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: glow
   when: ansible_system == "Darwin"
 
 - name: Install Glow for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

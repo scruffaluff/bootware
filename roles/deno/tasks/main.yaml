@@ -9,6 +9,7 @@
 # https://github.com/denoland/deno/issues/1846. Deno requires glibc, which is
 # not available on Alpine.
 - name: Install Deno for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
@@ -18,6 +19,7 @@
     != "apk" and ansible_architecture == "x86_64")
 
 - name: Generate Deno Fish completions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -29,8 +31,26 @@
     ansible_pkg_mgr != "apk" and ansible_architecture == "x86_64")
 
 - name: Install Deno for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: deno
   when: ansible_system == "Win32NT"
+
+- name: Create Deno PowerShell completions directory for Windows
+  become: yes
+  become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
+  win_file:
+    path: >-
+      {{ user_home_dir }}/Documents/WindowsPowerShell/Modules/DenoCompletion
+    state: directory
+
+- name: Generate Deno PowerShell completions module for Windows
+  become: yes
+  become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
+  win_shell: >-
+    deno completions powershell > {{ user_home_dir
+    }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1

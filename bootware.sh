@@ -2,8 +2,13 @@
 #
 # Bootstrap software installations with Ansible.
 
-# Exit immediately if a command exists with a non-zero status.
-set -eo pipefail
+# Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -o: Persist nonzero exit codes through a Bash pipe.
+#   -u: Throw an error when an unset variable is encountered.
+set -eou pipefail
 
 #######################################
 # Show CLI help information.
@@ -73,6 +78,15 @@ SUBCOMMANDS:
     setup            Install dependencies for Bootware
     uninstall        Remove Bootware files
     update           Update Bootware to latest version
+
+ENVIRONMENT VARIABLES:
+    BOOTWARE_CONFIG     Set the configuration file path
+    BOOTWARE_NOPASSWD   Assume passwordless sudo
+    BOOTWARE_NOSETUP    Skip Ansible install and system setup
+    BOOTWARE_PLAYBOOK   Set Ansible playbook name
+    BOOTWARE_SKIP       Set skip tags for Ansible roles
+    BOOTWARE_TAGS       Set tags for Ansible roles
+    BOOTWARE_URL        Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
@@ -174,7 +188,7 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${BOOTWARE_NOPASSWD}" ]]; then
+  if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
     ask_passwd=1
   fi
 
@@ -263,7 +277,7 @@ bootstrap() {
   # Flags:
   #   -n: Check if the string has nonzero length.
   #   -z: Check if string has zero length.
-  if [[ -n "${windows}" && -z "${ssh_key}" ]]; then
+  if [[ -n "${windows:-}" && -z "${ssh_key:-}" ]]; then
     error "An SSH key must be provided for Windows connection"
   fi
 
@@ -271,7 +285,7 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${no_setup}" ]]; then
+  if [[ -z "${no_setup:-}" ]]; then
     setup
   fi
 
@@ -348,7 +362,7 @@ config() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ "${empty_cfg}" == "true" || -z "${src_url}" ]]; then
+  if [[ "${empty_cfg:-}" == "true" || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf "passwordless_sudo: false" > "${dst_file}"
   else
@@ -428,9 +442,9 @@ find_config_path() {
   #   -f: Check if file exists and is a regular file.
   #   -n: Check if the string has nonzero length.
   #   -v: Only show file path of command.
-  if [[ -f "$1" ]]; then
+  if [[ -f "${1:-}" ]]; then
     RET_VAL="$1"
-  elif [[ -n "${BOOTWARE_CONFIG}" ]]; then
+  elif [[ -n "${BOOTWARE_CONFIG:-}" ]]; then
     RET_VAL="${BOOTWARE_CONFIG}"
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
@@ -467,7 +481,7 @@ fullpath() {
 log() {
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ -z "${BOOTWARE_NOLOG}" ]]; then
+  if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
     echo "$@"
   fi
 }
@@ -478,7 +492,7 @@ log() {
 setup() {
   local os_type
   local tmp_dir
-  local use_sudo
+  local use_sudo=""
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -572,13 +586,9 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
+    # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm python python-pip
-
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -652,13 +662,10 @@ setup_fedora() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
+    # Installing Ansible via Python causes issues installing remote DNF packages
+    # with Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y python3 python3-pip
-
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} dnf install -y ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -795,7 +802,7 @@ setup_macos() {
 #######################################
 uninstall() {
   local dst_file
-  local use_sudo
+  local use_sudo=""
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -840,7 +847,7 @@ uninstall() {
 update() {
   local dst_file
   local src_url
-  local use_sudo
+  local use_sudo=""
   local version="master"
 
   # Parse command line arguments.
@@ -891,7 +898,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.3.3"
+  echo "Bootware 0.3.4"
 }
 
 #######################################
@@ -899,7 +906,7 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  case "$1" in
+  case "${1:-}" in
     bootstrap)
       shift 1
       bootstrap "$@"
@@ -927,7 +934,7 @@ main() {
       version
       ;;
     *)
-      error_usage "No such subcommand '$1'"
+      error_usage "No such subcommand '${1:-}'"
       ;;
   esac
 }

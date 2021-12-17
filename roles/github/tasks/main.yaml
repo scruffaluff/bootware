@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/nektos/act/releases/download/v{{
@@ -26,17 +26,19 @@
   become: yes
   copy:
     dest: /usr/local/bin/act
-    mode: 0755
+    mode: "755"
     src: /tmp/act
   when: ansible_system == "Linux"
 
 - name: Install Act for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: act
   when: ansible_system == "Darwin"
 
 - name: Install Act for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -85,12 +87,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install GitHub CLI for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gh
   when: ansible_system == "Darwin"
 
 - name: Install GitHub CLI for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

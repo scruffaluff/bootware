@@ -1,4 +1,5 @@
 - name: Install iTerm2 for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -7,6 +8,7 @@
   when: ansible_system == "Darwin"
 
 - name: Change iTerm2 default profile for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |

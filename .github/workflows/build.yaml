@@ -48,6 +48,15 @@ jobs:
           additional_files: .bash_profile .bashrc '*.bats'
           ignore: node_modules
           severity: style
+      # Avoid the APT ansible-lint package which has the completely broken 4.2.0
+      # version due to https://github.com/ansible-community/ansible-lint/issues/892 bug.
+      - name: Install Ansible and Ansible Lint
+        run: |
+          python -m pip install ansible "ansible-lint>=4.3.5"
+      - name: Lint Ansible playbook and roles
+        run: |
+          ansible-lint --version
+          ansible-lint main.yaml
 
   test-bash:
     name: Run unit tests for Bash scripts

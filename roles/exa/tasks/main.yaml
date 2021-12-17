@@ -16,7 +16,7 @@
   become: yes
   unarchive:
     dest: /tmp/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
@@ -34,12 +34,13 @@
   become: yes
   copy:
     dest: /usr/local/bin/exa
-    mode: 0755
+    mode: "755"
     src: /tmp/bin/exa
   when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
 
 - name: Install Exa for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: exa

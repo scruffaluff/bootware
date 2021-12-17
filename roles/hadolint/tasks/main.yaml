@@ -10,19 +10,21 @@
   become: yes
   get_url:
     dest: /usr/local/bin/hadolint
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/hadolint/hadolint/releases/download/v{{
       hadolint_formula.json.versions.stable }}/hadolint-Linux-x86_64
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Hadolint for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: hadolint
   when: ansible_system == "Darwin"
 
 - name: Install Hadolint for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

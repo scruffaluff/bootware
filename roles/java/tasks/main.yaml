@@ -1,0 +1,71 @@
+- name: Install Java for Arch distributions
+  become: yes
+  community.general.pacman:
+    name:
+      - jdk-openjdk
+      - maven
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install Java for Debian distributions
+  apt:
+    name:
+      - openjdk-17-jdk
+      - maven
+  become: yes
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Java for Fedora distributions
+  become: yes
+  dnf:
+    name:
+      - java-latest-openjdk
+      - maven
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Java for FreeBSD
+  become: yes
+  community.general.pkgng:
+    name:
+      - openjdk17
+      - maven
+  when: ansible_system == "FreeBSD"
+
+- name: Install Java for MacOS
+  become: yes
+  become_user: "{{ user_account }}"
+  community.general.homebrew:
+    name:
+      - java
+      - maven
+      - openjdk
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Java for Windows
+  when: ansible_system == "Win32NT"
+  win_chocolatey:
+    name:
+      - maven
+      - openjdk
+
+- name: Make Java discover OpenJDK on MacOS
+  become: yes
+  file:
+    src: "{{ openjdk_path[ansible_architecture] }}"
+    dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
+    force: yes
+    mode: "755"
+    state: link
+  vars:
+    openjdk_path:
+      arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
+      x86_64: /usr/local/opt/openjdk/libexec/openjdk.jdk
+  when: ansible_system == "Darwin"
+
+- name: Create Java Jar directory for Linux
+  become: yes
+  file:
+    mode: "755"
+    path: /usr/local/share/java/jar/
+    state: directory
+  when: ansible_system == "Linux"

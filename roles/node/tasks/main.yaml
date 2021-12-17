@@ -16,6 +16,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Node version manager for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -24,6 +25,7 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install multiple Node versions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
   shell:
@@ -36,6 +38,7 @@
 # NVM is not used for Windows due to its frustrating launch checks that require
 # administrator permissions.
 - name: Install multiple Node versions for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -44,6 +47,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Set default Node version for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -54,6 +58,7 @@
 
 # NVM cannot find compatible versions of NPM for Alpine.
 - name: Update NPM for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -65,6 +70,7 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install or update Node CLI applications for FreeBSD
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
   shell:
@@ -75,6 +81,7 @@
   when: ansible_system == "FreeBSD" and user_account != "root"
 
 - name: Install or update Node CLI applications for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
   shell:
@@ -86,15 +93,17 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"] and user_account != "root"
 
 - name: Install or update Node CLI applications for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
-  win_shell: (npm install -g {{ item }}) -Or (npm update -g {{ item }})
   when: ansible_system == "Win32NT"
+  win_shell: (npm install -g {{ item }}) -Or (npm update -g {{ item }})
 
 - name: Download Fast NVM Fish for Unix
+  become: yes
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"
-    mode: 0644
+    mode: "644"
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
   when: ansible_system not in ["FreeBSD", "Win32NT"]

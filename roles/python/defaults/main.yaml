@@ -1,6 +1,8 @@
 pipx_applications:
+  - black
   - cookiecutter
+  - "jinja2-cli[toml,yaml,xml]"
   - jupytext
   - poetry
 python_versions:
-  - "3.9"
+  - "3.10"

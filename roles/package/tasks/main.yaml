@@ -1,6 +1,6 @@
 - name: Install Pacman packages for Arch distributions
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ item }}"
   loop: "{{ pacman_packages }}"
   when: ansible_pkg_mgr == "pacman"
@@ -34,6 +34,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Homebrew casks for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: yes
@@ -43,6 +44,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew packages for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: "{{ item }}"
@@ -51,12 +53,13 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
-  win_chocolatey:
-    name: "{{ item }}"
   loop: "{{ chocolatey_packages }}"
   when: ansible_system == "Win32NT"
+  win_chocolatey:
+    name: "{{ item }}"
 
 - name: Install Scoop packages for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

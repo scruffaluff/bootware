@@ -1,4 +1,5 @@
 - name: Install Rust for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd:
@@ -9,6 +10,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Rust for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -16,6 +18,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Update Rust for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -26,13 +29,15 @@
   when: ansible_system != "Win32NT"
 
 - name: Update Rust for Windows
+  become: yes
   become_user: "{{ user_account }}"
+  when: ansible_system == "Win32NT"
   win_shell: |
     rustup self update
     rustup update stable
-  when: ansible_system == "Win32NT"
 
 - name: Add Rust components for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ rustup_components }}"
   shell:
@@ -43,12 +48,14 @@
   when: ansible_system != "Win32NT"
 
 - name: Add Rust components for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ rustup_components }}"
-  win_shell: rustup component add {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: rustup component add {{ item }}
 
 - name: Add Rust targets for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ rustup_targets }}"
   shell:
@@ -59,12 +66,14 @@
   when: ansible_system != "Win32NT"
 
 - name: Add Rust targets for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ rustup_targets }}"
-  win_shell: rustup target add {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: rustup target add {{ item }}
 
 - name: Update or install Cargo packages for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ cargo_applications }}"
   shell:
@@ -75,7 +84,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Update or install Cargo packages for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ cargo_applications }}"
-  win_shell: cargo install {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: cargo install {{ item }}

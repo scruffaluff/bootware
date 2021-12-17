@@ -20,9 +20,11 @@ on:
       - master
 
 jobs:
+  # Node is currently broken for FreeBSD. For more information, visit
+  # https://github.com/nodejs/node/issues/40467#issuecomment-946902776.
   test-freebsd:
     name: Test bootstrapping software for FreeBSD
-    runs-on: macos-latest
+    runs-on: macos-10.15
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -31,35 +33,23 @@ jobs:
         with:
           prepare: pkg install -y bash curl
           run: |
+            sudo freebsd-update fetch
+            sudo freebsd-update install
             curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
-            node tests/integration/roles.spec.js --arch amd64 --skip python,starship freebsd
+            node tests/integration/roles.spec.js --arch amd64 freebsd
 
   test-linux:
     name: >-
       Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
     strategy:
       fail-fast: false
-      # Some Arm64 tests are currently removed since they cannot complete within
+      # Arm64 tests are currently removed since they cannot complete within
       # GitHub's job limit of 6 hours.
-      # TODO: Resolve job time limit for Arm64 tests.
       matrix:
         arch: ["amd64"]
         distro: [arch, debian, fedora, ubuntu]
-        # exclude:
-        #   # Docker Hub does not provide ARM64 Arch Linux images.
-        #   - arch: arm64
-        #     distro: arch
-        #   - arch: arm64
-        #     distro: debian
-        include:
-          - arch: arm64
-            distro: fedora
-            skip: rust
-          - arch: arm64
-            distro: ubuntu
-            skip: rust
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -82,7 +72,7 @@ jobs:
 
   test-macos:
     name: Test bootstrapping software for MacOS
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -142,20 +132,15 @@ jobs:
           StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
           $Env:UserName@127.0.0.1 dir
         shell: powershell
-      # Default configuration file causes UTF-8 codec on Windows GitHub CI
-      # servers. Unable to repeat on any other Windows system.
       - name: Copy Bootware configuration file
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
-          Copy-Item "./tests/data/config.yaml" -Destination "$HOME/.bootware/config.yaml"
         shell: powershell
-      # TODO: Remove build from skip tags when visualstudio2019buildtools
-      # becomes reliable again.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip build,defterm
+          bootware bootstrap --no-setup --skip defterm
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.

@@ -1,9 +1,9 @@
 # Arch TLDR package has file conflicts with Arch Python package.
 # TODO: Solve GPG error in order to use pre-built tealdeer-bin package.
 - name: Install TLDR for Arch distributions
+  become: yes
   become_user: "{{ user_account }}"
-  shell:
-    cmd: yay -Sy --noconfirm tealdeer
+  command: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install TLDR for FreeBSD
@@ -16,15 +16,18 @@
   become: yes
   package:
     name: tldr
+    state: present
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Install TLDR for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: tldr
   when: ansible_system == "Darwin"
 
 - name: Install TDLR for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -32,19 +35,22 @@
   when: ansible_system == "Win32NT"
 
 - name: Create TLDR repository directory for Linux
+  become: yes
   become_user: "{{ user_account }}"
   file:
+    mode: "755"
     path: "{{ user_home_dir }}/.local/share"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Update TLDR documentation for Unix
+  become: yes
   become_user: "{{ user_account }}"
-  shell:
-    cmd: tldr --update
+  command: tldr --update
   when: ansible_system != "Win32NT"
 
 - name: Update TLDR documentation for Windows
+  become: yes
   become_user: "{{ user_account }}"
-  win_shell: tldr --update
   when: ansible_system == "Win32NT"
+  win_shell: tldr --update

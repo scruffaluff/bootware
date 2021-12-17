@@ -66,10 +66,42 @@ prepend_path "$GOROOT/bin"
 set -x GOPATH "$HOME/go"
 prepend_path "$GOPATH/bin"
 
+# Java settings.
+
+# Find and add Java OpenJDK directory to path.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  if test -d "/opt/homebrew/opt/openjdk/bin"
+    prepend_path "/opt/homebrew/opt/openjdk/bin"
+  else if test -d "/usr/local/opt/openjdk/bin"
+    prepend_path "/usr/local/opt/openjdk/bin"
+  end
+end
+
+# Julia settings.
+
+prepend_path "/usr/local/julia/bin"
+
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
 set -x POETRY_VIRTUALENVS_IN_PROJECT 1
+
+# Make numerical compute libraries findable on MacOS.
+#
+# Flags:
+#   -d: Check if inode is a directory.
+#   -s: Print machine kernal name.
+if test (uname -s) = "Darwin"
+  if test -d "/opt/homebrew/opt/openblas"
+    set -x OPENBLAS "/opt/homebrew/opt/openblas"
+  else if test -d "/usr/local/opt/openblas"
+    set -c OPENBLAS "/usr/local/opt/openblas"
+  end
+end
 
 # Add Pyenv binaries to system path.
 prepend_path "$HOME/.pyenv/bin"
@@ -85,6 +117,7 @@ end
 
 # Ruby settings.
 
+prepend_path "$HOME/bin"
 prepend_path "$HOME/.rvm/bin"
 
 # Initialize RVM if available.
@@ -212,6 +245,10 @@ end
 
 # TypeScript settings.
 
+# Add Deno binaries to system path.
+set -x DENO_INSTALL "$HOME/.deno"
+prepend_path "$DENO_INSTALL/bin"
+
 # Add NPM global binaries to system path.
 prepend_path "$HOME/.npm-global/bin"
 
@@ -222,10 +259,6 @@ prepend_path "$HOME/.npm-global/bin"
 if type -q nvm
   nvm use default
 end
-
-# Deno settings.
-set -x DENO_INSTALL "$HOME/.deno"
-prepend_path "$DENO_INSTALL/bin"
 
 # User settings.
 

@@ -10,7 +10,7 @@
   become: yes
   unarchive:
     dest: /usr/local/bin/
-    mode: 0755
+    mode: "755"
     remote_src: yes
     src: >-
       https://github.com/boyter/scc/releases/download/v{{
@@ -19,12 +19,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Scc for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: scc
   when: ansible_system == "Darwin"
 
 - name: Install Scc for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

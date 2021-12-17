@@ -15,17 +15,19 @@
   become: yes
   get_url:
     dest: /usr/local/bin/neovim
-    mode: 0755
+    mode: "755"
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
   when: ansible_system == "Linux" and nvchad
 
 - name: Install Neovim for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: neovim
   when: ansible_system == "Darwin"
 
 - name: Install Neovim for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

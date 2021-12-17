@@ -16,7 +16,7 @@
   become: yes
   get_url:
     dest: /usr/local/bin/ffsend
-    mode: 0755
+    mode: "755"
     url: >-
       https://github.com/timvisee/ffsend/releases/download/v{{
       ffsend_formula.json.versions.stable }}/ffsend-v{{
@@ -24,12 +24,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install FFSend for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: ffsend
   when: ansible_system == "Darwin"
 
 - name: Install FFSend for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

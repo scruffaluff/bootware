@@ -16,6 +16,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install RVM dependencies for MacOS
+  become: yes
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gpg
@@ -39,6 +40,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install RVM GPG keys for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -49,6 +51,7 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install Ruby Environment Manager for Unix
+  become: yes
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://get.rvm.io | bash -s stable
@@ -57,6 +60,7 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ ruby_versions }}"
   shell:
@@ -68,6 +72,7 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Windows
+  become: yes
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -77,6 +82,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install or update Ruby CLI applications for Unix
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ ruby_applications }}"
   shell:
@@ -87,16 +93,18 @@
   when: ansible_system != "Win32NT"
 
 - name: Install or update Ruby CLI applications for Windows
+  become: yes
   become_user: "{{ user_account }}"
   loop: "{{ ruby_applications }}"
-  win_shell: gem install --user-install {{ item }}
   when: ansible_system == "Win32NT"
+  win_shell: gem install --user-install {{ item }}
 
 - name: Download RVM Fish for Unix
+  become: yes
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/rvm.fish"
-    mode: 0644
+    mode: "644"
     url: https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
