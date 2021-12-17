@@ -22,11 +22,13 @@
     name: gpg
   when: ansible_system == "Darwin"
 
-# RVM does not appear to be compatible with Busybox..
+# RVM does not appear to be compatible with Busybox.
 - name: Install Ruby for Alpine
   become: yes
   community.general.apk:
-    name: ruby
+    name:
+      - ruby
+      - ruby-dev
   when: ansible_pkg_mgr == "apk"
 
 # RVM does not provide binaries for FreeBSD.

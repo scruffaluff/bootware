@@ -1,3 +1,10 @@
+- name: Install TLDR for Alpine distributions
+  shell:
+    cmd: |
+      source {{ user_home_dir }}/.bashrc
+      npm install -g tldr
+  when: ansible_pkg_mgr == "apk"
+
 # Arch TLDR package has file conflicts with Arch Python package.
 # TODO: Solve GPG error in order to use pre-built tealdeer-bin package.
 - name: Install TLDR for Arch distributions

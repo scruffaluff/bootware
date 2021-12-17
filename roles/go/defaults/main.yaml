@@ -1,2 +1,2 @@
 go_applications:
-  - github.com/go-delve/delve/cmd/dlv
+  - github.com/go-delve/delve/cmd/dlv@latest
