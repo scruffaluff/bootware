@@ -31,6 +31,7 @@ OPTIONS:
         --check                     Dry run and show possible changes
         --checkout <REF>            Git reference to run against
     -d, --dev                       Run bootstrapping in development mode
+        --debug                     Enable Ansible task debugger
     -h, --help                      Print help information
     -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
@@ -211,6 +212,10 @@ bootstrap() {
         cmd="playbook"
         use_playbook=1
         use_pull=""
+        shift 1
+        ;;
+      --debug)
+        export ANSIBLE_ENABLE_TASK_DEBUGGER="True"
         shift 1
         ;;
       -h | --help)

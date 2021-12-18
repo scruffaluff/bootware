@@ -9,6 +9,8 @@ setup() {
 
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG="true"
+  # Set BOOTWARE_NOPASSWD to a specific value, to avoid external effects from a
+  # user's environment.
   export BOOTWARE_NOPASSWD=""
 
   # Mock functions for child processes by printing received arguments.
@@ -75,4 +77,14 @@ ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
   actual="$(bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
     --ssh-key /fake/key/path --user fakeuser)"
   assert_equal "${actual}" "${expected}"
+}
+
+@test "Bootstrap subcommand does not set Ansible environment variable" {
+  bootstrap
+  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ""
+}
+
+@test "Bootstrap subcommand sets Ansible environment variable" {
+  bootstrap --debug
+  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" "True"
 }

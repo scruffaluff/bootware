@@ -5,13 +5,25 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.5 - 2021-12-19
 
 ### Added
 
+- Alpine support.
+- Cuda and Nvidia Docker installations.
 - Deno autocompletion support for Windows.
 - Environment variable documenation.
+- Flag --debug to set Ansible task debugger.
 - Java, Julia, Parquet, Vagrant, Virtualbox, and Xsv roles.
+
+### Changed
+
+- Virtualization roles are no longer part of the server tag.
+
+### Fixed
+
+- Byte order marker for configuration files generated on Windows.
+- USQL libicu depenency for Fedora.
 
 ## 0.3.4 - 2021-10-20
 

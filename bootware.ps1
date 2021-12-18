@@ -113,6 +113,7 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
+    $DebugFlag = ""
     $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
@@ -130,6 +131,11 @@ Function Bootstrap() {
             { $_ -In "-d", "--dev" } {
                 $Playbook = "$(Get-Location)/main.yaml"
                 $UseSetup = 0
+                $ArgIdx += 1
+                Break
+            }
+            "--debug" {
+                $DebugFlag = "--debug"
                 $ArgIdx += 1
                 Break
             }
