@@ -61,6 +61,7 @@ function shouldSkip(system, conditions) {
  */
 function rolesTable(repoPath) {
   const systems = [
+    { arch: "amd64", os: "alpine" },
     { arch: "amd64", os: "arch" },
     { arch: "amd64", os: "debian" },
     { arch: "arm64", os: "debian" },

@@ -49,7 +49,7 @@ jobs:
       # GitHub's job limit of 6 hours.
       matrix:
         arch: ["amd64"]
-        distro: [arch, debian, fedora, ubuntu]
+        distro: [alpine, arch, debian, fedora, ubuntu]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
