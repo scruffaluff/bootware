@@ -6,6 +6,12 @@
   register: fd_formula
   when: ansible_system == "Linux"
 
+- name: Install FD for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: fd
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install FD for FreeBSD
   become: yes
   community.general.pkgng:
@@ -22,7 +28,9 @@
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu.tar.gz
-  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
   become: yes
@@ -31,7 +39,9 @@
     mode: "755"
     src: >-
       /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
-  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
   become: yes

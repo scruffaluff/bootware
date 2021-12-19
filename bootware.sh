@@ -31,6 +31,7 @@ OPTIONS:
         --check                     Dry run and show possible changes
         --checkout <REF>            Git reference to run against
     -d, --dev                       Run bootstrapping in development mode
+        --debug                     Enable Ansible task debugger
     -h, --help                      Print help information
     -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
@@ -211,6 +212,10 @@ bootstrap() {
         cmd="playbook"
         use_playbook=1
         use_pull=""
+        shift 1
+        ;;
+      --debug)
+        export ANSIBLE_ENABLE_TASK_DEBUGGER="True"
         shift 1
         ;;
       -h | --help)
@@ -553,8 +558,11 @@ setup_alpine() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} apk update
-    ${1:+sudo} apk add python3 py3-pip
+    ${1:+sudo} apk add python3 python3-dev py3-pip
 
+    # There are no Alpine Ansible wheels. Additional libraries are required to
+    # build Ansible from scratch.
+    ${1:+sudo} apk add gcc libffi-dev musl-dev openssl-dev
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
   fi

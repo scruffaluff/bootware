@@ -68,7 +68,7 @@
     mode: "755"
     path: "{{ user_home_dir }}/.config/Code/User/"
     state: directory
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode keybindings file for Linux
   become: yes
@@ -78,7 +78,7 @@
     force: yes
     mode: "640"
     src: keybindings.j2
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode settings file for Linux
   become: yes
@@ -88,7 +88,7 @@
     force: yes
     mode: "640"
     src: settings.j2
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Create VSCode user directory for MacOS
   become: yes
@@ -153,7 +153,7 @@
   become_user: "{{ user_account }}"
   command: code --install-extension {{ item }}
   loop: "{{ vscode_extensions }}"
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Windows
   become: yes

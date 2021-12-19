@@ -1,3 +1,9 @@
+- name: Install GitLab Runner for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: gitlab-runner
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install GitLab Runner for Arch distributions
   become: yes
   community.general.pacman:

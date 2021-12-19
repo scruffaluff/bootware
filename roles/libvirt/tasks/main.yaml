@@ -1,3 +1,9 @@
+- name: Install Libvirt for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: libvirt-client
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Libvirt for Arch distributions
   become: yes
   community.general.pacman:

@@ -6,6 +6,14 @@
       - qemu-user-static
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
+- name: Install Qemu for Alpine distributions
+  become: yes
+  community.general.apk:
+    name:
+      - qemu
+      - qemu-img
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Qemu for FreeBSD
   become: yes
   community.general.pkgng:
@@ -16,8 +24,7 @@
   become: yes
   package:
     name: qemu
-    state: present
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install QEMU for MacOS
   become: yes

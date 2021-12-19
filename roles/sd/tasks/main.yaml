@@ -6,6 +6,15 @@
   register: sd_formula
   when: ansible_system == "Linux"
 
+- name: Install SD for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: sd
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: yes
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install SD for FreeBSD
   become: yes
   community.general.pkgng:
@@ -21,7 +30,9 @@
       https://github.com/chmln/sd/releases/download/v{{
       sd_formula.json.versions.stable }}/sd-v{{ sd_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu
-  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+  when: >-
+    ansible_system == "Linux" and ansible_architecture == "x86_64" and
+    ansible_pkg_mgr != "apk"
 
 - name: Install SD for MacOS
   become: yes

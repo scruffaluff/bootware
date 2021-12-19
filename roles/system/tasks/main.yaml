@@ -1,3 +1,10 @@
+- name: Update packages for Alpine distributions
+  become: yes
+  community.general.apk:
+    update_cache: yes
+    upgrade: yes
+  when: ansible_pkg_mgr == "apk"
+
 - name: Update packages for Arch distributions
   become: yes
   community.general.pacman:
@@ -77,8 +84,6 @@
       - iftop
       - neofetch
       - sudo
-      - tmate
-      - tmux
       - unzip
       - zip
   when: ansible_system == "FreeBSD"
@@ -98,8 +103,6 @@
       - pass
       - sudo
       - tar
-      - tmate
-      - tmux
       - unzip
       - zip
     state: present
@@ -112,6 +115,7 @@
     name:
       - neofetch
       - openssh
+      - shellcheck
       - tmate
       - tmux
       - unzip

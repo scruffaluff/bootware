@@ -1,3 +1,31 @@
+- name: Dowload Google Cloud SDK for Alpine distributions
+  become: yes
+  unarchive:
+    dest: /usr/lib/
+    mode: "755"
+    remote_src: yes
+    src: https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Google Cloud SDK binaries for Alpine distributions
+  become: yes
+  command:
+    cmd: /usr/lib/google-cloud-sdk/install.sh --quiet
+  when: ansible_pkg_mgr == "apk"
+
+- name: Create links to Google Cloud SDK binaries for Alpine distributions
+  become: yes
+  file:
+    dest: "/usr/local/bin/{{ item }}"
+    mode: "755"
+    src: "/usr/lib/google-cloud-sdk/bin/{{ item }}"
+    state: link
+  loop:
+    - bq
+    - gcloud
+    - gsutil
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Google Cloud SDK for Arch distributions
   become: yes
   become_user: "{{ user_account }}"

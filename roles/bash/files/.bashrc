@@ -48,6 +48,8 @@ export DOCKER_BUILDKIT=1
 
 # Find and export Go root directory.
 #
+# On Alpine Linux, there does not appear to exist a GOROOT directory.
+#
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
@@ -58,13 +60,17 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 
   if [[ -d "${ARM_GOROOT}" ]]; then
     export GOROOT="${ARM_GOROOT}"
+    prepend_path "${GOROOT}/bin"
   elif [[ -d "${INTEL_GOROOT}" ]]; then
     export GOROOT="${INTEL_GOROOT}"
+    prepend_path "${GOROOT}/bin"
   fi
 else
-  export GOROOT="/usr/local/go"
+  if [[ -d "/usr/local/go" ]]; then
+    export GOROOT="/usr/local/go"
+    prepend_path "${GOROOT}/bin"
+  fi
 fi
-prepend_path "${GOROOT}/bin"
 
 # Add Go local binaries to system path.
 export GOPATH="${HOME}/go"

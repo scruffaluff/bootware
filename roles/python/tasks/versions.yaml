@@ -73,7 +73,7 @@
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ user_home_dir }}/.pyenv/bin/pyenv"
     warn: no
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
   become: yes
@@ -83,7 +83,7 @@
       source {{ user_home_dir }}/.bashrc
       pyenv update
     executable: "{{ bash_executable }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix
   become: yes
@@ -95,13 +95,13 @@
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
   register: pyenv_releases
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Extract Python versions from Pyenv outputs for Unix
   set_fact:
     python_releases:
       "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
   become: yes
@@ -112,7 +112,7 @@
       source {{ user_home_dir }}/.bashrc
       pyenv install -s {{ item }}
     executable: "{{ bash_executable }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Windows
   become: yes
@@ -131,4 +131,4 @@
       source {{ user_home_dir }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: "{{ bash_executable }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"

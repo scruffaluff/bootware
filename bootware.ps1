@@ -113,6 +113,7 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
+    $Debug = 0
     $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
@@ -130,6 +131,11 @@ Function Bootstrap() {
             { $_ -In "-d", "--dev" } {
                 $Playbook = "$(Get-Location)/main.yaml"
                 $UseSetup = 0
+                $ArgIdx += 1
+                Break
+            }
+            "--debug" {
+                $Debug = 1
                 $ArgIdx += 1
                 Break
             }
@@ -190,7 +196,8 @@ Function Bootstrap() {
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish.
-    wsl bootware bootstrap --windows `
+     If ($Debug) {
+        wsl bootware bootstrap --debug --windows `
         --config "$ConfigPath" `
         --inventory "$Inventory," `
         --playbook "$PlaybookPath" `
@@ -198,6 +205,17 @@ Function Bootstrap() {
         --ssh-key "`$HOME/.ssh/bootware" `
         --tags "$Tags" `
         --user "$User"
+    }
+    Else {
+        wsl bootware bootstrap --windows `
+        --config "$ConfigPath" `
+        --inventory "$Inventory," `
+        --playbook "$PlaybookPath" `
+        --skip "$Skip" `
+        --ssh-key "`$HOME/.ssh/bootware" `
+        --tags "$Tags" `
+        --user "$User"
+    }
 }
 
 # Subcommand to generate or download Bootware configuration file.

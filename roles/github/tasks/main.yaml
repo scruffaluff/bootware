@@ -53,6 +53,12 @@
   register: gh_formula
   when: ansible_system == "Linux"
 
+- name: Install GitHub CLI for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: github-cli
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install GitHub CLI for Debian distributions
   apt:
     deb: >-

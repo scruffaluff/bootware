@@ -1,3 +1,11 @@
+- name: Install Java for Alpine distributions
+  become: yes
+  community.general.apk:
+    name:
+      - maven
+      - openjdk17
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Java for Arch distributions
   become: yes
   community.general.pacman:
@@ -9,8 +17,8 @@
 - name: Install Java for Debian distributions
   apt:
     name:
-      - openjdk-17-jdk
       - maven
+      - openjdk-17-jdk
   become: yes
   when: ansible_pkg_mgr == "apt"
 
@@ -26,8 +34,8 @@
   become: yes
   community.general.pkgng:
     name:
-      - openjdk17
       - maven
+      - openjdk17
   when: ansible_system == "FreeBSD"
 
 - name: Install Java for MacOS

@@ -1,3 +1,9 @@
+- name: Install SQLite for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: sqlite
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install SQLite for Arch distributions
   become: yes
   community.general.pacman:

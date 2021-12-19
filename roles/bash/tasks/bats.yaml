@@ -1,3 +1,9 @@
+- name: Install Bats for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: bats
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Bats for Arch distributions
   become: yes
   community.general.pacman:

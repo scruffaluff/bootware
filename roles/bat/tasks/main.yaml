@@ -6,6 +6,12 @@
   register: bat_formula
   when: ansible_system == "Linux"
 
+- name: Install Bat for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: bat
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Bat for Arch distributions
   become: yes
   community.general.pacman:

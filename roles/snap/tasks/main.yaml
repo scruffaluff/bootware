@@ -9,7 +9,7 @@
   package:
     name: snapd
     state: present
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "pacman"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Check if Snap daemon socket is available for Linux
   register: snapd_available

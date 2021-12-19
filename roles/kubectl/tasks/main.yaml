@@ -1,3 +1,12 @@
+- name: Install Kubectl for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: kubectl
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: yes
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Kubectl for Arch distributions
   become: yes
   community.general.pacman:
