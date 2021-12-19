@@ -100,7 +100,7 @@
   },
   {
     "name": "ffsend",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["ffsend --version"]
   },
   {
