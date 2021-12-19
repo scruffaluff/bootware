@@ -6,6 +6,12 @@
   register: exa_formula
   when: ansible_system == "Linux"
 
+- name: Install Exa for Alpine distributions
+  become: yes
+  community.general.apk:
+    name: exa
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Exa for FreeBSD
   become: yes
   community.general.pkgng:
@@ -29,6 +35,7 @@
       x86_64: x86_64
   when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
+    and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for Linux
   become: yes
@@ -38,6 +45,7 @@
     src: /tmp/bin/exa
   when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
+    and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for MacOS
   become: yes

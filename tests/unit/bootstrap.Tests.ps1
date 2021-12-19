@@ -27,7 +27,7 @@ Describe "Bootstrap" {
             + "--skip none --ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
             + "$Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml)"
+        $Actual = "$(& "$Bootware" bootstrap  --playbook C:/Fake\path/repo/main.yaml)"
         $Actual | Should -Be $Expected
     }
 
@@ -52,7 +52,7 @@ Describe "Bootstrap" {
             + "--skip python,rust --ssh-key `$HOME/.ssh/bootware --tags fd,go " `
             + "--user $Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook `
+        $Actual = "$(& "$Bootware" bootstrap  --playbook `
             C:/Fake\path/repo/main.yaml --skip python,rust --tags fd,go)"
         $Actual | Should -Be $Expected
     }

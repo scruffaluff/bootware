@@ -77,7 +77,11 @@
   },
   {
     "name": "dvc",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "arch" }],
+    "skip": [
+      { "arch": "arm64", "os": "linux" },
+      { "os": "alpine" },
+      { "os": "arch" }
+    ],
     "tests": ["dvc --version"]
   },
   {
@@ -130,7 +134,7 @@
     "tests": ["act --version", "gh --version"]
   },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
-  { "name": "glow", "tests": ["glow --version"] },
+  { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
@@ -147,6 +151,7 @@
     "name": "hyper",
     "skip": [
       { "arch": "arm64", "os": "linux" },
+      { "os": "alpine" },
       { "os": "arch" },
       { "os": "debian" },
       { "os": "freebsd" }
@@ -179,7 +184,7 @@
   },
   {
     "name": "mdbook",
-    "skip": [{ "arch": "arm64" }],
+    "skip": [{ "arch": "arm64" }, { "os": "alpine" }],
     "tests": ["mdbook --version"]
   },
   {
@@ -201,7 +206,7 @@
   { "name": "node", "tests": ["node --version", "npm --version"] },
   {
     "name": "ots",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["ots --version"]
   },
   { "name": "package" },
@@ -266,7 +271,7 @@
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["usql --version"]
   },
   {
@@ -277,7 +282,7 @@
   { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "virtualbox",
-    "skip": [{ "os": "debian" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "debian" }, { "os": "windows" }],
     "tests": ["virtualbox --help"]
   },
   {
@@ -287,7 +292,7 @@
   },
   {
     "name": "wasm",
-    "skip": [{ "arch": "arm64" }, { "os": "freebsd" }],
+    "skip": [{ "arch": "arm64" }, { "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },

@@ -6,7 +6,7 @@
   register: dvc_formula
   when: ansible_system == "Linux"
 
-# DVC does not appear to provide an Arch release.
+# DVC does not appear to provide Alpine or Arch releases.
 
 - name: Install DVC for Debian distributions
   apt:

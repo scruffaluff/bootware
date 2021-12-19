@@ -11,7 +11,8 @@
     julia_version: >-
       {{ julia_formula.json.versions.stable | regex_search('(\d+\.\d+)\.+\d+',
       '\1') | first }}
-    julia_os: "{{ ansible_system | lower }}"
+    julia_os: >-
+      {{ 'musl' if ansible_pkg_mgr == 'apk' else ansible_system | lower }}
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Julia for FreeBSD and Linux

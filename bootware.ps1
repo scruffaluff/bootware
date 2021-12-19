@@ -135,7 +135,7 @@ Function Bootstrap() {
                 Break
             }
             "--debug" {
-                $DebugFlag = " --debug "
+                $DebugFlag = "--debug"
                 $ArgIdx += 1
                 Break
             }
@@ -196,7 +196,7 @@ Function Bootstrap() {
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish.
-    wsl bootware bootstrap"$DebugFlag"--windows `
+    wsl bootware bootstrap "$DebugFlag" --windows `
         --config "$ConfigPath" `
         --inventory "$Inventory," `
         --playbook "$PlaybookPath" `
