@@ -54,7 +54,6 @@
     architecture: 64bit
     name:
       - cmake
-      - dotnet
       - dotnet-sdk
       - gdb
       - llvm

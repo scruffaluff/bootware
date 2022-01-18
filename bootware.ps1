@@ -605,7 +605,10 @@ Function Uninstall() {
 
     # Uninstall WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        wsl bootware uninstall `> /dev/null
+        # Check if Bootware is installed on WSL.
+        If (wsl command -v bootware) {
+            wsl bootware uninstall `> /dev/null
+        }
     }
 
     Remove-Item -Force -Recurse "$PSScriptRoot"
@@ -639,7 +642,10 @@ Function Update() {
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        wsl bootware update --version "$Version" `> /dev/null
+        # Check if Bootware is installed on WSL.
+        If (wsl command -v bootware) {
+            wsl bootware update --version "$Version" `> /dev/null
+        }
     }
 
     # Update playbook repository.

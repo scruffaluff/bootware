@@ -128,7 +128,6 @@
   loop:
     - extras
     - main
-    - neofetch
     - nerd-fonts
     - versions
   when: ansible_system == "Win32NT"
@@ -140,6 +139,7 @@
     architecture: 64bit
     name:
       - 7zip
+      - neofetch
       - openssl
       - unzip
       - zip
