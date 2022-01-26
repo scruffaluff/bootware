@@ -42,7 +42,6 @@
     dest: "{{ user_home_dir }}/{{ item }}"
     force: yes
     src: profile.ps1
-
 # Disabled since trusting PSGallery is an absurdly frustrating process on
 # Windows 11.
 # - name: Trust default PowerShell repository

@@ -121,12 +121,17 @@
     src: settings.j2
   when: ansible_system == "Darwin"
 
+# User directory can be in multiple locations depending on package installer and
+# Windows version.
 - name: Create VSCode user directory for Windows
   become: yes
   become_user: "{{ user_account }}"
+  loop:
+    - AppData/Roaming/Code/User
+    - scoop/apps/vscode/current/data/user-data/User/
   when: ansible_system == "Win32NT"
   win_file:
-    path: "{{ user_home_dir }}/AppData/Roaming/Code/User"
+    path: "{{ user_home_dir }}/{{ item }}"
     state: directory
 
 # Keybindings file can be in multiple locations depending on package installer
