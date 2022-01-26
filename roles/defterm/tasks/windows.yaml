@@ -14,12 +14,16 @@
     path: "{{ user_home_dir }}/AppData/Local/Microsoft/Windows Terminal"
     state: directory
 
+# Settings file can be in multiple locations depending on package installer and
+# Windows version.
 - name: Copy Windows Terminal configuration file for Windows
   become: yes
   become_user: "{{ user_account }}"
+  loop:
+    - Microsoft/Windows Terminal/settings.json
+    - Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json
   when: ansible_system == "Win32NT"
   win_template:
-    dest: >-
-      {{ user_home_dir }}/AppData/Local/Microsoft/Windows Terminal/settings.json
+    dest: "{{ user_home_dir }}/AppData/Local/{{ item }}"
     force: yes
     src: windows.j2

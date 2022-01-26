@@ -5,6 +5,18 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- All Ansible arguments to bootstrap subcommand.
+
+### Fixed
+
+- Outdated Scoop package names.
+- VSCode settings file location for Scoop updates.
+- Windows Terminal settings file location for Microsoft Store installation.
+
 ## 0.3.5 - 2021-12-19
 
 ### Added

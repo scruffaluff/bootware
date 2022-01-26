@@ -27,7 +27,10 @@ OPTIONS:
     -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
+
+ANSIBLE-OPTIONS:
 '@
+            wsl ansible --help
         }
         "config" {
             Write-Output @'
@@ -114,6 +117,7 @@ Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
     $Debug = 0
+    $ExtraArgs = @()
     $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
@@ -174,7 +178,8 @@ Function Bootstrap() {
                 Break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                $ExtraArgs += $Args[0][$ArgIdx]
+                $ArgIdx += 1
             }
         }
     }
@@ -193,28 +198,56 @@ Function Bootstrap() {
     $ConfigPath = $(WSLPath "$Global:RetVal")
     $Inventory = "$(FindRelativeIP)"
     $PlaybookPath = $(WSLPath "$Playbook")
+    $ExtraArgsString = $($ExtraArgs -Join " ")
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
-    # is Fish.
-     If ($Debug) {
+    # is Fish. Have not found a way to optionally include arguments in
+    # PowerShell. If a simpler solution exists, please edit.
+    If ($Debug -And $ExtraArgs.Count -Gt 0) {
         wsl bootware bootstrap --debug --windows `
-        --config "$ConfigPath" `
-        --inventory "$Inventory," `
-        --playbook "$PlaybookPath" `
-        --skip "$Skip" `
-        --ssh-key "`$HOME/.ssh/bootware" `
-        --tags "$Tags" `
-        --user "$User"
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgsString
+    }
+    ElseIf ($Debug) {
+        wsl bootware bootstrap --debug --windows `
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User"
+    }
+    ElseIf ($ExtraArgs.Count -Gt 0) {
+        wsl bootware bootstrap --windows `
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgsString
     }
     Else {
         wsl bootware bootstrap --windows `
-        --config "$ConfigPath" `
-        --inventory "$Inventory," `
-        --playbook "$PlaybookPath" `
-        --skip "$Skip" `
-        --ssh-key "`$HOME/.ssh/bootware" `
-        --tags "$Tags" `
-        --user "$User"
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User"
     }
 }
 
