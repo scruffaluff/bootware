@@ -20,7 +20,7 @@
   become: yes
   community.general.pkgng:
     name:
-      - node
+      - node14
       - npm
   when: ansible_system == "FreeBSD"
 
