@@ -17,6 +17,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - VSCode settings file location for Scoop updates.
 - Windows Terminal settings file location for Microsoft Store installation.
 
+### Removed
+
+- Hyper terminal plugins that are broken on Windows.
+
 ## 0.3.5 - 2021-12-19
 
 ### Added

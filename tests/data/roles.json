@@ -178,7 +178,7 @@
   {
     "name": "lua",
     "tests": {
-      "alpine": ["/usr/bin/lua -v"],
+      "alpine": [],
       "default": ["lua -v"],
       "freebsd": ["lua54 -v"]
     }
