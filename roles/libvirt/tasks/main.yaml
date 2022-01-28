@@ -51,7 +51,6 @@
       # - jeffreywildman/homebrew-virt-manager/virt-manager
       - jeffreywildman/homebrew-virt-manager/virt-viewer
   when: ansible_system == "Darwin"
-
 # Scoop appears to have dropped support for Libvirt.
 # - name: Install Libvirt for Windows
 #   become: yes
