@@ -177,8 +177,8 @@
   },
   {
     "name": "lua",
+    "skip": [{ "os": "alpine" }],
     "tests": {
-      "alpine": [],
       "default": ["lua -v"],
       "freebsd": ["lua54 -v"]
     }
