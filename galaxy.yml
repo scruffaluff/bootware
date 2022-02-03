@@ -1,0 +1,24 @@
+# Ansible Galaxy collection metadata file.
+#
+# For more information, visit
+# https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html#collections-galaxy-meta.
+
+authors:
+  - Macklan Weinstein <macklan.weinstein@gmail.com>
+dependencies:
+  chocolatey.chocolatey: ">=1.1.0"
+  community.general: ">=4.0.0"
+  community.windows: ">=1.9.0"
+description: software installers
+documentation: http://scruffaluff.github.io/bootware
+homepage: http://github.com/scruffaluff/bootware
+issues: http://github.com/scruffaluff/bootware/issues
+license:
+  - MIT
+name: bootware
+namespace: scruffaluff
+readme: README.md
+repository: http://github.com/scruffaluff/bootware
+tags:
+  - install
+version: 0.3.5
