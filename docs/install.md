@@ -6,25 +6,25 @@ command will download the shell scripts and add them to the system path.
 <code-group>
 <code-block title="FreeBSD">
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="Linux" active>
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="MacOS">
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
 ```
 </code-block>
 
 <code-block title="Windows">
 ```powershell
-iwr -useb https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/scruffaluff/bootware/master/install.ps1 | iex
 ```
 </code-block>
 </code-group>
@@ -35,25 +35,25 @@ to the script by replacing the `--help` argument.
 <code-group>
 <code-block title="FreeBSD">
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash -s -- --help
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash -s -- --help
 ```
 </code-block>
 
 <code-block title="Linux" active>
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash -s -- --help
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash -s -- --help
 ```
 </code-block>
 
 <code-block title="MacOS">
 ```bash
-curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash -s -- --help
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash -s -- --help
 ```
 </code-block>
 
 <code-block title="Windows">
 ```powershell
-powershell { & ([ScriptBlock]::Create((iwr -useb https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.ps1))) "--help" }
+powershell { & ([ScriptBlock]::Create((iwr -useb https://raw.githubusercontent.com/scruffaluff/bootware/master/install.ps1))) "--help" }
 ```
 </code-block>
 </code-group>

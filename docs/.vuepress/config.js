@@ -13,7 +13,7 @@ module.exports = {
       { text: "Software", link: "/software/" },
       { text: "Config", link: "/config/" },
     ],
-    repo: "https://github.com/wolfgangwazzlestrauss/bootware",
+    repo: "https://github.com/scruffaluff/bootware",
     smoothScroll: true,
   },
 };

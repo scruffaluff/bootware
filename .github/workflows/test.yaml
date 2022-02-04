@@ -35,7 +35,7 @@ jobs:
           run: |
             sudo freebsd-update fetch
             sudo freebsd-update install
-            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+            curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
             node tests/integration/roles.spec.js --arch amd64 freebsd
@@ -68,7 +68,7 @@ jobs:
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}
           platforms: linux/${{ matrix.arch }}
           push: false
-          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
+          tags: scruffaluff/bootware:${{ matrix.distro }}-latest
 
   test-macos:
     name: Test bootstrapping software for MacOS
@@ -79,7 +79,7 @@ jobs:
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh
           | bash
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: >-

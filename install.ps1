@@ -71,7 +71,7 @@ Function Main() {
         }
     }
 
-    $Source = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
+    $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     If ($Target -Eq "User") {
         $Dest = "$Env:AppData/Bootware/bootware.ps1"
     }

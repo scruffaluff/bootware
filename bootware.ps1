@@ -121,7 +121,7 @@ Function Bootstrap() {
     $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
-    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
+    $URL = "https://github.com/scruffaluff/bootware.git"
     $UseSetup = 1
     $User = "$Env:UserName"
 
@@ -381,7 +381,7 @@ Function RemoteScript($URL) {
 Function Setup() {
     $ArgIdx = 0
     $Branch = "master"
-    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
+    $URL = "https://github.com/scruffaluff/bootware.git"
     $WSL = 1
 
     While ($ArgIdx -lt $Args[0].Count) {
@@ -614,7 +614,7 @@ Function SetupWSL($Branch) {
     If (-Not (wsl command -v bootware)) {
         Log "Installing a WSL copy of Bootware"
         wsl curl -LSfs `
-            https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `
+            https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh `
             `| bash -s -- --version "$Branch"
         wsl bootware setup
     }
@@ -670,7 +670,7 @@ Function Update() {
         }
     }
 
-    $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
+    $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
 
     # Update WSL copy of Bootware.

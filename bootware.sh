@@ -183,7 +183,7 @@ bootstrap() {
   local skip="${BOOTWARE_SKIP:-""}"
   local ssh_key
   local tags="${BOOTWARE_TAGS:-""}"
-  local url="${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}"
+  local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
   local use_playbook
   local use_pull=1
   local user_account="${USER:-root}"
@@ -882,7 +882,7 @@ update() {
   assert_cmd curl
 
   dst_file="$(fullpath "$0")"
-  src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
 
   # Use sudo for system installation if user is not root.
   #
