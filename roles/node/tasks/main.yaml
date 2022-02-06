@@ -21,7 +21,7 @@
   become: yes
   community.general.pkgng:
     name:
-      - node14
+      - node16
       - www/npm
   when: ansible_system == "FreeBSD"
 
