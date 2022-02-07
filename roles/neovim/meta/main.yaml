@@ -1,2 +1,5 @@
 dependencies:
+  # Without the C++ Redistributable, Neovim will not launch.
+  - role: build
+    when: ansible_system == "Win32NT"
   - role: git

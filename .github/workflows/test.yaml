@@ -72,7 +72,7 @@ jobs:
 
   test-macos:
     name: Test bootstrapping software for MacOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -98,7 +98,7 @@ jobs:
 
   test-windows:
     name: Test bootstrapping software for Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2

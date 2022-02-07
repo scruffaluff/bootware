@@ -31,8 +31,5 @@
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    # Without the C++ Redistributable, Neovim will not launch.
-    name:
-      - extras/vcredist2015
-      - neovim
+    name: neovim
   when: ansible_system == "Win32NT"

@@ -415,11 +415,6 @@ Function Setup() {
     If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
         Log "Downloading Chocolatey package manager"
         RemoteScript "https://chocolatey.org/install.ps1"
-
-        # Several packages require the Visual C++ build tools and Chocolatey
-        # requires user interaction yes prompt.
-        Log "Installing Visual C++ build tools"
-        choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.

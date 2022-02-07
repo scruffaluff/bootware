@@ -161,5 +161,19 @@ module.exports = {
   keymaps: {
     // Example
     // 'window:devtools': 'cmd+alt+o',
+    {% if ansible_system == 'Win32NT' %}
+    'tab:next': [
+      'ctrl+shift+]',
+      'ctrl+shift+right',
+      'ctrl+alt+right',
+      'ctrl+tab'
+    ],
+    'tab:prev': [
+      'ctrl+shift+[',
+      'ctrl+shift+left',
+      'ctrl+alt+left',
+      'ctrl+shift+tab'
+    ]
+    {% endif %}
   },
 };
