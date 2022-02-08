@@ -19,6 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Outdated Scoop package names.
+- Update Starship installation command to match upstream change.
 - VSCode settings file location for Scoop updates.
 - Windows build tools versions.
 - Windows Terminal settings file location for Microsoft Store installation.
