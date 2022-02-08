@@ -24,6 +24,7 @@ jobs:
   # https://github.com/nodejs/node/issues/40467#issuecomment-946902776.
   test-freebsd:
     name: Test bootstrapping software for FreeBSD
+    # MacOS version 10.15 is required by vmactions/freebsd-vm.
     runs-on: macos-10.15
     steps:
       - name: Checkout code repository
@@ -35,7 +36,7 @@ jobs:
           run: |
             sudo freebsd-update fetch
             sudo freebsd-update install
-            curl -LSfs https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh | bash
+            curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
             node tests/integration/roles.spec.js --arch amd64 freebsd
@@ -68,18 +69,18 @@ jobs:
           file: ./tests/integration/Dockerfile.${{ matrix.distro }}
           platforms: linux/${{ matrix.arch }}
           push: false
-          tags: wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-latest
+          tags: scruffaluff/bootware:${{ matrix.distro }}-latest
 
   test-macos:
     name: Test bootstrapping software for MacOS
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh
           | bash
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: >-
@@ -98,7 +99,8 @@ jobs:
 
   test-windows:
     name: Test bootstrapping software for Windows
-    runs-on: windows-latest
+    # Vampire/setup-wsl does not yet support windows-2022.
+    runs-on: windows-2019
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -137,14 +139,17 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
+      # Windows Terminal is too early of a version to be supported on the GitHub
+      # server. Go package installer syntax is currently outdated on GitHub
+      # server.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip defterm
+          bootware bootstrap --no-setup --skip defterm,go
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 windows
+          node tests/integration/roles.spec.js --arch amd64 windows --skip go

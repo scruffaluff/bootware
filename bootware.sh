@@ -44,7 +44,10 @@ OPTIONS:
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
         --windows                   Connect to a Windows host with SSH
+
+ANSIBLE-OPTIONS:
 EOF
+      ansible --help
       ;;
     config)
       cat 1>&2 << EOF
@@ -172,6 +175,7 @@ bootstrap() {
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
   local connection="local"
+  local extra_args=()
   local inventory="127.0.0.1,"
   local no_setup="${BOOTWARE_NOSETUP:-""}"
   local passwd
@@ -179,7 +183,7 @@ bootstrap() {
   local skip="${BOOTWARE_SKIP:-""}"
   local ssh_key
   local tags="${BOOTWARE_TAGS:-""}"
-  local url="${BOOTWARE_URL:-"https://github.com/wolfgangwazzlestrauss/bootware.git"}"
+  local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
   local use_playbook
   local use_pull=1
   local user_account="${USER:-root}"
@@ -272,7 +276,8 @@ bootstrap() {
         shift 1
         ;;
       *)
-        error_usage "No such option '$1'" "bootstrap"
+        extra_args+=("$1")
+        shift 1
         ;;
     esac
   done
@@ -317,6 +322,7 @@ bootstrap() {
     ${use_pull:+--url "${url}"} \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
+    ${extra_args:+"${extra_args[@]}"} \
     "${playbook}"
 }
 
@@ -876,7 +882,7 @@ update() {
   assert_cmd curl
 
   dst_file="$(fullpath "$0")"
-  src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
 
   # Use sudo for system installation if user is not root.
   #

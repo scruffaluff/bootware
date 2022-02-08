@@ -27,7 +27,7 @@ Describe "Install" {
         & "$Install" --user --version develop
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
             $DstFile -eq "$Env:AppData/Bootware/bootware.ps1" -And
-            $SrcURL -eq "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.ps1"
+            $SrcURL -eq "https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.ps1"
         }
     }
 }

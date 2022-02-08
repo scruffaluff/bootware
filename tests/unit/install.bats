@@ -28,7 +28,7 @@ setup() {
 @test "Installer passes local path to Curl" {
   local actual
   local expected="curl -LSfs \
-https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh \
+https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 -o ${HOME}/.local/bin/bootware"
 
   actual="$(install.sh --user --version develop)"

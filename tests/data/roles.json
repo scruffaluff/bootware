@@ -177,6 +177,7 @@
   },
   {
     "name": "lua",
+    "skip": [{ "os": "alpine" }],
     "tests": {
       "default": ["lua -v"],
       "freebsd": ["lua54 -v"]
@@ -232,7 +233,11 @@
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
-  { "name": "qemu", "tests": ["qemu-img --version"] },
+  {
+    "name": "qemu",
+    "skip": [{ "os": "windows" }],
+    "tests": ["qemu-img --version"]
+  },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
@@ -287,7 +292,7 @@
   },
   {
     "name": "vscode",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["code --version"]
   },
   {

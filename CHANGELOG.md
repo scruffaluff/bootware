@@ -5,6 +5,30 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- All Ansible arguments to bootstrap subcommand.
+- WSL tag for selecting roles.
+
+### Changed
+
+- GitHub installation links.
+
+### Fixed
+
+- Outdated Scoop package names.
+- Update Starship installation command to match upstream change.
+- VSCode settings file location for Scoop updates.
+- Windows build tools versions.
+- Windows Terminal settings file location for Microsoft Store installation.
+
+### Removed
+
+- Hyper terminal plugins that are broken on Windows.
+- Libvirt support for Windows.
+
 ## 0.3.5 - 2021-12-19
 
 ### Added

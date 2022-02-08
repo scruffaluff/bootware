@@ -97,8 +97,7 @@ jobs:
           platforms: linux/${{ matrix.arch }}
           push: false
           tags: >-
-            wolfgangwazzlestrauss/bootware:${{ matrix.distro }}-${{ matrix.tag
-            }}-fuzz
+            scruffaluff/bootware:${{ matrix.distro }}-${{ matrix.tag }}-fuzz
 
   test-macos:
     if: github.event.inputs.macos == true
@@ -115,7 +114,7 @@ jobs:
       - name: Install Bootware
         run: >
           curl -LSfs
-          https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh
+          https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh
           | bash
       - name: Create Bootware configuration file
         run: bootware config --empty

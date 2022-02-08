@@ -5,6 +5,7 @@
 .DS_Store
 .local/
 .vagrant/
+.vscode/
 /build/
 /docs/index.md
 /docs/software.md

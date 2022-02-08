@@ -123,7 +123,7 @@ error_usage() {
 #######################################
 install_completions() {
   local fish_url
-  fish_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$3/completions/bootware.fish"
+  fish_url="https://raw.githubusercontent.com/scruffaluff/bootware/$3/completions/bootware.fish"
 
   # Flags:
   #   -z: Check if the string has zero length or is null.
@@ -146,7 +146,7 @@ install_completions() {
 #######################################
 install_man() {
   local man_url
-  man_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$2/bootware.1"
+  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/$2/bootware.1"
 
   ${1:+sudo} mkdir -p "/usr/local/share/man/man1"
   ${1:+sudo} curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
@@ -209,7 +209,7 @@ main() {
 
   assert_cmd curl
 
-  src_url="https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
 
   # Use sudo for system installation if user did not give the --user, does not
   # own the file, and is not root.

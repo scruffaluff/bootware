@@ -3,7 +3,7 @@
 - name: Install Starship shell prompt for Unix
   become: yes
   shell:
-    cmd: curl -LSfs https://starship.rs/install.sh | bash -s -- -y
+    cmd: curl -LSfs https://starship.rs/install.sh | sh -s -- -y
     warn: no
   when: ansible_system != "Win32NT"
 

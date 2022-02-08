@@ -45,14 +45,14 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Import-Module PSReadLine
 
     # Use Bash style tab completion.
-    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
     # Use VI mode for command line editing.
-    Set-PSReadlineOption -EditMode vi
+    Set-PSReadLineOption -EditMode vi
 
     # Add history based autocompletion to arrow keys.
-    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 
     # Show history based autocompletion for every typed character.
     # Feature is only available for PowerShell 7.0 and later.

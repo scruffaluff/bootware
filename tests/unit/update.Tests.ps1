@@ -35,7 +35,7 @@ Describe "Update" {
         $Actual = "$(& "$Bootware" update --version master)"
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
             $DstFile -eq "$BootwareDir/bootware.ps1" -And
-            $SrcURL -eq "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.ps1"
+            $SrcURL -eq "https://raw.githubusercontent.com/scruffaluff/bootware/master/bootware.ps1"
         }
 
         $Actual | Should -Be $Expected

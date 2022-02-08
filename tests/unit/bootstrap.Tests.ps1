@@ -24,7 +24,8 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
-            + "--skip none --ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
+            + "--skip none --ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
             + "$Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/main.yaml)"
@@ -36,7 +37,9 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --debug --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
-            + "--skip python,rust --ssh-key `$HOME/.ssh/bootware --tags fd,go " `
+            + "--skip python,rust " `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go " `
             + "--user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --debug --playbook `
@@ -49,11 +52,29 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
-            + "--skip python,rust --ssh-key `$HOME/.ssh/bootware --tags fd,go " `
+            + "--skip python,rust " `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go " `
             + "--user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook `
             C:/Fake\path/repo/main.yaml --skip python,rust --tags fd,go)"
+        $Actual | Should -Be $Expected
+    }
+
+    It "Subcommand passes extra arguments to WSL copy of Bootware" {
+        $Env:BOOTWARE_NOLOG = 1
+        $Expected = "wsl bootware bootstrap --windows --config " `
+            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
+            + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/main.yaml " `
+            + "--skip python,rust " `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go "`
+            + "--user $Env:UserName --timeout 60"
+
+        $Actual = "$(& "$Bootware" bootstrap --playbook `
+            C:/Fake\path/repo/main.yaml --skip python,rust --timeout 60 `
+            --tags fd,go)"
         $Actual | Should -Be $Expected
     }
 }

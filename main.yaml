@@ -12,6 +12,7 @@
     - desktop
     - server
     - system
+    - wsl
 
 - name: Install Alacritty terminal
   hosts: all
@@ -32,6 +33,7 @@
     - container
     - desktop
     - server
+    - wsl
 
 - name: Install AppImage packages
   hosts: all
@@ -42,6 +44,7 @@
     - container
     - desktop
     - server
+    - wsl
 
 - name: Install audio tools
   hosts: all
@@ -60,6 +63,7 @@
     - container
     - desktop
     - server
+    - wsl
 
 - name: Install Bash shell
   hosts: all
@@ -71,6 +75,7 @@
     - desktop
     - server
     - shell
+    - wsl
 
 - name: Install Bat file reader
   hosts: all
@@ -82,6 +87,7 @@
     - desktop
     - server
     - shell
+    - wsl
 
 - name: Install Beekeeper database client
   hosts: all
@@ -100,6 +106,7 @@
     - container
     - desktop
     - server
+    - wsl
 
 - name: Install Caffeine
   hosts: all
@@ -135,6 +142,7 @@
     - cuda
     - desktop
     - server
+    - wsl
 
 - name: Install DBeaver database client
   hosts: all
@@ -164,6 +172,7 @@
     - language
     - server
     - typescript
+    - wsl
 
 - name: Configure system desktop environment
   hosts: all
@@ -182,6 +191,7 @@
     - docker
     - server
     - vm
+    - wsl
 
 - name: Install Digital Ocean development tools
   hosts: all
@@ -193,6 +203,7 @@
     - desktop
     - doctl
     - server
+    - wsl
 
 - name: Install Data Version Control
   hosts: all
@@ -204,6 +215,7 @@
     - dvc
     - server
     - vcs
+    - wsl
 
 - name: Install Dust disk space analyzer
   hosts: all
@@ -214,6 +226,7 @@
     - desktop
     - dust
     - server
+    - wsl
 
 - name: Install Emacs terminal text editor
   hosts: all
@@ -225,6 +238,7 @@
     - editor
     - emacs
     - server
+    - wsl
 
 - name: Install Balena Etcher ISO flasher
   hosts: all
@@ -244,6 +258,7 @@
     - exa
     - server
     - shell
+    - wsl
 
 - name: Install FD file searcher
   hosts: all
@@ -255,6 +270,7 @@
     - fd
     - server
     - shell
+    - wsl
 
 - name: Install FFSend secure file sharer
   hosts: all
@@ -265,6 +281,7 @@
     - desktop
     - ffsend
     - server
+    - wsl
 
 - name: Install Firefox web browser
   hosts: all
@@ -285,6 +302,7 @@
     - fish
     - server
     - shell
+    - wsl
 
 - name: Install Flatpak packages
   hosts: all
@@ -295,6 +313,7 @@
     - desktop
     - flatpak
     - server
+    - wsl
 
 - name: Install fonts
   hosts: all
@@ -315,6 +334,7 @@
     - desktop
     - fzf
     - server
+    - wsl
 
 - name: Install Google Cloud Platform development tools
   hosts: all
@@ -326,6 +346,7 @@
     - desktop
     - gcp
     - server
+    - wsl
 
 - name: Install Git version control
   hosts: all
@@ -337,6 +358,7 @@
     - git
     - server
     - vcs
+    - wsl
 
 - name: Install GitHub helper tools
   hosts: all
@@ -347,6 +369,7 @@
     - github
     - server
     - vcs
+    - wsl
 
 - name: Install GitLab helper tools
   hosts: all
@@ -357,6 +380,7 @@
     - gitlab
     - server
     - vcs
+    - wsl
 
 - name: Install Glow
   hosts: all
@@ -367,6 +391,7 @@
     - desktop
     - glow
     - server
+    - wsl
 
 - name: Install Go language
   hosts: all
@@ -378,6 +403,7 @@
     - go
     - language
     - server
+    - wsl
 
 - name: Install Hadolint linter
   hosts: all
@@ -388,6 +414,7 @@
     - hadolint
     - server
     - vm
+    - wsl
 
 - name: Install HDF5 file serialization tools
   hosts: all
@@ -398,6 +425,7 @@
     - desktop
     - hdf5
     - server
+    - wsl
 
 - name: Install Helm Kubernetes manager
   hosts: all
@@ -408,6 +436,7 @@
     - helm
     - server
     - vm
+    - wsl
 
 - name: Install Hyper terminal
   hosts: all
@@ -427,6 +456,7 @@
     - desktop
     - hyperfine
     - server
+    - wsl
 
 - name: Install Java language
   hosts: all
@@ -438,6 +468,7 @@
     - java
     - language
     - server
+    - wsl
 
 - name: Install Jq JSON parser
   hosts: all
@@ -449,6 +480,7 @@
     - jq
     - server
     - shell
+    - wsl
 
 - name: Install Julia language
   hosts: all
@@ -460,6 +492,7 @@
     - julia
     - language
     - server
+    - wsl
 
 - name: Install Kubectl Kubernetes manager
   hosts: all
@@ -470,6 +503,7 @@
     - kubectl
     - server
     - vm
+    - wsl
 
 - name: Install Libvirt virtualization API
   hosts: all
@@ -490,6 +524,7 @@
     - language
     - lua
     - server
+    - wsl
 
 - name: Install Mdbook static website generator
   hosts: all
@@ -501,6 +536,7 @@
     - mdbook
     - server
     - website
+    - wsl
 
 - name: Install Mkcert web certificate generator
   hosts: all
@@ -512,6 +548,7 @@
     - mkcert
     - network
     - server
+    - wsl
 
 - name: Install MongoDB database client
   hosts: all
@@ -523,6 +560,7 @@
     - desktop
     - mongo
     - server
+    - wsl
 
 - name: Install Navi interactive documentation tool
   hosts: all
@@ -533,6 +571,7 @@
     - desktop
     - navi
     - server
+    - wsl
 
 - name: Install Neovim terminal text editor
   hosts: all
@@ -544,6 +583,7 @@
     - editor
     - neovim
     - server
+    - wsl
 
 - name: Install Node JavaScript runtime
   hosts: all
@@ -556,6 +596,7 @@
     - node
     - server
     - typescript
+    - wsl
 
 - name: Install OTS secret sharer
   hosts: all
@@ -566,6 +607,7 @@
     - desktop
     - ots
     - server
+    - wsl
 
 - name: Install optional packages
   hosts: all
@@ -576,6 +618,7 @@
     - desktop
     - package
     - server
+    - wsl
 
 - name: Install Packer image generator
   hosts: all
@@ -587,6 +630,7 @@
     - hashicorp
     - packer
     - server
+    - wsl
 
 - name: Install Parquet file serialization tools
   hosts: all
@@ -597,6 +641,7 @@
     - desktop
     - parquet
     - server
+    - wsl
 
 - name: Install PowerShell shell
   hosts: all
@@ -618,6 +663,7 @@
     - desktop
     - procs
     - server
+    - wsl
 
 - name: Install Python language
   hosts: all
@@ -629,6 +675,7 @@
     - language
     - python
     - server
+    - wsl
 
 - name: Install QEMU hardware virtualizer
   hosts: all
@@ -648,6 +695,7 @@
     - desktop
     - rclone
     - server
+    - wsl
 
 - name: Install Ripgrep text searcher
   hosts: all
@@ -659,6 +707,7 @@
     - ripgrep
     - server
     - shell
+    - wsl
 
 - name: Install Ruby language
   hosts: all
@@ -670,6 +719,7 @@
     - language
     - ruby
     - server
+    - wsl
 
 - name: Install Rust language
   hosts: all
@@ -681,6 +731,7 @@
     - language
     - rust
     - server
+    - wsl
 
 - name: Install Scc code line counter
   hosts: all
@@ -691,6 +742,7 @@
     - desktop
     - scc
     - server
+    - wsl
 
 - name: Install SD find and replace tool
   hosts: all
@@ -701,6 +753,7 @@
     - desktop
     - server
     - sd
+    - wsl
 
 - name: Install Snap packages
   hosts: all
@@ -720,6 +773,7 @@
     - desktop
     - server
     - sqlite
+    - wsl
 
 - name: Install Starship shell prompt
   hosts: all
@@ -731,6 +785,7 @@
     - server
     - shell
     - starship
+    - wsl
 
 - name: Configure sudo settings
   hosts: all
@@ -741,6 +796,7 @@
     - desktop
     - server
     - sudo
+    - wsl
 
 - name: Install Terraform infrastructure as code software
   hosts: all
@@ -752,6 +808,7 @@
     - hashicorp
     - server
     - terraform
+    - wsl
 
 - name: Install Terragrunt Terraform manager
   hosts: all
@@ -763,6 +820,7 @@
     - hashicorp
     - server
     - terragrunt
+    - wsl
 
 - name: Install TLDR documentation collection
   hosts: all
@@ -774,6 +832,7 @@
     - server
     - shell
     - tldr
+    - wsl
 
 - name: Install Tmux terminal multiplexer
   hosts: all
@@ -785,6 +844,7 @@
     - server
     - terminal
     - tmux
+    - wsl
 
 - name: Install USQL
   hosts: all
@@ -795,6 +855,7 @@
     - desktop
     - server
     - usql
+    - wsl
 
 - name: Install Vagrant virtualization manager
   hosts: all
@@ -803,7 +864,9 @@
   tags:
     - desktop
     - hashicorp
+    - server
     - vagrant
+    - wsl
 
 - name: Install Vault secrets manager
   hosts: all
@@ -815,6 +878,7 @@
     - hashicorp
     - server
     - vault
+    - wsl
 
 - name: Install Virtualbox virtualization manager
   hosts: all
@@ -833,6 +897,7 @@
     - desktop
     - editor
     - vscode
+    - wsl
 
 - name: Install Web Assembly runtime
   hosts: all
@@ -844,6 +909,7 @@
     - server
     - vm
     - wasm
+    - wsl
 
 - name: Install desktop window managers
   hosts: all
@@ -862,6 +928,7 @@
     - desktop
     - server
     - shell
+    - wsl
     - xsv
 
 - name: Install Zellij terminal multiplexer
@@ -873,6 +940,7 @@
     - desktop
     - server
     - termianl
+    - wsl
     - zellij
 
 - name: Install Zola static website generator
@@ -884,4 +952,5 @@
     - desktop
     - server
     - website
+    - wsl
     - zola

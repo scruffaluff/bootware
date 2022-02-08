@@ -81,6 +81,10 @@
 
 # Ansible does not provide a Git module for Windows.
 - name: Install Packer Neovim plugin manager for Windows
+  args:
+    creates: >-
+      {{ user_home_dir
+      }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
   become: yes
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"

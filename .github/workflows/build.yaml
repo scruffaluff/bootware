@@ -101,7 +101,7 @@ jobs:
 
   test-powershell:
     name: Run linter and unit tests for PowerShell scripts
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2

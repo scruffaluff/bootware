@@ -27,7 +27,10 @@ OPTIONS:
     -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
+
+ANSIBLE-OPTIONS:
 '@
+            wsl ansible --help
         }
         "config" {
             Write-Output @'
@@ -114,10 +117,11 @@ Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ""
     $Debug = 0
+    $ExtraArgs = @()
     $Playbook = "$PSScriptRoot/repo/main.yaml"
     $Skip = "none"
     $Tags = "desktop"
-    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
+    $URL = "https://github.com/scruffaluff/bootware.git"
     $UseSetup = 1
     $User = "$Env:UserName"
 
@@ -174,7 +178,8 @@ Function Bootstrap() {
                 Break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                $ExtraArgs += $Args[0][$ArgIdx]
+                $ArgIdx += 1
             }
         }
     }
@@ -193,28 +198,56 @@ Function Bootstrap() {
     $ConfigPath = $(WSLPath "$Global:RetVal")
     $Inventory = "$(FindRelativeIP)"
     $PlaybookPath = $(WSLPath "$Playbook")
+    $ExtraArgsString = $($ExtraArgs -Join " ")
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
-    # is Fish.
-     If ($Debug) {
+    # is Fish. Have not found a way to optionally include arguments in
+    # PowerShell. If a simpler solution exists, please edit.
+    If ($Debug -And $ExtraArgs.Count -Gt 0) {
         wsl bootware bootstrap --debug --windows `
-        --config "$ConfigPath" `
-        --inventory "$Inventory," `
-        --playbook "$PlaybookPath" `
-        --skip "$Skip" `
-        --ssh-key "`$HOME/.ssh/bootware" `
-        --tags "$Tags" `
-        --user "$User"
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgsString
+    }
+    ElseIf ($Debug) {
+        wsl bootware bootstrap --debug --windows `
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User"
+    }
+    ElseIf ($ExtraArgs.Count -Gt 0) {
+        wsl bootware bootstrap --windows `
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgsString
     }
     Else {
         wsl bootware bootstrap --windows `
-        --config "$ConfigPath" `
-        --inventory "$Inventory," `
-        --playbook "$PlaybookPath" `
-        --skip "$Skip" `
-        --ssh-key "`$HOME/.ssh/bootware" `
-        --tags "$Tags" `
-        --user "$User"
+            --config "$ConfigPath" `
+            --inventory "$Inventory," `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
+            --ssh-key "`$HOME/.ssh/bootware" `
+            --tags "$Tags" `
+            --user "$User"
     }
 }
 
@@ -348,7 +381,7 @@ Function RemoteScript($URL) {
 Function Setup() {
     $ArgIdx = 0
     $Branch = "master"
-    $URL = "https://github.com/wolfgangwazzlestrauss/bootware.git"
+    $URL = "https://github.com/scruffaluff/bootware.git"
     $WSL = 1
 
     While ($ArgIdx -lt $Args[0].Count) {
@@ -382,11 +415,6 @@ Function Setup() {
     If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
         Log "Downloading Chocolatey package manager"
         RemoteScript "https://chocolatey.org/install.ps1"
-
-        # Several packages require the Visual C++ build tools and Chocolatey
-        # requires user interaction yes prompt.
-        Log "Installing Visual C++ build tools"
-        choco install -y microsoft-visual-cpp-build-tools
     }
 
     # Install Scoop package manager.
@@ -581,7 +609,7 @@ Function SetupWSL($Branch) {
     If (-Not (wsl command -v bootware)) {
         Log "Installing a WSL copy of Bootware"
         wsl curl -LSfs `
-            https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/install.sh `
+            https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh `
             `| bash -s -- --version "$Branch"
         wsl bootware setup
     }
@@ -605,7 +633,10 @@ Function Uninstall() {
 
     # Uninstall WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        wsl bootware uninstall `> /dev/null
+        # Check if Bootware is installed on WSL.
+        If (wsl command -v bootware) {
+            wsl bootware uninstall `> /dev/null
+        }
     }
 
     Remove-Item -Force -Recurse "$PSScriptRoot"
@@ -634,12 +665,15 @@ Function Update() {
         }
     }
 
-    $SrcURL = "https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/$Version/bootware.ps1"
+    $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        wsl bootware update --version "$Version" `> /dev/null
+        # Check if Bootware is installed on WSL.
+        If (wsl command -v bootware) {
+            wsl bootware update --version "$Version" `> /dev/null
+        }
     }
 
     # Update playbook repository.

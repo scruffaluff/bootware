@@ -121,29 +121,44 @@
     src: settings.j2
   when: ansible_system == "Darwin"
 
+# User directory can be in multiple locations depending on package installer and
+# Windows version.
 - name: Create VSCode user directory for Windows
   become: yes
   become_user: "{{ user_account }}"
+  loop:
+    - AppData/Roaming/Code/User
+    - scoop/apps/vscode/current/data/user-data/User/
   when: ansible_system == "Win32NT"
   win_file:
-    path: "{{ user_home_dir }}/AppData/Roaming/Code/User"
+    path: "{{ user_home_dir }}/{{ item }}"
     state: directory
 
+# Keybindings file can be in multiple locations depending on package installer
+# and Windows version.
 - name: Copy VSCode keybindings file for Windows
   become: yes
   become_user: "{{ user_account }}"
+  loop:
+    - AppData/Roaming/Code/User/keybindings.json
+    - scoop/apps/vscode/current/data/user-data/User/keybindings.json
   when: ansible_system == "Win32NT"
   win_template:
-    dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/keybindings.json"
+    dest: "{{ user_home_dir }}/{{ item }}"
     force: yes
     src: keybindings.j2
 
+# Settings file can be in multiple locations depending on package installer and
+# Windows version.
 - name: Copy VSCode settings file for Windows
   become: yes
   become_user: "{{ user_account }}"
+  loop:
+    - AppData/Roaming/Code/User/settings.json
+    - scoop/apps/vscode/current/data/user-data/User/settings.json
   when: ansible_system == "Win32NT"
   win_template:
-    dest: "{{ user_home_dir }}/AppData/Roaming/Code/User/settings.json"
+    dest: "{{ user_home_dir }}/{{ item }}"
     force: yes
     mode: "644"
     src: settings.j2

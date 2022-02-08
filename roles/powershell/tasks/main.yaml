@@ -42,19 +42,18 @@
     dest: "{{ user_home_dir }}/{{ item }}"
     force: yes
     src: profile.ps1
+# Disabled since trusting PSGallery is an absurdly frustrating process on
+# Windows 11.
+# - name: Trust default PowerShell repository
+#   community.windows.win_psrepository: name: PSGallery installation_policy:
+#   trusted when: ansible_system == "Win32NT"
 
-- name: Trust default PowerShell repository
-  community.windows.win_psrepository:
-    name: PSGallery
-    installation_policy: trusted
-  when: ansible_system == "Win32NT"
-
-- name: Install PowerShell modules
-  become: yes
-  become_user: "{{ user_account }}"
-  community.windows.win_psmodule:
-    name: "{{ item }}"
-    skip_publisher_check: yes
-    state: latest
-  loop: "{{ powershell_modules }}"
-  when: ansible_system == "Win32NT"
+# - name: Install PowerShell modules
+#   become: yes
+#   become_user: "{{ user_account }}"
+#   community.windows.win_psmodule:
+#     name: "{{ item }}"
+#     skip_publisher_check: yes
+#     state: latest
+#   loop: "{{ powershell_modules }}"
+#   when: ansible_system == "Win32NT"

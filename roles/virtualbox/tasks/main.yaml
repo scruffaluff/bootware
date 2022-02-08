@@ -49,4 +49,6 @@
 - name: Install Virtualbox for Windows
   when: ansible_system == "Win32NT"
   win_chocolatey:
-    name: virtualbox
+    name:
+      - virtualbox
+      - virtualbox-guest-additions-guest.install

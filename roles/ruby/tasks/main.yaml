@@ -22,6 +22,16 @@
     name: gpg
   when: ansible_system == "Darwin"
 
+- name: Install Ruby dependencies for Windows
+  become: yes
+  become_user: "{{ user_account }}"
+  community.windows.win_scoop:
+    architecture: 64bit
+    name:
+      - mingw-winlibs
+      - msys2
+  when: ansible_system == "Win32NT"
+
 # RVM does not appear to be compatible with Busybox.
 - name: Install Ruby for Alpine
   become: yes
@@ -78,7 +88,7 @@
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name:
+    name: >-
       ruby{{ item | replace('ruby-','') | replace('.','') | replace('30','') }}
   loop: "{{ ruby_versions }}"
   when: ansible_system == "Win32NT"

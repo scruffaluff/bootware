@@ -29,7 +29,7 @@ setup() {
   local expected
   
   expected="curl -LSfs \
-https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootware.sh \
+https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 -o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
 
   actual="$(bootware.sh update --version develop)"
@@ -39,7 +39,7 @@ https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/develop/bootwar
 @test "Functon update uses sudo when destination is not writable" {
   local actual
   local expected="sudo curl -LSfs \
-https://raw.githubusercontent.com/wolfgangwazzlestrauss/bootware/master/bootware.sh \
+https://raw.githubusercontent.com/scruffaluff/bootware/master/bootware.sh \
 -o /bin/bash"
 
   source bootware.sh

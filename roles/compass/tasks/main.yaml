@@ -39,5 +39,5 @@
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
-    name: mongodb-compass-community
+    name: mongodb-compass
   when: ansible_system == "Win32NT"

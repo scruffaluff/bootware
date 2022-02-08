@@ -39,7 +39,7 @@ setup() {
   expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars user_account=${USER} --extra-vars @${HOME}/.bootware/config.yaml \
 --inventory 127.0.0.1, --url \
-https://github.com/wolfgangwazzlestrauss/bootware.git main.yaml"
+https://github.com/scruffaluff/bootware.git main.yaml"
 
   actual="$(bootware.sh bootstrap)"
   assert_equal "${actual}" "${expected}"
@@ -58,6 +58,22 @@ ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} \
 main.yaml"
 
   actual="$(bootware.sh bootstrap --dev --tags none)"
+  assert_equal "${actual}" "${expected}"
+}
+
+@test "Bootstrap subcommand passes extra arguments to Ansible" {
+  local actual
+  local expected
+
+  export BOOTWARE_SKIP=""
+  export BOOTWARE_TAGS=""
+  
+  expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
+ansible_python_interpreter=auto_silent --extra-vars user_account=${USER} \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
+--timeout 60 main.yaml"
+
+  actual="$(bootware.sh bootstrap --dev --tags none --timeout 60)"
   assert_equal "${actual}" "${expected}"
 }
 

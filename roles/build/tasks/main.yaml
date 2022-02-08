@@ -45,7 +45,8 @@
   win_chocolatey:
     name:
       - dotnetcore-sdk
-      - visualstudio2019buildtools
+      - visualstudio2022buildtools
+      - visualstudio2022-workload-vctools
 
 - name: Install build tools with Scoop for Windows
   become: yes
@@ -54,11 +55,10 @@
     architecture: 64bit
     name:
       - cmake
-      - dotnet
       - dotnet-sdk
       - gdb
       - llvm
       - make
       - openocd
-      - vcredist2019
+      - vcredist2022
   when: ansible_system == "Win32NT"
