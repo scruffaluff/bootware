@@ -15,6 +15,17 @@ on:
       - "**"
 
 jobs:
+  collection:
+    name: Publish collection to Ansible Galaxy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Build and Deploy Collection
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
+  
   lint:
     name: Check code with formatter and linter
     runs-on: ubuntu-latest

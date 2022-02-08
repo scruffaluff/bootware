@@ -1,0 +1,6 @@
+# Ansible Galaxy collection additional metadata file.
+#
+# For more information, visit
+# https://docs.ansible.com/ansible/3/dev_guide/developing_collections.html#meta-directory.
+
+requires_ansible: ">=2.9"
