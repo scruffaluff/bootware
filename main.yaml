@@ -897,7 +897,6 @@
     - desktop
     - editor
     - vscode
-    - wsl
 
 - name: Install Web Assembly runtime
   hosts: all
