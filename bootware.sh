@@ -227,6 +227,7 @@ bootstrap() {
         exit 0
         ;;
       -i | --inventory)
+        connection="ssh"
         inventory="$2"
         shift 2
         ;;

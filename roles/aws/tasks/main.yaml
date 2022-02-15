@@ -1,11 +1,9 @@
 - name: Install AWSCLI for Alpine distributions
-  become: yes
   community.general.apk:
     name: aws-cli
   when: ansible_pkg_mgr == "apk"
 
 - name: Install AWSCLI for Arch distributions
-  become: yes
   community.general.pacman:
     name: aws-cli
   when: ansible_pkg_mgr == "pacman"
@@ -13,30 +11,27 @@
 - name: Install AWSCLI for Debian distributions
   apt:
     name: awscli
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install AWSCLI for FreeBSD
-  become: yes
   community.general.pkgng:
     name: awscli
   when: ansible_system == "FreeBSD"
 
 - name: Install AWSCLI for Fedora distributions
-  become: yes
   dnf:
     name: awscli
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install AWSCLI for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: awscli
   when: ansible_system == "Darwin"
 
 - name: Install AWSCLI for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

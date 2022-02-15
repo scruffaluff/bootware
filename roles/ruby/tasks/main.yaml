@@ -47,7 +47,7 @@
   community.general.pkgng:
     name:
       - ruby
-      - ruby-dev
+      # - ruby-dev
       - ruby27-gems
   when: ansible_system == "FreeBSD"
 

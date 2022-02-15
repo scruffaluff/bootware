@@ -15,6 +15,7 @@
     - wsl
 
 - name: Install Alacritty terminal
+  become: true
   hosts: all
   roles:
     - alacritty
@@ -23,19 +24,8 @@
     - desktop
     - terminal
 
-- name: Install Amazon Web Services development tools
-  hosts: all
-  roles:
-    - aws
-  tags:
-    - aws
-    - cloud
-    - container
-    - desktop
-    - server
-    - wsl
-
 - name: Install AppImage packages
+  become: true
   hosts: all
   roles:
     - appimage
@@ -47,6 +37,7 @@
     - wsl
 
 - name: Install audio tools
+  become: true
   hosts: all
   roles:
     - audio
@@ -55,11 +46,25 @@
     - desktop
 
 - name: Install Avro file serialization tools
+  become: true
   hosts: all
   roles:
     - avro
   tags:
     - avro
+    - container
+    - desktop
+    - server
+    - wsl
+
+- name: Install Amazon Web Services development tools
+  become: true
+  hosts: all
+  roles:
+    - aws
+  tags:
+    - aws
+    - cloud
     - container
     - desktop
     - server
@@ -241,6 +246,7 @@
     - wsl
 
 - name: Install Balena Etcher ISO flasher
+  become: true
   hosts: all
   roles:
     - etcher

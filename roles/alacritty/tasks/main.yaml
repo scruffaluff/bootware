@@ -1,55 +1,49 @@
+# TODO: Install Alacritty for Debian distributions.
+- name: Add Alacritty PPA for Ubuntu distributions
+  apt_repository:
+    repo: ppa:mmstick76/alacritty
+  when: >-
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
+
 - name: Install Alacritty for Alpine distributions
-  become: yes
   community.general.apk:
     name: alacritty
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Alacritty for Arch distributions
-  become: yes
   community.general.pacman:
     name: alacritty
   when: ansible_pkg_mgr == "pacman"
 
-# TODO: Install Alacritty for Debian distributions.
-- name: Add Alacritty PPA for Ubuntu distributions
-  apt_repository:
-    repo: ppa:mmstick76/alacritty
-  become: yes
-  when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
-
 - name: Install Alacritty for FreeBSD
-  become: yes
   community.general.pkgng:
     name: alacritty
   when: ansible_system == "FreeBSD"
 
-- name: Install Alacritty for Ubuntu distributions
-  apt:
-    name: alacritty
-  become: yes
-  when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_architecture == "x86_64"
-
 - name: Install Alacritty for Fedora distributions
-  become: yes
   dnf:
     name: alacritty
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Alacritty for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: alacritty
     state: present
   when: ansible_system == "Darwin"
 
+- name: Install Alacritty for Ubuntu distributions
+  apt:
+    name: alacritty
+  when: >-
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_architecture == "x86_64"
+
 - name: Install Alacritty for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -57,37 +51,31 @@
   when: ansible_system == "Win32NT"
 
 - name: Create Alacritty configuration directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/alacritty/"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/alacritty/"
     state: directory
 
 - name: Copy Alacritty configuration file for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/alacritty/alacritty.yml"
-    force: yes
+    force: true
     mode: "644"
+    owner: "{{ user_account }}"
     src: alacritty.j2
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/alacritty/alacritty.yml"
-    force: yes
+    force: true
     src: alacritty.j2
