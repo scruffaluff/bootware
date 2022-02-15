@@ -1,12 +1,20 @@
-- name: Add Balena Etcher Deb repository for Debian distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: >-
-      curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh |
-      sudo -E bash
-    warn: no
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+- name: Add Balena Etcher key for Debian distributions
+  become: true
+  get_url:
+    dest: /usr/share/keyrings/balena-etcher.gpg
+    mode: "644"
+    url: https://dl.cloudsmith.io/public/balena/etcher/gpg.70528471AFF9A051.key
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Balena Etcher repository for Debian distributions
+  apt_repository:
+    repo:
+      "deb https://dl.cloudsmith.io/public/balena/etcher/deb/{{ deb_distro_base
+      }} {{ ansible_distribution_release }} main"
+    state: present
+    filename: balena-etcher
+  become: true
+  when: ansible_pkg_mgr == "apt"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
   become: yes
