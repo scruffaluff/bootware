@@ -25,7 +25,9 @@
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
   shell:
-    cmd: curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh
+    cmd: >-
+      curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
+      bash
     warn: false
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 

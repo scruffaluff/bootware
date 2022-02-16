@@ -2,24 +2,22 @@
   uri:
     url: https://formulae.brew.sh/api/formula/terraform.json
     method: GET
-    return_content: yes
+    return_content: true
   register: terraform_formula
   when: ansible_system == "Linux"
 
 - name: Install Terraform for FreeBSD
-  become: yes
   community.general.pkgng:
     name: terraform
   when: ansible_system == "FreeBSD"
 
 - name: Install Terraform for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://releases.hashicorp.com/terraform/{{
       terraform_formula.json.versions.stable }}/terraform_{{
@@ -32,14 +30,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Terraform for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: terraform
   when: ansible_system == "Darwin"
 
 - name: Install Terraform for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

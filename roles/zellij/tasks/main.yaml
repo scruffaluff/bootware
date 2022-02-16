@@ -2,16 +2,15 @@
   uri:
     url: https://formulae.brew.sh/api/formula/zellij.json
     method: GET
-    return_content: yes
+    return_content: true
   register: zellij_formula
   when: ansible_system == "Linux"
 
 - name: Download Zellij for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/zellij-org/zellij/releases/download/v{{
       zellij_formula.json.versions.stable }}/zellij-{{ ansible_architecture
@@ -19,27 +18,25 @@
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zellij
   when: ansible_system == "Darwin"
 
 - name: Create Zellij settings directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/zellij"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/zellij/config.yaml"
-    force: yes
+    force: true
     mode: "644"
+    owner: "{{ user_account }}"
     src: config.yaml
   when: ansible_system in ["Darwin", "Linux"]

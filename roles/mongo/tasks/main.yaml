@@ -2,7 +2,7 @@
   uri:
     url: https://formulae.brew.sh/api/formula/mongosh.json
     method: GET
-    return_content: yes
+    return_content: true
   register: mongosh_formula_linux
   when: ansible_system == "Linux"
 
@@ -12,14 +12,13 @@
   win_uri:
     url: https://formulae.brew.sh/api/formula/mongosh.json
     method: GET
-    return_content: yes
+    return_content: true
 
 - name: Download Mongo Shell for Linux
-  become: yes
   unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{
@@ -31,7 +30,6 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/mongosh
     mode: "755"
@@ -45,7 +43,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mongosh
@@ -54,7 +52,7 @@
 # As of 12/14/2021, Scoop installation of mongodb-database-tools always results
 # in a fetch error.
 # - name: Install Mongo tools for Windows
-#   become: yes
+#   become: true
 #   become_user: "{{ user_account }}"
 #   community.windows.win_scoop:
 #     architecture: 64bit

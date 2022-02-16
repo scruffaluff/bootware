@@ -1,5 +1,5 @@
 - name: Download NvChad for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   git:
     depth: 1
@@ -8,7 +8,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install NvChad for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/nvim/{{ item }}"
@@ -20,7 +20,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Remove Neovim settings file for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   file:
     path: "{{ user_home_dir }}/.config/nvim/init.vim"
@@ -28,7 +28,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install NvChad configuration file for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/nvim/lua/custom/"
@@ -37,7 +37,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Download NvChad for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: >-
@@ -45,7 +45,7 @@
     }}/AppData/Local/Temp/NvChad
 
 - name: Install NvChad for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - init.lua
@@ -56,7 +56,7 @@
     src: "{{ user_home_dir }}/AppData/Local/Temp/NvChad/{{ item }}"
 
 - name: Remove Neovim settings file for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
@@ -64,7 +64,7 @@
     state: absent
 
 - name: Install NvChad configuration file for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_copy:

@@ -1,30 +1,28 @@
 - name: Install Pipx for FreeBSD
-  become: yes
   community.general.pkgng:
     name: py38-pipx
   when: ansible_system == "FreeBSD"
 
 - name: Install Pipx for Linux
-  become: yes
   command: /usr/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "Linux"
 
 - name: Install Pipx for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"
 
 - name: Install Pipx for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: python -m pip install --upgrade pipx
 
 # Pipx installs applications per user, so user_account is required.
 - name: Install Pipx command line applications for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
   shell:
@@ -38,7 +36,7 @@
 
 # Pipx installs applications per user, so user_account is required.
 - name: Install Pipx command line applications for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
   when: ansible_system == "Win32NT"
@@ -48,7 +46,7 @@
     (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install --force {{ item }})
 
 - name: Update Pipx command line applications for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -58,7 +56,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: pipx upgrade-all

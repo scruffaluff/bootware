@@ -1,5 +1,4 @@
 - name: Install Python packages for Alpine distributions
-  become: yes
   community.general.apk:
     name:
       - py3-pip
@@ -7,7 +6,6 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Python packages for Arch distributions
-  become: yes
   community.general.pacman:
     name:
       - python
@@ -21,11 +19,9 @@
       - python3-dev
       - python3-pip
       - python3-venv
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Python packages for Fedora distributions
-  become: yes
   dnf:
     name:
       - python3
@@ -34,14 +30,12 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Python packages for FreeBSD
-  become: yes
   community.general.pkgng:
     name:
       - python3
   when: ansible_system == "FreeBSD"
 
 - name: Install ONNX dependencies for Arch distributions
-  become: yes
   community.general.pacman:
     name:
       - cmake
@@ -54,22 +48,20 @@
       - cmake
       - libprotoc-dev
       - protobuf-compiler
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
-- name:
+- name: >-
     Make system Python interpreter discoverable by Pyenv for FreeBSD and Linux
-  become: yes
   file:
     src: /usr/bin/python3
     dest: /usr/bin/python
-    force: yes
+    force: true
     mode: "755"
     state: link
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - python.exe

@@ -2,12 +2,12 @@
   uri:
     url: https://formulae.brew.sh/api/formula/glow.json
     method: GET
-    return_content: yes
+    return_content: true
   register: glow_formula
   when: ansible_system == "Linux"
 
 - name: Install Glow for Arch distributions
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
@@ -19,7 +19,6 @@
       glow_formula.json.versions.stable }}/glow_{{
       glow_formula.json.versions.stable }}_linux_{{
       glow_arch[ansible_architecture] }}.deb
-  become: yes
   vars:
     glow_arch:
       aarch64: arm64
@@ -27,9 +26,8 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Glow for Fedora distributions
-  become: yes
   dnf:
-    disable_gpg_check: yes
+    disable_gpg_check: true
     name: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_{{
@@ -42,20 +40,19 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Glow for FreeBSD
-  become: yes
   community.general.pkgng:
     name: glow
   when: ansible_system == "FreeBSD"
 
 - name: Install Glow for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: glow
   when: ansible_system == "Darwin"
 
 - name: Install Glow for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

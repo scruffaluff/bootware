@@ -2,16 +2,15 @@
   uri:
     url: https://formulae.brew.sh/api/formula/act.json
     method: GET
-    return_content: yes
+    return_content: true
   register: act_formula
   when: ansible_system == "Linux"
 
 - name: Download Act for Linux
-  become: yes
   unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/nektos/act/releases/download/v{{
       act_formula.json.versions.stable }}/act_Linux_{{
@@ -23,7 +22,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Act for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/act
     mode: "755"
@@ -31,14 +29,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Act for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: act
   when: ansible_system == "Darwin"
 
 - name: Install Act for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -49,12 +47,11 @@
   uri:
     url: https://formulae.brew.sh/api/formula/gh.json
     method: GET
-    return_content: yes
+    return_content: true
   register: gh_formula
   when: ansible_system == "Linux"
 
 - name: Install GitHub CLI for Alpine distributions
-  become: yes
   community.general.apk:
     name: github-cli
   when: ansible_pkg_mgr == "apk"
@@ -65,7 +62,6 @@
       https://github.com/cli/cli/releases/download/v{{
       gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
       }}_linux_{{ gh_arch[ansible_architecture] }}.deb
-  become: yes
   vars:
     gh_arch:
       aarch64: arm64
@@ -73,9 +69,8 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install GitHub CLI for Fedora distributions
-  become: yes
   dnf:
-    disable_gpg_check: yes
+    disable_gpg_check: true
     name:
       https://github.com/cli/cli/releases/download/v{{
       gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
@@ -87,20 +82,19 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install GitHub CLI for FreeBSD
-  become: yes
   community.general.pkgng:
     name: gh
   when: ansible_system == "FreeBSD"
 
 - name: Install GitHub CLI for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gh
   when: ansible_system == "Darwin"
 
 - name: Install GitHub CLI for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

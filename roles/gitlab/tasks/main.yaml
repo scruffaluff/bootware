@@ -1,11 +1,9 @@
 - name: Install GitLab Runner for Alpine distributions
-  become: yes
   community.general.apk:
     name: gitlab-runner
   when: ansible_pkg_mgr == "apk"
 
 - name: Install GitLab Runner for Arch distributions
-  become: yes
   community.general.pacman:
     name: gitlab-runner
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
@@ -15,7 +13,6 @@
     deb: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
       gitlab_arch[ansible_architecture] }}.deb
-  become: yes
   vars:
     gitlab_arch:
       aarch64: arm64
@@ -25,9 +22,8 @@
 # TODO: Add GPG key signing support. For more information, visit
 # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3243.
 - name: Install GitLab Runner for Fedora distributions
-  become: yes
   dnf:
-    disable_gpg_check: yes
+    disable_gpg_check: true
     name: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
       gitlab_arch[ansible_architecture] }}.rpm
@@ -38,20 +34,19 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install GitLab Runner for FreeBSD
-  become: yes
   community.general.pkgng:
     name: gitlab-runner
   when: ansible_system == "FreeBSD"
 
 - name: Install GitLab Runner for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"
 
 - name: Install GitLab Runner for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

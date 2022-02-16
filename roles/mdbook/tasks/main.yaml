@@ -2,35 +2,33 @@
   uri:
     url: https://formulae.brew.sh/api/formula/mdbook.json
     method: GET
-    return_content: yes
+    return_content: true
   register: mdbook_formula
   when: ansible_system == "Linux"
 
 # As of 12/18/2021 the Mdbook package on Alpine does not have a reliable
 # installation.
 # - name: Install Mdbook for Alpine distributions
-#   become: yes
+#   become: true
 #   community.general.apk:
 #     name: mdbook
 #     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
 #     state: latest
-#     update_cache: yes
+#     update_cache: true
 #   when: ansible_pkg_mgr == "apk"
 
 - name: Install Mdbook for FreeBSD
-  become: yes
   community.general.pkgng:
     name: mdbook
   when: ansible_system == "FreeBSD"
 
 - name: Install Mdbook for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/rust-lang/mdBook/releases/download/v{{
       mdbook_formula.json.versions.stable }}/mdbook-v{{
@@ -40,14 +38,14 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install Mdbook for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mdbook
   when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
 
 - name: Install Mdbook for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

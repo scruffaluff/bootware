@@ -2,24 +2,22 @@
   uri:
     url: https://formulae.brew.sh/api/formula/vault.json
     method: GET
-    return_content: yes
+    return_content: true
   register: vault_formula
   when: ansible_system == "Linux"
 
 - name: Install Vault for FreeBSD
-  become: yes
   community.general.pkgng:
     name: vault
   when: ansible_system == "FreeBSD"
 
 - name: Install Vault for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://releases.hashicorp.com/vault/{{ vault_formula.json.versions.stable
       }}/vault_{{ vault_formula.json.versions.stable }}_linux_{{
@@ -31,14 +29,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"
 
 - name: Install Vault for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

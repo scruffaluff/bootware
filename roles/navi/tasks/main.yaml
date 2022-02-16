@@ -2,16 +2,15 @@
   uri:
     url: https://formulae.brew.sh/api/formula/navi.json
     method: GET
-    return_content: yes
+    return_content: true
   register: navi_formula
   when: ansible_system == "Linux"
 
 - name: Install Navi for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/denisidoro/navi/releases/download/v{{
       navi_formula.json.versions.stable }}/navi-v{{
@@ -19,7 +18,7 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Navi for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: navi

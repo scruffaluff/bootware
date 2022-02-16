@@ -1,11 +1,10 @@
 - name: Install Snap for Arch distributions
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm snapd
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Snap for Linux
-  become: yes
   package:
     name: snapd
     state: present
@@ -18,7 +17,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Snap packages for Linux
-  become: yes
   community.general.snap:
     name: "{{ item }}"
   loop: "{{ snap_packages }}"

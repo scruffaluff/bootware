@@ -2,7 +2,6 @@
 # https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
 
 - name: Install Pyenv dependencies for Arch distributions
-  become: yes
   community.general.pacman:
     name:
       - base-devel
@@ -32,11 +31,9 @@
       - wget
       - xz-utils
       - zlib1g-dev
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Pyenv dependencies for Fedora distributions
-  become: yes
   dnf:
     name:
       - bzip2
@@ -53,7 +50,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pyenv dependencies for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -67,7 +64,7 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
@@ -76,7 +73,7 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -86,7 +83,7 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
@@ -104,7 +101,7 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ python_releases }}"
   shell:
@@ -115,7 +112,7 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -124,7 +121,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |

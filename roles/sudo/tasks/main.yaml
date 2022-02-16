@@ -1,10 +1,9 @@
 - name: Enable passwordless sudo for Unix
-  become: yes
   blockinfile:
     block: |
       # Enable passwordless sudo for {{ user_account }} user.
       {{ user_account }} ALL=(ALL) NOPASSWD:ALL
-    create: yes
+    create: true
     mode: "440"
     path: /etc/sudoers
     validate: /usr/sbin/visudo -cf %s

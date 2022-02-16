@@ -1,5 +1,4 @@
 - name: Install QEMU support libraries for Debian distributions
-  become: yes
   apt:
     name:
       - binfmt-support
@@ -7,7 +6,6 @@
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Qemu for Alpine distributions
-  become: yes
   community.general.apk:
     name:
       - qemu
@@ -15,26 +13,24 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Qemu for FreeBSD
-  become: yes
   community.general.pkgng:
     name: qemu
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for Linux
-  become: yes
   package:
     name: qemu
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install QEMU for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"
 
 - name: Install QEMU for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -42,7 +38,6 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Quickemu for Linux
-  become: yes
   get_url:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"

@@ -1,11 +1,9 @@
 - name: Install Libvirt for Alpine distributions
-  become: yes
   community.general.apk:
     name: libvirt-client
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch distributions
-  become: yes
   community.general.pacman:
     name:
       - libvirt
@@ -20,17 +18,14 @@
       - libvirt-daemon-system
       - virt-viewer
       - virtinst
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Libvirt for FreeBSD
-  become: yes
   community.general.pkgng:
     name: libvirt
   when: ansible_system == "FreeBSD"
 
 - name: Install Libvirt for Fedora distributions
-  become: yes
   dnf:
     name:
       - libvirt
@@ -43,7 +38,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Libvirt for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -53,7 +48,7 @@
   when: ansible_system == "Darwin"
 # Scoop appears to have dropped support for Libvirt.
 # - name: Install Libvirt for Windows
-#   become: yes
+#   become: true
 #   become_user: "{{ user_account }}"
 #   community.windows.win_scoop:
 #     architecture: 64bit

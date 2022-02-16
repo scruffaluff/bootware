@@ -2,29 +2,26 @@
   uri:
     url: https://formulae.brew.sh/api/formula/go.json
     method: GET
-    return_content: yes
+    return_content: true
   register: go_formula
   when: ansible_system == "Linux"
 
 - name: Install Go for Alpine distributions
-  become: yes
   community.general.apk:
     name: go
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Go for FreeBSD
-  become: yes
   community.general.pkgng:
     name: go
   when: ansible_system == "FreeBSD"
 
 - name: Install Go for Linux
-  become: yes
   unarchive:
     creates: /usr/local/go
     dest: /usr/local/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{
       go_arch[ansible_architecture] }}.tar.gz
@@ -35,7 +32,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Go for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: go
@@ -43,7 +40,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Go for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -51,7 +48,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Go command line applications for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ go_applications }}"
   shell:
@@ -62,7 +59,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Go command line applications for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ go_applications }}"
   when: ansible_system == "Win32NT"

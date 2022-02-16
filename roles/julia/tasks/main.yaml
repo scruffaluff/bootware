@@ -2,7 +2,7 @@
   uri:
     url: https://formulae.brew.sh/api/formula/julia.json
     method: GET
-    return_content: yes
+    return_content: true
   register: julia_formula
   when: ansible_system in ["FreeBSD", "Linux"]
 
@@ -16,7 +16,6 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Julia for FreeBSD and Linux
-  become: yes
   unarchive:
     creates: /usr/local/julia
     dest: /usr/local/
@@ -24,7 +23,7 @@
       - --transform
       - "s/julia-{{ julia_formula.json.versions.stable }}/julia/"
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://julialang-s3.julialang.org/bin/{{ julia_os }}/{{
       julia_arch[ansible_architecture][0] }}/{{ julia_version }}/julia-{{
@@ -38,7 +37,7 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Julia for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: julia
@@ -46,7 +45,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Julia for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -1,5 +1,5 @@
 - name: Create Neovim settings directories for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   file:
     mode: "755"
@@ -13,17 +13,17 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Neovim settings file for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/nvim/init.vim"
-    force: yes
+    force: true
     mode: "644"
     src: init.vim
   when: ansible_system != "Win32NT" and not nvchad
 
 - name: Install NeoSolarized color scheme for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/nvim/colors/NeoSolarized.vim"
@@ -32,7 +32,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Packer Neovim plugin manager for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   git:
     depth: 1
@@ -43,7 +43,7 @@
 
 # TODO: Make headless Neovim error exit instead of waiting for user input.
 # - name: Run Neovim Packer updates for Unix
-#   become: yes
+#   become: true
 #   become_user: "{{ user_account }}"
 #   shell:
 #     cmd: |
@@ -51,7 +51,7 @@
 #   when: ansible_system != "Win32NT"
 
 - name: Create Neovim settings directories for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - nvim
@@ -64,7 +64,7 @@
     state: directory
 
 - name: Copy Neovim settings files for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT" and not nvchad
   win_copy:
@@ -72,7 +72,7 @@
     src: init.vim
 
 - name: Install NeoSolarized color scheme for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_get_url:
@@ -85,7 +85,7 @@
     creates: >-
       {{ user_home_dir
       }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: >-
@@ -94,7 +94,7 @@
 
 # TODO: Make headless Neovim error exit instead of waiting for user input.
 # - name: Run Neovim Packer updates for Windows
-#   become: yes
+#   become: true
 #   become_user: "{{ user_account }}"
 #   when: ansible_system == "Win32NT"
 #   win_shell: |

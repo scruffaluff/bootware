@@ -2,30 +2,27 @@
   uri:
     url: https://formulae.brew.sh/api/formula/zola.json
     method: GET
-    return_content: yes
+    return_content: true
   register: zola_formula
   when: ansible_system == "Linux"
 
 - name: Install Zola for Alpine distributions
-  become: yes
   community.general.apk:
     name: zola
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Zola for FreeBSD
-  become: yes
   community.general.pkgng:
     name: zola
   when: ansible_system == "FreeBSD"
 
 - name: Install Zola for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/getzola/zola/releases/download/v{{
       zola_formula.json.versions.stable }}/zola-v{{
@@ -35,14 +32,14 @@
     ansible_architecture == "x86_64"
 
 - name: Install Zola for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zola
   when: ansible_system == "Darwin"
 
 - name: Install Zola for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

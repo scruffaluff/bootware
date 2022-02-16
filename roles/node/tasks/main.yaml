@@ -2,13 +2,13 @@
   uri:
     url: https://formulae.brew.sh/api/formula/nvm.json
     method: GET
-    return_content: yes
+    return_content: true
   register: nvm_formula
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 # NVM is not well-supported for Alpine.
 - name: Install Node for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name:
       - nodejs
@@ -18,7 +18,7 @@
 # NVM does not provide binaries for FreeBSD. Node versions 16 and 17 have
 # OpenSSL errors on FreeBSD 13.
 - name: Install Node for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - node16
@@ -26,7 +26,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Node version manager for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -36,7 +36,7 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Node versions for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ node_versions }}"
   shell:
@@ -50,7 +50,7 @@
 # NVM is not used for Windows due to its frustrating launch checks that require
 # administrator permissions.
 - name: Install multiple Node versions for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -59,7 +59,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Set default Node version for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -71,7 +71,7 @@
 
 # NVM cannot find compatible versions of NPM for Alpine.
 - name: Update NPM for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -84,7 +84,7 @@
 
 - name: >-
     Install or update Node CLI applications for Alpine distributions and FreeBSD
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
   shell:
@@ -99,7 +99,7 @@
     != "root"
 
 - name: Install or update Node CLI applications for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
   shell:
@@ -113,14 +113,14 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install or update Node CLI applications for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ node_applications }}"
   when: ansible_system == "Win32NT"
   win_shell: (npm install -g {{ item }}) -Or (npm update -g {{ item }})
 
 - name: Download Fast NVM Fish for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   get_url:
     dest: "{{ user_home_dir }}/.config/fish/functions/nvm.fish"

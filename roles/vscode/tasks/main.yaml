@@ -3,7 +3,7 @@
 # information, see
 # https://wiki.archlinux.org/index.php/Visual_Studio_Code#No_extensions_found.
 - name: Install VSCode for Arch distributions
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm visual-studio-code-bin
   when: ansible_pkg_mgr == "pacman"
@@ -13,7 +13,6 @@
     deb: >-
       https://update.code.visualstudio.com/latest/linux-deb-{{
       vscode_arch[ansible_architecture] }}/stable
-  become: yes
   vars:
     vscode_arch:
       aarch64: arm64
@@ -21,13 +20,11 @@
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
 - name: Add Microsoft GPG key for Fedora distributions
-  become: yes
   rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for Fedora distributions
-  become: yes
   dnf:
     name: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
@@ -39,10 +36,10 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: visual-studio-code
     state: present
   when: ansible_system == "Darwin"
@@ -50,11 +47,10 @@
 - name: Install VSCode for PopOS
   apt:
     name: code
-  become: yes
   when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
 
 - name: Install VSCode for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -62,69 +58,63 @@
   when: ansible_system == "Win32NT"
 
 - name: Create VSCode user directory for Linux
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/Code/User/"
     state: directory
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode keybindings file for Linux
-  become: yes
-  become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/Code/User/keybindings.json"
-    force: yes
+    force: true
     mode: "640"
+    owner: "{{ user_account }}"
     src: keybindings.j2
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode settings file for Linux
-  become: yes
-  become_user: "{{ user_account }}"
   template:
     dest: "{{ user_home_dir }}/.config/Code/User/settings.json"
-    force: yes
+    force: true
     mode: "640"
+    owner: "{{ user_account }}"
     src: settings.j2
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Create VSCode user directory for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/Library/Application Support/Code/User/"
     state: directory
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode keybindings file for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   template:
     dest: >-
       {{ user_home_dir }}/Library/Application Support/Code/User/keybindings.json
-    force: yes
+    force: true
     mode: "640"
+    owner: "{{ user_account }}"
     src: keybindings.j2
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode settings file for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   template:
     dest: >-
       {{ user_home_dir }}/Library/Application Support/Code/User/settings.json
-    force: yes
+    force: true
     mode: "640"
+    owner: "{{ user_account }}"
     src: settings.j2
   when: ansible_system == "Darwin"
 
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
 - name: Create VSCode user directory for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - AppData/Roaming/Code/User
@@ -137,7 +127,7 @@
 # Keybindings file can be in multiple locations depending on package installer
 # and Windows version.
 - name: Copy VSCode keybindings file for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - AppData/Roaming/Code/User/keybindings.json
@@ -145,13 +135,13 @@
   when: ansible_system == "Win32NT"
   win_template:
     dest: "{{ user_home_dir }}/{{ item }}"
-    force: yes
+    force: true
     src: keybindings.j2
 
 # Settings file can be in multiple locations depending on package installer and
 # Windows version.
 - name: Copy VSCode settings file for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop:
     - AppData/Roaming/Code/User/settings.json
@@ -159,19 +149,19 @@
   when: ansible_system == "Win32NT"
   win_template:
     dest: "{{ user_home_dir }}/{{ item }}"
-    force: yes
+    force: true
     mode: "644"
     src: settings.j2
 
 - name: Install VSCode extensions for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   command: code --install-extension {{ item }}
   loop: "{{ vscode_extensions }}"
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   loop: "{{ vscode_extensions }}"
   when: ansible_system == "Win32NT"

@@ -2,12 +2,11 @@
   uri:
     url: https://formulae.brew.sh/api/formula/parquet-cli.json
     method: GET
-    return_content: yes
+    return_content: true
   register: parquet_formula
   when: ansible_system == "Linux"
 
 - name: Download Parquet Jar for Linux
-  become: yes
   get_url:
     dest: /usr/local/share/java/jar/parquet.jar
     mode: "755"
@@ -18,16 +17,15 @@
   when: ansible_system == "Linux"
 
 - name: Copy Parquet Jar script for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/parquet
-    force: yes
+    force: true
     mode: "755"
     src: parquet.sh
   when: ansible_system == "Linux"
 
 - name: Install Parquet CLI for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: parquet-cli

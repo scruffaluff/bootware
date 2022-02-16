@@ -1,25 +1,23 @@
 - name: Install RClone for FreeBSD
-  become: yes
   community.general.pkgng:
     name: rclone
   when: ansible_system == "FreeBSD"
 
 - name: Install RClone for Linux
-  become: yes
   package:
     name: rclone
     state: present
   when: ansible_system == "Linux"
 
 - name: Install RClone for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: rclone
   when: ansible_system == "Darwin"
 
 - name: Install RClone for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

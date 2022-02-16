@@ -372,7 +372,8 @@
 - name: Install Google Cloud Platform development tools
   hosts: all
   roles:
-    - gcp
+    - name: gcp
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cloud
     - container
@@ -384,7 +385,8 @@
 - name: Install Git version control
   hosts: all
   roles:
-    - git
+    - name: git
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -396,7 +398,8 @@
 - name: Install GitHub helper tools
   hosts: all
   roles:
-    - github
+    - name: github
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - github
@@ -407,7 +410,8 @@
 - name: Install GitLab helper tools
   hosts: all
   roles:
-    - gitlab
+    - name: gitlab
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - gitlab
@@ -418,7 +422,8 @@
 - name: Install Glow
   hosts: all
   roles:
-    - glow
+    - name: glow
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -429,7 +434,8 @@
 - name: Install Go language
   hosts: all
   roles:
-    - go
+    - name: go
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -441,7 +447,10 @@
 - name: Install Hadolint linter
   hosts: all
   roles:
-    - hadolint
+    - name: hadolint
+      become: true
+      become_user:
+        "{{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}"
   tags:
     - desktop
     - hadolint
@@ -452,7 +461,8 @@
 - name: Install HDF5 file serialization tools
   hosts: all
   roles:
-    - hdf5
+    - name: hdf5
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -463,7 +473,8 @@
 - name: Install Helm Kubernetes manager
   hosts: all
   roles:
-    - helm
+    - name: helm
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - helm
@@ -474,7 +485,8 @@
 - name: Install Hyper terminal
   hosts: all
   roles:
-    - hyper
+    - name: hyper
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hyper
@@ -483,7 +495,8 @@
 - name: Install Hyperfine benchmarking tool
   hosts: all
   roles:
-    - hyperfine
+    - name: hyperfine
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -494,7 +507,8 @@
 - name: Install Java language
   hosts: all
   roles:
-    - java
+    - name: java
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -506,7 +520,8 @@
 - name: Install Jq JSON parser
   hosts: all
   roles:
-    - jq
+    - name: jq
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -518,7 +533,8 @@
 - name: Install Julia language
   hosts: all
   roles:
-    - julia
+    - name: julia
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -530,7 +546,8 @@
 - name: Install Kubectl Kubernetes manager
   hosts: all
   roles:
-    - kubectl
+    - name: kubectl
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - kubectl
@@ -541,7 +558,8 @@
 - name: Install Libvirt virtualization API
   hosts: all
   roles:
-    - libvirt
+    - name: libvirt
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - libvirt
@@ -550,7 +568,8 @@
 - name: Install Lua language
   hosts: all
   roles:
-    - lua
+    - name: lua
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -562,7 +581,8 @@
 - name: Install Mdbook static website generator
   hosts: all
   roles:
-    - mdbook
+    - name: mdbook
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -574,7 +594,8 @@
 - name: Install Mkcert web certificate generator
   hosts: all
   roles:
-    - mkcert
+    - name: mkcert
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -586,7 +607,8 @@
 - name: Install MongoDB database client
   hosts: all
   roles:
-    - mongo
+    - name: mongo
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - database
@@ -598,7 +620,8 @@
 - name: Install Navi interactive documentation tool
   hosts: all
   roles:
-    - navi
+    - name: navi
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -609,7 +632,8 @@
 - name: Install Neovim terminal text editor
   hosts: all
   roles:
-    - neovim
+    - name: neovim
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -621,7 +645,8 @@
 - name: Install Node JavaScript runtime
   hosts: all
   roles:
-    - node
+    - name: node
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -634,7 +659,8 @@
 - name: Install OTS secret sharer
   hosts: all
   roles:
-    - ots
+    - name: ots
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -645,7 +671,8 @@
 - name: Install optional packages
   hosts: all
   roles:
-    - package
+    - name: package
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -656,7 +683,8 @@
 - name: Install Packer image generator
   hosts: all
   roles:
-    - packer
+    - name: packer
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -668,7 +696,8 @@
 - name: Install Parquet file serialization tools
   hosts: all
   roles:
-    - parquet
+    - name: parquet
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -679,7 +708,8 @@
 - name: Install PowerShell shell
   hosts: all
   roles:
-    - powershell
+    - name: powershell
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -690,7 +720,8 @@
 - name: Install Procs process viewer
   hosts: all
   roles:
-    - procs
+    - name: procs
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -701,7 +732,8 @@
 - name: Install Python language
   hosts: all
   roles:
-    - python
+    - name: python
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -713,7 +745,8 @@
 - name: Install QEMU hardware virtualizer
   hosts: all
   roles:
-    - qemu
+    - name: qemu
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - qemu
@@ -722,7 +755,8 @@
 - name: Install RClone cloud storage utility
   hosts: all
   roles:
-    - rclone
+    - name: rclone
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -733,7 +767,8 @@
 - name: Install Ripgrep text searcher
   hosts: all
   roles:
-    - ripgrep
+    - name: ripgrep
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -745,7 +780,8 @@
 - name: Install Ruby language
   hosts: all
   roles:
-    - ruby
+    - name: ruby
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -757,7 +793,9 @@
 - name: Install Rust language
   hosts: all
   roles:
-    - rust
+    - name: rust
+      become: true
+      become_user: "{{ user_account }}"
   tags:
     - container
     - desktop
@@ -769,7 +807,8 @@
 - name: Install Scc code line counter
   hosts: all
   roles:
-    - scc
+    - name: scc
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -780,7 +819,8 @@
 - name: Install SD find and replace tool
   hosts: all
   roles:
-    - sd
+    - name: sd
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -791,7 +831,8 @@
 - name: Install Snap packages
   hosts: all
   roles:
-    - snap
+    - name: snap
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - snap
@@ -799,7 +840,8 @@
 - name: Install SQLite database
   hosts: all
   roles:
-    - sqlite
+    - name: sqlite
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - database
@@ -811,7 +853,8 @@
 - name: Install Starship shell prompt
   hosts: all
   roles:
-    - starship
+    - name: starship
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -823,7 +866,8 @@
 - name: Configure sudo settings
   hosts: all
   roles:
-    - sudo
+    - name: sudo
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -834,7 +878,8 @@
 - name: Install Terraform infrastructure as code software
   hosts: all
   roles:
-    - terraform
+    - name: terraform
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -846,7 +891,8 @@
 - name: Install Terragrunt Terraform manager
   hosts: all
   roles:
-    - terragrunt
+    - name: terragrunt
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -858,7 +904,8 @@
 - name: Install TLDR documentation collection
   hosts: all
   roles:
-    - tldr
+    - name: tldr
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -870,7 +917,8 @@
 - name: Install Tmux terminal multiplexer
   hosts: all
   roles:
-    - tmux
+    - name: tmux
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -882,7 +930,8 @@
 - name: Install USQL
   hosts: all
   roles:
-    - usql
+    - name: usql
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -893,7 +942,8 @@
 - name: Install Vagrant virtualization manager
   hosts: all
   roles:
-    - vagrant
+    - name: vagrant
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hashicorp
@@ -904,7 +954,8 @@
 - name: Install Vault secrets manager
   hosts: all
   roles:
-    - vault
+    - name: vault
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -916,7 +967,8 @@
 - name: Install Virtualbox virtualization manager
   hosts: all
   roles:
-    - virtualbox
+    - name: virtualbox
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hashicorp
@@ -925,7 +977,8 @@
 - name: Install VSCode text exitor
   hosts: all
   roles:
-    - vscode
+    - name: vscode
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - editor
@@ -935,7 +988,8 @@
 - name: Install Web Assembly runtime
   hosts: all
   roles:
-    - wasm
+    - name: wasm
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -947,7 +1001,8 @@
 - name: Install desktop window managers
   hosts: all
   roles:
-    - winman
+    - name: winman
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - winman
@@ -955,7 +1010,8 @@
 - name: Install Xsv CSV parser
   hosts: all
   roles:
-    - xsv
+    - name: xsv
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -967,7 +1023,8 @@
 - name: Install Zellij terminal multiplexer
   hosts: all
   roles:
-    - zellij
+    - name: zellij
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -979,7 +1036,8 @@
 - name: Install Zola static website generator
   hosts: all
   roles:
-    - zola
+    - name: zola
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop

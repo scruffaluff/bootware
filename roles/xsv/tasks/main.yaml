@@ -2,22 +2,20 @@
   uri:
     url: https://formulae.brew.sh/api/formula/xsv.json
     method: GET
-    return_content: yes
+    return_content: true
   register: xsv_formula
   when: ansible_system == "Linux"
 
 - name: Install Xsv for FreeBSD
-  become: yes
   community.general.pkgng:
     name: xsv-rs
   when: ansible_system == "FreeBSD"
 
 - name: Download Xsv for Linux
-  become: yes
   unarchive:
     dest: /usr/local/bin
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/BurntSushi/xsv/releases/download/{{
       xsv_formula.json.versions.stable }}/xsv-{{
@@ -25,14 +23,14 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Xsv for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: xsv
   when: ansible_system == "Darwin"
 
 - name: Install Xsv for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
