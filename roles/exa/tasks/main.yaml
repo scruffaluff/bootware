@@ -2,28 +2,25 @@
   uri:
     url: https://formulae.brew.sh/api/formula/exa.json
     method: GET
-    return_content: yes
+    return_content: true
   register: exa_formula
   when: ansible_system == "Linux"
 
 - name: Install Exa for Alpine distributions
-  become: yes
   community.general.apk:
     name: exa
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Exa for FreeBSD
-  become: yes
   community.general.pkgng:
     name: exa
   when: ansible_system == "FreeBSD"
 
 - name: Download Exa for Linux
-  become: yes
   unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
       exa_formula.json.versions.stable }}/exa-linux-{{
@@ -38,7 +35,6 @@
     and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/exa
     mode: "755"
@@ -48,7 +44,7 @@
     and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: exa

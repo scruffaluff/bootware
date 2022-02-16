@@ -5,22 +5,21 @@
   when: ansible_system == "Linux"
 
 - name: Install Beekeeper for Linux
-  become: yes
   community.general.snap:
     name: beekeeper-studio
   when: ansible_system == "Linux" and snapd_available.stat.exists
 
 - name: Install Beekeeper for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: beekeeper-studio
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Beekeeper for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

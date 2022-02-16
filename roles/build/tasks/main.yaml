@@ -1,5 +1,4 @@
 - name: Install build tools for FreeBSD
-  become: yes
   community.general.pkgng:
     name:
       - cmake
@@ -11,7 +10,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install build tools for Linux
-  become: yes
   package:
     name:
       - clang
@@ -29,7 +27,7 @@
 # available for Apple silicon.
 # TODO: Add back GDB when available for Apple silicon.
 - name: Install build tools for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
@@ -41,6 +39,8 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
+  become: true
+  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_chocolatey:
     name:
@@ -49,7 +49,7 @@
       - visualstudio2022-workload-vctools
 
 - name: Install build tools with Scoop for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

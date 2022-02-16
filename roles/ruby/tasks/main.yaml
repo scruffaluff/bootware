@@ -58,7 +58,7 @@
     cmd: |
       curl -LSfs https://rvm.io/mpapis.asc | gpg --import -
       curl -LSfs https://rvm.io/pkuczynski.asc | gpg --import -
-    warn: no
+    warn: false
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
@@ -67,7 +67,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://get.rvm.io | bash -s stable
-    warn: no
+    warn: false
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 

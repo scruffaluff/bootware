@@ -1,56 +1,50 @@
 - name: Install Fish for FreeBSD
-  become: yes
   community.general.pkgng:
     name: fish
   when: ansible_system == "FreeBSD"
 
 - name: Install Fish for Linux
-  become: yes
   package:
     name: fish
   when: ansible_system == "Linux"
 
 - name: Install Fish for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fish
   when: ansible_system == "Darwin"
 
 - name: Create Fish configuration directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/fish"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/fish/completions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish functions directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   file:
     mode: "755"
+    owner: "{{ user_account }}"
     path: "{{ user_home_dir }}/.config/fish/functions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Copy Fish settings file for Unix
-  become: yes
-  become_user: "{{ user_account }}"
   copy:
     dest: "{{ user_home_dir }}/.config/fish/config.fish"
-    force: yes
+    force: true
     mode: "644"
+    owner: "{{ user_account }}"
     src: config.fish
   when: ansible_system != "Win32NT"
 
@@ -66,7 +60,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -77,7 +71,7 @@
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   shell:
     cmd: |
@@ -87,7 +81,6 @@
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
-  become: yes
   user:
     name: "{{ user_account }}"
     shell: "{{ fish_executable }}"

@@ -87,7 +87,8 @@
 - name: Install Bat file reader
   hosts: all
   roles:
-    - bat
+    - name: bat
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - bat
     - container
@@ -99,7 +100,8 @@
 - name: Install Beekeeper database client
   hosts: all
   roles:
-    - beekeeper
+    - name: beekeeper
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - beekeeper
     - desktop
@@ -107,7 +109,8 @@
 - name: Install build tools
   hosts: all
   roles:
-    - build
+    - name: build
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - build
     - container
@@ -118,7 +121,8 @@
 - name: Install Caffeine
   hosts: all
   roles:
-    - caffeine
+    - name: caffeine
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - caffeine
     - desktop
@@ -126,7 +130,8 @@
 - name: Install Google Chrome web browser
   hosts: all
   roles:
-    - chrome
+    - name: chrome
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - browser
     - chrome
@@ -135,7 +140,8 @@
 - name: Install MongoDB Compass database graphical client
   hosts: all
   roles:
-    - compass
+    - name: compass
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - compass
     - database
@@ -144,7 +150,8 @@
 - name: Install Nvidia CUDA CPU acceleration toolkit
   hosts: all
   roles:
-    - cuda
+    - name: cuda
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cuda
     - desktop
@@ -154,7 +161,8 @@
 - name: Install DBeaver database client
   hosts: all
   roles:
-    - dbeaver
+    - name: dbeaver
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - dbeaver
     - desktop
@@ -162,7 +170,8 @@
 - name: Configure default system terminal
   hosts: all
   roles:
-    - defterm
+    - name: defterm
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - defterm
     - desktop
@@ -171,7 +180,8 @@
 - name: Install Deno JavaScript and TypeScript runtime
   hosts: all
   roles:
-    - deno
+    - name: deno
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - deno
@@ -184,7 +194,9 @@
 - name: Configure system desktop environment
   hosts: all
   roles:
-    - deskenv
+    - name: deskenv
+      become: true
+      become_user: "{{ user_account }}"
   tags:
     - deskenv
     - desktop
@@ -192,7 +204,8 @@
 - name: Install Docker container platform
   hosts: all
   roles:
-    - docker
+    - name: docker
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - docker
@@ -203,7 +216,8 @@
 - name: Install Digital Ocean development tools
   hosts: all
   roles:
-    - doctl
+    - name: doctl
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cloud
     - container
@@ -215,7 +229,8 @@
 - name: Install Data Version Control
   hosts: all
   roles:
-    - dvc
+    - name: dvc
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -227,7 +242,8 @@
 - name: Install Dust disk space analyzer
   hosts: all
   roles:
-    - dust
+    - name: dust
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -238,7 +254,8 @@
 - name: Install Emacs terminal text editor
   hosts: all
   roles:
-    - emacs
+    - name: emacs
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -248,10 +265,10 @@
     - wsl
 
 - name: Install Balena Etcher ISO flasher
-  become: true
   hosts: all
   roles:
-    - etcher
+    - name: etcher
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - etcher
@@ -259,7 +276,8 @@
 - name: Install Exa file lister
   hosts: all
   roles:
-    - exa
+    - name: exa
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -271,7 +289,8 @@
 - name: Install FD file searcher
   hosts: all
   roles:
-    - fd
+    - name: fd
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -283,7 +302,8 @@
 - name: Install FFSend secure file sharer
   hosts: all
   roles:
-    - ffsend
+    - name: ffsend
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -294,7 +314,8 @@
 - name: Install Firefox web browser
   hosts: all
   roles:
-    - firefox
+    - name: firefox
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - browser
     - desktop
@@ -303,7 +324,8 @@
 - name: Install Fish shell
   hosts: all
   roles:
-    - fish
+    - name: fish
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -315,7 +337,8 @@
 - name: Install Flatpak packages
   hosts: all
   roles:
-    - flatpak
+    - name: flatpak
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -326,7 +349,8 @@
 - name: Install fonts
   hosts: all
   roles:
-    - font
+    - name: font
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -336,7 +360,8 @@
 - name: Install FzF fuzzy searcher
   hosts: all
   roles:
-    - fzf
+    - name: fzf
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop

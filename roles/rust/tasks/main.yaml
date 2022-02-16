@@ -6,7 +6,7 @@
       curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s -- -y
       --no-modify-path
     creates: "{{ user_home_dir }}/.cargo/bin/rustup"
-    warn: no
+    warn: false
   when: ansible_system != "Win32NT"
 
 - name: Install Rust for Windows

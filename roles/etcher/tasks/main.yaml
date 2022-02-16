@@ -6,9 +6,11 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher repository key for Debian distributions
-  command: >-
-    gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
-    /tmp/balena-etcher.gpg
+  command:
+    cmd: >-
+      gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
+      /tmp/balena-etcher.gpg
+    creates: /usr/share/keyrings/balena-etcher.gpg
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher repository for Debian distributions
@@ -24,7 +26,7 @@
 - name: Add Balena Etcher RPM repository for Fedora distributions
   shell:
     cmd: curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh
-    warn: no
+    warn: false
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 # Balena Etcher package conflicts with NodeJS.

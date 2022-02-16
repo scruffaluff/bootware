@@ -3,6 +3,7 @@
 # For more information, visit https://prettier.io/docs/en/ignore.html.
 
 .git/
+.venv/
 *.bats
 node_modules/
 package-lock.json

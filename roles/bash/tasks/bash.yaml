@@ -22,7 +22,7 @@
 - name: Copy Bash non-login settings file for Unix
   copy:
     dest: "{{ user_home_dir }}/.bashrc"
-    force: yes
+    force: true
     mode: "754"
     owner: "{{ user_account }}"
     src: .bashrc
@@ -31,7 +31,7 @@
 - name: Copy Bash login settings file for Unix
   copy:
     dest: "{{ user_home_dir }}/.bash_profile"
-    force: yes
+    force: true
     mode: "754"
     owner: "{{ user_account }}"
     src: .bash_profile
@@ -40,7 +40,7 @@
 - name: Copy shell aliases file for Unix
   copy:
     dest: "{{ user_home_dir }}/.aliases"
-    force: yes
+    force: true
     mode: "754"
     owner: "{{ user_account }}"
     src: .aliases

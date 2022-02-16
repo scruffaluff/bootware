@@ -2,18 +2,16 @@
   uri:
     url: https://formulae.brew.sh/api/formula/docker-compose.json
     method: GET
-    return_content: yes
+    return_content: true
   register: docker_compose_formula
   when: ansible_system == "Linux"
 
 - name: Install Docker for Alpine distributions
-  become: yes
   community.general.apk:
     name: docker
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Docker for Arch distributions
-  become: yes
   community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
@@ -25,22 +23,19 @@
       - ca-certificates
       - curl
       - gnupg
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker key for Debian distributions
-  become: yes
   shell:
     cmd: |
       curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
-    warn: no
+    warn: false
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker package information for Debian distributions
-  become: yes
   lineinfile:
-    create: yes
+    create: true
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
     line: deb [arch={{ docker_arch[ansible_architecture] }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
@@ -58,12 +53,10 @@
       - containerd.io
       - docker-ce
       - docker-ce-cli
-    update_cache: yes
-  become: yes
+    update_cache: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Fedora distributions
-  become: yes
   get_url:
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: "644"
@@ -71,7 +64,6 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Docker for Fedora distributions
-  become: yes
   dnf:
     name:
       - containerd.io
@@ -80,21 +72,22 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Docker for FreeBSD
-  become: yes
   community.general.pkgng:
     name: docker
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: docker
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Docker for Windows
+  become: true
+  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_chocolatey:
     name: docker-desktop
@@ -106,42 +99,36 @@
   when: ansible_system == "Linux"
 
 - name: Start Containerd on system boot for Linux
-  become: yes
   systemd:
-    enabled: yes
+    enabled: true
     name: containerd
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Start Docker on system boot for Linux
-  become: yes
   systemd:
-    enabled: yes
+    enabled: true
     name: docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Add user to Docker group for Linux
-  become: yes
   user:
-    append: yes
+    append: true
     name: "{{ user_account }}"
     groups:
       - docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Install Docker Compose for FreeBSD
-  become: yes
   community.general.pkgng:
     name: docker-compose
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker Compose for Linux
-  become: yes
   package:
     name: docker-compose
   when: ansible_system == "Linux"
 
 - name: Create Docker Compose plugin directory for Linux
-  become: yes
   file:
     mode: "755"
     path: /usr/lib/docker/cli-plugins
@@ -149,7 +136,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose plugin for Linux
-  become: yes
   get_url:
     dest: /usr/lib/docker/cli-plugins/docker-compose
     mode: "755"
@@ -160,7 +146,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: docker-compose
@@ -168,7 +154,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Docker Compose for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
@@ -178,7 +164,6 @@
   when: ansible_system == "Win32NT"
 
 - name: Create Fish completions directory for Unix
-  become: yes
   file:
     mode: "755"
     path: /etc/fish/completions
@@ -186,7 +171,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Docker Fish shell completions for Unix
-  become: yes
   get_url:
     dest: /etc/fish/completions/docker.fish
     mode: "664"
@@ -194,7 +178,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Docker Compose Fish shell completions for Unix
-  become: yes
   get_url:
     dest: /etc/fish/completions/docker-compose.fish
     mode: "664"

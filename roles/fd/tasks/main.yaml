@@ -2,28 +2,25 @@
   uri:
     url: https://formulae.brew.sh/api/formula/fd.json
     method: GET
-    return_content: yes
+    return_content: true
   register: fd_formula
   when: ansible_system == "Linux"
 
 - name: Install FD for Alpine distributions
-  become: yes
   community.general.apk:
     name: fd
   when: ansible_pkg_mgr == "apk"
 
 - name: Install FD for FreeBSD
-  become: yes
   community.general.pkgng:
     name: fd-find
   when: ansible_system == "FreeBSD"
 
 - name: Download FD for Linux
-  become: yes
   unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
@@ -33,7 +30,6 @@
     ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/fd
     mode: "755"
@@ -44,14 +40,14 @@
     ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

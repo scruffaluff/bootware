@@ -59,6 +59,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
+  become: true
+  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/alacritty/"
@@ -74,6 +76,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
+  become: true
+  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/alacritty/alacritty.yml"

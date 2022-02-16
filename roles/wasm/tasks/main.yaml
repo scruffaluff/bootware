@@ -3,7 +3,7 @@
   become_user: "{{ user_account }}"
   shell:
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
-    warn: no
+    warn: false
   when: >-
     ansible_system != "Win32NT" and ansible_architecture == "x86_64"
 
@@ -23,6 +23,6 @@
       source {{ user_home_dir }}/.bashrc
       curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
     executable: "{{ bash_executable }}"
-    warn: no
+    warn: false
   when: >-
     ansible_system != "Win32NT" and ansible_architecture == "x86_64"

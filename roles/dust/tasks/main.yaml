@@ -2,22 +2,20 @@
   uri:
     url: https://formulae.brew.sh/api/formula/dust.json
     method: GET
-    return_content: yes
+    return_content: true
   register: dust_formula
   when: ansible_system == "Linux"
 
 - name: Install Dust for Alpine distributions
-  become: yes
   community.general.apk:
     name: dust
   when: ansible_pkg_mgr == "apk"
 
 - name: Download Dust for Linux
-  become: yes
   unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
@@ -27,7 +25,6 @@
     ansible_architecture == "x86_64"
 
 - name: Install Dust for Linux
-  become: yes
   copy:
     dest: /usr/local/bin/dust
     mode: "755"
@@ -39,14 +36,14 @@
     ansible_architecture == "x86_64"
 
 - name: Install Dust for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dust
   when: ansible_system == "Darwin"
 
 - name: Install Dust for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -4,6 +4,7 @@
 
 .DS_Store
 .local/
+.venv/
 .vscode/
 /build/
 /docs/index.md

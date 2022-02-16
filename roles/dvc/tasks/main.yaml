@@ -2,7 +2,7 @@
   uri:
     url: https://formulae.brew.sh/api/formula/dvc.json
     method: GET
-    return_content: yes
+    return_content: true
   register: dvc_formula
   when: ansible_system == "Linux"
 
@@ -14,13 +14,11 @@
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc_{{
       dvc_formula.json.versions.stable }}_amd64.deb
-  become: yes
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install DVC for Fedora distributions
-  become: yes
   dnf:
-    disable_gpg_check: yes
+    disable_gpg_check: true
     name: >-
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc-{{
@@ -28,20 +26,19 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DVC for FreeBSD
-  become: yes
   community.general.pkgng:
     name: dvc
   when: ansible_system == "FreeBSD"
 
 - name: Install DVC for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dvc
   when: ansible_system == "Darwin"
 
 - name: Install DVC for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
