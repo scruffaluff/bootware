@@ -1,3 +1,8 @@
+- name: Tap Virt Manager Homebrew repository
+  community.general.homebrew_tap:
+    name: jeffreywildman/homebrew-virt-manager
+  when: ansible_system == "Darwin"
+
 - name: Install Libvirt for Alpine distributions
   community.general.apk:
     name: libvirt-client
@@ -32,14 +37,7 @@
       - virt-viewer
   when: ansible_pkg_mgr == "dnf"
 
-- name: Tap Virt Manager Homebrew repository
-  community.general.homebrew_tap:
-    name: jeffreywildman/homebrew-virt-manager
-  when: ansible_system == "Darwin"
-
 - name: Install Libvirt for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - libvirt

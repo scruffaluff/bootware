@@ -7,7 +7,6 @@
   when: ansible_system == "Linux"
 
 - name: Download OTS for Linux
-  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -23,7 +22,6 @@
   when: ansible_system == "Linux"
 
 - name: Install OTS for Linux
-  become: true
   copy:
     dest: /usr/local/bin/ots
     mode: "755"

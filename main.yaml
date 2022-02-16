@@ -7,7 +7,9 @@
   hosts: all
   roles:
     - name: system
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
+      become: true
+      become_user: >-
+        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - container
     - desktop
@@ -19,7 +21,9 @@
   hosts: all
   roles:
     - name: alacritty
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
+      become: true
+      become_user: >-
+        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - alacritty
     - desktop
@@ -62,7 +66,9 @@
   hosts: all
   roles:
     - name: aws
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
+      become: true
+      become_user: >-
+        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - aws
     - cloud
@@ -449,8 +455,8 @@
   roles:
     - name: hadolint
       become: true
-      become_user:
-        "{{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}"
+      become_user: >-
+        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - desktop
     - hadolint
@@ -559,7 +565,9 @@
   hosts: all
   roles:
     - name: libvirt
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
+      become: true
+      become_user: >-
+        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - desktop
     - libvirt
@@ -854,7 +862,8 @@
   hosts: all
   roles:
     - name: starship
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
+      become: true
+      become_user: "{{ user_account if ansible_system == 'Win32NT' else omit }}"
   tags:
     - container
     - desktop

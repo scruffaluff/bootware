@@ -1,15 +1,12 @@
 # Unable to find update instructions for Starship. Reinstalling will use a newer
 # version.
 - name: Install Starship shell prompt for Unix
-  become: true
   shell:
     cmd: curl -LSfs https://starship.rs/install.sh | sh -s -- -y
     warn: false
   when: ansible_system != "Win32NT"
 
 - name: Install Starship shell prompt for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: starship

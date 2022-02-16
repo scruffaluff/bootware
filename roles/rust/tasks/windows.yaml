@@ -1,0 +1,22 @@
+---
+- name: Install Rust for Windows
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: rustup-msvc
+
+- name: Update Rust for Windows
+  win_shell: |
+    rustup self update
+    rustup update stable
+
+- name: Add Rust components for Windows
+  loop: "{{ rustup_components }}"
+  win_shell: rustup component add {{ item }}
+
+- name: Add Rust targets for Windows
+  loop: "{{ rustup_targets }}"
+  win_shell: rustup target add {{ item }}
+
+- name: Update or install Cargo packages for Windows
+  loop: "{{ cargo_applications }}"
+  win_shell: cargo install {{ item }}

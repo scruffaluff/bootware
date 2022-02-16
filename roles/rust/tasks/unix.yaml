@@ -1,0 +1,30 @@
+---
+- block:
+    - name: Install Rust for Unix
+      shell:
+        cmd: >-
+          curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
+          -y --no-modify-path
+        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+        warn: false
+
+    - name: Update Rust for Unix
+      command: "{{ item }}"
+      loop:
+        - rustup self update
+        - rustup update stable
+
+    - name: Add Rust components for Unix
+      loop: "{{ rustup_components }}"
+      command: "rustup component add {{ item }}"
+
+    - name: Add Rust targets for Unix
+      command: "rustup target add {{ item }}"
+      loop: "{{ rustup_targets }}"
+
+    - name: Update or install Cargo packages for Unix
+      command: "cargo install {{ item }}"
+      loop: "{{ cargo_applications }}"
+
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"

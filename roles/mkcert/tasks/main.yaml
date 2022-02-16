@@ -1,7 +1,6 @@
 - name: Install network security service libraries for Debian distributions
   apt:
     name: libnss3-tools
-  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Get latest Mkcert version

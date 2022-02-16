@@ -26,8 +26,6 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     update_homebrew: true
     upgrade_all: true
@@ -100,8 +98,6 @@
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - neofetch
@@ -114,8 +110,6 @@
   when: ansible_system == "Darwin"
 
 - name: Add essential Scoop buckets for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop_bucket:
     name: "{{ item }}"
   loop:
@@ -126,8 +120,6 @@
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name:

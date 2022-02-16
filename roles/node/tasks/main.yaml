@@ -8,7 +8,6 @@
 
 # NVM is not well-supported for Alpine.
 - name: Install Node for Alpine distributions
-  become: true
   community.general.apk:
     name:
       - nodejs
@@ -18,7 +17,6 @@
 # NVM does not provide binaries for FreeBSD. Node versions 16 and 17 have
 # OpenSSL errors on FreeBSD 13.
 - name: Install Node for FreeBSD
-  become: true
   community.general.pkgng:
     name:
       - node16

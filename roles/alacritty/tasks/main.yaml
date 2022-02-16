@@ -6,29 +6,17 @@
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
     ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
 
-- name: Install Alacritty for Alpine distributions
-  community.general.apk:
-    name: alacritty
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Alacritty for Arch distributions
-  community.general.pacman:
-    name: alacritty
-  when: ansible_pkg_mgr == "pacman"
-
 - name: Install Alacritty for FreeBSD
   community.general.pkgng:
     name: alacritty
   when: ansible_system == "FreeBSD"
 
-- name: Install Alacritty for Fedora distributions
-  dnf:
+- name: Install Alacritty for Linux
+  package:
     name: alacritty
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Alacritty for MacOS
-  become: true
-  become_user: "{{ alacritty_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: alacritty
@@ -59,8 +47,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_file:
     path: "{{ user_home_dir }}/AppData/Roaming/alacritty/"
@@ -76,8 +62,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_template:
     dest: "{{ user_home_dir }}/AppData/Roaming/alacritty/alacritty.yml"
