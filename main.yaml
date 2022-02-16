@@ -6,7 +6,8 @@
 - name: Update system package managers and install essential packages
   hosts: all
   roles:
-    - system
+    - name: system
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -15,20 +16,20 @@
     - wsl
 
 - name: Install Alacritty terminal
-  become: true
   hosts: all
   roles:
-    - alacritty
+    - name: alacritty
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - alacritty
     - desktop
     - terminal
 
 - name: Install AppImage packages
-  become: true
   hosts: all
   roles:
-    - appimage
+    - name: appimage
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - appimage
     - container
@@ -37,19 +38,19 @@
     - wsl
 
 - name: Install audio tools
-  become: true
   hosts: all
   roles:
-    - audio
+    - name: audio
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - audio
     - desktop
 
 - name: Install Avro file serialization tools
-  become: true
   hosts: all
   roles:
-    - avro
+    - name: avro
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - avro
     - container
@@ -58,10 +59,10 @@
     - wsl
 
 - name: Install Amazon Web Services development tools
-  become: true
   hosts: all
   roles:
-    - aws
+    - name: aws
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - aws
     - cloud
@@ -73,7 +74,8 @@
 - name: Install Bash shell
   hosts: all
   roles:
-    - bash
+    - name: bash
+      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - bash
     - container

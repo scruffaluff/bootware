@@ -1,11 +1,9 @@
 - name: Install ShellCheck for Alpine distributions
-  become: yes
   community.general.apk:
     name: shellcheck
   when: ansible_pkg_mgr == "apk"
 
 - name: Install ShellCheck for Arch distributions
-  become: yes
   community.general.pacman:
     name: shellcheck
   when: ansible_pkg_mgr == "pacman"
@@ -13,17 +11,15 @@
 - name: Install ShellCheck for Debian distributions
   apt:
     name: shellcheck
-  become: yes
   when: ansible_pkg_mgr == "apt"
 
 - name: Install ShellCheck for Fedora distributions
-  become: yes
   dnf:
     name: ShellCheck
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install ShellCheck for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: shellcheck

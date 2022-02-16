@@ -2,18 +2,16 @@
   uri:
     url: https://formulae.brew.sh/api/formula/shfmt.json
     method: GET
-    return_content: yes
+    return_content: true
   register: shfmt_formula
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for FreeBSD
-  become: yes
   community.general.pkgng:
     name: shfmt
   when: ansible_system == "FreeBSD"
 
 - name: Install Shfmt for Linux
-  become: yes
   get_url:
     dest: /usr/local/bin/shfmt
     mode: "755"
@@ -29,14 +27,14 @@
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for MacOS
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.general.homebrew:
     name: shfmt
   when: ansible_system == "Darwin"
 
 - name: Install Shfmt for Windows
-  become: yes
+  become: true
   become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit

@@ -28,7 +28,7 @@
 
 - name: Install Alacritty for MacOS
   become: true
-  become_user: "{{ user_account }}"
+  become_user: "{{ alacritty_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: alacritty
@@ -44,7 +44,7 @@
 
 - name: Install Alacritty for Windows
   become: true
-  become_user: "{{ user_account }}"
+  become_user: "{{ alacritty_user }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: alacritty
@@ -53,7 +53,7 @@
 - name: Create Alacritty configuration directory for Unix
   file:
     mode: "755"
-    owner: "{{ user_account }}"
+    owner: "{{ alacritty_user }}"
     path: "{{ user_home_dir }}/.config/alacritty/"
     state: directory
   when: ansible_system != "Win32NT"
@@ -69,7 +69,7 @@
     dest: "{{ user_home_dir }}/.config/alacritty/alacritty.yml"
     force: true
     mode: "644"
-    owner: "{{ user_account }}"
+    owner: "{{ alacritty_user }}"
     src: alacritty.j2
   when: ansible_system != "Win32NT"
 
