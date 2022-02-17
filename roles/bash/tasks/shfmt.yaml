@@ -7,14 +7,17 @@
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for FreeBSD
+  become: true
   community.general.pkgng:
     name: shfmt
   when: ansible_system == "FreeBSD"
 
 - name: Install Shfmt for Linux
+  become: true
   get_url:
     dest: /usr/local/bin/shfmt
     mode: "755"
+    owner: root
     url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
@@ -27,15 +30,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: shfmt
   when: ansible_system == "Darwin"
 
 - name: Install Shfmt for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: shfmt

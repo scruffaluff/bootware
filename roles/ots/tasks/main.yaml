@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Download OTS for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -22,6 +23,7 @@
   when: ansible_system == "Linux"
 
 - name: Install OTS for Linux
+  become: true
   copy:
     dest: /usr/local/bin/ots
     mode: "755"
@@ -35,8 +37,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install OTS for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - sniptt-official/tap/ots

@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Dust for Alpine distributions
+  become: true
   community.general.apk:
     name: dust
   when: ansible_pkg_mgr == "apk"
 
 - name: Download Dust for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -25,6 +27,7 @@
     ansible_architecture == "x86_64"
 
 - name: Install Dust for Linux
+  become: true
   copy:
     dest: /usr/local/bin/dust
     mode: "755"
@@ -36,15 +39,11 @@
     ansible_architecture == "x86_64"
 
 - name: Install Dust for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dust
   when: ansible_system == "Darwin"
 
 - name: Install Dust for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: dust

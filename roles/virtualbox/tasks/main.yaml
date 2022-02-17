@@ -1,34 +1,38 @@
 - name: Add Virtualbox GPG key for Fedora distributions
+  become: true
   rpm_key:
     key: https://www.virtualbox.org/download/oracle_vbox.asc
     state: present
   when: ansible_pkg_mgr == "dnf"
 
 - name: Add Virtualbox repository for Fedora distributions
+  become: true
   get_url:
     dest: /etc/yum.repos.d/virtualbox.repo
     mode: "644"
+    owner: root
     url: https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for Arch distributions
+  become: true
   community.general.pacman:
     name: virtualbox
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Virtualbox for Fedora distributions
+  become: true
   dnf:
     name: VirtualBox-6.1
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for FreeBSD
+  become: true
   community.general.pkgng:
     name: virtualbox-ose
   when: ansible_system == "FreeBSD"
 
 - name: Install Virtualbox for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: virtualbox
@@ -38,11 +42,10 @@
 - name: Install Virtualbox for Ubuntu distributions
   apt:
     name: virtualbox
+  become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base != "debian"
 
 - name: Install Virtualbox for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_chocolatey:
     name:

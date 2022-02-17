@@ -7,16 +7,19 @@
   when: ansible_system == "Linux"
 
 - name: Install FD for Alpine distributions
+  become: true
   community.general.apk:
     name: fd
   when: ansible_pkg_mgr == "apk"
 
 - name: Install FD for FreeBSD
+  become: true
   community.general.pkgng:
     name: fd-find
   when: ansible_system == "FreeBSD"
 
 - name: Download FD for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -30,6 +33,7 @@
     ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
+  become: true
   copy:
     dest: /usr/local/bin/fd
     mode: "755"
@@ -40,15 +44,11 @@
     ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: fd

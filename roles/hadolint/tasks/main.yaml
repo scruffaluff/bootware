@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Hadolint for Linux
+  become: true
   get_url:
     dest: /usr/local/bin/hadolint
     mode: "755"

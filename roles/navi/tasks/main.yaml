@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Navi for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -18,8 +19,6 @@
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Navi for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: navi
   when: ansible_system == "Darwin"

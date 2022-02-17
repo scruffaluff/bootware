@@ -1,40 +1,34 @@
 - name: Install TLDR for Alpine distributions
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      npm install -g tldr
-    executable: "{{ bash_executable }}"
+  command: npm install -g tldr
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: ansible_pkg_mgr == "apk"
 
 # Arch TLDR package has file conflicts with Arch Python package.
 # TODO: Solve GPG error in order to use pre-built tealdeer-bin package.
 - name: Install TLDR for Arch distributions
-  become: true
-  become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install TLDR for FreeBSD
+  become: true
   community.general.pkgng:
     name: tealdeer
   when: ansible_system == "FreeBSD"
 
 - name: Install TLDR for Linux
+  become: true
   package:
     name: tldr
     state: present
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Install TLDR for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: tldr
   when: ansible_system == "Darwin"
 
 - name: Install TDLR for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: tldr
@@ -43,23 +37,17 @@
 - name: Create TLDR repository directory for Linux
   file:
     mode: "755"
-    owner: "{{ user_account }}"
-    path: "{{ user_home_dir }}/.local/share"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.local/share"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Update TLDR documentation for Unix
-  become: true
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      tldr --update
-    executable: "{{ bash_executable }}"
+  command: tldr --update
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: ansible_system != "Win32NT"
 
 - name: Update TLDR documentation for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: tldr --update

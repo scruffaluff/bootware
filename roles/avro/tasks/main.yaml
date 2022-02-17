@@ -8,9 +8,11 @@
 
 # TODO: Evaluate avro-bin package as replacement.
 - name: Download Avro Jar for Linux
+  become: true
   get_url:
     dest: /usr/local/share/java/jar/avro-tools.jar
     mode: "755"
+    owner: root
     url: >-
       https://archive.apache.org/dist/avro/avro-{{
       avro_formula.json.versions.stable }}/java/avro-tools-{{
@@ -18,23 +20,21 @@
   when: ansible_system == "Linux"
 
 - name: Copy Avro Jar script for Linux
+  become: true
   copy:
     dest: /usr/local/bin/avro-tools
     force: true
     mode: "755"
+    owner: root
     src: avro-tools.sh
   when: ansible_system == "Linux"
 
 - name: Install Avro for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: avro-tools
   when: ansible_system == "Darwin"
 
 - name: Install Avro for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: avro-tools

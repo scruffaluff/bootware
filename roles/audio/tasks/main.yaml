@@ -1,4 +1,5 @@
 - name: Install audio packages for Arch distributions
+  become: true
   community.general.pacman:
     name:
       - alsa-lib
@@ -10,9 +11,11 @@
     name:
       - alsa-utils
       - libasound2-dev
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora distributions
+  become: true
   dnf:
     name:
       - alsa-lib-devel

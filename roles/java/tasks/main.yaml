@@ -1,4 +1,5 @@
 - name: Install Java for Alpine distributions
+  become: true
   community.general.apk:
     name:
       - maven
@@ -6,6 +7,7 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Java for Arch distributions
+  become: true
   community.general.pacman:
     name:
       - jdk-openjdk
@@ -17,9 +19,11 @@
     name:
       - maven
       - openjdk-17-jdk
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Java for Fedora distributions
+  become: true
   dnf:
     name:
       - java-latest-openjdk
@@ -27,6 +31,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Java for FreeBSD
+  become: true
   community.general.pkgng:
     name:
       - maven
@@ -34,8 +39,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Java for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - java
@@ -45,8 +48,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Java for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_chocolatey:
     name:
@@ -59,7 +60,7 @@
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: true
     mode: "755"
-    owner: "{{ user_account }}"
+    owner: "{{ ansible_user_id }}"
     state: link
   vars:
     openjdk_path:
@@ -68,9 +69,9 @@
   when: ansible_system == "Darwin"
 
 - name: Create Java Jar directory for Linux
+  become: true
   file:
     mode: "755"
-    owner: "{{ user_account }}"
     path: /usr/local/share/java/jar/
     state: directory
   when: ansible_system == "Linux"

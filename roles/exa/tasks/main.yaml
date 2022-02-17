@@ -7,16 +7,19 @@
   when: ansible_system == "Linux"
 
 - name: Install Exa for Alpine distributions
+  become: true
   community.general.apk:
     name: exa
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Exa for FreeBSD
+  become: true
   community.general.pkgng:
     name: exa
   when: ansible_system == "FreeBSD"
 
 - name: Download Exa for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -35,6 +38,7 @@
     and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for Linux
+  become: true
   copy:
     dest: /usr/local/bin/exa
     mode: "755"
@@ -44,8 +48,6 @@
     and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: exa
   when: ansible_system == "Darwin"

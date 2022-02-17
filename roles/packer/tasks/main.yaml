@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Packer for FreeBSD
+  become: true
   community.general.pkgng:
     name: packer
   when: ansible_system == "FreeBSD"
 
 - name: Install Packer for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin/
     group: root
@@ -30,15 +32,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Packer for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: packer
   when: ansible_system == "Darwin"
 
 - name: Install Packer for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: packer

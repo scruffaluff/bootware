@@ -1,4 +1,5 @@
 - name: Install Git for FreeBSD
+  become: true
   community.general.pkgng:
     name:
       - git
@@ -6,6 +7,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Git for Linux
+  become: true
   package:
     name:
       - git
@@ -13,8 +15,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Git for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - git
@@ -22,8 +22,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name:
@@ -34,8 +32,8 @@
 
 - name: Copy Git configuration file
   template:
-    dest: "{{ user_home_dir }}/.gitconfig"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
     force: true
     mode: "644"
-    owner: "{{ user_account }}"
+    owner: "{{ ansible_user_id }}"
     src: gitconfig.j2

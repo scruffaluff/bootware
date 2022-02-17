@@ -1,16 +1,16 @@
 - name: Install Fish for FreeBSD
+  become: true
   community.general.pkgng:
     name: fish
   when: ansible_system == "FreeBSD"
 
 - name: Install Fish for Linux
+  become: true
   package:
     name: fish
   when: ansible_system == "Linux"
 
 - name: Install Fish for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fish
   when: ansible_system == "Darwin"
@@ -18,33 +18,33 @@
 - name: Create Fish configuration directory for Unix
   file:
     mode: "755"
-    owner: "{{ user_account }}"
-    path: "{{ user_home_dir }}/.config/fish"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
   file:
     mode: "755"
-    owner: "{{ user_account }}"
-    path: "{{ user_home_dir }}/.config/fish/completions"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish functions directory for Unix
   file:
     mode: "755"
-    owner: "{{ user_account }}"
-    path: "{{ user_home_dir }}/.config/fish/functions"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/functions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Copy Fish settings file for Unix
   copy:
-    dest: "{{ user_home_dir }}/.config/fish/config.fish"
+    dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
     force: true
     mode: "644"
-    owner: "{{ user_account }}"
+    owner: "{{ ansible_user_id }}"
     src: config.fish
   when: ansible_system != "Win32NT"
 
@@ -60,8 +60,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
       curl -Ls https://git.io/fisher | source
@@ -71,17 +69,16 @@
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.config/fish/config.fish
+      source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
+  become: true
   user:
-    name: "{{ user_account }}"
+    name: "{{ ansible_user_id }}"
     shell: "{{ fish_executable }}"
   when: ansible_system != "Win32NT"

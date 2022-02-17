@@ -23,4 +23,5 @@
   apt:
     name: nvidia-docker2
     update_cache: true
+  become: true
   when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"

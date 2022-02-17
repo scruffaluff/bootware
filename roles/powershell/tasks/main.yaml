@@ -20,26 +20,22 @@
       powershell_formula.json.version }}-win-x64.msi
 
 - name: Create PowerShell settings directories for Windows
-  become: true
-  become_user: "{{ user_account }}"
   loop:
     - Documents/PowerShell
     - Documents/WindowsPowerShell
     - Documents/WindowsPowerShell/Modules
   when: ansible_system == "Win32NT"
   win_file:
-    path: "{{ user_home_dir }}/{{ item }}"
+    path: "{{ ansible_env.HOME }}/{{ item }}"
     state: directory
 
 - name: Copy PowerShell settings files for Windows
-  become: true
-  become_user: "{{ user_account }}"
   loop:
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
     - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
   when: ansible_system == "Win32NT"
   win_copy:
-    dest: "{{ user_home_dir }}/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/{{ item }}"
     force: true
     src: profile.ps1
 # Disabled since trusting PSGallery is an absurdly frustrating process on
@@ -50,7 +46,7 @@
 
 # - name: Install PowerShell modules
 #   become: true
-#   become_user: "{{ user_account }}"
+#   become_user: "{{ ansible_user_id }}"
 #   community.windows.win_psmodule:
 #     name: "{{ item }}"
 #     skip_publisher_check: true

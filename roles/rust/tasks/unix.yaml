@@ -1,4 +1,10 @@
 ---
+- name: Install pkg-config for Linux
+  become: true
+  package:
+    name: pkg-config
+  when: ansible_system == "Linux"
+
 - block:
     - name: Install Rust for Unix
       shell:

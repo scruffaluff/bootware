@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Install SD for Alpine distributions
+  become: true
   community.general.apk:
     name: sd
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
@@ -15,11 +16,13 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install SD for FreeBSD
+  become: true
   community.general.pkgng:
     name: sd
   when: ansible_system == "FreeBSD"
 
 - name: Install SD for Linux
+  become: true
   get_url:
     dest: /usr/local/bin/sd
     mode: "755"
@@ -32,15 +35,11 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install SD for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sd
   when: ansible_system == "Darwin"
 
 - name: Install SD for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: sd

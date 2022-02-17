@@ -15,6 +15,7 @@
     return_content: true
 
 - name: Download Mongo Shell for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -30,6 +31,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for Linux
+  become: true
   copy:
     dest: /usr/local/bin/mongosh
     mode: "755"
@@ -43,8 +45,6 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mongosh
   when: ansible_system == "Darwin"
@@ -52,8 +52,6 @@
 # As of 12/14/2021, Scoop installation of mongodb-database-tools always results
 # in a fetch error.
 # - name: Install Mongo tools for Windows
-#   become: true
-#   become_user: "{{ user_account }}"
 #   community.windows.win_scoop:
 #     architecture: 64bit
 #     name: mongodb-database-tools

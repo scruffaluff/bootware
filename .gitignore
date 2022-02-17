@@ -12,4 +12,5 @@
 /site/
 /tmp/
 dist/
+molecule/
 node_modules/

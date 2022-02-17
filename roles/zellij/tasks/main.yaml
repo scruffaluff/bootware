@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Download Zellij for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin
     mode: "755"
@@ -18,8 +19,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zellij
   when: ansible_system == "Darwin"
@@ -27,16 +26,16 @@
 - name: Create Zellij settings directory for Unix
   file:
     mode: "755"
-    owner: "{{ user_account }}"
-    path: "{{ user_home_dir }}/.config/zellij"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/zellij"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
   copy:
-    dest: "{{ user_home_dir }}/.config/zellij/config.yaml"
+    dest: "{{ ansible_env.HOME }}/.config/zellij/config.yaml"
     force: true
     mode: "644"
-    owner: "{{ user_account }}"
+    owner: "{{ ansible_user_id }}"
     src: config.yaml
   when: ansible_system in ["Darwin", "Linux"]

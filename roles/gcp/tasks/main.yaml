@@ -1,4 +1,5 @@
 - name: Dowload Google Cloud SDK for Alpine distributions
+  become: true
   unarchive:
     dest: /usr/lib/
     mode: "755"
@@ -7,11 +8,13 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Google Cloud SDK binaries for Alpine distributions
+  become: true
   command:
     cmd: /usr/lib/google-cloud-sdk/install.sh --quiet
   when: ansible_pkg_mgr == "apk"
 
 - name: Create links to Google Cloud SDK binaries for Alpine distributions
+  become: true
   file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
@@ -24,12 +27,11 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Google Cloud SDK for Arch distributions
-  become: true
-  become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm google-cloud-sdk
   when: ansible_pkg_mgr == "pacman"
 
 - name: Add Google Cloud SDK key for Debian distributions
+  become: true
   get_url:
     dest: /usr/share/keyrings/cloud-google.gpg
     mode: "644"
@@ -37,10 +39,12 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Google Cloud SDK package list for Debian distributions
+  become: true
   copy:
     dest: /etc/apt/sources.list.d/google-cloud-sdk.list
     force: true
     mode: "644"
+    owner: root
     src: google-cloud-sdk.list
   when: ansible_pkg_mgr == "apt"
 
@@ -48,9 +52,11 @@
   apt:
     name: google-cloud-sdk
     update_cache: true
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Google Cloud SDK package information for Fedora distributions
+  become: true
   blockinfile:
     block: |
       [google-cloud-sdk]
@@ -63,40 +69,37 @@
              https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     create: true
     mode: "644"
+    owner: root
     path: /etc/yum.repos.d/google-cloud-sdk.repo
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Cloud SDK for Fedora distributions
+  become: true
   dnf:
     name: google-cloud-sdk
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Cloud SDK for FreeBSD
+  become: true
   community.general.pkgng:
     name: google-cloud-sdk
   when: ansible_system == "FreeBSD"
 
 - name: Install Google Cloud SDK Fish completion for Linux
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.config/fish/config.fish
+      source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install aliz-ai/google-cloud-sdk-fish-completion
     executable: "{{ fish_executable }}"
   when: ansible_system == "Linux"
 
 - name: Install Google Cloud SDK for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: google-cloud-sdk
   when: ansible_system == "Darwin"
 
 - name: Install Google Cloud SDK for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: gcloud

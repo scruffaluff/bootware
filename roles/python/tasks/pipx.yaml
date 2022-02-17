@@ -1,43 +1,37 @@
 - name: Install Pipx for FreeBSD
+  become: true
   community.general.pkgng:
     name: py38-pipx
   when: ansible_system == "FreeBSD"
 
 - name: Install Pipx for Linux
+  become: true
   command: /usr/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "Linux"
 
 - name: Install Pipx for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"
 
 - name: Install Pipx for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: python -m pip install --upgrade pipx
 
-# Pipx installs applications per user, so user_account is required.
+# Pipx installs applications per user, so ansible_user_id is required.
 - name: Install Pipx command line applications for Unix
-  become: true
-  become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
   shell:
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force {{ item }}
+    cmd: >-
+      pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force
+      {{ item }}
     executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT"
 
-# Pipx installs applications per user, so user_account is required.
+# Pipx installs applications per user, so ansible_user_id is required.
 - name: Install Pipx command line applications for Windows
-  become: true
-  become_user: "{{ user_account }}"
   loop: "{{ pipx_applications }}"
   when: ansible_system == "Win32NT"
   # Pipx installation can break if associated Python interpreter is updated.
@@ -46,17 +40,9 @@
     (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install --force {{ item }})
 
 - name: Update Pipx command line applications for Unix
-  become: true
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      pipx upgrade-all
-    executable: "{{ bash_executable }}"
+  command: pipx upgrade-all
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows
-  become: true
-  become_user: "{{ user_account }}"
   when: ansible_system == "Win32NT"
   win_shell: pipx upgrade-all

@@ -6,6 +6,7 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher repository key for Debian distributions
+  become: true
   command:
     cmd: >-
       gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
@@ -21,9 +22,11 @@
       ansible_distribution_release }} main
     state: present
     filename: balena-etcher
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
+  become: true
   shell:
     cmd: >-
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
@@ -34,23 +37,23 @@
 # Balena Etcher package conflicts with NodeJS.
 # - name: Install Balena Etcher for Arch distributions
 #   become: true
-#   become_user: "{{ user_account }}"
+#   become_user: "{{ ansible_user_id }}"
 #   command: yay -Sy --noconfirm balena-etcher
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions
   apt:
     name: balena-etcher-electron
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for Fedora distributions
+  become: true
   dnf:
     name: balena-etcher-electron
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: balenaetcher
@@ -58,8 +61,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Balena Etcher for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: etcher

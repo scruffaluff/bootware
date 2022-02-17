@@ -3,14 +3,17 @@
 - name: Install Google Chrome for Debian distributions
   apt:
     deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Google GPG key for Fedora distributions
+  become: true
   rpm_key:
     key: https://dl.google.com/linux/linux_signing_key.pub
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Google Chrome for Fedora distributions
+  become: true
   dnf:
     name: >-
       https://dl.google.com/linux/direct/google-chrome-stable_current_{{
@@ -18,8 +21,6 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Chrome for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: google-chrome
@@ -27,8 +28,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Google Chrome for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: googlechrome

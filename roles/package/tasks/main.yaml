@@ -1,4 +1,5 @@
 - name: Install Pacman packages for Arch distributions
+  become: true
   community.general.pacman:
     name: "{{ item }}"
   loop: "{{ pacman_packages }}"
@@ -7,30 +8,32 @@
 - name: Install Apt packages by name for Debian distributions
   apt:
     name: "{{ item }}"
+  become: true
   loop: "{{ apt_packages }}"
   when: ansible_pkg_mgr == "apt" and "/" not in item
 
 - name: Install Apt packages by path for Debian distributions
   apt:
     deb: "{{ item }}"
+  become: true
   loop: "{{ apt_packages }}"
   when: ansible_pkg_mgr == "apt" and "/" in item
 
 - name: Install DNF packages for Fedora distributions
+  become: true
   dnf:
     name: "{{ item }}"
   loop: "{{ dnf_packages }}"
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pkg packages for FreeBSD
+  become: true
   community.general.pkgng:
     name: "{{ item }}"
   loop: "{{ pkg_packages }}"
   when: ansible_system == "FreeBSD"
 
 - name: Install Homebrew casks for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: "{{ item }}"
@@ -39,8 +42,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew packages for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: "{{ item }}"
     state: present
@@ -54,8 +55,6 @@
     name: "{{ item }}"
 
 - name: Install Scoop packages for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: "{{ item }}"

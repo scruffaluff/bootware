@@ -7,9 +7,6 @@
   hosts: all
   roles:
     - name: system
-      become: true
-      become_user: >-
-        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - container
     - desktop
@@ -21,9 +18,6 @@
   hosts: all
   roles:
     - name: alacritty
-      become: true
-      become_user: >-
-        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - alacritty
     - desktop
@@ -33,7 +27,6 @@
   hosts: all
   roles:
     - name: appimage
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - appimage
     - container
@@ -45,7 +38,6 @@
   hosts: all
   roles:
     - name: audio
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - audio
     - desktop
@@ -54,7 +46,6 @@
   hosts: all
   roles:
     - name: avro
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - avro
     - container
@@ -66,9 +57,6 @@
   hosts: all
   roles:
     - name: aws
-      become: true
-      become_user: >-
-        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - aws
     - cloud
@@ -81,7 +69,6 @@
   hosts: all
   roles:
     - name: bash
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - bash
     - container
@@ -94,7 +81,6 @@
   hosts: all
   roles:
     - name: bat
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - bat
     - container
@@ -107,7 +93,6 @@
   hosts: all
   roles:
     - name: beekeeper
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - beekeeper
     - desktop
@@ -116,7 +101,6 @@
   hosts: all
   roles:
     - name: build
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - build
     - container
@@ -128,7 +112,6 @@
   hosts: all
   roles:
     - name: caffeine
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - caffeine
     - desktop
@@ -137,7 +120,6 @@
   hosts: all
   roles:
     - name: chrome
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - browser
     - chrome
@@ -147,7 +129,6 @@
   hosts: all
   roles:
     - name: compass
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - compass
     - database
@@ -157,7 +138,6 @@
   hosts: all
   roles:
     - name: cuda
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cuda
     - desktop
@@ -168,7 +148,6 @@
   hosts: all
   roles:
     - name: dbeaver
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - dbeaver
     - desktop
@@ -177,7 +156,6 @@
   hosts: all
   roles:
     - name: defterm
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - defterm
     - desktop
@@ -187,7 +165,6 @@
   hosts: all
   roles:
     - name: deno
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - deno
@@ -201,8 +178,7 @@
   hosts: all
   roles:
     - name: deskenv
-      become: true
-      become_user: "{{ user_account }}"
+
   tags:
     - deskenv
     - desktop
@@ -211,7 +187,6 @@
   hosts: all
   roles:
     - name: docker
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - docker
@@ -223,7 +198,6 @@
   hosts: all
   roles:
     - name: doctl
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cloud
     - container
@@ -236,7 +210,6 @@
   hosts: all
   roles:
     - name: dvc
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -249,7 +222,6 @@
   hosts: all
   roles:
     - name: dust
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -261,7 +233,6 @@
   hosts: all
   roles:
     - name: emacs
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -274,7 +245,6 @@
   hosts: all
   roles:
     - name: etcher
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - etcher
@@ -283,7 +253,6 @@
   hosts: all
   roles:
     - name: exa
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -296,7 +265,6 @@
   hosts: all
   roles:
     - name: fd
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -309,7 +277,6 @@
   hosts: all
   roles:
     - name: ffsend
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -321,7 +288,6 @@
   hosts: all
   roles:
     - name: firefox
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - browser
     - desktop
@@ -331,7 +297,6 @@
   hosts: all
   roles:
     - name: fish
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -344,7 +309,6 @@
   hosts: all
   roles:
     - name: flatpak
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -356,7 +320,6 @@
   hosts: all
   roles:
     - name: font
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -367,7 +330,6 @@
   hosts: all
   roles:
     - name: fzf
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -379,7 +341,6 @@
   hosts: all
   roles:
     - name: gcp
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - cloud
     - container
@@ -392,7 +353,6 @@
   hosts: all
   roles:
     - name: git
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -405,7 +365,6 @@
   hosts: all
   roles:
     - name: github
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - github
@@ -417,7 +376,6 @@
   hosts: all
   roles:
     - name: gitlab
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - gitlab
@@ -429,7 +387,6 @@
   hosts: all
   roles:
     - name: glow
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -441,7 +398,6 @@
   hosts: all
   roles:
     - name: go
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -454,9 +410,6 @@
   hosts: all
   roles:
     - name: hadolint
-      become: true
-      become_user: >-
-        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - desktop
     - hadolint
@@ -468,7 +421,6 @@
   hosts: all
   roles:
     - name: hdf5
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -480,7 +432,6 @@
   hosts: all
   roles:
     - name: helm
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - helm
@@ -492,7 +443,6 @@
   hosts: all
   roles:
     - name: hyper
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hyper
@@ -502,7 +452,6 @@
   hosts: all
   roles:
     - name: hyperfine
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -514,7 +463,6 @@
   hosts: all
   roles:
     - name: java
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -527,7 +475,6 @@
   hosts: all
   roles:
     - name: jq
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -540,7 +487,6 @@
   hosts: all
   roles:
     - name: julia
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -553,7 +499,6 @@
   hosts: all
   roles:
     - name: kubectl
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - kubectl
@@ -565,9 +510,6 @@
   hosts: all
   roles:
     - name: libvirt
-      become: true
-      become_user: >-
-        {{ user_account if ansible_system in ['Darwin', 'Win32NT'] else omit }}
   tags:
     - desktop
     - libvirt
@@ -577,7 +519,6 @@
   hosts: all
   roles:
     - name: lua
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -590,7 +531,6 @@
   hosts: all
   roles:
     - name: mdbook
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -603,7 +543,6 @@
   hosts: all
   roles:
     - name: mkcert
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -616,7 +555,6 @@
   hosts: all
   roles:
     - name: mongo
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - database
@@ -629,7 +567,6 @@
   hosts: all
   roles:
     - name: navi
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -641,7 +578,6 @@
   hosts: all
   roles:
     - name: neovim
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -654,7 +590,6 @@
   hosts: all
   roles:
     - name: node
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -668,7 +603,6 @@
   hosts: all
   roles:
     - name: ots
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -680,7 +614,6 @@
   hosts: all
   roles:
     - name: package
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -692,7 +625,6 @@
   hosts: all
   roles:
     - name: packer
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -705,7 +637,6 @@
   hosts: all
   roles:
     - name: parquet
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -717,7 +648,6 @@
   hosts: all
   roles:
     - name: powershell
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -729,7 +659,6 @@
   hosts: all
   roles:
     - name: procs
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -741,7 +670,6 @@
   hosts: all
   roles:
     - name: python
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -754,7 +682,6 @@
   hosts: all
   roles:
     - name: qemu
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - qemu
@@ -764,7 +691,6 @@
   hosts: all
   roles:
     - name: rclone
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -776,7 +702,6 @@
   hosts: all
   roles:
     - name: ripgrep
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -789,7 +714,6 @@
   hosts: all
   roles:
     - name: ruby
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -802,8 +726,6 @@
   hosts: all
   roles:
     - name: rust
-      become: true
-      become_user: "{{ user_account }}"
   tags:
     - container
     - desktop
@@ -816,7 +738,6 @@
   hosts: all
   roles:
     - name: scc
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -828,7 +749,6 @@
   hosts: all
   roles:
     - name: sd
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -840,7 +760,6 @@
   hosts: all
   roles:
     - name: snap
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - snap
@@ -849,7 +768,6 @@
   hosts: all
   roles:
     - name: sqlite
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - database
@@ -862,8 +780,7 @@
   hosts: all
   roles:
     - name: starship
-      become: true
-      become_user: "{{ user_account if ansible_system == 'Win32NT' else omit }}"
+
   tags:
     - container
     - desktop
@@ -876,7 +793,6 @@
   hosts: all
   roles:
     - name: sudo
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -888,7 +804,6 @@
   hosts: all
   roles:
     - name: terraform
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -901,7 +816,6 @@
   hosts: all
   roles:
     - name: terragrunt
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -914,7 +828,6 @@
   hosts: all
   roles:
     - name: tldr
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -927,7 +840,6 @@
   hosts: all
   roles:
     - name: tmux
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -940,7 +852,6 @@
   hosts: all
   roles:
     - name: usql
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -952,7 +863,6 @@
   hosts: all
   roles:
     - name: vagrant
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hashicorp
@@ -964,7 +874,6 @@
   hosts: all
   roles:
     - name: vault
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -977,7 +886,6 @@
   hosts: all
   roles:
     - name: virtualbox
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - hashicorp
@@ -987,7 +895,6 @@
   hosts: all
   roles:
     - name: vscode
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - editor
@@ -998,7 +905,6 @@
   hosts: all
   roles:
     - name: wasm
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -1011,7 +917,6 @@
   hosts: all
   roles:
     - name: winman
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - desktop
     - winman
@@ -1020,7 +925,6 @@
   hosts: all
   roles:
     - name: xsv
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -1033,7 +937,6 @@
   hosts: all
   roles:
     - name: zellij
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop
@@ -1046,7 +949,6 @@
   hosts: all
   roles:
     - name: zola
-      become: "{{ true if ansible_system != 'Win32NT' else omit }}"
   tags:
     - container
     - desktop

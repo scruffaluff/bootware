@@ -7,14 +7,17 @@
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for FreeBSD
+  become: true
   community.general.pkgng:
     name: doctl
   when: ansible_system == "FreeBSD"
 
 - name: Install Digital Ocean CLI for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin/
     mode: "755"
+    owner: root
     remote_src: true
     src: >-
       https://github.com/digitalocean/doctl/releases/download/v{{
@@ -28,24 +31,18 @@
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: doctl
   when: ansible_system == "Darwin"
 
 - name: Install Digital Ocean CLI for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: doctl
   when: ansible_system == "Win32NT"
 
 - name: Install Digital Ocean CLI Fish completion for Unix
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      doctl completion fish > {{ user_home_dir }}/.config/fish/completions/doctl.fish
+      doctl completion fish > {{ ansible_env.HOME }}/.config/fish/completions/doctl.fish
   when: ansible_system != "Win32NT"

@@ -7,6 +7,7 @@
   when: ansible_system == "Linux"
 
 - name: Download Act for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -22,22 +23,20 @@
   when: ansible_system == "Linux"
 
 - name: Install Act for Linux
+  become: true
   copy:
     dest: /usr/local/bin/act
     mode: "755"
+    owner: root
     src: /tmp/act
   when: ansible_system == "Linux"
 
 - name: Install Act for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: act
   when: ansible_system == "Darwin"
 
 - name: Install Act for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: act
@@ -52,6 +51,7 @@
   when: ansible_system == "Linux"
 
 - name: Install GitHub CLI for Alpine distributions
+  become: true
   community.general.apk:
     name: github-cli
   when: ansible_pkg_mgr == "apk"
@@ -62,6 +62,7 @@
       https://github.com/cli/cli/releases/download/v{{
       gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
       }}_linux_{{ gh_arch[ansible_architecture] }}.deb
+  become: true
   vars:
     gh_arch:
       aarch64: arm64
@@ -69,6 +70,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install GitHub CLI for Fedora distributions
+  become: true
   dnf:
     disable_gpg_check: true
     name:
@@ -82,20 +84,17 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install GitHub CLI for FreeBSD
+  become: true
   community.general.pkgng:
     name: gh
   when: ansible_system == "FreeBSD"
 
 - name: Install GitHub CLI for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gh
   when: ansible_system == "Darwin"
 
 - name: Install GitHub CLI for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: gh

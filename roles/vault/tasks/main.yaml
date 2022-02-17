@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for FreeBSD
+  become: true
   community.general.pkgng:
     name: vault
   when: ansible_system == "FreeBSD"
 
 - name: Install Vault for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin/
     group: root
@@ -29,15 +31,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"
 
 - name: Install Vault for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: vault

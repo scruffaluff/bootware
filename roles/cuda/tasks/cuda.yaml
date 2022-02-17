@@ -30,11 +30,10 @@
   apt:
     name: cuda
     update_cache: true
+  become: true
   when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Nvidia CUDA for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: cuda

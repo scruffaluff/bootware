@@ -1,9 +1,11 @@
 - name: Install AWSCLI for FreeBSD
+  become: true
   community.general.pkgng:
     name: awscli
   when: ansible_system == "FreeBSD"
 
 - name: Install AWSCLI for Linux
+  become: true
   package:
     name: >-
       {{ 'aws-cli' if ansible_pkg_mgr in ['apk', 'pacman'] else 'awscli' }}

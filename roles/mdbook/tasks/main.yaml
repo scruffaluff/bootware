@@ -18,11 +18,13 @@
 #   when: ansible_pkg_mgr == "apk"
 
 - name: Install Mdbook for FreeBSD
+  become: true
   community.general.pkgng:
     name: mdbook
   when: ansible_system == "FreeBSD"
 
 - name: Install Mdbook for Linux
+  become: true
   unarchive:
     dest: /usr/local/bin/
     group: root
@@ -38,15 +40,11 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install Mdbook for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: mdbook
   when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
 
 - name: Install Mdbook for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: mdbook

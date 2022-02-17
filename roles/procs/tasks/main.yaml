@@ -7,6 +7,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Procs for Debian distribution
+  become: true
   unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -20,20 +21,17 @@
 # TODO: Procs is not yet available on stable Alpine. Check
 # https://pkgs.alpinelinux.org/packages?name=procs for future availability.
 - name: Install Procs for Linux
+  become: true
   package:
     name: procs
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
 
 - name: Install Procs for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: procs
   when: ansible_system == "Darwin"
 
 - name: Install Procs for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: procs

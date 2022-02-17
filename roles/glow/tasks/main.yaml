@@ -7,8 +7,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Glow for Arch distributions
-  become: true
-  become_user: "{{ user_account }}"
   command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
@@ -19,6 +17,7 @@
       glow_formula.json.versions.stable }}/glow_{{
       glow_formula.json.versions.stable }}_linux_{{
       glow_arch[ansible_architecture] }}.deb
+  become: true
   vars:
     glow_arch:
       aarch64: arm64
@@ -26,6 +25,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Glow for Fedora distributions
+  become: true
   dnf:
     disable_gpg_check: true
     name: >-
@@ -40,20 +40,17 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Glow for FreeBSD
+  become: true
   community.general.pkgng:
     name: glow
   when: ansible_system == "FreeBSD"
 
 - name: Install Glow for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: glow
   when: ansible_system == "Darwin"
 
 - name: Install Glow for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: glow

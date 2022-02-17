@@ -1,23 +1,21 @@
 - name: Install FzF for FreeBSD
+  become: true
   community.general.pkgng:
     name: fzf
   when: ansible_system == "FreeBSD"
 
 - name: Install FzF for Linux
+  become: true
   package:
     name: fzf
   when: ansible_system == "Linux"
 
 - name: Install FzF for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fzf
   when: ansible_system == "Darwin"
 
 - name: Install FzF for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: fzf

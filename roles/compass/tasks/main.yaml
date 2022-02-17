@@ -13,9 +13,11 @@
     deb: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       mongodb_compass_formula.json.version }}_amd64.deb
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install MongoDB Compass For Fedora distributions
+  become: true
   dnf:
     disable_gpg_check: true
     name: >-
@@ -24,8 +26,6 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install MongoDB Compass for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: mongodb-compass
@@ -33,8 +33,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install MongoDB Compass for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: mongodb-compass

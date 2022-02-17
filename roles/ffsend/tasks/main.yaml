@@ -10,7 +10,7 @@
 # installation.
 # - name: Install FFSend for Alpine distributions
 #   become: true
-#   community.general.apk:
+# community.general.apk:
 #     name: ffsend
 #     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
 #     state: latest
@@ -18,11 +18,13 @@
 #   when: ansible_pkg_mgr == "apk"
 
 - name: Install FFSend for FreeBSD
+  become: true
   community.general.pkgng:
     name: ffsend
   when: ansible_system == "FreeBSD"
 
 - name: Install FFSend for Linux
+  become: true
   get_url:
     dest: /usr/local/bin/ffsend
     mode: "755"
@@ -35,15 +37,11 @@
     ansible_pkg_mgr != "apk"
 
 - name: Install FFSend for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: ffsend
   when: ansible_system == "Darwin"
 
 - name: Install FFSend for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: ffsend

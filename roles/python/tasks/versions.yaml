@@ -2,6 +2,7 @@
 # https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
 
 - name: Install Pyenv dependencies for Arch distributions
+  become: true
   community.general.pacman:
     name:
       - base-devel
@@ -31,9 +32,11 @@
       - wget
       - xz-utils
       - zlib1g-dev
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Pyenv dependencies for Fedora distributions
+  become: true
   dnf:
     name:
       - bzip2
@@ -50,8 +53,6 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pyenv dependencies for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - openssl
@@ -64,31 +65,25 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: curl -Sfs https://pyenv.run | bash
-    creates: "{{ user_home_dir }}/.pyenv/bin/pyenv"
+    creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
     warn: false
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       pyenv update
     executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix
-  become: true
-  become_user: "{{ user_account }}"
   loop: "{{ python_versions }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
   register: pyenv_releases
@@ -101,19 +96,15 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
-  become: true
-  become_user: "{{ user_account }}"
   loop: "{{ python_releases }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       pyenv install -s {{ item }}
     executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: python{{ item | replace('.','') | replace('310','') }}
@@ -121,11 +112,9 @@
   when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: "{{ bash_executable }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"

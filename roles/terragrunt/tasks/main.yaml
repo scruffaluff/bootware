@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Terragrunt for FreeBSD
+  become: true
   community.general.pkgng:
     name: terragrunt
   when: ansible_system == "FreeBSD"
 
 - name: Install Terragrunt for Linux
+  become: true
   get_url:
     dest: /usr/local/bin/terragrunt
     mode: "755"
@@ -26,15 +28,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Terragrunt for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: terragrunt
   when: ansible_system == "Darwin"
 
 - name: Install Terragrunt for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: terragrunt

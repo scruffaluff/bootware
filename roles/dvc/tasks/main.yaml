@@ -14,9 +14,11 @@
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc_{{
       dvc_formula.json.versions.stable }}_amd64.deb
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install DVC for Fedora distributions
+  become: true
   dnf:
     disable_gpg_check: true
     name: >-
@@ -26,20 +28,17 @@
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DVC for FreeBSD
+  become: true
   community.general.pkgng:
     name: dvc
   when: ansible_system == "FreeBSD"
 
 - name: Install DVC for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dvc
   when: ansible_system == "Darwin"
 
 - name: Install DVC for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: dvc

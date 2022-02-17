@@ -1,6 +1,4 @@
 - name: Install iTerm2 for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: iterm2
@@ -8,8 +6,6 @@
   when: ansible_system == "Darwin"
 
 - name: Change iTerm2 default profile for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   shell:
     cmd: |
       defaults write com.googlecode.iterm2 "Blinking Cursor" -bool 1

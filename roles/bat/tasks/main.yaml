@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Bat for Alpine distributions
+  become: true
   community.general.apk:
     name: bat
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Bat for Arch distributions
+  become: true
   community.general.pacman:
     name: bat
   when: ansible_pkg_mgr == "pacman"
@@ -23,6 +25,7 @@
       bat_formula.json.versions.stable }}/bat_{{
       bat_formula.json.versions.stable }}_{{ bat_arch[ansible_architecture]
       }}.deb
+  become: true
   vars:
     bat_arch:
       aarch64: arm64
@@ -30,25 +33,23 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Bat for Fedora distributions
+  become: true
   dnf:
     name: bat
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Bat for FreeBSD
+  become: true
   community.general.pkgng:
     name: bat
   when: ansible_system == "FreeBSD"
 
 - name: Install Bat for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: bat
   when: ansible_system == "Darwin"
 
 - name: Install Bat for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: bat

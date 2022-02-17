@@ -7,11 +7,13 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for FreeBSD
+  become: true
   community.general.pkgng:
     name: helm
   when: ansible_system == "FreeBSD"
 
 - name: Download Helm for Linux
+  become: true
   unarchive:
     dest: /tmp/
     mode: "755"
@@ -26,9 +28,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for Linux
+  become: true
   copy:
     dest: /usr/local/bin/helm
     mode: "755"
+    owner: root
     src: /tmp/linux-{{ helm_arch[ansible_architecture] }}/helm
   vars:
     helm_arch:
@@ -37,15 +41,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: helm
   when: ansible_system == "Darwin"
 
 - name: Install Helm for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: helm

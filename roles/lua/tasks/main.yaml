@@ -1,24 +1,22 @@
 - name: Install Lua for FreeBSD
+  become: true
   community.general.pkgng:
     name: lua54
   when: ansible_system == "FreeBSD"
 
 # Lua 5.4 is not available on all LTS Ubuntu releases.
 - name: Install Lua for Linux
+  become: true
   package:
     name: "{{ 'lua5.3' if ansible_pkg_mgr == 'apt' else 'lua' }}"
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS
-  become: true
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: lua
   when: ansible_system == "Darwin"
 
 - name: Install Lua for Windows
-  become: true
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
     architecture: 64bit
     name: lua

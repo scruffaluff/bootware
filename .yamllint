@@ -1,0 +1,15 @@
+# YamlLint configuration file for enforcing YAML file conventions.
+#
+# For more information, visit
+# https://yamllint.readthedocs.io/en/stable/configuration.html.
+
+---
+extends: default
+
+ignore: |
+  .vagrant/
+  .venv/
+  node_modules/
+rules:
+  indentation:
+    spaces: 2
