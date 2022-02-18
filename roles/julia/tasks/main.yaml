@@ -41,7 +41,7 @@
   community.general.homebrew:
     name: julia
     state: present
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
 
 - name: Install Julia for Windows
   community.windows.win_scoop:

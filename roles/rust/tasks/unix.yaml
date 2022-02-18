@@ -2,7 +2,7 @@
 - name: Install pkg-config for Linux
   become: true
   package:
-    name: pkg-config
+    name: "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   when: ansible_system == "Linux"
 
 - block:

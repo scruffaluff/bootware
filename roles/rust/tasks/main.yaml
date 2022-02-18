@@ -2,5 +2,5 @@
 - include_tasks: unix.yaml
   when: ansible_system != "Win32NT"
 
-- include_tasks: setup-Debian.yml
+- include_tasks: windows.yaml
   when: ansible_system == "Win32NT"

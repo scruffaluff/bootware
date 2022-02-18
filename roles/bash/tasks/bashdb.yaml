@@ -14,6 +14,7 @@
 
 # BashDB installer does not yet support Bash 5.1.
 # - name: Download BashDB for Linux
+#   become: true
 #   unarchive:
 #     dest: /tmp/
 #     mode: "755"
@@ -25,6 +26,7 @@
 #   when: ansible_system == "Linux"
 
 # - name: Install BashDB for Linux
+#   become: true
 #   shell:
 #     chdir: "/tmp/bashdb-{{ bashdb_formula.json.versions.stable }}"
 #     cmd: |

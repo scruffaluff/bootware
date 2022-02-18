@@ -1,4 +1,5 @@
 - name: Add Nvidia CUDA APT preferences for Ubuntu distributions
+  become: true
   get_url:
     dest: /etc/apt/preferences.d/cuda-repository-pin-600
     mode: "644"
@@ -6,6 +7,7 @@
   when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Download Nvidia CUDA repository key for Ubuntu distributions
+  become: true
   get_url:
     dest: /tmp/cuda-archive-keyring.pub
     mode: "644"
@@ -13,12 +15,14 @@
   when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Nvidia CUDA repository key for Ubuntu distributions
+  become: true
   command: >-
     gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg
     /tmp/cuda-archive-keyring.pub
   when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Nvidia CUDA repository for Ubuntu distributions
+  become: true
   template:
     dest: /etc/apt/sources.list.d/cuda.list
     force: true

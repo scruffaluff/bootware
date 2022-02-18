@@ -16,6 +16,14 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
     != "apk" and ansible_architecture == "x86_64")
 
+- name: Create Fish completions directory for Unix
+  file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
 # TODO: Add Bash completions with deno completions bash >
 # /usr/local/etc/bash_completion.d/deno.bash.
 - name: Generate Deno Fish completions for Unix

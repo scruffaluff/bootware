@@ -1,7 +1,9 @@
 - name: Install Hyper for Arch distributions
+  become: true
   get_url:
     dest: /usr/local/appimages/hyper.appimage
     mode: "755"
+    owner: root
     url: https://releases.hyper.is/download/AppImage
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
