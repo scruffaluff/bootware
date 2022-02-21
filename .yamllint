@@ -10,6 +10,10 @@ ignore: |
   .vagrant/
   .venv/
   node_modules/
+  tmp/
 rules:
   indentation:
     spaces: 2
+  # Prettier already enforces line length, so YamlLint only complains about long
+  # URLs.
+  line-length: disable

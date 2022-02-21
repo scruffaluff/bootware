@@ -1,3 +1,4 @@
+---
 - name: Get latest Hyperfine version
   uri:
     url: https://formulae.brew.sh/api/formula/hyperfine.json

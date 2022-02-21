@@ -1,3 +1,4 @@
+---
 # Shell installer for Deno accidentally installs ARM64 version on FreeBSD.
 - name: Install Deno for FreeBSD
   become: true

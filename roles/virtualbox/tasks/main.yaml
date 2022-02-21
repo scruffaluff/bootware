@@ -1,3 +1,4 @@
+---
 - name: Add Virtualbox GPG key for Fedora distributions
   become: true
   rpm_key:

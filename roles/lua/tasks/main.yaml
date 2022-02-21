@@ -1,3 +1,4 @@
+---
 - name: Install Lua for FreeBSD
   become: true
   community.general.pkgng:

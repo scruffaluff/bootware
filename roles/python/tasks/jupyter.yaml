@@ -1,3 +1,4 @@
+---
 - name: Create Jupyter settings directory for Unix
   file:
     mode: "755"

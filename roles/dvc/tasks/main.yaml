@@ -1,3 +1,4 @@
+---
 - name: Get latest DVC version
   uri:
     url: https://formulae.brew.sh/api/formula/dvc.json

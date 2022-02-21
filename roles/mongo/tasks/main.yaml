@@ -1,3 +1,4 @@
+---
 - name: Get latest Mongo Shell version for Linux
   uri:
     url: https://formulae.brew.sh/api/formula/mongosh.json

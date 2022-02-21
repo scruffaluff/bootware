@@ -1,3 +1,4 @@
+---
 # TODO: Tmate is not yet available on stable Alpine. Check
 # https://pkgs.alpinelinux.org/packages?name=tmate for future availability.
 - name: Install Tmux for Alpine distributions

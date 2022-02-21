@@ -1,3 +1,4 @@
+---
 - name: Get latest Zola version
   uri:
     url: https://formulae.brew.sh/api/formula/zola.json

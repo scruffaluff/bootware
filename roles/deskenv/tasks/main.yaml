@@ -1,3 +1,4 @@
+---
 - name: Install desktop management dependencies for MacOS
   community.general.homebrew:
     name: duti

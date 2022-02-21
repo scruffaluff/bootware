@@ -1,3 +1,4 @@
+---
 # TODO: Install Alacritty for Debian distributions.
 - name: Add Alacritty PPA for Ubuntu distributions
   apt_repository:

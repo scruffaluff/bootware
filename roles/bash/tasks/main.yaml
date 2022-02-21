@@ -1,3 +1,4 @@
+---
 - name: Install Bash shell
   import_tasks: bash.yaml
 

@@ -1,3 +1,4 @@
+---
 - name: Get latest Digital Ocean CLI version
   uri:
     url: https://formulae.brew.sh/api/formula/doctl.json

@@ -1,3 +1,4 @@
+---
 - name: Install Caffeine for Debian distributions
   apt:
     name: caffeine

@@ -1,3 +1,4 @@
+---
 - name: Install Bash for FreeBSD
   become: true
   community.general.pkgng:

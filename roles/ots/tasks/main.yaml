@@ -1,3 +1,4 @@
+---
 - name: Get latest OTS version
   uri:
     url: https://api.github.com/repos/sniptt-official/ots/releases/latest

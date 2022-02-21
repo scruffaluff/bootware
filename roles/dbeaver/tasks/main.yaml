@@ -1,3 +1,4 @@
+---
 - name: Install DBeaver for Arch distributions
   become: true
   community.general.pacman:

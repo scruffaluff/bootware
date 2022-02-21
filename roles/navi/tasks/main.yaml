@@ -1,3 +1,4 @@
+---
 - name: Get latest Navi version
   uri:
     url: https://formulae.brew.sh/api/formula/navi.json

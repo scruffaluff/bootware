@@ -1,3 +1,4 @@
+---
 - name: Get latest Parquet CLI version
   uri:
     url: https://formulae.brew.sh/api/formula/parquet-cli.json

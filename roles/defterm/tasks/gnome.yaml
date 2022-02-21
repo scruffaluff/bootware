@@ -1,3 +1,4 @@
+---
 - name: Install Gnome Terminal for Debian distributions
   apt:
     name: gnome-terminal

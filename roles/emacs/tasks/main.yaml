@@ -1,3 +1,4 @@
+---
 - name: Install Emacs for FreeBSD
   become: true
   community.general.pkgng:

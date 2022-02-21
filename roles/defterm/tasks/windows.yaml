@@ -1,3 +1,4 @@
+---
 - name: Install Windows Terminal for Windows
   community.windows.win_scoop:
     architecture: 64bit

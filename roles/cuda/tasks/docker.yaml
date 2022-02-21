@@ -1,3 +1,4 @@
+---
 - name: Download Nvidia Docker repository key for Ubuntu distributions
   become: true
   get_url:

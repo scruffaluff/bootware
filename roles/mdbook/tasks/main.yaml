@@ -1,3 +1,4 @@
+---
 - name: Get latest Mdbook version
   uri:
     url: https://formulae.brew.sh/api/formula/mdbook.json

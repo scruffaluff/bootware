@@ -1,3 +1,4 @@
+---
 - name: Get latest Vagrant version
   uri:
     url: https://formulae.brew.sh/api/cask/vagrant.json

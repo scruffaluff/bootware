@@ -1,3 +1,4 @@
+---
 dependencies:
   - role: java
     when: ansible_system == "Linux"

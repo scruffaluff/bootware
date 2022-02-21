@@ -1,3 +1,4 @@
+---
 - name: Install Wasmtime for Unix
   shell:
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash

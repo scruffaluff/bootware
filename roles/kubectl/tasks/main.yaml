@@ -1,3 +1,4 @@
+---
 - name: Install Kubectl for Alpine distributions
   become: true
   community.general.apk:

@@ -1,3 +1,4 @@
+---
 - name: Get latest MongoDB Compass version
   uri:
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json

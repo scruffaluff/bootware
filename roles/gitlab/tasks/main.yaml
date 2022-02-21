@@ -1,3 +1,4 @@
+---
 - name: Install GitLab Runner for Alpine distributions
   become: true
   community.general.apk:

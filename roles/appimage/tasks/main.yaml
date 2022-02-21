@@ -1,3 +1,4 @@
+---
 # AppImages requires FUSE.
 - name: Install FUSE for Arch distributions
   become: true

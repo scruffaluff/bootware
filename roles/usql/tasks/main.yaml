@@ -1,3 +1,4 @@
+---
 - name: Get latest Usql version
   uri:
     method: GET
@@ -26,7 +27,7 @@
 - name: Install Usql for Debian distributions
   command: go get github.com/xo/usql
   environment:
-    GOPATH: "{{ ansible_env.HOME}}/go"
+    GOPATH: "{{ ansible_env.HOME }}/go"
     GOROOT: "/usr/local/go"
     PATH: >-
       /usr/local/go/bin:{{ ansible_env.HOME }}/go/bin:{{ ansible_env.PATH }}

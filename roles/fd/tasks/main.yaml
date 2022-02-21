@@ -1,3 +1,4 @@
+---
 - name: Get latest FD version
   uri:
     url: https://formulae.brew.sh/api/formula/fd.json

@@ -1,3 +1,4 @@
+---
 - name: Install iTerm2 for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true

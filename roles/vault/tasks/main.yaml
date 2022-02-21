@@ -1,3 +1,4 @@
+---
 - name: Get latest Vault version
   uri:
     url: https://formulae.brew.sh/api/formula/vault.json

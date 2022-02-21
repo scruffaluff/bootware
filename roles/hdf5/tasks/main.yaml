@@ -1,3 +1,4 @@
+---
 - name: Install HDF5 tools for Linux
   become: true
   package:

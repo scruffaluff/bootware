@@ -1,3 +1,4 @@
+---
 - name: Install GNOME terminals
   import_tasks: gnome.yaml
 

@@ -1,3 +1,4 @@
+---
 - name: Install TLDR for Alpine distributions
   command: npm install -g tldr
   environment:

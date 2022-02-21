@@ -1,3 +1,4 @@
+---
 - name: Get latest Hadolint version
   uri:
     url: https://formulae.brew.sh/api/formula/hadolint.json

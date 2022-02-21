@@ -1,3 +1,4 @@
+---
 - name: Add Nvidia CUDA APT preferences for Ubuntu distributions
   become: true
   get_url:

@@ -1,3 +1,4 @@
+---
 - name: Install RVM dependencies for Debian distributions
   apt:
     name:

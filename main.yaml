@@ -3,6 +3,7 @@
 # For more information, visit
 # https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
+---
 - name: Update system package managers and install essential packages
   hosts: all
   roles:

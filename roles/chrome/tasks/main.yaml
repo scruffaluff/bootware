@@ -1,3 +1,4 @@
+---
 # Google does not appear to provide an Arch release for Chrome.
 
 - name: Install Google Chrome for Debian distributions

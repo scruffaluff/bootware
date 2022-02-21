@@ -1,3 +1,4 @@
+---
 - name: Get latest Docker Compose version
   uri:
     url: https://formulae.brew.sh/api/formula/docker-compose.json

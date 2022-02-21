@@ -1,3 +1,4 @@
+---
 - name: Enable passwordless sudo for Unix
   become: true
   blockinfile:

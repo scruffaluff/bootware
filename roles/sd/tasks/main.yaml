@@ -1,3 +1,4 @@
+---
 - name: Get latest SD version
   uri:
     url: https://formulae.brew.sh/api/formula/sd.json

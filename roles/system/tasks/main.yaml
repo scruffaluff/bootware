@@ -1,3 +1,4 @@
+---
 - name: Update packages for Alpine distributions
   become: true
   community.general.apk:

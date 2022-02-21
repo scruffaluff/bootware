@@ -1,3 +1,4 @@
+---
 _cargo_applications:
   always:
     - cargo-audit

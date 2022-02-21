@@ -1,3 +1,4 @@
+---
 - name: Get latest Go version
   uri:
     url: https://formulae.brew.sh/api/formula/go.json
@@ -51,7 +52,7 @@
   command: "go install {{ item }}"
   environment:
     GOPATH: "{{ go_path }}/go"
-    PATH: "{{ go_path }}/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ go_root }}/bin:{{ go_path }}/bin:{{ ansible_env.PATH }}"
   loop: "{{ go_applications }}"
   when: ansible_system != "Win32NT"
 

@@ -1,3 +1,4 @@
+---
 - name: Get latest Avro version
   uri:
     url: https://formulae.brew.sh/api/formula/avro-tools.json

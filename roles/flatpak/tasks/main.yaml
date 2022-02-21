@@ -1,3 +1,4 @@
+---
 - name: Install Flatpak for Linux
   become: true
   package:

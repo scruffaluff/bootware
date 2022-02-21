@@ -1,3 +1,4 @@
+---
 - name: Download NvChad for Unix
   git:
     depth: 1

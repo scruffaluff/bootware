@@ -1,3 +1,4 @@
+---
 powershell_modules:
   - GcloudTabComplete
   - npm-completion

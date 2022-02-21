@@ -1,3 +1,4 @@
+---
 - name: Get latest Helm version
   uri:
     url: https://formulae.brew.sh/api/formula/helm.json

@@ -1,3 +1,4 @@
+---
 _bash_executable:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'

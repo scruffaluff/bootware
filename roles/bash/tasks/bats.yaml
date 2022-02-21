@@ -1,3 +1,4 @@
+---
 - name: Install Bats for Alpine distributions
   become: true
   community.general.apk:

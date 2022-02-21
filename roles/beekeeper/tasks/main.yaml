@@ -1,3 +1,4 @@
+---
 - name: Check if Snap daemon socket is available for Linux
   register: snapd_available
   stat:

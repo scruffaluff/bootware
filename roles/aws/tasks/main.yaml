@@ -1,3 +1,4 @@
+---
 - name: Install AWSCLI for FreeBSD
   become: true
   community.general.pkgng:

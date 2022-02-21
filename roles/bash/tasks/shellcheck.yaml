@@ -1,3 +1,4 @@
+---
 - name: Install ShellCheck for Alpine distributions
   become: true
   community.general.apk:

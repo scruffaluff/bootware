@@ -1,3 +1,4 @@
+---
 - name: Install Java for Alpine distributions
   become: true
   community.general.apk:

@@ -1,3 +1,4 @@
+---
 - name: Get latest Packer version
   uri:
     url: https://formulae.brew.sh/api/formula/packer.json

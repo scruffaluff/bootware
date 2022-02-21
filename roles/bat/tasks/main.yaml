@@ -1,3 +1,4 @@
+---
 - name: Get latest Bat version
   uri:
     url: https://formulae.brew.sh/api/formula/bat.json

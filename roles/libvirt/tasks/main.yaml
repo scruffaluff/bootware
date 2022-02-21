@@ -1,3 +1,4 @@
+---
 - name: Tap Virt Manager Homebrew repository
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager

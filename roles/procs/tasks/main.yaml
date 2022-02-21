@@ -1,3 +1,4 @@
+---
 - name: Get latest Procs version
   uri:
     url: https://formulae.brew.sh/api/formula/procs.json

@@ -1,3 +1,4 @@
+---
 - name: Download Balena Etcher repository key for Debian distributions
   become: true
   get_url:

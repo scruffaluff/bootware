@@ -1,3 +1,4 @@
+---
 - name: Install FzF for FreeBSD
   become: true
   community.general.pkgng:

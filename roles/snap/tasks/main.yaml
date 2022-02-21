@@ -1,3 +1,4 @@
+---
 - name: Install Snap for Arch distributions
   command: yay -Sy --noconfirm snapd
   when: ansible_pkg_mgr == "pacman"

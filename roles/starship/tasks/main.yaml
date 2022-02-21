@@ -1,3 +1,4 @@
+---
 # Unable to find update instructions for Starship. Reinstalling will use a newer
 # version.
 - name: Install Starship shell prompt for Unix

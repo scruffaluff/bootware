@@ -1,3 +1,4 @@
+---
 - name: Create Neovim settings directories for Unix
   file:
     mode: "755"

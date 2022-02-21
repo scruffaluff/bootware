@@ -1,3 +1,4 @@
+---
 - name: Check if Pop Shell is installed for GNOME desktops
   command: gnome-extensions show pop-shell@system76.com
   ignore_errors: true
