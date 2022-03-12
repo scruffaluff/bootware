@@ -496,6 +496,39 @@
     - server
     - wsl
 
+- name: Install K3d Kubernetes development cluster manager
+  hosts: all
+  roles:
+    - name: k3d
+  tags:
+    - desktop
+    - k3d
+    - kubernetes
+    - server
+    - wsl
+
+- name: Install K9s Kubernetes manager
+  hosts: all
+  roles:
+    - name: k9s
+  tags:
+    - desktop
+    - k9s
+    - kubernetes
+    - server
+    - wsl
+
+- name: Install Krew Kubectl plugin package manager
+  hosts: all
+  roles:
+    - name: krew
+  tags:
+    - desktop
+    - krew
+    - kubernetes
+    - server
+    - wsl
+
 - name: Install Kubectl Kubernetes manager
   hosts: all
   roles:
@@ -503,8 +536,8 @@
   tags:
     - desktop
     - kubectl
+    - kubernetes
     - server
-    - vm
     - wsl
 
 - name: Install Libvirt virtualization API
@@ -823,6 +856,17 @@
     - hashicorp
     - server
     - terragrunt
+    - wsl
+
+- name: Install Tilt Kubernetes development suite
+  hosts: all
+  roles:
+    - name: tilt
+  tags:
+    - desktop
+    - kubernetes
+    - server
+    - tilt
     - wsl
 
 - name: Install TLDR documentation collection

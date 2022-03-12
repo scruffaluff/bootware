@@ -1,0 +1,45 @@
+---
+- name: Get latest Krew version
+  uri:
+    url: https://formulae.brew.sh/api/formula/krew.json
+    method: GET
+    return_content: true
+  register: krew_formula
+  when: ansible_system == "Linux"
+
+- name: Download Krew for Linux
+  become: true
+  unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/kubernetes-sigs/krew/releases/download/v{{
+      krew_formula.json.versions.stable }}/krew-linux_{{
+      krew_arch[ansible_architecture] }}.tar.gz
+  vars:
+    krew_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Krew for Linux
+  become: true
+  command:
+    cmd: "/tmp/krew-linux_{{ krew_arch[ansible_architecture] }} install krew"
+  vars:
+    krew_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Krew for MacOS
+  community.general.homebrew:
+    name: krew
+  when: ansible_system == "Darwin"
+
+- name: Install Krew for Windows
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: krew
+  when: ansible_system == "Win32NT"

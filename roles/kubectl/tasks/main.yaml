@@ -34,7 +34,7 @@
 
 - name: Install Kubectl for MacOS
   community.general.homebrew:
-    name: kubernetes-cli
+    name: kubectl
   when: ansible_system == "Darwin"
 
 - name: Install Kubectl for Windows
