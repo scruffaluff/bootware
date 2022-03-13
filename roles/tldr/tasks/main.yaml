@@ -51,4 +51,4 @@
 
 - name: Update TLDR documentation for Windows
   when: ansible_system == "Win32NT"
-  win_shell: tldr --update
+  win_command: tldr --update

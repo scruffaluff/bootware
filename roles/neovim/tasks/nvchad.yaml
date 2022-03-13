@@ -31,7 +31,7 @@
 
 - name: Download NvChad for Windows
   when: ansible_system == "Win32NT"
-  win_shell: >-
+  win_command: >-
     git clone --depth 1 https://github.com/NvChad/NvChad {{ ansible_env.HOME
     }}/AppData/Local/Temp/NvChad
 

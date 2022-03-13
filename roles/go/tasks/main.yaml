@@ -59,4 +59,4 @@
 - name: Install Go command line applications for Windows
   loop: "{{ go_applications }}"
   when: ansible_system == "Win32NT"
-  win_shell: "go install {{ item }}"
+  win_command: "go install {{ item }}"

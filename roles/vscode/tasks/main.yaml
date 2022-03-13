@@ -155,6 +155,6 @@
 - name: Install VSCode extensions for Windows
   loop: "{{ vscode_extensions }}"
   when: ansible_system == "Win32NT"
-  win_shell: >-
+  win_command: >-
     {{ ansible_env.HOME }}/scoop/apps/vscode/current/bin/code.cmd
     --install-extension {{ item }}

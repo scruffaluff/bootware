@@ -24,7 +24,6 @@
   when: ansible_system == "Linux"
 
 - name: Install Krew for Linux
-  become: true
   command:
     cmd: "/tmp/krew-linux_{{ krew_arch[ansible_architecture] }} install krew"
   vars:
@@ -43,3 +42,18 @@
     architecture: 64bit
     name: krew
   when: ansible_system == "Win32NT"
+
+- name: Install Kubectl plugins for Unix
+  command:
+    cmd: "kubectl-krew install {{ item }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
+  loop: "{{ kubectl_plugins }}"
+  when: ansible_system != "Win32NT"
+
+- name: Install Kubectl plugins for Windows
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
+  loop: "{{ kubectl_plugins }}"
+  when: ansible_system == "Win32NT"
+  win_command: "kubectl-krew install {{ item }}"
