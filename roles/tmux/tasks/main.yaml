@@ -17,7 +17,7 @@
 
 - name: Install Tmux for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - tmate
       - tmux

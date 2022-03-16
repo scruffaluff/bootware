@@ -7,14 +7,14 @@
 
 - name: Install Neovim for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: neovim
     state: "{{ 'absent' if nvchad else 'present' }}"
   when: ansible_system == "Linux"
 
 - name: Install Neovim for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/neovim
     mode: "755"
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage

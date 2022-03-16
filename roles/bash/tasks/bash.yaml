@@ -7,7 +7,7 @@
 
 - name: Install Bash for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - bash
       - bash-completion
@@ -21,7 +21,7 @@
   when: ansible_system == "Darwin"
 
 - name: Copy Bash non-login settings file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.bashrc"
     force: true
     mode: "754"
@@ -30,7 +30,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Bash login settings file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.bash_profile"
     force: true
     mode: "754"
@@ -39,7 +39,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy shell aliases file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.aliases"
     force: true
     mode: "754"

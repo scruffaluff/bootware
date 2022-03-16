@@ -15,14 +15,14 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Kubectl for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: kubectl
   become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Kubectl for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: kubectl
   when: ansible_pkg_mgr == "dnf"
 
@@ -44,7 +44,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl Fish completion for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install evanlucas/fish-kubectl-completions

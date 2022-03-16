@@ -12,14 +12,14 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install ShellCheck for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: shellcheck
   become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install ShellCheck for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: ShellCheck
   when: ansible_pkg_mgr == "dnf"
 

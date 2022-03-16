@@ -1,6 +1,6 @@
 ---
 - name: Get latest Procs version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/procs.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Install Procs for Debian distribution
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
     remote_src: true
@@ -23,7 +23,7 @@
 # https://pkgs.alpinelinux.org/packages?name=procs for future availability.
 - name: Install Procs for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: procs
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
 

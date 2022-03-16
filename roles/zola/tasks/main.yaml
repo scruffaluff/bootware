@@ -1,6 +1,6 @@
 ---
 - name: Get latest Zola version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/zola.json
     method: GET
     return_content: true
@@ -21,7 +21,7 @@
 
 - name: Install Zola for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"

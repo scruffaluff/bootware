@@ -1,6 +1,6 @@
 ---
 - name: Get latest Shfmt version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/shfmt.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Install Shfmt for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/shfmt
     mode: "755"
     owner: root

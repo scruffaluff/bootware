@@ -1,6 +1,6 @@
 ---
 - name: Get latest Helmfile version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/helmfile.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Install Helmfile for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/helmfile
     mode: "755"
     url: >-

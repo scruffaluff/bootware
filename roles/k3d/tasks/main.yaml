@@ -1,6 +1,6 @@
 ---
 - name: Get latest K3d version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/k3d.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Install K3d for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/k3d
     mode: "755"
     owner: root

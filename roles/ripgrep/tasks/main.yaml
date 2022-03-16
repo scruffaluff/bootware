@@ -7,7 +7,7 @@
 
 - name: Install Ripgrep for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: ripgrep
     state: present
   when: ansible_system == "Linux"

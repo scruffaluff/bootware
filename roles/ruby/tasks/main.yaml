@@ -1,6 +1,6 @@
 ---
 - name: Install RVM dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - debianutils
       - procps
@@ -9,7 +9,7 @@
 
 - name: Install RVM dependencies for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - findutils
       - procps
@@ -49,7 +49,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install RVM GPG keys for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: |
       curl -LSfs https://rvm.io/mpapis.asc | gpg --import -
       curl -LSfs https://rvm.io/pkuczynski.asc | gpg --import -
@@ -58,7 +58,7 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install Ruby Environment Manager for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://get.rvm.io | bash -s stable
     warn: false
   when: >-
@@ -66,7 +66,7 @@
 
 - name: Install multiple Ruby versions for Unix
   loop: "{{ ruby_versions }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       rvm install {{ item }}
@@ -85,7 +85,7 @@
 # TODO: Switch to Ansible Gem module.
 - name: Install or update Ruby CLI applications for Unix
   loop: "{{ ruby_applications }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       gem install --user-install {{ item }}
@@ -98,7 +98,7 @@
   win_command: gem install --user-install {{ item }}
 
 - name: Download RVM Fish for Unix
-  get_url:
+  ansible.builtin.get_url:
     dest: "{{ ansible_env.HOME }}/.config/fish/functions/rvm.fish"
     mode: "644"
     owner: "{{ ansible_user_id }}"

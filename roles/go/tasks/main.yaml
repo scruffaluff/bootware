@@ -1,6 +1,6 @@
 ---
 - name: Get latest Go version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/go.json
     method: GET
     return_content: true
@@ -21,7 +21,7 @@
 
 - name: Install Go for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     creates: /usr/local/go
     dest: /usr/local/
     mode: "755"
@@ -49,7 +49,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Go command line applications for Unix
-  command: "go install {{ item }}"
+  ansible.builtin.command: "go install {{ item }}"
   environment:
     GOPATH: "{{ go_path }}/go"
     PATH: "{{ go_root }}/bin:{{ go_path }}/bin:{{ ansible_env.PATH }}"

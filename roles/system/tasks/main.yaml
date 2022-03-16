@@ -14,7 +14,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Update packages for Debian distributions
-  apt:
+  ansible.builtin.apt:
     autoremove: true
     update_cache: true
     upgrade: full
@@ -23,7 +23,7 @@
 
 - name: Update packages for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     autoremove: true
     # Updating all packages causes an error since dnf would be removed.
     # name: "*"
@@ -46,7 +46,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install essential packages for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-file
       - apt-transport-https
@@ -60,7 +60,7 @@
 
 - name: Install essential packages for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - dnf-plugins-core
       - findutils
@@ -89,7 +89,7 @@
 
 - name: Install essential packages for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - ca-certificates
       - flatpak

@@ -1,13 +1,13 @@
 ---
 - name: Download NvChad for Unix
-  git:
+  ansible.builtin.git:
     depth: 1
     dest: /tmp/NvChad
     repo: https://github.com/NvChad/NvChad
   when: ansible_system != "Win32NT"
 
 - name: Install NvChad for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.config/nvim/{{ item }}"
     mode: "755"
     src: "/tmp/NvChad/{{ item }}"
@@ -17,13 +17,13 @@
   when: ansible_system != "Win32NT"
 
 - name: Remove Neovim settings file for Unix
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.config/nvim/init.vim"
     state: absent
   when: ansible_system != "Win32NT"
 
 - name: Install NvChad configuration file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/"
     mode: "664"
     src: chadrc.lua
@@ -40,7 +40,7 @@
     - init.lua
     - lua
   when: ansible_system == "Win32NT"
-  win_copy:
+  ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/{{ item }}"
     src: "{{ ansible_env.HOME }}/AppData/Local/Temp/NvChad/{{ item }}"
 
@@ -52,6 +52,6 @@
 
 - name: Install NvChad configuration file for Windows
   when: ansible_system == "Win32NT"
-  win_copy:
+  ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/lua/custom/"
     src: chadrc.lua

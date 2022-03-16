@@ -1,6 +1,6 @@
 ---
 - name: Get latest Glow version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/glow.json
     method: GET
     return_content: true
@@ -8,11 +8,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Glow for Arch distributions
-  command: yay -Sy --noconfirm glow
+  ansible.builtin.command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Glow for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_{{
@@ -27,7 +27,7 @@
 
 - name: Install Glow for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://github.com/charmbracelet/glow/releases/download/v{{

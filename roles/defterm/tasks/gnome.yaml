@@ -1,12 +1,12 @@
 ---
 - name: Install Gnome Terminal for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: gnome-terminal
   become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Change GNOME terminal default profile for GNOME desktops
-  shell:
+  ansible.builtin.shell:
     cmd: |
       UUID=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d \')
       gsettings set org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${UUID}/ cursor-background-color "rgb(0,0,0)"

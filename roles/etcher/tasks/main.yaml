@@ -1,7 +1,7 @@
 ---
 - name: Download Balena Etcher repository key for Debian distributions
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /tmp/balena-etcher.gpg
     mode: "644"
     url: https://dl.cloudsmith.io/public/balena/etcher/gpg.70528471AFF9A051.key
@@ -9,7 +9,7 @@
 
 - name: Install Balena Etcher repository key for Debian distributions
   become: true
-  command:
+  ansible.builtin.command:
     cmd: >-
       gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
       /tmp/balena-etcher.gpg
@@ -17,7 +17,7 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher repository for Debian distributions
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: >-
       deb [signed-by=/usr/share/keyrings/balena-etcher.gpg]
       https://dl.cloudsmith.io/public/balena/etcher/deb/{{ deb_distro_base }} {{
@@ -29,7 +29,7 @@
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
   become: true
-  shell:
+  ansible.builtin.shell:
     cmd: >-
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
       bash
@@ -40,18 +40,18 @@
 # - name: Install Balena Etcher for Arch distributions
 #   become: true
 #   become_user: "{{ ansible_user_id }}"
-#   command: yay -Sy --noconfirm balena-etcher
+#   ansible.builtin.command: yay -Sy --noconfirm balena-etcher
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: balena-etcher-electron
   become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: balena-etcher-electron
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 

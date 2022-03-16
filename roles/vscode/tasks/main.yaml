@@ -4,11 +4,11 @@
 # information, see
 # https://wiki.archlinux.org/index.php/Visual_Studio_Code#No_extensions_found.
 - name: Install VSCode for Arch distributions
-  command: yay -Sy --noconfirm visual-studio-code-bin
+  ansible.builtin.command: yay -Sy --noconfirm visual-studio-code-bin
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install VSCode for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://update.code.visualstudio.com/latest/linux-deb-{{
       vscode_arch[ansible_architecture] }}/stable
@@ -21,13 +21,13 @@
 
 - name: Add Microsoft GPG key for Fedora distributions
   become: true
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
       vscode_arch[ansible_architecture] }}/stable
@@ -45,7 +45,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install VSCode for PopOS
-  apt:
+  ansible.builtin.apt:
     name: code
   become: true
   when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
@@ -57,7 +57,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Create VSCode user directory for Linux
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/Code/User/"
@@ -65,7 +65,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode keybindings file for Linux
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/.config/Code/User/keybindings.json"
     force: true
     mode: "640"
@@ -74,7 +74,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode settings file for Linux
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/.config/Code/User/settings.json"
     force: true
     mode: "640"
@@ -83,7 +83,7 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Create VSCode user directory for MacOS
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/Library/Application Support/Code/User/"
@@ -91,7 +91,7 @@
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode keybindings file for MacOS
-  template:
+  ansible.builtin.template:
     dest: >-
       {{ ansible_env.HOME }}/Library/Application
       Support/Code/User/keybindings.json
@@ -102,7 +102,7 @@
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode settings file for MacOS
-  template:
+  ansible.builtin.template:
     dest: >-
       {{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json
     force: true
@@ -148,7 +148,7 @@
     src: settings.j2
 
 - name: Install VSCode extensions for Unix
-  command: code --install-extension {{ item }}
+  ansible.builtin.command: code --install-extension {{ item }}
   loop: "{{ vscode_extensions }}"
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 

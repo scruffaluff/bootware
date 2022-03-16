@@ -3,7 +3,7 @@
 # version.
 - name: Install Starship shell prompt for Unix
   become: true
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://starship.rs/install.sh | sh -s -- -y
     warn: false
   when: ansible_system != "Win32NT"

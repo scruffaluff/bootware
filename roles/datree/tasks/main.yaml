@@ -1,6 +1,6 @@
 ---
 - name: Get latest Datree version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/datree.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Download Datree for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     owner: root
@@ -27,7 +27,7 @@
 
 - name: Install Datree for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/datree
     mode: "755"
     src: /tmp/bin/datree

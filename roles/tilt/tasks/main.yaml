@@ -1,6 +1,6 @@
 ---
 - name: Get latest Tilt version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/tilt.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Download Tilt for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -26,7 +26,7 @@
 
 - name: Install Tilt for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/tilt
     mode: "755"
     src: /tmp/tilt

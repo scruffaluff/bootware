@@ -1,6 +1,6 @@
 ---
 - name: Get latest Bat version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/bat.json
     method: GET
     return_content: true
@@ -20,7 +20,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Bat for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://github.com/sharkdp/bat/releases/download/v{{
       bat_formula.json.versions.stable }}/bat_{{
@@ -35,7 +35,7 @@
 
 - name: Install Bat for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: bat
   when: ansible_pkg_mgr == "dnf"
 

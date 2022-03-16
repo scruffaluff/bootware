@@ -7,7 +7,7 @@
 
 - name: Install RClone for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: rclone
     state: present
   when: ansible_system == "Linux"

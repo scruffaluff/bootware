@@ -12,7 +12,7 @@
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 - name: Install GitLab Runner for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
       gitlab_arch[ansible_architecture] }}.deb
@@ -27,7 +27,7 @@
 # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3243.
 - name: Install GitLab Runner for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{

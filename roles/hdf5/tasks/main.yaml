@@ -1,12 +1,12 @@
 ---
 - name: Install HDF5 tools for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: hdf5
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install HDF5 tools for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: hdf5-tools
   become: true
   when: ansible_pkg_mgr == "apt"

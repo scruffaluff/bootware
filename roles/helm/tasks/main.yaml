@@ -1,6 +1,6 @@
 ---
 - name: Get latest Helm version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/helm.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Download Helm for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -30,7 +30,7 @@
 
 - name: Install Helm for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/helm
     mode: "755"
     owner: root

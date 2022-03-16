@@ -1,6 +1,6 @@
 ---
 - name: Get latest Hyperfine version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/hyperfine.json
     method: GET
     return_content: true
@@ -8,7 +8,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Hyperfine for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://github.com/sharkdp/hyperfine/releases/download/v{{
       hyperfine_formula.json.versions.stable }}/hyperfine_{{
@@ -24,7 +24,7 @@
 
 - name: Install Hyperfine for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: hyperfine
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 

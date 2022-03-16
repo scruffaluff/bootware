@@ -13,7 +13,7 @@
 
 - name: Install build tools for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - clang
       - cmake

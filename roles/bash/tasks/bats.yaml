@@ -12,14 +12,14 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Bats for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: bats
   become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Bats for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: bats
   when: ansible_pkg_mgr == "dnf"
 

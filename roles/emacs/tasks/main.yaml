@@ -7,7 +7,7 @@
 
 - name: Install Emacs for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: emacs
   when: ansible_system == "Linux"
 
@@ -23,7 +23,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Emacs settings file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.emacs"
     force: true
     mode: "644"
@@ -33,6 +33,6 @@
 
 - name: Copy Emacs settings files for Windows
   when: ansible_system == "Win32NT"
-  win_copy:
+  ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/.emacs"
     src: .emacs

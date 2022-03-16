@@ -1,7 +1,7 @@
 ---
 - name: Enable passwordless sudo for Unix
   become: true
-  blockinfile:
+  ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for {{ ansible_user_id }} user.
       {{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL

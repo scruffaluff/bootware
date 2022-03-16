@@ -1,6 +1,6 @@
 ---
 - name: Get latest DVC version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/dvc.json
     method: GET
     return_content: true
@@ -10,7 +10,7 @@
 # DVC does not appear to provide Alpine or Arch releases.
 
 - name: Install DVC for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc_{{
@@ -20,7 +20,7 @@
 
 - name: Install DVC for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://github.com/iterative/dvc/releases/download/{{

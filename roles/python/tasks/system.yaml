@@ -16,7 +16,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Python packages for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - python3
       - python3-dev
@@ -27,7 +27,7 @@
 
 - name: Install Python packages for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - python3
       - python3-devel
@@ -50,7 +50,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install ONNX dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - cmake
       - libprotoc-dev
@@ -61,7 +61,7 @@
 - name: >-
     Make system Python interpreter discoverable by Pyenv for FreeBSD and Linux
   become: true
-  file:
+  ansible.builtin.file:
     src: /usr/bin/python3
     dest: /usr/bin/python
     force: true

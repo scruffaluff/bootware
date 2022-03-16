@@ -1,6 +1,6 @@
 ---
 - name: Get latest BashDB version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/bashdb.json
     method: GET
     return_content: true
@@ -16,7 +16,7 @@
 # BashDB installer does not yet support Bash 5.1.
 # - name: Download BashDB for Linux
 #   become: true
-#   unarchive:
+#   ansible.builtin.unarchive:
 #     dest: /tmp/
 #     mode: "755"
 #     remote_src: true
@@ -28,7 +28,7 @@
 
 # - name: Install BashDB for Linux
 #   become: true
-#   shell:
+#   ansible.builtin.shell:
 #     chdir: "/tmp/bashdb-{{ bashdb_formula.json.versions.stable }}"
 #     cmd: |
 #       ./configure

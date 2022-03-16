@@ -1,6 +1,6 @@
 ---
 - name: Install Firefox for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: firefox-esr
   become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
@@ -13,7 +13,7 @@
 
 - name: Install Firefox for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: firefox
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apt" or deb_distro_base

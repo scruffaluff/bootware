@@ -1,6 +1,6 @@
 ---
 - name: Get latest Krew version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/krew.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Download Krew for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -24,7 +24,7 @@
   when: ansible_system == "Linux"
 
 - name: Install Krew for Linux
-  command:
+  ansible.builtin.command:
     cmd: "/tmp/krew-linux_{{ krew_arch[ansible_architecture] }} install krew"
   vars:
     krew_arch:
@@ -44,7 +44,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl plugins for Unix
-  command:
+  ansible.builtin.command:
     cmd: "kubectl-krew install {{ item }}"
   environment:
     PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"

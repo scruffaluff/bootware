@@ -1,6 +1,6 @@
 ---
 - name: Get latest Digital Ocean CLI version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/doctl.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Install Digital Ocean CLI for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
     owner: root
@@ -43,7 +43,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Digital Ocean CLI Fish completion for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: |
       doctl completion fish > {{ ansible_env.HOME }}/.config/fish/completions/doctl.fish
   when: ansible_system != "Win32NT"

@@ -1,7 +1,7 @@
 ---
 - name: Dowload Google Cloud SDK for Alpine distributions
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/lib/
     mode: "755"
     remote_src: true
@@ -10,13 +10,13 @@
 
 - name: Install Google Cloud SDK binaries for Alpine distributions
   become: true
-  command:
+  ansible.builtin.command:
     cmd: /usr/lib/google-cloud-sdk/install.sh --quiet
   when: ansible_pkg_mgr == "apk"
 
 - name: Create links to Google Cloud SDK binaries for Alpine distributions
   become: true
-  file:
+  ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
     src: "/usr/lib/google-cloud-sdk/bin/{{ item }}"
@@ -28,12 +28,12 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Google Cloud SDK for Arch distributions
-  command: yay -Sy --noconfirm google-cloud-sdk
+  ansible.builtin.command: yay -Sy --noconfirm google-cloud-sdk
   when: ansible_pkg_mgr == "pacman"
 
 - name: Add Google Cloud SDK key for Debian distributions
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/share/keyrings/cloud-google.gpg
     mode: "644"
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
@@ -41,7 +41,7 @@
 
 - name: Add Google Cloud SDK package list for Debian distributions
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/google-cloud-sdk.list
     force: true
     mode: "644"
@@ -50,7 +50,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Google Cloud SDK for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: google-cloud-sdk
     update_cache: true
   become: true
@@ -58,7 +58,7 @@
 
 - name: Add Google Cloud SDK package information for Fedora distributions
   become: true
-  blockinfile:
+  ansible.builtin.blockinfile:
     block: |
       [google-cloud-sdk]
       name=Google Cloud SDK
@@ -76,7 +76,7 @@
 
 - name: Install Google Cloud SDK for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: google-cloud-sdk
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
@@ -87,7 +87,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Google Cloud SDK Fish completion for Linux
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install aliz-ai/google-cloud-sdk-fish-completion
