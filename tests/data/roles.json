@@ -48,6 +48,11 @@
   },
   { "name": "compass" },
   {
+    "name": "datree",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["datree version"]
+  },
+  {
     "name": "dbeaver",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": {
@@ -147,6 +152,7 @@
     "tests": ["hadolint --version"]
   },
   { "name": "helm", "tests": ["helm version --short"] },
+  { "name": "helmfile", "tests": ["helmfile --version"] },
   {
     "name": "hyper",
     "skip": [

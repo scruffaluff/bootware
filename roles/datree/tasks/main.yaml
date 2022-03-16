@@ -1,0 +1,45 @@
+---
+- name: Get latest Datree version
+  uri:
+    url: https://formulae.brew.sh/api/formula/datree.json
+    method: GET
+    return_content: true
+  register: datree_formula
+  when: ansible_system == "Linux"
+
+- name: Download Datree for Linux
+  become: true
+  unarchive:
+    dest: /tmp/
+    mode: "755"
+    owner: root
+    remote_src: true
+    src: >-
+      https://github.com/datreeio/datree/releases/download/{{
+      datree_formula.json.versions.stable }}/datree-cli_{{
+      datree_formula.json.versions.stable }}_Linux_{{
+      datree_arch[ansible_architecture] }}.zip
+  vars:
+    datree_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
+
+- name: Install Datree for Linux
+  become: true
+  copy:
+    dest: /usr/local/bin/datree
+    mode: "755"
+    src: /tmp/bin/datree
+  when: ansible_system == "Linux"
+
+- name: Install Datree for MacOS
+  community.general.homebrew:
+    name: datree
+  when: ansible_system == "Darwin"
+
+- name: Install Datree for Windows
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: datree
+  when: ansible_system == "Win32NT"

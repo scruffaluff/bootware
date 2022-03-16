@@ -145,6 +145,17 @@
     - server
     - wsl
 
+- name: Install Datree Kubernetes linter
+  hosts: all
+  roles:
+    - name: datree
+  tags:
+    - datree
+    - desktop
+    - server
+    - vm
+    - wsl
+
 - name: Install DBeaver database client
   hosts: all
   roles:
@@ -438,6 +449,17 @@
     - helm
     - server
     - vm
+    - wsl
+
+- name: Install Helmfile Kubernetes Helm deployment tool
+  hosts: all
+  roles:
+    - name: helmfile
+  tags:
+    - desktop
+    - helmfile
+    - kubernetes
+    - server
     - wsl
 
 - name: Install Hyper terminal

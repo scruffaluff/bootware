@@ -67,7 +67,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
 # Add scripts directory to system path.
-$Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
+$Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + "$Env:PATH"
 
 # Starship settings.
 
@@ -77,6 +77,7 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 }
 
 # Tool settings.
+Set-Alias -Name exa -Value Get-ChildItem
 
 # Load SSH autocompletion if available.
 If (Get-Module -ListAvailable -Name Posh-SSH) {
@@ -98,4 +99,4 @@ If (Get-Module -ListAvailable -Name npm-completion) {
 # User settings.
 
 # Add scripts directory to PATH environment variable.
-$Env:PATH = "$HOME/.local/bin;" + $Env:PATH
+$Env:PATH = "$HOME/.local/bin;" + "$Env:PATH"
