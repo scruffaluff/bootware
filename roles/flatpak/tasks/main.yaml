@@ -1,14 +1,14 @@
 ---
 - name: Install Flatpak for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: flatpak
     state: present
   when: ansible_system == "Linux"
 
 - name: Add Flathub remote repository for Linux
   become: true
-  command: >-
+  ansible.builtin.command: >-
     flatpak remote-add --if-not-exists flathub
     https://flathub.org/repo/flathub.flatpakrepo
   when: ansible_system == "Linux"

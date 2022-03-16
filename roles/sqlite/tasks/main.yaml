@@ -12,7 +12,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install SQLite for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: sqlite3
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -25,7 +25,7 @@
 
 - name: Install SQLite for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: sqlite
   when: ansible_pkg_mgr == "dnf"
 
@@ -41,7 +41,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy SQLite settings file
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.sqliterc"
     force: true
     mode: "644"

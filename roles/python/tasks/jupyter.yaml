@@ -1,6 +1,6 @@
 ---
 - name: Create Jupyter settings directory for Unix
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.jupyter"
@@ -14,7 +14,7 @@
     state: directory
 
 - name: Copy Jupyter notebook settings file
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.jupyter/jupyter_notebook_config.py"
     force: true
     mode: "755"

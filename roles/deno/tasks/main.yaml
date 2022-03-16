@@ -10,7 +10,7 @@
 # https://github.com/denoland/deno/issues/1846. Deno requires glibc, which is
 # not available on Alpine.
 - name: Install Deno for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
     warn: false
   when: >-
@@ -18,7 +18,7 @@
     != "apk" and ansible_architecture == "x86_64")
 
 - name: Create Fish completions directory for Unix
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/fish/completions"
@@ -30,7 +30,7 @@
 - name: Generate Deno Fish completions for Unix
   environment:
     PATH: "{{ ansible_env.HOME }}/.deno/bin:{{ ansible_env.PATH }}"
-  shell: >-
+  ansible.builtin.shell: >-
     deno completions fish > {{ ansible_env.HOME
     }}/.config/fish/completions/deno.fish
   when: >-

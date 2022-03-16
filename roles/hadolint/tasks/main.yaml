@@ -1,6 +1,6 @@
 ---
 - name: Get latest Hadolint version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/hadolint.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Install Hadolint for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/hadolint
     mode: "755"
     owner: root

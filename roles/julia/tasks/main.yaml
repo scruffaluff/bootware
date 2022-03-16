@@ -1,6 +1,6 @@
 ---
 - name: Get latest Julia version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/julia.json
     method: GET
     return_content: true
@@ -8,7 +8,7 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Parse Julia major-minor version
-  set_fact:
+  ansible.builtin.set_fact:
     julia_version: >-
       {{ julia_formula.json.versions.stable | regex_search('(\d+\.\d+)\.+\d+',
       '\1') | first }}
@@ -18,7 +18,7 @@
 
 - name: Install Julia for FreeBSD and Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     creates: /usr/local/julia
     dest: /usr/local/
     extra_opts:

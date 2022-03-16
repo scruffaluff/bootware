@@ -1,6 +1,6 @@
 ---
 - name: Get latest Zellij version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/zellij.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Download Zellij for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin
     mode: "755"
     remote_src: true
@@ -25,7 +25,7 @@
   when: ansible_system == "Darwin"
 
 - name: Create Zellij settings directory for Unix
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/zellij"
@@ -33,7 +33,7 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.config/zellij/config.yaml"
     force: true
     mode: "644"

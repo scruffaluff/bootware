@@ -1,7 +1,7 @@
 ---
 - name: Install Hyper for Arch distributions
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/appimages/hyper.appimage
     mode: "755"
     owner: root
@@ -10,13 +10,13 @@
 
 - name: Install Hyper dependencies for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: mesa-libgbm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 # Hyper is not yet supported on Debian 11.
 - name: Install Hyper for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: https://releases.hyper.is/download/deb
   become: true
   when: >-
@@ -25,7 +25,7 @@
 
 - name: Install Hyper for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     disable_gpg_check: true
     name: https://releases.hyper.is/download/rpm
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
@@ -46,7 +46,7 @@
 # Hyper terminal lists ~/.hyper.js as deprecated path for its configuration
 # file, but seems to be the only path it will use for Unix.
 - name: Copy Hyper configuration file to backup location
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/.hyper.js"
     force: true
     mode: "644"
@@ -55,7 +55,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Hyper configuration directory for Linux
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/Hyper/"
@@ -63,7 +63,7 @@
   when: ansible_system == "Linux"
 
 - name: Create Hyper configuration directory for MacOS
-  file:
+  ansible.builtin.file:
     mode: "755"
     path: "{{ ansible_env.HOME }}/Library/Application Support/Hyper/"
     state: directory
@@ -76,7 +76,7 @@
     state: directory
 
 - name: Copy Hyper configuration file for Linux
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/.config/Hyper/.hyper.js"
     force: true
     mode: "644"
@@ -85,7 +85,7 @@
   when: ansible_system == "Linux"
 
 - name: Copy Hyper configuration file for MacOS
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/Library/Application Support/Hyper/.hyper.js"
     force: true
     mode: "644"

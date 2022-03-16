@@ -1,6 +1,6 @@
 ---
 - name: Install QEMU support libraries for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - binfmt-support
       - qemu-user-static
@@ -23,7 +23,7 @@
 
 - name: Install QEMU for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: qemu
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -40,7 +40,7 @@
 
 - name: Install Quickemu for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
     owner: root

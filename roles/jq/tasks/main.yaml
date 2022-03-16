@@ -7,7 +7,7 @@
 
 - name: Install JQ for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: jq
   when: ansible_system == "Linux"
 

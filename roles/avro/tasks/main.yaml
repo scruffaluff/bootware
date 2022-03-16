@@ -1,6 +1,6 @@
 ---
 - name: Get latest Avro version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/avro-tools.json
     method: GET
     return_content: true
@@ -10,7 +10,7 @@
 # TODO: Evaluate avro-bin package as replacement.
 - name: Download Avro Jar for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/share/java/jar/avro-tools.jar
     mode: "755"
     owner: root
@@ -22,7 +22,7 @@
 
 - name: Copy Avro Jar script for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/avro-tools
     force: true
     mode: "755"

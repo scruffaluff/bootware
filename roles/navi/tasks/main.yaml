@@ -1,6 +1,6 @@
 ---
 - name: Get latest Navi version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/navi.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Install Navi for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
     remote_src: true

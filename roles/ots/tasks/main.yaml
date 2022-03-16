@@ -1,6 +1,6 @@
 ---
 - name: Get latest OTS version
-  uri:
+  ansible.builtin.uri:
     url: https://api.github.com/repos/sniptt-official/ots/releases/latest
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Download OTS for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -25,7 +25,7 @@
 
 - name: Install OTS for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/ots
     mode: "755"
     src: /tmp/ots

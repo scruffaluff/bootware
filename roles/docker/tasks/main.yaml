@@ -1,6 +1,6 @@
 ---
 - name: Get latest Docker Compose version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/docker-compose.json
     method: GET
     return_content: true
@@ -20,7 +20,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install repository dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-transport-https
       - ca-certificates
@@ -31,7 +31,7 @@
 
 - name: Add Docker key for Debian distributions
   become: true
-  shell:
+  ansible.builtin.shell:
     cmd: |
       curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
@@ -40,7 +40,7 @@
 
 - name: Add Docker package information for Debian distributions
   become: true
-  lineinfile:
+  ansible.builtin.lineinfile:
     create: true
     # Check of line in file is dependent on whitespace such as newlines.
     # prettier-ignore
@@ -54,7 +54,7 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Docker for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - containerd.io
       - docker-ce
@@ -65,7 +65,7 @@
 
 - name: Add Docker repository for Fedora distributions
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: "644"
     url: https://download.docker.com/linux/fedora/docker-ce.repo
@@ -73,7 +73,7 @@
 
 - name: Install Docker for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - containerd.io
       - docker-ce
@@ -100,27 +100,27 @@
 
 - name: Check if systemd is available for Linux
   register: systemd_available
-  stat:
+  ansible.builtin.stat:
     path: /usr/bin/systemctl
   when: ansible_system == "Linux"
 
 - name: Start Containerd on system boot for Linux
   become: true
-  systemd:
+  ansible.builtin.systemd:
     enabled: true
     name: containerd
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Start Docker on system boot for Linux
   become: true
-  systemd:
+  ansible.builtin.systemd:
     enabled: true
     name: docker
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Add user to Docker group for Linux
   become: true
-  user:
+  ansible.builtin.user:
     append: true
     name: "{{ ansible_user_id }}"
     groups:
@@ -135,13 +135,13 @@
 
 - name: Install Docker Compose for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: docker-compose
   when: ansible_system == "Linux"
 
 - name: Create Docker Compose plugin directory for Linux
   become: true
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: root
     path: /usr/lib/docker/cli-plugins
@@ -150,7 +150,7 @@
 
 - name: Install Docker Compose plugin for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/lib/docker/cli-plugins/docker-compose
     mode: "755"
     owner: root
@@ -176,7 +176,7 @@
 
 - name: Create Fish completions directory for Unix
   become: true
-  file:
+  ansible.builtin.file:
     mode: "755"
     owner: root
     path: /etc/fish/completions
@@ -185,7 +185,7 @@
 
 - name: Install Docker Fish shell completions for Unix
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/fish/completions/docker.fish
     mode: "664"
     owner: root
@@ -194,7 +194,7 @@
 
 - name: Install Docker Compose Fish shell completions for Unix
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/fish/completions/docker-compose.fish
     mode: "664"
     owner: root

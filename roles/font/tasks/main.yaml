@@ -11,7 +11,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Fira Code font for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: fonts-firacode
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -24,7 +24,7 @@
 
 - name: Install Fira Code for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: fira-code-fonts
   when: ansible_pkg_mgr == "dnf"
 

@@ -7,7 +7,7 @@
 
 - name: Install Pipx for Linux
   become: true
-  command: /usr/bin/python3 -m pip install --upgrade pipx
+  ansible.builtin.command: /usr/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "Linux"
 
 - name: Install Pipx for MacOS
@@ -17,12 +17,12 @@
 
 - name: Install Pipx for Windows
   when: ansible_system == "Win32NT"
-  win_shell: python -m pip install --upgrade pipx
+  win_command: python -m pip install --upgrade pipx
 
 # Pipx installs applications per user, so ansible_user_id is required.
 - name: Install Pipx command line applications for Unix
   loop: "{{ pipx_applications }}"
-  shell:
+  ansible.builtin.shell:
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
     cmd: >-
@@ -41,9 +41,9 @@
     (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install --force {{ item }})
 
 - name: Update Pipx command line applications for Unix
-  command: pipx upgrade-all
+  ansible.builtin.command: pipx upgrade-all
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows
   when: ansible_system == "Win32NT"
-  win_shell: pipx upgrade-all
+  win_command: pipx upgrade-all

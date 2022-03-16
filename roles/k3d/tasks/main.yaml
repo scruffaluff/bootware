@@ -1,0 +1,35 @@
+---
+- name: Get latest K3d version
+  ansible.builtin.uri:
+    url: https://formulae.brew.sh/api/formula/k3d.json
+    method: GET
+    return_content: true
+  register: k3d_formula
+  when: ansible_system == "Linux"
+
+- name: Install K3d for Linux
+  become: true
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/k3d
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/k3d-io/k3d/releases/download/v{{
+      k3d_formula.json.versions.stable }}/k3d-linux-{{
+      k3d_arch[ansible_architecture] }}
+  vars:
+    k3d_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install K3d for MacOS
+  community.general.homebrew:
+    name: k3d
+  when: ansible_system == "Darwin"
+
+- name: Install K3d for Windows
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: k3d
+  when: ansible_system == "Win32NT"

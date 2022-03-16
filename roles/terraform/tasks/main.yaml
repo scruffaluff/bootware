@@ -1,6 +1,6 @@
 ---
 - name: Get latest Terraform version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/terraform.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Install Terraform for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"

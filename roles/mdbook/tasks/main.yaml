@@ -1,6 +1,6 @@
 ---
 - name: Get latest Mdbook version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/mdbook.json
     method: GET
     return_content: true
@@ -26,7 +26,7 @@
 
 - name: Install Mdbook for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"

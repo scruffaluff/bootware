@@ -238,6 +238,9 @@ elif [[ "$(uname -s)" == "Linux" ]]; then
   fi
 fi
 
+# Add Kubectl plugins to PATH.
+prepend_path "${HOME}/.krew/bin"
+
 # Add Navi widget if available and line editing is enabled.
 #
 # The Navi widget requires line editing and will otherwise cause the warning:

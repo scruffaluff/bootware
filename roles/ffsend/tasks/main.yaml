@@ -1,6 +1,6 @@
 ---
 - name: Get latest FFSend version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/ffsend.json
     method: GET
     return_content: true
@@ -26,7 +26,7 @@
 
 - name: Install FFSend for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/ffsend
     mode: "755"
     url: >-

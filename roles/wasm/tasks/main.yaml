@@ -1,6 +1,6 @@
 ---
 - name: Install Wasmtime for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
     warn: false
   when: >-
@@ -17,7 +17,7 @@
     PATH: >-
       {{ ansible_env.HOME }}/.wasmtime/bin:{{ ansible_env.HOME }}/.cargo/bin:{{
       ansible_env.PATH }}
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
     warn: false
   when: >-

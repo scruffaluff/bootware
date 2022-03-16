@@ -9,7 +9,7 @@
 
 - name: Install Git for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - git
       - git-lfs
@@ -32,7 +32,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Git configuration file
-  template:
+  ansible.builtin.template:
     dest: "{{ ansible_env.HOME }}/.gitconfig"
     force: true
     mode: "644"

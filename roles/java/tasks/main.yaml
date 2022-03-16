@@ -16,7 +16,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Java for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - maven
       - openjdk-17-jdk
@@ -25,7 +25,7 @@
 
 - name: Install Java for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - java-latest-openjdk
       - maven
@@ -56,7 +56,7 @@
       - openjdk
 
 - name: Make Java discover OpenJDK on MacOS
-  file:
+  ansible.builtin.file:
     src: "{{ openjdk_path[ansible_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: true
@@ -71,7 +71,7 @@
 
 - name: Create Java Jar directory for Linux
   become: true
-  file:
+  ansible.builtin.file:
     mode: "755"
     path: /usr/local/share/java/jar/
     state: directory

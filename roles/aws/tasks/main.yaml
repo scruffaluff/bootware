@@ -7,7 +7,7 @@
 
 - name: Install AWSCLI for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: >-
       {{ 'aws-cli' if ansible_pkg_mgr in ['apk', 'pacman'] else 'awscli' }}
   when: ansible_system == "Linux"

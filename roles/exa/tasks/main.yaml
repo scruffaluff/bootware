@@ -1,6 +1,6 @@
 ---
 - name: Get latest Exa version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/exa.json
     method: GET
     return_content: true
@@ -21,7 +21,7 @@
 
 - name: Download Exa for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -40,7 +40,7 @@
 
 - name: Install Exa for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/exa
     mode: "755"
     src: /tmp/bin/exa

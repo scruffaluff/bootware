@@ -8,13 +8,13 @@
 
 # TODO: Figure out stable method to install AppImageLauncher.
 # - name: Install AppImageLauncher for Arch distributions
-#   shell:
+#   ansible.builtin.shell:
 #     cmd: yay -Sy --noconfirm appimagelauncher-git
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Create AppImages directory for Linux
   become: true
-  file:
+  ansible.builtin.file:
     mode: "755"
     path: /usr/local/appimages
     owner: root
@@ -22,7 +22,7 @@
   when: ansible_system == "Linux"
 
 - name: Create AppImageLauncher settings directory for Linux
-  file:
+  ansible.builtin.file:
     dest: "{{ ansible_env.HOME }}/.config"
     mode: "755"
     owner: "{{ ansible_user_id }}"
@@ -30,7 +30,7 @@
   when: ansible_system == "Linux"
 
 - name: Copy AppImageLauncher settings file for Linux
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.config/appimagelauncher.cfg"
     mode: "644"
     owner: "{{ ansible_user_id }}"
@@ -39,7 +39,7 @@
 
 - name: Install AppImage packages for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/appimages/{{ item.name }}
     mode: "755"
     owner: root

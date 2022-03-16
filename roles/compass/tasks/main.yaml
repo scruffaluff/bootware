@@ -1,6 +1,6 @@
 ---
 - name: Get latest MongoDB Compass version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
     method: GET
     return_content: true
@@ -10,7 +10,7 @@
 # MongoDB appears to not have a Compass release for Arch distributions.
 
 - name: Install MongoDB Compass For Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       mongodb_compass_formula.json.version }}_amd64.deb
@@ -19,7 +19,7 @@
 
 - name: Install MongoDB Compass For Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{

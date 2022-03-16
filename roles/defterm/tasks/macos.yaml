@@ -7,7 +7,7 @@
   when: ansible_system == "Darwin"
 
 - name: Change iTerm2 default profile for MacOS
-  shell:
+  ansible.builtin.shell:
     cmd: |
       defaults write com.googlecode.iterm2 "Blinking Cursor" -bool 1
       defaults write com.googlecode.iterm2 "Cursor Type" -float 1

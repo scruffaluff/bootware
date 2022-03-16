@@ -7,7 +7,7 @@
 
 - name: Install FzF for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: fzf
   when: ansible_system == "Linux"
 

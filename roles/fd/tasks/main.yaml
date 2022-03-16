@@ -1,6 +1,6 @@
 ---
 - name: Get latest FD version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/fd.json
     method: GET
     return_content: true
@@ -21,7 +21,7 @@
 
 - name: Download FD for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -35,7 +35,7 @@
 
 - name: Install FD for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/fd
     mode: "755"
     src: >-

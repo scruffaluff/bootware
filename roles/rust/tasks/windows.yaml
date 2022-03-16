@@ -5,18 +5,18 @@
     name: rustup-msvc
 
 - name: Update Rust for Windows
-  win_shell: |
+  win_command: |
     rustup self update
     rustup update stable
 
 - name: Add Rust components for Windows
   loop: "{{ rustup_components }}"
-  win_shell: rustup component add {{ item }}
+  win_command: rustup component add {{ item }}
 
 - name: Add Rust targets for Windows
   loop: "{{ rustup_targets }}"
-  win_shell: rustup target add {{ item }}
+  win_command: rustup target add {{ item }}
 
 - name: Update or install Cargo packages for Windows
   loop: "{{ cargo_applications }}"
-  win_shell: cargo install {{ item }}
+  win_command: cargo install {{ item }}

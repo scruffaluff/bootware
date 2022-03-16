@@ -48,6 +48,11 @@
   },
   { "name": "compass" },
   {
+    "name": "datree",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["datree version"]
+  },
+  {
     "name": "dbeaver",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": {
@@ -147,6 +152,7 @@
     "tests": ["hadolint --version"]
   },
   { "name": "helm", "tests": ["helm version --short"] },
+  { "name": "helmfile", "tests": ["helmfile --version"] },
   {
     "name": "hyper",
     "skip": [
@@ -169,6 +175,13 @@
   { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "julia", "tests": ["julia --version"] },
+  { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
+  { "name": "k9s", "tests": ["k9s version"] },
+  {
+    "name": "krew",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["kubectl-krew version"]
+  },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
   {
     "name": "libvirt",
@@ -272,6 +285,7 @@
   { "name": "system" },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
+  { "name": "tilt", "skip": [{ "os": "freebsd" }], "tests": ["tilt version"] },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {

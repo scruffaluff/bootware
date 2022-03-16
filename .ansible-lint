@@ -3,5 +3,6 @@
 # For more information, visit
 # https://ansible-lint.readthedocs.io/en/latest/configuring.html.
 
+---
 skip_list:
   - git-latest

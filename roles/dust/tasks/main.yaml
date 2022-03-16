@@ -1,6 +1,6 @@
 ---
 - name: Get latest Dust version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/dust.json
     method: GET
     return_content: true
@@ -15,7 +15,7 @@
 
 - name: Download Dust for Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
     remote_src: true
@@ -29,7 +29,7 @@
 
 - name: Install Dust for Linux
   become: true
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/dust
     mode: "755"
     src: >-

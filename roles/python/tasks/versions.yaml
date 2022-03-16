@@ -12,7 +12,7 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Pyenv dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - build-essential
       - curl
@@ -38,7 +38,7 @@
 
 - name: Install Pyenv dependencies for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - bzip2
       - bzip2-devel
@@ -66,14 +66,14 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
     warn: false
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv update
@@ -82,7 +82,7 @@
 
 - name: Get latest patch release for each Python minor version for Unix
   loop: "{{ python_versions }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
@@ -91,14 +91,14 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Extract Python versions from Pyenv outputs for Unix
-  set_fact:
+  ansible.builtin.set_fact:
     python_releases:
       "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
   loop: "{{ python_releases }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install -s {{ item }}
@@ -113,7 +113,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Set Python global versions for Unix
-  shell:
+  ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}

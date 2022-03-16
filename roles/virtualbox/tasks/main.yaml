@@ -1,14 +1,14 @@
 ---
 - name: Add Virtualbox GPG key for Fedora distributions
   become: true
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: https://www.virtualbox.org/download/oracle_vbox.asc
     state: present
   when: ansible_pkg_mgr == "dnf"
 
 - name: Add Virtualbox repository for Fedora distributions
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/yum.repos.d/virtualbox.repo
     mode: "644"
     owner: root
@@ -23,7 +23,7 @@
 
 - name: Install Virtualbox for Fedora distributions
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: VirtualBox-6.1
   when: ansible_pkg_mgr == "dnf"
 
@@ -41,7 +41,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Virtualbox for Ubuntu distributions
-  apt:
+  ansible.builtin.apt:
     name: virtualbox
   become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base != "debian"

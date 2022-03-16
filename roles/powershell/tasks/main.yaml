@@ -35,7 +35,7 @@
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
     - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
   when: ansible_system == "Win32NT"
-  win_copy:
+  ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/{{ item }}"
     force: true
     src: profile.ps1

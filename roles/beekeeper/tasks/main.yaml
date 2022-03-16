@@ -1,7 +1,7 @@
 ---
 - name: Check if Snap daemon socket is available for Linux
   register: snapd_available
-  stat:
+  ansible.builtin.stat:
     path: /run/snapd.socket
   when: ansible_system == "Linux"
 

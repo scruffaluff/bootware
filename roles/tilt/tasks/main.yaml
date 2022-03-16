@@ -1,0 +1,44 @@
+---
+- name: Get latest Tilt version
+  ansible.builtin.uri:
+    url: https://formulae.brew.sh/api/formula/tilt.json
+    method: GET
+    return_content: true
+  register: tilt_formula
+  when: ansible_system == "Linux"
+
+- name: Download Tilt for Linux
+  become: true
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/tilt-dev/tilt/releases/download/v{{
+      tilt_formula.json.versions.stable }}/tilt.{{
+      tilt_formula.json.versions.stable }}.linux.{{
+      tilt_arch[ansible_architecture] }}.tar.gz
+  vars:
+    tilt_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
+
+- name: Install Tilt for Linux
+  become: true
+  ansible.builtin.copy:
+    dest: /usr/local/bin/tilt
+    mode: "755"
+    src: /tmp/tilt
+  when: ansible_system == "Linux"
+
+- name: Install Tilt for MacOS
+  community.general.homebrew:
+    name: tilt
+  when: ansible_system == "Darwin"
+
+- name: Install Tilt for Windows
+  community.windows.win_scoop:
+    architecture: 64bit
+    name: tilt
+  when: ansible_system == "Win32NT"

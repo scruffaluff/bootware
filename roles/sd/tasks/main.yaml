@@ -1,6 +1,6 @@
 ---
 - name: Get latest SD version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/sd.json
     method: GET
     return_content: true
@@ -24,7 +24,7 @@
 
 - name: Install SD for Linux
   become: true
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/sd
     mode: "755"
     url: >-

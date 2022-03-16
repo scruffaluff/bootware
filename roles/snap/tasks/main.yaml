@@ -1,18 +1,18 @@
 ---
 - name: Install Snap for Arch distributions
-  command: yay -Sy --noconfirm snapd
+  ansible.builtin.command: yay -Sy --noconfirm snapd
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Snap for Linux
   become: true
-  package:
+  ansible.builtin.package:
     name: snapd
     state: present
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Check if Snap daemon socket is available for Linux
   register: snapd_available
-  stat:
+  ansible.builtin.stat:
     path: /run/snapd.socket
   when: ansible_system == "Linux"
 

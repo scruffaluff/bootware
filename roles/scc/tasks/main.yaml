@@ -1,6 +1,6 @@
 ---
 - name: Get latest Scc version
-  uri:
+  ansible.builtin.uri:
     url: https://formulae.brew.sh/api/formula/scc.json
     method: GET
     return_content: true
@@ -9,7 +9,7 @@
 
 - name: Install Scc Linux
   become: true
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
     remote_src: true
