@@ -81,5 +81,5 @@
   become: true
   ansible.builtin.user:
     name: "{{ ansible_user_id }}"
-    ansible.builtin.shell: "{{ fish_executable }}"
+    shell: "{{ fish_executable }}"
   when: ansible_system != "Win32NT"

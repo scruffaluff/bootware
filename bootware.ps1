@@ -598,7 +598,7 @@ Function SetupWSL($Branch) {
         wsl --set-default-version 2
 
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.zip'
-        $TempDir = $TempFile -Replace '.zip', ""
+        $TempDir = $TempFile -Replace '.zip', ''
         Log 'Downloading Ubuntu image. Follow the prompt for installation'
         DownloadFile 'https://aka.ms/wslubuntu2004' "$TempFile"
 

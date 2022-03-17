@@ -30,7 +30,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/datree
     mode: "755"
-    src: /tmp/bin/datree
+    src: /tmp/datree
   when: ansible_system == "Linux"
 
 - name: Install Datree for MacOS

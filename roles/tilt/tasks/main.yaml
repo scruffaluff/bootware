@@ -22,7 +22,7 @@
     tilt_arch:
       aarch64: arm64
       x86_64: x86_64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tilt for Linux
   become: true
@@ -30,7 +30,7 @@
     dest: /usr/local/bin/tilt
     mode: "755"
     src: /tmp/tilt
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tilt for MacOS
   community.general.homebrew:

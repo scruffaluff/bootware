@@ -285,7 +285,11 @@
   { "name": "system" },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
-  { "name": "tilt", "skip": [{ "os": "freebsd" }], "tests": ["tilt version"] },
+  {
+    "name": "tilt",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "tests": ["tilt version"]
+  },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
