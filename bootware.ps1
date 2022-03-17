@@ -420,7 +420,10 @@ Function Setup() {
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Log 'Downloading Scoop package manager'
-        RemoteScript 'https://get.scoop.sh'
+        # Scoop disallows installation from an admin console, so basic user
+        # trust level 0x20000 is used. For more information, visit
+        # https://github.com/ScoopInstaller/Install#for-admin.
+        RunAs /TrustLevel:0x20000 'powershell iwr -useb get.scoop.sh | iex'
     }
 
     # Git is required for addding Scoop buckets.
