@@ -49,7 +49,7 @@
   environment:
     PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
   loop: "{{ kubectl_plugins }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Kubectl plugins for Windows
   environment:

@@ -49,7 +49,7 @@
   { "name": "compass" },
   {
     "name": "datree",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["datree version"]
   },
   {

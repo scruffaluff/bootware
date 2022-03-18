@@ -37,9 +37,3 @@
   community.general.homebrew:
     name: datree
   when: ansible_system == "Darwin"
-
-- name: Install Datree for Windows
-  community.windows.win_scoop:
-    architecture: 64bit
-    name: datree
-  when: ansible_system == "Win32NT"

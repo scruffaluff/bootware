@@ -17,6 +17,9 @@
     - name: Update Rust for Unix
       changed_when: "' changed' in rustup_update.stdout"
       ansible.builtin.command: "{{ item }}"
+      failed_when: >-
+        rustup_update.rc != 0 and 'update is disabled' not in
+        rustup_update.stderr
       loop:
         - rustup self update
         - rustup update stable

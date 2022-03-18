@@ -39,8 +39,8 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         Exit 1
     }
 
-    If ($Target -Eq 'Machine' -And (!(IsAdministrator)) {
-        Write-Output "@
+    If ($Target -Eq 'Machine' -And !(IsAdministrator)) {
+        Write-Output @"
 System level installation requires an administrator console.
 Run this script from an administrator console or execute with the '--user' flag.
 "@
@@ -56,7 +56,7 @@ Run this script from an administrator console or execute with the '--user' flag.
 Function DownloadFile {
     Param(
         [String] $SrcURL,
-        [String] $DstFile,
+        [String] $DstFile
     )
 
     $ProgressPreference = 'SilentlyContinue'

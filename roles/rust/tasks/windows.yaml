@@ -5,6 +5,8 @@
     name: rustup-msvc
 
 - name: Update Rust for Windows
+  failed_when: >-
+    rustup_update.rc != 0 and 'update is disabled' not in rustup_update.stderr
   win_command: |
     rustup self update
     rustup update stable
