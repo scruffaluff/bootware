@@ -20,18 +20,30 @@ OPTIONS:
 '@
 }
 
-Function CheckEnvironment() {
+Function CheckEnvironment($Target) {
     If (($PSVersionTable.PSVersion.Major) -LT 5) {
-        Write-Output 'PowerShell 5 or later is required to run Bootware.'
-        Write-Output 'Upgrade PowerShell: https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell'
+        Write-Output @'
+PowerShell 5 or later is required to run Bootware.
+Upgrade PowerShell: https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell
+'@
         Exit 1
     }
 
     $AllowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
-    if ((Get-ExecutionPolicy).ToString() -NotIn $AllowedExecutionPolicy) {
-        Write-Output "PowerShell requires an execution policy [$($AllowedExecutionPolicy -Join ', ')] to run Bootware."
-        Write-Output "To set the execution policy to the recommended 'RemoteSigned' run:"
-        Write-Output "'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser'"
+    If ((Get-ExecutionPolicy).ToString() -NotIn $AllowedExecutionPolicy) {
+        Write-Output @"
+PowerShell requires an execution policy [$($AllowedExecutionPolicy -Join ', ')] to run Bootware.
+To set the execution policy to the recommended 'RemoteSigned' run:
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+"@
+        Exit 1
+    }
+
+    If ($Target -Eq 'Machine' -And (!(IsAdministrator)) {
+        Write-Output "@
+System level installation requires an administrator console.
+Run this script from an administrator console or execute with the '--user' flag.
+"@
         Exit 1
     }
 }
@@ -41,7 +53,12 @@ Function CheckEnvironment() {
 # Required as a seperate function, since the default progress bar updates every
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
-Function DownloadFile($SrcURL, $DstFile) {
+Function DownloadFile {
+    Param(
+        [String] $SrcURL,
+        [String] $DstFile,
+    )
+
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
@@ -50,6 +67,13 @@ Function DownloadFile($SrcURL, $DstFile) {
 Function ErrorUsage($Message) {
     Throw "Error: $Message"
     Exit 2
+}
+
+# Check if script is run from an admin console.
+Function IsAdministrator {
+    Return ([Security.Principal.WindowsPrincipal]`
+            [Security.Principal.WindowsIdentity]::GetCurrent()`
+    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
 # Print log message to stdout if logging is enabled.
@@ -87,7 +111,7 @@ Function Main() {
         }
     }
 
-    CheckEnvironment
+    CheckEnvironment "$Target"
     $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     If ($Target -Eq 'User') {
         $Dest = "$Env:AppData/Bootware/bootware.ps1"

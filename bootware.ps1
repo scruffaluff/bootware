@@ -360,6 +360,13 @@ Function FindRelativeIP {
     }
 }
 
+# Check if script is run from an admin console.
+Function IsAdministrator {
+    Return ([Security.Principal.WindowsPrincipal]`
+            [Security.Principal.WindowsIdentity]::GetCurrent()`
+    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
 # Print log message to stdout if logging is enabled.
 Function Log($Message) {
     If (!"$Env:BOOTWARE_NOLOG") {
@@ -420,10 +427,18 @@ Function Setup() {
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Log 'Downloading Scoop package manager'
-        # Scoop disallows installation from an admin console, so basic user
-        # trust level 0x20000 is used. For more information, visit
+        # Scoop disallows installation from an admin console by default. For
+        # more information, visit
         # https://github.com/ScoopInstaller/Install#for-admin.
-        RunAs /TrustLevel:0x20000 'powershell iwr -useb get.scoop.sh | iex'
+        If (IsAdministrator) {
+            $ScoopInstaller = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.ps1'
+            DownloadFile 'get.scoop.sh' "$ScoopInstaller"
+            & "$ScoopInstaller" -RunAsAdmin
+            Remove-Item -Force -Path "$ScoopInstaller"
+        }
+        Else {
+            RemoteScript 'https://get.scoop.sh'
+        }
     }
 
     # Git is required for addding Scoop buckets.
