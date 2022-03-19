@@ -23,9 +23,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Fira Code for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: fira-code-fonts
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for MacOS
@@ -39,6 +39,5 @@
 
 - name: Install Fira Code font for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: firacode
   when: ansible_system == "Win32NT"

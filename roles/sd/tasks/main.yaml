@@ -1,9 +1,9 @@
 ---
 - name: Get latest SD version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/sd.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/sd.json
   register: sd_formula
   when: ansible_system == "Linux"
 
@@ -23,7 +23,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install SD for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/bin/sd
     mode: "755"
@@ -31,6 +30,7 @@
       https://github.com/chmln/sd/releases/download/v{{
       sd_formula.json.versions.stable }}/sd-v{{ sd_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture == "x86_64" and
     ansible_pkg_mgr != "apk"
@@ -42,6 +42,5 @@
 
 - name: Install SD for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: sd
   when: ansible_system == "Win32NT"

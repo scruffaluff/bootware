@@ -1,15 +1,14 @@
 ---
 - name: Get latest PowerShell Core version
-  register: powershell_formula
-  when: ansible_system == "Win32NT"
-  win_uri:
-    url: https://formulae.brew.sh/api/cask/powershell.json
+  ansible.windows.win_uri:
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/cask/powershell.json
+  register: powershell_formula
+  when: ansible_system == "Win32NT"
 
 - name: Install PowerShell Core for Windows
-  when: ansible_system == "Win32NT"
-  win_package:
+  ansible.windows.win_package:
     arguments:
       - /quiet
       - ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1
@@ -19,26 +18,27 @@
       https://github.com/PowerShell/PowerShell/releases/download/v{{
       powershell_formula.json.version }}/PowerShell-{{
       powershell_formula.json.version }}-win-x64.msi
+  when: ansible_system == "Win32NT"
 
 - name: Create PowerShell settings directories for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: directory
   loop:
     - Documents/PowerShell
     - Documents/WindowsPowerShell
     - Documents/WindowsPowerShell/Modules
   when: ansible_system == "Win32NT"
-  win_file:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
-    state: directory
 
 - name: Copy PowerShell settings files for Windows
-  loop:
-    - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
-    - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
-  when: ansible_system == "Win32NT"
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/{{ item }}"
     force: true
     src: profile.ps1
+  loop:
+    - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
+    - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+  when: ansible_system == "Win32NT"
 # Disabled since trusting PSGallery is an absurdly frustrating process on
 # Windows 11.
 # - name: Trust default PowerShell repository
@@ -46,8 +46,6 @@
 #   trusted when: ansible_system == "Win32NT"
 
 # - name: Install PowerShell modules
-#   become: true
-#   become_user: "{{ ansible_user_id }}"
 #   community.windows.win_psmodule:
 #     name: "{{ item }}"
 #     skip_publisher_check: true

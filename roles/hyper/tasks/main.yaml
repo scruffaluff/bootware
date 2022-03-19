@@ -1,17 +1,17 @@
 ---
 - name: Install Hyper for Arch distributions
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/appimages/hyper.appimage
     mode: "755"
     owner: root
     url: https://releases.hyper.is/download/AppImage
+  become: true
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 - name: Install Hyper dependencies for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: mesa-libgbm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 # Hyper is not yet supported on Debian 11.
@@ -24,10 +24,10 @@
     deb_distro_base == "ubuntu"
 
 - name: Install Hyper for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: https://releases.hyper.is/download/rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for MacOS
@@ -39,7 +39,6 @@
 
 - name: Install Hyper for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: hyper
   when: ansible_system == "Win32NT"
 
@@ -70,10 +69,10 @@
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/AppData/Roaming/Hyper/"
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Copy Hyper configuration file for Linux
   ansible.builtin.template:
@@ -94,8 +93,8 @@
   when: ansible_system == "Darwin"
 
 - name: Copy Hyper configuration file for Windows
-  when: ansible_system == "Win32NT"
-  win_template:
+  ansible.windows.win_template:
     dest: "{{ ansible_env.HOME }}/AppData/Roaming/Hyper/.hyper.js"
     force: true
     src: hyper.j2
+  when: ansible_system == "Win32NT"

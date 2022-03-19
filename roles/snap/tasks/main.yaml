@@ -4,16 +4,16 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Snap for Linux
-  become: true
   ansible.builtin.package:
     name: snapd
     state: present
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Check if Snap daemon socket is available for Linux
-  register: snapd_available
   ansible.builtin.stat:
     path: /run/snapd.socket
+  register: snapd_available
   when: ansible_system == "Linux"
 
 - name: Install Snap packages for Linux

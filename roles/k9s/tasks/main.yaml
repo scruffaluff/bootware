@@ -1,9 +1,9 @@
 ---
 - name: Get latest K9s version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/k9s.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/k9s.json
   register: k9s_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Download K9s for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -23,6 +22,7 @@
       https://github.com/derailed/k9s/releases/download/v{{
       k9s_formula.json.versions.stable }}/k9s_Linux_{{
       k9s_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     k9s_arch:
       aarch64: arm64
@@ -30,11 +30,11 @@
   when: ansible_system == "Linux"
 
 - name: Install K9s for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/k9s
     mode: "755"
     src: /tmp/k9s
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install K9s for MacOS
@@ -44,7 +44,6 @@
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: k9s
   when: ansible_system == "Win32NT"
 
@@ -57,10 +56,10 @@
   when: ansible_system != "Win32NT"
 
 - name: Create K9s configuration directory for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/AppData/Roaming/k9s"
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Copy K9s skin file for Unix
   ansible.builtin.copy:
@@ -72,8 +71,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy K9s skin file for Windows
-  when: ansible_system == "Win32NT"
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/AppData/Roaming/k9s/skin.yml"
     force: true
     src: skin.yml
+  when: ansible_system == "Win32NT"

@@ -1,14 +1,13 @@
 ---
 - name: Get latest Datree version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/datree.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/datree.json
   register: datree_formula
   when: ansible_system == "Linux"
 
 - name: Download Datree for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -19,6 +18,7 @@
       datree_formula.json.versions.stable }}/datree-cli_{{
       datree_formula.json.versions.stable }}_Linux_{{
       datree_arch[ansible_architecture] }}.zip
+  become: true
   vars:
     datree_arch:
       aarch64: arm64
@@ -26,11 +26,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Datree for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/datree
     mode: "755"
     src: /tmp/datree
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Datree for MacOS

@@ -1,9 +1,9 @@
 ---
 - name: Get latest FFSend version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/ffsend.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/ffsend.json
   register: ffsend_formula
   when: ansible_system == "Linux"
 
@@ -25,7 +25,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install FFSend for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/bin/ffsend
     mode: "755"
@@ -33,6 +32,7 @@
       https://github.com/timvisee/ffsend/releases/download/v{{
       ffsend_formula.json.versions.stable }}/ffsend-v{{
       ffsend_formula.json.versions.stable }}-linux-x64
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture == "x86_64" and
     ansible_pkg_mgr != "apk"
@@ -44,6 +44,5 @@
 
 - name: Install FFSend for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: ffsend
   when: ansible_system == "Win32NT"

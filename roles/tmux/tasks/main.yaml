@@ -16,11 +16,11 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Tmux for Linux
-  become: true
   ansible.builtin.package:
     name:
       - tmate
       - tmux
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Tmux for MacOS

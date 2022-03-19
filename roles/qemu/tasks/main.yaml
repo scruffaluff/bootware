@@ -22,9 +22,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for Linux
-  become: true
   ansible.builtin.package:
     name: qemu
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install QEMU for MacOS
@@ -34,18 +34,17 @@
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: qemu
   when: ansible_system == "Win32NT"
 
 - name: Install Quickemu for Linux
-  become: true
   ansible.builtin.get_url:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
     owner: root
     url: >-
       https://raw.githubusercontent.com/wimpysworld/quickemu/master/{{ item }}
+  become: true
   loop:
     - macrecovery
     - quickemu

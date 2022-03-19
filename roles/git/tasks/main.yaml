@@ -8,11 +8,11 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Git for Linux
-  become: true
   ansible.builtin.package:
     name:
       - git
       - git-lfs
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Git for MacOS
@@ -24,7 +24,6 @@
 
 - name: Install Git for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - git
       - git-lfs

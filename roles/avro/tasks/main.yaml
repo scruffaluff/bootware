@@ -1,15 +1,14 @@
 ---
 - name: Get latest Avro version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/avro-tools.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/avro-tools.json
   register: avro_formula
   when: ansible_system == "Linux"
 
 # TODO: Evaluate avro-bin package as replacement.
 - name: Download Avro Jar for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/share/java/jar/avro-tools.jar
     mode: "755"
@@ -18,16 +17,17 @@
       https://archive.apache.org/dist/avro/avro-{{
       avro_formula.json.versions.stable }}/java/avro-tools-{{
       avro_formula.json.versions.stable }}.jar
+  become: true
   when: ansible_system == "Linux"
 
 - name: Copy Avro Jar script for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/avro-tools
     force: true
     mode: "755"
     owner: root
     src: avro-tools.sh
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Avro for MacOS
@@ -37,6 +37,5 @@
 
 - name: Install Avro for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: avro-tools
   when: ansible_system == "Win32NT"

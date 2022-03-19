@@ -1,9 +1,9 @@
 ---
 - name: Get latest Terragrunt version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/terragrunt.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/terragrunt.json
   register: terragrunt_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Terragrunt for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/bin/terragrunt
     mode: "755"
@@ -22,6 +21,7 @@
       https://github.com/gruntwork-io/terragrunt/releases/download/v{{
       terragrunt_formula.json.versions.stable }}/terragrunt_linux_{{
       terragrunt_arch[ansible_architecture] }}
+  become: true
   vars:
     terragrunt_arch:
       aarch64: arm64
@@ -35,6 +35,5 @@
 
 - name: Install Terragrunt for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: terragrunt
   when: ansible_system == "Win32NT"

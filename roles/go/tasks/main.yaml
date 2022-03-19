@@ -1,9 +1,9 @@
 ---
 - name: Get latest Go version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/go.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/go.json
   register: go_formula
   when: ansible_system == "Linux"
 
@@ -20,7 +20,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Go for Linux
-  become: true
   ansible.builtin.unarchive:
     creates: /usr/local/go
     dest: /usr/local/
@@ -30,6 +29,7 @@
     src: >-
       https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{
       go_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     go_arch:
       aarch64: arm64
@@ -44,7 +44,6 @@
 
 - name: Install Go for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: go
   when: ansible_system == "Win32NT"
 
@@ -57,6 +56,6 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Go command line applications for Windows
+  ansible.builtin.win_command: "go install {{ item }}"
   loop: "{{ go_applications }}"
   when: ansible_system == "Win32NT"
-  win_command: "go install {{ item }}"

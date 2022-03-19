@@ -1,9 +1,9 @@
 ---
 - name: Get latest Vagrant version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/cask/vagrant.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/cask/vagrant.json
   register: vagrant_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Vagrant for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
@@ -24,6 +23,7 @@
     src: >-
       https://releases.hashicorp.com/vagrant/{{ vagrant_formula.json.version
       }}/vagrant_{{ vagrant_formula.json.version }}_linux_amd64.zip
+  become: true
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Vagrant for MacOS
@@ -35,6 +35,5 @@
 
 - name: Install Vagrant for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: vagrant
   when: ansible_system == "Win32NT"

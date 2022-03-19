@@ -1,9 +1,9 @@
 ---
 - name: Get latest Hyperfine version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/hyperfine.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/hyperfine.json
   register: hyperfine_formula
   when: ansible_pkg_mgr == "apt"
 
@@ -23,9 +23,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Hyperfine for Linux
-  become: true
   ansible.builtin.package:
     name: hyperfine
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Hyperfine for MacOS
@@ -35,6 +35,5 @@
 
 - name: Install Hyperfine for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: hyperfine
   when: ansible_system == "Win32NT"

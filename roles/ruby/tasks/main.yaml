@@ -8,12 +8,12 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install RVM dependencies for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - findutils
       - procps
       - which
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install RVM dependencies for MacOS
@@ -23,7 +23,6 @@
 
 - name: Install Ruby dependencies for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - mingw-winlibs
       - msys2
@@ -65,18 +64,17 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Unix
-  loop: "{{ ruby_versions }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       rvm install {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ ruby_versions }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: >-
       ruby{{ item | replace('ruby-','') | replace('.','') | replace('30','') }}
   loop: "{{ ruby_versions }}"
@@ -84,18 +82,18 @@
 
 # TODO: Switch to Ansible Gem module.
 - name: Install or update Ruby CLI applications for Unix
-  loop: "{{ ruby_applications }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       gem install --user-install {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ ruby_applications }}"
   when: ansible_system != "Win32NT"
 
 - name: Install or update Ruby CLI applications for Windows
+  ansible.builtin.win_command: gem install --user-install {{ item }}
   loop: "{{ ruby_applications }}"
   when: ansible_system == "Win32NT"
-  win_command: gem install --user-install {{ item }}
 
 - name: Download RVM Fish for Unix
   ansible.builtin.get_url:

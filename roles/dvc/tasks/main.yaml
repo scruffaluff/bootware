@@ -1,9 +1,9 @@
 ---
 - name: Get latest DVC version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/dvc.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/dvc.json
   register: dvc_formula
   when: ansible_system == "Linux"
 
@@ -19,13 +19,13 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install DVC for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://github.com/iterative/dvc/releases/download/{{
       dvc_formula.json.versions.stable }}/dvc-{{
       dvc_formula.json.versions.stable }}-1.x86_64.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DVC for FreeBSD
@@ -41,6 +41,5 @@
 
 - name: Install DVC for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: dvc
   when: ansible_system == "Win32NT"

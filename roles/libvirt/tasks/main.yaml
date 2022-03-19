@@ -36,11 +36,11 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Libvirt for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - libvirt
       - virt-viewer
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for MacOS
@@ -52,14 +52,11 @@
   when: ansible_system == "Darwin"
 # Scoop appears to have dropped support for Libvirt.
 # - name: Install Libvirt for Windows
-#   become: true
-#   become_user: "{{ ansible_user_id }}"
 #   community.windows.win_scoop:
-#     architecture: 64bit
 #     name: libvirt
 #   when: ansible_system == "Win32NT"
 
 # - name: Install Virt Viewer for Windows
 #   when: ansible_system == "Win32NT"
-#   win_chocolatey:
+#   chocolatey.chocolatey.win_chocolatey:
 #     name: virt-viewer

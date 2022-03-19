@@ -1,9 +1,9 @@
 ---
 - name: Get latest NVM version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/nvm.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/nvm.json
   register: nvm_formula
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
@@ -35,12 +35,12 @@
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Node versions for Unix
-  loop: "{{ node_versions }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       nvm install {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ node_versions }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
@@ -48,7 +48,6 @@
 # administrator permissions.
 - name: Install multiple Node versions for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: nodejs{{ item | replace('16','') }}
   loop: "{{ node_versions }}"
   when: ansible_system == "Win32NT"
@@ -75,7 +74,6 @@
 
 - name: >-
     Install or update Node CLI applications for Alpine distributions and FreeBSD
-  loop: "{{ node_applications }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
@@ -83,26 +81,28 @@
       npm config set prefix {{ ansible_env.HOME }}/.npm-global
       npm install -g {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ node_applications }}"
   when: >-
     (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and
     ansible_user_id != "root"
 
 - name: Install or update Node CLI applications for Unix
-  loop: "{{ node_applications }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       nvm use {{ node_versions[-1] }}
       npm install -g {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ node_applications }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_user_id != "root"
     and ansible_pkg_mgr != "apk"
 
 - name: Install or update Node CLI applications for Windows
+  ansible.windows.win_shell:
+    (npm install -g {{ item }}) -Or (npm update -g {{ item }})
   loop: "{{ node_applications }}"
   when: ansible_system == "Win32NT"
-  win_shell: (npm install -g {{ item }}) -Or (npm update -g {{ item }})
 
 - name: Download Fast NVM Fish for Unix
   ansible.builtin.get_url:

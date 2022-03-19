@@ -1,9 +1,9 @@
 ---
 - name: Get latest Exa version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/exa.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/exa.json
   register: exa_formula
   when: ansible_system == "Linux"
 
@@ -20,7 +20,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Download Exa for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -30,6 +29,7 @@
       exa_formula.json.versions.stable }}/exa-linux-{{
       exa_arch[ansible_architecture] }}-v{{ exa_formula.json.versions.stable
       }}.zip
+  become: true
   vars:
     exa_arch:
       armv7l: armv7
@@ -39,11 +39,11 @@
     and ansible_pkg_mgr != "apk"
 
 - name: Install Exa for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/exa
     mode: "755"
     src: /tmp/bin/exa
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
     and ansible_pkg_mgr != "apk"

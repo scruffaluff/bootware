@@ -52,6 +52,12 @@ jobs:
       matrix:
         arch: ["amd64"]
         distro: [alpine, arch, debian, fedora, ubuntu]
+        include:
+          # Google Cloud SDK is broken on Alpine. It always throws "ImportError:
+          # Error loading shared library ld-linux-x86-64.so.2".
+          - arch: amd64
+            os: alpine
+            skip: gcp
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -93,10 +99,13 @@ jobs:
       # Bats is already installed with NPM and causes a conflict.
       - name: Test bootstrapping
         run: bootware bootstrap --dev --no-passwd --skip bats,docker
+      # Ruby Tilt is already installed and the VM's shell is configured to point
+      # to the Ruby executable even after it is removed and another Tilt
+      # exectuable is installed.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip docker macos
+          node tests/integration/roles.spec.js --arch amd64 --skip docker,tilt macos
 
   test-windows:
     name: Test bootstrapping software for Windows

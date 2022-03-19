@@ -8,17 +8,17 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Google GPG key for Fedora distributions
-  become: true
   ansible.builtin.rpm_key:
     key: https://dl.google.com/linux/linux_signing_key.pub
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Google Chrome for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: >-
       https://dl.google.com/linux/direct/google-chrome-stable_current_{{
       ansible_architecture }}.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Chrome for MacOS
@@ -30,6 +30,5 @@
 
 - name: Install Google Chrome for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: googlechrome
   when: ansible_system == "Win32NT"

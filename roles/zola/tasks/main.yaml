@@ -1,9 +1,9 @@
 ---
 - name: Get latest Zola version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/zola.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/zola.json
   register: zola_formula
   when: ansible_system == "Linux"
 
@@ -20,7 +20,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Zola for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
@@ -31,6 +30,7 @@
       https://github.com/getzola/zola/releases/download/v{{
       zola_formula.json.versions.stable }}/zola-v{{
       zola_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
@@ -42,6 +42,5 @@
 
 - name: Install Zola for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: zola
   when: ansible_system == "Win32NT"

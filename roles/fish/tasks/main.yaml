@@ -6,9 +6,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Fish for Linux
-  become: true
   ansible.builtin.package:
     name: fish
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Fish for MacOS
@@ -50,8 +50,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Get installed Fish version
-  register: fish_version_text
   ansible.builtin.command: fish --version
+  register: fish_version_text
   when: ansible_system != "Win32NT"
 
 - name: Parse Fish version
@@ -78,8 +78,8 @@
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
-  become: true
   ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     shell: "{{ fish_executable }}"
+  become: true
   when: ansible_system != "Win32NT"

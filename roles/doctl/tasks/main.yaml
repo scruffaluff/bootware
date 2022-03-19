@@ -1,9 +1,9 @@
 ---
 - name: Get latest Digital Ocean CLI version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/doctl.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/doctl.json
   register: doctl_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Digital Ocean CLI for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -25,6 +24,7 @@
       doctl_formula.json.versions.stable }}/doctl-{{
       doctl_formula.json.versions.stable }}-linux-{{
       doctl_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     doctl_arch:
       aarch64: arm64
@@ -38,7 +38,6 @@
 
 - name: Install Digital Ocean CLI for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: doctl
   when: ansible_system == "Win32NT"
 

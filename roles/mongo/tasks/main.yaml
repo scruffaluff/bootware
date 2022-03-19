@@ -1,22 +1,21 @@
 ---
 - name: Get latest Mongo Shell version for Linux
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/mongosh.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/mongosh.json
   register: mongosh_formula_linux
   when: ansible_system == "Linux"
 
 - name: Get latest Mongo Shell version for Windows
-  register: mongosh_formula_windows
-  when: ansible_system == "Win32NT"
-  win_uri:
-    url: https://formulae.brew.sh/api/formula/mongosh.json
+  ansible.windows.win_uri:
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/mongosh.json
+  register: mongosh_formula_windows
+  when: ansible_system == "Win32NT"
 
 - name: Download Mongo Shell for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -25,6 +24,7 @@
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch[ansible_architecture] }}.tgz
+  become: true
   vars:
     mongosh_arch:
       aarch64: arm64
@@ -32,13 +32,13 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/mongosh
     mode: "755"
     src: >-
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch[ansible_architecture] }}/bin/mongosh
+  become: true
   vars:
     mongosh_arch:
       aarch64: arm64
@@ -50,17 +50,9 @@
     name: mongosh
   when: ansible_system == "Darwin"
 
-# As of 12/14/2021, Scoop installation of mongodb-database-tools always results
-# in a fetch error.
-# - name: Install Mongo tools for Windows
-#   community.windows.win_scoop:
-#     architecture: 64bit
-#     name: mongodb-database-tools
-#   when: ansible_system == "Win32NT"
-
 - name: Install Mongo Shell for Windows
-  when: ansible_system == "Win32NT"
-  win_package:
+  ansible.windows.win_package:
     path: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_windows.json.versions.stable }}-x64.msi
+  when: ansible_system == "Win32NT"

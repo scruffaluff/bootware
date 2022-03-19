@@ -12,9 +12,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Firefox for Linux
-  become: true
   ansible.builtin.package:
     name: firefox
+  become: true
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apt" or deb_distro_base
     != "debian")
@@ -28,6 +28,5 @@
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: firefox
   when: ansible_system == "Win32NT"

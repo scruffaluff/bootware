@@ -1,9 +1,9 @@
 ---
 - name: Get latest FD version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/fd.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/fd.json
   register: fd_formula
   when: ansible_system == "Linux"
 
@@ -20,7 +20,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Download FD for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -29,17 +28,18 @@
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/fd
     mode: "755"
     src: >-
       /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
@@ -51,6 +51,5 @@
 
 - name: Install FD for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: fd
   when: ansible_system == "Win32NT"

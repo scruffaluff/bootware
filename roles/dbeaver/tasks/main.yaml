@@ -12,10 +12,10 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install DBeaver for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install DBeaver for MacOS
@@ -26,6 +26,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install DBeaver for Windows
-  when: ansible_system == "Win32NT"
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: dbeaver
+  when: ansible_system == "Win32NT"

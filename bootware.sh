@@ -546,6 +546,7 @@ setup() {
       ;;
   esac
 
+  ansible-galaxy collection install chocolatey.chocolatey > /dev/null
   ansible-galaxy collection install community.general > /dev/null
   ansible-galaxy collection install community.windows > /dev/null
 }

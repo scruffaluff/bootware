@@ -1,27 +1,9 @@
 ---
-- name: Install ShellCheck for Alpine distributions
+- name: Install ShellCheck for Linux
+  ansible.builtin.package:
+    name: "{{ 'ShellCheck' if ansible_pkg_mgr == 'dnf' else 'shellcheck' }}"
   become: true
-  community.general.apk:
-    name: shellcheck
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install ShellCheck for Arch distributions
-  become: true
-  community.general.pacman:
-    name: shellcheck
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install ShellCheck for Debian distributions
-  ansible.builtin.apt:
-    name: shellcheck
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install ShellCheck for Fedora distributions
-  become: true
-  ansible.builtin.dnf:
-    name: ShellCheck
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_system == "Linux"
 
 - name: Install ShellCheck for MacOS
   community.general.homebrew:

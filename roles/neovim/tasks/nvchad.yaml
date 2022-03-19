@@ -30,28 +30,28 @@
   when: ansible_system != "Win32NT"
 
 - name: Download NvChad for Windows
-  when: ansible_system == "Win32NT"
-  win_command: >-
+  ansible.builtin.win_command: >-
     git clone --depth 1 https://github.com/NvChad/NvChad {{ ansible_env.HOME
     }}/AppData/Local/Temp/NvChad
+  when: ansible_system == "Win32NT"
 
 - name: Install NvChad for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/{{ item }}"
+    src: "{{ ansible_env.HOME }}/AppData/Local/Temp/NvChad/{{ item }}"
   loop:
     - init.lua
     - lua
   when: ansible_system == "Win32NT"
-  ansible.windows.win_copy:
-    dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/{{ item }}"
-    src: "{{ ansible_env.HOME }}/AppData/Local/Temp/NvChad/{{ item }}"
 
 - name: Remove Neovim settings file for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/AppData/Local/nvim/init.vim"
     state: absent
+  when: ansible_system == "Win32NT"
 
 - name: Install NvChad configuration file for Windows
-  when: ansible_system == "Win32NT"
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/lua/custom/"
     src: chadrc.lua
+  when: ansible_system == "Win32NT"

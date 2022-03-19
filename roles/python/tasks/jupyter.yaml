@@ -8,10 +8,10 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Jupyter settings directory for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/.jupyter"
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Copy Jupyter notebook settings file
   ansible.builtin.copy:

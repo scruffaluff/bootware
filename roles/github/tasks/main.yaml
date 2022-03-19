@@ -1,14 +1,13 @@
 ---
 - name: Get latest Act version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/act.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/act.json
   register: act_formula
   when: ansible_system == "Linux"
 
 - name: Download Act for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -17,6 +16,7 @@
       https://github.com/nektos/act/releases/download/v{{
       act_formula.json.versions.stable }}/act_Linux_{{
       act_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     act_arch:
       aarch64: arm64
@@ -24,12 +24,12 @@
   when: ansible_system == "Linux"
 
 - name: Install Act for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/act
     mode: "755"
     owner: root
     src: /tmp/act
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Act for MacOS
@@ -39,15 +39,14 @@
 
 - name: Install Act for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: act
   when: ansible_system == "Win32NT"
 
 - name: Get latest GitHub CLI version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/gh.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/gh.json
   register: gh_formula
   when: ansible_system == "Linux"
 
@@ -71,13 +70,13 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install GitHub CLI for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     disable_gpg_check: true
-    name:
+    name: >-
       https://github.com/cli/cli/releases/download/v{{
       gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
       }}_linux_{{ gh_arch[ansible_architecture] }}.rpm
+  become: true
   vars:
     gh_arch:
       aarch64: arm64
@@ -97,6 +96,5 @@
 
 - name: Install GitHub CLI for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: gh
   when: ansible_system == "Win32NT"

@@ -15,9 +15,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Alacritty for Linux
-  become: true
   ansible.builtin.package:
     name: alacritty
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Alacritty for MacOS
@@ -37,7 +37,6 @@
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: alacritty
   when: ansible_system == "Win32NT"
 
@@ -50,10 +49,10 @@
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/AppData/Roaming/alacritty/"
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Copy Alacritty configuration file for Unix
   ansible.builtin.template:
@@ -65,8 +64,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
-  when: ansible_system == "Win32NT"
-  win_template:
+  ansible.windows.win_template:
     dest: "{{ ansible_env.HOME }}/AppData/Roaming/alacritty/alacritty.yml"
     force: true
     src: alacritty.j2
+  when: ansible_system == "Win32NT"

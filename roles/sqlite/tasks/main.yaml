@@ -24,9 +24,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install SQLite for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: sqlite
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install SQLite for MacOS
@@ -36,7 +36,6 @@
 
 - name: Install SQLite for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: sqlite
   when: ansible_system == "Win32NT"
 

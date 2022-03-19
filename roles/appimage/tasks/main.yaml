@@ -13,12 +13,12 @@
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Create AppImages directory for Linux
-  become: true
   ansible.builtin.file:
     mode: "755"
     path: /usr/local/appimages
     owner: root
     state: directory
+  become: true
   when: ansible_system == "Linux"
 
 - name: Create AppImageLauncher settings directory for Linux
@@ -38,11 +38,11 @@
   when: ansible_system == "Linux"
 
 - name: Install AppImage packages for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/appimages/{{ item.name }}
     mode: "755"
     owner: root
     url: "{{ item.url }}"
+  become: true
   loop: "{{ appimage_packages }}"
   when: ansible_system == "Linux"

@@ -1,14 +1,13 @@
 ---
 - name: Get latest Scc version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/scc.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/scc.json
   register: scc_formula
   when: ansible_system == "Linux"
 
 - name: Install Scc Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -17,6 +16,7 @@
       https://github.com/boyter/scc/releases/download/v{{
       scc_formula.json.versions.stable }}/scc-{{
       scc_formula.json.versions.stable }}-x86_64-unknown-linux.zip
+  become: true
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Scc for MacOS
@@ -26,6 +26,5 @@
 
 - name: Install Scc for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: scc
   when: ansible_system == "Win32NT"

@@ -6,10 +6,10 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Ripgrep for Linux
-  become: true
   ansible.builtin.package:
     name: ripgrep
     state: present
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Ripgrep for MacOS
@@ -19,6 +19,5 @@
 
 - name: Install Ripgrep for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: ripgrep
   when: ansible_system == "Win32NT"

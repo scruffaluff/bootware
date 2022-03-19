@@ -37,7 +37,6 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Pyenv dependencies for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - bzip2
@@ -51,6 +50,7 @@
       - xz
       - xz-devel
       - zlib-devel
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pyenv dependencies for MacOS
@@ -81,12 +81,12 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix
-  loop: "{{ python_versions }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
+  loop: "{{ python_versions }}"
   register: pyenv_releases
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
@@ -97,17 +97,16 @@
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
-  loop: "{{ python_releases }}"
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install -s {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ python_releases }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: python{{ item | replace('.','') | replace('310','') }}
   loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"

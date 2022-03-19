@@ -6,9 +6,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Emacs for Linux
-  become: true
   ansible.builtin.package:
     name: emacs
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Emacs for MacOS
@@ -18,7 +18,6 @@
 
 - name: Install Emacs for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: emacs
   when: ansible_system == "Win32NT"
 
@@ -32,7 +31,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Emacs settings files for Windows
-  when: ansible_system == "Win32NT"
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/.emacs"
     src: .emacs
+  when: ansible_system == "Win32NT"

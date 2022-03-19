@@ -18,10 +18,10 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install TLDR for Linux
-  become: true
   ansible.builtin.package:
     name: tldr
     state: present
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
 
 - name: Install TLDR for MacOS
@@ -31,7 +31,6 @@
 
 - name: Install TDLR for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: tldr
   when: ansible_system == "Win32NT"
 
@@ -50,5 +49,5 @@
   when: ansible_system != "Win32NT"
 
 - name: Update TLDR documentation for Windows
+  ansible.builtin.win_command: tldr --update
   when: ansible_system == "Win32NT"
-  win_command: tldr --update

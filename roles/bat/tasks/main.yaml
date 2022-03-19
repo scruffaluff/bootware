@@ -1,9 +1,9 @@
 ---
 - name: Get latest Bat version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/bat.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/bat.json
   register: bat_formula
   when: ansible_system == "Linux"
 
@@ -34,9 +34,9 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Bat for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: bat
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Bat for FreeBSD
@@ -52,6 +52,5 @@
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: bat
   when: ansible_system == "Win32NT"

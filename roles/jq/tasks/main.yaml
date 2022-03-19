@@ -6,9 +6,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install JQ for Linux
-  become: true
   ansible.builtin.package:
     name: jq
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install JQ for MacOS
@@ -18,6 +18,5 @@
 
 - name: Install JQ for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: jq
   when: ansible_system == "Win32NT"

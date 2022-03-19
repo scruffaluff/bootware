@@ -1,9 +1,9 @@
 ---
 - name: Get latest Helm version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/helm.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/helm.json
   register: helm_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Download Helm for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -22,6 +21,7 @@
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
       helm_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     helm_arch:
       aarch64: arm64
@@ -29,12 +29,12 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/helm
     mode: "755"
     owner: root
     src: /tmp/linux-{{ helm_arch[ansible_architecture] }}/helm
+  become: true
   vars:
     helm_arch:
       aarch64: arm64
@@ -48,6 +48,5 @@
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: helm
   when: ansible_system == "Win32NT"

@@ -1,9 +1,9 @@
 ---
 - name: Get latest Terraform version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/terraform.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/terraform.json
   register: terraform_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Terraform for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
@@ -26,6 +25,7 @@
       terraform_formula.json.versions.stable }}/terraform_{{
       terraform_formula.json.versions.stable }}_linux_{{
       terraform_arch[ansible_architecture] }}.zip
+  become: true
   vars:
     terraform_arch:
       aarch64: arm64
@@ -39,6 +39,5 @@
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: terraform
   when: ansible_system == "Win32NT"

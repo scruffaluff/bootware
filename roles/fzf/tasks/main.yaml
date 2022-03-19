@@ -6,9 +6,9 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install FzF for Linux
-  become: true
   ansible.builtin.package:
     name: fzf
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install FzF for MacOS
@@ -18,6 +18,5 @@
 
 - name: Install FzF for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: fzf
   when: ansible_system == "Win32NT"

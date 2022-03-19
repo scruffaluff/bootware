@@ -1,9 +1,9 @@
 ---
 - name: Get latest Exa version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/xsv.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/xsv.json
   register: xsv_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Download Xsv for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin
     mode: "755"
@@ -23,6 +22,7 @@
       https://github.com/BurntSushi/xsv/releases/download/{{
       xsv_formula.json.versions.stable }}/xsv-{{
       xsv_formula.json.versions.stable }}-x86_64-unknown-linux-musl.tar.gz
+  become: true
   when: ansible_system == "Linux" and ansible_architecture == "x86_64"
 
 - name: Install Xsv for MacOS
@@ -32,6 +32,5 @@
 
 - name: Install Xsv for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: xsv
   when: ansible_system == "Win32NT"

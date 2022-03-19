@@ -21,9 +21,9 @@
   when: ansible_pkg_mgr == "apt" and "/" in item
 
 - name: Install DNF packages for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: "{{ item }}"
+  become: true
   loop: "{{ dnf_packages }}"
   when: ansible_pkg_mgr == "dnf"
 
@@ -50,14 +50,13 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
+  chocolatey.chocolatey.win_chocolatey:
+    name: "{{ item }}"
   loop: "{{ chocolatey_packages }}"
   when: ansible_system == "Win32NT"
-  win_chocolatey:
-    name: "{{ item }}"
 
 - name: Install Scoop packages for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
   when: ansible_system == "Win32NT"

@@ -1,14 +1,13 @@
 ---
 - name: Get latest Krew version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/krew.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/krew.json
   register: krew_formula
   when: ansible_system == "Linux"
 
 - name: Download Krew for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -17,6 +16,7 @@
       https://github.com/kubernetes-sigs/krew/releases/download/v{{
       krew_formula.json.versions.stable }}/krew-linux_{{
       krew_arch[ansible_architecture] }}.tar.gz
+  become: true
   vars:
     krew_arch:
       aarch64: arm64
@@ -38,8 +38,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Krew for Windows
-  community.windows.win_scoop:
-    architecture: 64bit
+  chocolatey.chocolatey.win_chocolatey:
     name: krew
   when: ansible_system == "Win32NT"
 
@@ -52,8 +51,8 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Kubectl plugins for Windows
+  ansible.builtin.win_command: "kubectl-krew install {{ item }}"
   environment:
     PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
   loop: "{{ kubectl_plugins }}"
   when: ansible_system == "Win32NT"
-  win_command: "kubectl-krew install {{ item }}"

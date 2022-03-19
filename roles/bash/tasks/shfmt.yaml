@@ -1,9 +1,9 @@
 ---
 - name: Get latest Shfmt version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/shfmt.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/shfmt.json
   register: shfmt_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Shfmt for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/bin/shfmt
     mode: "755"
@@ -24,6 +23,7 @@
       shfmt_formula.json.versions.stable }}/shfmt_v{{
       shfmt_formula.json.versions.stable }}_linux_{{
       shfmt_arch[ansible_architecture] }}
+  become: true
   vars:
     shfmt_arch:
       aarch64: arm64
@@ -37,6 +37,5 @@
 
 - name: Install Shfmt for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: shfmt
   when: ansible_system == "Win32NT"

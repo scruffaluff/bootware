@@ -1,9 +1,9 @@
 ---
 - name: Get latest Mdbook version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/mdbook.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/mdbook.json
   register: mdbook_formula
   when: ansible_system == "Linux"
 
@@ -25,7 +25,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Mdbook for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
@@ -36,6 +35,7 @@
       https://github.com/rust-lang/mdBook/releases/download/v{{
       mdbook_formula.json.versions.stable }}/mdbook-v{{
       mdbook_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture == "x86_64" and
     ansible_pkg_mgr != "apk"
@@ -47,6 +47,5 @@
 
 - name: Install Mdbook for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: mdbook
   when: ansible_system == "Win32NT"

@@ -6,11 +6,11 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Bash for Linux
-  become: true
   ansible.builtin.package:
     name:
       - bash
       - bash-completion
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Bash for MacOS

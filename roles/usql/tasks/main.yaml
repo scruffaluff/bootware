@@ -8,17 +8,16 @@
   when: ansible_system == "Linux"
 
 - name: Install Usql dependencies for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - bzip2
       - libicu
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Arch.
 - name: Install Usql for Arch distributions
-  become_user: "{{ ansible_user_id }}"
   ansible.builtin.command: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
 
@@ -34,7 +33,6 @@
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Usql for Fedora and Ubuntu distributions
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -43,6 +41,7 @@
       https://github.com/xo/usql/releases/download/v{{
       usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
       }}-linux-amd64.tar.bz2
+  become: true
   when: >-
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
     ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
@@ -62,13 +61,13 @@
 # distributions. For more information, visit
 # https://github.com/xo/usql/issues/117.
 - name: Make libicu symlinks for Fedora distributions
-  become: true
   ansible.builtin.file:
     src: "/usr/lib64/{{ item }}.so.{{ libicu_major_version }}"
     dest: "/usr/lib64/{{ item }}.so.67"
     force: true
     mode: "755"
     state: link
+  become: true
   loop:
     - libicuuc
     - libicui18n
@@ -92,7 +91,6 @@
 
 - name: Install Usql for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: usql
   when: ansible_system == "Win32NT"
 

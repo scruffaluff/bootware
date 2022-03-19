@@ -1,9 +1,9 @@
 ---
 - name: Get latest Dust version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/dust.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/dust.json
   register: dust_formula
   when: ansible_system == "Linux"
 
@@ -14,7 +14,6 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Download Dust for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
@@ -23,18 +22,19 @@
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
       dust_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install Dust for Linux
-  become: true
   ansible.builtin.copy:
     dest: /usr/local/bin/dust
     mode: "755"
     src: >-
       /tmp/dust-v{{ dust_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu/dust
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
@@ -46,6 +46,5 @@
 
 - name: Install Dust for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: dust
   when: ansible_system == "Win32NT"

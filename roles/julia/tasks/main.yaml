@@ -1,9 +1,9 @@
 ---
 - name: Get latest Julia version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/julia.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/julia.json
   register: julia_formula
   when: ansible_system in ["FreeBSD", "Linux"]
 
@@ -17,7 +17,6 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Julia for FreeBSD and Linux
-  become: true
   ansible.builtin.unarchive:
     creates: /usr/local/julia
     dest: /usr/local/
@@ -31,6 +30,7 @@
       julia_arch[ansible_architecture][0] }}/{{ julia_version }}/julia-{{
       julia_formula.json.versions.stable }}-{{ julia_os }}-{{
       julia_arch[ansible_architecture][1] }}.tar.gz
+  become: true
   vars:
     julia_arch:
       aarch64: [aarch64, aarch64]
@@ -46,6 +46,5 @@
 
 - name: Install Julia for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: julia
   when: ansible_system == "Win32NT"

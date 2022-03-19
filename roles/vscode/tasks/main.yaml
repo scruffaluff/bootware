@@ -20,17 +20,17 @@
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
 - name: Add Microsoft GPG key for Fedora distributions
-  become: true
   ansible.builtin.rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
       vscode_arch[ansible_architecture] }}/stable
+  become: true
   vars:
     vscode_arch:
       aarch64: arm64
@@ -52,7 +52,6 @@
 
 - name: Install VSCode for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: vscode
   when: ansible_system == "Win32NT"
 
@@ -114,38 +113,38 @@
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
 - name: Create VSCode user directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: directory
   loop:
     - AppData/Roaming/Code/User
     - scoop/apps/vscode/current/data/user-data/User/
   when: ansible_system == "Win32NT"
-  win_file:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
-    state: directory
 
 # Keybindings file can be in multiple locations depending on package installer
 # and Windows version.
 - name: Copy VSCode keybindings file for Windows
+  ansible.windows.win_template:
+    dest: "{{ ansible_env.HOME }}/{{ item }}"
+    force: true
+    src: keybindings.j2
   loop:
     - AppData/Roaming/Code/User/keybindings.json
     - scoop/apps/vscode/current/data/user-data/User/keybindings.json
   when: ansible_system == "Win32NT"
-  win_template:
-    dest: "{{ ansible_env.HOME }}/{{ item }}"
-    force: true
-    src: keybindings.j2
 
 # Settings file can be in multiple locations depending on package installer and
 # Windows version.
 - name: Copy VSCode settings file for Windows
-  loop:
-    - AppData/Roaming/Code/User/settings.json
-    - scoop/apps/vscode/current/data/user-data/User/settings.json
-  when: ansible_system == "Win32NT"
-  win_template:
+  ansible.windows.win_template:
     dest: "{{ ansible_env.HOME }}/{{ item }}"
     force: true
     mode: "644"
     src: settings.j2
+  loop:
+    - AppData/Roaming/Code/User/settings.json
+    - scoop/apps/vscode/current/data/user-data/User/settings.json
+  when: ansible_system == "Win32NT"
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
@@ -153,8 +152,8 @@
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Windows
-  loop: "{{ vscode_extensions }}"
-  when: ansible_system == "Win32NT"
-  win_command: >-
+  ansible.builtin.win_command: >-
     {{ ansible_env.HOME }}/scoop/apps/vscode/current/bin/code.cmd
     --install-extension {{ item }}
+  loop: "{{ vscode_extensions }}"
+  when: ansible_system == "Win32NT"

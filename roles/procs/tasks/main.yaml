@@ -1,14 +1,13 @@
 ---
 - name: Get latest Procs version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/procs.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/procs.json
   register: procs_formula
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Procs for Debian distribution
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -17,14 +16,15 @@
       https://github.com/dalance/procs/releases/download/v{{
       procs_formula.json.versions.stable }}/procs-v{{
       procs_formula.json.versions.stable }}-x86_64-lnx.zip
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 # TODO: Procs is not yet available on stable Alpine. Check
 # https://pkgs.alpinelinux.org/packages?name=procs for future availability.
 - name: Install Procs for Linux
-  become: true
   ansible.builtin.package:
     name: procs
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
 
 - name: Install Procs for MacOS
@@ -34,6 +34,5 @@
 
 - name: Install Procs for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: procs
   when: ansible_system == "Win32NT"

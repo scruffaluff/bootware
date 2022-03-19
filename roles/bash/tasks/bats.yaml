@@ -1,33 +1,15 @@
 ---
-- name: Install Bats for Alpine distributions
-  become: true
-  community.general.apk:
-    name: bats
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Bats for Arch distributions
-  become: true
-  community.general.pacman:
-    name: bash-bats
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install Bats for Debian distributions
-  ansible.builtin.apt:
-    name: bats
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Bats for Fedora distributions
-  become: true
-  ansible.builtin.dnf:
-    name: bats
-  when: ansible_pkg_mgr == "dnf"
-
 - name: Install Bats for FreeBSD
   become: true
   community.general.pkgng:
     name: bats-core
   when: ansible_system == "FreeBSD"
+
+- name: Install Bats for Linux
+  ansible.builtin.package:
+    name: "{{ 'bash-bats' if ansible_pkg_mgr == 'pacman' else 'bats' }}"
+  become: true
+  when: ansible_system == "Linux"
 
 - name: Install Bats for MacOS
   community.general.homebrew:

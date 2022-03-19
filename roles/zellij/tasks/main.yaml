@@ -1,14 +1,13 @@
 ---
 - name: Get latest Zellij version
   ansible.builtin.uri:
-    url: https://formulae.brew.sh/api/formula/zellij.json
     method: GET
     return_content: true
+    url: https://formulae.brew.sh/api/formula/zellij.json
   register: zellij_formula
   when: ansible_system == "Linux"
 
 - name: Download Zellij for Linux
-  become: true
   ansible.builtin.unarchive:
     dest: /usr/local/bin
     mode: "755"
@@ -17,6 +16,7 @@
       https://github.com/zellij-org/zellij/releases/download/v{{
       zellij_formula.json.versions.stable }}/zellij-{{ ansible_architecture
       }}-unknown-linux-musl.tar.gz
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS

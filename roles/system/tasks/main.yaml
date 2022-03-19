@@ -22,12 +22,12 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Update packages for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     autoremove: true
     # Updating all packages causes an error since dnf would be removed.
     # name: "*"
     update_cache: true
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
@@ -60,7 +60,6 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install essential packages for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - dnf-plugins-core
@@ -70,6 +69,7 @@
       - procps
       - python
       - which
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 # Adding openssl to the package list causes Node to throw the error 'version
@@ -89,7 +89,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install essential packages for Linux
-  become: true
   ansible.builtin.package:
     name:
       - ca-certificates
@@ -106,6 +105,7 @@
       - unzip
       - zip
     state: present
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
@@ -129,7 +129,6 @@
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - 7zip
       - neofetch

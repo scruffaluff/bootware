@@ -6,18 +6,18 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Neovim for Linux
-  become: true
   ansible.builtin.package:
     name: neovim
     state: "{{ 'absent' if nvchad else 'present' }}"
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Neovim for Linux
-  become: true
   ansible.builtin.get_url:
     dest: /usr/local/bin/neovim
     mode: "755"
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+  become: true
   when: ansible_system == "Linux" and nvchad
 
 - name: Install Neovim for MacOS
@@ -27,6 +27,5 @@
 
 - name: Install Neovim for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: neovim
   when: ansible_system == "Win32NT"

@@ -28,30 +28,29 @@
 # TODO: Add Bash completions with deno completions bash >
 # /usr/local/etc/bash_completion.d/deno.bash.
 - name: Generate Deno Fish completions for Unix
-  environment:
-    PATH: "{{ ansible_env.HOME }}/.deno/bin:{{ ansible_env.PATH }}"
   ansible.builtin.shell: >-
     deno completions fish > {{ ansible_env.HOME
     }}/.config/fish/completions/deno.fish
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.deno/bin:{{ ansible_env.PATH }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     ansible_pkg_mgr != "apk" and ansible_architecture == "x86_64")
 
 - name: Install Deno for Windows
   community.windows.win_scoop:
-    architecture: 64bit
     name: deno
   when: ansible_system == "Win32NT"
 
 - name: Create Deno PowerShell completions directory for Windows
-  when: ansible_system == "Win32NT"
-  win_file:
+  ansible.windows.win_file:
     path: >-
       {{ ansible_env.HOME }}/Documents/WindowsPowerShell/Modules/DenoCompletion
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Generate Deno PowerShell completions module for Windows
-  when: ansible_system == "Win32NT"
-  win_shell: >-
+  ansible.windows.win_shell: >-
     deno completions powershell > {{ ansible_env.HOME
     }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1
+  when: ansible_system == "Win32NT"

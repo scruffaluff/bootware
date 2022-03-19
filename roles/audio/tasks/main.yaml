@@ -16,9 +16,9 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora distributions
-  become: true
   ansible.builtin.dnf:
     name:
       - alsa-lib-devel
       - alsa-utils
+  become: true
   when: ansible_pkg_mgr == "dnf"
