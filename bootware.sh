@@ -227,8 +227,11 @@ bootstrap() {
         exit 0
         ;;
       -i | --inventory)
+        cmd="playbook"
         connection="ssh"
         inventory="$2"
+        use_playbook=1
+        use_pull=""
         shift 2
         ;;
       --no-passwd)
