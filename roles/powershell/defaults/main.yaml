@@ -5,7 +5,7 @@ powershell_modules:
   - Pester
   - Posh-SSH
   - PowerShellGet
-  - PSConsoleTheme
   - PSKubectlCompletion
+  - PSProfiler
   - PSReadLine
   - PSScriptAnalyzer

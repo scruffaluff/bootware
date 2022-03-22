@@ -1,0 +1,15 @@
+---
+_kubectl_plugins:
+  always: []
+  Darwin:
+    - ctx
+    - ns
+  FreeBSD:
+    - ctx
+    - ns
+  Linux:
+    - ctx
+    - ns
+  Win32NT: []
+kubectl_plugins: >-
+  {{ _kubectl_plugins.always + _kubectl_plugins[ansible_system] }}

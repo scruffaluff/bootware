@@ -31,15 +31,6 @@ $Env:DOCKER_BUILDKIT = 1
 #     Import-Module posh-git
 # }
 
-# PowerShell settings.
-
-# # Configure console theme if available.
-# If (Get-Module -ListAvailable -Name PSConsoleTheme) {
-#     Import-Module PSConsoleTheme
-#     # TODO: Figure out installation method for GitHub Actions.
-#     # Set-ConsoleTheme "Solarized Light"
-# }
-
 # Configure PSReadLine settings if available.
 If (Get-Module -ListAvailable -Name PSReadLine) {
     Import-Module PSReadLine

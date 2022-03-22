@@ -45,5 +45,5 @@
   ansible.windows.win_package:
     path: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
-      mongodb_compass_formula_windows.json.versions.stable }}-win32-x64.msi
+      mongodb_compass_formula_windows.json.version }}-win32-x64.msi
   when: ansible_system == "Win32NT"

@@ -50,3 +50,13 @@
   community.windows.win_scoop:
     name: helm
   when: ansible_system == "Win32NT"
+
+- name: Install Helm plugins for Unix
+  ansible.builtin.command: "helm plugin install {{ item }}"
+  loop: "{{ helm_plugins }}"
+  when: ansible_system != "Win32NT"
+
+- name: Install Helm plugins for Windows
+  ansible.builtin.win_command: "helm plugin install {{ item }}"
+  loop: "{{ helm_plugins }}"
+  when: ansible_system == "Win32NT"

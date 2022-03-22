@@ -1,4 +1,0 @@
----
-kubectl_plugins:
-  - ctx
-  - ns

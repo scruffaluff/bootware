@@ -4,11 +4,12 @@
     name: rustup-msvc
 
 - name: Update Rust for Windows
-  ansible.builtin.win_command: |
+  ansible.builtin.win_shell: |
     rustup self update
     rustup update stable
   failed_when: >-
     rustup_update.rc != 0 and 'update is disabled' not in rustup_update.stderr
+  register: rustup_update
 
 - name: Add Rust components for Windows
   ansible.builtin.win_command: rustup component add {{ item }}

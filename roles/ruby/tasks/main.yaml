@@ -91,7 +91,10 @@
   when: ansible_system != "Win32NT"
 
 - name: Install or update Ruby CLI applications for Windows
-  ansible.builtin.win_command: gem install --user-install {{ item }}
+  ansible.builtin.win_command: "gem.cmd install --user-install {{ item }}"
+  environment:
+    Path: >-
+      {{ ansible_env.HOME }}/scoop/apps/ruby/current/bin:{{ ansible_env.Path }}
   loop: "{{ ruby_applications }}"
   when: ansible_system == "Win32NT"
 

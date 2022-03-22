@@ -37,6 +37,12 @@
     name: tilt
   when: ansible_system == "Darwin"
 
+- name: Install Tilt Scoop bucket for Windows
+  community.windows.win_scoop_bucket:
+    name: tilt-dev
+    repo: https://github.com/tilt-dev/scoop-bucket
+  when: ansible_system == "Win32NT"
+
 - name: Install Tilt for Windows
   community.windows.win_scoop:
     name: tilt

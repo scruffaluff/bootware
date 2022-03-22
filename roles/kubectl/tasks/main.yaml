@@ -8,29 +8,17 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Kubectl for Arch distributions
-  become: true
-  community.general.pacman:
-    name: kubectl
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install Kubectl for Debian distributions
-  ansible.builtin.apt:
-    name: kubectl
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Kubectl for Fedora distributions
-  ansible.builtin.dnf:
-    name: kubectl
-  become: true
-  when: ansible_pkg_mgr == "dnf"
-
 - name: Install Kubectl for FreeBSD
   become: true
   community.general.pkgng:
     name: kubectl
   when: ansible_system == "FreeBSD"
+
+- name: Install Kubectl for Linux
+  ansible.builtin.package:
+    name: kubectl
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Kubectl for MacOS
   community.general.homebrew:

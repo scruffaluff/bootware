@@ -12,3 +12,31 @@
   community.windows.win_scoop:
     name: starship
   when: ansible_system == "Win32NT"
+
+- name: Create Starship settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ ansible_env.HOME }}/.config"
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Create Starship settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/starship.toml"
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: starship.toml
+  when: ansible_system != "Win32NT"
+
+- name: Create Starship settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/.config"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Create Starship settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/.config/starship.toml"
+    src: starship.toml
+  when: ansible_system == "Win32NT"

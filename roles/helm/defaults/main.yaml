@@ -1,0 +1,3 @@
+---
+helm_plugins:
+  - https://github.com/databus23/helm-diff

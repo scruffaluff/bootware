@@ -1,11 +1,19 @@
 ---
-- name: Get latest Datree version
+- name: Get latest Datree version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/datree.json
-  register: datree_formula
+  register: datree_formula_linux
   when: ansible_system == "Linux"
+
+- name: Get latest Datree version for Windows
+  ansible.builtin.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/datree.json
+  register: datree_formula_windows
+  when: ansible_system == "Win32NT"
 
 - name: Download Datree for Linux
   ansible.builtin.unarchive:
@@ -15,8 +23,8 @@
     remote_src: true
     src: >-
       https://github.com/datreeio/datree/releases/download/{{
-      datree_formula.json.versions.stable }}/datree-cli_{{
-      datree_formula.json.versions.stable }}_Linux_{{
+      datree_formula_linux.json.versions.stable }}/datree-cli_{{
+      datree_formula_linux.json.versions.stable }}_Linux_{{
       datree_arch[ansible_architecture] }}.zip
   become: true
   vars:
@@ -37,3 +45,38 @@
   community.general.homebrew:
     name: datree
   when: ansible_system == "Darwin"
+
+- name: Download Datree archive for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/datree.zip"
+    url: >-
+      https://github.com/datreeio/datree/releases/download/{{
+      datree_formula_windows.json.versions.stable }}/datree-cli_{{
+      datree_formula_windows.json.versions.stable }}_windows_x86_64.zip
+  when: ansible_system == "Win32NT"
+
+- name: Decompress Datree archive for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}/datree"
+    src: "{{ ansible_env.TEMP }}/datree.zip"
+  when: ansible_system == "Win32NT"
+
+- name: Create Datree program directory for Windows
+  ansible.windows.win_file:
+    dest: "C:/Program Files/Datree"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include Datree program directory for Windows
+  ansible.windows.win_path:
+    name: PATH
+    elements: "C:\\Program Files\\Datree"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Install Datree for Windows
+  ansible.windows.win_copy:
+    dest: "C:/Program Files/Datree/datree.exe"
+    remote_src: true
+    src: "{{ ansible_env.TEMP }}/datree/datree.exe"
+  when: ansible_system == "Win32NT"
