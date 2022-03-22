@@ -1,3 +1,12 @@
 ---
-helm_plugins:
-  - https://github.com/databus23/helm-diff
+_helm_plugins:
+  always: []
+  Darwin:
+    - https://github.com/databus23/helm-diff
+  FreeBSD: []
+  Linux:
+    - https://github.com/databus23/helm-diff
+  Win32NT:
+    - https://github.com/databus23/helm-diff
+helm_plugins: >-
+  {{ _helm_plugins.always + _helm_plugins[ansible_system] }}
