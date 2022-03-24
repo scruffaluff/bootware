@@ -449,7 +449,7 @@ Function Setup() {
 
     $ScoopBuckets = $(scoop bucket list)
     ForEach ($Bucket in @('extras', 'main', 'nerd-fonts', 'versions')) {
-        If ($Bucket -NotIn $ScoopBuckets) {
+        If ($Bucket -NotIn $ScoopBuckets.Name) {
             scoop bucket add "$Bucket"
         }
     }

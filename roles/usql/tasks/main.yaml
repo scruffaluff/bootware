@@ -24,7 +24,7 @@
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Debian.
 - name: Install Usql for Debian distributions
-  ansible.builtin.command: go get github.com/xo/usql
+  ansible.builtin.command: "go install github.com/xo/usql@latest"
   environment:
     GOPATH: "{{ ansible_env.HOME }}/go"
     GOROOT: "/usr/local/go"
