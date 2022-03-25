@@ -29,12 +29,6 @@ _user_shell:
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
   Win32NT: C:/Program Files/PowerShell/7/pwsh.exe
-_user_home_dir:
-  Darwin: "{{ '/Users/' + user_account }}"
-  FreeBSD:
-    "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
-  Linux: "{{ '/root' if user_account == 'root' else '/home/' + user_account }}"
-  Win32NT: "{{ 'C:/Users/' + user_account }}"
 bash_executable: "{{  _bash_executable[ansible_system] }}"
 deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
@@ -43,5 +37,5 @@ desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 fish_executable: "{{  _fish_executable[ansible_system] }}"
 font_size: 14
 gnome_desktop: "{{ desktop in _gnome_desktops }}"
-user_home_dir: "{{ _user_home_dir[ansible_system] }}"
+scoop_apps: "{{ ansible_env.HOME }}/scoop/apps"
 user_shell: "{{ _user_shell[ansible_system] }}"

@@ -132,16 +132,17 @@ async function main(): Promise<void> {
 
   if (program.skips) {
     roles = roles.filter(
-      (role: RoleTest) => !program.skips.includes(role.name),
+      (role: RoleTest) => !program.skips.includes(role.name)
     );
   }
 
   let error = false;
   for (const role of roles) {
-    error = (await testRole(
-      { arch: program.architecture, os: program.os, shell: program.shell },
-      role,
-    )) || error;
+    error =
+      (await testRole(
+        { arch: program.architecture, os: program.os, shell: program.shell },
+        role
+      )) || error;
   }
 
   if (error) {
