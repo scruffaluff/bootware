@@ -40,7 +40,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd --skip deskenv,starship
-            ./tests/integration/roles_test.ts --arch amd64 freebsd
+            ./tests/integration/roles_test.ts --arch amd64 --skip starship freebsd
 
   test-linux:
     name: >-

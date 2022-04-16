@@ -24,14 +24,19 @@
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],
-    "tests": [
-      "bash --version",
-      "bats --version",
-      "shellcheck --version",
-      "shfmt --version"
-    ]
+    "tests": ["bash --version"]
+  },
+  {
+    "name": "bashdb",
+    "skip": [{ "os": "linux" }, { "os": "windows" }],
+    "tests": ["bashdb --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
+  {
+    "name": "bats",
+    "skip": [{ "os": "windows" }],
+    "tests": ["bats --version"]
+  },
   { "name": "beekeeper" },
   { "name": "build" },
   { "name": "caffeine" },
@@ -276,6 +281,16 @@
     "name": "sd",
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["sd --version"]
+  },
+  {
+    "name": "shellcheck",
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "tests": ["shellcheck --version"]
+  },
+  {
+    "name": "shfmt",
+    "skip": [{ "os": "windows" }],
+    "tests": ["shfmt --version"]
   },
   {
     "name": "snap",

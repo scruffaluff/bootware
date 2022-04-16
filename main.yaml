@@ -78,12 +78,36 @@
     - shell
     - wsl
 
+- name: Install Bashdb Bash debugger
+  hosts: all
+  roles:
+    - name: bashdb
+  tags:
+    - bashdb
+    - container
+    - desktop
+    - server
+    - shell
+    - wsl
+
 - name: Install Bat file reader
   hosts: all
   roles:
     - name: bat
   tags:
     - bat
+    - container
+    - desktop
+    - server
+    - shell
+    - wsl
+
+- name: Install Bats Bash test framework
+  hosts: all
+  roles:
+    - name: bats
+  tags:
+    - bats
     - container
     - desktop
     - server
@@ -867,6 +891,30 @@
     - sd
     - wsl
 
+- name: Install Shellcheck shell linter
+  hosts: all
+  roles:
+    - name: shellcheck
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - shellcheck
+    - wsl
+
+- name: Install Shfmt shell formatter
+  hosts: all
+  roles:
+    - name: shfmt
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - shfmt
+    - wsl
+
 - name: Install Snap packages
   hosts: all
   roles:
@@ -891,7 +939,6 @@
   hosts: all
   roles:
     - name: starship
-
   tags:
     - container
     - desktop

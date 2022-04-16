@@ -18,6 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Git pager to Delta.
 - GitHub installation links.
+- Split Bash subtasks into separate roles.
 
 ### Fixed
 
