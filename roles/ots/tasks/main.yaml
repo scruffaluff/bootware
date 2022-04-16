@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://api.github.com/repos/sniptt-official/ots/releases/latest
-  register: ots_formula
+  register: ots_release
   when: ansible_system == "Linux"
 
 - name: Download OTS for Linux
@@ -13,8 +13,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      https://github.com/sniptt-official/ots/releases/download/v{{
-      ots_formula.json.tag_name[1:] }}/ots_{{ ots_formula.json.tag_name[1:]
+      https://github.com/sniptt-official/ots/releases/download/{{
+      ots_release.json.tag_name }}/ots_{{ ots_release.json.tag_name[1:]
       }}_linux_{{ ots_arch[ansible_architecture] }}.tar.gz
   become: true
   vars:
