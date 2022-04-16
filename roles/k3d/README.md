@@ -1,6 +1,6 @@
-# Ots
+# K3d
 
-Ots is an Ansible role
+K3d is an Ansible role
 
 ## Requirements
 
