@@ -163,7 +163,11 @@
   },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
-  { "name": "htmlq", "tests": ["htmlq --version"] },
+  {
+    "name": "htmlq",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "tests": ["htmlq --version"]
+  },
   {
     "name": "hyper",
     "skip": [
@@ -235,11 +239,6 @@
   },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
-  {
-    "name": "ots",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
-    "tests": ["ots --version"]
-  },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "parquet" },

@@ -32,6 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Hyper terminal plugins that are broken on Windows.
 - Libvirt support for Windows.
+- OTS role.
 
 ## 0.3.5 - 2021-12-19
 

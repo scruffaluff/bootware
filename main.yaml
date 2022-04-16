@@ -734,17 +734,6 @@
     - typescript
     - wsl
 
-- name: Install OTS secret sharer
-  hosts: all
-  roles:
-    - name: ots
-  tags:
-    - container
-    - desktop
-    - ots
-    - server
-    - wsl
-
 - name: Install optional packages
   hosts: all
   roles:
