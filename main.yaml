@@ -126,6 +126,17 @@
     - chrome
     - desktop
 
+- name: Install Croc secure file transfer
+  hosts: all
+  roles:
+    - name: croc
+  tags:
+    - container
+    - croc
+    - desktop
+    - server
+    - wsl
+
 - name: Install MongoDB Compass database graphical client
   hosts: all
   roles:
@@ -470,6 +481,17 @@
     - desktop
     - helmfile
     - kubernetes
+    - server
+    - wsl
+
+- name: Install Htmlq HTML parser
+  hosts: all
+  roles:
+    - name: htmlq
+  tags:
+    - container
+    - desktop
+    - htmlq
     - server
     - wsl
 
@@ -1042,6 +1064,17 @@
     - shell
     - wsl
     - xsv
+
+- name: Install Yq YAML parser
+  hosts: all
+  roles:
+    - name: yq
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - yq
 
 - name: Install Zellij terminal multiplexer
   hosts: all

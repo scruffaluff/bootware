@@ -61,8 +61,8 @@
 - name: Install Git for Windows
   community.windows.win_scoop:
     name:
+      - delta
       - git
-      - git-delta
       - git-lfs
       - posh-git
   when: ansible_system == "Win32NT"

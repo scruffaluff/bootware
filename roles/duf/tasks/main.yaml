@@ -1,4 +1,12 @@
 ---
+- name: Get latest Duf version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/muesli/duf/releases/latest
+  register: duf_release
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install Duf for Alpine distributions
   become: true
   community.general.apk:
@@ -7,6 +15,19 @@
     state: latest
     update_cache: true
   when: ansible_pkg_mgr == "apk"
+
+- name: Install Duf for Debian distributions
+  ansible.builtin.apt:
+    deb: >-
+      https://github.com/muesli/duf/releases/download/{{
+      duf_release.json.tag_name }}/duf_{{ duf_release.json.tag_name[1:]
+      }}_linux_{{ duf_arch[ansible_architecture] }}.deb
+  become: true
+  vars:
+    duf_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Duf for FreeBSD
   become: true
@@ -18,7 +39,8 @@
   ansible.builtin.package:
     name: duf
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
 
 - name: Install Duf for MacOS
   community.general.homebrew:

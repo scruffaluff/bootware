@@ -47,6 +47,7 @@
     }
   },
   { "name": "compass" },
+  { "name": "croc", "tests": ["croc --version"] },
   {
     "name": "datree",
     "skip": [{ "os": "freebsd" }],
@@ -157,6 +158,7 @@
   },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
+  { "name": "htmlq", "tests": ["htmlq --version"] },
   {
     "name": "hyper",
     "skip": [
@@ -335,6 +337,8 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["xsv --version"]
   },
+  { "name": "yq", "tests": ["yq --version"] },
+  { "name": "zellij", "tests": ["zellij --version"] },
   {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],
