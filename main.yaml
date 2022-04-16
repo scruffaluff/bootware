@@ -218,6 +218,17 @@
     - server
     - wsl
 
+- name: Install Duf device usage analyzer
+  hosts: all
+  roles:
+    - name: duf
+  tags:
+    - container
+    - desktop
+    - duf
+    - server
+    - wsl
+
 - name: Install Data Version Control
   hosts: all
   roles:
@@ -560,6 +571,28 @@
     - kubectl
     - kubernetes
     - server
+    - wsl
+
+- name: Install Lazydocker Docker manager
+  hosts: all
+  roles:
+    - name: lazydocker
+  tags:
+    - desktop
+    - lazydocker
+    - server
+    - wsl
+
+- name: Install Lazygit Git manager
+  hosts: all
+  roles:
+    - name: lazygit
+  tags:
+    - container
+    - desktop
+    - lazygit
+    - server
+    - vcs
     - wsl
 
 - name: Install Libvirt virtualization API
@@ -986,6 +1019,17 @@
   tags:
     - desktop
     - winman
+
+- name: Install Xh HTTP client
+  hosts: all
+  roles:
+    - name: xh
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - xh
 
 - name: Install Xsv CSV parser
   hosts: all

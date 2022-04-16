@@ -1,0 +1,49 @@
+---
+- name: Get latest Lazygit version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/lazygit.json
+  register: lazygit_formula
+  when: ansible_system == "Linux"
+
+- name: Install Lazygit for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: lazygit
+  when: ansible_system == "FreeBSD"
+
+- name: Download Lazygit for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/jesseduffield/lazygit/releases/download/v{{
+      lazygit_formula.json.versions.stable }}/lazygit_{{
+      lazygit_formula.json.versions.stable }}_Linux_{{
+      lazygit_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    lazygit_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
+
+- name: Install Lazygit for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/lazygit
+    mode: "755"
+    src: /tmp/lazygit
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Lazygit for MacOS
+  community.general.homebrew:
+    name: lazygit
+  when: ansible_system == "Darwin"
+
+- name: Install Lazygit for Windows
+  community.windows.win_scoop:
+    name: lazygit
+  when: ansible_system == "Win32NT"

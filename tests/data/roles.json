@@ -80,6 +80,7 @@
     "name": "docker",
     "tests": ["docker --version", "docker compose --help"]
   },
+  { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "dvc",
     "skip": [
@@ -132,7 +133,10 @@
     "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },
-  { "name": "git", "tests": ["git --version", "git-lfs --version"] },
+  {
+    "name": "git",
+    "tests": ["delta --version", "git --version", "git-lfs --version"]
+  },
   {
     "name": "github",
     "skip": [{ "os": "arch" }, { "os": "freebsd" }],
@@ -183,6 +187,12 @@
     "tests": ["kubectl-krew version"]
   },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
+  {
+    "name": "lazydocker",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["lazydocker --version"]
+  },
+  { "name": "lazygit", "tests": ["lazygit --version"] },
   {
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
@@ -319,6 +329,7 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
+  { "name": "xh", "tests": ["xh --version", "xhs --version"] },
   {
     "name": "xsv",
     "skip": [{ "arch": "arm64", "os": "linux" }],

@@ -1,0 +1,56 @@
+---
+- name: Get latest Xh version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/xh.json
+  register: xh_formula
+  when: ansible_system == "Linux"
+
+- name: Install Xh for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: xh
+  when: ansible_system == "FreeBSD"
+
+- name: Download Xh for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/ducaale/xh/releases/download/v{{
+      xh_formula.json.versions.stable }}/xh-v{{ xh_formula.json.versions.stable
+      }}-{{ ansible_architecture }}-unknown-linux-musl.tar.gz
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Xh for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/xh
+    mode: "755"
+    src: >-
+      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ ansible_architecture
+      }}-unknown-linux-musl/xh
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Make Xh HTTPS link for Linux
+  ansible.builtin.file:
+    src: /usr/local/bin/xh
+    dest: /usr/local/bin/xhs
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Xh for MacOS
+  community.general.homebrew:
+    name: xh
+  when: ansible_system == "Darwin"
+
+- name: Install Xh for Windows
+  community.windows.win_scoop:
+    name: xh
+  when: ansible_system == "Win32NT"

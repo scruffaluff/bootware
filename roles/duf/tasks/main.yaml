@@ -1,0 +1,31 @@
+---
+- name: Install Duf for Alpine distributions
+  become: true
+  community.general.apk:
+    name: duf
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Duf for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: duf
+  when: ansible_system == "FreeBSD"
+
+- name: Install Duf for Linux
+  ansible.builtin.package:
+    name: duf
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Duf for MacOS
+  community.general.homebrew:
+    name: duf
+  when: ansible_system == "Darwin"
+
+- name: Install Duf for Windows
+  community.windows.win_scoop:
+    name: duf
+  when: ansible_system == "Win32NT"

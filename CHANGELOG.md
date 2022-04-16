@@ -10,10 +10,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - All Ansible arguments to bootstrap subcommand.
+- Datree, Duf, Helm, Helmfile, Kubectl, K9s, Lazydocker, Lazygit, and Xh roles.
 - WSL tag for selecting roles.
 
 ### Changed
 
+- Git pager to Delta.
 - GitHub installation links.
 
 ### Fixed
