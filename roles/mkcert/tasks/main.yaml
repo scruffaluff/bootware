@@ -1,20 +1,20 @@
+---
 - name: Install network security service libraries for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: libnss3-tools
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Get latest Mkcert version
-  uri:
-    url: https://formulae.brew.sh/api/formula/mkcert.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/mkcert.json
   register: mkcert_formula
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for Linux
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/mkcert
     mode: "755"
     url: >-
@@ -22,6 +22,7 @@
       mkcert_formula.json.versions.stable }}/mkcert-v{{
       mkcert_formula.json.versions.stable }}-linux-{{
       mkcert_arch[ansible_architecture] }}
+  become: true
   vars:
     mkcert_arch:
       aarch64: arm64
@@ -30,8 +31,6 @@
 
 # Certificate generation requires NSS on MacOS.
 - name: Install Mkcert for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - mkcert
@@ -39,9 +38,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Mkcert for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: mkcert
   when: ansible_system == "Win32NT"

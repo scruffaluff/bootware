@@ -1,113 +1,100 @@
+---
 - name: Install Hyper for Arch distributions
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/appimages/hyper.appimage
     mode: "755"
+    owner: root
     url: https://releases.hyper.is/download/AppImage
+  become: true
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
 - name: Install Hyper dependencies for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: mesa-libgbm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 # Hyper is not yet supported on Debian 11.
 - name: Install Hyper for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: https://releases.hyper.is/download/deb
-  become: yes
+  become: true
   when: >-
     ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64" and
     deb_distro_base == "ubuntu"
 
 - name: Install Hyper for Fedora distributions
-  become: yes
-  dnf:
-    disable_gpg_check: yes
+  ansible.builtin.dnf:
+    disable_gpg_check: true
     name: https://releases.hyper.is/download/rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Hyper for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: hyper
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Hyper for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: hyper
   when: ansible_system == "Win32NT"
 
 # Hyper terminal lists ~/.hyper.js as deprecated path for its configuration
 # file, but seems to be the only path it will use for Unix.
 - name: Copy Hyper configuration file to backup location
-  become: yes
-  become_user: "{{ user_account }}"
-  template:
-    dest: "{{ user_home_dir }}/.hyper.js"
-    force: yes
+  ansible.builtin.template:
+    dest: "{{ ansible_env.HOME }}/.hyper.js"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: hyper.j2
   when: ansible_system != "Win32NT"
 
 - name: Create Hyper configuration directory for Linux
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/.config/Hyper/"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/Hyper/"
     state: directory
   when: ansible_system == "Linux"
 
 - name: Create Hyper configuration directory for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/Library/Application Support/Hyper/"
+    path: "{{ ansible_env.HOME }}/Library/Application Support/Hyper/"
     state: directory
   when: ansible_system == "Darwin"
 
 - name: Create Hyper configuration directory for Windows
-  become: yes
-  become_user: "{{ user_account }}"
-  when: ansible_system == "Win32NT"
-  win_file:
-    path: "{{ user_home_dir }}/AppData/Roaming/Hyper/"
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/AppData/Roaming/Hyper/"
     state: directory
+  when: ansible_system == "Win32NT"
 
 - name: Copy Hyper configuration file for Linux
-  become: yes
-  become_user: "{{ user_account }}"
-  template:
-    dest: "{{ user_home_dir }}/.config/Hyper/.hyper.js"
-    force: yes
+  ansible.builtin.template:
+    dest: "{{ ansible_env.HOME }}/.config/Hyper/.hyper.js"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: hyper.j2
   when: ansible_system == "Linux"
 
 - name: Copy Hyper configuration file for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
-  template:
-    dest: "{{ user_home_dir }}/Library/Application Support/Hyper/.hyper.js"
-    force: yes
+  ansible.builtin.template:
+    dest: "{{ ansible_env.HOME }}/Library/Application Support/Hyper/.hyper.js"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: hyper.j2
   when: ansible_system == "Darwin"
 
 - name: Copy Hyper configuration file for Windows
-  become: yes
-  become_user: "{{ user_account }}"
-  when: ansible_system == "Win32NT"
-  win_template:
-    dest: "{{ user_home_dir }}/AppData/Roaming/Hyper/.hyper.js"
-    force: yes
+  ansible.windows.win_template:
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/Hyper/.hyper.js"
+    force: true
     src: hyper.j2
+  when: ansible_system == "Win32NT"

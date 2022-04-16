@@ -1,52 +1,48 @@
+---
 - name: Get latest FFSend version
-  uri:
-    url: https://formulae.brew.sh/api/formula/ffsend.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ffsend.json
   register: ffsend_formula
   when: ansible_system == "Linux"
 
 # As of 12/18/2021 the FFsend package on Alpine does not have a reliable
 # installation.
 # - name: Install FFSend for Alpine distributions
-#   become: yes
-#   community.general.apk:
+#   become: true
+# community.general.apk:
 #     name: ffsend
 #     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
 #     state: latest
-#     update_cache: yes
+#     update_cache: true
 #   when: ansible_pkg_mgr == "apk"
 
 - name: Install FFSend for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: ffsend
   when: ansible_system == "FreeBSD"
 
 - name: Install FFSend for Linux
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/local/bin/ffsend
     mode: "755"
     url: >-
       https://github.com/timvisee/ffsend/releases/download/v{{
       ffsend_formula.json.versions.stable }}/ffsend-v{{
       ffsend_formula.json.versions.stable }}-linux-x64
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture == "x86_64" and
     ansible_pkg_mgr != "apk"
 
 - name: Install FFSend for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: ffsend
   when: ansible_system == "Darwin"
 
 - name: Install FFSend for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: ffsend
   when: ansible_system == "Win32NT"

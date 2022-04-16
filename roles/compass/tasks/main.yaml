@@ -1,43 +1,49 @@
-- name: Get latest MongoDB Compass version
-  uri:
-    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
+---
+- name: Get latest MongoDB Compass version for Linux
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
-  register: mongodb_compass_formula
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
+  register: mongodb_compass_formula_linux
   when: ansible_system == "Linux"
 
-# MongoDB appears to not have a Compass release for Arch distributions.
+- name: Get latest MongoDB Compass version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
+  register: mongodb_compass_formula_windows
+  when: ansible_system == "Win32NT"
+
+# MongoDB does not appear to have a Compass release for Arch distributions.
 
 - name: Install MongoDB Compass For Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
-      mongodb_compass_formula.json.version }}_amd64.deb
-  become: yes
+      mongodb_compass_formula_linux.json.version }}_amd64.deb
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install MongoDB Compass For Fedora distributions
-  become: yes
-  dnf:
-    disable_gpg_check: yes
+  ansible.builtin.dnf:
+    disable_gpg_check: true
     name: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
-      mongodb_compass_formula.json.version }}.x86_64.rpm
+      mongodb_compass_formula_linux.json.version }}.x86_64.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install MongoDB Compass for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: mongodb-compass
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install MongoDB Compass for Windows
-  become: yes
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    name: mongodb-compass
+  ansible.windows.win_package:
+    path: >-
+      https://downloads.mongodb.com/compass/mongodb-compass-{{
+      mongodb_compass_formula_windows.json.version }}-win32-x64.msi
   when: ansible_system == "Win32NT"

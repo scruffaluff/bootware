@@ -1,54 +1,54 @@
+---
 - name: Add Virtualbox GPG key for Fedora distributions
-  become: yes
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: https://www.virtualbox.org/download/oracle_vbox.asc
     state: present
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Add Virtualbox repository for Fedora distributions
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/yum.repos.d/virtualbox.repo
     mode: "644"
+    owner: root
     url: https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name: virtualbox
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Virtualbox for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: VirtualBox-6.1
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Virtualbox for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: virtualbox-ose
   when: ansible_system == "FreeBSD"
 
 - name: Install Virtualbox for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: virtualbox
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Virtualbox for Ubuntu distributions
-  apt:
+  ansible.builtin.apt:
     name: virtualbox
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base != "debian"
 
 - name: Install Virtualbox for Windows
-  when: ansible_system == "Win32NT"
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name:
       - virtualbox
       - virtualbox-guest-additions-guest.install
+  when: ansible_system == "Win32NT"

@@ -1,11 +1,13 @@
+---
 - name: Enable passwordless sudo for Unix
-  become: yes
-  blockinfile:
+  ansible.builtin.blockinfile:
     block: |
-      # Enable passwordless sudo for {{ user_account }} user.
-      {{ user_account }} ALL=(ALL) NOPASSWD:ALL
-    create: yes
+      # Enable passwordless sudo for {{ ansible_user_id }} user.
+      {{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL
+    create: true
     mode: "440"
+    owner: root
     path: /etc/sudoers
     validate: /usr/sbin/visudo -cf %s
+  become: true
   when: passwordless_sudo and ansible_system != "Win32NT"

@@ -24,14 +24,19 @@
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],
-    "tests": [
-      "bash --version",
-      "bats --version",
-      "shellcheck --version",
-      "shfmt --version"
-    ]
+    "tests": ["bash --version"]
+  },
+  {
+    "name": "bashdb",
+    "skip": [{ "os": "linux" }, { "os": "windows" }],
+    "tests": ["bashdb --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
+  {
+    "name": "bats",
+    "skip": [{ "os": "windows" }],
+    "tests": ["bats --version"]
+  },
   { "name": "beekeeper" },
   { "name": "build" },
   { "name": "caffeine" },
@@ -47,6 +52,12 @@
     }
   },
   { "name": "compass" },
+  { "name": "croc", "tests": ["croc --version"] },
+  {
+    "name": "datree",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["datree version"]
+  },
   {
     "name": "dbeaver",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
@@ -75,6 +86,7 @@
     "name": "docker",
     "tests": ["docker --version", "docker compose --help"]
   },
+  { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "dvc",
     "skip": [
@@ -127,7 +139,10 @@
     "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },
-  { "name": "git", "tests": ["git --version", "git-lfs --version"] },
+  {
+    "name": "git",
+    "tests": ["delta --version", "git --version", "git-lfs --version"]
+  },
   {
     "name": "github",
     "skip": [{ "os": "arch" }, { "os": "freebsd" }],
@@ -147,6 +162,12 @@
     "tests": ["hadolint --version"]
   },
   { "name": "helm", "tests": ["helm version --short"] },
+  { "name": "helmfile", "tests": ["helmfile --version"] },
+  {
+    "name": "htmlq",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "tests": ["htmlq --version"]
+  },
   {
     "name": "hyper",
     "skip": [
@@ -169,7 +190,20 @@
   { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "julia", "tests": ["julia --version"] },
+  { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
+  { "name": "k9s", "tests": ["k9s version"] },
+  {
+    "name": "krew",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["kubectl-krew version"]
+  },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
+  {
+    "name": "lazydocker",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["lazydocker --version"]
+  },
+  { "name": "lazygit", "tests": ["lazygit --version"] },
   {
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
@@ -205,11 +239,6 @@
   },
   { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
-  {
-    "name": "ots",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
-    "tests": ["ots --version"]
-  },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "parquet" },
@@ -253,6 +282,16 @@
     "tests": ["sd --version"]
   },
   {
+    "name": "shellcheck",
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "tests": ["shellcheck --version"]
+  },
+  {
+    "name": "shfmt",
+    "skip": [{ "os": "windows" }],
+    "tests": ["shfmt --version"]
+  },
+  {
     "name": "snap",
     "skip": [
       { "os": "alpine" },
@@ -272,6 +311,11 @@
   { "name": "system" },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
+  {
+    "name": "tilt",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "tests": ["tilt version"]
+  },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
@@ -301,11 +345,14 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
+  { "name": "xh", "tests": ["xh --version", "xhs --version"] },
   {
     "name": "xsv",
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["xsv --version"]
   },
+  { "name": "yq", "tests": ["yq --version"] },
+  { "name": "zellij", "tests": ["zellij --version"] },
   {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],

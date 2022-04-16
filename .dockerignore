@@ -7,5 +7,6 @@
 .git/
 .github/
 .gitignore
+.venv/
 node_modules/
 package-lock.json

@@ -1,18 +1,11 @@
+---
 - name: Install HDF5 tools for Linux
-  become: yes
-  package:
-    name: hdf5
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
-
-- name: Install HDF5 tools for Debian distributions
-  apt:
-    name: hdf5-tools
-  become: yes
-  when: ansible_pkg_mgr == "apt"
+  ansible.builtin.package:
+    name: "{{ 'hdf5-tools' if ansible_pkg_mgr == 'apt' else 'hdf5' }}"
+  become: true
+  when: ansible_system == "Linux"
 
 - name: Install H5Dump for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: hdf5
   when: ansible_system == "Darwin"

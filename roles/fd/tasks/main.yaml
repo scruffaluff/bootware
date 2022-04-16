@@ -1,59 +1,55 @@
+---
 - name: Get latest FD version
-  uri:
-    url: https://formulae.brew.sh/api/formula/fd.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/fd.json
   register: fd_formula
   when: ansible_system == "Linux"
 
 - name: Install FD for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: fd
   when: ansible_pkg_mgr == "apk"
 
 - name: Install FD for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: fd-find
   when: ansible_system == "FreeBSD"
 
 - name: Download FD for Linux
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install FD for Linux
-  become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/fd
     mode: "755"
     src: >-
       /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install FD for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: fd
   when: ansible_system == "Win32NT"

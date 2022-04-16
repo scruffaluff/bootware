@@ -5,6 +5,7 @@
 .DS_Store
 .local/
 .vagrant/
+.venv/
 .vscode/
 /build/
 /docs/index.md
@@ -12,4 +13,5 @@
 /site/
 /tmp/
 dist/
+molecule/
 node_modules/

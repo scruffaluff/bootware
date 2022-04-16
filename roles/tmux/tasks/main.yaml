@@ -1,13 +1,14 @@
+---
 # TODO: Tmate is not yet available on stable Alpine. Check
 # https://pkgs.alpinelinux.org/packages?name=tmate for future availability.
 - name: Install Tmux for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: tmux
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Tmux for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - tmate
@@ -15,15 +16,14 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Tmux for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name:
       - tmate
       - tmux
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - tmate

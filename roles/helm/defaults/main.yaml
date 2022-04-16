@@ -1,0 +1,15 @@
+---
+_helm_plugins:
+  always: []
+  Darwin:
+    - https://github.com/databus23/helm-diff
+    - https://github.com/datreeio/helm-datree
+  FreeBSD: []
+  Linux:
+    - https://github.com/databus23/helm-diff
+    - https://github.com/datreeio/helm-datree
+  Win32NT:
+    - https://github.com/databus23/helm-diff
+    - https://github.com/datreeio/helm-datree
+helm_plugins: >-
+  {{ _helm_plugins.always + _helm_plugins[ansible_system] }}

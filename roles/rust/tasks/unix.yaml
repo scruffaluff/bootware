@@ -1,0 +1,47 @@
+---
+- name: Install pkg-config for Linux
+  ansible.builtin.package:
+    name: "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
+  become: true
+  when: ansible_system == "Linux"
+
+- block:
+    - name: Install Rust for Unix
+      ansible.builtin.shell:
+        cmd: >-
+          curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
+          -y --no-modify-path
+        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+        warn: false
+
+    - name: Update Rust for Unix
+      ansible.builtin.command: "{{ item }}"
+      changed_when: "' changed' in rustup_update.stdout"
+      failed_when: >-
+        rustup_update.rc != 0 and 'update is disabled' not in
+        rustup_update.stderr
+      loop:
+        - rustup self update
+        - rustup update stable
+      register: rustup_update
+
+    - name: Add Rust components for Unix
+      ansible.builtin.command: "rustup component add {{ item }}"
+      changed_when: "'installing' in rustup_component.stdout"
+      loop: "{{ rustup_components }}"
+      register: rustup_component
+
+    - name: Add Rust targets for Unix
+      ansible.builtin.command: "rustup target add {{ item }}"
+      changed_when: "'installing' in rustup_target.stdout"
+      loop: "{{ rustup_targets }}"
+      register: rustup_target
+
+    - name: Update or install Cargo packages for Unix
+      ansible.builtin.command: "cargo install {{ item }}"
+      changed_when: "'Installing' in cargo_install.stdout"
+      loop: "{{ cargo_applications }}"
+      register: cargo_install
+
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"

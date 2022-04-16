@@ -1,31 +1,32 @@
+---
 - name: Install Caffeine for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: caffeine
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 # Zorin is not supported since it is based on a old version of Ubuntu.
 - name: Check if Caffeine shell extension is installed for GNOME desktops
-  command: gnome-extensions show caffeine@patapon.info
-  ignore_errors: yes
+  ansible.builtin.command: gnome-extensions show caffeine@patapon.info
+  ignore_errors: true
   register: caffeine_shell_check
   when: ansible_system == "Linux" and gnome_desktop
 
 - name: Install Caffeine shell extension for GNOME desktop Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: gnome-shell-extension-caffeine
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt" and gnome_desktop
 
 - name: Install Caffeine shell extension for GNOME desktop Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: gnome-shell-extension-caffeine
+  become: true
   when: ansible_pkg_mgr == "dnf" and gnome_desktop
 
 # Only needs to happen after first install.
 - name: Reload GNOME shell to add Caffeine shell extension for GNOME desktops
-  shell:
+  ansible.builtin.shell:
     # GNOME shell reload code taken from
     # https://github.com/pop-os/shell/blob/77650a9aafa2f7adc328424e36dc91705411feb4/Makefile#L96.
     cmd: |
@@ -35,12 +36,8 @@
         gnome-session-quit --logout
       fi
       sleep 3
-  when: >-
-    caffeine_shell_check is failed and gnome_desktop
+  when: caffeine_shell_check is failed and gnome_desktop
 
 - name: Enable Caffeine shell extension for GNOME desktops
-  become: yes
-  become_user: "{{ user_account }}"
-  command: gnome-extensions enable caffeine@patapon.info
-  when: >-
-    ansible_system == "Linux" and gnome_desktop
+  ansible.builtin.command: gnome-extensions enable caffeine@patapon.info
+  when: ansible_system == "Linux" and gnome_desktop

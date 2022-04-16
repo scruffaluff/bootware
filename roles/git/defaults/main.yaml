@@ -1,2 +1,3 @@
+---
 git_user_email: "{{ git_user_name | lower | replace(' ', '.') }}@gmail.com"
 git_user_name: User Name

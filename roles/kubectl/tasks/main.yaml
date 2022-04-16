@@ -1,57 +1,56 @@
+---
+- name: Get latest Kubectl version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://dl.k8s.io/release/stable.txt
+  register: kubectl_version
+  when: ansible_system == "Linux"
+
 - name: Install Kubectl for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: kubectl
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
     state: latest
-    update_cache: yes
+    update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Kubectl for Arch distributions
-  become: yes
-  community.general.pacman:
-    name: kubectl
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install Kubectl for Debian distributions
-  apt:
-    name: kubectl
-  become: yes
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Kubectl for Fedora distributions
-  become: yes
-  dnf:
-    name: kubectl
-  when: ansible_pkg_mgr == "dnf"
-
 - name: Install Kubectl for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: kubectl
   when: ansible_system == "FreeBSD"
 
+- name: Install Kubectl for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/kubectl
+    mode: "755"
+    owner: root
+    url: >-
+      https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
+      kubectl_arch[ansible_architecture] }}/kubectl
+  become: true
+  vars:
+    kubectl_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Install Kubectl for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
-    name: kubernetes-cli
+    name: kubectl
   when: ansible_system == "Darwin"
 
 - name: Install Kubectl for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: kubectl
   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl Fish completion for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      source {{ user_home_dir }}/.config/fish/config.fish
+      source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install evanlucas/fish-kubectl-completions
     executable: "{{ fish_executable }}"
   when: ansible_system != "Win32NT"

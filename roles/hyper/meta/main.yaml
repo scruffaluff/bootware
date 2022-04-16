@@ -1,3 +1,4 @@
+---
 dependencies:
   - role: appimage
     when: ansible_pkg_mgr == "pacman"

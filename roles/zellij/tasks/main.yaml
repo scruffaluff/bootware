@@ -1,45 +1,42 @@
+---
 - name: Get latest Zellij version
-  uri:
-    url: https://formulae.brew.sh/api/formula/zellij.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/zellij.json
   register: zellij_formula
   when: ansible_system == "Linux"
 
 - name: Download Zellij for Linux
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/zellij-org/zellij/releases/download/v{{
       zellij_formula.json.versions.stable }}/zellij-{{ ansible_architecture
       }}-unknown-linux-musl.tar.gz
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: zellij
   when: ansible_system == "Darwin"
 
 - name: Create Zellij settings directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/.config/zellij"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/zellij"
     state: directory
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.config/zellij/config.yaml"
-    force: yes
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/zellij/config.yaml"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: config.yaml
   when: ansible_system in ["Darwin", "Linux"]

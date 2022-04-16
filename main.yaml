@@ -3,10 +3,11 @@
 # For more information, visit
 # https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
+---
 - name: Update system package managers and install essential packages
   hosts: all
   roles:
-    - system
+    - name: system
   tags:
     - container
     - desktop
@@ -17,28 +18,16 @@
 - name: Install Alacritty terminal
   hosts: all
   roles:
-    - alacritty
+    - name: alacritty
   tags:
     - alacritty
     - desktop
     - terminal
 
-- name: Install Amazon Web Services development tools
-  hosts: all
-  roles:
-    - aws
-  tags:
-    - aws
-    - cloud
-    - container
-    - desktop
-    - server
-    - wsl
-
 - name: Install AppImage packages
   hosts: all
   roles:
-    - appimage
+    - name: appimage
   tags:
     - appimage
     - container
@@ -49,7 +38,7 @@
 - name: Install audio tools
   hosts: all
   roles:
-    - audio
+    - name: audio
   tags:
     - audio
     - desktop
@@ -57,9 +46,21 @@
 - name: Install Avro file serialization tools
   hosts: all
   roles:
-    - avro
+    - name: avro
   tags:
     - avro
+    - container
+    - desktop
+    - server
+    - wsl
+
+- name: Install Amazon Web Services development tools
+  hosts: all
+  roles:
+    - name: aws
+  tags:
+    - aws
+    - cloud
     - container
     - desktop
     - server
@@ -68,9 +69,21 @@
 - name: Install Bash shell
   hosts: all
   roles:
-    - bash
+    - name: bash
   tags:
     - bash
+    - container
+    - desktop
+    - server
+    - shell
+    - wsl
+
+- name: Install Bashdb Bash debugger
+  hosts: all
+  roles:
+    - name: bashdb
+  tags:
+    - bashdb
     - container
     - desktop
     - server
@@ -80,9 +93,21 @@
 - name: Install Bat file reader
   hosts: all
   roles:
-    - bat
+    - name: bat
   tags:
     - bat
+    - container
+    - desktop
+    - server
+    - shell
+    - wsl
+
+- name: Install Bats Bash test framework
+  hosts: all
+  roles:
+    - name: bats
+  tags:
+    - bats
     - container
     - desktop
     - server
@@ -92,7 +117,7 @@
 - name: Install Beekeeper database client
   hosts: all
   roles:
-    - beekeeper
+    - name: beekeeper
   tags:
     - beekeeper
     - desktop
@@ -100,7 +125,7 @@
 - name: Install build tools
   hosts: all
   roles:
-    - build
+    - name: build
   tags:
     - build
     - container
@@ -111,7 +136,7 @@
 - name: Install Caffeine
   hosts: all
   roles:
-    - caffeine
+    - name: caffeine
   tags:
     - caffeine
     - desktop
@@ -119,16 +144,27 @@
 - name: Install Google Chrome web browser
   hosts: all
   roles:
-    - chrome
+    - name: chrome
   tags:
     - browser
     - chrome
     - desktop
 
+- name: Install Croc secure file transfer
+  hosts: all
+  roles:
+    - name: croc
+  tags:
+    - container
+    - croc
+    - desktop
+    - server
+    - wsl
+
 - name: Install MongoDB Compass database graphical client
   hosts: all
   roles:
-    - compass
+    - name: compass
   tags:
     - compass
     - database
@@ -137,17 +173,28 @@
 - name: Install Nvidia CUDA CPU acceleration toolkit
   hosts: all
   roles:
-    - cuda
+    - name: cuda
   tags:
     - cuda
     - desktop
     - server
     - wsl
 
+- name: Install Datree Kubernetes linter
+  hosts: all
+  roles:
+    - name: datree
+  tags:
+    - datree
+    - desktop
+    - server
+    - vm
+    - wsl
+
 - name: Install DBeaver database client
   hosts: all
   roles:
-    - dbeaver
+    - name: dbeaver
   tags:
     - dbeaver
     - desktop
@@ -155,7 +202,7 @@
 - name: Configure default system terminal
   hosts: all
   roles:
-    - defterm
+    - name: defterm
   tags:
     - defterm
     - desktop
@@ -164,7 +211,7 @@
 - name: Install Deno JavaScript and TypeScript runtime
   hosts: all
   roles:
-    - deno
+    - name: deno
   tags:
     - container
     - deno
@@ -177,7 +224,8 @@
 - name: Configure system desktop environment
   hosts: all
   roles:
-    - deskenv
+    - name: deskenv
+
   tags:
     - deskenv
     - desktop
@@ -185,7 +233,7 @@
 - name: Install Docker container platform
   hosts: all
   roles:
-    - docker
+    - name: docker
   tags:
     - desktop
     - docker
@@ -196,7 +244,7 @@
 - name: Install Digital Ocean development tools
   hosts: all
   roles:
-    - doctl
+    - name: doctl
   tags:
     - cloud
     - container
@@ -205,10 +253,21 @@
     - server
     - wsl
 
+- name: Install Duf device usage analyzer
+  hosts: all
+  roles:
+    - name: duf
+  tags:
+    - container
+    - desktop
+    - duf
+    - server
+    - wsl
+
 - name: Install Data Version Control
   hosts: all
   roles:
-    - dvc
+    - name: dvc
   tags:
     - container
     - desktop
@@ -220,7 +279,7 @@
 - name: Install Dust disk space analyzer
   hosts: all
   roles:
-    - dust
+    - name: dust
   tags:
     - container
     - desktop
@@ -231,7 +290,7 @@
 - name: Install Emacs terminal text editor
   hosts: all
   roles:
-    - emacs
+    - name: emacs
   tags:
     - container
     - desktop
@@ -243,7 +302,7 @@
 - name: Install Balena Etcher ISO flasher
   hosts: all
   roles:
-    - etcher
+    - name: etcher
   tags:
     - desktop
     - etcher
@@ -251,7 +310,7 @@
 - name: Install Exa file lister
   hosts: all
   roles:
-    - exa
+    - name: exa
   tags:
     - container
     - desktop
@@ -263,7 +322,7 @@
 - name: Install FD file searcher
   hosts: all
   roles:
-    - fd
+    - name: fd
   tags:
     - container
     - desktop
@@ -275,7 +334,7 @@
 - name: Install FFSend secure file sharer
   hosts: all
   roles:
-    - ffsend
+    - name: ffsend
   tags:
     - container
     - desktop
@@ -286,7 +345,7 @@
 - name: Install Firefox web browser
   hosts: all
   roles:
-    - firefox
+    - name: firefox
   tags:
     - browser
     - desktop
@@ -295,7 +354,7 @@
 - name: Install Fish shell
   hosts: all
   roles:
-    - fish
+    - name: fish
   tags:
     - container
     - desktop
@@ -307,7 +366,7 @@
 - name: Install Flatpak packages
   hosts: all
   roles:
-    - flatpak
+    - name: flatpak
   tags:
     - container
     - desktop
@@ -318,7 +377,7 @@
 - name: Install fonts
   hosts: all
   roles:
-    - font
+    - name: font
   tags:
     - container
     - desktop
@@ -328,7 +387,7 @@
 - name: Install FzF fuzzy searcher
   hosts: all
   roles:
-    - fzf
+    - name: fzf
   tags:
     - container
     - desktop
@@ -339,7 +398,7 @@
 - name: Install Google Cloud Platform development tools
   hosts: all
   roles:
-    - gcp
+    - name: gcp
   tags:
     - cloud
     - container
@@ -351,7 +410,7 @@
 - name: Install Git version control
   hosts: all
   roles:
-    - git
+    - name: git
   tags:
     - container
     - desktop
@@ -363,7 +422,7 @@
 - name: Install GitHub helper tools
   hosts: all
   roles:
-    - github
+    - name: github
   tags:
     - desktop
     - github
@@ -374,7 +433,7 @@
 - name: Install GitLab helper tools
   hosts: all
   roles:
-    - gitlab
+    - name: gitlab
   tags:
     - desktop
     - gitlab
@@ -385,7 +444,7 @@
 - name: Install Glow
   hosts: all
   roles:
-    - glow
+    - name: glow
   tags:
     - container
     - desktop
@@ -396,7 +455,7 @@
 - name: Install Go language
   hosts: all
   roles:
-    - go
+    - name: go
   tags:
     - container
     - desktop
@@ -408,7 +467,7 @@
 - name: Install Hadolint linter
   hosts: all
   roles:
-    - hadolint
+    - name: hadolint
   tags:
     - desktop
     - hadolint
@@ -419,7 +478,7 @@
 - name: Install HDF5 file serialization tools
   hosts: all
   roles:
-    - hdf5
+    - name: hdf5
   tags:
     - container
     - desktop
@@ -430,7 +489,7 @@
 - name: Install Helm Kubernetes manager
   hosts: all
   roles:
-    - helm
+    - name: helm
   tags:
     - desktop
     - helm
@@ -438,10 +497,32 @@
     - vm
     - wsl
 
+- name: Install Helmfile Kubernetes Helm deployment tool
+  hosts: all
+  roles:
+    - name: helmfile
+  tags:
+    - desktop
+    - helmfile
+    - kubernetes
+    - server
+    - wsl
+
+- name: Install Htmlq HTML parser
+  hosts: all
+  roles:
+    - name: htmlq
+  tags:
+    - container
+    - desktop
+    - htmlq
+    - server
+    - wsl
+
 - name: Install Hyper terminal
   hosts: all
   roles:
-    - hyper
+    - name: hyper
   tags:
     - desktop
     - hyper
@@ -450,7 +531,7 @@
 - name: Install Hyperfine benchmarking tool
   hosts: all
   roles:
-    - hyperfine
+    - name: hyperfine
   tags:
     - container
     - desktop
@@ -461,7 +542,7 @@
 - name: Install Java language
   hosts: all
   roles:
-    - java
+    - name: java
   tags:
     - container
     - desktop
@@ -473,7 +554,7 @@
 - name: Install Jq JSON parser
   hosts: all
   roles:
-    - jq
+    - name: jq
   tags:
     - container
     - desktop
@@ -485,7 +566,7 @@
 - name: Install Julia language
   hosts: all
   roles:
-    - julia
+    - name: julia
   tags:
     - container
     - desktop
@@ -494,21 +575,76 @@
     - server
     - wsl
 
+- name: Install K3d Kubernetes development cluster manager
+  hosts: all
+  roles:
+    - name: k3d
+  tags:
+    - desktop
+    - k3d
+    - kubernetes
+    - server
+    - wsl
+
+- name: Install K9s Kubernetes manager
+  hosts: all
+  roles:
+    - name: k9s
+  tags:
+    - desktop
+    - k9s
+    - kubernetes
+    - server
+    - wsl
+
+- name: Install Krew Kubectl plugin package manager
+  hosts: all
+  roles:
+    - name: krew
+  tags:
+    - desktop
+    - krew
+    - kubernetes
+    - server
+    - wsl
+
 - name: Install Kubectl Kubernetes manager
   hosts: all
   roles:
-    - kubectl
+    - name: kubectl
   tags:
     - desktop
     - kubectl
+    - kubernetes
     - server
-    - vm
+    - wsl
+
+- name: Install Lazydocker Docker manager
+  hosts: all
+  roles:
+    - name: lazydocker
+  tags:
+    - desktop
+    - lazydocker
+    - server
+    - wsl
+
+- name: Install Lazygit Git manager
+  hosts: all
+  roles:
+    - name: lazygit
+  tags:
+    - container
+    - desktop
+    - lazygit
+    - server
+    - vcs
     - wsl
 
 - name: Install Libvirt virtualization API
   hosts: all
   roles:
-    - libvirt
+    - name: libvirt
   tags:
     - desktop
     - libvirt
@@ -517,7 +653,7 @@
 - name: Install Lua language
   hosts: all
   roles:
-    - lua
+    - name: lua
   tags:
     - container
     - desktop
@@ -529,7 +665,7 @@
 - name: Install Mdbook static website generator
   hosts: all
   roles:
-    - mdbook
+    - name: mdbook
   tags:
     - container
     - desktop
@@ -541,7 +677,7 @@
 - name: Install Mkcert web certificate generator
   hosts: all
   roles:
-    - mkcert
+    - name: mkcert
   tags:
     - container
     - desktop
@@ -553,7 +689,7 @@
 - name: Install MongoDB database client
   hosts: all
   roles:
-    - mongo
+    - name: mongo
   tags:
     - container
     - database
@@ -565,7 +701,7 @@
 - name: Install Navi interactive documentation tool
   hosts: all
   roles:
-    - navi
+    - name: navi
   tags:
     - container
     - desktop
@@ -576,7 +712,7 @@
 - name: Install Neovim terminal text editor
   hosts: all
   roles:
-    - neovim
+    - name: neovim
   tags:
     - container
     - desktop
@@ -588,7 +724,7 @@
 - name: Install Node JavaScript runtime
   hosts: all
   roles:
-    - node
+    - name: node
   tags:
     - container
     - desktop
@@ -598,21 +734,10 @@
     - typescript
     - wsl
 
-- name: Install OTS secret sharer
-  hosts: all
-  roles:
-    - ots
-  tags:
-    - container
-    - desktop
-    - ots
-    - server
-    - wsl
-
 - name: Install optional packages
   hosts: all
   roles:
-    - package
+    - name: package
   tags:
     - container
     - desktop
@@ -623,7 +748,7 @@
 - name: Install Packer image generator
   hosts: all
   roles:
-    - packer
+    - name: packer
   tags:
     - container
     - desktop
@@ -635,7 +760,7 @@
 - name: Install Parquet file serialization tools
   hosts: all
   roles:
-    - parquet
+    - name: parquet
   tags:
     - container
     - desktop
@@ -646,7 +771,7 @@
 - name: Install PowerShell shell
   hosts: all
   roles:
-    - powershell
+    - name: powershell
   tags:
     - container
     - desktop
@@ -657,7 +782,7 @@
 - name: Install Procs process viewer
   hosts: all
   roles:
-    - procs
+    - name: procs
   tags:
     - container
     - desktop
@@ -668,7 +793,7 @@
 - name: Install Python language
   hosts: all
   roles:
-    - python
+    - name: python
   tags:
     - container
     - desktop
@@ -680,7 +805,7 @@
 - name: Install QEMU hardware virtualizer
   hosts: all
   roles:
-    - qemu
+    - name: qemu
   tags:
     - desktop
     - qemu
@@ -689,7 +814,7 @@
 - name: Install RClone cloud storage utility
   hosts: all
   roles:
-    - rclone
+    - name: rclone
   tags:
     - container
     - desktop
@@ -700,7 +825,7 @@
 - name: Install Ripgrep text searcher
   hosts: all
   roles:
-    - ripgrep
+    - name: ripgrep
   tags:
     - container
     - desktop
@@ -712,7 +837,7 @@
 - name: Install Ruby language
   hosts: all
   roles:
-    - ruby
+    - name: ruby
   tags:
     - container
     - desktop
@@ -724,7 +849,7 @@
 - name: Install Rust language
   hosts: all
   roles:
-    - rust
+    - name: rust
   tags:
     - container
     - desktop
@@ -736,7 +861,7 @@
 - name: Install Scc code line counter
   hosts: all
   roles:
-    - scc
+    - name: scc
   tags:
     - container
     - desktop
@@ -747,7 +872,7 @@
 - name: Install SD find and replace tool
   hosts: all
   roles:
-    - sd
+    - name: sd
   tags:
     - container
     - desktop
@@ -755,10 +880,34 @@
     - sd
     - wsl
 
+- name: Install Shellcheck shell linter
+  hosts: all
+  roles:
+    - name: shellcheck
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - shellcheck
+    - wsl
+
+- name: Install Shfmt shell formatter
+  hosts: all
+  roles:
+    - name: shfmt
+  tags:
+    - container
+    - desktop
+    - server
+    - shell
+    - shfmt
+    - wsl
+
 - name: Install Snap packages
   hosts: all
   roles:
-    - snap
+    - name: snap
   tags:
     - desktop
     - snap
@@ -766,7 +915,7 @@
 - name: Install SQLite database
   hosts: all
   roles:
-    - sqlite
+    - name: sqlite
   tags:
     - container
     - database
@@ -778,7 +927,7 @@
 - name: Install Starship shell prompt
   hosts: all
   roles:
-    - starship
+    - name: starship
   tags:
     - container
     - desktop
@@ -790,7 +939,7 @@
 - name: Configure sudo settings
   hosts: all
   roles:
-    - sudo
+    - name: sudo
   tags:
     - container
     - desktop
@@ -801,7 +950,7 @@
 - name: Install Terraform infrastructure as code software
   hosts: all
   roles:
-    - terraform
+    - name: terraform
   tags:
     - container
     - desktop
@@ -813,7 +962,7 @@
 - name: Install Terragrunt Terraform manager
   hosts: all
   roles:
-    - terragrunt
+    - name: terragrunt
   tags:
     - container
     - desktop
@@ -822,10 +971,21 @@
     - terragrunt
     - wsl
 
+- name: Install Tilt Kubernetes development suite
+  hosts: all
+  roles:
+    - name: tilt
+  tags:
+    - desktop
+    - kubernetes
+    - server
+    - tilt
+    - wsl
+
 - name: Install TLDR documentation collection
   hosts: all
   roles:
-    - tldr
+    - name: tldr
   tags:
     - container
     - desktop
@@ -837,7 +997,7 @@
 - name: Install Tmux terminal multiplexer
   hosts: all
   roles:
-    - tmux
+    - name: tmux
   tags:
     - container
     - desktop
@@ -849,7 +1009,7 @@
 - name: Install USQL
   hosts: all
   roles:
-    - usql
+    - name: usql
   tags:
     - container
     - desktop
@@ -860,7 +1020,7 @@
 - name: Install Vagrant virtualization manager
   hosts: all
   roles:
-    - vagrant
+    - name: vagrant
   tags:
     - desktop
     - hashicorp
@@ -871,7 +1031,7 @@
 - name: Install Vault secrets manager
   hosts: all
   roles:
-    - vault
+    - name: vault
   tags:
     - container
     - desktop
@@ -883,7 +1043,7 @@
 - name: Install Virtualbox virtualization manager
   hosts: all
   roles:
-    - virtualbox
+    - name: virtualbox
   tags:
     - desktop
     - hashicorp
@@ -892,7 +1052,7 @@
 - name: Install VSCode text exitor
   hosts: all
   roles:
-    - vscode
+    - name: vscode
   tags:
     - desktop
     - editor
@@ -901,7 +1061,7 @@
 - name: Install Web Assembly runtime
   hosts: all
   roles:
-    - wasm
+    - name: wasm
   tags:
     - container
     - desktop
@@ -913,15 +1073,26 @@
 - name: Install desktop window managers
   hosts: all
   roles:
-    - winman
+    - name: winman
   tags:
     - desktop
     - winman
 
+- name: Install Xh HTTP client
+  hosts: all
+  roles:
+    - name: xh
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - xh
+
 - name: Install Xsv CSV parser
   hosts: all
   roles:
-    - xsv
+    - name: xsv
   tags:
     - container
     - desktop
@@ -930,10 +1101,21 @@
     - wsl
     - xsv
 
+- name: Install Yq YAML parser
+  hosts: all
+  roles:
+    - name: yq
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - yq
+
 - name: Install Zellij terminal multiplexer
   hosts: all
   roles:
-    - zellij
+    - name: zellij
   tags:
     - container
     - desktop
@@ -945,7 +1127,7 @@
 - name: Install Zola static website generator
   hosts: all
   roles:
-    - zola
+    - name: zola
   tags:
     - container
     - desktop

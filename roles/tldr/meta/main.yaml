@@ -1,5 +1,4 @@
+---
 dependencies:
-  - role: bash
-    when: ansible_pkg_mgr == "apk"
   - role: node
     when: ansible_pkg_mgr == "apk"

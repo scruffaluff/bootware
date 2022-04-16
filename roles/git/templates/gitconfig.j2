@@ -5,8 +5,17 @@
 [core]
     autocrlf = input
     editor = nvim
+    pager = delta
+[delta]
+    navigate = true
+[diff]
+    colorMoved = default
 [init]
     defaultBranch = main
+[interactive]
+    diffFilter = delta --color-only
+[merge]
+    conflictstyle = diff3
 [pull]
     rebase = false
 [user]

@@ -2,12 +2,12 @@
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 # Exit immediately if a PowerShell Cmdlet encounters an error.
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
 # Show CLI help information.
 Function Usage() {
     Switch ($Args[0]) {
-        "bootstrap" {
+        'bootstrap' {
             Write-Output @'
 Bootware bootstrap
 Boostrap install computer software
@@ -32,7 +32,7 @@ ANSIBLE-OPTIONS:
 '@
             wsl ansible --help
         }
-        "config" {
+        'config' {
             Write-Output @'
 Bootware config
 Download default Bootware configuration file
@@ -47,7 +47,7 @@ OPTIONS:
     -s, --source <URL>      URL to configuration file
 '@
         }
-        "main" {
+        'main' {
             Write-Output @'
 Bootware 0.3.5
 Boostrapping software installer
@@ -69,7 +69,7 @@ SUBCOMMANDS:
 See 'bootware <subcommand> --help' for more information on a specific command.
 '@
         }
-        "setup" {
+        'setup' {
             Write-Output @'
 Bootware setup
 Install dependencies for Bootware
@@ -84,7 +84,7 @@ OPTIONS:
     -u, --url <URL>         URL of playbook repository
 '@
         }
-        "uninstall" {
+        'uninstall' {
             Write-Output @'
 Bootware uninstall
 Remove Bootware files
@@ -96,7 +96,7 @@ FLAGS:
     -h, --help      Print help information
 '@
         }
-        "update" {
+        'update' {
             Write-Output @'
 Bootware update
 Update Bootware to latest version
@@ -115,64 +115,64 @@ FLAGS:
 # Subcommand to bootstrap software installations.
 Function Bootstrap() {
     $ArgIdx = 0
-    $ConfigPath = ""
+    $ConfigPath = ''
     $Debug = 0
     $ExtraArgs = @()
     $Playbook = "$PSScriptRoot/repo/main.yaml"
-    $Skip = "none"
-    $Tags = "desktop"
-    $URL = "https://github.com/scruffaluff/bootware.git"
+    $Skip = 'none'
+    $Tags = 'desktop'
+    $URL = 'https://github.com/scruffaluff/bootware.git'
     $UseSetup = 1
     $User = "$Env:UserName"
 
-    While ($ArgIdx -lt $Args[0].Count) {
+    While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            { $_ -In "-c", "--config" } {
+            { $_ -In '-c', '--config' } {
                 $ConfigPath = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            { $_ -In "-d", "--dev" } {
+            { $_ -In '-d', '--dev' } {
                 $Playbook = "$(Get-Location)/main.yaml"
                 $UseSetup = 0
                 $ArgIdx += 1
                 Break
             }
-            "--debug" {
+            '--debug' {
                 $Debug = 1
                 $ArgIdx += 1
                 Break
             }
-            { $_ -In "-h", "--help" } {
-                Usage "bootstrap"
+            { $_ -In '-h', '--help' } {
+                Usage 'bootstrap'
                 Exit 0
             }
-            "--no-setup" {
+            '--no-setup' {
                 $UseSetup = 0
                 $ArgIdx += 1
                 Break
             }
-            { $_ -In "-p", "--playbook" } {
+            { $_ -In '-p', '--playbook' } {
                 $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            { $_ -In "-s", "--skip" } {
+            { $_ -In '-s', '--skip' } {
                 $Skip = $Args[0][$ArgIdx + 1] -Join ","
                 $ArgIdx += 2
                 Break
             }
-            { $_ -In "-t", "--tags" } {
+            { $_ -In '-t', '--tags' } {
                 $Tags = $Args[0][$ArgIdx + 1] -Join ","
                 $ArgIdx += 2
                 Break
             }
-            { $_ -In "-u", "--url" } {
+            { $_ -In '-u', '--url' } {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            "--user" {
+            '--user' {
                 $User = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -186,11 +186,11 @@ Function Bootstrap() {
 
     If ($UseSetup) {
         $Params = @()
-        $Params += "--url", "$URL"
+        $Params += '--url', "$URL"
         Setup $Params
     }
     ElseIf (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
-        Throw "Error: The WSL needs to be setup before bootstrapping"
+        Throw 'Error: The WSL needs to be setup before bootstrapping'
         Exit 1
     }
 
@@ -198,12 +198,12 @@ Function Bootstrap() {
     $ConfigPath = $(WSLPath "$Global:RetVal")
     $Inventory = "$(FindRelativeIP)"
     $PlaybookPath = $(WSLPath "$Playbook")
-    $ExtraArgsString = $($ExtraArgs -Join " ")
+    $ExtraArgsString = $($ExtraArgs -Join ' ')
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish. Have not found a way to optionally include arguments in
     # PowerShell. If a simpler solution exists, please edit.
-    If ($Debug -And $ExtraArgs.Count -Gt 0) {
+    If ($Debug -And $ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap --debug --windows `
             --config "$ConfigPath" `
             --inventory "$Inventory," `
@@ -226,7 +226,7 @@ Function Bootstrap() {
             --tags "$Tags" `
             --user "$User"
     }
-    ElseIf ($ExtraArgs.Count -Gt 0) {
+    ElseIf ($ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap --windows `
             --config "$ConfigPath" `
             --inventory "$Inventory," `
@@ -254,27 +254,27 @@ Function Bootstrap() {
 # Subcommand to generate or download Bootware configuration file.
 Function Config() {
     $ArgIdx = 0
-    $SrcURL = ""
+    $SrcURL = ''
     $DstFile = "$HOME/.bootware/config.yaml"
     $EmptyCfg = 0
 
-    While ($ArgIdx -lt $Args[0].Count) {
+    While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            { $_ -In "-d", "--dest" } {
+            { $_ -In '-d', '--dest' } {
                 $DstFile = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            { $_ -In "-e", "--empty" } {
+            { $_ -In '-e', '--empty' } {
                 $EmptyCfg = 1
                 $ArgIdx += 1
                 Break
             }
-            { $_ -In "-h", "--help" } {
-                Usage "config"
+            { $_ -In '-h', '--help' } {
+                Usage 'config'
                 Exit 0
             }
-            { $_ -In "-s", "--source" } {
+            { $_ -In '-s', '--source' } {
                 $SrcURL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -295,7 +295,7 @@ Function Config() {
         # Do not use Write-Ouput. On PowerShell 5, it will add a byte order
         # marker to the file, which makes WSL Ansible throw UTF-8 errors.
         # Solution was taken from https://stackoverflow.com/a/32951824.
-        [System.IO.File]::WriteAllLines("$DstFile", "font_size: 14")
+        [System.IO.File]::WriteAllLines("$DstFile", 'font_size: 14')
     }
     Else {
         # Log "Downloading configuration file to $DstFile"
@@ -309,7 +309,7 @@ Function Config() {
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
-    $ProgressPreference = "SilentlyContinue"
+    $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
 
@@ -331,9 +331,9 @@ Function FindConfigPath($FilePath) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
     }
     Else {
-        Log "Unable to find Bootware configuation file"
+        Log 'Unable to find Bootware configuation file'
         $Params = @()
-        $Params += @("--empty")
+        $Params += @('--empty')
         Config $Params
         $ConfigPath = "$HOME/.bootware/config.yaml"
     }
@@ -353,11 +353,18 @@ Function FindRelativeIP {
     wsl -l -v 2>&1 | Out-Null
 
     If ($LastExitCode) {
-        Write-Output "127.0.0.1"
+        Write-Output '127.0.0.1'
     }
     Else {
         Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
     }
+}
+
+# Check if script is run from an admin console.
+Function IsAdministrator {
+    Return ([Security.Principal.WindowsPrincipal]`
+            [Security.Principal.WindowsIdentity]::GetCurrent()`
+    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
 # Print log message to stdout if logging is enabled.
@@ -373,34 +380,34 @@ Function Log($Message) {
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
 Function RemoteScript($URL) {
-    $ProgressPreference = "SilentlyContinue"
+    $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -UseBasicParsing -Uri "$URL" | Invoke-Expression
 }
 
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
-    $Branch = "master"
-    $URL = "https://github.com/scruffaluff/bootware.git"
+    $Branch = 'master'
+    $URL = 'https://github.com/scruffaluff/bootware.git'
     $WSL = 1
 
-    While ($ArgIdx -lt $Args[0].Count) {
+    While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            { $_ -In "-h", "--help" } {
-                Usage "setup"
+            { $_ -In '-h', '--help' } {
+                Usage 'setup'
                 Exit 0
             }
-            "--checkout" {
+            '--checkout' {
                 $Branch = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
-            "--no-wsl" {
+            '--no-wsl' {
                 $WSL = 0
                 $ArgIdx += 1
                 Break
             }
-            { $_ -In "-u", "--url" } {
+            { $_ -In '-u', '--url' } {
                 $URL = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -413,25 +420,36 @@ Function Setup() {
 
     # Install Chocolatey package manager.
     If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
-        Log "Downloading Chocolatey package manager"
-        RemoteScript "https://chocolatey.org/install.ps1"
+        Log 'Downloading Chocolatey package manager'
+        RemoteScript 'https://chocolatey.org/install.ps1'
     }
 
     # Install Scoop package manager.
     If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-        Log "Downloading Scoop package manager"
-        RemoteScript "https://get.scoop.sh"
+        Log 'Downloading Scoop package manager'
+        # Scoop disallows installation from an admin console by default. For
+        # more information, visit
+        # https://github.com/ScoopInstaller/Install#for-admin.
+        If (IsAdministrator) {
+            $ScoopInstaller = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.ps1'
+            DownloadFile 'get.scoop.sh' "$ScoopInstaller"
+            & "$ScoopInstaller" -RunAsAdmin
+            Remove-Item -Force -Path "$ScoopInstaller"
+        }
+        Else {
+            RemoteScript 'https://get.scoop.sh'
+        }
     }
 
     # Git is required for addding Scoop buckets.
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
-        Log "Downloading Git version control"
+        Log 'Downloading Git version control'
         scoop install git
     }
 
     $ScoopBuckets = $(scoop bucket list)
-    ForEach ($Bucket in @("extras", "main", "nerd-fonts", "versions")) {
-        If ($Bucket -NotIn $ScoopBuckets) {
+    ForEach ($Bucket in @('extras', 'main', 'nerd-fonts', 'versions')) {
+        If ($Bucket -NotIn $ScoopBuckets.Name) {
             scoop bucket add "$Bucket"
         }
     }
@@ -462,7 +480,7 @@ Function Setup() {
 Function SetupSSHKeys {
     $SetupSSHKeysComplete = "$PSScriptRoot/.setup_ssh_keys"
     If (-Not (Test-Path -Path "$SetupSSHKeysComplete" -PathType Leaf)) {
-        Log "Generating SSH keys"
+        Log 'Generating SSH keys'
 
         # GetTempFileName creates a 0 byte file, so it has to be deleted to work
         # with ssh-keygen.
@@ -472,10 +490,10 @@ Function SetupSSHKeys {
         ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
-            -Path "C:/ProgramData/ssh/administrators_authorized_keys" `
+            -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `
             -Value $PublicKey
 
-        Log "Moving SSH keys to WSL"
+        Log 'Moving SSH keys to WSL'
 
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
@@ -486,12 +504,12 @@ Function SetupSSHKeys {
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
-        Log "Disabling SSH password authentication"
+        Log 'Disabling SSH password authentication'
 
         # Disable password based logins for SSH.
         Add-Content `
             -Path "$Env:ProgramData/ssh/sshd_config" `
-            -Value "PasswordAuthentication no"
+            -Value 'PasswordAuthentication no'
 
         New-Item -ItemType File -Path "$SetupSSHKeysComplete" | Out-Null
     }
@@ -504,7 +522,7 @@ Function SetupSSHKeys {
 Function SetupSSHServer() {
     $SetupSSHServerComplete = "$PSScriptRoot/.setup_ssh_server"
     If (-Not (Test-Path -Path "$SetupSSHServerComplete" -PathType Leaf)) {
-        Log "Setting up OpenSSH server"
+        Log 'Setting up OpenSSH server'
 
         # Turn on Windows Update and TrustedInstaller services.
         Start-Service -Name wuauserv -ErrorAction SilentlyContinue
@@ -514,11 +532,11 @@ Function SetupSSHServer() {
         }
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-        If (-Not (Get-NetFirewallRule -DisplayName "Bootware SSH" -ErrorAction SilentlyContinue)) {
+        If (-Not (Get-NetFirewallRule -DisplayName 'Bootware SSH' -ErrorAction SilentlyContinue)) {
             New-NetFirewallRule `
                 -Action Allow `
                 -Direction Inbound `
-                -DisplayName "Bootware SSH" `
+                -DisplayName 'Bootware SSH' `
                 -Enabled True `
                 -LocalPort 22 `
                 -Name sshd `
@@ -531,21 +549,21 @@ Function SetupSSHServer() {
         New-ItemProperty `
             -Force `
             -Name DefaultShell `
-            -Path "HKLM:\SOFTWARE\OpenSSH" `
+            -Path 'HKLM:\SOFTWARE\OpenSSH' `
             -PropertyType String `
-            -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+            -Value 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
 
         # Administrative Windows users must have their accepted public keys
         # stored in C:/ProgramData/ssh/administrators_authorized_keys with
         # specific permissions. For more information, visit
         # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#administrative-user.
-        $AuthKeys = "C:/ProgramData/ssh/administrators_authorized_keys"
+        $AuthKeys = 'C:/ProgramData/ssh/administrators_authorized_keys'
         If (-Not (Test-Path -Path "$AuthKeys" -PathType Leaf)) {
             New-Item -ItemType File -Path "$AuthKeys" | Out-Null
         }
         icacls "$AuthKeys" `
-            /Grant "Administrators:F" `
-            /Grant "SYSTEM:F" `
+            /Grant 'Administrators:F' `
+            /Grant 'SYSTEM:F' `
             /Inheritance:r
 
         New-Item -ItemType File -Path "$SetupSSHServerComplete" | Out-Null
@@ -563,7 +581,7 @@ Function SetupWSL($Branch) {
     $MWSL = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
     $VMP = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
 
-    If ((-Not $WSLExe) -Or ($MWSL.State -NE "Enabled") -Or ($VMP.State -NE "Enabled")) {
+    If ((-Not $WSLExe) -Or ($MWSL.State -NE 'Enabled') -Or ($VMP.State -NE 'Enabled')) {
         # Dism appears to require arguments in a specific order.
         dism `
             /Online `
@@ -578,36 +596,36 @@ Function SetupWSL($Branch) {
             /All `
             /NoRestart
 
-        Log "Restart your system to finish WSL installation"
-        Log "Then run bootware setup again to install Ubuntu"
+        Log 'Restart your system to finish WSL installation'
+        Log 'Then run bootware setup again to install Ubuntu'
         Exit 0
     }
 
     # Unable to figure a better way to check if a Linux distro is installed.
     # Checking output of wsl list seems to never work.
-    $MatchString = "A WSL distro is installed"
+    $MatchString = 'A WSL distro is installed'
     $DistroCheck = "$(wsl echo $MatchString)"
     If (-Not ("$DistroCheck" -Like "$MatchString")) {
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".msi"
-        Log "Downloading WSL update"
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.msi'
+        Log 'Downloading WSL update'
         DownloadFile `
-            "https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi" `
+            'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' `
             $TempFile
         Start-Process -Wait $TempFile /Passive
 
         wsl --set-default-version 2
 
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace ".tmp", ".zip"
-        $TempDir = $TempFile -Replace ".zip", ""
-        Log "Downloading Ubuntu image. Follow the prompt for installation"
-        DownloadFile "https://aka.ms/wslubuntu2004" "$TempFile"
+        $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.zip'
+        $TempDir = $TempFile -Replace '.zip', ''
+        Log 'Downloading Ubuntu image. Follow the prompt for installation'
+        DownloadFile 'https://aka.ms/wslubuntu2004' "$TempFile"
 
         Expand-Archive "$TempFile" "$TempDir"
         & "$TempDir/ubuntu2004.exe" exit 0
     }
 
     If (-Not (wsl command -v bootware)) {
-        Log "Installing a WSL copy of Bootware"
+        Log 'Installing a WSL copy of Bootware'
         wsl curl -LSfs `
             https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh `
             `| bash -s -- --version "$Branch"
@@ -619,10 +637,10 @@ Function SetupWSL($Branch) {
 Function Uninstall() {
     $ArgIdx = 0
 
-    While ($ArgIdx -lt $Args[0].Count) {
+    While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            { $_ -In "-h", "--help" } {
-                Usage "uninstall"
+            { $_ -In '-h', '--help' } {
+                Usage 'uninstall'
                 Exit 0
             }
             Default {
@@ -640,21 +658,21 @@ Function Uninstall() {
     }
 
     Remove-Item -Force -Recurse "$PSScriptRoot"
-    Log "Uninstalled Bootware"
+    Log 'Uninstalled Bootware'
 }
 
 # Subcommand to update Bootware script.
 Function Update() {
     $ArgIdx = 0
-    $Version = "master"
+    $Version = 'master'
 
-    While ($ArgIdx -lt $Args[0].Count) {
+    While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
-            { $_ -In "-h", "--help" } {
-                Usage "update"
+            { $_ -In '-h', '--help' } {
+                Usage 'update'
                 Exit 0
             }
-            { $_ -In "-v", "--version" } {
+            { $_ -In '-v', '--version' } {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
@@ -687,20 +705,20 @@ Function Update() {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output "Bootware 0.3.5"
+    Write-Output 'Bootware 0.3.5'
 }
 
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
     $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':', ''
-    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace "\\", "/"
+    $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace '\\', '/'
     Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
 # Script entrypoint.
 Function Main() {
     # Get subcommand parameters.
-    If ($Args[0].Length -gt 1) {
+    If ($Args[0].Length -GT 1) {
         $Slice = $Args[0][1..($Args[0].Length - 1)]
     }
     Else {
@@ -708,31 +726,31 @@ Function Main() {
     }
 
     Switch ($Args[0][0]) {
-        { $_ -In "-h", "--help" } {
-            Usage "main"
+        { $_ -In '-h', '--help' } {
+            Usage 'main'
             Break
         }
-        { $_ -In "-v", "--version" } {
+        { $_ -In '-v', '--version' } {
             Version
             Break
         }
-        "bootstrap" {
+        'bootstrap' {
             Bootstrap $Slice
             Break
         }
-        "config" {
+        'config' {
             Config $Slice
             Break
         }
-        "setup" {
+        'setup' {
             Setup $Slice
             Break
         }
-        "uninstall" {
+        'uninstall' {
             Uninstall $Slice
             Break
         }
-        "update" {
+        'update' {
             Update $Slice
             Break
         }
@@ -743,6 +761,6 @@ Function Main() {
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.
-If ($MyInvocation.InvocationName -ne '.') {
+If ($MyInvocation.InvocationName -NE '.') {
     Main $Args
 }

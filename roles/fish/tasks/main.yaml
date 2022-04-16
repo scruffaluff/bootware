@@ -1,94 +1,85 @@
+---
 - name: Install Fish for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: fish
   when: ansible_system == "FreeBSD"
 
 - name: Install Fish for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name: fish
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Fish for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: fish
   when: ansible_system == "Darwin"
 
 - name: Create Fish configuration directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/.config/fish"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/.config/fish/completions"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Create Fish functions directory for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  file:
+  ansible.builtin.file:
     mode: "755"
-    path: "{{ user_home_dir }}/.config/fish/functions"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/functions"
     state: directory
   when: ansible_system != "Win32NT"
 
 - name: Copy Fish settings file for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.config/fish/config.fish"
-    force: yes
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/fish/config.fish"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: config.fish
   when: ansible_system != "Win32NT"
 
 - name: Get installed Fish version
+  ansible.builtin.command: fish --version
   register: fish_version_text
-  command: fish --version
   when: ansible_system != "Win32NT"
 
 - name: Parse Fish version
-  set_fact:
+  ansible.builtin.set_fact:
     fish_version: >-
       {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       curl -Ls https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-    warn: no
+    warn: false
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      source {{ user_home_dir }}/.config/fish/config.fish
+      source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
-  become: yes
-  user:
-    name: "{{ user_account }}"
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
     shell: "{{ fish_executable }}"
+  become: true
   when: ansible_system != "Win32NT"

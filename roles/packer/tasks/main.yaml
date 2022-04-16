@@ -1,30 +1,31 @@
+---
 - name: Get latest Packer version
-  uri:
-    url: https://formulae.brew.sh/api/formula/packer.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/packer.json
   register: packer_formula
   when: ansible_system == "Linux"
 
 - name: Install Packer for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: packer
   when: ansible_system == "FreeBSD"
 
 - name: Install Packer for Linux
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://releases.hashicorp.com/packer/{{
       packer_formula.json.versions.stable }}/packer_{{
       packer_formula.json.versions.stable }}_linux_{{
       packer_arch[ansible_architecture] }}.zip
+  become: true
   vars:
     packer_arch:
       aarch64: arm64
@@ -32,16 +33,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Packer for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: packer
   when: ansible_system == "Darwin"
 
 - name: Install Packer for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: packer
   when: ansible_system == "Win32NT"

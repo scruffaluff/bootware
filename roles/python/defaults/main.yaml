@@ -1,3 +1,4 @@
+---
 pipx_applications:
   - black
   - cookiecutter

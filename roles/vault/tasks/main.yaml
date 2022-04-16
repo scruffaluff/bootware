@@ -1,29 +1,30 @@
+---
 - name: Get latest Vault version
-  uri:
-    url: https://formulae.brew.sh/api/formula/vault.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/vault.json
   register: vault_formula
   when: ansible_system == "Linux"
 
 - name: Install Vault for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: vault
   when: ansible_system == "FreeBSD"
 
 - name: Install Vault for Linux
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     group: root
     mode: "755"
     owner: root
-    remote_src: yes
+    remote_src: true
     src: >-
       https://releases.hashicorp.com/vault/{{ vault_formula.json.versions.stable
       }}/vault_{{ vault_formula.json.versions.stable }}_linux_{{
       vault_arch[ansible_architecture] }}.zip
+  become: true
   vars:
     vault_arch:
       aarch64: arm64
@@ -31,16 +32,11 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"
 
 - name: Install Vault for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: vault
   when: ansible_system == "Win32NT"

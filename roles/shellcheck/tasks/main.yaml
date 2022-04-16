@@ -1,0 +1,11 @@
+---
+- name: Install ShellCheck for Linux
+  ansible.builtin.package:
+    name: "{{ 'ShellCheck' if ansible_pkg_mgr == 'dnf' else 'shellcheck' }}"
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install ShellCheck for MacOS
+  community.general.homebrew:
+    name: shellcheck
+  when: ansible_system == "Darwin"

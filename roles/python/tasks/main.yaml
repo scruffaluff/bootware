@@ -1,3 +1,4 @@
+---
 - name: Configure system dependencies for Python
   import_tasks: system.yaml
 

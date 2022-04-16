@@ -1,53 +1,48 @@
+---
 - name: Install SQLite for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: sqlite
   when: ansible_pkg_mgr == "apk"
 
 - name: Install SQLite for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name: sqlite
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install SQLite for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: sqlite3
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install SQLite for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: sqlite3
   when: ansible_system == "FreeBSD"
 
 - name: Install SQLite for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: sqlite
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install SQLite for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: sqlite
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: sqlite
   when: ansible_system == "Win32NT"
 
 - name: Copy SQLite settings file
-  become: yes
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.sqliterc"
-    force: yes
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.sqliterc"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: .sqliterc

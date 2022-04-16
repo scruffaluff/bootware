@@ -1,0 +1,39 @@
+---
+- name: Get latest Helmfile version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/helmfile.json
+  register: helmfile_formula
+  when: ansible_system == "Linux"
+
+- name: Install Helmfile for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: helmfile
+  when: ansible_system == "FreeBSD"
+
+- name: Install Helmfile for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/helmfile
+    mode: "755"
+    url: >-
+      https://github.com/roboll/helmfile/releases/download/v{{
+      helmfile_formula.json.versions.stable }}/helmfile_linux_{{
+      helmfile_arch[ansible_architecture] }}
+  become: true
+  vars:
+    helmfile_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Helmfile for MacOS
+  community.general.homebrew:
+    name: helmfile
+  when: ansible_system == "Darwin"
+
+- name: Install Helmfile for Windows
+  community.windows.win_scoop:
+    name: helmfile
+  when: ansible_system == "Win32NT"

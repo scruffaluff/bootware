@@ -1,0 +1,58 @@
+---
+- name: Get latest Krew version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/krew.json
+  register: krew_formula
+  when: ansible_system == "Linux"
+
+- name: Download Krew for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/kubernetes-sigs/krew/releases/download/v{{
+      krew_formula.json.versions.stable }}/krew-linux_{{
+      krew_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    krew_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Krew for Linux
+  ansible.builtin.command:
+    cmd: "/tmp/krew-linux_{{ krew_arch[ansible_architecture] }} install krew"
+  vars:
+    krew_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Krew for MacOS
+  community.general.homebrew:
+    name: krew
+  when: ansible_system == "Darwin"
+
+- name: Install Krew for Windows
+  chocolatey.chocolatey.win_chocolatey:
+    name: krew
+  when: ansible_system == "Win32NT"
+
+- name: Install Kubectl plugins for Unix
+  ansible.builtin.command:
+    cmd: "kubectl-krew install {{ item }}"
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
+  loop: "{{ kubectl_plugins }}"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Install Kubectl plugins for Windows
+  ansible.builtin.win_command: "kubectl-krew install {{ item }}"
+  environment:
+    Path: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.Path }}"
+  loop: "{{ kubectl_plugins }}"
+  when: ansible_system == "Win32NT"

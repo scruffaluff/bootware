@@ -1,49 +1,47 @@
+---
 - name: Get latest Usql version
-  uri:
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
     url: https://raw.githubusercontent.com/ScoopInstaller/Main/master/bucket/usql.json
   register: usql_manifest
   when: ansible_system == "Linux"
 
 - name: Install Usql dependencies for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name:
       - bzip2
       - libicu
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Arch.
 - name: Install Usql for Arch distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  command: yay -Sy --noconfirm usql
+  ansible.builtin.command: yay -Sy --noconfirm usql
   when: ansible_pkg_mgr == "pacman"
 
 # Pre-built Usql binaries require a libicu version that is different from the
 # supported version on Debian.
 - name: Install Usql for Debian distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      go get github.com/xo/usql
-    executable: "{{ bash_executable }}"
+  ansible.builtin.command: "go install github.com/xo/usql@latest"
+  environment:
+    GOPATH: "{{ ansible_env.HOME }}/go"
+    GOROOT: "/usr/local/go"
+    PATH: >-
+      /usr/local/go/bin:{{ ansible_env.HOME }}/go/bin:{{ ansible_env.PATH }}
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Usql for Fedora and Ubuntu distributions
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/xo/usql/releases/download/v{{
       usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
       }}-linux-amd64.tar.bz2
+  become: true
   when: >-
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
     ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
@@ -54,7 +52,7 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Get Libicu major version for Fedora distributions
-  set_fact:
+  ansible.builtin.set_fact:
     libicu_major_version: >-
       {{ ansible_facts.packages.libicu[0].version.split('.')[0] }}
   when: ansible_pkg_mgr == "dnf"
@@ -63,51 +61,43 @@
 # distributions. For more information, visit
 # https://github.com/xo/usql/issues/117.
 - name: Make libicu symlinks for Fedora distributions
-  become: yes
-  file:
+  ansible.builtin.file:
     src: "/usr/lib64/{{ item }}.so.{{ libicu_major_version }}"
     dest: "/usr/lib64/{{ item }}.so.67"
-    force: yes
+    force: true
     mode: "755"
     state: link
+  become: true
   loop:
     - libicuuc
     - libicui18n
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Usql for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: usql
   when: ansible_system == "FreeBSD"
 
 - name: Tap Usql for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_tap:
     name: xo/xo
   when: ansible_system == "Darwin"
 
 - name: Install Usql for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: xo/xo/usql
   when: ansible_system == "Darwin"
 
 - name: Install Usql for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: usql
   when: ansible_system == "Win32NT"
 
 - name: Copy Usql settings file
-  become: yes
-  become_user: "{{ user_account }}"
-  copy:
-    dest: "{{ user_home_dir }}/.usqlrc"
-    force: yes
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.usqlrc"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: .usqlrc

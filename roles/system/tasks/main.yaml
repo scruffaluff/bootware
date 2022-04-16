@@ -1,53 +1,53 @@
+---
 - name: Update packages for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
-    update_cache: yes
-    upgrade: yes
+    update_cache: true
+    upgrade: true
   when: ansible_pkg_mgr == "apk"
 
 - name: Update packages for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
-    update_cache: yes
-    upgrade: yes
+    update_cache: true
+    upgrade: true
   when: ansible_pkg_mgr == "pacman"
 
 - name: Update packages for Debian distributions
-  apt:
-    autoremove: yes
-    update_cache: yes
+  ansible.builtin.apt:
+    autoremove: true
+    update_cache: true
     upgrade: full
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Update packages for Fedora distributions
-  become: yes
-  dnf:
-    autoremove: yes
+  ansible.builtin.dnf:
+    autoremove: true
     # Updating all packages causes an error since dnf would be removed.
     # name: "*"
-    update_cache: yes
+    update_cache: true
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
-    update_homebrew: yes
-    upgrade_all: yes
+    update_homebrew: true
+    upgrade_all: true
   when: ansible_system == "Darwin"
 
 - name: Install essential packages for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name:
+      - libxcrypt-compat
       - openssh
       - pkgconf
       - which
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install essential packages for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-file
       - apt-transport-https
@@ -56,12 +56,11 @@
       - openssh-client
       - pbuilder
       - ubuntu-dev-tools
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install essential packages for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name:
       - dnf-plugins-core
       - findutils
@@ -70,12 +69,13 @@
       - procps
       - python
       - which
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 # Adding openssl to the package list causes Node to throw the error 'version
 # OPENSSL_1_1_1e required by /usr/local/bin/node not found' in the CI tests.
 - name: Install essential packages for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - gnupg
@@ -89,8 +89,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install essential packages for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name:
       - ca-certificates
       - flatpak
@@ -106,18 +105,14 @@
       - unzip
       - zip
     state: present
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - neofetch
       - openssh
-      - shellcheck
-      - tmate
-      - tmux
       - unzip
       - zip
   when: ansible_system == "Darwin"
@@ -133,10 +128,7 @@
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - 7zip
       - neofetch

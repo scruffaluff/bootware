@@ -1,25 +1,24 @@
+---
 - name: Get latest Glow version
-  uri:
-    url: https://formulae.brew.sh/api/formula/glow.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/glow.json
   register: glow_formula
   when: ansible_system == "Linux"
 
 - name: Install Glow for Arch distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  command: yay -Sy --noconfirm glow
+  ansible.builtin.command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Glow for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_{{
       glow_formula.json.versions.stable }}_linux_{{
       glow_arch[ansible_architecture] }}.deb
-  become: yes
+  become: true
   vars:
     glow_arch:
       aarch64: arm64
@@ -27,14 +26,14 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Glow for Fedora distributions
-  become: yes
-  dnf:
-    disable_gpg_check: yes
+  ansible.builtin.dnf:
+    disable_gpg_check: true
     name: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_{{
       glow_formula.json.versions.stable }}_linux_{{
       glow_arch[ansible_architecture] }}.rpm
+  become: true
   vars:
     glow_arch:
       aarch64: arm64
@@ -42,22 +41,17 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Glow for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: glow
   when: ansible_system == "FreeBSD"
 
 - name: Install Glow for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: glow
   when: ansible_system == "Darwin"
 
 - name: Install Glow for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: glow
   when: ansible_system == "Win32NT"

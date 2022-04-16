@@ -1,37 +1,34 @@
+---
+- name: Tap Homebrew fonts for MacOS
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+  when: ansible_system == "Darwin"
+
 - name: Install Fira Code for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name: ttf-fira-code
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Fira Code font for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: fonts-firacode
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Fira Code for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: firacode
   when: ansible_system == "FreeBSD"
 
-- name: Tap Homebrew fonts for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
-  community.general.homebrew_tap:
-    name: homebrew/cask-fonts
-  when: ansible_system == "Darwin"
-
 - name: Install Fira Code for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: fira-code-fonts
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Fira Code font for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
     # Force option is required to solve "It seems there is already a Font"
     # error.
@@ -41,9 +38,6 @@
   when: ansible_system == "Darwin"
 
 - name: Install Fira Code font for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: firacode
   when: ansible_system == "Win32NT"

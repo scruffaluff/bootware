@@ -3,6 +3,7 @@
 # For more information, visit
 # https://docs.github.com/actions/learn-github-actions.
 
+---
 name: release
 
 # Trigger workflow on SemVer compatible tags.

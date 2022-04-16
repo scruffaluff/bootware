@@ -1,5 +1,5 @@
+---
 ruby_applications:
   - bundle
-  - neovim
 ruby_versions:
   - "3.0"

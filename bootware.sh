@@ -227,7 +227,11 @@ bootstrap() {
         exit 0
         ;;
       -i | --inventory)
+        cmd="playbook"
+        connection="ssh"
         inventory="$2"
+        use_playbook=1
+        use_pull=""
         shift 2
         ;;
       --no-passwd)
@@ -316,7 +320,6 @@ bootstrap() {
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
     ${windows:+--extra-vars "ansible_ssh_private_key_file=${ssh_key}"} \
     ${windows:+--extra-vars "ansible_user=${user_account}"} \
-    --extra-vars "user_account=${user_account}" \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
     ${use_pull:+--url "${url}"} \
@@ -546,6 +549,7 @@ setup() {
       ;;
   esac
 
+  ansible-galaxy collection install chocolatey.chocolatey > /dev/null
   ansible-galaxy collection install community.general > /dev/null
   ansible-galaxy collection install community.windows > /dev/null
 }

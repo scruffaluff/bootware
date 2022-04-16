@@ -1,22 +1,21 @@
+---
 - name: Check if Pop Shell is installed for GNOME desktops
-  command: gnome-extensions show pop-shell@system76.com
-  ignore_errors: yes
+  ansible.builtin.command: gnome-extensions show pop-shell@system76.com
+  ignore_errors: true
   register: pop_shell_check
   when: ansible_system == "Linux" and gnome_desktop
 
 # Pop Shell requires TypeScript as a build dependency
 - name: Install Typescript for GNOME desktops
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      npm install -g typescript
-    executable: "{{ bash_executable }}"
+  ansible.builtin.command: npm install -g typescript
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: pop_shell_check is failed and gnome_desktop
 
 - name: Install Pop Shell for GNOME desktops
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       tmp_dir="${HOME}$(mktemp -u)"
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
       echo y | make -C "${tmp_dir}" local-install
@@ -25,28 +24,16 @@
   when: pop_shell_check is failed and gnome_desktop
 
 - name: Enable Pop Shell extension for GNOME desktops
-  command: gnome-extensions enable pop-shell@system76.com
+  ansible.builtin.command: gnome-extensions enable pop-shell@system76.com
   when: ansible_system== "Linux" and gnome_desktop
 
 - name: Change Pop Shell settings for GNOME desktops
-  become: yes
-  become_user: "{{ user_account }}"
-  script: pop_shell.sh
+  ansible.builtin.script: pop_shell.sh
   when: ansible_system == "Linux" and gnome_desktop
 
 - name: Install Amethyst for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: amethyst
     state: present
   when: ansible_system == "Darwin"
-
-- name: Install Powertoys for Windows
-  become: yes
-  become_user: "{{ user_account }}"
-  community.windows.win_scoop:
-    architecture: 64bit
-    name: powertoys
-  when: ansible_system == "Win32NT"

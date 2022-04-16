@@ -1,55 +1,66 @@
-- name: Add Balena Etcher Deb repository for Debian distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+---
+- name: Download Balena Etcher repository key for Debian distributions
+  ansible.builtin.get_url:
+    dest: /tmp/balena-etcher.gpg
+    mode: "644"
+    url: https://dl.cloudsmith.io/public/balena/etcher/gpg.70528471AFF9A051.key
+  become: true
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Install Balena Etcher repository key for Debian distributions
+  ansible.builtin.command:
     cmd: >-
-      curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh |
-      sudo -E bash
-    warn: no
+      gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
+      /tmp/balena-etcher.gpg
+    creates: /usr/share/keyrings/balena-etcher.gpg
+  become: true
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+
+- name: Add Balena Etcher repository for Debian distributions
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/balena-etcher.gpg]
+      https://dl.cloudsmith.io/public/balena/etcher/deb/{{ deb_distro_base }} {{
+      ansible_distribution_release }} main
+    state: present
+    filename: balena-etcher
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: >-
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
-      sudo -E bash
-    warn: no
+      bash
+    warn: false
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 # Balena Etcher package conflicts with NodeJS.
 # - name: Install Balena Etcher for Arch distributions
-#   become: yes
-#   become_user: "{{ user_account }}"
-#   command: yay -Sy --noconfirm balena-etcher
+#   ansible.builtin.command: yay -Sy --noconfirm balena-etcher
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Balena Etcher for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name: balena-etcher-electron
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: balena-etcher-electron
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Balena Etcher for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: balenaetcher
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Balena Etcher for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: etcher
   when: ansible_system == "Win32NT"

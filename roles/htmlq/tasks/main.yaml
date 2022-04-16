@@ -1,0 +1,47 @@
+---
+- name: Get latest Htmlq version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/htmlq.json
+  register: htmlq_formula
+  when: ansible_system == "Linux"
+
+- name: Install Htmlq for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: htmlq
+  when: ansible_system == "FreeBSD"
+
+- name: Download Htmlq for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/mgdm/htmlq/releases/download/v{{
+      htmlq_formula.json.versions.stable }}/htmlq-x86_64-linux.tar.gz
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_architecture == "x86_64" and
+    ansible_pkg_mgr != "apk"
+
+- name: Install Htmlq for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/htmlq
+    mode: "755"
+    src: /tmp/htmlq
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_architecture == "x86_64" and
+    ansible_pkg_mgr != "apk"
+
+- name: Install Htmlq for MacOS
+  community.general.homebrew:
+    name: htmlq
+  when: ansible_system == "Darwin"
+
+- name: Install Htmlq for Windows
+  community.windows.win_scoop:
+    name: htmlq
+  when: ansible_system == "Win32NT"

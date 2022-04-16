@@ -1,51 +1,54 @@
+---
 - name: Get latest Docker Compose version
-  uri:
-    url: https://formulae.brew.sh/api/formula/docker-compose.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/docker-compose.json
   register: docker_compose_formula
   when: ansible_system == "Linux"
 
 - name: Install Docker for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: docker
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Docker for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install repository dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - apt-transport-https
       - ca-certificates
       - curl
       - gnupg
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker key for Debian distributions
-  become: yes
-  shell:
-    cmd: |
-      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  ansible.builtin.shell:
+    cmd: >-
+      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg |
+      gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
-    warn: no
+    warn: false
+  become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker package information for Debian distributions
-  become: yes
-  lineinfile:
-    create: yes
-    # Check of line in file is dependent on whitespace such as newlines.
-    # prettier-ignore
-    line: deb [arch={{ docker_arch[ansible_architecture] }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ deb_distro_base }} {{ ansible_distribution_release|lower }} stable
-    mode: "644"
-    path: /etc/apt/sources.list.d/docker.list
+- name: Add Docker repository for Debian distributions
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ docker_arch[ansible_architecture] }}
+      signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+      https://download.docker.com/linux/{{ deb_distro_base }} {{
+      ansible_distribution_release|lower }} stable
+    state: present
+    filename: docker
+  become: true
   vars:
     docker_arch:
       aarch64: arm64
@@ -53,150 +56,148 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Docker for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - containerd.io
       - docker-ce
       - docker-ce-cli
-    update_cache: yes
-  become: yes
+    update_cache: true
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Fedora distributions
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: "644"
     url: https://download.docker.com/linux/fedora/docker-ce.repo
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Docker for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name:
       - containerd.io
       - docker-ce
       - docker-ce-cli
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Docker for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: docker
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: docker
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Docker for Windows
-  when: ansible_system == "Win32NT"
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: docker-desktop
+  when: ansible_system == "Win32NT"
 
 - name: Check if systemd is available for Linux
-  register: systemd_available
-  stat:
+  ansible.builtin.stat:
     path: /usr/bin/systemctl
+  register: systemd_available
   when: ansible_system == "Linux"
 
 - name: Start Containerd on system boot for Linux
-  become: yes
-  systemd:
-    enabled: yes
+  ansible.builtin.systemd:
+    enabled: true
     name: containerd
+  become: true
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Start Docker on system boot for Linux
-  become: yes
-  systemd:
-    enabled: yes
+  ansible.builtin.systemd:
+    enabled: true
     name: docker
+  become: true
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Add user to Docker group for Linux
-  become: yes
-  user:
-    append: yes
-    name: "{{ user_account }}"
+  ansible.builtin.user:
+    append: true
+    name: "{{ ansible_user_id }}"
     groups:
       - docker
+  become: true
   when: ansible_system == "Linux" and systemd_available.stat.exists
 
 - name: Install Docker Compose for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: docker-compose
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker Compose for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name: docker-compose
+  become: true
   when: ansible_system == "Linux"
 
 - name: Create Docker Compose plugin directory for Linux
-  become: yes
-  file:
+  ansible.builtin.file:
     mode: "755"
+    owner: root
     path: /usr/lib/docker/cli-plugins
     state: directory
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose plugin for Linux
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /usr/lib/docker/cli-plugins/docker-compose
     mode: "755"
+    owner: root
     url: >-
       https://github.com/docker/compose/releases/download/v{{
       docker_compose_formula.json.versions.stable }}/docker-compose-linux-{{
       ansible_architecture }}
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: docker-compose
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Docker Compose for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - docker-compose
       - posh-docker
   when: ansible_system == "Win32NT"
 
 - name: Create Fish completions directory for Unix
-  become: yes
-  file:
+  ansible.builtin.file:
     mode: "755"
+    owner: root
     path: /etc/fish/completions
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Install Docker Fish shell completions for Unix
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/fish/completions/docker.fish
     mode: "664"
+    owner: root
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Install Docker Compose Fish shell completions for Unix
-  become: yes
-  get_url:
+  ansible.builtin.get_url:
     dest: /etc/fish/completions/docker-compose.fish
     mode: "664"
+    owner: root
     url: https://raw.githubusercontent.com/docker/compose/master/contrib/completion/fish/docker-compose.fish
+  become: true
   when: ansible_system != "Win32NT"

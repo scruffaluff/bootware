@@ -7,38 +7,29 @@
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
-# Load Docker autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-docker) {
-    Import-Module posh-docker
-}
+# # Load Docker autocompletion if available.
+# If (Get-Module -ListAvailable -Name posh-docker) {
+#     Import-Module posh-docker
+# }
 
-# Load Kubectl autocompletion if available.
-If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
-    Import-Module PSKubectlCompletion
-}
+# # Load Kubectl autocompletion if available.
+# If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
+#     Import-Module PSKubectlCompletion
+# }
 
-# GCloud settings.
+# # GCloud settings.
 
-# Load GCloud autocompletion if available.
-If (Get-Module -ListAvailable -Name GcloudTabComplete) {
-    Import-Module GcloudTabComplete
-}
+# # Load GCloud autocompletion if available.
+# If (Get-Module -ListAvailable -Name GcloudTabComplete) {
+#     Import-Module GcloudTabComplete
+# }
 
-# Git settings.
+# # Git settings.
 
-# Load Git autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-git) {
-    Import-Module posh-git
-}
-
-# PowerShell settings.
-
-# Configure console theme if available.
-If (Get-Module -ListAvailable -Name PSConsoleTheme) {
-    Import-Module PSConsoleTheme
-    # TODO: Figure out installation method for GitHub Actions.
-    # Set-ConsoleTheme "Solarized Light"
-}
+# # Load Git autocompletion if available.
+# If (Get-Module -ListAvailable -Name posh-git) {
+#     Import-Module posh-git
+# }
 
 # Configure PSReadLine settings if available.
 If (Get-Module -ListAvailable -Name PSReadLine) {
@@ -67,7 +58,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
 # Add scripts directory to system path.
-$Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + $Env:PATH
+$Env:PATH = "$HOME/scoop/apps/python/current/Scripts;" + "$Env:PATH"
 
 # Starship settings.
 
@@ -77,25 +68,26 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 }
 
 # Tool settings.
+Set-Alias -Name exa -Value Get-ChildItem
 
-# Load SSH autocompletion if available.
-If (Get-Module -ListAvailable -Name Posh-SSH) {
-    Import-Module Posh-SSH
-}
+# # Load SSH autocompletion if available.
+# If (Get-Module -ListAvailable -Name Posh-SSH) {
+#     Import-Module Posh-SSH
+# }
 
-# TypeScript settings.
+# # TypeScript settings.
 
-# Load Deno autocompletion if available.
-If (Get-Module -ListAvailable -Name DenoCompletion) {
-    Import-Module DenoCompletion
-}
+# # Load Deno autocompletion if available.
+# If (Get-Module -ListAvailable -Name DenoCompletion) {
+#     Import-Module DenoCompletion
+# }
 
-# Load NPM autocompletion if available.
-If (Get-Module -ListAvailable -Name npm-completion) {
-    Import-Module npm-completion
-}
+# # Load NPM autocompletion if available.
+# If (Get-Module -ListAvailable -Name npm-completion) {
+#     Import-Module npm-completion
+# }
 
 # User settings.
 
 # Add scripts directory to PATH environment variable.
-$Env:PATH = "$HOME/.local/bin;" + $Env:PATH
+$Env:PATH = "$HOME/.local/bin;" + "$Env:PATH"

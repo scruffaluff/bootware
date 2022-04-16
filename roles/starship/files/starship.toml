@@ -1,0 +1,7 @@
+# Starship configuration file.
+#
+# For more information, visit https://starship.rs/config.
+
+# Disabled since it takes orders of magnitude longer than other commands.
+[git_status]
+disabled = true

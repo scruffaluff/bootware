@@ -1,5 +1,6 @@
+---
 - name: Install build tools for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - cmake
@@ -11,8 +12,7 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install build tools for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name:
       - clang
       - cmake
@@ -23,14 +23,13 @@
       - llvm
       - make
       - openocd
+  become: true
   when: ansible_system == "Linux"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon.
 # TODO: Add back GDB when available for Apple silicon.
 - name: Install build tools for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - cmake
@@ -41,18 +40,15 @@
   when: ansible_system == "Darwin"
 
 - name: Install build tools with Chocolatey for Windows
-  when: ansible_system == "Win32NT"
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name:
       - dotnetcore-sdk
       - visualstudio2022buildtools
       - visualstudio2022-workload-vctools
+  when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - cmake
       - dotnet-sdk

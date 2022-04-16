@@ -10,11 +10,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - All Ansible arguments to bootstrap subcommand.
+- Croc, Datree, Duf, Helm, Helmfile, Htmlq, Kubectl, K9s, Lazydocker, Lazygit,
+  Xh, and Yq roles.
 - WSL tag for selecting roles.
 
 ### Changed
 
+- Git pager to Delta.
 - GitHub installation links.
+- Split Bash subtasks into separate roles.
 
 ### Fixed
 
@@ -28,6 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Hyper terminal plugins that are broken on Windows.
 - Libvirt support for Windows.
+- OTS role.
 
 ## 0.3.5 - 2021-12-19
 

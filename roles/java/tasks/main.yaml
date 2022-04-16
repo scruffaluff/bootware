@@ -1,5 +1,6 @@
+---
 - name: Install Java for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name:
       - maven
@@ -7,7 +8,7 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Java for Arch distributions
-  become: yes
+  become: true
   community.general.pacman:
     name:
       - jdk-openjdk
@@ -15,23 +16,23 @@
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Java for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - maven
       - openjdk-17-jdk
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Java for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name:
       - java-latest-openjdk
       - maven
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Java for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - maven
@@ -39,8 +40,6 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Java for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - java
@@ -49,21 +48,22 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Java for Windows
-  when: ansible_system == "Win32NT"
-  win_chocolatey:
+- name: Install Java for Window
+  chocolatey.chocolatey.win_chocolatey:
     name:
       - maven
       - openjdk
+  when: ansible_system == "Win32NT"
 
 - name: Make Java discover OpenJDK on MacOS
-  become: yes
-  file:
+  ansible.builtin.file:
     src: "{{ openjdk_path[ansible_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
-    force: yes
+    force: true
     mode: "755"
+    owner: "{{ ansible_user_id }}"
     state: link
+  become: true
   vars:
     openjdk_path:
       arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
@@ -71,9 +71,9 @@
   when: ansible_system == "Darwin"
 
 - name: Create Java Jar directory for Linux
-  become: yes
-  file:
+  ansible.builtin.file:
     mode: "755"
     path: /usr/local/share/java/jar/
     state: directory
+  become: true
   when: ansible_system == "Linux"

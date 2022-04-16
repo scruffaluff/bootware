@@ -49,3 +49,8 @@ shell:
   program: {{ user_shell }}
   args:
     - {{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}
+
+window:
+  padding:
+    x: 16
+    y: 0

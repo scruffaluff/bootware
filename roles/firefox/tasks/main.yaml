@@ -1,36 +1,32 @@
+---
 - name: Install Firefox for Debian distributions
-  become: yes
-  apt:
+  ansible.builtin.apt:
     name: firefox-esr
+  become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Firefox for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: firefox
   when: ansible_system == "FreeBSD"
 
 - name: Install Firefox for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name: firefox
+  become: true
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apt" or deb_distro_base
     != "debian")
 
 - name: Install Firefox for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: firefox
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Firefox for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: firefox
   when: ansible_system == "Win32NT"

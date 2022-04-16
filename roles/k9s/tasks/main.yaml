@@ -1,0 +1,78 @@
+---
+- name: Get latest K9s version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/k9s.json
+  register: k9s_formula
+  when: ansible_system == "Linux"
+
+- name: Install K9s for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: k9s
+  when: ansible_system == "FreeBSD"
+
+- name: Download K9s for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/derailed/k9s/releases/download/v{{
+      k9s_formula.json.versions.stable }}/k9s_Linux_{{
+      k9s_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    k9s_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
+
+- name: Install K9s for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/k9s
+    mode: "755"
+    src: /tmp/k9s
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install K9s for MacOS
+  community.general.homebrew:
+    name: k9s
+  when: ansible_system == "Darwin"
+
+- name: Install K9s for Windows
+  community.windows.win_scoop:
+    name: k9s
+  when: ansible_system == "Win32NT"
+
+- name: Create K9s configuration directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/k9s"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Create K9s configuration directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/AppData/Roaming/k9s"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy K9s skin file for Unix
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/k9s/skin.yml"
+    force: true
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: skin.yml
+  when: ansible_system != "Win32NT"
+
+- name: Copy K9s skin file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/k9s/skin.yml"
+    force: true
+    src: skin.yml
+  when: ansible_system == "Win32NT"

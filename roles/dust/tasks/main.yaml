@@ -1,54 +1,50 @@
+---
 - name: Get latest Dust version
-  uri:
-    url: https://formulae.brew.sh/api/formula/dust.json
+  ansible.builtin.uri:
     method: GET
-    return_content: yes
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/dust.json
   register: dust_formula
   when: ansible_system == "Linux"
 
 - name: Install Dust for Alpine distributions
-  become: yes
+  become: true
   community.general.apk:
     name: dust
   when: ansible_pkg_mgr == "apk"
 
 - name: Download Dust for Linux
-  become: yes
-  unarchive:
+  ansible.builtin.unarchive:
     dest: /tmp/
     mode: "755"
-    remote_src: yes
+    remote_src: true
     src: >-
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
       dust_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install Dust for Linux
-  become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /usr/local/bin/dust
     mode: "755"
     src: >-
       /tmp/dust-v{{ dust_formula.json.versions.stable
       }}-x86_64-unknown-linux-gnu/dust
+  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     ansible_architecture == "x86_64"
 
 - name: Install Dust for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: dust
   when: ansible_system == "Darwin"
 
 - name: Install Dust for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: dust
   when: ansible_system == "Win32NT"

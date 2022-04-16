@@ -1,3 +1,4 @@
+---
 dependencies:
   # Without the C++ Redistributable, Neovim will not launch.
   - role: build

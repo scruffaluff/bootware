@@ -1,3 +1,4 @@
+---
 _ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_extensions:
   - "bierner.markdown-mermaid"
@@ -6,6 +7,7 @@ vscode_extensions:
   - "cweijan.vscode-database-client2"
   - "dbaeumer.vscode-eslint"
   - "denoland.vscode-deno"
+  - "dorzey.vscode-sqlfluff"
   - "eamodio.gitlens"
   - "esbenp.prettier-vscode"
   - "firsttris.vscode-jest-runner"
@@ -17,6 +19,7 @@ vscode_extensions:
   - "julialang.language-julia"
   - "matklad.rust-analyzer"
   - "ms-azuretools.vscode-docker"
+  - "ms-kubernetes-tools.vscode-kubernetes-tools"
   - "ms-python.python"
   - "ms-python.vscode-pylance"
   - "ms-vscode-remote.vscode-remote-extensionpack"

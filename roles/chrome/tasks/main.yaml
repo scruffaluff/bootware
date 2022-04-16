@@ -1,38 +1,34 @@
+---
 # Google does not appear to provide an Arch release for Chrome.
 
 - name: Install Google Chrome for Debian distributions
-  apt:
+  ansible.builtin.apt:
     deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Google GPG key for Fedora distributions
-  become: yes
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: https://dl.google.com/linux/linux_signing_key.pub
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Google Chrome for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name: >-
       https://dl.google.com/linux/direct/google-chrome-stable_current_{{
       ansible_architecture }}.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 
 - name: Install Google Chrome for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew_cask:
-    accept_external_apps: yes
+    accept_external_apps: true
     name: google-chrome
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Google Chrome for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: googlechrome
   when: ansible_system == "Win32NT"

@@ -1,44 +1,76 @@
+---
+- name: Get latest Git Delta version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/git-delta.json
+  register: git_delta_formula
+  when: ansible_system == "Linux"
+
 - name: Install Git for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - git
+      - git-delta
       - git-lfs
   when: ansible_system == "FreeBSD"
 
 - name: Install Git for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name:
       - git
       - git-lfs
+  become: true
   when: ansible_system == "Linux"
 
+- block:
+    - name: Download Git Delta for Linux
+      ansible.builtin.unarchive:
+        dest: /tmp/
+        mode: "755"
+        remote_src: true
+        src: >-
+          https://github.com/dandavison/delta/releases/download/{{
+          git_delta_formula.json.versions.stable }}/delta-{{
+          git_delta_formula.json.versions.stable }}-{{ ansible_architecture
+          }}-unknown-linux-{{ git_delta_env }}.tar.gz
+      become: true
+      when: ansible_system == "Linux"
+
+    - name: Install Git Delta for Linux
+      ansible.builtin.copy:
+        dest: /usr/local/bin/delta
+        mode: "755"
+        src: >-
+          /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
+          ansible_architecture }}-unknown-linux-{{ git_delta_env }}/delta
+      become: true
+      when: ansible_system == "Linux"
+  vars:
+    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu' }}"
+
 - name: Install Git for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name:
       - git
+      - git-delta
       - git-lfs
   when: ansible_system == "Darwin"
 
 - name: Install Git for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name:
+      - delta
       - git
       - git-lfs
       - posh-git
   when: ansible_system == "Win32NT"
 
 - name: Copy Git configuration file
-  become: yes
-  become_user: "{{ user_account }}"
-  template:
-    dest: "{{ user_home_dir }}/.gitconfig"
-    force: yes
+  ansible.builtin.template:
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    force: true
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     src: gitconfig.j2

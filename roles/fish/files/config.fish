@@ -235,6 +235,9 @@ if test (uname -s) = "Darwin"
   end
 end
 
+# Add Kubectl plugins to PATH.
+prepend_path "$HOME/.krew/bin"
+
 # Add Navi widget if available.
 #
 # Flags:

@@ -1,0 +1,24 @@
+---
+- name: Install Rust for Windows
+  community.windows.win_scoop:
+    name: rustup-msvc
+
+- name: Update Rust for Windows
+  ansible.builtin.win_shell: |
+    rustup self update
+    rustup update stable
+  failed_when: >-
+    rustup_update.rc != 0 and 'update is disabled' not in rustup_update.stderr
+  register: rustup_update
+
+- name: Add Rust components for Windows
+  ansible.builtin.win_command: rustup component add {{ item }}
+  loop: "{{ rustup_components }}"
+
+- name: Add Rust targets for Windows
+  ansible.builtin.win_command: rustup target add {{ item }}
+  loop: "{{ rustup_targets }}"
+
+- name: Update or install Cargo packages for Windows
+  ansible.builtin.win_command: cargo install {{ item }}
+  loop: "{{ cargo_applications }}"

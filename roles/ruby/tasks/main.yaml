@@ -1,32 +1,28 @@
+---
 - name: Install RVM dependencies for Debian distributions
-  apt:
+  ansible.builtin.apt:
     name:
       - debianutils
       - procps
-  become: yes
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install RVM dependencies for Fedora distributions
-  become: yes
-  dnf:
+  ansible.builtin.dnf:
     name:
       - findutils
       - procps
       - which
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install RVM dependencies for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: gpg
   when: ansible_system == "Darwin"
 
 - name: Install Ruby dependencies for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name:
       - mingw-winlibs
       - msys2
@@ -34,7 +30,7 @@
 
 # RVM does not appear to be compatible with Busybox.
 - name: Install Ruby for Alpine
-  become: yes
+  become: true
   community.general.apk:
     name:
       - ruby
@@ -43,80 +39,75 @@
 
 # RVM does not provide binaries for FreeBSD.
 - name: Install Ruby for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name:
       - ruby
-      - ruby-dev
+      # - ruby-dev
       - ruby27-gems
   when: ansible_system == "FreeBSD"
 
 - name: Install RVM GPG keys for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
       curl -LSfs https://rvm.io/mpapis.asc | gpg --import -
       curl -LSfs https://rvm.io/pkuczynski.asc | gpg --import -
-    warn: no
+    warn: false
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install Ruby Environment Manager for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://get.rvm.io | bash -s stable
-    warn: no
+    warn: false
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  loop: "{{ ruby_versions }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       rvm install {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ ruby_versions }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Ruby versions for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: >-
       ruby{{ item | replace('ruby-','') | replace('.','') | replace('30','') }}
   loop: "{{ ruby_versions }}"
   when: ansible_system == "Win32NT"
 
+# TODO: Switch to Ansible Gem module.
 - name: Install or update Ruby CLI applications for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  loop: "{{ ruby_applications }}"
-  shell:
+  ansible.builtin.shell:
     cmd: |
-      source {{ user_home_dir }}/.bashrc
+      source {{ ansible_env.HOME }}/.bashrc
       gem install --user-install {{ item }}
     executable: "{{ bash_executable }}"
+  loop: "{{ ruby_applications }}"
   when: ansible_system != "Win32NT"
 
 - name: Install or update Ruby CLI applications for Windows
-  become: yes
-  become_user: "{{ user_account }}"
+  ansible.builtin.win_shell: |
+    If (Get-Command gem -ErrorAction SilentlyContinue) {
+        gem install --user-install {{ item }}
+    }
+    Else {
+        {{ scoop_apps }}/ruby/current/bin/gem install --user-install {{ item }}
+    }
+  environment:
+    Path: "{{ scoop_apps }}/ruby/current/bin:{{ ansible_env.Path }}"
   loop: "{{ ruby_applications }}"
   when: ansible_system == "Win32NT"
-  win_shell: gem install --user-install {{ item }}
 
 - name: Download RVM Fish for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  get_url:
-    dest: "{{ user_home_dir }}/.config/fish/functions/rvm.fish"
+  ansible.builtin.get_url:
+    dest: "{{ ansible_env.HOME }}/.config/fish/functions/rvm.fish"
     mode: "644"
+    owner: "{{ ansible_user_id }}"
     url: https://raw.github.com/lunks/fish-nuggets/master/functions/rvm.fish
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"

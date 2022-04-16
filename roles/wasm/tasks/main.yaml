@@ -1,28 +1,21 @@
+---
 - name: Install Wasmtime for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
+  ansible.builtin.shell:
     cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
-    warn: no
-  when: >-
-    ansible_system != "Win32NT" and ansible_architecture == "x86_64"
+    warn: false
+  when: ansible_system != "Win32NT" and ansible_architecture == "x86_64"
 
 - name: Install Wasmtime for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: wasmtime
   when: ansible_system == "Win32NT"
 
 - name: Install Wasm Pack for Unix
-  become: yes
-  become_user: "{{ user_account }}"
-  shell:
-    cmd: |
-      source {{ user_home_dir }}/.bashrc
-      curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
-    executable: "{{ bash_executable }}"
-    warn: no
-  when: >-
-    ansible_system != "Win32NT" and ansible_architecture == "x86_64"
+  ansible.builtin.shell:
+    cmd: curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+    warn: false
+  environment:
+    PATH: >-
+      {{ ansible_env.HOME }}/.wasmtime/bin:{{ ansible_env.HOME }}/.cargo/bin:{{
+      ansible_env.PATH }}
+  when: ansible_system != "Win32NT" and ansible_architecture == "x86_64"

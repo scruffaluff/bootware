@@ -1,26 +1,22 @@
+---
 - name: Install JQ for FreeBSD
-  become: yes
+  become: true
   community.general.pkgng:
     name: jq
   when: ansible_system == "FreeBSD"
 
 - name: Install JQ for Linux
-  become: yes
-  package:
+  ansible.builtin.package:
     name: jq
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install JQ for MacOS
-  become: yes
-  become_user: "{{ user_account }}"
   community.general.homebrew:
     name: jq
   when: ansible_system == "Darwin"
 
 - name: Install JQ for Windows
-  become: yes
-  become_user: "{{ user_account }}"
   community.windows.win_scoop:
-    architecture: 64bit
     name: jq
   when: ansible_system == "Win32NT"
