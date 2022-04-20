@@ -15,6 +15,17 @@
     - system
     - wsl
 
+- name: Install Age encryption tool
+  hosts: all
+  roles:
+    - name: age
+  tags:
+    - age
+    - container
+    - desktop
+    - server
+    - wsl
+
 - name: Install Alacritty terminal
   hosts: all
   roles:
@@ -241,6 +252,17 @@
     - vm
     - wsl
 
+- name: Install Docker Compose container orchestrator
+  hosts: all
+  roles:
+    - name: docker_compose
+  tags:
+    - desktop
+    - docker_compose
+    - server
+    - vm
+    - wsl
+
 - name: Install Digital Ocean development tools
   hosts: all
   roles:
@@ -264,6 +286,17 @@
     - server
     - wsl
 
+- name: Install Dust disk space analyzer
+  hosts: all
+  roles:
+    - name: dust
+  tags:
+    - container
+    - desktop
+    - dust
+    - server
+    - wsl
+
 - name: Install Data Version Control
   hosts: all
   roles:
@@ -274,17 +307,6 @@
     - dvc
     - server
     - vcs
-    - wsl
-
-- name: Install Dust disk space analyzer
-  hosts: all
-  roles:
-    - name: dust
-  tags:
-    - container
-    - desktop
-    - dust
-    - server
     - wsl
 
 - name: Install Emacs terminal text editor
@@ -911,6 +933,17 @@
   tags:
     - desktop
     - snap
+
+- name: Install Sops secrets editor
+  hosts: all
+  roles:
+    - name: sops
+  tags:
+    - container
+    - desktop
+    - server
+    - sops
+    - wsl
 
 - name: Install SQLite database
   hosts: all

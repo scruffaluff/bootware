@@ -1,0 +1,62 @@
+---
+- name: Get latest Sops version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/mozilla/sops/releases/latest
+  register: sops_release
+  when: ansible_system == "Linux"
+
+- name: Install Sops For Debian distributions
+  ansible.builtin.apt:
+    deb: >-
+      https://github.com/mozilla/sops/releases/download/{{
+      sops_release.json.tag_name }}/sops_{{ sops_release.json.tag_name[1:] }}_{{
+      sops_arch[ansible_architecture] }}.deb
+  become: true
+  vars:
+    sops_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Sops For Fedora distributions
+  ansible.builtin.dnf:
+    name: >-
+      https://github.com/mozilla/sops/releases/download/{{
+      sops_release.json.tag_name }}/sops-{{ sops_release.json.tag_name[1:]
+      }}-1.{{ ansible_architecture }}.rpm
+  become: true
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install Sops for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: sops
+  when: ansible_system == "FreeBSD"
+
+- name: Install Sops for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/sops
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/mozilla/sops/releases/download/{{
+      sops_release.json.tag_name }}/sops-{{ sops_release.json.tag_name
+      }}.linux.{{ sops_arch[ansible_architecture] }}
+  become: true
+  vars:
+    sops_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf"]
+
+- name: Install Sops for MacOS
+  community.general.homebrew:
+    name: sops
+  when: ansible_system == "Darwin"
+
+- name: Install Sops for Windows
+  community.windows.win_scoop:
+    name: sops
+  when: ansible_system == "Win32NT"

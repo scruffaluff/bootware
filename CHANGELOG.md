@@ -10,8 +10,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - All Ansible arguments to bootstrap subcommand.
-- Croc, Datree, Duf, Helm, Helmfile, Htmlq, Kubectl, K9s, Lazydocker, Lazygit,
-  Xh, and Yq roles.
+- Age, Croc, Datree, Duf, Helm, Helmfile, Htmlq, Kubectl, K9s, Lazydocker,
+  Lazygit, Sops, Xh, and Yq roles.
 - WSL tag for selecting roles.
 
 ### Changed
@@ -19,6 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Git pager to Delta.
 - GitHub installation links.
 - Split Bash subtasks into separate roles.
+- Split Docker Compose installation separate role.
 
 ### Fixed
 

@@ -1,5 +1,9 @@
 [
   {
+    "name": "age",
+    "tests": ["age --version", "age-keygen --version"]
+  },
+  {
     "name": "alacritty",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
@@ -82,10 +86,8 @@
     "tests": ["dust --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
-  {
-    "name": "docker",
-    "tests": ["docker --version", "docker compose --help"]
-  },
+  { "name": "docker", "tests": ["docker --version"] },
+  { "name": "docker_compose", "tests": ["docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "dvc",
@@ -301,6 +303,7 @@
     ],
     "tests": ["snap --version"]
   },
+  { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
   {
