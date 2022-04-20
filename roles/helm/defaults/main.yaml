@@ -4,10 +4,12 @@ _helm_plugins:
   Darwin:
     - https://github.com/databus23/helm-diff
     - https://github.com/datreeio/helm-datree
+    - https://github.com/jkroepke/helm-secrets
   FreeBSD: []
   Linux:
     - https://github.com/databus23/helm-diff
     - https://github.com/datreeio/helm-datree
+    - https://github.com/jkroepke/helm-secrets
   Win32NT:
     - https://github.com/databus23/helm-diff
     - https://github.com/datreeio/helm-datree

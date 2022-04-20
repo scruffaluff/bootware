@@ -22,6 +22,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Avoid unnecessary tasks for meta dependencies.
 - Outdated Scoop package names.
 - Update Starship installation command to match upstream change.
 - VSCode settings file location for Scoop updates.
