@@ -157,9 +157,6 @@ function setenv() {
   export "$1=$2"
 }
 
-# Use VI mode for command line editing.
-set -o vi
-
 # Load aliases if file exists.
 #
 # Flags:
