@@ -22,6 +22,7 @@
 
 - name: Install Sops For Fedora distributions
   ansible.builtin.dnf:
+    disable_gpg_check: true
     name: >-
       https://github.com/mozilla/sops/releases/download/{{
       sops_release.json.tag_name }}/sops-{{ sops_release.json.tag_name[1:]

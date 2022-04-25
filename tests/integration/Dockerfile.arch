@@ -1,7 +1,6 @@
-FROM archlinux:base-20220320.0.50753
+FROM archlinux:base-20220417.0.53367
 
 ARG TARGETARCH
-
 
 # Create non-priviledged user.
 #
