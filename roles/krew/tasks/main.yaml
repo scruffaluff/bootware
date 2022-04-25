@@ -56,3 +56,18 @@
     Path: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.Path }}"
   loop: "{{ kubectl_plugins }}"
   when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Install Krew Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      kubectl-krew completion fish > {{ ansible_env.HOME
+      }}/.config/fish/completions/kubectl-krew.fish
+  when: ansible_system != "Win32NT"

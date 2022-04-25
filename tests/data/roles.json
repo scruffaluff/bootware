@@ -148,7 +148,7 @@
   {
     "name": "github",
     "skip": [{ "os": "arch" }, { "os": "freebsd" }],
-    "tests": ["act --version", "gh --version"]
+    "tests": ["gh --version"]
   },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },

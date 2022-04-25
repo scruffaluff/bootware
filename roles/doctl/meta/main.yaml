@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: fish
-    when: ansible_system != "Win32NT"

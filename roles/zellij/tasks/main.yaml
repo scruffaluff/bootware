@@ -40,3 +40,18 @@
     owner: "{{ ansible_user_id }}"
     src: config.yaml
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Install Zellij Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      zellij setup --generate-completion fish > {{ ansible_env.HOME
+      }}/.config/fish/completions/zellij.fish
+  when: ansible_system != "Win32NT"
