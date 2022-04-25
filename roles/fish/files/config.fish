@@ -124,7 +124,7 @@ prepend_path "$HOME/bin"
 #   -q: Only check for exit status by supressing output.
 if type -q ruby
   prepend_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
-fi
+end
 
 # Rust settings.
 prepend_path "$HOME/.cargo/bin"
