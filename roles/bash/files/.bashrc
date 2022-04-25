@@ -130,16 +130,14 @@ if [[ -x "$(command -v pyenv)" ]]; then
 fi
 
 # Ruby settings.
-
 prepend_path "${HOME}/bin"
-prepend_path "${HOME}/.rvm/bin"
 
-# Initialize RVM if available.
+# Add gems binaries to path if Ruby is available.
 #
 # Flags:
-#   -f: Check if file exists and is a regular file.
-if [[ -f "${HOME}/.rvm/scripts/rvm" ]]; then
-  source "${HOME}/.rvm/scripts/rvm"
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v ruby)" ]]; then
+  prepend_path "$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
 fi
 
 # Rust settings.

@@ -116,17 +116,15 @@ if type -q pyenv
 end
 
 # Ruby settings.
-
 prepend_path "$HOME/bin"
-prepend_path "$HOME/.rvm/bin"
 
-# Initialize RVM if available.
+# Add gems binaries to path if Ruby is available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q rvm
-  rvm default
-end
+if type -q ruby
+  prepend_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
+fi
 
 # Rust settings.
 prepend_path "$HOME/.cargo/bin"

@@ -18,6 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Git pager to Delta.
 - GitHub installation links.
+- Ruby role to use standard installer instead of RVM.
 - Split Bash subtasks into separate roles.
 - Split Docker Compose installation separate role.
 
@@ -32,9 +33,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Emacs and OTS role.
 - Hyper terminal plugins that are broken on Windows.
 - Libvirt support for Windows.
-- OTS role.
+- Support for multiple Ruby versions.
 
 ## 0.3.5 - 2021-12-19
 

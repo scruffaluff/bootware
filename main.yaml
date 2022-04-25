@@ -309,18 +309,6 @@
     - vcs
     - wsl
 
-- name: Install Emacs terminal text editor
-  hosts: all
-  roles:
-    - name: emacs
-  tags:
-    - container
-    - desktop
-    - editor
-    - emacs
-    - server
-    - wsl
-
 - name: Install Balena Etcher ISO flasher
   hosts: all
   roles:
