@@ -1,0 +1,17 @@
+---
+- name: Install Direnv for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: direnv
+  when: ansible_system == "FreeBSD"
+
+- name: Install Direnv for Linux
+  ansible.builtin.package:
+    name: direnv
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Direnv for MacOS
+  community.general.homebrew:
+    name: direnv
+  when: ansible_system == "Darwin"

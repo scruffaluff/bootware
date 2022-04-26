@@ -1,0 +1,22 @@
+---
+- name: Install Zoxide for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: zoxide
+  when: ansible_system == "FreeBSD"
+
+- name: Install Zoxide for Linux
+  ansible.builtin.package:
+    name: zoxide
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Zoxide for MacOS
+  community.general.homebrew:
+    name: zoxide
+  when: ansible_system == "Darwin"
+
+- name: Install Zoxide for Windows
+  community.windows.win_scoop:
+    name: zoxide
+  when: ansible_system == "Win32NT"

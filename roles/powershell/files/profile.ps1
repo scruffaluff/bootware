@@ -105,6 +105,19 @@ Set-Alias -Name touch -Value New-Item
 #     Import-Module Posh-SSH
 # }
 
+# Initialize Zoxide if available.
+If (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& {
+        If ($PSVersionTable.PSVersion.Major -lt 6) {
+            $Hook = 'prompt'
+        }
+        Else {
+            $Hook = 'pwd'
+        }
+        (zoxide init --hook $Hook powershell | Out-String)
+    })
+}
+
 # # TypeScript settings.
 
 # Load Deno autocompletion if available.

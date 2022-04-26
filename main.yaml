@@ -241,6 +241,17 @@
     - deskenv
     - desktop
 
+- name: Install Direnv environment variables shell extension
+  hosts: all
+  roles:
+    - name: direnv
+  tags:
+    - container
+    - desktop
+    - direnv
+    - server
+    - wsl
+
 - name: Install Docker container platform
   hosts: all
   roles:
@@ -1156,3 +1167,14 @@
     - website
     - wsl
     - zola
+
+- name: Install Zoxide directory navigator helper
+  hosts: all
+  roles:
+    - name: zoxide
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - zoxide
