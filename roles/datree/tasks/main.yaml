@@ -87,11 +87,11 @@
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/fish/completions"
     state: directory
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Datree Fish completion for Unix
   ansible.builtin.shell:
     cmd: >-
       datree completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/datree.fish
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]

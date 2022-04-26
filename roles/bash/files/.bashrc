@@ -21,12 +21,12 @@ prepend_path() {
 # Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
-prepend_path "/usr/bin"
+prepend_path '/usr/bin'
 
 # Add manually installed binary directory to PATH environment variable.
 #
 # Necessary since path is missing on some MacOS systems.
-prepend_path "/usr/local/bin"
+prepend_path '/usr/local/bin'
 
 # Bash settings
 
@@ -36,8 +36,8 @@ prepend_path "/usr/local/bin"
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [[ -f "/etc/bash_completion" ]]; then
-  source "/etc/bash_completion"
+if [[ -f '/etc/bash_completion' ]]; then
+  source '/etc/bash_completion'
 fi
 
 # Docker settings.
@@ -53,10 +53,10 @@ export DOCKER_BUILDKIT=1
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if [[ "$(uname -s)" == "Darwin" ]]; then
+if [[ "$(uname -s)" == 'Darwin' ]]; then
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
-  ARM_GOROOT="/opt/homebrew/opt/go/libexec"
-  INTEL_GOROOT="/usr/local/opt/go/libexec"
+  ARM_GOROOT='/opt/homebrew/opt/go/libexec'
+  INTEL_GOROOT='/usr/local/opt/go/libexec'
 
   if [[ -d "${ARM_GOROOT}" ]]; then
     export GOROOT="${ARM_GOROOT}"
@@ -66,8 +66,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     prepend_path "${GOROOT}/bin"
   fi
 else
-  if [[ -d "/usr/local/go" ]]; then
-    export GOROOT="/usr/local/go"
+  if [[ -d '/usr/local/go' ]]; then
+    export GOROOT='/usr/local/go'
     prepend_path "${GOROOT}/bin"
   fi
 fi
@@ -83,17 +83,17 @@ prepend_path "${GOPATH}/bin"
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if [[ "$(uname -s)" == "Darwin" ]]; then
-  if [[ -d "/opt/homebrew/opt/openjdk/bin" ]]; then
-    prepend_path "/opt/homebrew/opt/openjdk/bin"
-  elif [[ -d "/usr/local/opt/openjdk/bin" ]]; then
-    prepend_path "/usr/local/opt/openjdk/bin"
+if [[ "$(uname -s)" == 'Darwin' ]]; then
+  if [[ -d '/opt/homebrew/opt/openjdk/bin' ]]; then
+    prepend_path '/opt/homebrew/opt/openjdk/bin'
+  elif [[ -d '/usr/local/opt/openjdk/bin' ]]; then
+    prepend_path '/usr/local/opt/openjdk/bin'
   fi
 fi
 
 # Julia settings.
 
-prepend_path "/usr/local/julia/bin"
+prepend_path '/usr/local/julia/bin'
 
 # Python settings.
 
@@ -105,11 +105,11 @@ export POETRY_VIRTUALENVS_IN_PROJECT=1
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if [[ "$(uname -s)" == "Darwin" ]]; then
-  if [[ -d "/opt/homebrew/opt/openblas" ]]; then
-    export OPENBLAS="/opt/homebrew/opt/openblas"
-  elif [[ -d "/usr/local/opt/openblas" ]]; then
-    export OPENBLAS="/usr/local/opt/openblas"
+if [[ "$(uname -s)" == 'Darwin' ]]; then
+  if [[ -d '/opt/homebrew/opt/openblas' ]]; then
+    export OPENBLAS='/opt/homebrew/opt/openblas'
+  elif [[ -d '/usr/local/opt/openblas' ]]; then
+    export OPENBLAS='/usr/local/opt/openblas'
   fi
 fi
 
@@ -191,14 +191,14 @@ fi
 
 # Tool settings.
 
-export BAT_THEME="Solarized (light)"
-complete -C /usr/local/bin/terraform terraform
+export BAT_THEME='Solarized (light)'
+complete -C '/usr/local/bin/terraform' terraform
 
 # Disable pagination for Bat.
-export BAT_PAGER=""
+export BAT_PAGER=''
 
 # Add Visual Studio Code binary to PATH for Linux.
-prepend_path "/usr/share/code/bin"
+prepend_path '/usr/share/code/bin'
 
 # Initialize Digital Ocean CLI if available.
 #
@@ -208,15 +208,28 @@ if [[ -x "$(command -v doctl)" ]]; then
   source <(doctl completion bash)
 fi
 
+# Initialize Direnv if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v direnv)" ]]; then
+  eval "$(direnv hook bash)"
+fi
+
+# Set Fzf solarized light theme.
+_fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+_fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+export FZF_DEFAULT_OPTS="${_fzf_colors} ${_fzf_highlights}"
+
 # Initialize GCloud if on MacOS and available.
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -s: Print machine kernal name.
-if [[ "$(uname -s)" == "Darwin" ]]; then
+if [[ "$(uname -s)" == 'Darwin' ]]; then
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
-  ARM_GCLOUD_PATH="/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
-  INTEL_GCLOUD_PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+  ARM_GCLOUD_PATH='/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
+  INTEL_GCLOUD_PATH='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
 
   if [[ -f "${ARM_GCLOUD_PATH}/path.bash.inc" ]]; then
     source "${ARM_GCLOUD_PATH}/path.bash.inc"
@@ -225,8 +238,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     source "${INTEL_GCLOUD_PATH}/path.bash.inc"
     source "${INTEL_GCLOUD_PATH}/completion.bash.inc"
   fi
-elif [[ "$(uname -s)" == "Linux" ]]; then
-  GCLOUD_BASH_COMPLETION="/usr/lib/google-cloud-sdk/completion.bash.inc"
+elif [[ "$(uname -s)" == 'Linux' ]]; then
+  GCLOUD_BASH_COMPLETION='/usr/lib/google-cloud-sdk/completion.bash.inc'
 
   if [[ -f "${GCLOUD_BASH_COMPLETION}" ]]; then
     source "${GCLOUD_BASH_COMPLETION}"
@@ -235,6 +248,14 @@ fi
 
 # Add Kubectl plugins to PATH.
 prepend_path "${HOME}/.krew/bin"
+
+# Initialize Kubernetes CLI if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v kubectl)" ]]; then
+  source <(kubectl completion bash)
+fi
 
 # Add Navi widget if available and line editing is enabled.
 #
@@ -248,12 +269,12 @@ if [[ -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
   eval "$(navi widget bash)"
 fi
 
-# Initialize Kubernetes CLI if available.
+# Initialize Zoxide if available.
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v kubectl)" ]]; then
-  source <(kubectl completion bash)
+if [[ -x "$(command -v zoxide)" ]]; then
+  eval "$(zoxide init bash)"
 fi
 
 # TypeScript settings.
@@ -279,7 +300,10 @@ fi
 
 # User settings.
 
-export EDITOR="nvim"
+# Disable MacOS default shell is now Zsh message.
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+export EDITOR='nvim'
 
 # Add scripts directory to PATH environment variable.
 prepend_path "${HOME}/.local/bin"
@@ -292,4 +316,4 @@ prepend_path "${WASMTIME_HOME}/bin"
 # Apple Silicon support.
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
-prepend_path "/opt/homebrew/bin"
+prepend_path '/opt/homebrew/bin'
