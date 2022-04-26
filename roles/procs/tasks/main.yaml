@@ -36,3 +36,23 @@
   community.windows.win_scoop:
     name: procs
   when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+# Procs on Fedora is an earlier version which does not yet support the
+# --completion-out flag. TODO: Add Fedora completion once Procs version is
+# upgraded.
+- name: Install Procs Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      procs --completion-out fish > {{ ansible_env.HOME
+      }}/.config/fish/completions/procs.fish
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "dnf"]

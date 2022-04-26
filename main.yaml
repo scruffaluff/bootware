@@ -15,6 +15,17 @@
     - system
     - wsl
 
+- name: Install Age encryption tool
+  hosts: all
+  roles:
+    - name: age
+  tags:
+    - age
+    - container
+    - desktop
+    - server
+    - wsl
+
 - name: Install Alacritty terminal
   hosts: all
   roles:
@@ -230,6 +241,17 @@
     - deskenv
     - desktop
 
+- name: Install Direnv environment variables shell extension
+  hosts: all
+  roles:
+    - name: direnv
+  tags:
+    - container
+    - desktop
+    - direnv
+    - server
+    - wsl
+
 - name: Install Docker container platform
   hosts: all
   roles:
@@ -237,6 +259,17 @@
   tags:
     - desktop
     - docker
+    - server
+    - vm
+    - wsl
+
+- name: Install Docker Compose container orchestrator
+  hosts: all
+  roles:
+    - name: docker_compose
+  tags:
+    - desktop
+    - docker_compose
     - server
     - vm
     - wsl
@@ -264,18 +297,6 @@
     - server
     - wsl
 
-- name: Install Data Version Control
-  hosts: all
-  roles:
-    - name: dvc
-  tags:
-    - container
-    - desktop
-    - dvc
-    - server
-    - vcs
-    - wsl
-
 - name: Install Dust disk space analyzer
   hosts: all
   roles:
@@ -287,16 +308,16 @@
     - server
     - wsl
 
-- name: Install Emacs terminal text editor
+- name: Install Data Version Control
   hosts: all
   roles:
-    - name: emacs
+    - name: dvc
   tags:
     - container
     - desktop
-    - editor
-    - emacs
+    - dvc
     - server
+    - vcs
     - wsl
 
 - name: Install Balena Etcher ISO flasher
@@ -912,6 +933,17 @@
     - desktop
     - snap
 
+- name: Install Sops secrets editor
+  hosts: all
+  roles:
+    - name: sops
+  tags:
+    - container
+    - desktop
+    - server
+    - sops
+    - wsl
+
 - name: Install SQLite database
   hosts: all
   roles:
@@ -1135,3 +1167,14 @@
     - website
     - wsl
     - zola
+
+- name: Install Zoxide directory navigator helper
+  hosts: all
+  roles:
+    - name: zoxide
+  tags:
+    - container
+    - desktop
+    - server
+    - wsl
+    - zoxide

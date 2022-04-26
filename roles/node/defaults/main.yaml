@@ -3,8 +3,9 @@ node_applications:
   - "@vue/cli"
   - "gitmoji-cli"
   - live-server
-  - neovim
   - prettier
+  - speed-test
   - speedscope
+  - wikit
 node_versions:
   - "16"

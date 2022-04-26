@@ -12,10 +12,10 @@ $Env:DOCKER_BUILDKIT = 1
 #     Import-Module posh-docker
 # }
 
-# # Load Kubectl autocompletion if available.
-# If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
-#     Import-Module PSKubectlCompletion
-# }
+# Load Kubectl autocompletion if available.
+If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
+    Import-Module PSKubectlCompletion
+}
 
 # # GCloud settings.
 
@@ -24,32 +24,61 @@ $Env:DOCKER_BUILDKIT = 1
 #     Import-Module GcloudTabComplete
 # }
 
-# # Git settings.
+# Git settings.
 
-# # Load Git autocompletion if available.
-# If (Get-Module -ListAvailable -Name posh-git) {
-#     Import-Module posh-git
-# }
+# Load Git autocompletion if available.
+If (Get-Module -ListAvailable -Name posh-git) {
+    Import-Module posh-git
+}
 
 # Configure PSReadLine settings if available.
+#
+# Do not enable Vi mode command line edits. Will disable functionality.
 If (Get-Module -ListAvailable -Name PSReadLine) {
     Import-Module PSReadLine
+
+    # Use only spaces as word boundaries.
+    Set-PSReadLineOption -WordDelimiters ' '
+
+    # Add Unix shell key bindings.
+    Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
+    Set-PSReadLineKeyHandler -Chord Ctrl+w -Function BackwardDeleteWord
+    Set-PSReadLineKeyHandler -Chord Shift+LeftArrow -Function ShellBackwardWord
+
+    # Set shift+rightarrow to jump to end of next suggestion if at the end
+    # of the line else to the end of the next word.
+    Set-PSReadLineKeyHandler -Chord Shift+RightArrow -ScriptBlock {
+        Param($Key, $Arg)
+
+        $Line = $null
+        $Cursor = $null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Line, [ref]$Cursor)
+
+        if ($Cursor -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
+        } else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
+        }
+    }
 
     # Use Bash style tab completion.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
-    # Use VI mode for command line editing.
-    Set-PSReadLineOption -EditMode vi
-
     # Add history based autocompletion to arrow keys.
-    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
 
     # Show history based autocompletion for every typed character.
     # Feature is only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
         Set-PSReadLineOption -PredictionSource History
     }
+    
+    # Use solarized light blue for predictions.
+    Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
+
+    # Disable sounds for errors.
+    Set-PSReadlineOption -BellStyle None
 }
 
 # Python settings.
@@ -69,23 +98,37 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 
 # Tool settings.
 Set-Alias -Name exa -Value Get-ChildItem
+Set-Alias -Name touch -Value New-Item
 
 # # Load SSH autocompletion if available.
 # If (Get-Module -ListAvailable -Name Posh-SSH) {
 #     Import-Module Posh-SSH
 # }
 
+# Initialize Zoxide if available.
+If (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& {
+        If ($PSVersionTable.PSVersion.Major -lt 6) {
+            $Hook = 'prompt'
+        }
+        Else {
+            $Hook = 'pwd'
+        }
+        (zoxide init --hook $Hook powershell | Out-String)
+    })
+}
+
 # # TypeScript settings.
 
-# # Load Deno autocompletion if available.
-# If (Get-Module -ListAvailable -Name DenoCompletion) {
-#     Import-Module DenoCompletion
-# }
+# Load Deno autocompletion if available.
+If (Get-Module -ListAvailable -Name DenoCompletion) {
+    Import-Module DenoCompletion
+}
 
-# # Load NPM autocompletion if available.
-# If (Get-Module -ListAvailable -Name npm-completion) {
-#     Import-Module npm-completion
-# }
+# Load NPM autocompletion if available.
+If (Get-Module -ListAvailable -Name npm-completion) {
+    Import-Module npm-completion
+}
 
 # User settings.
 

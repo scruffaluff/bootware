@@ -2,7 +2,6 @@ FROM fedora:35
 
 ARG TARGETARCH
 
-
 # Create non-priviledged user.
 #
 # Flags:

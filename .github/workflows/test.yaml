@@ -151,15 +151,16 @@ jobs:
         shell: powershell
       # Windows Terminal is too early of a version to be supported on the GitHub
       # server. Go package installer syntax is currently outdated on GitHub
-      # server.
+      # server. GitLab runner is failing Soop installation due to a hash
+      # mismatch. TODO: Turn back on gitlab tag in a few weeks.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip defterm,go
+          bootware bootstrap --no-setup --skip defterm,gitlab,go
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 windows --skip go
+          node tests/integration/roles.spec.js --arch amd64 windows --skip gitlab,go

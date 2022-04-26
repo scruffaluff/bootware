@@ -2,7 +2,6 @@ FROM debian:11
 
 ARG TARGETARCH
 
-
 # Create non-priviledged user.
 #
 # Flags:

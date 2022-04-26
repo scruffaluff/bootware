@@ -1,6 +1,5 @@
 FROM node:16.0.0 AS builder
 
-
 ARG version=1.0.0
 
 # Copy bootware package build files.
@@ -15,9 +14,7 @@ RUN npm install
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
-
 FROM ubuntu:21.04
-
 
 ARG version=1.0.0
 

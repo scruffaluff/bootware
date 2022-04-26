@@ -1,5 +1,9 @@
 [
   {
+    "name": "age",
+    "tests": ["age --version", "age-keygen --version"]
+  },
+  {
     "name": "alacritty",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
@@ -77,15 +81,18 @@
   },
   { "name": "deskenv" },
   {
+    "name": "direnv",
+    "skip": [{ "os": "windows" }],
+    "tests": ["direnv --version"]
+  },
+  {
     "name": "dust",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["dust --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
-  {
-    "name": "docker",
-    "tests": ["docker --version", "docker compose --help"]
-  },
+  { "name": "docker", "tests": ["docker --version"] },
+  { "name": "docker_compose", "tests": ["docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "dvc",
@@ -146,7 +153,7 @@
   {
     "name": "github",
     "skip": [{ "os": "arch" }, { "os": "freebsd" }],
-    "tests": ["act --version", "gh --version"]
+    "tests": ["gh --version"]
   },
   { "name": "gitlab", "tests": ["gitlab-runner --version"] },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
@@ -301,6 +308,7 @@
     ],
     "tests": ["snap --version"]
   },
+  { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
   {
@@ -357,5 +365,9 @@
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["zola --version"]
+  },
+  {
+    "name": "zoxide",
+    "tests": ["zoxide --version"]
   }
 ]

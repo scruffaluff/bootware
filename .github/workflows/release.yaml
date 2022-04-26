@@ -36,6 +36,17 @@ jobs:
             See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
             steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
 
+  collection:
+    name: Publish collection to Ansible Galaxy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Build and Deploy Collection
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
+
   package:
     name: Create and upload ${{ matrix.package }} package
     strategy:

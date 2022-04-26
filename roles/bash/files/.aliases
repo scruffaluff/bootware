@@ -6,6 +6,4 @@ alias cargo-testpath="cargo test --no-run --message-format=json | jq -r 'select(
 alias diff='diff -u'
 alias emacs='emacs -nw'
 alias exa='exa -Fhl -s type --color auto'
-alias lzd='lazydocker'
-alias lzg='lazygit'
 alias procs='procs --theme light'

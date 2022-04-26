@@ -3,7 +3,9 @@
 # For more information, visit https://git-scm.com/docs/gitignore.
 
 .DS_Store
+.env
 .local/
+.vagrant/
 .venv/
 .vscode/
 /build/

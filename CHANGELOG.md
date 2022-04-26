@@ -5,23 +5,26 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.3.6 - 2022-04-26
 
 ### Added
 
 - All Ansible arguments to bootstrap subcommand.
-- Croc, Datree, Duf, Helm, Helmfile, Htmlq, Kubectl, K9s, Lazydocker, Lazygit,
-  Xh, and Yq roles.
+- Age, Croc, Datree, Direnv, Duf, Helm, Helmfile, Htmlq, Kubectl, K9s,
+  Lazydocker, Lazygit, Sops, Xh, Yq, and Zoxide roles.
 - WSL tag for selecting roles.
 
 ### Changed
 
 - Git pager to Delta.
 - GitHub installation links.
+- Ruby role to use standard installer instead of RVM.
 - Split Bash subtasks into separate roles.
+- Split Docker Compose installation separate role.
 
 ### Fixed
 
+- Avoid unnecessary tasks for meta dependencies.
 - Outdated Scoop package names.
 - Update Starship installation command to match upstream change.
 - VSCode settings file location for Scoop updates.
@@ -30,9 +33,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Emacs and OTS role.
 - Hyper terminal plugins that are broken on Windows.
 - Libvirt support for Windows.
-- OTS role.
+- Support for multiple Ruby versions.
 
 ## 0.3.5 - 2021-12-19
 

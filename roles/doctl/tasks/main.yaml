@@ -41,8 +41,17 @@
     name: doctl
   when: ansible_system == "Win32NT"
 
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
 - name: Install Digital Ocean CLI Fish completion for Unix
   ansible.builtin.shell:
-    cmd: |
-      doctl completion fish > {{ ansible_env.HOME }}/.config/fish/completions/doctl.fish
+    cmd: >-
+      doctl completion fish > {{ ansible_env.HOME
+      }}/.config/fish/completions/doctl.fish
   when: ansible_system != "Win32NT"

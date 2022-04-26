@@ -24,12 +24,12 @@ end
 # Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
-prepend_path "/usr/bin"
+prepend_path '/usr/bin'
 
 # Add manually installed binary directory to PATH environment variable.
 #
 # Necessary since path is missing on some MacOS systems.
-prepend_path "/usr/local/bin"
+prepend_path '/usr/local/bin'
 
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
@@ -47,10 +47,10 @@ set fish_greeting
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if test (uname -s) = "Darwin"
+if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
-  set ARM_GOROOT "/opt/homebrew/opt/go/libexec"
-  set INTEL_GOROOT "/usr/local/opt/go/libexec"
+  set ARM_GOROOT '/opt/homebrew/opt/go/libexec'
+  set INTEL_GOROOT '/usr/local/opt/go/libexec'
 
   if test -d "$ARM_GOROOT"
     set -x GOROOT "$ARM_GOROOT"
@@ -58,7 +58,7 @@ if test (uname -s) = "Darwin"
     set -x GOROOT "$INTEL_GOROOT"
   end
 else
-  set -x GOROOT "/usr/local/go"
+  set -x GOROOT '/usr/local/go'
 end
 prepend_path "$GOROOT/bin"
 
@@ -73,17 +73,17 @@ prepend_path "$GOPATH/bin"
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if test (uname -s) = "Darwin"
-  if test -d "/opt/homebrew/opt/openjdk/bin"
-    prepend_path "/opt/homebrew/opt/openjdk/bin"
-  else if test -d "/usr/local/opt/openjdk/bin"
-    prepend_path "/usr/local/opt/openjdk/bin"
+if test (uname -s) = 'Darwin'
+  if test -d '/opt/homebrew/opt/openjdk/bin'
+    prepend_path '/opt/homebrew/opt/openjdk/bin'
+  else if test -d '/usr/local/opt/openjdk/bin'
+    prepend_path '/usr/local/opt/openjdk/bin'
   end
 end
 
 # Julia settings.
 
-prepend_path "/usr/local/julia/bin"
+prepend_path '/usr/local/julia/bin'
 
 # Python settings.
 
@@ -95,11 +95,11 @@ set -x POETRY_VIRTUALENVS_IN_PROJECT 1
 # Flags:
 #   -d: Check if inode is a directory.
 #   -s: Print machine kernal name.
-if test (uname -s) = "Darwin"
-  if test -d "/opt/homebrew/opt/openblas"
-    set -x OPENBLAS "/opt/homebrew/opt/openblas"
-  else if test -d "/usr/local/opt/openblas"
-    set -c OPENBLAS "/usr/local/opt/openblas"
+if test (uname -s) = 'Darwin'
+  if test -d '/opt/homebrew/opt/openblas'
+    set -x OPENBLAS '/opt/homebrew/opt/openblas'
+  else if test -d '/usr/local/opt/openblas'
+    set -c OPENBLAS '/usr/local/opt/openblas'
   end
 end
 
@@ -116,16 +116,14 @@ if type -q pyenv
 end
 
 # Ruby settings.
-
 prepend_path "$HOME/bin"
-prepend_path "$HOME/.rvm/bin"
 
-# Initialize RVM if available.
+# Add gems binaries to path if Ruby is available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q rvm
-  rvm default
+if type -q ruby
+  prepend_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
 end
 
 # Rust settings.
@@ -147,20 +145,6 @@ function setenv
     set -gx $argv
   end
 end
-
-# Use VI mode for command line editing.
-#
-# Flags:
-#   -M <mode>: Set key bind for Fish mode.
-fish_vi_key_bindings
-# VI command mode remappings.
-bind -M default j backward-char
-bind -M default ';' forward-char
-# VI visual mode remappings.
-bind -M visual j backward-char
-bind -M visual ';' forward-char
-bind -M visual l up-line
-bind -M visual k down-line
 
 # Load aliases if file exists.
 #
@@ -200,13 +184,13 @@ end
 
 # Tool settings.
 
-set -x BAT_THEME "Solarized (light)"
+set -x BAT_THEME 'Solarized (light)'
 
 # Disable pagination for Bat.
 set -x BAT_PAGER ""
 
 # Add Visual Studio Code binary to PATH for Linux.
-prepend_path "/usr/share/code/bin"
+prepend_path '/usr/share/code/bin'
 
 # Initialize Digital Ocean CLI if available.
 #
@@ -216,6 +200,19 @@ if type -q doctl
   source (doctl completion fish|psub)
 end
 
+# Initialize Direnv if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q direnv
+  direnv hook fish | source
+end
+
+# Set Fzf solarized light theme.
+set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+set -x FZF_DEFAULT_OPTS "$_fzf_colors $_fzf_highlights"
+
 # Initialize GCloud if on MacOS and available.
 #
 # GCloud completion is provided on Linux via a Fish package.
@@ -223,10 +220,10 @@ end
 # Flags:
 #   -f: Check if inode is a regular file.
 #   -s: Print machine kernal name.
-if test (uname -s) = "Darwin"
+if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
-  set ARM_GCLOUD_PATH "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
-  set INTEL_GCLOUD_PATH "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+  set ARM_GCLOUD_PATH '/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
+  set INTEL_GCLOUD_PATH '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
 
   if test -f "$ARM_GCLOUD_PATH/path.fish.inc"
     source "$ARM_GCLOUD_PATH/path.fish.inc"
@@ -244,6 +241,14 @@ prepend_path "$HOME/.krew/bin"
 #   -q: Only check for exit status by supressing output.
 if type -q navi
   navi widget fish | source
+end
+
+# Initialize Zoxide if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q zoxide
+  zoxide init fish --cmd cd | source
 end
 
 # TypeScript settings.
@@ -277,4 +282,4 @@ prepend_path "$WASMTIME_HOME/bin"
 # Apple Silicon support.
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
-prepend_path "/opt/homebrew/bin"
+prepend_path '/opt/homebrew/bin'

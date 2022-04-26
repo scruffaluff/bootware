@@ -153,7 +153,7 @@
 
 - name: Install VSCode extensions for Windows
   ansible.builtin.win_shell: |
-    If (Get-Command gem -ErrorAction SilentlyContinue) {
+    If (Get-Command code -ErrorAction SilentlyContinue) {
         code --install-extension {{ item }}
     }
     Else {
