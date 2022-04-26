@@ -47,6 +47,14 @@
     name: k9s
   when: ansible_system == "Win32NT"
 
+- name: Create K9s configuration directory for FreeBSD
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.k9s"
+    state: directory
+  when: ansible_system == "FreeBSD"
+
 - name: Create K9s configuration directory for Linux
   ansible.builtin.file:
     mode: "755"
@@ -65,9 +73,18 @@
 
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/AppData/Roaming/k9s"
+    path: "{{ ansible_env.HOME }}/AppData/Local/k9s"
     state: directory
   when: ansible_system == "Win32NT"
+
+- name: Copy K9s skin file for FreeBSD
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.k9s/skin.yml"
+    force: true
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: skin.yml
+  when: ansible_system == "FreeBSD"
 
 - name: Copy K9s skin file for Linux
   ansible.builtin.copy:
@@ -85,7 +102,7 @@
     mode: "644"
     owner: "{{ ansible_user_id }}"
     src: skin.yml
-  when: ansible_system != "Darwin"
+  when: ansible_system == "Darwin"
 
 - name: Copy K9s skin file for Windows
   ansible.windows.win_copy:
