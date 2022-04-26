@@ -114,7 +114,7 @@ If (Get-Command zoxide -ErrorAction SilentlyContinue) {
         Else {
             $Hook = 'pwd'
         }
-        (zoxide init --hook $Hook powershell | Out-String)
+        (zoxide init --hook $Hook powershell --cmd cd | Out-String)
     })
 }
 
