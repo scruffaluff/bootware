@@ -620,8 +620,23 @@ Function SetupWSL($Branch) {
         Log 'Downloading Ubuntu image. Follow the prompt for installation'
         DownloadFile 'https://aka.ms/wslubuntu2004' "$TempFile"
 
+        # Older versions of WSL Ubuntu were installed via standard executable.
+        # Newer versions are installed via application bundle.
         Expand-Archive "$TempFile" "$TempDir"
-        & "$TempDir/ubuntu2004.exe" exit 0
+        If (Test-Path -Path "$TempDir/ubuntu2004.exe" -PathType Leaf) {
+            & "$TempDir/ubuntu2004.exe" exit 0
+        }
+        Else {
+            If ("$Env:PROCESSOR_ARCHITECTURE" -Eq "ARM64") {
+                $UbuntuArch = "ARM64"
+            }
+            Else {
+                $UbuntuArch = "x64"
+            }
+
+            $UbuntuInstaller = Get-ChildItem -Path "$TempDir/Ubuntu*_$UbuntuArch.appx" | Select-Object -First 1
+            & "$UbuntuInstaller" exit 0
+        }
     }
 
     If (-Not (wsl command -v bootware)) {

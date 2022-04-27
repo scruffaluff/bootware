@@ -54,9 +54,10 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         $Cursor = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Line, [ref]$Cursor)
 
-        if ($Cursor -LT $Line.Length) {
+        If ($Cursor -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
-        } else {
+        } 
+        Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
         }
     }
@@ -78,7 +79,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
 
     # Disable sounds for errors.
-    Set-PSReadlineOption -BellStyle None
+    Set-PSReadLineOption -BellStyle None
 }
 
 # Python settings.
@@ -107,15 +108,17 @@ Set-Alias -Name touch -Value New-Item
 
 # Initialize Zoxide if available.
 If (Get-Command zoxide -ErrorAction SilentlyContinue) {
-    Invoke-Expression (& {
-        If ($PSVersionTable.PSVersion.Major -lt 6) {
-            $Hook = 'prompt'
+    Invoke-Expression (
+        & {
+            If ($PSVersionTable.PSVersion.Major -lt 6) {
+                $Hook = 'prompt'
+            }
+            Else {
+                $Hook = 'pwd'
+            }
+            zoxide init --hook $Hook powershell --cmd cd | Out-String
         }
-        Else {
-            $Hook = 'pwd'
-        }
-        (zoxide init --hook $Hook powershell --cmd cd | Out-String)
-    })
+    )
 }
 
 # # TypeScript settings.

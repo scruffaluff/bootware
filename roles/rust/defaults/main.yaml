@@ -6,8 +6,7 @@ _cargo_applications:
     - cross
   Darwin:
     aarch64: []
-    always:
-      - cargo-binutils
+    always: []
     arm64: []
     x86_64: []
   # On some FreeBSD servers Ansible discovers the architecture as AMD64 instead

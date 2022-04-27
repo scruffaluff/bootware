@@ -1,28 +1,55 @@
 {
+  "$help": "https://aka.ms/terminal-documentation",
   "$schema": "https://aka.ms/terminal-profiles-schema",
-  "copyFormatting": false,
+  "actions": [
+    { "command": { "action": "nextTab" }, "keys": "ctrl+shift+]" },
+    { "command": { "action": "prevTab" }, "keys": "ctrl+shift+[" },
+  ],
+  "copyFormatting": "none",
   "copyOnSelect": false,
   "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
-  "keybindings": [
-    { "command": "nextTab", "keys": "ctrl+shift+]" },
-    { "command": "prevTab", "keys": "ctrl+shift+[" },
-  ],
   "multiLinePasteWarning": false,
   "profiles": {
     "defaults": {
       "colorScheme": "Solarized Light",
-      "fontFace": "Fira Code",
-      "fontSize": {{ font_size }}
+      "font": {
+        "face": "Fira Code",
+        "size": {{ font_size }}
+      }
     },
     "list": [
       {
+        "commandline": "pwsh.exe /NoLogo",
         "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
         "hidden": false,
         "name": "PowerShell",
-        "commandline": "pwsh.exe /NoLogo",
         "source": "Windows.Terminal.PowershellCore"
       }
     ]
   },
-  "schemes": []
+  "schemes": [
+    {
+      "background": "#FDF6E3",
+      "black": "#002B36",
+      "blue": "#268BD2",
+      "brightBlack": "#073642",
+      "brightBlue": "#839496",
+      "brightCyan": "#93A1A1",
+      "brightGreen": "#586E75",
+      "brightPurple": "#6C71C4",
+      "brightRed": "#CB4B16",
+      "brightWhite": "#FDF6E3",
+      "brightYellow": "#657B83",
+      "cursorColor": "#002B36",
+      "cyan": "#2AA198",
+      "foreground": "#657B83",
+      "green": "#859900",
+      "name": "Solarized Light",
+      "purple": "#D33682",
+      "red": "#DC322F",
+      "selectionBackground": "#FFFFFF",
+      "white": "#EEE8D5",
+      "yellow": "#B58900"
+    },
+  ]
 }

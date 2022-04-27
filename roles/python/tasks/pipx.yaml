@@ -17,6 +17,8 @@
 
 - name: Install Pipx for Windows
   ansible.builtin.win_command: python -m pip install --upgrade pipx
+  environment:
+    Path: "{{ scoop_apps }}/python/current:{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"
 
 # Pipx installs applications per user, so ansible_user_id is required.
