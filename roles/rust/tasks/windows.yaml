@@ -1,4 +1,12 @@
 ---
+- name: Get latest Cargo Binstall version for Windows
+  ansible.builtin.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
+  register: cargo_binstall_release
+  when: ansible_system == "Win32NT"
+
 - name: Install Rust for Windows
   community.windows.win_scoop:
     name: rustup-msvc
@@ -19,6 +27,34 @@
   ansible.builtin.win_command: rustup target add {{ item }}
   loop: "{{ rustup_targets }}"
 
+- name: Download Cargo Binstall archive for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
+    url: >-
+      https://github.com/ryankurte/cargo-binstall/releases/download/{{
+      cargo_binstall_release.json.tag_name
+      }}/cargo-binstall-x86_64-pc-windows-msvc.zip
+  when: ansible_system == "Win32NT"
+
+- name: Decompress Cargo Binstall archive for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}/cargo_binstall"
+    src: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
+  when: ansible_system == "Win32NT"
+
+- name: Create Cargo Binstall directory for Windows
+  ansible.windows.win_file:
+    dest: "{{ ansible_env.HOME }}/scoop/persist/rustup-msvc/.cargo/bin"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include Cargo Binstall directory for Windows
+  ansible.windows.win_path:
+    name: PATH
+    elements: "{{ ansible_env.HOME }}\\scoop\\apps\\rustup-msvc\\current\\.cargo\\bin"
+    scope: user
+  when: ansible_system == "Win32NT"
+
 - name: Update or install Cargo packages for Windows
-  ansible.builtin.win_command: cargo install {{ item }}
+  ansible.builtin.win_command: cargo binstall --no-confirm {{ item }}
   loop: "{{ cargo_applications }}"

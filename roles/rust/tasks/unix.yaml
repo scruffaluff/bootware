@@ -1,4 +1,11 @@
 ---
+- name: Get latest Cargo Binstall version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
+  register: cargo_binstall_release
+
 - name: Install pkg-config for Linux
   ansible.builtin.package:
     name: "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
@@ -37,11 +44,50 @@
       loop: "{{ rustup_targets }}"
       register: rustup_target
 
-    - name: Update or install Cargo packages for Unix
+    - name: Create Cargo Binstall applications directory for Unix
+      ansible.builtin.file:
+        mode: "755"
+        owner: "{{ ansible_user_id }}"
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+
+    - name: Download Cargo Binstall for Amd64 Unix
+      ansible.builtin.unarchive:
+        dest: /tmp/
+        mode: "755"
+        remote_src: true
+        src: >-
+          https://github.com/ryankurte/cargo-binstall/releases/download/{{
+          cargo_binstall_release.json.tag_name }}/cargo-binstall-x86_64-{{
+          cargo_binstall_suffix[ansible_system] }}
+      vars:
+        cargo_binstall_suffix:
+          Darwin: apple-darwin.zip
+          Linux: unknown-linux-gnu.tgz
+      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+
+    - name: Install Cargo Binstall for Amd64 Unix
+      ansible.builtin.copy:
+        dest: "{{ ansible_env.HOME }}/.local/bin/cargo-binstall"
+        mode: "755"
+        src: /tmp/cargo-binstall
+      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+
+    - name: Update or install Cargo packages for Amd64 Unix
+      ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+      changed_when: "'This will install' in cargo_binstall.stdout"
+      loop: "{{ cargo_applications }}"
+      register: cargo_binstall
+      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+
+    - name: Update or install Cargo packages for Arm64 Unix
       ansible.builtin.command: "cargo install {{ item }}"
       changed_when: "'Installing' in cargo_install.stdout"
       loop: "{{ cargo_applications }}"
       register: cargo_install
+      when: ansible_architecture != "x86_64" or ansible_pkg_mgr == "apk"
 
   environment:
-    PATH: "{{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.PATH }}"
+    PATH: >-
+      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
+      ansible_env.PATH }}

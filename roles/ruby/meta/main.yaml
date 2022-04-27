@@ -2,5 +2,3 @@
 dependencies:
   - role: bash
     when: ansible_system != "Win32NT"
-  - role: fish
-    when: ansible_system != "Win32NT"
