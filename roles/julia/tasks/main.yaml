@@ -36,7 +36,9 @@
       aarch64: [aarch64, aarch64]
       amd64: [x64, x86_64]
       x86_64: [x64, x86_64]
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: >-
+    ansible_system in ["FreeBSD", "Linux"] and (ansible_pkg_mgr != "apk" or
+    ansible_architecture == "x86_64")
 
 - name: Install Julia for MacOS
   community.general.homebrew:

@@ -46,7 +46,14 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
+    "skip": [
+      { "arch": "arm64", "os": "debian" },
+      { "arch": "arm64", "os": "fedora" },
+      { "arch": "arm64", "os": "ubuntu" },
+      { "os": "alpine" },
+      { "os": "arch" },
+      { "os": "freebsd" }
+    ],
     "tests": {
       "default": ["google-chrome --version"],
       "macos": [
@@ -64,7 +71,13 @@
   },
   {
     "name": "dbeaver",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [
+      { "arch": "arm64", "os": "debian" },
+      { "arch": "arm64", "os": "fedora" },
+      { "arch": "arm64", "os": "ubuntu" },
+      { "os": "alpine" },
+      { "os": "freebsd" }
+    ],
     "tests": {
       "default": ["dbeaver -help -nosplash"],
       "macos": [
@@ -126,7 +139,8 @@
     "name": "firefox",
     "tests": {
       "default": ["firefox --version"],
-      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"]
+      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"],
+      "ubuntu": []
     }
   },
   {
@@ -152,10 +166,18 @@
   },
   {
     "name": "github",
-    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
+    "skip": [
+      { "arch": "arm64", "os": "fedora" },
+      { "os": "arch" },
+      { "os": "freebsd" }
+    ],
     "tests": ["gh --version"]
   },
-  { "name": "gitlab", "tests": ["gitlab-runner --version"] },
+  {
+    "name": "gitlab",
+    "skip": [{ "arch": "arm64", "os": "fedora" }],
+    "tests": ["gitlab-runner --version"]
+  },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
@@ -196,7 +218,11 @@
   },
   { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
-  { "name": "julia", "tests": ["julia --version"] },
+  {
+    "name": "julia",
+    "skip": [{ "arch": "arm64", "os": "alpine" }],
+    "tests": ["julia --version"]
+  },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },
   {
@@ -290,7 +316,11 @@
   },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [
+      { "arch": "arm64", "os": "alpine" },
+      { "os": "freebsd" },
+      { "os": "windows" }
+    ],
     "tests": ["shellcheck --version"]
   },
   {
@@ -339,7 +369,12 @@
   { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "virtualbox",
-    "skip": [{ "os": "alpine" }, { "os": "debian" }, { "os": "windows" }],
+    "skip": [
+      { "arch": "arm64" },
+      { "os": "alpine" },
+      { "os": "debian" },
+      { "os": "windows" }
+    ],
     "tests": ["virtualbox --help"]
   },
   {

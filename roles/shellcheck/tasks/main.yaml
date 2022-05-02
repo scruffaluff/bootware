@@ -3,7 +3,9 @@
   ansible.builtin.package:
     name: "{{ 'ShellCheck' if ansible_pkg_mgr == 'dnf' else 'shellcheck' }}"
   become: true
-  when: ansible_system == "Linux"
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
+    ansible_architecture == "x86_64")
 
 - name: Install ShellCheck for MacOS
   community.general.homebrew:

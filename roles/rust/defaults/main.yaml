@@ -1,12 +1,12 @@
 ---
 _cargo_applications:
   always:
-    - cargo-audit
     - cargo-bloat
     - cross
   Darwin:
     aarch64: []
-    always: []
+    always:
+      - cargo-audit
     arm64: []
     x86_64: []
   # On some FreeBSD servers Ansible discovers the architecture as AMD64 instead
@@ -14,6 +14,7 @@ _cargo_applications:
   FreeBSD:
     aarch64: []
     always:
+      - cargo-audit
       - cargo-binutils
     amd64: []
     arm64: []
@@ -27,6 +28,7 @@ _cargo_applications:
       - cargo-rpm
     arm64: []
     x86_64:
+      - cargo-audit
       - cargo-edit
       - cargo-expand
       - cargo-generate
@@ -35,7 +37,8 @@ _cargo_applications:
   Win32NT:
     64-bit: []
     aarch64: []
-    always: []
+    always:
+      - cargo-audit
     arm64: []
     x86_64: []
 cargo_applications: >-

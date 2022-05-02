@@ -54,5 +54,6 @@
       procs --completion-out fish > {{ ansible_env.HOME
       }}/.config/fish/completions/procs.fish
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
-    ["apk", "dnf"]
+    (ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "apt", "dnf"]) or (ansible_pkg_mgr == "apt" and ansible_architecture
+    == "x86_64")
