@@ -163,3 +163,28 @@
     Path: "{{ scoop_apps }}/vscode/current/bin:{{ ansible_env.Path }}"
   loop: "{{ vscode_extensions }}"
   when: ansible_system == "Win32NT"
+
+- name: Add VSCode Firewall rules for Windows
+  community.windows.win_firewall_rule:
+    action: allow
+    direction: "{{ item['direction'] }}"
+    enabled: true
+    localport: any
+    name: VSCode
+    profiles:
+      - domain
+      - private
+      - public
+    program: "{{ scoop_apps }}\\vscode\\current\\bin\\code"
+    protocol: "{{ item['protocol'] }}"
+    state: present
+  loop:
+    - direction: in
+      protocol: tcp
+    - direction: in
+      protocol: udp
+    - direction: out
+      protocol: tcp
+    - direction: in
+      protocol: udp
+  when: ansible_system == "Win32NT"
