@@ -51,6 +51,10 @@ ARG skip
 ARG tags
 ARG test
 
+# VSCode, when run inside of a container, will falsely warn the user about the
+# issues of running inside of the WSL and force a yes or no prompt.
+ENV DONT_PROMPT_WSL_INSTALL='true'
+
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
 

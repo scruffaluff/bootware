@@ -12,7 +12,8 @@
   become: true
   when: ansible_system == "Linux"
 
-- block:
+- name: Install Rust and Cargo applications for Unix
+  block:
     - name: Install Rust for Unix
       ansible.builtin.shell:
         cmd: >-

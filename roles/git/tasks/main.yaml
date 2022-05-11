@@ -33,7 +33,8 @@
   become: true
   when: ansible_system == "Linux"
 
-- block:
+- name: Download and install Git Delta for Linux
+  block:
     - name: Download Git Delta for Linux
       ansible.builtin.unarchive:
         dest: /tmp/
