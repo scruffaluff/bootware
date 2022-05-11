@@ -15,7 +15,7 @@
     src: >-
       https://github.com/dalance/procs/releases/download/v{{
       procs_formula.json.versions.stable }}/procs-v{{
-      procs_formula.json.versions.stable }}-x86_64-lnx.zip
+      procs_formula.json.versions.stable }}-x86_64-linux.zip
   become: true
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 

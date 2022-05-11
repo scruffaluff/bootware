@@ -101,24 +101,20 @@
     "**/venv/**": true
   },
   "gitlens.showWelcomeOnInstall": false,
-  "jupyter.alwaysTrustNotebooks": true,
   "jupyter.askForKernelRestart": false,
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
   "liveServer.settings.donotShowInfoMsg": true,
   "notebook.lineNumbers": "on",
-  "powershell.integratedConsole.showOnStartup": false,
   "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
   "python.linting.flake8Args": ["--max-line-length=80"],
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "python.linting.pylintEnabled": false,
-  "python.pythonPath": "${workspaceFolder}/.venv",
   "python.testing.promptToConfigure": false,
   "python.testing.pytestEnabled": true,
-  "python.testing.pytestPath": "tests",
   "redhat.telemetry.enabled": false,
 {% if vscode_extensions | length > 0 %}
   "remote.SSH.defaultExtensions": [
@@ -129,11 +125,8 @@
   ],
 {% endif %}
   "remote.SSH.useLocalServer": false,
-  "rust-analyzer.inlayHints.enable": false,
   "rust-analyzer.notifications.cargoTomlNotFound": false,
-  "rust-analyzer.updates.askBeforeDownload": false,
   "security.workspace.trust.enabled": false,
-  "tabnine.experimentalAutoImports": true,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.fontFamily": "Fira Code",
@@ -145,6 +138,7 @@
       "args": ["-NoLogo"]
     }
   },
+  "terminal.integrated.showExitAlert": false,
   "update.mode": "none",
   "vsicons.dontShowNewVersionMessage": true,
   "workbench.colorTheme": "Solarized Light",

@@ -25,7 +25,9 @@
 - name: Install Ruby for Linux
   become: true
   ansible.builtin.package:
-    name: ruby
+    name:
+      - ruby
+      - ruby-dev
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Ruby for MacOS
