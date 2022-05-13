@@ -1,19 +1,4 @@
 ---
-- name: Install Ruby dependencies for Windows
-  community.windows.win_scoop:
-    name:
-      - mingw-winlibs
-      - msys2
-  when: ansible_system == "Win32NT"
-
-- name: Install Ruby for Alpine
-  become: true
-  community.general.apk:
-    name:
-      - ruby
-      - ruby-dev
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Ruby for FreeBSD
   become: true
   community.general.pkgng:
@@ -25,10 +10,15 @@
 - name: Install Ruby for Linux
   become: true
   ansible.builtin.package:
-    name:
-      - ruby
-      - ruby-dev
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+    name: ruby
+  when: ansible_system == "Linux"
+
+# Required for updating several Ruby gems.
+- name: Install Ruby source code for Linux
+  become: true
+  ansible.builtin.package:
+    name: "{{ 'ruby-devel' if ansible_pkg_mgr == 'dnf' else 'ruby-dev' }}"
+  when: ansible_pkg_mgr in ["apk", "apt", "dnf"]
 
 - name: Install Ruby for MacOS
   community.general.homebrew:
@@ -37,7 +27,10 @@
 
 - name: Install Ruby for Windows
   community.windows.win_scoop:
-    name: ruby
+    name:
+      - mingw-winlibs
+      - msys2
+      - ruby
   when: ansible_system == "Win32NT"
 
 # TODO: Switch to Ansible Gem module.
