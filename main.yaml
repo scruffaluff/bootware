@@ -755,6 +755,14 @@
     - typescript
     - wsl
 
+- name: Install Obsidian notetaking application
+  hosts: all
+  roles:
+    - name: obsidian
+  tags:
+    - desktop
+    - obsidian
+
 - name: Install optional packages
   hosts: all
   roles:

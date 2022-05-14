@@ -3,20 +3,6 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
-# Prepend directory to the system path if it exists and is not already there.
-#
-# Fish version 2 errors if nonexistant inodes are added to the system path and
-# does not support the prepend_path function.
-#
-# Flags:
-#   -d: Check if inode is a directory.
-#   -x: Export variable for current and child processes.
-function prepend_path
-  if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
-    set -x PATH "$argv[1]" $PATH
-  end
-end
-
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
@@ -24,12 +10,12 @@ end
 # Pyenv system shell won't work unless it is found in a bin directory. Archlinux
 # places a symlink in an sbin directory. For more information, see
 # https://github.com/pyenv/pyenv/issues/1301#issuecomment-582858696.
-prepend_path '/usr/bin'
+fish_add_path '/usr/bin'
 
 # Add manually installed binary directory to PATH environment variable.
 #
 # Necessary since path is missing on some MacOS systems.
-prepend_path '/usr/local/bin'
+fish_add_path '/usr/local/bin'
 
 # Docker settings.
 set -x COMPOSE_DOCKER_CLI_BUILD 1
@@ -60,11 +46,11 @@ if test (uname -s) = 'Darwin'
 else
   set -x GOROOT '/usr/local/go'
 end
-prepend_path "$GOROOT/bin"
+fish_add_path "$GOROOT/bin"
 
 # Add Go local binaries to system path.
 set -x GOPATH "$HOME/go"
-prepend_path "$GOPATH/bin"
+fish_add_path "$GOPATH/bin"
 
 # Java settings.
 
@@ -75,15 +61,15 @@ prepend_path "$GOPATH/bin"
 #   -s: Print machine kernal name.
 if test (uname -s) = 'Darwin'
   if test -d '/opt/homebrew/opt/openjdk/bin'
-    prepend_path '/opt/homebrew/opt/openjdk/bin'
+    fish_add_path '/opt/homebrew/opt/openjdk/bin'
   else if test -d '/usr/local/opt/openjdk/bin'
-    prepend_path '/usr/local/opt/openjdk/bin'
+    fish_add_path '/usr/local/opt/openjdk/bin'
   end
 end
 
 # Julia settings.
 
-prepend_path '/usr/local/julia/bin'
+fish_add_path '/usr/local/julia/bin'
 
 # Python settings.
 
@@ -104,7 +90,7 @@ if test (uname -s) = 'Darwin'
 end
 
 # Add Pyenv binaries to system path.
-prepend_path "$HOME/.pyenv/bin"
+fish_add_path "$HOME/.pyenv/bin"
 
 # Initialize Pyenv if available.
 #
@@ -116,18 +102,18 @@ if type -q pyenv
 end
 
 # Ruby settings.
-prepend_path "$HOME/bin"
+fish_add_path "$HOME/bin"
 
 # Add gems binaries to path if Ruby is available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q ruby
-  prepend_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
+  fish_add_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
 end
 
 # Rust settings.
-prepend_path "$HOME/.cargo/bin"
+fish_add_path "$HOME/.cargo/bin"
 
 # Shell settings
 
@@ -190,7 +176,7 @@ set -x BAT_THEME 'Solarized (light)'
 set -x BAT_PAGER ""
 
 # Add Visual Studio Code binary to PATH for Linux.
-prepend_path '/usr/share/code/bin'
+fish_add_path '/usr/share/code/bin'
 
 # Initialize Digital Ocean CLI if available.
 #
@@ -233,7 +219,7 @@ if test (uname -s) = 'Darwin'
 end
 
 # Add Kubectl plugins to PATH.
-prepend_path "$HOME/.krew/bin"
+fish_add_path "$HOME/.krew/bin"
 
 # Add Navi widget if available.
 #
@@ -255,10 +241,10 @@ end
 
 # Add Deno binaries to system path.
 set -x DENO_INSTALL "$HOME/.deno"
-prepend_path "$DENO_INSTALL/bin"
+fish_add_path "$DENO_INSTALL/bin"
 
 # Add NPM global binaries to system path.
-prepend_path "$HOME/.npm-global/bin"
+fish_add_path "$HOME/.npm-global/bin"
 
 # Initialize NVM default version of Node if available.
 #
@@ -273,13 +259,13 @@ end
 set -x EDITOR "nvim"
 
 # Add scripts directory to system path.
-prepend_path "$HOME/.local/bin"
+fish_add_path "$HOME/.local/bin"
 
 # Wasmtime settings.
 set -x WASMTIME_HOME "$HOME/.wasmtime"
-prepend_path "$WASMTIME_HOME/bin"
+fish_add_path "$WASMTIME_HOME/bin"
 
 # Apple Silicon support.
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
-prepend_path '/opt/homebrew/bin'
+fish_add_path '/opt/homebrew/bin'
