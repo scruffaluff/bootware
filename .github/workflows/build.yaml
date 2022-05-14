@@ -96,7 +96,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./tests/integration/Dockerfile.${{ matrix.format }}
+          file: ./tests/integration/${{ matrix.format }}.Dockerfile
           tags: bootware:${{ matrix.format }}
           push: false
 

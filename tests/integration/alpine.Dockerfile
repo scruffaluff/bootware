@@ -1,34 +1,32 @@
-FROM archlinux:base-20220417.0.53367
+FROM alpine:3.15
 
 ARG TARGETARCH
 
 # Create non-priviledged user.
 #
+# Alpine does contain the useradd command.
+#
 # Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
+#     -D: Do not assign the user a password.
 #     -s /usr/bin/fish: Set user login shell to Fish.
 #     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 arch
+RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
 
 # Install Bash, Curl, and Sudo.
-RUN pacman --noconfirm -Suy && pacman --noconfirm -S bash curl sudo
-
-# Create sudo group.
-RUN groupadd sudo
+RUN apk update && apk add bash curl sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo arch
+RUN addgroup alpine wheel
 
 # Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+RUN printf "%%wheel ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 # Fix current sudo bug for containers.
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV HOME=/home/arch USER=arch
-USER arch
+ENV HOME=/home/alpine USER=alpine
+USER alpine
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -49,6 +47,10 @@ ARG skip
 ARG tags
 ARG test
 
+# VSCode, when run inside of a container, will falsely warn the user about the
+# issues of running inside of the WSL and force a yes or no prompt.
+ENV DONT_PROMPT_WSL_INSTALL='true'
+
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
 
@@ -64,10 +66,8 @@ SHELL ["/bin/bash", "-c"]
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v deno)" ]]; then \
-            sudo pacman -S --noconfirm unzip; \
-            curl -LSfs https://deno.land/install.sh | sh; \
-            export PATH="${HOME}/.deno/bin:${PATH}"; \
+        if [[ ! -x "$(command -v node)" ]]; then \
+            sudo apk add nodejs; \
         fi; \
-        ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
     fi

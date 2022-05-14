@@ -1,4 +1,4 @@
-FROM debian:11
+FROM ubuntu:22.04
 
 ARG TARGETARCH
 
@@ -9,9 +9,9 @@ ARG TARGETARCH
 #     -m: Create user home directory if it does not exist.
 #     -s /usr/bin/fish: Set user login shell to Fish.
 #     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 debian
+RUN useradd -lm -s /bin/bash -u 1000 ubuntu
 
-# Install Bash, Curl and Sudo.
+# Install Bash, Curl, and Sudo.
 #
 # Flags:
 #     -m: Ignore missing packages and handle result.
@@ -19,8 +19,11 @@ RUN useradd -lm -s /bin/bash -u 1000 debian
 #     -y: Assume "yes" as answer to all prompts and run non-interactively.
 RUN apt-get update -m && apt-get install -qy bash curl sudo
 
+# Avoid APT interactively requesting to configure tzdata.
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo debian
+RUN usermod -a -G sudo ubuntu
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -29,8 +32,8 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV HOME=/home/debian USER=debian
-USER debian
+ENV HOME=/home/ubuntu USER=ubuntu
+USER ubuntu
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -43,13 +46,17 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY --chown="${USER}" roles/ ./roles/
 COPY --chown="${USER}" group_vars/ ./group_vars/
 COPY --chown="${USER}" main.yaml ./
+COPY --chown="${USER}" roles/ ./roles/
 
 ARG skip
 ARG tags
 ARG test
+
+# VSCode, when run inside of a container, will falsely warn the user about the
+# issues of running inside of the WSL and force a yes or no prompt.
+ENV DONT_PROMPT_WSL_INSTALL='true'
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
@@ -69,5 +76,5 @@ RUN if [[ -n "$test" ]]; then \
         if [[ ! -x "$(command -v node)" ]]; then \
             sudo apt-get install -qy nodejs; \
         fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
     fi

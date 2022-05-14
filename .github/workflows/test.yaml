@@ -73,7 +73,7 @@ jobs:
             skip=${{ matrix.skip || 'none' }}
             test=true
           context: .
-          file: ./tests/integration/Dockerfile.${{ matrix.distro }}
+          file: ./tests/integration/${{ matrix.distro }}.Dockerfile
           platforms: linux/${{ matrix.arch }}
           push: false
           tags: scruffaluff/bootware:${{ matrix.distro }}-latest

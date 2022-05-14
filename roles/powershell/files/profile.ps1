@@ -38,7 +38,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Import-Module PSReadLine
 
     # Use only spaces as word boundaries.
-    Set-PSReadLineOption -WordDelimiters ' '
+    Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine

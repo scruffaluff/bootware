@@ -549,9 +549,13 @@ setup() {
       ;;
   esac
 
-  ansible-galaxy collection install chocolatey.chocolatey > /dev/null
-  ansible-galaxy collection install community.general > /dev/null
-  ansible-galaxy collection install community.windows > /dev/null
+  collections=('chocolatey.chocolatey' 'community.general' 'community.windows')
+  for collection in "${collections[@]}"; do
+    collection_status="$(ansible-galaxy collection list "${collection}" 2>&1)"
+    if [[ "${collection_status}" =~ "unable to find" ]]; then
+      ansible-galaxy collection install "${collection}"
+    fi
+  done
 }
 
 #######################################

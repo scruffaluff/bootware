@@ -47,3 +47,28 @@
   community.windows.win_scoop:
     name: croc
   when: ansible_system == "Win32NT"
+
+- name: Add Croc Firewall rules for Windows
+  community.windows.win_firewall_rule:
+    action: allow
+    direction: "{{ item['direction'] }}"
+    enabled: true
+    localport: any
+    name: Croc
+    profiles:
+      - domain
+      - private
+      - public
+    program: "{{ scoop_apps }}\\croc\\current\\croc.exe"
+    protocol: "{{ item['protocol'] }}"
+    state: present
+  loop:
+    - direction: in
+      protocol: tcp
+    - direction: in
+      protocol: udp
+    - direction: out
+      protocol: tcp
+    - direction: out
+      protocol: udp
+  when: ansible_system == "Win32NT"

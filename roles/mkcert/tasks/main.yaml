@@ -1,9 +1,17 @@
 ---
-- name: Install network security service libraries for Debian distributions
-  ansible.builtin.apt:
-    name: libnss3-tools
+# Certificate generation requires Certutil from the Nss package. For more
+# information, visit https://github.com/FiloSottile/mkcert#installation.
+- name: Install network security service libraries for Linux
+  ansible.builtin.package:
+    name: "{{ mkcert_dependencies[ansible_pkg_mgr] }}"
   become: true
-  when: ansible_pkg_mgr == "apt"
+  vars:
+    mkcert_dependencies:
+      apk: nss-tools
+      apt: libnss3-tools
+      dnf: nss-tools
+      pacman: nss
+  when: ansible_system == "Linux"
 
 - name: Get latest Mkcert version
   ansible.builtin.uri:
@@ -29,7 +37,6 @@
       x86_64: amd64
   when: ansible_system == "Linux"
 
-# Certificate generation requires NSS on MacOS.
 - name: Install Mkcert for MacOS
   community.general.homebrew:
     name:

@@ -8,4 +8,4 @@ node_applications:
   - speedscope
   - wikit
 node_versions:
-  - "16"
+  - "18"

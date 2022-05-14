@@ -1,4 +1,4 @@
-FROM fedora:35
+FROM debian:11
 
 ARG TARGETARCH
 
@@ -9,19 +9,18 @@ ARG TARGETARCH
 #     -m: Create user home directory if it does not exist.
 #     -s /usr/bin/fish: Set user login shell to Fish.
 #     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 fedora
+RUN useradd -lm -s /bin/bash -u 1000 debian
 
-# Update DNF package lists.
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-
-# Install Bash, Curl, and Sudo.  
-RUN dnf install -y bash curl sudo
-
-# Create sudo group.
-RUN groupadd sudo
+# Install Bash, Curl and Sudo.
+#
+# Flags:
+#     -m: Ignore missing packages and handle result.
+#     -q: Produce log suitable output by omitting progress indicators.
+#     -y: Assume "yes" as answer to all prompts and run non-interactively.
+RUN apt-get update -m && apt-get install -qy bash curl sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo fedora
+RUN usermod -a -G sudo debian
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -30,8 +29,8 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV HOME=/home/fedora USER=fedora
-USER fedora
+ENV HOME=/home/debian USER=debian
+USER debian
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -52,6 +51,10 @@ ARG skip
 ARG tags
 ARG test
 
+# VSCode, when run inside of a container, will falsely warn the user about the
+# issues of running inside of the WSL and force a yes or no prompt.
+ENV DONT_PROMPT_WSL_INSTALL='true'
+
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
 
@@ -68,7 +71,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v node)" ]]; then \
-            sudo dnf install -y nodejs; \
+            sudo apt-get install -qy nodejs; \
         fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

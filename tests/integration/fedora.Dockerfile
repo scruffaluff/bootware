@@ -1,32 +1,37 @@
-FROM alpine:3.15
+FROM fedora:36
 
 ARG TARGETARCH
 
 # Create non-priviledged user.
 #
-# Alpine does contain the useradd command.
-#
 # Flags:
-#     -D: Do not assign the user a password.
+#     -l: Do not add user to lastlog database.
+#     -m: Create user home directory if it does not exist.
 #     -s /usr/bin/fish: Set user login shell to Fish.
 #     -u 1000: Give new user UID value 1000.
-RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
+RUN useradd -lm -s /bin/bash -u 1000 fedora
 
-# Install Bash, Curl, and Sudo.
-RUN apk update && apk add bash curl sudo
+# Update DNF package lists.
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+
+# Install Bash, Curl, and Sudo.  
+RUN dnf install -y bash curl sudo
+
+# Create sudo group.
+RUN groupadd sudo
 
 # Add standard user to sudoers group.
-RUN addgroup alpine wheel
+RUN usermod -a -G sudo fedora
 
 # Allow sudo commands with no password.
-RUN printf "%%wheel ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 # Fix current sudo bug for containers.
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
-ENV HOME=/home/alpine USER=alpine
-USER alpine
+ENV HOME=/home/fedora USER=fedora
+USER fedora
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -47,6 +52,10 @@ ARG skip
 ARG tags
 ARG test
 
+# VSCode, when run inside of a container, will falsely warn the user about the
+# issues of running inside of the WSL and force a yes or no prompt.
+ENV DONT_PROMPT_WSL_INSTALL='true'
+
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
 
@@ -63,7 +72,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v node)" ]]; then \
-            sudo apk add nodejs; \
+            sudo dnf install -y nodejs; \
         fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi
