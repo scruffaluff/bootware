@@ -25,9 +25,12 @@
   become: true
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install VSCode for Fedora distributions
-  ansible.builtin.dnf:
-    name: >-
+# Package needs to be downloaded to a file with an rpm extension to prevent
+# confusion for Ansible DNF module.
+- name: Download VSCode for Fedora distributions
+  ansible.builtin.get_url:
+    dest: /tmp/vscode.rpm
+    url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
       vscode_arch[ansible_architecture] }}/stable
   become: true
@@ -35,6 +38,12 @@
     vscode_arch:
       aarch64: arm64
       x86_64: x64
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install VSCode for Fedora distributions
+  ansible.builtin.dnf:
+    name: /tmp/vscode.rpm
+  become: true
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for MacOS

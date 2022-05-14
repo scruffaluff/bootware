@@ -4,31 +4,52 @@
     dest: /usr/local/appimages/hyper.appimage
     mode: "755"
     owner: root
-    url: https://releases.hyper.is/download/AppImage
+    url: >-
+      https://releases.hyper.is/download/{{ hyper_appimage[ansible_architecture]
+      }}
   become: true
-  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
+  vars:
+    hyper_appimage:
+      aarch64: AppImage_arm64
+      x86_64: AppImage
+  when: ansible_pkg_mgr == "pacman"
 
 - name: Install Hyper dependencies for Fedora distributions
   ansible.builtin.dnf:
     name: mesa-libgbm
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf"
 
-# Hyper is not yet supported on Debian 11.
 - name: Install Hyper for Debian distributions
   ansible.builtin.apt:
-    deb: https://releases.hyper.is/download/deb
+    deb: >-
+      https://releases.hyper.is/download/{{ hyper_deb[ansible_architecture] }}
   become: true
-  when: >-
-    ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64" and
-    deb_distro_base == "ubuntu"
+  vars:
+    hyper_deb:
+      aarch64: deb_arm64
+      x86_64: deb
+  when: ansible_pkg_mgr == "apt"
+
+# Package needs to be downloaded to a file with an rpm extension to prevent
+# confusion for Ansible DNF module.
+- name: Download Hyper for Fedora distributions
+  ansible.builtin.get_url:
+    dest: /tmp/hyper.rpm
+    url: >-
+      https://releases.hyper.is/download/{{ hyper_rpm[ansible_architecture] }}
+  vars:
+    hyper_rpm:
+      aarch64: rpm_arm64
+      x86_64: rpm
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Hyper for Fedora distributions
   ansible.builtin.dnf:
     disable_gpg_check: true
-    name: https://releases.hyper.is/download/rpm
+    name: /tmp/hyper.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Hyper for MacOS
   community.general.homebrew_cask:

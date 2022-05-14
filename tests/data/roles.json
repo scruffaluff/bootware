@@ -166,16 +166,11 @@
   },
   {
     "name": "github",
-    "skip": [
-      { "arch": "arm64", "os": "fedora" },
-      { "os": "arch" },
-      { "os": "freebsd" }
-    ],
+    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
     "tests": ["gh --version"]
   },
   {
     "name": "gitlab",
-    "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gitlab-runner --version"]
   },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
@@ -199,13 +194,7 @@
   },
   {
     "name": "hyper",
-    "skip": [
-      { "arch": "arm64", "os": "linux" },
-      { "os": "alpine" },
-      { "os": "arch" },
-      { "os": "debian" },
-      { "os": "freebsd" }
-    ],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["hyper --version"]
   },
   {

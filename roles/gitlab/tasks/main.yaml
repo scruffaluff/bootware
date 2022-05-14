@@ -36,7 +36,7 @@
     gitlab_arch:
       aarch64: arm64
       x86_64: amd64
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install GitLab Runner for FreeBSD
   become: true

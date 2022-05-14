@@ -74,19 +74,19 @@
         src: /tmp/cargo-binstall
       when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
 
-    - name: Update or install Cargo packages for Amd64 Unix
-      ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
-      changed_when: "'This will install' in cargo_binstall.stdout"
-      loop: "{{ cargo_applications }}"
-      register: cargo_binstall
-      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+    # Cargo Binstall has OpenSSL issues on several platforms.
+    # - name: Update or install Cargo packages for Amd64 Unix
+    #   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+    #   changed_when: "'This will install' in cargo_binstall.stdout"
+    #   loop: "{{ cargo_applications }}"
+    #   register: cargo_binstall
+    #   when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
 
-    - name: Update or install Cargo packages for Arm64 Unix
+    - name: Update or install Cargo packages for Unix
       ansible.builtin.command: "cargo install {{ item }}"
       changed_when: "'Installing' in cargo_install.stdout"
       loop: "{{ cargo_applications }}"
       register: cargo_install
-      when: ansible_architecture != "x86_64" or ansible_pkg_mgr == "apk"
 
   environment:
     PATH: >-
