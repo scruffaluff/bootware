@@ -73,5 +73,5 @@ RUN if [[ -n "$test" ]]; then \
             curl -LSfs https://deno.land/install.sh | sh; \
             export PATH="${HOME}/.deno/bin:${PATH}"; \
         fi; \
-        ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
+        ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi
