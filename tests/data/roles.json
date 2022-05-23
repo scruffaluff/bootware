@@ -215,6 +215,11 @@
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },
   {
+    "name": "kind",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["kind --version"]
+  },
+  {
     "name": "krew",
     "skip": [{ "os": "freebsd" }],
     "tests": ["kubectl-krew version"]

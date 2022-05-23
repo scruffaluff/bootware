@@ -618,6 +618,17 @@
     - server
     - wsl
 
+- name: Install Kind Kubernetes development cluster manager
+  hosts: all
+  roles:
+    - name: kind
+  tags:
+    - desktop
+    - kind
+    - kubernetes
+    - server
+    - wsl
+
 - name: Install Krew Kubectl plugin package manager
   hosts: all
   roles:

@@ -1,0 +1,48 @@
+---
+- name: Get latest Kind version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/kubernetes-sigs/kind/releases/latest
+  register: kind_release
+  when: ansible_system == "Linux"
+
+- name: Install Kind for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/kind
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/kubernetes-sigs/kind/releases/download/{{
+      kind_release.json.tag_name }}/kind-linux-{{
+      kind_arch[ansible_architecture] }}
+  become: true
+  vars:
+    kind_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Kind for MacOS
+  community.general.homebrew:
+    name: kind
+  when: ansible_system == "Darwin"
+
+- name: Install Kind for Windows
+  community.windows.win_scoop:
+    name: kind
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Generate Kind Fish completions for Unix
+  ansible.builtin.shell: >-
+    kind completion fish > {{ ansible_env.HOME
+    }}/.config/fish/completions/deno.fish
+  when: ansible_system in ["Darwin", "Linux"]

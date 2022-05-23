@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Obsidian role.
+- Kind and Obsidian roles.
 - Windows Defender Firewall rules.
 
 ### Fixed
