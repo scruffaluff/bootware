@@ -1,10 +1,29 @@
 ---
+- name: Disable annoying and unhelpful sudoedit error
+  ansible.builtin.blockinfile:
+    block: |
+      # Disable 'editing files in a writable directory is not permitted' error.
+      #
+      # Sudoedit will throw an error if editing a unwritable file in a writable
+      # directory. Visit https://unix.stackexchange.com/a/356145, for more 
+      # information.
+      Defaults !sudoedit_checkdir
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED SUDOEDIT BLOCK"
+    mode: "440"
+    owner: root
+    path: /etc/sudoers
+    validate: /usr/sbin/visudo -cf %s
+  become: true
+  when: ansible_system != "Win32NT"
+
 - name: Enable passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for {{ ansible_user_id }} user.
       {{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL
     create: true
+    marker: "# {mark} ANSIBLE MANAGED PASSWORDLESS SUDO BLOCK"
     mode: "440"
     owner: root
     path: /etc/sudoers
