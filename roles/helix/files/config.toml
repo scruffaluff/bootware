@@ -1,0 +1,16 @@
+# Helix configuration file.
+#
+# For more information, visit https://docs.helix-editor.com/configuration.html.
+
+theme = "solarized_light"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "bar"
+select = "bar"
+
+[keys.normal]
+j = "move_char_left"
+k = "move_line_down"
+l = "move_line_up"
+";" = "move_char_right"

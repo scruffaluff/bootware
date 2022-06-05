@@ -507,6 +507,18 @@
     - server
     - wsl
 
+- name: Install Helix terminal text editor
+  hosts: all
+  roles:
+    - name: helix
+  tags:
+    - container
+    - desktop
+    - editor
+    - helix
+    - server
+    - wsl
+
 - name: Install Helm Kubernetes manager
   hosts: all
   roles:

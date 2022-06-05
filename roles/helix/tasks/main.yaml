@@ -1,0 +1,87 @@
+---
+- name: Get latest Helix version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/helix-editor/helix/releases/latest
+  register: helix_release
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install Helix for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: helix
+  when: ansible_system == "FreeBSD"
+
+- name: Download Helix for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/helix-editor/helix/releases/download/{{
+      helix_release.json.tag_name }}/helix-{{ helix_release.json.tag_name
+      }}-x86_64-linux.tar.xz
+  become: true
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Install Helix for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/hx
+    mode: "755"
+    src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/hx
+  become: true
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Tap Helix for MacOS
+  community.general.homebrew_tap:
+    name: helix-editor/helix
+  when: ansible_system == "Darwin"
+
+- name: Install Helix for MacOS
+  community.general.homebrew:
+    name: helix-editor/helix/helix
+  when: ansible_system == "Darwin"
+
+- name: Install Helix for Windows
+  community.windows.win_scoop:
+    name: helix
+  when: ansible_system == "Win32NT"
+
+- name: Create Helix configuration directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/helix/"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Install Helix runtime files for Linux
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/helix/"
+    mode: "755"
+    src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
+  become: true
+  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+
+- name: Copy Helix configuration file for Unix
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/helix/config.toml"
+    force: true
+    mode: "664"
+    owner: "{{ ansible_user_id }}"
+    src: config.toml
+  when: ansible_system != "Win32NT"
+
+- name: Create Helix configuration directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/AppData/Roaming/helix"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Helix configuration file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/helix/config.toml"
+    force: true
+    src: config.toml
+  when: ansible_system == "Win32NT"

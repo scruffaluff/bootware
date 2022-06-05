@@ -185,6 +185,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
+  { "name": "helix", "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
