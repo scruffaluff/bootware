@@ -179,7 +179,7 @@ bootstrap() {
   local inventory="127.0.0.1,"
   local no_setup="${BOOTWARE_NOSETUP:-""}"
   local passwd
-  local playbook="${BOOTWARE_PLAYBOOK:-"main.yaml"}"
+  local playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
   local skip="${BOOTWARE_SKIP:-""}"
   local ssh_key
   local tags="${BOOTWARE_TAGS:-""}"

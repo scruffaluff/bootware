@@ -30,6 +30,7 @@
 - name: Download VSCode for Fedora distributions
   ansible.builtin.get_url:
     dest: /tmp/vscode.rpm
+    mode: "600"
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
       vscode_arch[ansible_architecture] }}/stable

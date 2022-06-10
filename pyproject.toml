@@ -24,13 +24,13 @@ version = "0.3.6"
 python = "^3.8.0"
 
 [tool.poetry.dev-dependencies]
-ansible = "^5.5.0"
-ansible-compat = "^2.0.0"
-ansible-lint = "^6.0.0"
-ipython = "^8.0.0"
-molecule = {extras = ["lint", "docker", "vagrant"], version = "^3.6.1"}
+ansible = "^5.9.0"
+ansible-compat = "^2.1.0"
+ansible-lint = "^6.3.0"
+ipython = "^8.4.0"
+molecule = {extras = ["lint", "docker", "vagrant"], version = "^3.6.0"}
 molecule-vagrant = "^1.0.0"
 pdbpp = "^0.10.0"
-python-vagrant = "^0.5.0"
+python-vagrant = "^1.0.0"
 pywinrm = "^0.4.0"
 yamllint = "^1.26.0"

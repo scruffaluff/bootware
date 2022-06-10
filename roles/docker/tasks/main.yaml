@@ -37,7 +37,7 @@
       deb [arch={{ docker_arch[ansible_architecture] }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
       https://download.docker.com/linux/{{ deb_distro_base }} {{
-      ansible_distribution_release|lower }} stable
+      ansible_distribution_release | lower }} stable
     state: present
     filename: docker
   become: true

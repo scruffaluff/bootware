@@ -38,7 +38,7 @@ setup() {
 
   expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --url \
-https://github.com/scruffaluff/bootware.git main.yaml"
+https://github.com/scruffaluff/bootware.git playbook.yaml"
 
   actual="$(bootware.sh bootstrap)"
   assert_equal "${actual}" "${expected}"
@@ -53,7 +53,7 @@ https://github.com/scruffaluff/bootware.git main.yaml"
   
   expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
-@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none main.yaml"
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --tags none)"
   assert_equal "${actual}" "${expected}"
@@ -69,7 +69,7 @@ ansible_python_interpreter=auto_silent --extra-vars \
   expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none --timeout 60 \
-main.yaml"
+playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --tags none --timeout 60)"
   assert_equal "${actual}" "${expected}"
@@ -86,7 +86,7 @@ ansible_pkg_mgr=scoop --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell --extra-vars \
 ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
---skip-tags sometag main.yaml"
+--skip-tags sometag playbook.yaml"
 
   actual="$(bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
     --ssh-key /fake/key/path --user fakeuser)"

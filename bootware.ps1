@@ -118,7 +118,7 @@ Function Bootstrap() {
     $ConfigPath = ''
     $Debug = 0
     $ExtraArgs = @()
-    $Playbook = "$PSScriptRoot/repo/main.yaml"
+    $Playbook = "$PSScriptRoot/repo/playbook.yaml"
     $Skip = 'none'
     $Tags = 'desktop'
     $URL = 'https://github.com/scruffaluff/bootware.git'
@@ -133,7 +133,7 @@ Function Bootstrap() {
                 Break
             }
             { $_ -In '-d', '--dev' } {
-                $Playbook = "$(Get-Location)/main.yaml"
+                $Playbook = "$(Get-Location)/playbook.yaml"
                 $UseSetup = 0
                 $ArgIdx += 1
                 Break

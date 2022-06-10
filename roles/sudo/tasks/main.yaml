@@ -5,7 +5,7 @@
       # Disable 'editing files in a writable directory is not permitted' error.
       #
       # Sudoedit will throw an error if editing a unwritable file in a writable
-      # directory. Visit https://unix.stackexchange.com/a/356145, for more 
+      # directory. Visit https://unix.stackexchange.com/a/356145, for more
       # information.
       Defaults !sudoedit_checkdir
     create: true

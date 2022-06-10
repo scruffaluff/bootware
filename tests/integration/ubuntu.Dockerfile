@@ -47,7 +47,7 @@ WORKDIR $HOME/bootware
 
 # Copy bootware project files.
 COPY --chown="${USER}" group_vars/ ./group_vars/
-COPY --chown="${USER}" main.yaml ./
+COPY --chown="${USER}" playbook.yaml ./
 COPY --chown="${USER}" roles/ ./roles/
 
 ARG skip

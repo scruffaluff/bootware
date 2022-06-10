@@ -7,5 +7,6 @@ dependencies:
   - role: git
     when: ansible_system == "Linux" and gnome_desktop
   - role: node
-    node_applications: []
+    vars:
+      node_applications: []
     when: ansible_system == "Linux" and gnome_desktop

@@ -36,6 +36,7 @@
 - name: Download Hyper for Fedora distributions
   ansible.builtin.get_url:
     dest: /tmp/hyper.rpm
+    mode: "600"
     url: >-
       https://releases.hyper.is/download/{{ hyper_rpm[ansible_architecture] }}
   vars:

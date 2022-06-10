@@ -1,5 +1,6 @@
 ---
 dependencies:
   - role: go
-    go_applications: []
+    vars:
+      go_applications: []
     when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
