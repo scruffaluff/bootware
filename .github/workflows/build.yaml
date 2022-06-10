@@ -38,8 +38,8 @@ jobs:
         run: npm run prettier:test
       - name: Install Shfmt
         run: |
-          shfmt_version="$(curl -LSfs "https://formulae.brew.sh/api/formula/shfmt.json" | jq -r .versions.stable)"
-          sudo curl -LSfs "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_linux_amd64" -o "/usr/local/bin/shfmt"
+          shfmt_version="$(curl -LSfs "https://api.github.com/repos/mvdan/sh/releases/latest" | jq -r .tag_name)"
+          sudo curl -LSfs "https://github.com/mvdan/sh/releases/download/${shfmt_version}/shfmt_${shfmt_version}_linux_amd64" -o "/usr/local/bin/shfmt"
           sudo chmod 755 "/usr/local/bin/shfmt"
       - name: Check format of shell scripts
         run: npm run shfmt:test
