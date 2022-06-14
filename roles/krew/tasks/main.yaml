@@ -8,9 +8,11 @@
   when: ansible_system == "Linux"
 
 - name: Download Krew for Linux
+  # Do not add a mode specifier here. On Arch Linux it will change the
+  # permissions of the /tmp folder to be user uneditable as of 06/14/2022. As
+  # result, Krew will fail installation.
   ansible.builtin.unarchive:
     dest: /tmp/
-    mode: "755"
     remote_src: true
     src: >-
       https://github.com/kubernetes-sigs/krew/releases/download/v{{

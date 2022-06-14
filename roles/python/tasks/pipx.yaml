@@ -25,8 +25,9 @@
   # Ansible lint variable spacing is ignored since it incorrectly thinks that
   # the or operator, i.e. ||, is a Jinja filter that needs an extra space.
   # Prettier is ignored since it removes the required extra space before the
-  # Ansible lint ignore comment. prettier-ignore
-  ansible.builtin.shell: # noqa var-spacing
+  # Ansible lint ignore comment.
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa var-spacing
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
     cmd: >-

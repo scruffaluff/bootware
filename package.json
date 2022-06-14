@@ -11,13 +11,13 @@
     "vuepress:serve": "vuepress dev docs/"
   },
   "devDependencies": {
-    "bats": "^1.4.0",
+    "bats": "^1.7.0",
     "bats-assert": "https://github.com/ztombol/bats-assert",
     "bats-support": "https://github.com/ztombol/bats-support",
-    "commander": "^8.2.0",
+    "commander": "^9.3.0",
     "mustache": "^4.2.0",
-    "prettier": "^2.4.0",
-    "vuepress": "^1.8.0",
-    "vuepress-plugin-code-copy": "^1.0.0"
+    "prettier": "^2.6.0",
+    "vuepress": "^1.9.0",
+    "vuepress-plugin-code-copy": "^1.0.6"
   }
 }

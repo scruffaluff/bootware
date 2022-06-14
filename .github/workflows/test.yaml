@@ -39,8 +39,8 @@ jobs:
             sudo freebsd-update install
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
             bootware setup
-            bootware bootstrap --dev --no-passwd --skip deskenv,starship
-            ./tests/integration/roles_test.ts --arch amd64 --skip node,starship freebsd
+            bootware bootstrap --dev --no-passwd
+            ./tests/integration/roles_test.ts --arch amd64 freebsd
 
   test-linux:
     name: >-
@@ -58,6 +58,13 @@ jobs:
           - arch: amd64
             os: alpine
             skip: gcp
+          # Alacritty terminal is only installable on Ubuntu via deb package
+          # from MMStick PPA,
+          # https://launchpad.net/~mmstick76/+archive/ubuntu/alacritty. The PPA
+          # has not provided a 22.04 release as of 06/14/2022.
+          - arch: amd64
+            os: ubuntu
+            skip: alacritty
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -156,11 +163,11 @@ jobs:
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip defterm,gitlab,go
+          bootware bootstrap --no-setup --skip defterm,deskenv
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
-          $Env:Path = "$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 windows --skip gitlab,go
+          $Env:Path = "$HOME\scoop\shims;$Env:Path"
+          node tests/integration/roles.spec.js --arch amd64 windows

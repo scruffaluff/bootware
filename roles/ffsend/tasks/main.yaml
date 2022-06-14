@@ -7,6 +7,12 @@
   register: ffsend_formula
   when: ansible_system == "Linux"
 
+- name: Install compatibility layer for older OpenSSL version
+  ansible.builtin.package:
+    name: openssl1.1
+  become: true
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution_version >= "36"
+
 # As of 12/18/2021 the FFsend package on Alpine does not have a reliable
 # installation.
 # - name: Install FFSend for Alpine distributions

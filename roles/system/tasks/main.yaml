@@ -36,6 +36,12 @@
     upgrade_all: true
   when: ansible_system == "Darwin"
 
+- name: Install essential packages for Alpine distributions
+  become: true
+  community.general.apk:
+    name: xz
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install essential packages for Arch distributions
   become: true
   community.general.pacman:
