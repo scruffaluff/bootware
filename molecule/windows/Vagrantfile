@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "gusztavvargadr/windows-11"
+
+  config.vm.provider "virtualbox" do |vb|
+    # Do not display the VirtualBox GUI when booting the machine.
+    vb.gui = false
+    # Customize the amount of memory on the VM in megabytes.
+    vb.memory = "4096"
+    # To speed up creation of new VMs, create a hidden master VM. All new VMs
+    # are created by spinning off a new disk image from the hidden master VM
+    # rather than import the base image.
+    vb.linked_clone = true
+  end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  config.vm.provision "shell", path: "../../install.ps1"
+end
