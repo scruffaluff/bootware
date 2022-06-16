@@ -23,7 +23,7 @@ on:
     inputs:
       debug:
         default: "false"
-        description: "Use TMate session for debugging on failure"
+        description: Use TMate session for debugging on failure
         required: false
       os:
         default: alpine arch debian fedora freebsd macos ubuntu windows
@@ -31,81 +31,162 @@ on:
         required: false
 
 jobs:
-  # Node is currently broken for FreeBSD. For more information, visit
-  # https://github.com/nodejs/node/issues/40467#issuecomment-946902776.
+  test-alpine:
+    name: Test bootstrapping software for Amd64 Alpine Linux
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' ||
+      contains(github.event.inputs.os, 'alpine') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: test=true
+          context: .
+          file: ./tests/integration/alpine.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:alpine-latest
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  test-arch:
+    name: Test bootstrapping software for Amd64 Arch Linux
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' ||
+      contains(github.event.inputs.os, 'arch') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: test=true
+          context: .
+          file: ./tests/integration/arch.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:arch-latest
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  test-debian:
+    name: Test bootstrapping software for Amd64 Debian Linux
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' ||
+      contains(github.event.inputs.os, 'debian') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: test=true
+          context: .
+          file: ./tests/integration/debian.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:debian-latest
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  test-fedora:
+    name: Test bootstrapping software for Amd64 Fedora Linux
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' ||
+      contains(github.event.inputs.os, 'fedora') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: test=true
+          context: .
+          file: ./tests/integration/fedora.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:fedora-latest
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
   test-freebsd:
-    name: Test bootstrapping software for FreeBSD
+    name: Test bootstrapping software for Amd64 FreeBSD
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'freebsd') }}
-    # MacOS version 10.15 is required by vmactions/freebsd-vm.
-    runs-on: macos-10.15
+    runs-on: macos-12
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.1.5
+        uses: vmactions/freebsd-vm@v0.1.6
         with:
-          prepare: pkg install -y bash curl
-          run: |
+          prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
+            pkg install -y bash curl
+          # As explained at https://stackoverflow.com/a/32073958, there is no
+          # way to runtime configure csh exit on error. sh shell cannot be used
+          # since it does not have access to sudo.
+          run: |
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
+            set code = $?
+            if $code != 0 then
+              exit $code
+            endif
             ./tests/integration/roles_test.ts --arch amd64 freebsd
+          usesh: true
+      # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
+      # freebsd` and `cd $GITHUB_WORKSPACE`.
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug }}
+          github.event.inputs.debug == 'true' }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  # test-linux:
-  #   name: >-
-  #     Test bootstrapping software for ${{ matrix.arch }} ${{ matrix.distro }}
-  #   strategy:
-  #     fail-fast: false
-  #     # Arm64 tests are currently removed since they cannot complete within
-  #     # GitHub's job limit of 6 hours.
-  #     matrix:
-  #       arch: ["amd64"]
-  #       distro: [alpine, arch, debian, fedora, ubuntu]
-  #       include:
-  #         # Google Cloud SDK is broken on Alpine. It always throws "ImportError:
-  #         # Error loading shared library ld-linux-x86-64.so.2".
-  #         - arch: amd64
-  #           os: alpine
-  #           skip: gcp
-  #         # Alacritty terminal is only installable on Ubuntu via deb package
-  #         # from MMStick PPA,
-  #         # https://launchpad.net/~mmstick76/+archive/ubuntu/alacritty. The PPA
-  #         # has not provided a 22.04 release as of 06/14/2022.
-  #         - arch: amd64
-  #           os: ubuntu
-  #           skip: alacritty
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code repository
-  #       uses: actions/checkout@v2
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v1
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
-  #     - name: Build Docker image
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         build-args: |
-  #           skip=${{ matrix.skip || 'none' }}
-  #           test=true
-  #         context: .
-  #         file: ./tests/integration/${{ matrix.distro }}.Dockerfile
-  #         platforms: linux/${{ matrix.arch }}
-  #         push: false
-  #         tags: scruffaluff/bootware:${{ matrix.distro }}-latest
-
   test-macos:
-    name: Test bootstrapping software for MacOS
+    name: Test bootstrapping software for Amd64 MacOS
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'macos') }}
@@ -125,25 +206,62 @@ jobs:
         run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
-      # Bats is already installed with NPM and causes a conflict.
+      # Bats is already installed with NPM and causes a conflict. Docker is not
+      # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
         run: bootware bootstrap --dev --no-passwd --skip bats,docker
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
-      # exectuable is installed.
+      # exectuable is installed. Since Docker is not installable, the Docker
+      # Compose check will fail.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip docker,tilt macos
+          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker-compose,tilt macos
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug }}
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  test-ubuntu:
+    name: Test bootstrapping software for Amd64 Ubuntu Linux
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' ||
+      contains(github.event.inputs.os, 'ubuntu') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          # Alacritty terminal is only installable on Ubuntu via deb package
+          # from MMStick PPA,
+          # https://launchpad.net/~mmstick76/+archive/ubuntu/alacritty. The PPA
+          # has not provided a 22.04 release as of 06/14/2022.
+          build-args: |
+            skip=alacritty
+            test=true
+          context: .
+          file: ./tests/integration/ubuntu.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:ubuntu-latest
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
   test-windows:
-    name: Test bootstrapping software for Windows
+    name: Test bootstrapping software for Amd64 Windows
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'windows') }}
@@ -187,10 +305,7 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Windows Terminal is too early of a version to be supported on the GitHub
-      # server. Go package installer syntax is currently outdated on GitHub
-      # server. GitLab runner is failing Soop installation due to a hash
-      # mismatch. TODO: Turn back on gitlab tag in a few weeks.
+      # Windows server 2019 does not have fully support for Windows Terminal.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
@@ -205,6 +320,6 @@ jobs:
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug }}
+          github.event.inputs.debug == 'true' }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
