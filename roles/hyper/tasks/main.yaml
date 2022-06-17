@@ -1,4 +1,7 @@
 ---
+# Since Appimages use FUSE, Hyper cannot be version checked within a Docker
+# container. For more information, visit
+# https://github.com/AppImage/AppImageKit/wiki/FUSE#docker.
 - name: Install Hyper for Arch distributions
   ansible.builtin.get_url:
     dest: /usr/local/appimages/hyper.appimage

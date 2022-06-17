@@ -217,7 +217,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker-compose,tilt macos
+          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt macos
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&

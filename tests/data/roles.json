@@ -195,7 +195,7 @@
   },
   {
     "name": "hyper",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
     "tests": ["hyper --version"]
   },
   {
