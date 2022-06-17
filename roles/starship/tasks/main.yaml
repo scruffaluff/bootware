@@ -6,7 +6,7 @@
     cmd: curl -LSfs https://starship.rs/install.sh | sh -s -- -y
     warn: false
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Starship shell prompt for Windows
   community.windows.win_scoop:
@@ -19,7 +19,7 @@
     mode: "755"
     owner: "{{ ansible_user_id }}"
     state: directory
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Create Starship settings file for Unix
   ansible.builtin.copy:
@@ -27,7 +27,7 @@
     mode: "644"
     owner: "{{ ansible_user_id }}"
     src: starship.toml
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Create Starship settings directory for Windows
   ansible.windows.win_file:
