@@ -5,7 +5,6 @@
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
   register: cargo_binstall_release
-  when: ansible_system == "Win32NT"
 
 - name: Install Rust for Windows
   community.windows.win_scoop:
@@ -34,27 +33,17 @@
       https://github.com/ryankurte/cargo-binstall/releases/download/{{
       cargo_binstall_release.json.tag_name
       }}/cargo-binstall-x86_64-pc-windows-msvc.zip
-  when: ansible_system == "Win32NT"
 
 - name: Decompress Cargo Binstall archive for Windows
   community.windows.win_unzip:
     dest: "{{ ansible_env.TEMP }}/cargo_binstall"
     src: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
-  when: ansible_system == "Win32NT"
 
-- name: Create Cargo Binstall directory for Windows
-  ansible.windows.win_file:
-    dest: "{{ scoop_apps }}/rustup-msvc/.cargo/bin"
-    state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Update system path to include Cargo Binstall directory for Windows
-  ansible.windows.win_path:
-    name: PATH
-    elements: >-
-      {{ ansible_env.HOME }}\\scoop\\apps\\rustup-msvc\\current\\.cargo\\bin
-    scope: user
-  when: ansible_system == "Win32NT"
+- name: Install Cargo Binstall for Windows
+  community.windows.win_unzip:
+    dest: "{{ scoop_apps }}/rust-msvc/current/.cargo/bin/cargo-binstall.exe"
+    remote_src: true
+    src: "{{ ansible_env.TEMP }}/cargo_binstall/cargo-binstall.exe"
 
 - name: Update or install Cargo packages for Windows
   ansible.builtin.win_command: cargo binstall --no-confirm {{ item }}

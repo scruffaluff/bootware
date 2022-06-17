@@ -3,6 +3,25 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
+# Function fish_add_path was not added until Fish version 3.2.0.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if not type -q fish_add_path
+  # Prepend directory to the system path if it exists and is not already there.
+  #
+  # Flags:
+  #   -d: Check if inode is a directory.
+  #   -x: Export variable for current and child processes.
+  function fish_add_path
+    # Fish version 2 throws an error if an inode in the system path does not
+    # exist.
+    if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
+      set -x PATH "$argv[1]" $PATH
+    end
+  end
+end
+
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
