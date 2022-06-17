@@ -39,7 +39,7 @@ https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 @test "Functon update uses sudo when destination is not writable" {
   local actual
   local expected="sudo curl -LSfs \
-https://raw.githubusercontent.com/scruffaluff/bootware/master/bootware.sh \
+https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
 -o /bin/bash"
 
   source bootware.sh

@@ -387,7 +387,7 @@ Function RemoteScript($URL) {
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
-    $Branch = 'master'
+    $Branch = 'main'
     $URL = 'https://github.com/scruffaluff/bootware.git'
     $WSL = 1
 
@@ -642,7 +642,7 @@ Function SetupWSL($Branch) {
     If (-Not (wsl command -v bootware)) {
         Log 'Installing a WSL copy of Bootware'
         wsl curl -LSfs `
-            https://raw.githubusercontent.com/scruffaluff/bootware/master/install.sh `
+            https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh `
             `| bash -s -- --version "$Branch"
         wsl bootware setup
     }
@@ -679,7 +679,7 @@ Function Uninstall() {
 # Subcommand to update Bootware script.
 Function Update() {
     $ArgIdx = 0
-    $Version = 'master'
+    $Version = 'main'
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {

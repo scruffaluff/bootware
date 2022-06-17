@@ -53,9 +53,9 @@ documentation.
 
 For guidance on setting up a development environment and how to make a
 contribution, see the
-[Contributing Guide](https://github.com/scruffaluff/bootware/blob/master/CONTRIBUTING.md).
+[Contributing Guide](https://github.com/scruffaluff/bootware/blob/main/CONTRIBUTING.md).
 
 ## License
 
 Bootware is distributed under a
-[MIT license](https://github.com/scruffaluff/bootware/blob/master/LICENSE.md).
+[MIT license](https://github.com/scruffaluff/bootware/blob/main/LICENSE.md).

@@ -87,7 +87,7 @@ Function Log($Message) {
 Function Main() {
     $ArgIdx = 0
     $Target = 'Machine'
-    $Version = 'master'
+    $Version = 'main'
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {

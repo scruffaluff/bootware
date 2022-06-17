@@ -32,10 +32,10 @@ Describe "Update" {
         $BootwareDir = "$(Split-Path -Parent $Bootware)"
         $Expected = "git -C $BootwareDir/repo pull"
 
-        $Actual = "$(& "$Bootware" update --version master)"
+        $Actual = "$(& "$Bootware" update --version main)"
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
             $DstFile -eq "$BootwareDir/bootware.ps1" -And
-            $SrcURL -eq "https://raw.githubusercontent.com/scruffaluff/bootware/master/bootware.ps1"
+            $SrcURL -eq "https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.ps1"
         }
 
         $Actual | Should -Be $Expected

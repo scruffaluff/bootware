@@ -867,7 +867,7 @@ update() {
   local dst_file
   local src_url
   local use_sudo=""
-  local version="master"
+  local version="main"
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do

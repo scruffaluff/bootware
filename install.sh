@@ -179,7 +179,7 @@ main() {
   local src_url
   local use_sudo=""
   local user_install
-  local version="master"
+  local version="main"
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
