@@ -388,7 +388,13 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
-  { "name": "xh", "tests": ["xh --version", "xhs --version"] },
+  {
+    "name": "xh",
+    "tests": {
+      "default": ["xh --version", "xhs --version"],
+      "freebsd": ["xh --version"]
+    }
+  },
   {
     "name": "xsv",
     "skip": [{ "arch": "arm64", "os": "linux" }],

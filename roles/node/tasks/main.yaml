@@ -22,8 +22,8 @@
   become: true
   community.general.pkgng:
     name:
-      - node16
-      - www/npm
+      - node14
+      - npm-node14
   when: ansible_system == "FreeBSD"
 
 - name: Install Node version manager for Unix

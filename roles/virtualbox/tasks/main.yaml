@@ -31,7 +31,7 @@
   become: true
   community.general.pkgng:
     name: virtualbox-ose
-  when: ansible_system == "FreeBSD" and ansible_architecture == "x86_64"
+  when: ansible_system == "FreeBSD" and ansible_architecture == "amd64"
 
 - name: Install Virtualbox for MacOS
   community.general.homebrew_cask:
