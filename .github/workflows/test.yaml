@@ -163,17 +163,11 @@ jobs:
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install -y bash curl
-          # As explained at https://stackoverflow.com/a/32073958, there is no
-          # way to runtime configure csh exit on error. sh shell cannot be used
-          # since it does not have access to sudo.
           run: |
+            set -eou pipefail
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
-            set code = $?
-            if $code != 0 then
-              exit $code
-            endif
             ./tests/integration/roles_test.ts --arch amd64 freebsd
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
