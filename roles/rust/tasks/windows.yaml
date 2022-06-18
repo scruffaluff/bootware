@@ -40,7 +40,7 @@
     src: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
 
 - name: Install Cargo Binstall for Windows
-  community.windows.win_unzip:
+  community.windows.win_copy:
     dest: "{{ scoop_apps }}/rust-msvc/current/.cargo/bin/cargo-binstall.exe"
     remote_src: true
     src: "{{ ansible_env.TEMP }}/cargo_binstall/cargo-binstall.exe"

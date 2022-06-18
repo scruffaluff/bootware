@@ -395,7 +395,11 @@
     "tests": ["xsv --version"]
   },
   { "name": "yq", "tests": ["yq --version"] },
-  { "name": "zellij", "tests": ["zellij --version"] },
+  {
+    "name": "zellij",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["zellij --version"]
+  },
   {
     "name": "zola",
     "skip": [{ "arch": "arm64", "os": "linux" }],

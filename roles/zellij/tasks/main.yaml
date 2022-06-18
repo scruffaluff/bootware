@@ -47,11 +47,11 @@
     owner: "{{ ansible_user_id }}"
     path: "{{ ansible_env.HOME }}/.config/fish/completions"
     state: directory
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Zellij Fish completion for Unix
   ansible.builtin.shell:
     cmd: >-
       zellij setup --generate-completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/zellij.fish
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
