@@ -168,6 +168,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
+            bash -c 'echo $PATH'
             bash -c './tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -303,7 +304,7 @@ jobs:
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip defterm,deskenv
+          bootware bootstrap --no-setup --skip defterm
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.

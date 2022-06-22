@@ -162,15 +162,9 @@
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Windows
-  ansible.builtin.win_shell: |
-    If (Get-Command code -ErrorAction SilentlyContinue) {
-        code --install-extension {{ item }}
-    }
-    Else {
-        {{ scoop_apps }}/vscode/current/bin/code --install-extension {{ item }}
-    }
+  ansible.builtin.win_shell: code --install-extension {{ item }}
   environment:
-    Path: "{{ scoop_apps }}/vscode/current/bin:{{ ansible_env.Path }}"
+    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ vscode_extensions }}"
   when: ansible_system == "Win32NT"
 

@@ -54,5 +54,5 @@
   ansible.builtin.win_command: cargo binstall --no-confirm {{ item }}
   environment:
     Path: >-
-      {{ scoop_apps }}/rustup-msvc/current/.cargo/bin:{{ ansible_env.Path }}
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ cargo_applications }}"

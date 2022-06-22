@@ -41,6 +41,8 @@
   community.windows.win_scoop_bucket:
     name: tilt-dev
     repo: https://github.com/tilt-dev/scoop-bucket
+  environment:
+    Path: "{{ ansible_env.HOME }}\\scoop\\shims\\scoop;{{ ansible_env.HOME }}"
   when: ansible_system == "Win32NT"
 
 - name: Install Tilt for Windows

@@ -126,6 +126,8 @@
 - name: Add essential Scoop buckets for Windows
   community.windows.win_scoop_bucket:
     name: "{{ item }}"
+  environment:
+    Path: "{{ ansible_env.HOME }}\\scoop\\shims\\scoop;{{ ansible_env.HOME }}"
   loop:
     - extras
     - main

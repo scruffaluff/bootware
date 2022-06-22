@@ -100,14 +100,9 @@
 
 - name: Install or update Node CLI applications for Windows
   ansible.builtin.win_shell: |
-    If (Get-Command npm -ErrorAction SilentlyContinue) {
-        (npm install -g {{ item }}) -Or (npm update -g {{ item }})
-    }
-    Else {
-        ({{ scoop_apps }}/nodejs/current/npm install -g {{ item }}) -Or ({{ scoop_apps }}/nodejs/current/npm update -g {{ item }})
-    }
+    (npm install -g {{ item }}) -Or (npm update -g {{ item }})
   environment:
-    Path: "{{ scoop_apps }}/nodejs/current:{{ ansible_env.Path }}"
+    Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
   loop: "{{ node_applications }}"
   when: ansible_system == "Win32NT"
 
