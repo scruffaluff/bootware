@@ -403,7 +403,7 @@
   { "name": "yq", "tests": ["yq --version"] },
   {
     "name": "zellij",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["zellij --version"]
   },
   {

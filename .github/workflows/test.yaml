@@ -168,8 +168,7 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
-            bash -c 'echo $PATH'
-            bash -c './tests/integration/roles_test.ts --arch amd64 freebsd'
+            bash -i -c './tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd $GITHUB_WORKSPACE`.
@@ -310,7 +309,7 @@ jobs:
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
-          $Env:Path = "$HOME\scoop\shims;$Env:Path"
+          $Env:Path = "C:\Program Files\Datree;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
           node tests/integration/roles.spec.js --arch amd64 windows
       - name: Setup tmate session if job failed
         if: >-

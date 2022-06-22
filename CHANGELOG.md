@@ -15,7 +15,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Ansible collection installations are now shown to user.
+- Node installation for FreeBSD.
 - Mkcert dependencies for Linux.
+- Sudoers roles for FreeBSD.
+- Windows system path management for installations.
 
 ### Removed
 
