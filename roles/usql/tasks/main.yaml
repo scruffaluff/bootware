@@ -3,8 +3,8 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://raw.githubusercontent.com/ScoopInstaller/Main/master/bucket/usql.json
-  register: usql_manifest
+    url: https://api.github.com/repos/xo/usql/releases/latest
+  register: usql_release
   when: ansible_system == "Linux"
 
 - name: Install Usql dependencies for Fedora distributions
@@ -38,9 +38,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      https://github.com/xo/usql/releases/download/v{{
-      usql_manifest.json.version }}/usql-{{ usql_manifest.json.version
-      }}-linux-amd64.tar.bz2
+      https://github.com/xo/usql/releases/download/{{ usql_release.json.tag_name
+      }}/usql-{{ usql_release.json.tag_name[1:] }}-linux-amd64.tar.bz2
   become: true
   when: >-
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or

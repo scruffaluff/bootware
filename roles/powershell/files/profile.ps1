@@ -87,9 +87,6 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
-# Add scripts directory to system path.
-$Env:PATH = "$HOME\scoop\apps\python\current\Scripts;" + "$Env:PATH"
-
 # Starship settings.
 
 # Initialize Starship if available.
@@ -132,8 +129,3 @@ If (Get-Module -ListAvailable -Name DenoCompletion) {
 If (Get-Module -ListAvailable -Name npm-completion) {
     Import-Module npm-completion
 }
-
-# User settings.
-
-# Add scripts directory to PATH environment variable.
-$Env:PATH = "$HOME\.local\bin;" + "$Env:PATH"

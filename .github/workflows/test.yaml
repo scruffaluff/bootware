@@ -168,7 +168,9 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
-            bash -i -c './tests/integration/roles_test.ts --arch amd64 freebsd'
+            source $HOME/.bashrc
+            bash -c 'echo $PATH'
+            bash -c './tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd $GITHUB_WORKSPACE`.
