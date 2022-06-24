@@ -8,7 +8,7 @@
   hosts: all
   tasks:
     - name: Update system package managers and install essential packages
-      include_role:
+      ansible.builtin.import_role:
         name: system
       tags:
         - container
@@ -18,7 +18,7 @@
         - wsl
 
     - name: Install Age encryption tool
-      include_role:
+      ansible.builtin.import_role:
         name: age
       tags:
         - age
@@ -28,7 +28,7 @@
         - wsl
 
     - name: Install Alacritty terminal
-      include_role:
+      ansible.builtin.import_role:
         name: alacritty
       tags:
         - alacritty
@@ -36,7 +36,7 @@
         - terminal
 
     - name: Install AppImage packages
-      include_role:
+      ansible.builtin.import_role:
         name: appimage
       tags:
         - appimage
@@ -46,14 +46,14 @@
         - wsl
 
     - name: Install audio tools
-      include_role:
+      ansible.builtin.import_role:
         name: audio
       tags:
         - audio
         - desktop
 
     - name: Install Avro file serialization tools
-      include_role:
+      ansible.builtin.import_role:
         name: avro
       tags:
         - avro
@@ -63,7 +63,7 @@
         - wsl
 
     - name: Install Amazon Web Services development tools
-      include_role:
+      ansible.builtin.import_role:
         name: aws
       tags:
         - aws
@@ -74,7 +74,7 @@
         - wsl
 
     - name: Install Bash shell
-      include_role:
+      ansible.builtin.import_role:
         name: bash
       tags:
         - bash
@@ -85,7 +85,7 @@
         - wsl
 
     - name: Install Bashdb Bash debugger
-      include_role:
+      ansible.builtin.import_role:
         name: bashdb
       tags:
         - bashdb
@@ -96,7 +96,7 @@
         - wsl
 
     - name: Install Bat file reader
-      include_role:
+      ansible.builtin.import_role:
         name: bat
       tags:
         - bat
@@ -107,7 +107,7 @@
         - wsl
 
     - name: Install Bats Bash test framework
-      include_role:
+      ansible.builtin.import_role:
         name: bats
       tags:
         - bats
@@ -118,14 +118,14 @@
         - wsl
 
     - name: Install Beekeeper database client
-      include_role:
+      ansible.builtin.import_role:
         name: beekeeper
       tags:
         - beekeeper
         - desktop
 
     - name: Install build tools
-      include_role:
+      ansible.builtin.import_role:
         name: build
       tags:
         - build
@@ -135,14 +135,14 @@
         - wsl
 
     - name: Install Caffeine
-      include_role:
+      ansible.builtin.import_role:
         name: caffeine
       tags:
         - caffeine
         - desktop
 
     - name: Install Google Chrome web browser
-      include_role:
+      ansible.builtin.import_role:
         name: chrome
       tags:
         - browser
@@ -150,7 +150,7 @@
         - desktop
 
     - name: Install Croc secure file transfer
-      include_role:
+      ansible.builtin.import_role:
         name: croc
       tags:
         - container
@@ -160,7 +160,7 @@
         - wsl
 
     - name: Install MongoDB Compass database graphical client
-      include_role:
+      ansible.builtin.import_role:
         name: compass
       tags:
         - compass
@@ -168,7 +168,7 @@
         - desktop
 
     - name: Install Nvidia CUDA CPU acceleration toolkit
-      include_role:
+      ansible.builtin.import_role:
         name: cuda
       tags:
         - cuda
@@ -177,7 +177,7 @@
         - wsl
 
     - name: Install Datree Kubernetes linter
-      include_role:
+      ansible.builtin.import_role:
         name: datree
       tags:
         - datree
@@ -187,14 +187,14 @@
         - wsl
 
     - name: Install DBeaver database client
-      include_role:
+      ansible.builtin.import_role:
         name: dbeaver
       tags:
         - dbeaver
         - desktop
 
     - name: Configure default system terminal
-      include_role:
+      ansible.builtin.import_role:
         name: defterm
       tags:
         - defterm
@@ -202,7 +202,7 @@
         - terminal
 
     - name: Install Deno JavaScript and TypeScript runtime
-      include_role:
+      ansible.builtin.import_role:
         name: deno
       tags:
         - container
@@ -214,7 +214,7 @@
         - wsl
 
     - name: Configure system desktop environment
-      include_role:
+      ansible.builtin.import_role:
         name: deskenv
 
       tags:
@@ -222,7 +222,7 @@
         - desktop
 
     - name: Install Direnv environment variables shell extension
-      include_role:
+      ansible.builtin.import_role:
         name: direnv
       tags:
         - container
@@ -232,7 +232,7 @@
         - wsl
 
     - name: Install Docker container platform
-      include_role:
+      ansible.builtin.import_role:
         name: docker
       tags:
         - desktop
@@ -242,7 +242,7 @@
         - wsl
 
     - name: Install Docker Compose container orchestrator
-      include_role:
+      ansible.builtin.import_role:
         name: docker_compose
       tags:
         - desktop
@@ -252,7 +252,7 @@
         - wsl
 
     - name: Install Digital Ocean development tools
-      include_role:
+      ansible.builtin.import_role:
         name: doctl
       tags:
         - cloud
@@ -263,7 +263,7 @@
         - wsl
 
     - name: Install Duf device usage analyzer
-      include_role:
+      ansible.builtin.import_role:
         name: duf
       tags:
         - container
@@ -273,7 +273,7 @@
         - wsl
 
     - name: Install Dust disk space analyzer
-      include_role:
+      ansible.builtin.import_role:
         name: dust
       tags:
         - container
@@ -283,7 +283,7 @@
         - wsl
 
     - name: Install Data Version Control
-      include_role:
+      ansible.builtin.import_role:
         name: dvc
       tags:
         - container
@@ -294,14 +294,14 @@
         - wsl
 
     - name: Install Balena Etcher ISO flasher
-      include_role:
+      ansible.builtin.import_role:
         name: etcher
       tags:
         - desktop
         - etcher
 
     - name: Install Exa file lister
-      include_role:
+      ansible.builtin.import_role:
         name: exa
       tags:
         - container
@@ -312,7 +312,7 @@
         - wsl
 
     - name: Install FD file searcher
-      include_role:
+      ansible.builtin.import_role:
         name: fd
       tags:
         - container
@@ -323,7 +323,7 @@
         - wsl
 
     - name: Install FFSend secure file sharer
-      include_role:
+      ansible.builtin.import_role:
         name: ffsend
       tags:
         - container
@@ -333,7 +333,7 @@
         - wsl
 
     - name: Install Firefox web browser
-      include_role:
+      ansible.builtin.import_role:
         name: firefox
       tags:
         - browser
@@ -341,7 +341,7 @@
         - firefox
 
     - name: Install Fish shell
-      include_role:
+      ansible.builtin.import_role:
         name: fish
       tags:
         - container
@@ -352,7 +352,7 @@
         - wsl
 
     - name: Install Flatpak packages
-      include_role:
+      ansible.builtin.import_role:
         name: flatpak
       tags:
         - container
@@ -362,7 +362,7 @@
         - wsl
 
     - name: Install fonts
-      include_role:
+      ansible.builtin.import_role:
         name: font
       tags:
         - container
@@ -371,7 +371,7 @@
         - server
 
     - name: Install FzF fuzzy searcher
-      include_role:
+      ansible.builtin.import_role:
         name: fzf
       tags:
         - container
@@ -381,7 +381,7 @@
         - wsl
 
     - name: Install Google Cloud Platform development tools
-      include_role:
+      ansible.builtin.import_role:
         name: gcp
       tags:
         - cloud
@@ -392,7 +392,7 @@
         - wsl
 
     - name: Install Git version control
-      include_role:
+      ansible.builtin.import_role:
         name: git
       tags:
         - container
@@ -403,7 +403,7 @@
         - wsl
 
     - name: Install GitHub helper tools
-      include_role:
+      ansible.builtin.import_role:
         name: github
       tags:
         - desktop
@@ -413,7 +413,7 @@
         - wsl
 
     - name: Install GitLab helper tools
-      include_role:
+      ansible.builtin.import_role:
         name: gitlab
       tags:
         - desktop
@@ -423,7 +423,7 @@
         - wsl
 
     - name: Install Glow
-      include_role:
+      ansible.builtin.import_role:
         name: glow
       tags:
         - container
@@ -433,7 +433,7 @@
         - wsl
 
     - name: Install Go language
-      include_role:
+      ansible.builtin.import_role:
         name: go
       tags:
         - container
@@ -444,7 +444,7 @@
         - wsl
 
     - name: Install Hadolint linter
-      include_role:
+      ansible.builtin.import_role:
         name: hadolint
       tags:
         - desktop
@@ -454,7 +454,7 @@
         - wsl
 
     - name: Install HDF5 file serialization tools
-      include_role:
+      ansible.builtin.import_role:
         name: hdf5
       tags:
         - container
@@ -464,7 +464,7 @@
         - wsl
 
     - name: Install Helix terminal text editor
-      include_role:
+      ansible.builtin.import_role:
         name: helix
       tags:
         - container
@@ -475,7 +475,7 @@
         - wsl
 
     - name: Install Helm Kubernetes manager
-      include_role:
+      ansible.builtin.import_role:
         name: helm
       tags:
         - desktop
@@ -485,7 +485,7 @@
         - wsl
 
     - name: Install Helmfile Kubernetes Helm deployment tool
-      include_role:
+      ansible.builtin.import_role:
         name: helmfile
       tags:
         - desktop
@@ -495,7 +495,7 @@
         - wsl
 
     - name: Install Htmlq HTML parser
-      include_role:
+      ansible.builtin.import_role:
         name: htmlq
       tags:
         - container
@@ -505,7 +505,7 @@
         - wsl
 
     - name: Install Hyper terminal
-      include_role:
+      ansible.builtin.import_role:
         name: hyper
       tags:
         - desktop
@@ -513,7 +513,7 @@
         - terminal
 
     - name: Install Hyperfine benchmarking tool
-      include_role:
+      ansible.builtin.import_role:
         name: hyperfine
       tags:
         - container
@@ -523,7 +523,7 @@
         - wsl
 
     - name: Install Java language
-      include_role:
+      ansible.builtin.import_role:
         name: java
       tags:
         - container
@@ -534,7 +534,7 @@
         - wsl
 
     - name: Install Jq JSON parser
-      include_role:
+      ansible.builtin.import_role:
         name: jq
       tags:
         - container
@@ -545,7 +545,7 @@
         - wsl
 
     - name: Install Julia language
-      include_role:
+      ansible.builtin.import_role:
         name: julia
       tags:
         - container
@@ -556,7 +556,7 @@
         - wsl
 
     - name: Install K3d Kubernetes development cluster manager
-      include_role:
+      ansible.builtin.import_role:
         name: k3d
       tags:
         - desktop
@@ -566,7 +566,7 @@
         - wsl
 
     - name: Install K9s Kubernetes manager
-      include_role:
+      ansible.builtin.import_role:
         name: k9s
       tags:
         - desktop
@@ -576,7 +576,7 @@
         - wsl
 
     - name: Install Kind Kubernetes development cluster manager
-      include_role:
+      ansible.builtin.import_role:
         name: kind
       tags:
         - desktop
@@ -586,7 +586,7 @@
         - wsl
 
     - name: Install Krew Kubectl plugin package manager
-      include_role:
+      ansible.builtin.import_role:
         name: krew
       tags:
         - desktop
@@ -596,7 +596,7 @@
         - wsl
 
     - name: Install Kubectl Kubernetes manager
-      include_role:
+      ansible.builtin.import_role:
         name: kubectl
       tags:
         - desktop
@@ -606,7 +606,7 @@
         - wsl
 
     - name: Install Lazydocker Docker manager
-      include_role:
+      ansible.builtin.import_role:
         name: lazydocker
       tags:
         - desktop
@@ -615,7 +615,7 @@
         - wsl
 
     - name: Install Lazygit Git manager
-      include_role:
+      ansible.builtin.import_role:
         name: lazygit
       tags:
         - container
@@ -626,7 +626,7 @@
         - wsl
 
     - name: Install Libvirt virtualization API
-      include_role:
+      ansible.builtin.import_role:
         name: libvirt
       tags:
         - desktop
@@ -634,7 +634,7 @@
         - vm
 
     - name: Install Lua language
-      include_role:
+      ansible.builtin.import_role:
         name: lua
       tags:
         - container
@@ -645,7 +645,7 @@
         - wsl
 
     - name: Install Mdbook static website generator
-      include_role:
+      ansible.builtin.import_role:
         name: mdbook
       tags:
         - container
@@ -656,7 +656,7 @@
         - wsl
 
     - name: Install Mkcert web certificate generator
-      include_role:
+      ansible.builtin.import_role:
         name: mkcert
       tags:
         - container
@@ -667,7 +667,7 @@
         - wsl
 
     - name: Install MongoDB database client
-      include_role:
+      ansible.builtin.import_role:
         name: mongo
       tags:
         - container
@@ -678,7 +678,7 @@
         - wsl
 
     - name: Install Navi interactive documentation tool
-      include_role:
+      ansible.builtin.import_role:
         name: navi
       tags:
         - container
@@ -688,7 +688,7 @@
         - wsl
 
     - name: Install Neovim terminal text editor
-      include_role:
+      ansible.builtin.import_role:
         name: neovim
       tags:
         - container
@@ -699,7 +699,7 @@
         - wsl
 
     - name: Install Node JavaScript runtime
-      include_role:
+      ansible.builtin.import_role:
         name: node
       tags:
         - container
@@ -711,14 +711,14 @@
         - wsl
 
     - name: Install Obsidian notetaking application
-      include_role:
+      ansible.builtin.import_role:
         name: obsidian
       tags:
         - desktop
         - obsidian
 
     - name: Install optional packages
-      include_role:
+      ansible.builtin.import_role:
         name: package
       tags:
         - container
@@ -728,7 +728,7 @@
         - wsl
 
     - name: Install Packer image generator
-      include_role:
+      ansible.builtin.import_role:
         name: packer
       tags:
         - container
@@ -739,7 +739,7 @@
         - wsl
 
     - name: Install Parquet file serialization tools
-      include_role:
+      ansible.builtin.import_role:
         name: parquet
       tags:
         - container
@@ -749,7 +749,7 @@
         - wsl
 
     - name: Install PowerShell shell
-      include_role:
+      ansible.builtin.import_role:
         name: powershell
       tags:
         - container
@@ -759,7 +759,7 @@
         - shell
 
     - name: Install Procs process viewer
-      include_role:
+      ansible.builtin.import_role:
         name: procs
       tags:
         - container
@@ -769,7 +769,7 @@
         - wsl
 
     - name: Install Python language
-      include_role:
+      ansible.builtin.import_role:
         name: python
       tags:
         - container
@@ -780,7 +780,7 @@
         - wsl
 
     - name: Install QEMU hardware virtualizer
-      include_role:
+      ansible.builtin.import_role:
         name: qemu
       tags:
         - desktop
@@ -788,7 +788,7 @@
         - vm
 
     - name: Install RClone cloud storage utility
-      include_role:
+      ansible.builtin.import_role:
         name: rclone
       tags:
         - container
@@ -798,7 +798,7 @@
         - wsl
 
     - name: Install Ripgrep text searcher
-      include_role:
+      ansible.builtin.import_role:
         name: ripgrep
       tags:
         - container
@@ -809,7 +809,7 @@
         - wsl
 
     - name: Install Ruby language
-      include_role:
+      ansible.builtin.import_role:
         name: ruby
       tags:
         - container
@@ -820,7 +820,7 @@
         - wsl
 
     - name: Install Rust language
-      include_role:
+      ansible.builtin.import_role:
         name: rust
       tags:
         - container
@@ -831,7 +831,7 @@
         - wsl
 
     - name: Install Scc code line counter
-      include_role:
+      ansible.builtin.import_role:
         name: scc
       tags:
         - container
@@ -841,7 +841,7 @@
         - wsl
 
     - name: Install SD find and replace tool
-      include_role:
+      ansible.builtin.import_role:
         name: sd
       tags:
         - container
@@ -851,7 +851,7 @@
         - wsl
 
     - name: Install Shellcheck shell linter
-      include_role:
+      ansible.builtin.import_role:
         name: shellcheck
       tags:
         - container
@@ -862,7 +862,7 @@
         - wsl
 
     - name: Install Shfmt shell formatter
-      include_role:
+      ansible.builtin.import_role:
         name: shfmt
       tags:
         - container
@@ -873,14 +873,14 @@
         - wsl
 
     - name: Install Snap packages
-      include_role:
+      ansible.builtin.import_role:
         name: snap
       tags:
         - desktop
         - snap
 
     - name: Install Sops secrets editor
-      include_role:
+      ansible.builtin.import_role:
         name: sops
       tags:
         - container
@@ -890,7 +890,7 @@
         - wsl
 
     - name: Install SQLite database
-      include_role:
+      ansible.builtin.import_role:
         name: sqlite
       tags:
         - container
@@ -901,7 +901,7 @@
         - wsl
 
     - name: Install Starship shell prompt
-      include_role:
+      ansible.builtin.import_role:
         name: starship
       tags:
         - container
@@ -912,7 +912,7 @@
         - wsl
 
     - name: Configure sudo settings
-      include_role:
+      ansible.builtin.import_role:
         name: sudo
       tags:
         - container
@@ -922,7 +922,7 @@
         - wsl
 
     - name: Install Terraform infrastructure as code software
-      include_role:
+      ansible.builtin.import_role:
         name: terraform
       tags:
         - container
@@ -933,7 +933,7 @@
         - wsl
 
     - name: Install Terragrunt Terraform manager
-      include_role:
+      ansible.builtin.import_role:
         name: terragrunt
       tags:
         - container
@@ -944,7 +944,7 @@
         - wsl
 
     - name: Install Tilt Kubernetes development suite
-      include_role:
+      ansible.builtin.import_role:
         name: tilt
       tags:
         - desktop
@@ -954,7 +954,7 @@
         - wsl
 
     - name: Install TLDR documentation collection
-      include_role:
+      ansible.builtin.import_role:
         name: tldr
       tags:
         - container
@@ -965,7 +965,7 @@
         - wsl
 
     - name: Install Tmux terminal multiplexer
-      include_role:
+      ansible.builtin.import_role:
         name: tmux
       tags:
         - container
@@ -976,7 +976,7 @@
         - wsl
 
     - name: Install USQL
-      include_role:
+      ansible.builtin.import_role:
         name: usql
       tags:
         - container
@@ -986,7 +986,7 @@
         - wsl
 
     - name: Install Vagrant virtualization manager
-      include_role:
+      ansible.builtin.import_role:
         name: vagrant
       tags:
         - desktop
@@ -996,7 +996,7 @@
         - wsl
 
     - name: Install Vault secrets manager
-      include_role:
+      ansible.builtin.import_role:
         name: vault
       tags:
         - container
@@ -1007,7 +1007,7 @@
         - wsl
 
     - name: Install Virtualbox virtualization manager
-      include_role:
+      ansible.builtin.import_role:
         name: virtualbox
       tags:
         - desktop
@@ -1015,7 +1015,7 @@
         - virtualbox
 
     - name: Install VSCode text exitor
-      include_role:
+      ansible.builtin.import_role:
         name: vscode
       tags:
         - desktop
@@ -1023,7 +1023,7 @@
         - vscode
 
     - name: Install Web Assembly runtime
-      include_role:
+      ansible.builtin.import_role:
         name: wasm
       tags:
         - container
@@ -1034,14 +1034,14 @@
         - wsl
 
     - name: Install desktop window managers
-      include_role:
+      ansible.builtin.import_role:
         name: winman
       tags:
         - desktop
         - winman
 
     - name: Install Xh HTTP client
-      include_role:
+      ansible.builtin.import_role:
         name: xh
       tags:
         - container
@@ -1051,7 +1051,7 @@
         - xh
 
     - name: Install Xsv CSV parser
-      include_role:
+      ansible.builtin.import_role:
         name: xsv
       tags:
         - container
@@ -1062,7 +1062,7 @@
         - xsv
 
     - name: Install Yq YAML parser
-      include_role:
+      ansible.builtin.import_role:
         name: yq
       tags:
         - container
@@ -1072,7 +1072,7 @@
         - yq
 
     - name: Install Zellij terminal multiplexer
-      include_role:
+      ansible.builtin.import_role:
         name: zellij
       tags:
         - container
@@ -1083,7 +1083,7 @@
         - zellij
 
     - name: Install Zola static website generator
-      include_role:
+      ansible.builtin.import_role:
         name: zola
       tags:
         - container
@@ -1094,7 +1094,7 @@
         - zola
 
     - name: Install Zoxide directory navigator helper
-      include_role:
+      ansible.builtin.import_role:
         name: zoxide
       tags:
         - container
