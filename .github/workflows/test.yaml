@@ -168,12 +168,10 @@ jobs:
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
             bootware bootstrap --dev --no-passwd
-            source $HOME/.bashrc
-            bash -c 'echo $PATH'
-            bash -c './tests/integration/roles_test.ts --arch amd64 freebsd'
+            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
-      # freebsd` and `cd $GITHUB_WORKSPACE`.
+      # freebsd` and `cd /root/work/bootware/bootware`.
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
