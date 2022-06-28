@@ -4,1208 +4,1101 @@
 # https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
 ---
-- name: Update system package managers and install essential packages
-  hosts: all
-  roles:
-    - role: system
-  tags:
-    - container
-    - desktop
-    - server
-    - system
-    - wsl
-
-- name: Install Age encryption tool
-  hosts: all
-  roles:
-    - role: age
-  tags:
-    - age
-    - container
-    - desktop
-    - server
-    - wsl
-
-- name: Install Alacritty terminal
-  hosts: all
-  roles:
-    - role: alacritty
-  tags:
-    - alacritty
-    - desktop
-    - terminal
-
-- name: Install AppImage packages
-  hosts: all
-  roles:
-    - role: appimage
-  tags:
-    - appimage
-    - container
-    - desktop
-    - server
-    - wsl
-
-- name: Install audio tools
-  hosts: all
-  roles:
-    - role: audio
-  tags:
-    - audio
-    - desktop
-
-- name: Install Avro file serialization tools
-  hosts: all
-  roles:
-    - role: avro
-  tags:
-    - avro
-    - container
-    - desktop
-    - server
-    - wsl
-
-- name: Install Amazon Web Services development tools
-  hosts: all
-  roles:
-    - role: aws
-  tags:
-    - aws
-    - cloud
-    - container
-    - desktop
-    - server
-    - wsl
-
-- name: Install Bash shell
-  hosts: all
-  roles:
-    - role: bash
-  tags:
-    - bash
-    - container
-    - desktop
-    - server
-    - shell
-    - wsl
-
-- name: Install Bashdb Bash debugger
-  hosts: all
-  roles:
-    - role: bashdb
-  tags:
-    - bashdb
-    - container
-    - desktop
-    - server
-    - shell
-    - wsl
-
-- name: Install Bat file reader
-  hosts: all
-  roles:
-    - role: bat
-  tags:
-    - bat
-    - container
-    - desktop
-    - server
-    - shell
-    - wsl
-
-- name: Install Bats Bash test framework
-  hosts: all
-  roles:
-    - role: bats
-  tags:
-    - bats
-    - container
-    - desktop
-    - server
-    - shell
-    - wsl
-
-- name: Install Beekeeper database client
-  hosts: all
-  roles:
-    - role: beekeeper
-  tags:
-    - beekeeper
-    - desktop
-
-- name: Install build tools
-  hosts: all
-  roles:
-    - role: build
-  tags:
-    - build
-    - container
-    - desktop
-    - server
-    - wsl
-
-- name: Install Caffeine
-  hosts: all
-  roles:
-    - role: caffeine
-  tags:
-    - caffeine
-    - desktop
-
-- name: Install Google Chrome web browser
-  hosts: all
-  roles:
-    - role: chrome
-  tags:
-    - browser
-    - chrome
-    - desktop
-
-- name: Install Croc secure file transfer
-  hosts: all
-  roles:
-    - role: croc
-  tags:
-    - container
-    - croc
-    - desktop
-    - server
-    - wsl
-
-- name: Install MongoDB Compass database graphical client
-  hosts: all
-  roles:
-    - role: compass
-  tags:
-    - compass
-    - database
-    - desktop
-
-- name: Install Nvidia CUDA CPU acceleration toolkit
-  hosts: all
-  roles:
-    - role: cuda
-  tags:
-    - cuda
-    - desktop
-    - server
-    - wsl
-
-- name: Install Datree Kubernetes linter
-  hosts: all
-  roles:
-    - role: datree
-  tags:
-    - datree
-    - desktop
-    - server
-    - vm
-    - wsl
-
-- name: Install DBeaver database client
-  hosts: all
-  roles:
-    - role: dbeaver
-  tags:
-    - dbeaver
-    - desktop
-
-- name: Configure default system terminal
-  hosts: all
-  roles:
-    - role: defterm
-  tags:
-    - defterm
-    - desktop
-    - terminal
-
-- name: Install Deno JavaScript and TypeScript runtime
-  hosts: all
-  roles:
-    - role: deno
-  tags:
-    - container
-    - deno
-    - desktop
-    - language
-    - server
-    - typescript
-    - wsl
-
-- name: Configure system desktop environment
-  hosts: all
-  roles:
-    - role: deskenv
-
-  tags:
-    - deskenv
-    - desktop
-
-- name: Install Direnv environment variables shell extension
-  hosts: all
-  roles:
-    - role: direnv
-  tags:
-    - container
-    - desktop
-    - direnv
-    - server
-    - wsl
-
-- name: Install Docker container platform
-  hosts: all
-  roles:
-    - role: docker
-  tags:
-    - desktop
-    - docker
-    - server
-    - vm
-    - wsl
-
-- name: Install Docker Compose container orchestrator
-  hosts: all
-  roles:
-    - role: docker_compose
-  tags:
-    - desktop
-    - docker_compose
-    - server
-    - vm
-    - wsl
-
-- name: Install Digital Ocean development tools
-  hosts: all
-  roles:
-    - role: doctl
-  tags:
-    - cloud
-    - container
-    - desktop
-    - doctl
-    - server
-    - wsl
-
-- name: Install Duf device usage analyzer
-  hosts: all
-  roles:
-    - role: duf
-  tags:
-    - container
-    - desktop
-    - duf
-    - server
-    - wsl
-
-- name: Install Dust disk space analyzer
-  hosts: all
-  roles:
-    - role: dust
-  tags:
-    - container
-    - desktop
-    - dust
-    - server
-    - wsl
-
-- name: Install Data Version Control
-  hosts: all
-  roles:
-    - role: dvc
-  tags:
-    - container
-    - desktop
-    - dvc
-    - server
-    - vcs
-    - wsl
-
-- name: Install Balena Etcher ISO flasher
-  hosts: all
-  roles:
-    - role: etcher
-  tags:
-    - desktop
-    - etcher
-
-- name: Install Exa file lister
-  hosts: all
-  roles:
-    - role: exa
-  tags:
-    - container
-    - desktop
-    - exa
-    - server
-    - shell
-    - wsl
-
-- name: Install FD file searcher
-  hosts: all
-  roles:
-    - role: fd
-  tags:
-    - container
-    - desktop
-    - fd
-    - server
-    - shell
-    - wsl
-
-- name: Install FFSend secure file sharer
-  hosts: all
-  roles:
-    - role: ffsend
-  tags:
-    - container
-    - desktop
-    - ffsend
-    - server
-    - wsl
-
-- name: Install Firefox web browser
-  hosts: all
-  roles:
-    - role: firefox
-  tags:
-    - browser
-    - desktop
-    - firefox
-
-- name: Install Fish shell
-  hosts: all
-  roles:
-    - role: fish
-  tags:
-    - container
-    - desktop
-    - fish
-    - server
-    - shell
-    - wsl
-
-- name: Install Flatpak packages
-  hosts: all
-  roles:
-    - role: flatpak
-  tags:
-    - container
-    - desktop
-    - flatpak
-    - server
-    - wsl
-
-- name: Install fonts
-  hosts: all
-  roles:
-    - role: font
-  tags:
-    - container
-    - desktop
-    - font
-    - server
-
-- name: Install FzF fuzzy searcher
-  hosts: all
-  roles:
-    - role: fzf
-  tags:
-    - container
-    - desktop
-    - fzf
-    - server
-    - wsl
-
-- name: Install Google Cloud Platform development tools
-  hosts: all
-  roles:
-    - role: gcp
-  tags:
-    - cloud
-    - container
-    - desktop
-    - gcp
-    - server
-    - wsl
-
-- name: Install Git version control
-  hosts: all
-  roles:
-    - role: git
-  tags:
-    - container
-    - desktop
-    - git
-    - server
-    - vcs
-    - wsl
-
-- name: Install GitHub helper tools
-  hosts: all
-  roles:
-    - role: github
-  tags:
-    - desktop
-    - github
-    - server
-    - vcs
-    - wsl
-
-- name: Install GitLab helper tools
-  hosts: all
-  roles:
-    - role: gitlab
-  tags:
-    - desktop
-    - gitlab
-    - server
-    - vcs
-    - wsl
-
-- name: Install Glow
-  hosts: all
-  roles:
-    - role: glow
-  tags:
-    - container
-    - desktop
-    - glow
-    - server
-    - wsl
-
-- name: Install Go language
-  hosts: all
-  roles:
-    - role: go
-  tags:
-    - container
-    - desktop
-    - go
-    - language
-    - server
-    - wsl
-
-- name: Install Hadolint linter
-  hosts: all
-  roles:
-    - role: hadolint
-  tags:
-    - desktop
-    - hadolint
-    - server
-    - vm
-    - wsl
-
-- name: Install HDF5 file serialization tools
-  hosts: all
-  roles:
-    - role: hdf5
-  tags:
-    - container
-    - desktop
-    - hdf5
-    - server
-    - wsl
-
-- name: Install Helix terminal text editor
-  hosts: all
-  roles:
-    - role: helix
-  tags:
-    - container
-    - desktop
-    - editor
-    - helix
-    - server
-    - wsl
-
-- name: Install Helm Kubernetes manager
-  hosts: all
-  roles:
-    - role: helm
-  tags:
-    - desktop
-    - helm
-    - server
-    - vm
-    - wsl
-
-- name: Install Helmfile Kubernetes Helm deployment tool
-  hosts: all
-  roles:
-    - role: helmfile
-  tags:
-    - desktop
-    - helmfile
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install Htmlq HTML parser
-  hosts: all
-  roles:
-    - role: htmlq
-  tags:
-    - container
-    - desktop
-    - htmlq
-    - server
-    - wsl
-
-- name: Install Hyper terminal
-  hosts: all
-  roles:
-    - role: hyper
-  tags:
-    - desktop
-    - hyper
-    - terminal
-
-- name: Install Hyperfine benchmarking tool
-  hosts: all
-  roles:
-    - role: hyperfine
-  tags:
-    - container
-    - desktop
-    - hyperfine
-    - server
-    - wsl
-
-- name: Install Java language
-  hosts: all
-  roles:
-    - role: java
-  tags:
-    - container
-    - desktop
-    - java
-    - language
-    - server
-    - wsl
-
-- name: Install Jq JSON parser
-  hosts: all
-  roles:
-    - role: jq
-  tags:
-    - container
-    - desktop
-    - jq
-    - server
-    - shell
-    - wsl
-
-- name: Install Julia language
-  hosts: all
-  roles:
-    - role: julia
-  tags:
-    - container
-    - desktop
-    - julia
-    - language
-    - server
-    - wsl
-
-- name: Install K3d Kubernetes development cluster manager
-  hosts: all
-  roles:
-    - role: k3d
-  tags:
-    - desktop
-    - k3d
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install K9s Kubernetes manager
-  hosts: all
-  roles:
-    - role: k9s
-  tags:
-    - desktop
-    - k9s
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install Kind Kubernetes development cluster manager
-  hosts: all
-  roles:
-    - role: kind
-  tags:
-    - desktop
-    - kind
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install Krew Kubectl plugin package manager
-  hosts: all
-  roles:
-    - role: krew
-  tags:
-    - desktop
-    - krew
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install Kubectl Kubernetes manager
-  hosts: all
-  roles:
-    - role: kubectl
-  tags:
-    - desktop
-    - kubectl
-    - kubernetes
-    - server
-    - wsl
-
-- name: Install Lazydocker Docker manager
-  hosts: all
-  roles:
-    - role: lazydocker
-  tags:
-    - desktop
-    - lazydocker
-    - server
-    - wsl
-
-- name: Install Lazygit Git manager
-  hosts: all
-  roles:
-    - role: lazygit
-  tags:
-    - container
-    - desktop
-    - lazygit
-    - server
-    - vcs
-    - wsl
-
-- name: Install Libvirt virtualization API
-  hosts: all
-  roles:
-    - role: libvirt
-  tags:
-    - desktop
-    - libvirt
-    - vm
-
-- name: Install Lua language
-  hosts: all
-  roles:
-    - role: lua
-  tags:
-    - container
-    - desktop
-    - language
-    - lua
-    - server
-    - wsl
-
-- name: Install Mdbook static website generator
-  hosts: all
-  roles:
-    - role: mdbook
-  tags:
-    - container
-    - desktop
-    - mdbook
-    - server
-    - website
-    - wsl
-
-- name: Install Mkcert web certificate generator
-  hosts: all
-  roles:
-    - role: mkcert
-  tags:
-    - container
-    - desktop
-    - mkcert
-    - network
-    - server
-    - wsl
-
-- name: Install MongoDB database client
-  hosts: all
-  roles:
-    - role: mongo
-  tags:
-    - container
-    - database
-    - desktop
-    - mongo
-    - server
-    - wsl
-
-- name: Install Navi interactive documentation tool
-  hosts: all
-  roles:
-    - role: navi
-  tags:
-    - container
-    - desktop
-    - navi
-    - server
-    - wsl
-
-- name: Install Neovim terminal text editor
-  hosts: all
-  roles:
-    - role: neovim
-  tags:
-    - container
-    - desktop
-    - editor
-    - neovim
-    - server
-    - wsl
-
-- name: Install Node JavaScript runtime
-  hosts: all
-  roles:
-    - role: node
-  tags:
-    - container
-    - desktop
-    - language
-    - node
-    - server
-    - typescript
-    - wsl
-
-- name: Install Obsidian notetaking application
-  hosts: all
-  roles:
-    - role: obsidian
-  tags:
-    - desktop
-    - obsidian
-
-- name: Install optional packages
-  hosts: all
-  roles:
-    - role: package
-  tags:
-    - container
-    - desktop
-    - package
-    - server
-    - wsl
-
-- name: Install Packer image generator
-  hosts: all
-  roles:
-    - role: packer
-  tags:
-    - container
-    - desktop
-    - hashicorp
-    - packer
-    - server
-    - wsl
-
-- name: Install Parquet file serialization tools
-  hosts: all
-  roles:
-    - role: parquet
-  tags:
-    - container
-    - desktop
-    - parquet
-    - server
-    - wsl
-
-- name: Install PowerShell shell
-  hosts: all
-  roles:
-    - role: powershell
-  tags:
-    - container
-    - desktop
-    - powershell
-    - server
-    - shell
-
-- name: Install Procs process viewer
-  hosts: all
-  roles:
-    - role: procs
-  tags:
-    - container
-    - desktop
-    - procs
-    - server
-    - wsl
-
-- name: Install Python language
-  hosts: all
-  roles:
-    - role: python
-  tags:
-    - container
-    - desktop
-    - language
-    - python
-    - server
-    - wsl
-
-- name: Install QEMU hardware virtualizer
-  hosts: all
-  roles:
-    - role: qemu
-  tags:
-    - desktop
-    - qemu
-    - vm
-
-- name: Install RClone cloud storage utility
-  hosts: all
-  roles:
-    - role: rclone
-  tags:
-    - container
-    - desktop
-    - rclone
-    - server
-    - wsl
-
-- name: Install Ripgrep text searcher
-  hosts: all
-  roles:
-    - role: ripgrep
-  tags:
-    - container
-    - desktop
-    - ripgrep
-    - server
-    - shell
-    - wsl
-
-- name: Install Ruby language
-  hosts: all
-  roles:
-    - role: ruby
-  tags:
-    - container
-    - desktop
-    - language
-    - ruby
-    - server
-    - wsl
-
-- name: Install Rust language
-  hosts: all
-  roles:
-    - role: rust
-  tags:
-    - container
-    - desktop
-    - language
-    - rust
-    - server
-    - wsl
-
-- name: Install Scc code line counter
-  hosts: all
-  roles:
-    - role: scc
-  tags:
-    - container
-    - desktop
-    - scc
-    - server
-    - wsl
-
-- name: Install SD find and replace tool
-  hosts: all
-  roles:
-    - role: sd
-  tags:
-    - container
-    - desktop
-    - server
-    - sd
-    - wsl
-
-- name: Install Shellcheck shell linter
-  hosts: all
-  roles:
-    - role: shellcheck
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - shellcheck
-    - wsl
-
-- name: Install Shfmt shell formatter
-  hosts: all
-  roles:
-    - role: shfmt
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - shfmt
-    - wsl
-
-- name: Install Snap packages
-  hosts: all
-  roles:
-    - role: snap
-  tags:
-    - desktop
-    - snap
-
-- name: Install Sops secrets editor
-  hosts: all
-  roles:
-    - role: sops
-  tags:
-    - container
-    - desktop
-    - server
-    - sops
-    - wsl
-
-- name: Install SQLite database
-  hosts: all
-  roles:
-    - role: sqlite
-  tags:
-    - container
-    - database
-    - desktop
-    - server
-    - sqlite
-    - wsl
-
-- name: Install Starship shell prompt
-  hosts: all
-  roles:
-    - role: starship
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - starship
-    - wsl
-
-- name: Configure sudo settings
-  hosts: all
-  roles:
-    - role: sudo
-  tags:
-    - container
-    - desktop
-    - server
-    - sudo
-    - wsl
-
-- name: Install Terraform infrastructure as code software
-  hosts: all
-  roles:
-    - role: terraform
-  tags:
-    - container
-    - desktop
-    - hashicorp
-    - server
-    - terraform
-    - wsl
-
-- name: Install Terragrunt Terraform manager
-  hosts: all
-  roles:
-    - role: terragrunt
-  tags:
-    - container
-    - desktop
-    - hashicorp
-    - server
-    - terragrunt
-    - wsl
-
-- name: Install Tilt Kubernetes development suite
-  hosts: all
-  roles:
-    - role: tilt
-  tags:
-    - desktop
-    - kubernetes
-    - server
-    - tilt
-    - wsl
-
-- name: Install TLDR documentation collection
-  hosts: all
-  roles:
-    - role: tldr
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - tldr
-    - wsl
-
-- name: Install Tmux terminal multiplexer
-  hosts: all
-  roles:
-    - role: tmux
-  tags:
-    - container
-    - desktop
-    - server
-    - terminal
-    - tmux
-    - wsl
-
-- name: Install USQL
-  hosts: all
-  roles:
-    - role: usql
-  tags:
-    - container
-    - desktop
-    - server
-    - usql
-    - wsl
-
-- name: Install Vagrant virtualization manager
-  hosts: all
-  roles:
-    - role: vagrant
-  tags:
-    - desktop
-    - hashicorp
-    - server
-    - vagrant
-    - wsl
-
-- name: Install Vault secrets manager
-  hosts: all
-  roles:
-    - role: vault
-  tags:
-    - container
-    - desktop
-    - hashicorp
-    - server
-    - vault
-    - wsl
-
-- name: Install Virtualbox virtualization manager
-  hosts: all
-  roles:
-    - role: virtualbox
-  tags:
-    - desktop
-    - hashicorp
-    - virtualbox
-
-- name: Install VSCode text exitor
-  hosts: all
-  roles:
-    - role: vscode
-  tags:
-    - desktop
-    - editor
-    - vscode
-
-- name: Install Web Assembly runtime
-  hosts: all
-  roles:
-    - role: wasm
-  tags:
-    - container
-    - desktop
-    - server
-    - vm
-    - wasm
-    - wsl
-
-- name: Install desktop window managers
-  hosts: all
-  roles:
-    - role: winman
-  tags:
-    - desktop
-    - winman
-
-- name: Install Xh HTTP client
-  hosts: all
-  roles:
-    - role: xh
-  tags:
-    - container
-    - desktop
-    - server
-    - wsl
-    - xh
-
-- name: Install Xsv CSV parser
-  hosts: all
-  roles:
-    - role: xsv
-  tags:
-    - container
-    - desktop
-    - server
-    - shell
-    - wsl
-    - xsv
-
-- name: Install Yq YAML parser
-  hosts: all
-  roles:
-    - role: yq
-  tags:
-    - container
-    - desktop
-    - server
-    - wsl
-    - yq
-
-- name: Install Zellij terminal multiplexer
-  hosts: all
-  roles:
-    - role: zellij
-  tags:
-    - container
-    - desktop
-    - server
-    - termianl
-    - wsl
-    - zellij
-
-- name: Install Zola static website generator
-  hosts: all
-  roles:
-    - role: zola
-  tags:
-    - container
-    - desktop
-    - server
-    - website
-    - wsl
-    - zola
-
-- name: Install Zoxide directory navigator helper
-  hosts: all
-  roles:
-    - role: zoxide
-  tags:
-    - container
-    - desktop
-    - server
-    - wsl
-    - zoxide
+- name: Install software with Bootware
+  hosts: all
+  tasks:
+    - name: Update system package managers and install essential packages
+      ansible.builtin.import_role:
+        name: system
+      tags:
+        - container
+        - desktop
+        - server
+        - system
+        - wsl
+
+    - name: Install Age encryption tool
+      ansible.builtin.import_role:
+        name: age
+      tags:
+        - age
+        - container
+        - desktop
+        - server
+        - wsl
+
+    - name: Install Alacritty terminal
+      ansible.builtin.import_role:
+        name: alacritty
+      tags:
+        - alacritty
+        - desktop
+        - terminal
+
+    - name: Install AppImage packages
+      ansible.builtin.import_role:
+        name: appimage
+      tags:
+        - appimage
+        - container
+        - desktop
+        - server
+        - wsl
+
+    - name: Install audio tools
+      ansible.builtin.import_role:
+        name: audio
+      tags:
+        - audio
+        - desktop
+
+    - name: Install Avro file serialization tools
+      ansible.builtin.import_role:
+        name: avro
+      tags:
+        - avro
+        - container
+        - desktop
+        - server
+        - wsl
+
+    - name: Install Amazon Web Services development tools
+      ansible.builtin.import_role:
+        name: aws
+      tags:
+        - aws
+        - cloud
+        - container
+        - desktop
+        - server
+        - wsl
+
+    - name: Install Bash shell
+      ansible.builtin.import_role:
+        name: bash
+      tags:
+        - bash
+        - container
+        - desktop
+        - server
+        - shell
+        - wsl
+
+    - name: Install Bashdb Bash debugger
+      ansible.builtin.import_role:
+        name: bashdb
+      tags:
+        - bashdb
+        - container
+        - desktop
+        - server
+        - shell
+        - wsl
+
+    - name: Install Bat file reader
+      ansible.builtin.import_role:
+        name: bat
+      tags:
+        - bat
+        - container
+        - desktop
+        - server
+        - shell
+        - wsl
+
+    - name: Install Bats Bash test framework
+      ansible.builtin.import_role:
+        name: bats
+      tags:
+        - bats
+        - container
+        - desktop
+        - server
+        - shell
+        - wsl
+
+    - name: Install Beekeeper database client
+      ansible.builtin.import_role:
+        name: beekeeper
+      tags:
+        - beekeeper
+        - desktop
+
+    - name: Install build tools
+      ansible.builtin.import_role:
+        name: build
+      tags:
+        - build
+        - container
+        - desktop
+        - server
+        - wsl
+
+    - name: Install Caffeine
+      ansible.builtin.import_role:
+        name: caffeine
+      tags:
+        - caffeine
+        - desktop
+
+    - name: Install Google Chrome web browser
+      ansible.builtin.import_role:
+        name: chrome
+      tags:
+        - browser
+        - chrome
+        - desktop
+
+    - name: Install Croc secure file transfer
+      ansible.builtin.import_role:
+        name: croc
+      tags:
+        - container
+        - croc
+        - desktop
+        - server
+        - wsl
+
+    - name: Install MongoDB Compass database graphical client
+      ansible.builtin.import_role:
+        name: compass
+      tags:
+        - compass
+        - database
+        - desktop
+
+    - name: Install Nvidia CUDA CPU acceleration toolkit
+      ansible.builtin.import_role:
+        name: cuda
+      tags:
+        - cuda
+        - desktop
+        - server
+        - wsl
+
+    - name: Install Datree Kubernetes linter
+      ansible.builtin.import_role:
+        name: datree
+      tags:
+        - datree
+        - desktop
+        - server
+        - vm
+        - wsl
+
+    - name: Install DBeaver database client
+      ansible.builtin.import_role:
+        name: dbeaver
+      tags:
+        - dbeaver
+        - desktop
+
+    - name: Configure default system terminal
+      ansible.builtin.import_role:
+        name: defterm
+      tags:
+        - defterm
+        - desktop
+        - terminal
+
+    - name: Install Deno JavaScript and TypeScript runtime
+      ansible.builtin.import_role:
+        name: deno
+      tags:
+        - container
+        - deno
+        - desktop
+        - language
+        - server
+        - typescript
+        - wsl
+
+    - name: Configure system desktop environment
+      ansible.builtin.import_role:
+        name: deskenv
+
+      tags:
+        - deskenv
+        - desktop
+
+    - name: Install Direnv environment variables shell extension
+      ansible.builtin.import_role:
+        name: direnv
+      tags:
+        - container
+        - desktop
+        - direnv
+        - server
+        - wsl
+
+    - name: Install Docker container platform
+      ansible.builtin.import_role:
+        name: docker
+      tags:
+        - desktop
+        - docker
+        - server
+        - vm
+        - wsl
+
+    - name: Install Docker Compose container orchestrator
+      ansible.builtin.import_role:
+        name: docker_compose
+      tags:
+        - desktop
+        - docker_compose
+        - server
+        - vm
+        - wsl
+
+    - name: Install Digital Ocean development tools
+      ansible.builtin.import_role:
+        name: doctl
+      tags:
+        - cloud
+        - container
+        - desktop
+        - doctl
+        - server
+        - wsl
+
+    - name: Install Duf device usage analyzer
+      ansible.builtin.import_role:
+        name: duf
+      tags:
+        - container
+        - desktop
+        - duf
+        - server
+        - wsl
+
+    - name: Install Dust disk space analyzer
+      ansible.builtin.import_role:
+        name: dust
+      tags:
+        - container
+        - desktop
+        - dust
+        - server
+        - wsl
+
+    - name: Install Data Version Control
+      ansible.builtin.import_role:
+        name: dvc
+      tags:
+        - container
+        - desktop
+        - dvc
+        - server
+        - vcs
+        - wsl
+
+    - name: Install Balena Etcher ISO flasher
+      ansible.builtin.import_role:
+        name: etcher
+      tags:
+        - desktop
+        - etcher
+
+    - name: Install Exa file lister
+      ansible.builtin.import_role:
+        name: exa
+      tags:
+        - container
+        - desktop
+        - exa
+        - server
+        - shell
+        - wsl
+
+    - name: Install FD file searcher
+      ansible.builtin.import_role:
+        name: fd
+      tags:
+        - container
+        - desktop
+        - fd
+        - server
+        - shell
+        - wsl
+
+    - name: Install FFSend secure file sharer
+      ansible.builtin.import_role:
+        name: ffsend
+      tags:
+        - container
+        - desktop
+        - ffsend
+        - server
+        - wsl
+
+    - name: Install Firefox web browser
+      ansible.builtin.import_role:
+        name: firefox
+      tags:
+        - browser
+        - desktop
+        - firefox
+
+    - name: Install Fish shell
+      ansible.builtin.import_role:
+        name: fish
+      tags:
+        - container
+        - desktop
+        - fish
+        - server
+        - shell
+        - wsl
+
+    - name: Install Flatpak packages
+      ansible.builtin.import_role:
+        name: flatpak
+      tags:
+        - container
+        - desktop
+        - flatpak
+        - server
+        - wsl
+
+    - name: Install fonts
+      ansible.builtin.import_role:
+        name: font
+      tags:
+        - container
+        - desktop
+        - font
+        - server
+
+    - name: Install FzF fuzzy searcher
+      ansible.builtin.import_role:
+        name: fzf
+      tags:
+        - container
+        - desktop
+        - fzf
+        - server
+        - wsl
+
+    - name: Install Google Cloud Platform development tools
+      ansible.builtin.import_role:
+        name: gcp
+      tags:
+        - cloud
+        - container
+        - desktop
+        - gcp
+        - server
+        - wsl
+
+    - name: Install Git version control
+      ansible.builtin.import_role:
+        name: git
+      tags:
+        - container
+        - desktop
+        - git
+        - server
+        - vcs
+        - wsl
+
+    - name: Install GitHub helper tools
+      ansible.builtin.import_role:
+        name: github
+      tags:
+        - desktop
+        - github
+        - server
+        - vcs
+        - wsl
+
+    - name: Install GitLab helper tools
+      ansible.builtin.import_role:
+        name: gitlab
+      tags:
+        - desktop
+        - gitlab
+        - server
+        - vcs
+        - wsl
+
+    - name: Install Glow
+      ansible.builtin.import_role:
+        name: glow
+      tags:
+        - container
+        - desktop
+        - glow
+        - server
+        - wsl
+
+    - name: Install Go language
+      ansible.builtin.import_role:
+        name: go
+      tags:
+        - container
+        - desktop
+        - go
+        - language
+        - server
+        - wsl
+
+    - name: Install Hadolint linter
+      ansible.builtin.import_role:
+        name: hadolint
+      tags:
+        - desktop
+        - hadolint
+        - server
+        - vm
+        - wsl
+
+    - name: Install HDF5 file serialization tools
+      ansible.builtin.import_role:
+        name: hdf5
+      tags:
+        - container
+        - desktop
+        - hdf5
+        - server
+        - wsl
+
+    - name: Install Helix terminal text editor
+      ansible.builtin.import_role:
+        name: helix
+      tags:
+        - container
+        - desktop
+        - editor
+        - helix
+        - server
+        - wsl
+
+    - name: Install Helm Kubernetes manager
+      ansible.builtin.import_role:
+        name: helm
+      tags:
+        - desktop
+        - helm
+        - server
+        - vm
+        - wsl
+
+    - name: Install Helmfile Kubernetes Helm deployment tool
+      ansible.builtin.import_role:
+        name: helmfile
+      tags:
+        - desktop
+        - helmfile
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install Htmlq HTML parser
+      ansible.builtin.import_role:
+        name: htmlq
+      tags:
+        - container
+        - desktop
+        - htmlq
+        - server
+        - wsl
+
+    - name: Install Hyper terminal
+      ansible.builtin.import_role:
+        name: hyper
+      tags:
+        - desktop
+        - hyper
+        - terminal
+
+    - name: Install Hyperfine benchmarking tool
+      ansible.builtin.import_role:
+        name: hyperfine
+      tags:
+        - container
+        - desktop
+        - hyperfine
+        - server
+        - wsl
+
+    - name: Install Java language
+      ansible.builtin.import_role:
+        name: java
+      tags:
+        - container
+        - desktop
+        - java
+        - language
+        - server
+        - wsl
+
+    - name: Install Jq JSON parser
+      ansible.builtin.import_role:
+        name: jq
+      tags:
+        - container
+        - desktop
+        - jq
+        - server
+        - shell
+        - wsl
+
+    - name: Install Julia language
+      ansible.builtin.import_role:
+        name: julia
+      tags:
+        - container
+        - desktop
+        - julia
+        - language
+        - server
+        - wsl
+
+    - name: Install K3d Kubernetes development cluster manager
+      ansible.builtin.import_role:
+        name: k3d
+      tags:
+        - desktop
+        - k3d
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install K9s Kubernetes manager
+      ansible.builtin.import_role:
+        name: k9s
+      tags:
+        - desktop
+        - k9s
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install Kind Kubernetes development cluster manager
+      ansible.builtin.import_role:
+        name: kind
+      tags:
+        - desktop
+        - kind
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install Krew Kubectl plugin package manager
+      ansible.builtin.import_role:
+        name: krew
+      tags:
+        - desktop
+        - krew
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install Kubectl Kubernetes manager
+      ansible.builtin.import_role:
+        name: kubectl
+      tags:
+        - desktop
+        - kubectl
+        - kubernetes
+        - server
+        - wsl
+
+    - name: Install Lazydocker Docker manager
+      ansible.builtin.import_role:
+        name: lazydocker
+      tags:
+        - desktop
+        - lazydocker
+        - server
+        - wsl
+
+    - name: Install Lazygit Git manager
+      ansible.builtin.import_role:
+        name: lazygit
+      tags:
+        - container
+        - desktop
+        - lazygit
+        - server
+        - vcs
+        - wsl
+
+    - name: Install Libvirt virtualization API
+      ansible.builtin.import_role:
+        name: libvirt
+      tags:
+        - desktop
+        - libvirt
+        - vm
+
+    - name: Install Lua language
+      ansible.builtin.import_role:
+        name: lua
+      tags:
+        - container
+        - desktop
+        - language
+        - lua
+        - server
+        - wsl
+
+    - name: Install Mdbook static website generator
+      ansible.builtin.import_role:
+        name: mdbook
+      tags:
+        - container
+        - desktop
+        - mdbook
+        - server
+        - website
+        - wsl
+
+    - name: Install Mkcert web certificate generator
+      ansible.builtin.import_role:
+        name: mkcert
+      tags:
+        - container
+        - desktop
+        - mkcert
+        - network
+        - server
+        - wsl
+
+    - name: Install MongoDB database client
+      ansible.builtin.import_role:
+        name: mongo
+      tags:
+        - container
+        - database
+        - desktop
+        - mongo
+        - server
+        - wsl
+
+    - name: Install Navi interactive documentation tool
+      ansible.builtin.import_role:
+        name: navi
+      tags:
+        - container
+        - desktop
+        - navi
+        - server
+        - wsl
+
+    - name: Install Neovim terminal text editor
+      ansible.builtin.import_role:
+        name: neovim
+      tags:
+        - container
+        - desktop
+        - editor
+        - neovim
+        - server
+        - wsl
+
+    - name: Install Node JavaScript runtime
+      ansible.builtin.import_role:
+        name: node
+      tags:
+        - container
+        - desktop
+        - language
+        - node
+        - server
+        - typescript
+        - wsl
+
+    - name: Install Obsidian notetaking application
+      ansible.builtin.import_role:
+        name: obsidian
+      tags:
+        - desktop
+        - obsidian
+
+    - name: Install optional packages
+      ansible.builtin.import_role:
+        name: package
+      tags:
+        - container
+        - desktop
+        - package
+        - server
+        - wsl
+
+    - name: Install Packer image generator
+      ansible.builtin.import_role:
+        name: packer
+      tags:
+        - container
+        - desktop
+        - hashicorp
+        - packer
+        - server
+        - wsl
+
+    - name: Install Parquet file serialization tools
+      ansible.builtin.import_role:
+        name: parquet
+      tags:
+        - container
+        - desktop
+        - parquet
+        - server
+        - wsl
+
+    - name: Install PowerShell shell
+      ansible.builtin.import_role:
+        name: powershell
+      tags:
+        - container
+        - desktop
+        - powershell
+        - server
+        - shell
+
+    - name: Install Procs process viewer
+      ansible.builtin.import_role:
+        name: procs
+      tags:
+        - container
+        - desktop
+        - procs
+        - server
+        - wsl
+
+    - name: Install Python language
+      ansible.builtin.import_role:
+        name: python
+      tags:
+        - container
+        - desktop
+        - language
+        - python
+        - server
+        - wsl
+
+    - name: Install QEMU hardware virtualizer
+      ansible.builtin.import_role:
+        name: qemu
+      tags:
+        - desktop
+        - qemu
+        - vm
+
+    - name: Install RClone cloud storage utility
+      ansible.builtin.import_role:
+        name: rclone
+      tags:
+        - container
+        - desktop
+        - rclone
+        - server
+        - wsl
+
+    - name: Install Ripgrep text searcher
+      ansible.builtin.import_role:
+        name: ripgrep
+      tags:
+        - container
+        - desktop
+        - ripgrep
+        - server
+        - shell
+        - wsl
+
+    - name: Install Ruby language
+      ansible.builtin.import_role:
+        name: ruby
+      tags:
+        - container
+        - desktop
+        - language
+        - ruby
+        - server
+        - wsl
+
+    - name: Install Rust language
+      ansible.builtin.import_role:
+        name: rust
+      tags:
+        - container
+        - desktop
+        - language
+        - rust
+        - server
+        - wsl
+
+    - name: Install Scc code line counter
+      ansible.builtin.import_role:
+        name: scc
+      tags:
+        - container
+        - desktop
+        - scc
+        - server
+        - wsl
+
+    - name: Install SD find and replace tool
+      ansible.builtin.import_role:
+        name: sd
+      tags:
+        - container
+        - desktop
+        - server
+        - sd
+        - wsl
+
+    - name: Install Shellcheck shell linter
+      ansible.builtin.import_role:
+        name: shellcheck
+      tags:
+        - container
+        - desktop
+        - server
+        - shell
+        - shellcheck
+        - wsl
+
+    - name: Install Shfmt shell formatter
+      ansible.builtin.import_role:
+        name: shfmt
+      tags:
+        - container
+        - desktop
+        - server
+        - shell
+        - shfmt
+        - wsl
+
+    - name: Install Snap packages
+      ansible.builtin.import_role:
+        name: snap
+      tags:
+        - desktop
+        - snap
+
+    - name: Install Sops secrets editor
+      ansible.builtin.import_role:
+        name: sops
+      tags:
+        - container
+        - desktop
+        - server
+        - sops
+        - wsl
+
+    - name: Install SQLite database
+      ansible.builtin.import_role:
+        name: sqlite
+      tags:
+        - container
+        - database
+        - desktop
+        - server
+        - sqlite
+        - wsl
+
+    - name: Install Starship shell prompt
+      ansible.builtin.import_role:
+        name: starship
+      tags:
+        - container
+        - desktop
+        - server
+        - shell
+        - starship
+        - wsl
+
+    - name: Configure sudo settings
+      ansible.builtin.import_role:
+        name: sudo
+      tags:
+        - container
+        - desktop
+        - server
+        - sudo
+        - wsl
+
+    - name: Install Terraform infrastructure as code software
+      ansible.builtin.import_role:
+        name: terraform
+      tags:
+        - container
+        - desktop
+        - hashicorp
+        - server
+        - terraform
+        - wsl
+
+    - name: Install Terragrunt Terraform manager
+      ansible.builtin.import_role:
+        name: terragrunt
+      tags:
+        - container
+        - desktop
+        - hashicorp
+        - server
+        - terragrunt
+        - wsl
+
+    - name: Install Tilt Kubernetes development suite
+      ansible.builtin.import_role:
+        name: tilt
+      tags:
+        - desktop
+        - kubernetes
+        - server
+        - tilt
+        - wsl
+
+    - name: Install TLDR documentation collection
+      ansible.builtin.import_role:
+        name: tldr
+      tags:
+        - container
+        - desktop
+        - server
+        - shell
+        - tldr
+        - wsl
+
+    - name: Install Tmux terminal multiplexer
+      ansible.builtin.import_role:
+        name: tmux
+      tags:
+        - container
+        - desktop
+        - server
+        - terminal
+        - tmux
+        - wsl
+
+    - name: Install USQL
+      ansible.builtin.import_role:
+        name: usql
+      tags:
+        - container
+        - desktop
+        - server
+        - usql
+        - wsl
+
+    - name: Install Vagrant virtualization manager
+      ansible.builtin.import_role:
+        name: vagrant
+      tags:
+        - desktop
+        - hashicorp
+        - server
+        - vagrant
+        - wsl
+
+    - name: Install Vault secrets manager
+      ansible.builtin.import_role:
+        name: vault
+      tags:
+        - container
+        - desktop
+        - hashicorp
+        - server
+        - vault
+        - wsl
+
+    - name: Install Virtualbox virtualization manager
+      ansible.builtin.import_role:
+        name: virtualbox
+      tags:
+        - desktop
+        - hashicorp
+        - virtualbox
+
+    - name: Install VSCode text exitor
+      ansible.builtin.import_role:
+        name: vscode
+      tags:
+        - desktop
+        - editor
+        - vscode
+
+    - name: Install Web Assembly runtime
+      ansible.builtin.import_role:
+        name: wasm
+      tags:
+        - container
+        - desktop
+        - server
+        - vm
+        - wasm
+        - wsl
+
+    - name: Install desktop window managers
+      ansible.builtin.import_role:
+        name: winman
+      tags:
+        - desktop
+        - winman
+
+    - name: Install Xh HTTP client
+      ansible.builtin.import_role:
+        name: xh
+      tags:
+        - container
+        - desktop
+        - server
+        - wsl
+        - xh
+
+    - name: Install Xsv CSV parser
+      ansible.builtin.import_role:
+        name: xsv
+      tags:
+        - container
+        - desktop
+        - server
+        - shell
+        - wsl
+        - xsv
+
+    - name: Install Yq YAML parser
+      ansible.builtin.import_role:
+        name: yq
+      tags:
+        - container
+        - desktop
+        - server
+        - wsl
+        - yq
+
+    - name: Install Zellij terminal multiplexer
+      ansible.builtin.import_role:
+        name: zellij
+      tags:
+        - container
+        - desktop
+        - server
+        - termianl
+        - wsl
+        - zellij
+
+    - name: Install Zola static website generator
+      ansible.builtin.import_role:
+        name: zola
+      tags:
+        - container
+        - desktop
+        - server
+        - website
+        - wsl
+        - zola
+
+    - name: Install Zoxide directory navigator helper
+      ansible.builtin.import_role:
+        name: zoxide
+      tags:
+        - container
+        - desktop
+        - server
+        - wsl
+        - zoxide

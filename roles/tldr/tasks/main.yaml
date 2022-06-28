@@ -1,6 +1,10 @@
 ---
 - name: Install TLDR for Alpine distributions
-  ansible.builtin.command: npm install -g tldr
+  ansible.builtin.shell:
+    cmd: |
+      source {{ ansible_env.HOME }}/.bashrc
+      npm install -g tldr
+    executable: "{{ bash_executable }}"
   environment:
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: ansible_pkg_mgr == "apk"

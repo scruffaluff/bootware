@@ -52,6 +52,17 @@
   loop: "{{ node_versions }}"
   when: ansible_system == "Win32NT"
 
+- name: Configure NPM for Alpine distributions and FreeBSD
+  ansible.builtin.shell:
+    cmd: |
+      source {{ ansible_env.HOME }}/.bashrc
+      mkdir -p {{ ansible_env.HOME }}/.npm-global
+      npm config set prefix {{ ansible_env.HOME }}/.npm-global
+    executable: "{{ bash_executable }}"
+  when: >-
+    (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and
+    ansible_user_id != "root"
+
 - name: Set default Node version for Unix
   ansible.builtin.shell:
     cmd: |
@@ -77,8 +88,6 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      mkdir -p {{ ansible_env.HOME }}/.npm-global
-      npm config set prefix {{ ansible_env.HOME }}/.npm-global
       npm install -g {{ item }}
     executable: "{{ bash_executable }}"
   loop: "{{ node_applications }}"
