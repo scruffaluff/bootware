@@ -14,16 +14,25 @@
   ansible.builtin.win_shell: |
     rustup self update
     rustup update stable
+  environment:
+    Path: >-
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   failed_when: >-
     rustup_update.rc != 0 and 'update is disabled' not in rustup_update.stderr
   register: rustup_update
 
 - name: Add Rust components for Windows
   ansible.builtin.win_command: rustup component add {{ item }}
+  environment:
+    Path: >-
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ rustup_components }}"
 
 - name: Add Rust targets for Windows
   ansible.builtin.win_command: rustup target add {{ item }}
+  environment:
+    Path: >-
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ rustup_targets }}"
 
 - name: Download Cargo Binstall archive for Windows

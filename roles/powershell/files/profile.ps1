@@ -69,14 +69,14 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
 
-    # Show history based autocompletion for every typed character.
-    # Feature is only available for PowerShell 7.0 and later.
+    # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
+        # Show history based autocompletion for every typed character.
         Set-PSReadLineOption -PredictionSource History
+
+        # Use solarized light blue for predictions.
+        Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
     }
-    
-    # Use solarized light blue for predictions.
-    Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
 
     # Disable sounds for errors.
     Set-PSReadLineOption -BellStyle None

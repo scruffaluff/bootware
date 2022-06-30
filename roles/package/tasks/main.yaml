@@ -49,7 +49,7 @@
   loop: "{{ homebrew_packages }}"
   when: ansible_system == "Darwin"
 
-- name: Install build tools with Chocolatey for Windows
+- name: Install Chocolatey packages for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: "{{ item }}"
   loop: "{{ chocolatey_packages }}"
