@@ -9,12 +9,22 @@
   ansible.builtin.package:
     name: zoxide
   become: true
-  when: ansible_system == "Linux"
+  when: >-
+    ansible_system == "Linux" and not (ansible_pkg_mgr == "apt" and
+    deb_distro_base == "ubuntu")
 
 - name: Install Zoxide for MacOS
   community.general.homebrew:
     name: zoxide
   when: ansible_system == "Darwin"
+
+- name: Install Zoxide for Ubuntu
+  ansible.builtin.package:
+    name: zoxide
+  become: true
+  when: >-
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_distribution_version >= "21.04"
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
