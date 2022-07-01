@@ -8,7 +8,9 @@
     name: snapd
     state: present
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
+    "zypper"]
 
 - name: Check if Snap daemon socket is available for Linux
   ansible.builtin.stat:
@@ -21,4 +23,6 @@
   community.general.snap:
     name: "{{ item }}"
   loop: "{{ snap_packages }}"
-  when: ansible_system == "Linux" and snapd_available.stat.exists
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
+    "zypper"] and snapd_available.stat.exists

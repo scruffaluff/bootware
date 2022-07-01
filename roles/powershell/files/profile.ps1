@@ -7,10 +7,10 @@
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
-# # Load Docker autocompletion if available.
-# If (Get-Module -ListAvailable -Name posh-docker) {
-#     Import-Module posh-docker
-# }
+# Load Docker autocompletion if available.
+If (Get-Module -ListAvailable -Name posh-docker) {
+    Import-Module posh-docker
+}
 
 # Load Kubectl autocompletion if available.
 If (Get-Module -ListAvailable -Name PSKubectlCompletion) {

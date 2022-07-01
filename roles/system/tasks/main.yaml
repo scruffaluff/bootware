@@ -105,7 +105,6 @@
       - iotop
       - neofetch
       - openssl
-      - pass
       - sudo
       - tar
       - unzip
@@ -122,6 +121,12 @@
       - unzip
       - zip
   when: ansible_system == "Darwin"
+
+- name: Install essential packages for Suse distributions
+  ansible.builtin.zypper:
+    name: gzip
+  become: true
+  when: ansible_pkg_mgr == "zypper"
 
 - name: Add essential Scoop buckets for Windows
   community.windows.win_scoop_bucket:

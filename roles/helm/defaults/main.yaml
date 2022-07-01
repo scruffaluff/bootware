@@ -13,7 +13,6 @@ _helm_plugins:
     - https://github.com/jkroepke/helm-secrets
   Win32NT:
     - https://github.com/aslafy-z/helm-git
-    - https://github.com/databus23/helm-diff
     - https://github.com/jkroepke/helm-secrets
 helm_plugins: >-
   {{ _helm_plugins.always + _helm_plugins[ansible_system] }}

@@ -476,7 +476,6 @@ Function Setup() {
 }
 
 # Create SSH keys to connect to Windows host and scan for fingerprints.
-# TODO: Add logic to skip if SSH key already exists.
 Function SetupSSHKeys {
     $SetupSSHKeysComplete = "$PSScriptRoot/.setup_ssh_keys"
     If (-Not (Test-Path -Path "$SetupSSHKeysComplete" -PathType Leaf)) {
@@ -597,7 +596,7 @@ Function SetupWSL($Branch) {
             /NoRestart
 
         Log 'Restart your system to finish WSL installation'
-        Log 'Then run bootware setup again to install Ubuntu'
+        Log "Then run 'bootware setup' again to install Ubuntu"
         Exit 0
     }
 
@@ -617,6 +616,7 @@ Function SetupWSL($Branch) {
         Log "Complete pop up window and then run 'bootware setup' again"
         wsl --set-default-version 2
         wsl --install --distribution Ubuntu
+        exit 0
     }
 
     If (-Not (wsl command -v bootware)) {
