@@ -26,6 +26,7 @@
     state: directory
   loop:
     - Documents/PowerShell
+    - Documents/PowerShell/Modules
     - Documents/WindowsPowerShell
     - Documents/WindowsPowerShell/Modules
   when: ansible_system == "Win32NT"
@@ -38,6 +39,30 @@
   loop:
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
     - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+  when: ansible_system == "Win32NT"
+
+- name: Install local PowerShell modules
+  block:
+    - name: Create PowerShell module directories for Windows
+      ansible.windows.win_file:
+        path: "{{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}"
+        state: directory
+      loop: "{{ psmodule_folders | product(psmodules) | list }}"
+
+    - name: Copy PowerShell modules for Windows
+      ansible.windows.win_copy:
+        dest: >-
+          {{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}/{{ item[1] }}.psm1
+        force: true
+        src: "{{ item[1] }}.psm1"
+      loop: "{{ psmodule_folders | product(psmodules) | list }}"
+
+  vars:
+    psmodule_folders:
+      - Documents/PowerShell/Modules
+      - Documents/WindowsPowerShell/Modules
+    psmodules:
+      - SSHCompletion
   when: ansible_system == "Win32NT"
 # Disabled since trusting PSGallery is an absurdly frustrating process on
 # Windows 11.

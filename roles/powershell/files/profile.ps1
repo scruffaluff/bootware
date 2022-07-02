@@ -98,10 +98,10 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
-# # Load SSH autocompletion if available.
-# If (Get-Module -ListAvailable -Name Posh-SSH) {
-#     Import-Module Posh-SSH
-# }
+# Load SSH autocompletion if available.
+If (Get-Module -ListAvailable -Name SSHCompletion) {
+    Import-Module SSHCompletion
+}
 
 # Initialize Zoxide if available.
 If (Get-Command zoxide -ErrorAction SilentlyContinue) {
