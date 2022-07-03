@@ -303,7 +303,13 @@ fi
 # Disable MacOS default shell is now Zsh message.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-export EDITOR='nvim'
+# Set default editor to Helix if available.
+#
+# Flags:
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v hx)" ]]; then
+  export EDITOR='hx'
+fi
 
 # Add scripts directory to PATH environment variable.
 prepend_path "${HOME}/.local/bin"

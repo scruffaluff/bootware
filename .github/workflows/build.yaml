@@ -59,10 +59,10 @@ jobs:
       - name: Check format of shell scripts
         run: npm run shfmt:test
       - name: Run ShellCheck on shell scripts
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheckludeeus/action-shellcheck@master
         with:
           additional_files: .bash_profile .bashrc '*.bats'
-          ignore: .venv node_modules
+          ignore_paths: .venv node_modules
           severity: style
       - name: Lint Ansible playbook and roles
         run: |
@@ -120,9 +120,12 @@ jobs:
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
       - name: Run PSScriptAnalyzer format lints on all PowerShell scripts
-        run: |
-          Invoke-ScriptAnalyzer -Recurse -Path . -Setting CodeFormatting
-          Invoke-ScriptAnalyzer -Recurse -Path .
+        run: >-
+          Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting
+          CodeFormatting
+        shell: pwsh
+      - name: Run PSScriptAnalyzer code lints on all PowerShell scripts
+        run: Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
         shell: pwsh
       - name: Install Pester
         run: Install-Module -Force -Name Pester
