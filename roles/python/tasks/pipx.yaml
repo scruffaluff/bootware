@@ -42,6 +42,8 @@
   # If so a new installation should overwrite the current.
   ansible.windows.win_shell: |
     (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install --force {{ item }})
+  environment:
+    Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
   loop: "{{ pipx_applications }}"
   when: ansible_system == "Win32NT"
 
@@ -51,4 +53,6 @@
 
 - name: Update Pipx command line applications for Windows
   ansible.builtin.win_command: pipx upgrade-all
+  environment:
+    Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"

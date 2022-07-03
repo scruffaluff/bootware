@@ -141,11 +141,11 @@ fish_add_path "$HOME/.cargo/bin"
 # Taken from https://unix.stackexchange.com/a/176331.
 #
 # Examples:
-#   setenv PATH "usr/local/bin"
+#   setenv PATH 'usr/local/bin'
 function setenv
   if [ $argv[1] = PATH ]
     # Replace colons and spaces with newlines.
-    set -x PATH (echo "$argv[2]" | tr ": " \n)
+    set -x PATH (echo "$argv[2]" | tr ': ' \n)
   else
     set -gx $argv
   end
@@ -192,7 +192,7 @@ end
 set -x BAT_THEME 'Solarized (light)'
 
 # Disable pagination for Bat.
-set -x BAT_PAGER ""
+set -x BAT_PAGER ''
 
 # Add Visual Studio Code binary to PATH for Linux.
 fish_add_path '/usr/share/code/bin'
@@ -275,7 +275,13 @@ end
 
 # User settings.
 
-set -x EDITOR "nvim"
+# Set default editor to Helix if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q hx
+  set -x EDITOR 'hx'
+end
 
 # Add scripts directory to system path.
 fish_add_path "$HOME/.local/bin"

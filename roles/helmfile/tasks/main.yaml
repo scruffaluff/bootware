@@ -13,19 +13,29 @@
     name: helmfile
   when: ansible_system == "FreeBSD"
 
-- name: Install Helmfile for Linux
-  ansible.builtin.get_url:
-    dest: /usr/local/bin/helmfile
+- name: Download Helmfile for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
     mode: "755"
-    url: >-
-      https://github.com/roboll/helmfile/releases/download/v{{
-      helmfile_formula.json.versions.stable }}/helmfile_linux_{{
-      helmfile_arch[ansible_architecture] }}
+    remote_src: true
+    src: >-
+      https://github.com/helmfile/helmfile/releases/download/v{{
+      helmfile_formula.json.versions.stable }}/helmfile_{{
+      helmfile_formula.json.versions.stable }}_linux_{{
+      helmfile_arch[ansible_architecture] }}.tar.gz
   become: true
   vars:
     helmfile_arch:
       aarch64: arm64
       x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Helmfile for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/helmfile
+    mode: "755"
+    src: /tmp/helmfile
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Helmfile for MacOS

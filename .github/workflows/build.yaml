@@ -62,7 +62,7 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           additional_files: .bash_profile .bashrc '*.bats'
-          ignore: .venv node_modules
+          ignore_paths: .venv node_modules
           severity: style
       - name: Lint Ansible playbook and roles
         run: |
@@ -120,7 +120,14 @@ jobs:
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
       - name: Run PSScriptAnalyzer format lints on all PowerShell scripts
-        run: Invoke-ScriptAnalyzer -Recurse -Path . -Settings CodeFormatting
+        run: >-
+          Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting
+          CodeFormatting
+        shell: pwsh
+      # EnableExit flag is not used since ScriptAnalyzer fails to exclude
+      # PSUseDeclaredVarsMoreThanAssignment rule.
+      - name: Run PSScriptAnalyzer code lints on all PowerShell scripts
+        run: Invoke-ScriptAnalyzer -Recurse -Path .
         shell: pwsh
       - name: Install Pester
         run: Install-Module -Force -Name Pester

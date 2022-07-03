@@ -7,10 +7,10 @@
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
-# # Load Docker autocompletion if available.
-# If (Get-Module -ListAvailable -Name posh-docker) {
-#     Import-Module posh-docker
-# }
+# Load Docker autocompletion if available.
+If (Get-Module -ListAvailable -Name posh-docker) {
+    Import-Module posh-docker
+}
 
 # Load Kubectl autocompletion if available.
 If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
@@ -56,7 +56,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
         If ($Cursor -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
-        } 
+        }
         Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
         }
@@ -69,14 +69,14 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
 
-    # Show history based autocompletion for every typed character.
-    # Feature is only available for PowerShell 7.0 and later.
+    # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
+        # Show history based autocompletion for every typed character.
         Set-PSReadLineOption -PredictionSource History
+
+        # Use solarized light blue for predictions.
+        Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
     }
-    
-    # Use solarized light blue for predictions.
-    Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
 
     # Disable sounds for errors.
     Set-PSReadLineOption -BellStyle None
@@ -98,10 +98,10 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
-# # Load SSH autocompletion if available.
-# If (Get-Module -ListAvailable -Name Posh-SSH) {
-#     Import-Module Posh-SSH
-# }
+# Load SSH autocompletion if available.
+If (Get-Module -ListAvailable -Name SSHCompletion) {
+    Import-Module SSHCompletion
+}
 
 # Initialize Zoxide if available.
 If (Get-Command zoxide -ErrorAction SilentlyContinue) {

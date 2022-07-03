@@ -476,7 +476,6 @@ Function Setup() {
 }
 
 # Create SSH keys to connect to Windows host and scan for fingerprints.
-# TODO: Add logic to skip if SSH key already exists.
 Function SetupSSHKeys {
     $SetupSSHKeysComplete = "$PSScriptRoot/.setup_ssh_keys"
     If (-Not (Test-Path -Path "$SetupSSHKeysComplete" -PathType Leaf)) {
@@ -597,7 +596,7 @@ Function SetupWSL($Branch) {
             /NoRestart
 
         Log 'Restart your system to finish WSL installation'
-        Log 'Then run bootware setup again to install Ubuntu'
+        Log "Then run 'bootware setup' again to install Ubuntu"
         Exit 0
     }
 
@@ -613,30 +612,11 @@ Function SetupWSL($Branch) {
             $TempFile
         Start-Process -Wait $TempFile /Passive
 
+        Log 'Installing Ubuntu distribution'
+        Log "Complete pop up window and then run 'bootware setup' again"
         wsl --set-default-version 2
-
-        $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.zip'
-        $TempDir = $TempFile -Replace '.zip', ''
-        Log 'Downloading Ubuntu image. Follow the prompt for installation'
-        DownloadFile 'https://aka.ms/wslubuntu2004' "$TempFile"
-
-        # Older versions of WSL Ubuntu were installed via standard executable.
-        # Newer versions are installed via application bundle.
-        Expand-Archive "$TempFile" "$TempDir"
-        If (Test-Path -Path "$TempDir/ubuntu2004.exe" -PathType Leaf) {
-            & "$TempDir/ubuntu2004.exe" exit 0
-        }
-        Else {
-            If ("$Env:PROCESSOR_ARCHITECTURE" -Eq "ARM64") {
-                $UbuntuArch = "ARM64"
-            }
-            Else {
-                $UbuntuArch = "x64"
-            }
-
-            $UbuntuInstaller = Get-ChildItem -Path "$TempDir/Ubuntu*_$UbuntuArch.appx" | Select-Object -First 1
-            & "$UbuntuInstaller" exit 0
-        }
+        wsl --install --distribution Ubuntu
+        exit 0
     }
 
     If (-Not (wsl command -v bootware)) {

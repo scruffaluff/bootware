@@ -3,7 +3,9 @@
   become: true
   community.general.snap:
     name: beekeeper-studio
-  when: ansible_system == "Linux" and snapd_available.stat.exists
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
+    "zypper"] and snapd_available.stat.exists
 
 - name: Install Beekeeper for MacOS
   community.general.homebrew_cask:

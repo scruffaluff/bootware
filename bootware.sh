@@ -754,6 +754,8 @@ setup_linux() {
     setup_debian "$1"
   elif [[ -x "$(command -v dnf)" ]]; then
     setup_fedora "$1"
+  elif [[ -x "$(command -v zypper)" ]]; then
+    setup_suse "$1"
   else
     error "Unable to find supported package manager"
   fi
@@ -811,6 +813,37 @@ setup_macos() {
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
     brew install git
+  fi
+}
+
+#######################################
+# Configure boostrapping services and utilities for Suse distributions.
+#######################################
+setup_suse() {
+  # Install dependencies for Bootware.
+  #
+  # Flags:
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ ! -x "$(command -v ansible)" ]]; then
+    log "Installing Ansible"
+    ${1:+sudo} zypper update
+    ${1:+sudo} zypper install -y python3 python3-pip
+
+    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+sudo} python3 -m pip install ansible
+  fi
+
+  if [[ ! -x "$(command -v curl)" ]]; then
+    log "Installing Curl"
+    ${1:+sudo} zypper update
+    ${1:+sudo} zypper install -y curl
+  fi
+
+  if [[ ! -x "$(command -v git)" ]]; then
+    log "Installing Git"
+    ${1:+sudo} zypper update
+    ${1:+sudo} zypper install -y git
   fi
 }
 
