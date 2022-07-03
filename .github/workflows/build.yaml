@@ -120,7 +120,9 @@ jobs:
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
       - name: Run PSScriptAnalyzer format lints on all PowerShell scripts
-        run: Invoke-ScriptAnalyzer -Recurse -Path . -Settings CodeFormatting
+        run: |
+          Invoke-ScriptAnalyzer -Recurse -Path . -Setting CodeFormatting
+          Invoke-ScriptAnalyzer -Recurse -Path .
         shell: pwsh
       - name: Install Pester
         run: Install-Module -Force -Name Pester

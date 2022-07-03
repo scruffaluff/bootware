@@ -10,11 +10,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Kind, Helix, and Obsidian roles.
+- SSH auto completion for Windows.
 - Windows Defender Firewall rules.
+
+## Changed
+
+- Default Unix editor to Helix.
 
 ### Fixed
 
 - Ansible collection installations are now shown to user.
+- Automation for WSL installation.
 - Node installation for FreeBSD.
 - Mkcert dependencies for Linux.
 - Sudoers roles for FreeBSD.

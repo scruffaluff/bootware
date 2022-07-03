@@ -56,7 +56,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
         If ($Cursor -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
-        } 
+        }
         Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
         }
