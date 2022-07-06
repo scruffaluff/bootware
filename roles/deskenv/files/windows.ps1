@@ -1,10 +1,54 @@
-# Configure Windows desktop.
+﻿# Configure Windows desktop.
 #
 # Most commands are taken from
-# https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1.
+# https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1 and
+# https://github.com/Sycnex/Windows10Debloater/blob/master/Windows10Debloater.ps1.
+
+# Remove applications.
+$Applications = @(
+    'Microsoft.BingFinance'
+    'Microsoft.BingFoodAndDrink'
+    'Microsoft.BingHealthAndFitness'
+    'Microsoft.BingNews'
+    'Microsoft.BingSports'
+    'Microsoft.BingTranslator'
+    'Microsoft.BingTravel'
+    'Microsoft.BingWeather'
+    'Microsoft.WindowsFeedbackHub'
+    'Microsoft.Xbox.TCUI'
+    'Microsoft.XboxApp'
+    'Microsoft.XboxGameOverlay'
+    'Microsoft.XboxGamingOverlay'
+    'Microsoft.XboxSpeechToTextOverlay'
+    'Microsoft.ZuneMusic'
+)
+
+ForEach ($Application in $Applications) {
+    Get-AppxPackage -AllUsers -Name $Application | Remove-AppxPackage -AllUsers
+
+    Get-AppxProvisionedPackage -Online |
+        Where-Object DisplayName -EQ $Application |
+        Remove-AppxProvisionedPackage -Online
+}
+
+# Disable services.
+$Services = @(
+    'Beep' # Windows error beep sound.
+    'Diagnosticshub.Standardcollector.Service' # Diagnostics hub standard collector service.
+    'DiagTrack' # Diagnostics tracking service.
+    'XblAuthManager' # Xbox live authentication manager.
+    'XblGameSave' # Xbox live game save service.
+    'XboxGipSvc' # Xbox accessory management service.
+    'XboxNetApiSvc' # Xbox live networking service.
+)
+
+ForEach ($Service in $Services) {
+    Get-Service -Name $Service -ErrorAction SilentlyContinue |
+        Set-Service -StartupType Manual
+}
 
 # Show hidden files in File Explorer.
-If (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -ErrorAction SilentlyContinue) {
+If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced') {
     Set-ItemProperty `
         -Name 'HideFileExt' `
         -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' `
@@ -13,23 +57,71 @@ If (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\A
     Stop-Process -Force -ProcessName Explorer
 }
 
-# Disable beep sounds on errors after next restart.
-#
-# Beep service cannot be stopped directly.
-Set-Service -Name Beep -StartupType Disabled
-
-# Remove news and interests from task bar.
-If (Get-ItemProperty 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds' -ErrorAction SilentlyContinue) {
+# Change Windows error beep sound to nothing.
+If (Test-Path 'HKCU:\Control Panel\Sound') {
     Set-ItemProperty `
-        -Name 'EnableFeeds' `
-        -Path 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds' `
+        -Name 'Beep' `
+        -Path 'HKCU:\Control Panel\Sound' `
+        -Type String `
+        -Value 'no'
+}
+
+# Disable Windows advertising Id.
+$AdvertisePath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
+If (Test-Path $AdvertisePath) {
+    Set-ItemProperty -Name Enabled -Path $AdvertisePath -Type DWord -Value 0
+}
+
+# Disable error reporting.
+$ErrorReportingPath = 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting'
+If (Test-Path $ErrorReportingPath) {
+    Set-ItemProperty -Name 'Disabled' -Path $ErrorReportingPath -Type DWord -Value 1
+    Disable-ScheduledTask -TaskName 'Microsoft\Windows\Windows Error Reporting\QueueReporting'
+}
+
+# Disable storage sense.
+Remove-Item -Force -Recurse 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy'
+
+# Disable Bing search in startup menu.
+If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
+    Set-ItemProperty `
+        -Name 'BingSearchEnabled' `
+        -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search' `
         -Type DWord `
         -Value 0
 }
-If (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds' -ErrorAction SilentlyContinue) {
+
+# Remove Cortana from Windows search.
+$SearchPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
+If (Test-Path $SearchPath) {
+    Set-ItemProperty -Name AllowCortana -Path $SearchPath -Type DWord -Value 0
+}
+
+# Remove news and interests from task bar.
+$WindowsFeedsPath = 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds'
+If (Test-Path $WindowsFeedsPath) {
+    Set-ItemProperty `
+        -Name 'EnableFeeds' `
+        -Path $WindowsFeedsPath `
+        -Type DWord `
+        -Value 0
+}
+$ShellFeedsPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds'
+If (Test-Path $ShellFeedsPath) {
     Set-ItemProperty `
         -Name 'ShellFeedsTaskbarViewMode' `
-        -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds' `
+        -Path $ShellFeedsPath `
         -Type DWord `
         -Value 2
+}
+
+# Remove application recommendations.
+$ContentPath = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'
+If (Test-Path $ContentPath) {
+    Set-ItemProperty -Name 'ContentDeliveryAllowed' -Path $ContentPath -Type DWord -Value 0
+    Set-ItemProperty -Name 'OemPreInstalledAppsEnabled' -Path $ContentPath -Type DWord -Value 0
+    Set-ItemProperty -Name 'PreInstalledAppsEnabled' -Path $ContentPath -Type DWord -Value 0
+    Set-ItemProperty -Name 'PreInstalledAppsEverEnabled' -Path $ContentPath -Type DWord -Value 0
+    Set-ItemProperty -Name 'SilentInstalledAppsEnabled' -Path $ContentPath -Type DWord -Value 0
+    Set-ItemProperty -Name 'SystemPaneSuggestionsEnabled' -Path $ContentPath -Type DWord -Value 0
 }

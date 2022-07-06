@@ -98,6 +98,11 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
+# Load Bootware autocompletion if available.
+If (Get-Module -ListAvailable -Name BootwareCompletion) {
+    Import-Module BootwareCompletion
+}
+
 # Load SSH autocompletion if available.
 If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion

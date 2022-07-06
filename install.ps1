@@ -69,6 +69,21 @@ Function ErrorUsage($Message) {
     Exit 2
 }
 
+# Install completion script for Bootware.
+Function InstallCompletion($Version) {
+    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/BootwareCompletion.psm1"
+
+    $Paths = @(
+        "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
+        "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
+    )
+    ForEach ($Path in $Paths) {
+        New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
+        DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
+    }
+}
+
+
 # Check if script is run from an admin console.
 Function IsAdministrator {
     Return ([Security.Principal.WindowsPrincipal]`
@@ -136,6 +151,7 @@ Function Main() {
 
     New-Item -Force -ItemType Directory -Path "$DestDir" | Out-Null
     DownloadFile "$Source" "$Dest"
+    InstallCompletion "$Version"
     Log "Installed $(bootware --version)"
 }
 
