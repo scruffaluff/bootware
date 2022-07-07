@@ -876,7 +876,6 @@
       ansible.builtin.import_role:
         name: snap
       tags:
-        - desktop
         - snap
 
     - name: Install Sops secrets editor

@@ -1,11 +1,21 @@
 ---
+# Since Appimages use FUSE, Beekeeper cannot be version checked within a Docker
+# container. For more information, visit
+# https://github.com/AppImage/AppImageKit/wiki/FUSE#docker.
 - name: Install Beekeeper for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/appimages/beekeeper.appimage
+    mode: "755"
+    owner: root
+    url: >-
+      https://www.beekeeperstudio.io/download/?ext=AppImage&arch={{
+      beekeeper_arch[ansible_architecture] }}&type=&edition=community
   become: true
-  community.general.snap:
-    name: beekeeper-studio
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
-    "zypper"] and snapd_available.stat.exists
+  vars:
+    beekeeper_arch:
+      aarch64: arm64
+      x86_64: x86_64
+  when: ansible_system == "Linux"
 
 - name: Install Beekeeper for MacOS
   community.general.homebrew_cask:

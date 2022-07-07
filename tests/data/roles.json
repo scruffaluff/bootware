@@ -328,16 +328,7 @@
     "skip": [{ "os": "windows" }],
     "tests": ["shfmt --version"]
   },
-  {
-    "name": "snap",
-    "skip": [
-      { "os": "alpine" },
-      { "os": "freebsd" },
-      { "os": "macos" },
-      { "os": "windows" }
-    ],
-    "tests": ["snap --version"]
-  },
+  { "name": "snap" },
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   {

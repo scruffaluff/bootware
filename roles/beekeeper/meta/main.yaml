@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - role: snap
+  - role: appimage
     when: ansible_system == "Linux"
