@@ -242,7 +242,7 @@ jobs:
           # https://launchpad.net/~mmstick76/+archive/ubuntu/alacritty. The PPA
           # has not provided a 22.04 release as of 06/14/2022.
           build-args: |
-            tags=desktop,extras
+            skip=alacritty
             test=true
           context: .
           file: ./tests/integration/ubuntu.Dockerfile
