@@ -56,7 +56,7 @@ ARG test
 ENV DONT_PROMPT_WSL_INSTALL='true'
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} ${tags:+--tags $tags}
+RUN bootware bootstrap --dev --no-passwd ${skip:+--skip $skip} --tags ${tags:-desktop,extras}
 
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/

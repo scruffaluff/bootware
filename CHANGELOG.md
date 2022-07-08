@@ -17,6 +17,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Changed Beekeeper install from Snap to AppImage package.
 - Default Unix editor to Helix.
+- Moved Avro, Java, Julia, Parquet, Ruby and Virtualbox roles from default to
+  extras list.
 
 ### Fixed
 

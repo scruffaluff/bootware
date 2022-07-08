@@ -44,5 +44,5 @@
 - name: Generate Kind Fish completions for Unix
   ansible.builtin.shell: >-
     kind completion fish > {{ ansible_env.HOME
-    }}/.config/fish/completions/deno.fish
+    }}/.config/fish/completions/kind.fish
   when: ansible_system in ["Darwin", "Linux"]
