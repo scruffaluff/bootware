@@ -2,6 +2,7 @@
 pipx_applications:
   - black
   - cookiecutter
+  - csvkit
   - "jinja2-cli[toml,yaml,xml]"
   - jupytext
   - poetry

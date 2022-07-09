@@ -4,7 +4,6 @@ vscode_extensions:
   - "bierner.markdown-mermaid"
   - "bungcip.better-toml"
   - "coolbear.systemd-unit-file"
-  - "cweijan.vscode-database-client2"
   - "dbaeumer.vscode-eslint"
   - "denoland.vscode-deno"
   - "dorzey.vscode-sqlfluff"

@@ -1,6 +1,7 @@
 # Fish completion file for Bootware.
 #
 # For a tutorial on writing Fish completions, visit
+# https://fishshell.com/docs/current/completions.html.
 
 # Add Bootware options and subcommands as completions.
 #
