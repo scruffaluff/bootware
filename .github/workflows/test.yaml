@@ -274,7 +274,7 @@ jobs:
           set-as-default: "true"
       - name: Install Bootware
         run: |
-          ./install.ps1
+          ./install.ps1 ${{ steps.branch.outputs.current_branch }}
           Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.

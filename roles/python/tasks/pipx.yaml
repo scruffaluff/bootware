@@ -2,7 +2,7 @@
 - name: Install Pipx for FreeBSD
   become: true
   community.general.pkgng:
-    name: py38-pipx
+    name: py39-pipx
   when: ansible_system == "FreeBSD"
 
 - name: Install Pipx for Linux

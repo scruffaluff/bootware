@@ -103,6 +103,16 @@ If (Get-Module -ListAvailable -Name BootwareCompletion) {
     Import-Module BootwareCompletion
 }
 
+# Load Chocolatey autocompletion if available.
+If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
+    Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+}
+
+# Load Scoop autocompletion if available.
+If (Get-Module -ListAvailable -Name SSHCompletion) {
+    Import-Module scoop-completion
+}
+
 # Load SSH autocompletion if available.
 If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion

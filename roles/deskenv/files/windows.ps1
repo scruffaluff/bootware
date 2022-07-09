@@ -14,13 +14,6 @@ $Applications = @(
     'Microsoft.BingTranslator'
     'Microsoft.BingTravel'
     'Microsoft.BingWeather'
-    'Microsoft.WindowsFeedbackHub'
-    'Microsoft.Xbox.TCUI'
-    'Microsoft.XboxApp'
-    'Microsoft.XboxGameOverlay'
-    'Microsoft.XboxGamingOverlay'
-    'Microsoft.XboxSpeechToTextOverlay'
-    'Microsoft.ZuneMusic'
 )
 
 ForEach ($Application in $Applications) {
@@ -34,8 +27,6 @@ ForEach ($Application in $Applications) {
 # Disable services.
 $Services = @(
     'Beep' # Windows error beep sound.
-    'Diagnosticshub.Standardcollector.Service' # Diagnostics hub standard collector service.
-    'DiagTrack' # Diagnostics tracking service.
     'XblAuthManager' # Xbox live authentication manager.
     'XblGameSave' # Xbox live game save service.
     'XboxGipSvc' # Xbox accessory management service.
@@ -65,22 +56,6 @@ If (Test-Path 'HKCU:\Control Panel\Sound') {
         -Type String `
         -Value 'no'
 }
-
-# Disable Windows advertising Id.
-$AdvertisePath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
-If (Test-Path $AdvertisePath) {
-    Set-ItemProperty -Name Enabled -Path $AdvertisePath -Type DWord -Value 0
-}
-
-# Disable error reporting.
-$ErrorReportingPath = 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting'
-If (Test-Path $ErrorReportingPath) {
-    Set-ItemProperty -Name 'Disabled' -Path $ErrorReportingPath -Type DWord -Value 1
-    Disable-ScheduledTask -TaskName 'Microsoft\Windows\Windows Error Reporting\QueueReporting'
-}
-
-# Disable storage sense.
-Remove-Item -Force -Recurse 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy'
 
 # Disable Bing search in startup menu.
 If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
