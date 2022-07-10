@@ -50,7 +50,7 @@
   community.windows.win_scoop:
     name:
       - docker-compose
-      - posh-docker
+      - dockercompletion
   when: ansible_system == "Win32NT"
 
 - name: Create Fish completions directory for Unix

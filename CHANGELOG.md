@@ -15,7 +15,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Changed
 
+- Changed Beekeeper install from Snap to AppImage package.
 - Default Unix editor to Helix.
+- Moved Avro, Java, Julia, Parquet, Ruby and Virtualbox roles from default to
+  extras list.
 
 ### Fixed
 
@@ -28,6 +31,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Desktop tag from Snap role.
 - GistPad, LiveShare, and TabNine from default VSCode extensions.
 
 ## 0.3.6 - 2022-04-26

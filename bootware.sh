@@ -28,7 +28,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
-        --check                     Dry run and show possible changes
+        --check                     Perform dry run and show possible changes
         --checkout <REF>            Git reference to run against
     -d, --dev                       Run bootstrapping in development mode
         --debug                     Enable Ansible task debugger
@@ -36,7 +36,7 @@ OPTIONS:
     -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Bootware dependency installation
-    -p, --playbook <FILE-NAME>      Name of play to execute
+    -p, --playbook <FILE-NAME>      Path to playbook to execute
         --password <PASSWORD>       Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
         --ssh-key <FILE-NAME>       Path to SSH private key

@@ -4,7 +4,7 @@
   community.general.pkgng:
     name:
       - ruby
-      - ruby27-gems
+      - ruby30-gems
   when: ansible_system == "FreeBSD"
 
 - name: Install Ruby for Linux

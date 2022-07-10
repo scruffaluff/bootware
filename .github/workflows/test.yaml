@@ -167,7 +167,7 @@ jobs:
             set -eou pipefail
             curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
             bootware setup
-            bootware bootstrap --dev --no-passwd
+            bootware bootstrap --dev --no-passwd --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -203,7 +203,9 @@ jobs:
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
-        run: bootware bootstrap --dev --no-passwd --skip bats,docker
+        run: >-
+          bootware bootstrap --dev --no-passwd --skip bats,docker --tags
+          desktop,extras
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
       # exectuable is installed. Since Docker is not installable, the Docker
@@ -272,7 +274,7 @@ jobs:
           set-as-default: "true"
       - name: Install Bootware
         run: |
-          ./install.ps1
+          ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}
           Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
@@ -309,7 +311,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 windows
+          node tests/integration/roles.spec.js --arch amd64 windows --tags desktop,extras
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&

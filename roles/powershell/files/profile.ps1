@@ -8,8 +8,8 @@ $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
 # Load Docker autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-docker) {
-    Import-Module posh-docker
+If (Get-Module -ListAvailable -Name DockerCompletion) {
+    Import-Module DockerCompletion
 }
 
 # Load Kubectl autocompletion if available.
@@ -68,6 +68,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Add history based autocompletion to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
+    Set-PSReadLineOption -HistorySearchCursorMovesToEnd
 
     # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
@@ -97,6 +98,21 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 # Tool settings.
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
+
+# Load Bootware autocompletion if available.
+If (Get-Module -ListAvailable -Name BootwareCompletion) {
+    Import-Module BootwareCompletion
+}
+
+# Load Chocolatey autocompletion if available.
+If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
+    Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+}
+
+# Load Scoop autocompletion if available.
+If (Get-Module -ListAvailable -Name SSHCompletion) {
+    Import-Module scoop-completion
+}
 
 # Load SSH autocompletion if available.
 If (Get-Module -ListAvailable -Name SSHCompletion) {

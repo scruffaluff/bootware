@@ -57,10 +57,8 @@
         name: avro
       tags:
         - avro
-        - container
-        - desktop
-        - server
-        - wsl
+        - extras
+        - never
 
     - name: Install Amazon Web Services development tools
       ansible.builtin.import_role:
@@ -526,12 +524,9 @@
       ansible.builtin.import_role:
         name: java
       tags:
-        - container
-        - desktop
+        - extras
         - java
-        - language
-        - server
-        - wsl
+        - never
 
     - name: Install Jq JSON parser
       ansible.builtin.import_role:
@@ -548,12 +543,9 @@
       ansible.builtin.import_role:
         name: julia
       tags:
-        - container
-        - desktop
+        - extras
         - julia
-        - language
-        - server
-        - wsl
+        - never
 
     - name: Install K3d Kubernetes development cluster manager
       ansible.builtin.import_role:
@@ -742,11 +734,9 @@
       ansible.builtin.import_role:
         name: parquet
       tags:
-        - container
-        - desktop
+        - extras
+        - never
         - parquet
-        - server
-        - wsl
 
     - name: Install PowerShell shell
       ansible.builtin.import_role:
@@ -812,12 +802,9 @@
       ansible.builtin.import_role:
         name: ruby
       tags:
-        - container
-        - desktop
-        - language
+        - extras
+        - never
         - ruby
-        - server
-        - wsl
 
     - name: Install Rust language
       ansible.builtin.import_role:
@@ -876,7 +863,7 @@
       ansible.builtin.import_role:
         name: snap
       tags:
-        - desktop
+        - never
         - snap
 
     - name: Install Sops secrets editor
@@ -1010,8 +997,8 @@
       ansible.builtin.import_role:
         name: virtualbox
       tags:
-        - desktop
-        - hashicorp
+        - extras
+        - never
         - virtualbox
 
     - name: Install VSCode text exitor
@@ -1086,11 +1073,8 @@
       ansible.builtin.import_role:
         name: zola
       tags:
-        - container
-        - desktop
-        - server
-        - website
-        - wsl
+        - extras
+        - never
         - zola
 
     - name: Install Zoxide directory navigator helper

@@ -8,7 +8,7 @@ const childProcess = require("child_process");
 
 function main() {
   let options;
-  let paths = "bootware.sh install.sh roles/";
+  let paths = "bootware.sh install.sh completions/ roles/";
 
   switch (process.argv[2]) {
     case "format":

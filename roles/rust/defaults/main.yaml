@@ -2,6 +2,7 @@
 _cargo_applications:
   always:
     - cargo-bloat
+    - cargo-cache
     - cross
   Darwin:
     aarch64: []
