@@ -1,8 +1,8 @@
 ---
+# FreeBSD py39-pipx package is broken.
 - name: Install Pipx for FreeBSD
   become: true
-  community.general.pkgng:
-    name: py39-pipx
+  ansible.builtin.command: /usr/local/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "FreeBSD"
 
 - name: Install Pipx for Linux
