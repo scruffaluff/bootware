@@ -8,8 +8,8 @@ $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
 
 # Load Docker autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-docker) {
-    Import-Module posh-docker
+If (Get-Module -ListAvailable -Name DockerCompletion) {
+    Import-Module DockerCompletion
 }
 
 # Load Kubectl autocompletion if available.
@@ -68,6 +68,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Add history based autocompletion to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
+    Set-PSReadLineOption -HistorySearchCursorMovesToEnd
 
     # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
