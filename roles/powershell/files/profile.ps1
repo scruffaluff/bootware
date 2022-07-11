@@ -108,6 +108,23 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
+# Shell settings.
+
+# Load aliases if file exists.
+If (Test-Path "$HOME/.aliases.ps1") {
+  . "$HOME/.aliases.ps1"
+}
+
+# Load environment variables if file exists.
+If (Test-Path "$HOME/.env.ps1") {
+  . "$HOME/.env.ps1"
+}
+
+# Load secrets if file exists.
+If (Test-Path "$HOME/.secrets.ps1") {
+  . "$HOME/.secrets.ps1"
+}
+
 # Starship settings.
 
 # Initialize Starship if available.
@@ -116,6 +133,8 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 }
 
 # Tool settings.
+
+$Env:BAT_THEME = 'Solarized (light)'
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 

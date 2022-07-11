@@ -217,9 +217,6 @@ end
 
 set -x BAT_THEME 'Solarized (light)'
 
-# Disable pagination for Bat.
-set -x BAT_PAGER ''
-
 # Add Visual Studio Code binary to PATH for Linux.
 fish_add_path '/usr/share/code/bin'
 

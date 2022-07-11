@@ -38,11 +38,20 @@ prepend_path '/usr/local/bin'
 #   -f: Check if file exists and is a regular file.
 if [[ -f '/etc/bash_completion' ]]; then
   source '/etc/bash_completion'
+elif [[ -f '/opt/homebrew/etc/bash_completion' ]]; then
+  source '/opt/homebrew/etc/bash_completion'
 fi
 
 # Docker settings.
 export COMPOSE_DOCKER_CLI_BUILD=1
 export DOCKER_BUILDKIT=1
+
+# Fzf settings.
+
+# Set Fzf solarized light theme.
+_fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+_fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 
 # Go settings.
 
@@ -194,8 +203,6 @@ fi
 export BAT_THEME='Solarized (light)'
 complete -C '/usr/local/bin/terraform' terraform
 
-# Disable pagination for Bat.
-export BAT_PAGER=''
 
 # Add Visual Studio Code binary to PATH for Linux.
 prepend_path '/usr/share/code/bin'
@@ -215,11 +222,6 @@ fi
 if [[ -x "$(command -v direnv)" ]]; then
   eval "$(direnv hook bash)"
 fi
-
-# Set Fzf solarized light theme.
-_fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-_fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-export FZF_DEFAULT_OPTS="${_fzf_colors} ${_fzf_highlights}"
 
 # Initialize GCloud if on MacOS and available.
 #
