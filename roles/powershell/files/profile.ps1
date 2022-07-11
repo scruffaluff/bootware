@@ -1,4 +1,4 @@
-# PowerShell settings file.
+﻿# PowerShell settings file.
 #
 # For more information, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
@@ -112,17 +112,17 @@ $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
 
 # Load aliases if file exists.
 If (Test-Path "$HOME/.aliases.ps1") {
-  . "$HOME/.aliases.ps1"
+    . "$HOME/.aliases.ps1"
 }
 
 # Load environment variables if file exists.
 If (Test-Path "$HOME/.env.ps1") {
-  . "$HOME/.env.ps1"
+    . "$HOME/.env.ps1"
 }
 
 # Load secrets if file exists.
 If (Test-Path "$HOME/.secrets.ps1") {
-  . "$HOME/.secrets.ps1"
+    . "$HOME/.secrets.ps1"
 }
 
 # Starship settings.
