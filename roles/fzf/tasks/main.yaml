@@ -18,5 +18,7 @@
 
 - name: Install FzF for Windows
   community.windows.win_scoop:
-    name: fzf
+    name:
+      - fzf
+      - psfzf
   when: ansible_system == "Win32NT"
