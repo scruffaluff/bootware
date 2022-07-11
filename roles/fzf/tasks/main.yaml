@@ -1,19 +1,50 @@
 ---
+- name: Get latest Fzf version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/fzf.json
+  register: fzf_formula
+  when: ansible_system == "Linux"
+
 - name: Install FzF for FreeBSD
   become: true
   community.general.pkgng:
     name: fzf
   when: ansible_system == "FreeBSD"
 
-- name: Install FzF for Linux
-  ansible.builtin.package:
-    name: fzf
+# Fzf version from most Linux package managers is too outdated for compatibility
+# with Navi and Fzf Fish plugin.
+- name: Install Fzf for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/junegunn/fzf/releases/download/{{
+      fzf_formula.json.versions.stable }}/fzf-{{
+      fzf_formula.json.versions.stable }}-linux_{{
+      fzf_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    fzf_arch:
+      aarch64: arm64
+      x86_64: amd64
+  when: ansible_system == "Linux"
+
+- name: Install Fzf for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/fzf
+    mode: "755"
+    src: /tmp/fzf
   become: true
   when: ansible_system == "Linux"
 
 - name: Install FzF for MacOS
   community.general.homebrew:
-    name: fzf
+    name:
+      - fzf
+      - tree
   when: ansible_system == "Darwin"
 
 - name: Install FzF for Windows
@@ -22,3 +53,22 @@
       - fzf
       - psfzf
   when: ansible_system == "Win32NT"
+
+- name: Download Fzf key bindings file for Unix
+  ansible.builtin.get_url:
+    dest: "{{ ansible_env.HOME }}/.config/fish/functions/fzf_key_bindings.fish"
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Fzf user key bindings file for Unix
+  ansible.builtin.copy:
+    dest: >-
+      {{ ansible_env.HOME }}/.config/fish/functions/fish_user_key_bindings.fish
+    force: true
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: fish_user_key_bindings.fish
+  when: ansible_system != "Win32NT"

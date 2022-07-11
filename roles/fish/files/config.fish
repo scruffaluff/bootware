@@ -45,6 +45,32 @@ set -x DOCKER_BUILDKIT 1
 # Disable welcome message.
 set fish_greeting
 
+# Fzf settings.
+
+# Set Fzf solarized light theme.
+set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+set -x FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
+
+# Add inode preview to Fzf file finder.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q bat and type -q tree
+  function fzf_inode_preview
+    bat --color always --style numbers $argv 2> /dev/null
+    if test $status != 0
+      tree -C -L 1 $argv 2> /dev/null
+    end
+  end
+
+  set -x FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
+end
+
+if type -q fzf
+  fzf_key_bindings
+end
+
 # Go settings.
 
 # Find and export Go root directory.
@@ -212,11 +238,6 @@ end
 if type -q direnv
   direnv hook fish | source
 end
-
-# Set Fzf solarized light theme.
-set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-set -x FZF_DEFAULT_OPTS "$_fzf_colors $_fzf_highlights"
 
 # Initialize GCloud if on MacOS and available.
 #
