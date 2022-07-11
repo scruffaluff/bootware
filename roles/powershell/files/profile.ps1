@@ -12,17 +12,25 @@ If (Get-Module -ListAvailable -Name DockerCompletion) {
     Import-Module DockerCompletion
 }
 
+# Fzf settings.
+
+# Set Fzf solarized light theme.
+$FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+$FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+$Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
+
+# Add inode preview to Fzf file finder.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+If (Get-Command bat -ErrorAction SilentlyContinue) {
+    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
+}
+
 # Load Kubectl autocompletion if available.
 If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
     Import-Module PSKubectlCompletion
 }
-
-# # GCloud settings.
-
-# # Load GCloud autocompletion if available.
-# If (Get-Module -ListAvailable -Name GcloudTabComplete) {
-#     Import-Module GcloudTabComplete
-# }
 
 # Git settings.
 
@@ -50,9 +58,9 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineKeyHandler -Chord Shift+RightArrow -ScriptBlock {
         Param($Key, $Arg)
 
-        $Line = $null
-        $Cursor = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Line, [ref]$Cursor)
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
 
         If ($Cursor -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
@@ -121,12 +129,8 @@ If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
     Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 }
 
-$FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-$FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-$Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
-
 # Load Scoop autocompletion if available.
-If (Get-Module -ListAvailable -Name SSHCompletion) {
+If (Get-Module -ListAvailable -Name scoop-completion) {
     Import-Module scoop-completion
 }
 
