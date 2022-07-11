@@ -5,6 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
   register: cargo_binstall_release
+  when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
 
 - name: Install pkg-config for Linux
   ansible.builtin.package:
@@ -51,6 +52,7 @@
         owner: "{{ ansible_user_id }}"
         path: "{{ ansible_env.HOME }}/.local/bin"
         state: directory
+      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
 
     - name: Download Cargo Binstall for Amd64 Unix
       ansible.builtin.unarchive:

@@ -5,7 +5,9 @@
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
   register: usql_release
-  when: ansible_system == "Linux"
+  when: >-
+    ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
+    ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
 
 - name: Install Usql dependencies for Fedora distributions
   ansible.builtin.dnf:

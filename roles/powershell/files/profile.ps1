@@ -1,4 +1,4 @@
-# PowerShell settings file.
+﻿# PowerShell settings file.
 #
 # For more information, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
@@ -12,17 +12,25 @@ If (Get-Module -ListAvailable -Name DockerCompletion) {
     Import-Module DockerCompletion
 }
 
+# Fzf settings.
+
+# Set Fzf solarized light theme.
+$FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+$FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+$Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
+
+# Add inode preview to Fzf file finder.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+If (Get-Command bat -ErrorAction SilentlyContinue) {
+    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
+}
+
 # Load Kubectl autocompletion if available.
 If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
     Import-Module PSKubectlCompletion
 }
-
-# # GCloud settings.
-
-# # Load GCloud autocompletion if available.
-# If (Get-Module -ListAvailable -Name GcloudTabComplete) {
-#     Import-Module GcloudTabComplete
-# }
 
 # Git settings.
 
@@ -50,9 +58,9 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     Set-PSReadLineKeyHandler -Chord Shift+RightArrow -ScriptBlock {
         Param($Key, $Arg)
 
-        $Line = $null
-        $Cursor = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Line, [ref]$Cursor)
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
 
         If ($Cursor -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
@@ -81,12 +89,41 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
     # Disable sounds for errors.
     Set-PSReadLineOption -BellStyle None
+
+    # Setup Fzf PowerShell integration if available.
+    #
+    # Fzf PowerShell integration depends on PSReadLine being activated first.
+    If (Get-Module -ListAvailable -Name PsFzf) {
+        Import-Module PsFzf
+
+        # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
+        Set-PsFzfOption `
+            -PSReadlineChordProvider 'Ctrl+t' `
+            -PSReadlineChordReverseHistory 'Ctrl+r'
+    }
 }
 
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
+
+# Shell settings.
+
+# Load aliases if file exists.
+If (Test-Path "$HOME/.aliases.ps1") {
+    . "$HOME/.aliases.ps1"
+}
+
+# Load environment variables if file exists.
+If (Test-Path "$HOME/.env.ps1") {
+    . "$HOME/.env.ps1"
+}
+
+# Load secrets if file exists.
+If (Test-Path "$HOME/.secrets.ps1") {
+    . "$HOME/.secrets.ps1"
+}
 
 # Starship settings.
 
@@ -96,6 +133,8 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 }
 
 # Tool settings.
+
+$Env:BAT_THEME = 'Solarized (light)'
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
@@ -110,7 +149,7 @@ If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
 }
 
 # Load Scoop autocompletion if available.
-If (Get-Module -ListAvailable -Name SSHCompletion) {
+If (Get-Module -ListAvailable -Name scoop-completion) {
     Import-Module scoop-completion
 }
 

@@ -950,7 +950,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.3.6"
+  echo "Bootware 0.4.0"
 }
 
 #######################################
