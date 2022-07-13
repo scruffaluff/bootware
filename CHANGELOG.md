@@ -5,7 +5,7 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.4.0 - 2022-07-13
 
 ### Added
 
@@ -17,6 +17,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Changed Beekeeper install from Snap to AppImage package.
 - Default Unix editor to Helix.
+- Improved Fzf shell integration.
 - Moved Avro, Java, Julia, Parquet, Ruby and Virtualbox roles from default to
   extras list.
 
