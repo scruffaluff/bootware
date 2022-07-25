@@ -94,7 +94,7 @@ end
 fish_add_path "$GOROOT/bin"
 
 # Add Go local binaries to system path.
-set -x GOPATH "$HOME/go"
+set -x GOPATH "$HOME/.go"
 fish_add_path "$GOPATH/bin"
 
 # Java settings.

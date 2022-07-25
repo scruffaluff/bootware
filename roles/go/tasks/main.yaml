@@ -50,7 +50,7 @@
 - name: Install Go command line applications for Unix
   ansible.builtin.command: "go install {{ item }}"
   environment:
-    GOPATH: "{{ go_path }}/go"
+    GOPATH: "{{ go_path }}"
     PATH: "{{ go_root }}/bin:{{ go_path }}/bin:{{ ansible_env.PATH }}"
   loop: "{{ go_applications }}"
   when: ansible_system != "Win32NT"
@@ -58,6 +58,7 @@
 - name: Install Go command line applications for Windows
   ansible.builtin.win_shell: go install {{ item }}
   environment:
+    GOPATH: "{{ go_path }}"
     Path: "{{ scoop_apps }}\\go\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ go_applications }}"
   when: ansible_system == "Win32NT"
