@@ -1,4 +1,4 @@
-FROM node:16.0.0 AS builder
+FROM node:18.0.0 AS builder
 
 ARG version=1.0.0
 
