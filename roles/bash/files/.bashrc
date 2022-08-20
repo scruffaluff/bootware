@@ -82,7 +82,7 @@ else
 fi
 
 # Add Go local binaries to system path.
-export GOPATH="${HOME}/go"
+export GOPATH="${HOME}/.go"
 prepend_path "${GOPATH}/bin"
 
 # Java settings.

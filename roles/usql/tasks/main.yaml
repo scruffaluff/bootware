@@ -28,10 +28,10 @@
 - name: Install Usql for Debian distributions
   ansible.builtin.command: "go install github.com/xo/usql@latest"
   environment:
-    GOPATH: "{{ ansible_env.HOME }}/go"
+    GOPATH: "{{ ansible_env.HOME }}/.go"
     GOROOT: "/usr/local/go"
     PATH: >-
-      /usr/local/go/bin:{{ ansible_env.HOME }}/go/bin:{{ ansible_env.PATH }}
+      /usr/local/go/bin:{{ ansible_env.HOME }}/.go/bin:{{ ansible_env.PATH }}
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Usql for Fedora and Ubuntu distributions

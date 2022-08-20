@@ -63,6 +63,7 @@
           https://github.com/ryankurte/cargo-binstall/releases/download/{{
           cargo_binstall_release.json.tag_name }}/cargo-binstall-x86_64-{{
           cargo_binstall_suffix[ansible_system] }}
+      become: true
       vars:
         cargo_binstall_suffix:
           Darwin: apple-darwin.zip
@@ -74,6 +75,7 @@
         dest: "{{ ansible_env.HOME }}/.local/bin/cargo-binstall"
         mode: "755"
         src: /tmp/cargo-binstall
+      become: true
       when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
 
     # Cargo Binstall has OpenSSL issues on several platforms.

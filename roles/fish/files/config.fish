@@ -94,7 +94,7 @@ end
 fish_add_path "$GOROOT/bin"
 
 # Add Go local binaries to system path.
-set -x GOPATH "$HOME/go"
+set -x GOPATH "$HOME/.go"
 fish_add_path "$GOPATH/bin"
 
 # Java settings.
@@ -181,8 +181,8 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.aliases"
-  source "$HOME/.aliases"
+if test -f "$HOME/.aliases"; and type -q bass
+  bass source "$HOME/.aliases"
 end
 
 # Load environment variables if file exists.

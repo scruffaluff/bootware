@@ -6,7 +6,7 @@ _go_root:
   FreeBSD: ""
   Linux: /usr/local/go
   Win32NT: ""
-go_path: "{{ ansible_env.HOME }}/go"
+go_path: "{{ ansible_env.HOME }}/.go"
 go_root: "{{ _go_root[ansible_system] }}"
 go_applications:
   - github.com/go-delve/delve/cmd/dlv@latest
