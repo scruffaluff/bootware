@@ -69,7 +69,6 @@
 
 - name: Update system path to include Datree program directory for Windows
   ansible.windows.win_path:
-    name: PATH
     elements: "C:\\Program Files\\Datree"
     scope: machine
   when: ansible_system == "Win32NT"
