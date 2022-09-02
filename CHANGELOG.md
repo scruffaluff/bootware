@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - GDB enhanced features installation.
 
+### Changed
+
+- Moved Libvirt, Vagrant and Vault roles to extras tag.
+
 ### Fixed
 
 - Go paths for CLI tools.

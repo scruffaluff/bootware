@@ -622,7 +622,9 @@
         name: libvirt
       tags:
         - desktop
+        - extras
         - libvirt
+        - never
         - vm
 
     - name: Install Lua language
@@ -977,7 +979,9 @@
         name: vagrant
       tags:
         - desktop
+        - extras
         - hashicorp
+        - never
         - server
         - vagrant
         - wsl
@@ -988,7 +992,9 @@
       tags:
         - container
         - desktop
+        - extras
         - hashicorp
+        - never
         - server
         - vault
         - wsl
