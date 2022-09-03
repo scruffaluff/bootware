@@ -1,11 +1,19 @@
 ---
 node_applications:
+  - "@taplo/cli"
   - "@vue/cli"
   - "gitmoji-cli"
+  - bash-language-server
+  - dockerfile-language-server-nodejs
+  - lean-language-server
   - live-server
   - prettier
   - speed-test
   - speedscope
+  - typescript-language-server
+  - vls
+  - vscode-langservers-extracted
   - wikit
+  - yaml-language-server
 node_versions:
   - "18"
