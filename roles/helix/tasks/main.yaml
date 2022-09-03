@@ -67,18 +67,20 @@
     dest: "{{ ansible_env.HOME }}/.config/helix/"
     mode: "755"
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
-  become: true
   when: >-
     ansible_system == "Linux" and ansible_architecture == "x86_64" and
     ansible_pkg_mgr != "apk"
 
-- name: Copy Helix configuration file for Unix
+- name: Copy Helix configuration files for Unix
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.config/helix/config.toml"
+    dest: "{{ ansible_env.HOME }}/.config/helix/{{ item }}"
     force: true
     mode: "664"
     owner: "{{ ansible_user_id }}"
-    src: config.toml
+    src: "{{ item }}"
+  loop:
+    - config.toml
+    - languages.toml
   when: ansible_system != "Win32NT"
 
 - name: Create Helix configuration directory for Windows
@@ -87,9 +89,12 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Copy Helix configuration file for Windows
+- name: Copy Helix configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ ansible_env.HOME }}/AppData/Roaming/helix/config.toml"
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/helix/{{ item }}"
     force: true
-    src: config.toml
+    src: "{{ item }}"
+  loop:
+    - config.toml
+    - languages.toml
   when: ansible_system == "Win32NT"

@@ -1,0 +1,42 @@
+# Helix configuration file for language specific settings.
+#
+# For more information, visit https://docs.helix-editor.com/languages.html.
+
+[[language]]
+name = "bash"
+auto-format = true
+file-types = ["sh", "bash", "zsh", ".bash_login", ".bash_logout", ".bash_profile", ".bashrc", "env", ".profile", ".secrets", ".zshenv", ".zlogin", ".zlogout", ".zprofile", ".zshrc", "APKBUILD", "PKGBUILD", "eclass", "ebuild", "bazelrc"]
+formatter = { command = "shfmt", args = ["--indent", "2"] }
+
+[[language]]
+name = "javascript"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "json"
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "html"
+formatter = { command = "prettier", args = ["--parser", "html"] }
+
+[[language]]
+name = "markdown"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+
+[[language]]
+name = "python"
+auto-format = true
+roots = ["pyproject.toml", "setup.py", "requirements.txt"]
+
+[[language]]
+name = "typescript"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "yaml"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "yaml"] }

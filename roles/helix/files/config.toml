@@ -4,10 +4,28 @@
 
 theme = "solarized_light"
 
+[editor]
+auto-pairs = false
+color-modes = true
+cursorline = true
+
 [editor.cursor-shape]
 insert = "bar"
 normal = "bar"
 select = "bar"
+
+[editor.file-picker]
+git-ignore = true
+hidden = false
+
+[editor.indent-guides]
+render = true
+
+[editor.statusline]
+center = []
+left = ["mode", "spinner", "file-name"]
+right = ["diagnostics", "selections", "position", "file-line-ending"]
+separator = "│"
 
 [keys.normal]
 j = "move_char_left"

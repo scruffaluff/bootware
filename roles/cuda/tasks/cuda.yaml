@@ -5,7 +5,7 @@
     mode: "644"
     url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
   become: true
-  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Download Nvidia CUDA repository key for Ubuntu distributions
   ansible.builtin.get_url:
@@ -13,14 +13,14 @@
     mode: "644"
     url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
   become: true
-  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Nvidia CUDA repository key for Ubuntu distributions
   ansible.builtin.command: >-
     gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg
     /tmp/cuda-archive-keyring.pub
   become: true
-  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Nvidia CUDA repository for Ubuntu distributions
   ansible.builtin.template:
@@ -29,16 +29,16 @@
     mode: "644"
     src: cuda.list.j2
   become: true
-  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Nvidia CUDA for Ubuntu distributions
   ansible.builtin.apt:
     name: cuda
     update_cache: true
   become: true
-  when: cuda and ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Install Nvidia CUDA for Windows
   community.windows.win_scoop:
     name: cuda
-  when: cuda and ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT"

@@ -4,3 +4,58 @@
 
 - include_tasks: windows.yaml
   when: ansible_system == "Win32NT"
+
+- name: Install Rust Analyzer for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: rust-analyzer
+  when: ansible_system == "FreeBSD"
+
+- name: Download Rust Analyzer for Alpine
+  ansible.builtin.get_url:
+    dest: /tmp/rust-analyzer.gz
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/rust-lang/rust-analyzer/releases/download/2022-08-29/rust-analyzer-x86_64-unknown-linux-musl.gz
+  become: true
+  when: ansible_pkg_mgr == "apk" and ansible_system == "x86_64"
+
+- name: Download Rust Analyzer for Linux
+  ansible.builtin.get_url:
+    dest: /tmp/rust-analyzer.gz
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
+      ansible_architecture }}-unknown-linux-gnu.gz
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Decompress Rust Analyzer for Linux
+  ansible.builtin.command:
+    cmd: gunzip --force /tmp/rust-analyzer.gz
+  become: true
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or ansible_system ==
+    "x86_64")
+
+- name: Install Rust Analyzer for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/rust-analyzer
+    mode: "755"
+    src: /tmp/rust-analyzer
+  become: true
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or ansible_system ==
+    "x86_64")
+
+- name: Install Rust Analyzer for MacOS
+  community.general.homebrew:
+    name: rust-analyzer
+  when: ansible_system == "Darwin"
+
+- name: Install Rust Analyzer for Windows
+  community.windows.win_scoop:
+    name: rust-analyzer
+  when: ansible_system == "Win32NT"
