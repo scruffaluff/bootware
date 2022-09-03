@@ -6,10 +6,3 @@ alias diff='diff -u'
 alias emacs='emacs -nw'
 alias exa='exa -Fhl -s type --color auto'
 alias procs='procs --theme light'
-
-# Operating system specific aliases.
-
-if [[ "$(uname -s)" == 'Linux' ]]; then
-  alias pbcopy='xclip -selection clipboard'
-  alias pbpaste='xclip -selection clipboard -o'
-fi

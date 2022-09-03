@@ -33,3 +33,9 @@
 - name: Change desktop settings for XFCE
   ansible.builtin.script: xfce.sh
   when: ansible_system == "Linux" and desktop == "xfce"
+
+- name: Add clipboard commands for Linux with Wayland display
+  ansible.builtin.package:
+    name: wl-clipboard
+  become: true
+  when: ansible_system == "Linux" and display_manager == "wayland"
