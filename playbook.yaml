@@ -170,9 +170,7 @@
         name: cuda
       tags:
         - cuda
-        - desktop
-        - server
-        - wsl
+        - never
 
     - name: Install Datree Kubernetes linter
       ansible.builtin.import_role:
