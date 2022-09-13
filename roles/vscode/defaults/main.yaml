@@ -1,6 +1,7 @@
 ---
 _ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_extensions:
+  - "antfu.vite"
   - "bierner.markdown-mermaid"
   - "bungcip.better-toml"
   - "coolbear.systemd-unit-file"
@@ -19,7 +20,6 @@ vscode_extensions:
   - "ms-python.python"
   - "ms-python.vscode-pylance"
   - "ms-vscode-remote.vscode-remote-extensionpack"
-  - "octref.vetur"
   - "RandomFractalsInc.vscode-data-preview"
   - "redhat.vscode-yaml"
   - "ritwickdey.liveserver"
@@ -27,7 +27,9 @@ vscode_extensions:
   - "skyapps.fish-vscode"
   - "stkb.rewrap"
   - "sumneko.lua"
+  - "tilt-dev.tiltfile"
   - "timonwong.shellcheck"
   - "vadimcn.vscode-lldb"
   - "vscode-icons-team.vscode-icons"
+  - "vue.volar"
   - "yzhang.markdown-all-in-one"
