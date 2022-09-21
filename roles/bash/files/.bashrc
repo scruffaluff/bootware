@@ -61,7 +61,7 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 #
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if [[ "$(uname -s)" == 'Darwin' ]]; then
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   ARM_GOROOT='/opt/homebrew/opt/go/libexec'
@@ -91,7 +91,7 @@ prepend_path "${GOPATH}/bin"
 #
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if [[ "$(uname -s)" == 'Darwin' ]]; then
   if [[ -d '/opt/homebrew/opt/openjdk/bin' ]]; then
     prepend_path '/opt/homebrew/opt/openjdk/bin'
@@ -113,7 +113,7 @@ export POETRY_VIRTUALENVS_IN_PROJECT=1
 #
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if [[ "$(uname -s)" == 'Darwin' ]]; then
   if [[ -d '/opt/homebrew/opt/openblas' ]]; then
     export OPENBLAS='/opt/homebrew/opt/openblas'
@@ -227,7 +227,7 @@ fi
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if [[ "$(uname -s)" == 'Darwin' ]]; then
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   ARM_GCLOUD_PATH='/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'

@@ -79,10 +79,13 @@ end
 
 # Find and export Go root directory.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   --kernel-name: Print machine kernal name.
-if test (uname --kernel-name) = 'Darwin'
+#   -s: Print machine kernel name.
+if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   set ARM_GOROOT '/opt/homebrew/opt/go/libexec'
   set INTEL_GOROOT '/usr/local/opt/go/libexec'
@@ -105,10 +108,13 @@ fish_add_path "$GOPATH/bin"
 
 # Find and add Java OpenJDK directory to path.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   --kernel-name: Print machine kernal name.
-if test (uname --kernel-name) = 'Darwin'
+#   -s: Print machine kernel name.
+if test (uname -s) = 'Darwin'
   if test -d '/opt/homebrew/opt/openjdk/bin'
     fish_add_path '/opt/homebrew/opt/openjdk/bin'
   else if test -d '/usr/local/opt/openjdk/bin'
@@ -127,10 +133,13 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT 1
 
 # Make numerical compute libraries findable on MacOS.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   --kernel-name: Print machine kernal name.
-if test (uname --kernel-name) = 'Darwin'
+#   -s: Print machine kernel name.
+if test (uname -s) = 'Darwin'
   if test -d '/opt/homebrew/opt/openblas'
     set --export OPENBLAS '/opt/homebrew/opt/openblas'
   else if test -d '/usr/local/opt/openblas'
@@ -242,12 +251,13 @@ end
 
 # Initialize GCloud if on MacOS and available.
 #
-# GCloud completion is provided on Linux via a Fish package.
+# GCloud completion is provided on Linux via a Fish package. Use the short form
+# '-s' flag instead of the less portable long form '--kernel-name' flag.
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   --kernel-name: Print machine kernal name.
-if test (uname --kernel-name) = 'Darwin'
+#   -s: Print machine kernel name.
+if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   set ARM_GCLOUD_PATH '/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
   set INTEL_GCLOUD_PATH '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
