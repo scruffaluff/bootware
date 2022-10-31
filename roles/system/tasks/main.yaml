@@ -147,6 +147,7 @@
       - neofetch
       - openssl
       - scoop-completion
+      - sudo
       - unzip
       - zip
   when: ansible_system == "Win32NT"

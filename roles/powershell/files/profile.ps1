@@ -3,6 +3,24 @@
 # For more information, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
+
+# Convenience functions.
+Function Export($Name, $Value) {
+    Set-Content Env:$Name $Value
+}
+
+Function PKill($Name) {
+    Stop-Process -Force -Name "$Name"
+}
+
+Function PGrep($Name) {
+    Get-Process $Name
+}
+
+Function Which($Name) {
+    Get-Command $Name | Select-Object -ExpandProperty Definition
+}
+
 # Docker settings.
 $Env:COMPOSE_DOCKER_CLI_BUILD = 1
 $Env:DOCKER_BUILDKIT = 1
@@ -83,8 +101,14 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         # Show history based autocompletion for every typed character.
         Set-PSReadLineOption -PredictionSource History
 
-        # Use solarized light blue for predictions.
-        Set-PSReadLineOption -Colors @{ InlinePrediction = '#268bd2' }
+        # Use solarized light compatible colors for predictions.
+        Set-PSReadLineOption -Colors @{
+            Default = '#657b83'
+            InlinePrediction = '#268bd2'
+            Number = '#657b83'
+            Parameter = '#657b83'
+            String = '#657b83'
+        }
     }
 
     # Disable sounds for errors.
