@@ -103,11 +103,11 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
         # Use solarized light compatible colors for predictions.
         Set-PSReadLineOption -Colors @{
-            Default = '#657b83'
+            Default          = '#657b83'
             InlinePrediction = '#268bd2'
-            Number = '#657b83'
-            Parameter = '#657b83'
-            String = '#657b83'
+            Number           = '#657b83'
+            Parameter        = '#657b83'
+            String           = '#657b83'
         }
     }
 
