@@ -6,18 +6,18 @@
 # Function fish_add_path was not added until Fish version 3.2.0.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if not type -q fish_add_path
+#   --query: Only check for exit status by supressing output.
+if not type --query fish_add_path
   # Prepend directory to the system path if it exists and is not already there.
   #
   # Flags:
   #   -d: Check if inode is a directory.
-  #   -x: Export variable for current and child processes.
+  #   --export: Export variable for current and child processes.
   function fish_add_path
     # Fish version 2 throws an error if an inode in the system path does not
     # exist.
     if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
-      set -x PATH "$argv[1]" $PATH
+      set --export PATH "$argv[1]" $PATH
     end
   end
 end
@@ -37,8 +37,8 @@ fish_add_path '/usr/bin'
 fish_add_path '/usr/local/bin'
 
 # Docker settings.
-set -x COMPOSE_DOCKER_CLI_BUILD 1
-set -x DOCKER_BUILDKIT 1
+set --export COMPOSE_DOCKER_CLI_BUILD 1
+set --export DOCKER_BUILDKIT 1
 
 # Fish settings.
 
@@ -50,24 +50,28 @@ set fish_greeting
 # Set Fzf solarized light theme.
 set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-set -x FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
+set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 
 # Add inode preview to Fzf file finder.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q bat and type -q tree
+#   --query: Only check for exit status by supressing output.
+if type --query bat; and type --query tree
   function fzf_inode_preview
     bat --color always --style numbers $argv 2> /dev/null
+
     if test $status != 0
+      # Flags:
+      #   -C: Turn on color.
+      #   -L 1: Descend only 1 directory level deep.
       tree -C -L 1 $argv 2> /dev/null
     end
   end
 
-  set -x FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
+  set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
 end
 
-if type -q fzf
+if type --query fzf
   fzf_key_bindings
 end
 
@@ -75,35 +79,41 @@ end
 
 # Find and export Go root directory.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   set ARM_GOROOT '/opt/homebrew/opt/go/libexec'
   set INTEL_GOROOT '/usr/local/opt/go/libexec'
 
   if test -d "$ARM_GOROOT"
-    set -x GOROOT "$ARM_GOROOT"
+    set --export GOROOT "$ARM_GOROOT"
   else if test -d "$INTEL_GOROOT"
-    set -x GOROOT "$INTEL_GOROOT"
+    set --export GOROOT "$INTEL_GOROOT"
   end
 else
-  set -x GOROOT '/usr/local/go'
+  set --export GOROOT '/usr/local/go'
 end
 fish_add_path "$GOROOT/bin"
 
 # Add Go local binaries to system path.
-set -x GOPATH "$HOME/.go"
+set --export GOPATH "$HOME/.go"
 fish_add_path "$GOPATH/bin"
 
 # Java settings.
 
 # Find and add Java OpenJDK directory to path.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if test (uname -s) = 'Darwin'
   if test -d '/opt/homebrew/opt/openjdk/bin'
     fish_add_path '/opt/homebrew/opt/openjdk/bin'
@@ -119,18 +129,21 @@ fish_add_path '/usr/local/julia/bin'
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
-set -x POETRY_VIRTUALENVS_IN_PROJECT 1
+set --export POETRY_VIRTUALENVS_IN_PROJECT 1
 
 # Make numerical compute libraries findable on MacOS.
 #
+# Use the short form '-s' flag instead of the less portable long form
+# '--kernel-name' flag.
+#
 # Flags:
 #   -d: Check if inode is a directory.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if test (uname -s) = 'Darwin'
   if test -d '/opt/homebrew/opt/openblas'
-    set -x OPENBLAS '/opt/homebrew/opt/openblas'
+    set --export OPENBLAS '/opt/homebrew/opt/openblas'
   else if test -d '/usr/local/opt/openblas'
-    set -c OPENBLAS '/usr/local/opt/openblas'
+    set --export OPENBLAS '/usr/local/opt/openblas'
   end
 end
 
@@ -140,8 +153,8 @@ fish_add_path "$HOME/.pyenv/bin"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q pyenv
+#   --query: Only check for exit status by supressing output.
+if type --query pyenv
   status is-interactive; and pyenv init --path | source
   pyenv init - | source
 end
@@ -152,8 +165,8 @@ fish_add_path "$HOME/bin"
 # Add gems binaries to path if Ruby is available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q ruby
+#   --query: Only check for exit status by supressing output.
+if type --query ruby
   fish_add_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
 end
 
@@ -171,9 +184,9 @@ fish_add_path "$HOME/.cargo/bin"
 function setenv
   if [ $argv[1] = PATH ]
     # Replace colons and spaces with newlines.
-    set -x PATH (echo "$argv[2]" | tr ': ' \n)
+    set --export PATH (echo "$argv[2]" | tr ': ' \n)
   else
-    set -gx $argv
+    set --export $argv
   end
 end
 
@@ -181,7 +194,7 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.aliases"; and type -q bass
+if test -f "$HOME/.aliases"; and type --query bass
   bass source "$HOME/.aliases"
 end
 
@@ -189,8 +202,8 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   -q: Only check for exit status by supressing output.
-if test -f "$HOME/.env"; and type -q bass
+#   --query: Only check for exit status by supressing output.
+if test -f "$HOME/.env"; and type --query bass
   bass source "$HOME/.env"
 end
 
@@ -198,8 +211,8 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   -q: Only check for exit status by supressing output.
-if test -f "$HOME/.secrets"; and type -q bass
+#   --query: Only check for exit status by supressing output.
+if test -f "$HOME/.secrets"; and type --query bass
   bass source "$HOME/.secrets"
 end
 
@@ -208,14 +221,14 @@ end
 # Initialize Starship if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q starship
+#   --query: Only check for exit status by supressing output.
+if type --query starship
   starship init fish | source
 end
 
 # Tool settings.
 
-set -x BAT_THEME 'Solarized (light)'
+set --export BAT_THEME 'Solarized (light)'
 
 # Add Visual Studio Code binary to PATH for Linux.
 fish_add_path '/usr/share/code/bin'
@@ -223,26 +236,27 @@ fish_add_path '/usr/share/code/bin'
 # Initialize Digital Ocean CLI if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q doctl
-  source (doctl completion fish|psub)
+#   --query: Only check for exit status by supressing output.
+if type --query doctl
+  source (doctl completion fish | psub)
 end
 
 # Initialize Direnv if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q direnv
+#   --query: Only check for exit status by supressing output.
+if type --query direnv
   direnv hook fish | source
 end
 
 # Initialize GCloud if on MacOS and available.
 #
-# GCloud completion is provided on Linux via a Fish package.
+# GCloud completion is provided on Linux via a Fish package. Use the short form
+# '-s' flag instead of the less portable long form '--kernel-name' flag.
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   -s: Print machine kernal name.
+#   -s: Print machine kernel name.
 if test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   set ARM_GCLOUD_PATH '/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
@@ -261,23 +275,23 @@ fish_add_path "$HOME/.krew/bin"
 # Add Navi widget if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q navi
+#   --query: Only check for exit status by supressing output.
+if type --query navi
   navi widget fish | source
 end
 
 # Initialize Zoxide if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q zoxide
+#   --query: Only check for exit status by supressing output.
+if type --query zoxide
   zoxide init fish --cmd cd | source
 end
 
 # TypeScript settings.
 
 # Add Deno binaries to system path.
-set -x DENO_INSTALL "$HOME/.deno"
+set --export DENO_INSTALL "$HOME/.deno"
 fish_add_path "$DENO_INSTALL/bin"
 
 # Add NPM global binaries to system path.
@@ -286,8 +300,8 @@ fish_add_path "$HOME/.npm-global/bin"
 # Initialize NVM default version of Node if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q nvm
+#   --query: Only check for exit status by supressing output.
+if type --query nvm
   nvm use default
 end
 
@@ -296,17 +310,27 @@ end
 # Set default editor to Helix if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q hx
-  set -x EDITOR 'hx'
+#   --query: Only check for exit status by supressing output.
+if type --query hx
+  set --export EDITOR 'hx'
 end
 
 # Add scripts directory to system path.
 fish_add_path "$HOME/.local/bin"
 
 # Wasmtime settings.
-set -x WASMTIME_HOME "$HOME/.wasmtime"
+set --export WASMTIME_HOME "$HOME/.wasmtime"
 fish_add_path "$WASMTIME_HOME/bin"
+
+# Zellij settings.
+if type --query zellij; and test "$TERM" = 'alacritty'
+  set --export ZELLIJ_AUTO_ATTACH 'true'
+  set --export ZELLIJ_AUTO_EXIT 'true'
+  
+  if status is-interactive
+    eval (zellij setup --generate-auto-start fish | string collect)
+  end
+end
 
 # Apple Silicon support.
 

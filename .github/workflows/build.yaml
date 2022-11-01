@@ -18,7 +18,7 @@ on:
 jobs:
   lint:
     name: Check code with formatter and linter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -71,7 +71,7 @@ jobs:
 
   test-bash:
     name: Run unit tests for Bash scripts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -96,7 +96,7 @@ jobs:
       fail-fast: false
       matrix:
         format: [deb]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -112,7 +112,7 @@ jobs:
 
   test-powershell:
     name: Run linter and unit tests for PowerShell scripts
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2

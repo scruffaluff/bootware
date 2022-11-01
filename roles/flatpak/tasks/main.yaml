@@ -13,6 +13,11 @@
   become: true
   when: ansible_system == "Linux"
 
+- name: Enable Flathub remote repository for Linux
+  ansible.builtin.command: flatpak remote-modify --enable flathub
+  become: true
+  when: ansible_system == "Linux"
+
 - name: Install Flatpak packages for Linux
   become: true
   community.general.flatpak:

@@ -16,15 +16,14 @@ on:
 jobs:
   docs:
     name: Build and publish documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Node interpreter
         uses: actions/setup-node@v2
         with:
-          # Vuepress does not appear to work on Node 18 as of 06/14/2022.
-          node-version: 16
+          node-version: 18
       - name: Cache Node packages
         uses: actions/cache@v2
         with:

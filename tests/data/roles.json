@@ -306,7 +306,7 @@
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   {
     "name": "scc",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }],
     "tests": ["scc --version"]
   },
   {
