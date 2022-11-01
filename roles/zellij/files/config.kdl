@@ -89,15 +89,15 @@ keybinds {
 themes {
     default {
         bg 253 246 227
-        black 7 54 66
+        black 253 246 227
         blue 38 139 210
         cyan 42 161 152
-        fg 40 123 131
+        fg 40 110 160
         green 133 153 0
         magenta 211 54 130
         orange 203 75 22
         red 220 50 47
-        white 238 232 213
+        white 7 54 66
         yellow 181 137 0
     }
 }

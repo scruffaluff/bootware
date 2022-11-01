@@ -29,7 +29,7 @@ jobs:
         with:
           path: node_modules
           key: >-
-            node-16_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-18_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: npm install
       - name: Build documentation

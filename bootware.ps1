@@ -511,6 +511,7 @@ Function SetupSSHKeys {
             -Value 'PasswordAuthentication no'
 
         New-Item -ItemType File -Path "$SetupSSHKeysComplete" | Out-Null
+        Log 'Completed SSH key configuration'
     }
 }
 
