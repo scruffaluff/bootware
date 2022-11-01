@@ -36,7 +36,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'alpine') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -65,7 +65,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'arch') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -94,7 +94,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'debian') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -123,7 +123,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'fedora') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -227,7 +227,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'ubuntu') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -249,7 +249,7 @@ jobs:
           file: ./tests/integration/ubuntu.Dockerfile
           platforms: linux/amd64
           push: false
-          tags: scruffaluff/bootware:ubuntu-latest
+          tags: scruffaluff/bootware:ubuntu-22.04
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
@@ -262,7 +262,7 @@ jobs:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' ||
       contains(github.event.inputs.os, 'windows') }}
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -301,7 +301,7 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Windows server 2019 does not have fully support for Windows Terminal.
+      # Windows server 2019 does not have full support for Windows Terminal.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"

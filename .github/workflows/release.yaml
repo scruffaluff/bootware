@@ -15,7 +15,7 @@ on:
 jobs:
   release:
     name: Get Git tag and make GitHub release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       tag: ${{ steps.extract_tag.outputs.tag }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -38,7 +38,7 @@ jobs:
 
   collection:
     name: Publish collection to Ansible Galaxy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
       matrix:
         package: [deb]
     needs: release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
