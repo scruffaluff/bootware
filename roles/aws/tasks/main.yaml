@@ -12,6 +12,14 @@
   become: true
   when: ansible_system == "Linux"
 
+# For more information, visit https://askubuntu.com/q/1428181.
+- name: Upgrade PyOpenSSL to Avoid Errors for Debian
+  ansible.builtin.pip:
+    name: pyopenssl
+    state: latest
+  become: true
+  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
+
 - name: Install AWSCLI for MacOS
   community.general.homebrew:
     name: awscli

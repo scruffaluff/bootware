@@ -344,15 +344,17 @@ Function FindConfigPath($FilePath) {
 
 # Find IP address of Windows host relative from WSL.
 #
-# For WSL version, the Linux subsystem and the Windows host share the same
+# For WSL version 1, the Linux subsystem and the Windows host share the same
 # network. For WSL version 2, the first "nameserver <ip-address>" section of
 # /etc/resolv.conf contains the IP address of the windows host. Note that there
 # can be several namserver sections. For more information, visit
 # https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
-    wsl -l -v 2>&1 | Out-Null
+    $WSLVersion = Get-ItemPropertyValue `
+      -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss' `
+      -Name DefaultVersion
 
-    If ($LastExitCode) {
+    If ($WSLVersion -Eq 1) {
         Write-Output '127.0.0.1'
     }
     Else {

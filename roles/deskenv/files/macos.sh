@@ -79,13 +79,6 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Do not autosave files to iCloud.
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
-# Keyboard settings.
-
-# Increase cursor movement to max speed.
-defaults write NSGlobalDomain KeyRepeat 1
-# Minimize delay for cursor movement to smallest time.
-defaults write NSGlobalDomain InitialKeyRepeat 10
-
 # TextEdit settings.
 
 # Save files to plain text by default.

@@ -157,7 +157,7 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.2.9
+        uses: vmactions/freebsd-vm@v0.3.0
         with:
           prepare: |
             sudo freebsd-update fetch
@@ -289,7 +289,8 @@ jobs:
         run: Get-NetFirewallRule -All
         shell: powershell
       # IdentitiesOnly is required to avoid an infinite wait for user password
-      # input if the private key is rejected.
+      # input if the private key is rejected. Localhost is used since
+      # Vampire/setup-wsl@v1 sets up WSL version 1.
       - name: Test SSH connection from WSL to Windows host
         run: >-
           wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o
@@ -301,11 +302,10 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Windows server 2019 does not have full support for Windows Terminal.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --skip defterm
+          bootware bootstrap --no-setup
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
