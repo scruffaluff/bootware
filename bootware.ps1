@@ -351,8 +351,8 @@ Function FindConfigPath($FilePath) {
 # https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
     $WSLVersion = Get-ItemPropertyValue `
-      -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss' `
-      -Name DefaultVersion
+        -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss' `
+        -Name DefaultVersion
 
     If ($WSLVersion -Eq 1) {
         Write-Output '127.0.0.1'
