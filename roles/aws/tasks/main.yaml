@@ -16,7 +16,8 @@
 - name: Upgrade PyOpenSSL to Avoid Errors for Debian
   ansible.builtin.pip:
     name: pyopenssl
-    state: latest
+    # prettier-ignore
+    state: latest  # noqa package-latest
   become: true
   when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
