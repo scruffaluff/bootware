@@ -3,11 +3,15 @@
 # For more information, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
+# Do not use flag '--query' instead of '-q'. Flag '--quiet' was renamed to
+# '--query' in Fish version 3.2.0, but short flag '-q' is compatible across all
+# versions.
+
 # Function fish_add_path was not added until Fish version 3.2.0.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if not type --query fish_add_path
+#   -q: Only check for exit status by supressing output.
+if not type -q fish_add_path
   # Prepend directory to the system path if it exists and is not already there.
   #
   # Flags:
@@ -55,8 +59,8 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 # Add inode preview to Fzf file finder.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query bat; and type --query tree
+#   -q: Only check for exit status by supressing output.
+if type -q bat; and type -q tree
   function fzf_inode_preview
     bat --color always --style numbers $argv 2> /dev/null
 
@@ -71,7 +75,7 @@ if type --query bat; and type --query tree
   set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
 end
 
-if type --query fzf
+if type -q fzf
   fzf_key_bindings
 end
 
@@ -153,8 +157,8 @@ fish_add_path "$HOME/.pyenv/bin"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query pyenv
+#   -q: Only check for exit status by supressing output.
+if type -q pyenv
   status is-interactive; and pyenv init --path | source
   pyenv init - | source
 end
@@ -165,8 +169,8 @@ fish_add_path "$HOME/bin"
 # Add gems binaries to path if Ruby is available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query ruby
+#   -q: Only check for exit status by supressing output.
+if type -q ruby
   fish_add_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
 end
 
@@ -194,7 +198,7 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.aliases"; and type --query bass
+if test -f "$HOME/.aliases"; and type -q bass
   bass source "$HOME/.aliases"
 end
 
@@ -202,8 +206,8 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   --query: Only check for exit status by supressing output.
-if test -f "$HOME/.env"; and type --query bass
+#   -q: Only check for exit status by supressing output.
+if test -f "$HOME/.env"; and type -q bass
   bass source "$HOME/.env"
 end
 
@@ -211,8 +215,8 @@ end
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-#   --query: Only check for exit status by supressing output.
-if test -f "$HOME/.secrets"; and type --query bass
+#   -q: Only check for exit status by supressing output.
+if test -f "$HOME/.secrets"; and type -q bass
   bass source "$HOME/.secrets"
 end
 
@@ -221,8 +225,8 @@ end
 # Initialize Starship if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query starship
+#   -q: Only check for exit status by supressing output.
+if type -q starship
   starship init fish | source
 end
 
@@ -236,16 +240,16 @@ fish_add_path '/usr/share/code/bin'
 # Initialize Digital Ocean CLI if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query doctl
+#   -q: Only check for exit status by supressing output.
+if type -q doctl
   source (doctl completion fish | psub)
 end
 
 # Initialize Direnv if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query direnv
+#   -q: Only check for exit status by supressing output.
+if type -q direnv
   direnv hook fish | source
 end
 
@@ -275,16 +279,16 @@ fish_add_path "$HOME/.krew/bin"
 # Add Navi widget if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query navi
+#   -q: Only check for exit status by supressing output.
+if type -q navi
   navi widget fish | source
 end
 
 # Initialize Zoxide if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query zoxide
+#   -q: Only check for exit status by supressing output.
+if type -q zoxide
   zoxide init fish --cmd cd | source
 end
 
@@ -300,8 +304,8 @@ fish_add_path "$HOME/.npm-global/bin"
 # Initialize NVM default version of Node if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query nvm
+#   -q: Only check for exit status by supressing output.
+if type -q nvm
   nvm use default
 end
 
@@ -310,8 +314,8 @@ end
 # Set default editor to Helix if available.
 #
 # Flags:
-#   --query: Only check for exit status by supressing output.
-if type --query hx
+#   -q: Only check for exit status by supressing output.
+if type -q hx
   set --export EDITOR 'hx'
 end
 
@@ -323,7 +327,7 @@ set --export WASMTIME_HOME "$HOME/.wasmtime"
 fish_add_path "$WASMTIME_HOME/bin"
 
 # Zellij settings.
-if type --query zellij; and test "$TERM" = 'alacritty'
+if type -q zellij; and test "$TERM" = 'alacritty'
   set --export ZELLIJ_AUTO_ATTACH 'true'
   set --export ZELLIJ_AUTO_EXIT 'true'
   

@@ -8,7 +8,7 @@ ARG TARGETARCH
 #
 # Flags:
 #     -D: Do not assign the user a password.
-#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -s /usr/bin/sh: Set user login shell to Sh.
 #     -u 1000: Give new user UID value 1000.
 RUN adduser --disabled-password -s /bin/sh -u 1000 alpine
 

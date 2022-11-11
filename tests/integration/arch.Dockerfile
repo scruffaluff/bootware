@@ -7,7 +7,7 @@ ARG TARGETARCH
 # Flags:
 #     -l: Do not add user to lastlog database.
 #     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/fish: Set user login shell to Fish.
+#     -s /usr/bin/bash: Set user login shell to Bash.
 #     -u 1000: Give new user UID value 1000.
 RUN useradd -lm -s /bin/bash -u 1000 arch
 
