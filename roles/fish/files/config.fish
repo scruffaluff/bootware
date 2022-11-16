@@ -26,6 +26,18 @@ if not type -q fish_add_path
   end
 end
 
+# Check if current shell is within a remote SSH session.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function ssh_session
+  if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
+    return 0
+  else
+    return 1
+  end
+end
+
 # System settings.
 
 # Ensure that /usr/bin appears before /usr/sbin in PATH environment variable.
@@ -327,10 +339,17 @@ set --export WASMTIME_HOME "$HOME/.wasmtime"
 fish_add_path "$WASMTIME_HOME/bin"
 
 # Zellij settings.
-if type -q zellij; and test "$TERM" = 'alacritty'
+
+# Autostart Zellij or connect to existing session if within Alacritty terminal.
+#
+# For more information, visit https://zellij.dev/documentation/integration.html.
+if type -q zellij; and not ssh_session; and test "$TERM" = 'alacritty'
+  # Attach to a default session if it exists.
   set --export ZELLIJ_AUTO_ATTACH 'true'
+  # Exit the shell when Zellij exits.
   set --export ZELLIJ_AUTO_EXIT 'true'
   
+  # If within an interactive shell, create or connect to Zellij session.
   if status is-interactive
     eval (zellij setup --generate-auto-start fish | string collect)
   end
