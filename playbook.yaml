@@ -604,13 +604,13 @@
         - server
         - wsl
 
-    - name: Install Lazygit Git manager
+    - name: Install GitUI Git manager
       ansible.builtin.import_role:
-        name: lazygit
+        name: gitui
       tags:
         - container
         - desktop
-        - lazygit
+        - gitui
         - server
         - vcs
         - wsl

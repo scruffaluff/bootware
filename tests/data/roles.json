@@ -173,6 +173,7 @@
     "name": "gitlab",
     "tests": ["gitlab-runner --version"]
   },
+  { "name": "gitui", "tests": ["gitui --version"] },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
@@ -235,7 +236,6 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["lazydocker --version"]
   },
-  { "name": "lazygit", "tests": ["lazygit --version"] },
   {
     "name": "libvirt",
     "skip": [{ "os": "windows" }],

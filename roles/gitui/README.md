@@ -1,6 +1,6 @@
-# Lazygit
+# GitUI
 
-Lazygit is an Ansible role
+GitUI is an Ansible role
 
 ## Requirements
 
