@@ -313,6 +313,14 @@ fish_add_path "$DENO_INSTALL/bin"
 # Add NPM global binaries to system path.
 fish_add_path "$HOME/.npm-global/bin"
 
+# Source TabTab shell completion for PNPM.
+#
+# Flags:
+#   -f: Check if inode is a regular file.
+if test -f "$HOME/.config/tabtab/fish/__tabtab.fish"
+  source "$HOME/.config/tabtab/fish/__tabtab.fish"
+end
+
 # Initialize NVM default version of Node if available.
 #
 # Flags:

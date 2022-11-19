@@ -288,6 +288,11 @@ prepend_path "${DENO_INSTALL}/bin"
 # Add NPM global binaries to system path.
 prepend_path "${HOME}/.npm-global/bin"
 
+# Source TabTab shell completion for PNPM.
+if [[ -f "${HOME}/.config/tabtab/bash/__tabtab.bash" ]]; then
+  source "${HOME}/.config/tabtab/bash/__tabtab.bash"
+fi
+
 # Load Node version manager and its bash completion.
 #
 # Flags:
