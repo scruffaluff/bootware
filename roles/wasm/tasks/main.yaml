@@ -1,17 +1,29 @@
 ---
+- name: Download Wastime installer for Unix
+  ansible.builtin.get_url:
+    dest: /tmp/wasmtime_install.sh
+    mode: "755"
+    url: https://wasmtime.dev/install.sh
+  when: ansible_system != "Win32NT"
+
 - name: Install Wasmtime for Unix
-  ansible.builtin.shell:
-    cmd: curl -LSfs https://wasmtime.dev/install.sh | bash
-  when: ansible_system != "Win32NT" and ansible_architecture == "x86_64"
+  ansible.builtin.command: /tmp/wasmtime_install.sh
+  when: ansible_system != "Win32NT"
 
 - name: Install Wasmtime for Windows
   community.windows.win_scoop:
     name: wasmtime
   when: ansible_system == "Win32NT"
 
+- name: Download Wasm Pack installer for Unix
+  ansible.builtin.get_url:
+    dest: /tmp/wasm_pack_init.sh
+    mode: "755"
+    url: https://rustwasm.github.io/wasm-pack/installer/init.sh
+  when: ansible_system != "Win32NT" and ansible_architecture == "x86_64"
+
 - name: Install Wasm Pack for Unix
-  ansible.builtin.shell:
-    cmd: curl -LSfs https://rustwasm.github.io/wasm-pack/installer/init.sh | sh
+  ansible.builtin.command: /tmp/wasm_pack_init.sh
   environment:
     PATH: >-
       {{ ansible_env.HOME }}/.wasmtime/bin:{{ ansible_env.HOME }}/.cargo/bin:{{

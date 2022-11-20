@@ -60,8 +60,9 @@
       {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   when: ansible_system != "Win32NT"
 
-- name: Install Fisher package manager
-  ansible.builtin.shell:
+- name: Install Fisher package manager for Unix
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: |
       curl -Ls https://git.io/fisher | source
       fisher install jorgebucaran/fisher

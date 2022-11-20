@@ -14,6 +14,12 @@
 #   become: true
 #   when: ansible_system == "Linux"
 
+- name: Install AWSCLI for Alpine distributions
+  become: true
+  community.general.apk:
+    name: aws-cli
+  when: ansible_pkg_mgr == "apk"
+
 - name: Download AWSCLI for Linux
   ansible.builtin.unarchive:
     creates: /usr/local/bin/aws
@@ -24,14 +30,14 @@
       https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture
       }}.zip
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for Linux
   ansible.builtin.command:
     creates: /usr/local/bin/aws
     cmd: /tmp/aws/install
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for MacOS
   community.general.homebrew:

@@ -20,7 +20,8 @@
       ansible_env.PATH }}
   block:
     - name: Install Rust for Unix
-      ansible.builtin.shell:
+      # prettier-ignore
+      ansible.builtin.shell:  # noqa command-instead-of-module
         cmd: >-
           curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
           -y --no-modify-path

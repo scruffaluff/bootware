@@ -22,7 +22,8 @@
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker key for Debian distributions
-  ansible.builtin.shell:
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: >-
       curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg |
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg

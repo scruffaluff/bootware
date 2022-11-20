@@ -26,9 +26,16 @@
   become: true
   when: ansible_system == "Linux"
 
+- name: Download GEF installer for Unix
+  ansible.builtin.get_url:
+    dest: /tmp/gef_install.sh
+    mode: "755"
+    url: https://gef.blah.cat/sh
+  when: ansible_system != "Win32NT"
+
 - name: Install GEF for Unix
-  ansible.builtin.shell:
-    cmd: curl -LSfs https://gef.blah.cat/sh | bash
+  ansible.builtin.command:
+    cmd: /tmp/gef_install.sh
     creates: "{{ ansible_env.HOME }}/.gdbinit"
   when: ansible_system != "Win32NT"
 

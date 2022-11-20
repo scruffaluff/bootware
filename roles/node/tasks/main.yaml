@@ -26,10 +26,18 @@
       - npm-node14
   when: ansible_system == "FreeBSD"
 
+- name: Download Node version manager installer for Unix
+  ansible.builtin.get_url:
+    dest: /tmp/nvm_install.sh
+    mode: "755"
+    url: >-
+      https://raw.githubusercontent.com/nvm-sh/nvm/v{{
+      nvm_formula.json.versions.stable }}/install.sh
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+
 - name: Install Node version manager for Unix
-  ansible.builtin.shell:
-    cmd: |
-      curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_formula.json.versions.stable }}/install.sh | bash
+  ansible.builtin.command: /tmp/nvm_install.sh
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 

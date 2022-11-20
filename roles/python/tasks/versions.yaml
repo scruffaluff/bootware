@@ -66,7 +66,8 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
-  ansible.builtin.shell:
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
