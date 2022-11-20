@@ -18,7 +18,7 @@
 - name: Download Datree for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
-    mode: "755"
+    mode: "777"
     owner: root
     remote_src: true
     src: >-

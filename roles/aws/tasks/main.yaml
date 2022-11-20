@@ -18,7 +18,7 @@
   ansible.builtin.unarchive:
     creates: /usr/local/bin/aws
     dest: /tmp/
-    mode: "755"
+    mode: "777"
     remote_src: true
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture

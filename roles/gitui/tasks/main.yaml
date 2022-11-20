@@ -16,7 +16,7 @@
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
-    mode: "755"
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/extrawurst/gitui/releases/download/v{{

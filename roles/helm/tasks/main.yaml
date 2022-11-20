@@ -16,7 +16,7 @@
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
-    mode: "755"
+    mode: "777"
     remote_src: true
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
