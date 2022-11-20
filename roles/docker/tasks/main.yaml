@@ -28,7 +28,7 @@
       curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg |
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
-    become: true
+  become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Debian distributions
