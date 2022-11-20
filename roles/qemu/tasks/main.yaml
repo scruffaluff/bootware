@@ -23,7 +23,7 @@
 
 - name: Install QEMU for Linux
   ansible.builtin.package:
-    name: qemu
+    name: "{{ 'qemu-kvm' if ansible_pkg_mgr == 'apt' else 'qemu' }}"
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 

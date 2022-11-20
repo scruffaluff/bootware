@@ -1,0 +1,48 @@
+---
+- name: Get latest GitUI version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/gitui.json
+  register: gitui_formula
+  when: ansible_system == "Linux"
+
+- name: Install GitUI for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: gitui
+  when: ansible_system == "FreeBSD"
+
+- name: Download GitUI for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/extrawurst/gitui/releases/download/v{{
+      gitui_formula.json.versions.stable }}/gitui-linux-{{
+      gitui_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    gitui_arch:
+      aarch64: aarch64
+      x86_64: musl
+  when: ansible_system == "Linux"
+
+- name: Install GitUI for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/gitui
+    mode: "755"
+    src: /tmp/gitui
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install GitUI for MacOS
+  community.general.homebrew:
+    name: gitui
+  when: ansible_system == "Darwin"
+
+- name: Install GitUI for Windows
+  community.windows.win_scoop:
+    name: gitui
+  when: ansible_system == "Win32NT"

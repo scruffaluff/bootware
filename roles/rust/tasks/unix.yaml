@@ -14,14 +14,18 @@
   when: ansible_system == "Linux"
 
 - name: Install Rust and Cargo applications for Unix
+  environment:
+    PATH: >-
+      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
+      ansible_env.PATH }}
   block:
     - name: Install Rust for Unix
-      ansible.builtin.shell:
+      # prettier-ignore
+      ansible.builtin.shell:  # noqa command-instead-of-module
         cmd: >-
           curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
           -y --no-modify-path
         creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
-        warn: false
 
     - name: Update Rust for Unix
       ansible.builtin.command: "{{ item }}"
@@ -91,8 +95,3 @@
       changed_when: "'Installing' in cargo_install.stdout"
       loop: "{{ cargo_applications }}"
       register: cargo_install
-
-  environment:
-    PATH: >-
-      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
-      ansible_env.PATH }}

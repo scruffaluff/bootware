@@ -34,6 +34,11 @@
   when: ansible_system == "Linux"
 
 - name: Download and install Git Delta for Linux
+  vars:
+    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu' }}"
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
+    ansible_architecture == "x86_64")
   block:
     - name: Download Git Delta for Linux
       ansible.builtin.unarchive:
@@ -55,11 +60,6 @@
           /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
           ansible_architecture }}-unknown-linux-{{ git_delta_env }}/delta
       become: true
-  vars:
-    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu' }}"
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    ansible_architecture == "x86_64")
 
 - name: Install Git for MacOS
   community.general.homebrew:

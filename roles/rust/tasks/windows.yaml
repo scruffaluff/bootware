@@ -1,6 +1,6 @@
 ---
 - name: Get latest Cargo Binstall version for Windows
-  ansible.builtin.win_uri:
+  ansible.windows.win_uri:
     method: GET
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
@@ -11,7 +11,7 @@
     name: rustup-msvc
 
 - name: Update Rust for Windows
-  ansible.builtin.win_shell: |
+  ansible.windows.win_shell: |
     rustup self update
     rustup update stable
   environment:
@@ -23,7 +23,7 @@
   register: rustup_update
 
 - name: Add Rust components for Windows
-  ansible.builtin.win_command: rustup component add {{ item }}
+  ansible.windows.win_command: rustup component add {{ item }}
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
@@ -31,7 +31,7 @@
   loop: "{{ rustup_components }}"
 
 - name: Add Rust targets for Windows
-  ansible.builtin.win_command: rustup target add {{ item }}
+  ansible.windows.win_command: rustup target add {{ item }}
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
@@ -63,7 +63,7 @@
     src: "{{ ansible_env.TEMP }}/cargo_binstall/cargo-binstall.exe"
 
 - name: Update or install Cargo packages for Windows
-  ansible.builtin.win_command: cargo binstall --no-confirm {{ item }}
+  ansible.windows.win_command: cargo binstall --no-confirm {{ item }}
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-

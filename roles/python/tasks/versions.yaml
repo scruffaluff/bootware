@@ -66,10 +66,10 @@
 # Do not use Homebrew for installing Pyenv. The subsequent commands will not be
 # able to find the Pyenv executable.
 - name: Install Pyenv for Unix
-  ansible.builtin.shell:
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
-    warn: false
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
@@ -107,7 +107,7 @@
 
 - name: Install multiple Python versions for Windows
   community.windows.win_scoop:
-    name: python{{ item | replace('.','') | replace('310','') }}
+    name: python{{ item | replace('.', '') | replace('310', '') }}
   loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"
 

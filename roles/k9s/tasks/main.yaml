@@ -16,7 +16,7 @@
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
-    mode: "755"
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/derailed/k9s/releases/download/v{{

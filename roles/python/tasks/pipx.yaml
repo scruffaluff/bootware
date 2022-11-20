@@ -16,7 +16,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Pipx for Windows
-  ansible.builtin.win_command: python -m pip install --upgrade pipx
+  ansible.windows.win_command: python -m pip install --upgrade pipx
   environment:
     Path: "{{ scoop_apps }}\\python\\current;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"
@@ -27,7 +27,7 @@
   # Prettier is ignored since it removes the required extra space before the
   # Ansible lint ignore comment.
   # prettier-ignore
-  ansible.builtin.shell:  # noqa var-spacing
+  ansible.builtin.shell:  # noqa jinja[spacing]
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
     cmd: >-
@@ -52,7 +52,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Update Pipx command line applications for Windows
-  ansible.builtin.win_command: pipx upgrade-all
+  ansible.windows.win_command: pipx upgrade-all
   environment:
     Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"

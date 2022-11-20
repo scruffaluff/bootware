@@ -28,11 +28,11 @@
   when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
-  ansible.builtin.shell:
+  # prettier-ignore
+  ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: >-
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
       bash
-    warn: false
   become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 

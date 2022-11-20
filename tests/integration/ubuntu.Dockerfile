@@ -1,5 +1,4 @@
-# Ubuntu22.10 is missing "qemu" package as of 10/31/2022.
-FROM ubuntu:22.04
+FROM ubuntu:22.10
 
 ARG TARGETARCH
 

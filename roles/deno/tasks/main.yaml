@@ -6,13 +6,20 @@
     name: deno
   when: ansible_system == "FreeBSD"
 
+- name: Download Deno installer for Unix
+  ansible.builtin.get_url:
+    dest: /tmp/deno_install.sh
+    mode: "755"
+    url: https://deno.land/x/install/install.sh
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
+    != "apk" and ansible_architecture == "x86_64")
+
 # Deno Linux ARM support is in progress. See
 # https://github.com/denoland/deno/issues/1846. Deno requires glibc, which is
 # not available on Alpine.
 - name: Install Deno for Unix
-  ansible.builtin.shell:
-    cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
-    warn: false
+  ansible.builtin.command: /tmp/deno_install.sh
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
     != "apk" and ansible_architecture == "x86_64")

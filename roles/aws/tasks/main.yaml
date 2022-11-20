@@ -5,21 +5,39 @@
     name: awscli
   when: ansible_system == "FreeBSD"
 
-- name: Install AWSCLI for Linux
-  ansible.builtin.package:
-    name: >-
-      {{ 'aws-cli' if ansible_pkg_mgr in ['apk', 'pacman'] else 'awscli' }}
-  become: true
-  when: ansible_system == "Linux"
+# Temporarily disabled since most distributions ship AWSCLI version 1, which now
+# always complains that version 2 should be installed instead.
+# - name: Install AWSCLI for Linux
+#   ansible.builtin.package:
+#     name: >-
+#       {{ 'aws-cli' if ansible_pkg_mgr in ['apk', 'pacman'] else 'awscli' }}
+#   become: true
+#   when: ansible_system == "Linux"
 
-# For more information, visit https://askubuntu.com/q/1428181.
-- name: Upgrade PyOpenSSL to Avoid Errors for Debian
-  ansible.builtin.pip:
-    name: pyopenssl
-    # prettier-ignore
-    state: latest  # noqa package-latest
+- name: Install AWSCLI for Alpine distributions
   become: true
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
+  community.general.apk:
+    name: aws-cli
+  when: ansible_pkg_mgr == "apk"
+
+- name: Download AWSCLI for Linux
+  ansible.builtin.unarchive:
+    creates: /usr/local/bin/aws
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture
+      }}.zip
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install AWSCLI for Linux
+  ansible.builtin.command:
+    creates: /usr/local/bin/aws
+    cmd: /tmp/aws/install
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for MacOS
   community.general.homebrew:

@@ -10,14 +10,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - GDB enhanced features installation.
+- PNPM shell integration.
 
 ### Changed
 
 - Moved Libvirt, Vagrant and Vault roles to extras tag.
+- Switched Lazygit role to GitUI.
 
 ### Fixed
 
 - Go paths for CLI tools.
+- Zellij integration for Alacritty during SSH sessions.
 
 ## 0.4.0 - 2022-07-13
 
