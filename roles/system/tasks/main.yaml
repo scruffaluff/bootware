@@ -123,7 +123,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install essential packages for Suse distributions
-  ansible.builtin.zypper:
+  community.general.packaging.os.zypper:
     name: gzip
   become: true
   when: ansible_pkg_mgr == "zypper"

@@ -67,7 +67,7 @@
 
 # Ansible does not provide a Git module for Windows.
 - name: Install Packer Neovim plugin manager for Windows
-  ansible.builtin.win_command: >-
+  ansible.windows.win_command: >-
     git clone --depth 1 https://github.com/wbthomason/packer.nvim {{
     ansible_env.HOME
     }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
@@ -78,6 +78,6 @@
   when: ansible_system == "Win32NT"
 # TODO: Make headless Neovim error exit instead of waiting for user input.
 # - name: Run Neovim Packer updates for Windows
-#   ansible.builtin.win_command: >-
+#   ansible.windows.win_command: >-
 #     nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
 #   when: ansible_system == "Win32NT"

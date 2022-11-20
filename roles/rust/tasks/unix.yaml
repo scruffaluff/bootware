@@ -14,6 +14,10 @@
   when: ansible_system == "Linux"
 
 - name: Install Rust and Cargo applications for Unix
+  environment:
+    PATH: >-
+      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
+      ansible_env.PATH }}
   block:
     - name: Install Rust for Unix
       ansible.builtin.shell:
@@ -90,8 +94,3 @@
       changed_when: "'Installing' in cargo_install.stdout"
       loop: "{{ cargo_applications }}"
       register: cargo_install
-
-  environment:
-    PATH: >-
-      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
-      ansible_env.PATH }}

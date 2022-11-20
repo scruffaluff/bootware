@@ -1,10 +1,10 @@
 ---
 - name: Install Neovim
-  import_tasks: install.yaml
+  ansible.builtin.import_tasks: install.yaml
 
 - name: Configure Neovim settings
-  import_tasks: settings.yaml
+  ansible.builtin.import_tasks: settings.yaml
 
 - name: Install and configure NvChad
-  import_tasks: nvchad.yaml
+  ansible.builtin.import_tasks: nvchad.yaml
   when: nvchad

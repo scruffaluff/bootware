@@ -42,6 +42,13 @@
   when: ansible_system == "Win32NT"
 
 - name: Install local PowerShell modules
+  vars:
+    psmodule_folders:
+      - Documents/PowerShell/Modules
+      - Documents/WindowsPowerShell/Modules
+    psmodules:
+      - SSHCompletion
+  when: ansible_system == "Win32NT"
   block:
     - name: Create PowerShell module directories for Windows
       ansible.windows.win_file:
@@ -56,14 +63,6 @@
         force: true
         src: "{{ item[1] }}.psm1"
       loop: "{{ psmodule_folders | product(psmodules) | list }}"
-
-  vars:
-    psmodule_folders:
-      - Documents/PowerShell/Modules
-      - Documents/WindowsPowerShell/Modules
-    psmodules:
-      - SSHCompletion
-  when: ansible_system == "Win32NT"
 # Disabled since trusting PSGallery is an absurdly frustrating process on
 # Windows 11.
 # - name: Trust default PowerShell repository

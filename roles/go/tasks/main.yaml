@@ -58,7 +58,7 @@
 # Scoop installer automatically sets $HOME/go as GOTPATH and does not allow a
 # custom path.
 - name: Install Go command line applications for Windows
-  ansible.builtin.win_shell: go install {{ item }}
+  ansible.windows.win_shell: go install {{ item }}
   environment:
     GOPATH: "{{ ansible_env.HOME }}\\go"
     Path: "{{ scoop_apps }}\\go\\current\\bin;{{ ansible_env.Path }}"

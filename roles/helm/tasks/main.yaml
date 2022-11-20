@@ -60,7 +60,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Helm plugins for Windows
-  ansible.builtin.win_command: "helm plugin install {{ item }}"
+  ansible.windows.win_command: "helm plugin install {{ item }}"
   failed_when: >-
     helm_plugin.rc != 0 and 'plugin already exists' not in helm_plugin.stderr
   loop: "{{ helm_plugins }}"

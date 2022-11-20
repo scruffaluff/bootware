@@ -53,5 +53,5 @@
   when: ansible_system != "Win32NT"
 
 - name: Update TLDR documentation for Windows
-  ansible.builtin.win_command: tldr --update
+  ansible.windows.win_command: tldr --update
   when: ansible_system == "Win32NT"

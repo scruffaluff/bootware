@@ -1,8 +1,10 @@
 ---
-- include_tasks: unix.yaml
+- name: Install Rust for Unix
+  ansible.builtin.include_tasks: unix.yaml
   when: ansible_system != "Win32NT"
 
-- include_tasks: windows.yaml
+- name: Install Rust for Windows
+  ansible.builtin.include_tasks: windows.yaml
   when: ansible_system == "Win32NT"
 
 - name: Install Rust Analyzer for FreeBSD

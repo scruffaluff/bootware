@@ -8,7 +8,7 @@
   when: ansible_system == "Linux"
 
 - name: Get latest Datree version for Windows
-  ansible.builtin.win_uri:
+  ansible.windows.win_uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/datree.json

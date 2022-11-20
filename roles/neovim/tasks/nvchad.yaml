@@ -30,7 +30,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Download NvChad for Windows
-  ansible.builtin.win_command: >-
+  ansible.windows.win_command: >-
     git clone --depth 1 https://github.com/NvChad/NvChad {{ ansible_env.HOME
     }}/AppData/Local/Temp/NvChad
   when: ansible_system == "Win32NT"
