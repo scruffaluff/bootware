@@ -12,7 +12,6 @@
 - name: Install Deno for Unix
   ansible.builtin.shell:
     cmd: curl -LSfs https://deno.land/x/install/install.sh | sh
-    warn: false
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
     != "apk" and ansible_architecture == "x86_64")

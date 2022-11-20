@@ -69,7 +69,6 @@
   ansible.builtin.shell:
     cmd: curl -Sfs https://pyenv.run | bash
     creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
-    warn: false
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix

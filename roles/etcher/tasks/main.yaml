@@ -32,7 +32,6 @@
     cmd: >-
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
       bash
-    warn: false
   become: true
   when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
 

@@ -1,4 +1,4 @@
-FROM fedora:34 AS builder
+FROM fedora:37 AS builder
 
 ARG version=1.0.0
 
@@ -19,7 +19,7 @@ RUN npm install
 # Build Fedora package.
 RUN node scripts/build_package.js rpm "${version}"
 
-FROM fedora:36
+FROM fedora:37
 
 ARG version=1.0.0
 

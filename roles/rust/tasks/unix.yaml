@@ -21,7 +21,6 @@
           curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
           -y --no-modify-path
         creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
-        warn: false
 
     - name: Update Rust for Unix
       ansible.builtin.command: "{{ item }}"

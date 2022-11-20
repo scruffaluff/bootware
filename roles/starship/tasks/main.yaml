@@ -4,7 +4,6 @@
 - name: Install Starship shell prompt for Unix
   ansible.builtin.shell:
     cmd: curl -LSfs https://starship.rs/install.sh | sh -s -- -y
-    warn: false
   become: true
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 

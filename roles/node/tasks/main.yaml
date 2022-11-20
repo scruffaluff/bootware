@@ -30,7 +30,6 @@
   ansible.builtin.shell:
     cmd: |
       curl -Sfs https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_formula.json.versions.stable }}/install.sh | bash
-    warn: false
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 

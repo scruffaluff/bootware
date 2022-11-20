@@ -66,7 +66,6 @@
       curl -Ls https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-    warn: false
   when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix

@@ -30,7 +30,6 @@
   ansible.builtin.shell:
     cmd: curl -LSfs https://gef.blah.cat/sh | bash
     creates: "{{ ansible_env.HOME }}/.gdbinit"
-    warn: false
   when: ansible_system != "Win32NT"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
