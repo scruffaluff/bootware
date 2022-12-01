@@ -145,7 +145,7 @@ fish_add_path '/usr/local/julia/bin'
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
-set --export POETRY_VIRTUALENVS_IN_PROJECT 1
+set --export POETRY_VIRTUALENVS_IN_PROJECT 'true'
 
 # Make numerical compute libraries findable on MacOS.
 #

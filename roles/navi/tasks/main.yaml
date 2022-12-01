@@ -28,3 +28,14 @@
   chocolatey.chocolatey.win_chocolatey:
     name: navi
   when: ansible_system == "Win32NT"
+# Enable when Navi support noninteractive downloads.
+#
+# - name: Download Navi cheatsheets for Unix
+#   ansible.builtin.command: navi repo add {{ item }}
+#   loop: "{{ navi_repos }}"
+#   when: ansible_system != "Win32NT"
+
+# - name: Download Navi cheatsheets for Windows
+#   ansible.builtin.win_command: navi repo add {{ item }}
+#   loop: "{{ navi_repos }}"
+#   when: ansible_system == "Win32NT"

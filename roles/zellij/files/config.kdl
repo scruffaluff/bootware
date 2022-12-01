@@ -84,11 +84,13 @@ keybinds {
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
+    // Unbind ctrl+g in all modes for Navi compatibility.
+    unbind "Ctrl g"
 }
 
 themes {
     default {
-        bg 253 246 227
+        bg 147 161 161
         black 253 246 227
         blue 38 139 210
         cyan 42 161 152
