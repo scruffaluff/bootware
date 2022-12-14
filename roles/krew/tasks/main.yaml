@@ -40,7 +40,7 @@
   when: ansible_system == "Darwin"
 
 - name: Install Krew for Windows
-  chocolatey.chocolatey.win_chocolatey:
+  community.windows.win_scoop:
     name: krew
   when: ansible_system == "Win32NT"
 

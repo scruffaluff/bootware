@@ -135,6 +135,7 @@
     Path: "{{ ansible_env.HOME }}\\scoop\\shims\\scoop;{{ ansible_env.Path }}"
   loop:
     - extras
+    - java
     - main
     - nerd-fonts
     - versions
