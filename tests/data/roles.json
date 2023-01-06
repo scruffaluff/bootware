@@ -232,6 +232,11 @@
   },
   { "name": "kubectl", "tests": ["kubectl version --client --short"] },
   {
+    "name": "kubeshark",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["kubeshark version"]
+  },
+  {
     "name": "lazydocker",
     "skip": [{ "os": "freebsd" }],
     "tests": ["lazydocker --version"]
@@ -301,6 +306,7 @@
     "tests": ["qemu-img --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
+  { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },

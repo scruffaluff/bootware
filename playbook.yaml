@@ -595,6 +595,17 @@
         - server
         - wsl
 
+    - name: Install Kubeshark Kubernetes network analyzer
+      ansible.builtin.import_role:
+        name: kubeshark
+      tags:
+        - container
+        - desktop
+        - kubernetes
+        - kubeshark
+        - server
+        - wsl
+
     - name: Install Lazydocker Docker manager
       ansible.builtin.import_role:
         name: lazydocker
@@ -784,6 +795,16 @@
         - container
         - desktop
         - rclone
+        - server
+        - wsl
+
+    - name: Install Restic backup tool
+      ansible.builtin.import_role:
+        name: restic
+      tags:
+        - container
+        - desktop
+        - restic
         - server
         - wsl
 

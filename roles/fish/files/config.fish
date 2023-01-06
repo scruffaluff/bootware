@@ -331,11 +331,14 @@ end
 
 # User settings.
 
-# Set default editor to Helix if available.
+# Helix settings.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q hx
+  # Assume that terminal session has full color support for convenience.
+  set --export COLORTERM 'truecolor'
+  # Set default editor to Helix if available.
   set --export EDITOR 'hx'
 end
 

@@ -310,11 +310,14 @@ fi
 # Disable MacOS default shell is now Zsh message.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# Set default editor to Helix if available.
+# Helix settings.
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v hx)" ]]; then
+  # Assume that terminal session has full color support for convenience.
+  export COLORTERM='truecolor'
+  # Set default editor to Helix if available.
   export EDITOR='hx'
 fi
 
