@@ -1052,6 +1052,13 @@
         - desktop
         - winman
 
+    - name: Install Wireshark network analyzer
+      ansible.builtin.import_role:
+        name: wireshark
+      tags:
+        - desktop
+        - wireshark
+
     - name: Install Xh HTTP client
       ansible.builtin.import_role:
         name: xh

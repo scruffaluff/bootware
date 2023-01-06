@@ -390,6 +390,10 @@
   },
   { "name": "winman" },
   {
+    "name": "wireshark",
+    "tests": ["termshark --version", "tshark --version", "wireshark --version"]
+  },
+  {
     "name": "xh",
     "tests": {
       "default": ["xh --version", "xhs --version"],

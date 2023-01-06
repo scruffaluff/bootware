@@ -30,7 +30,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Restic Fish completion for Unix
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: >-
       restic generate --fish-completion {{ ansible_env.HOME
       }}/.config/fish/completions/restic.fish

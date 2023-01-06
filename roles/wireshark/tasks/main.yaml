@@ -1,0 +1,89 @@
+---
+- name: Get latest Termshark version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/termshark.json
+  register: termshark_formula
+  when: ansible_system == "Linux"
+
+- name: Install Wireshark for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - termshark
+      - wireshark
+  when: ansible_system == "FreeBSD"
+
+- name: Download Termshark for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/gcla/termshark/releases/download/v{{
+      termshark_formula.json.versions.stable }}/termshark_{{
+      termshark_formula.json.versions.stable }}_linux_{{
+      termshark_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    termshark_arch:
+      aarch64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Termshark for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/termshark
+    mode: "755"
+    src: >-
+      /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
+      termshark_arch[ansible_architecture] }}/termshark
+  become: true
+  vars:
+    termshark_arch:
+      aarch64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Wireshark CLI for Linux
+  ansible.builtin.package:
+    name: "{{ wireshark_package[ansible_pkg_mgr] }}"
+  become: true
+  vars:
+    wireshark_package:
+      apk: tshark
+      apt: tshark
+      dnf: wireshark-cli
+      pacman: wireshark-cli
+  when: ansible_system == "Linux"
+
+- name: Install Wireshark CLI for MacOS
+  community.general.homebrew:
+    name:
+      - termshark
+      - wireshark
+  when: ansible_system == "Darwin"
+
+- name: Install Wireshark GUI for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: wireshark
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Wireshark for Windows
+  community.windows.win_scoop:
+    name:
+      - termshark
+      - wireshark
+  when: ansible_system == "Win32NT"
+
+- name: Add user to Wireshark group for Linux
+  ansible.builtin.user:
+    append: true
+    name: "{{ ansible_user_id }}"
+    groups:
+      - wireshark
+  become: true
+  when: ansible_system == "Linux"
