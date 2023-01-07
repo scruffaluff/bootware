@@ -578,7 +578,7 @@ setup_alpine() {
     # build Ansible from scratch.
     ${1:+sudo} apk add gcc libffi-dev musl-dev openssl-dev
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pexpect
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -607,7 +607,7 @@ setup_arch() {
     log "Installing Ansible"
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm ansible python-pexpect
+    ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -654,7 +654,7 @@ setup_debian() {
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pexpect
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -684,7 +684,7 @@ setup_fedora() {
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible python3-pexpect
+    ${1:+sudo} dnf install -y ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -719,7 +719,7 @@ setup_freebsd() {
     ${1:+sudo} pkg install -y "py${py_ver}-pip"
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pexpect
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   # Install Curl if not already installed.
@@ -806,8 +806,7 @@ setup_macos() {
   # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    brew install ansible python3
-    python3 -m pip install pexpect
+    brew install ansible
   fi
 
   # Install Git if not already installed.
@@ -832,7 +831,7 @@ setup_suse() {
     ${1:+sudo} zypper install -y python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible pexpect
+    ${1:+sudo} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then

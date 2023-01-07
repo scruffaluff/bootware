@@ -28,6 +28,7 @@
   vars:
     kubeshark_arch:
       aarch64: arm64
+      arm64: arm64
       x86_64: amd64
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 

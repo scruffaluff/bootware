@@ -70,12 +70,21 @@
     name: termshark
   when: ansible_system == "Win32NT"
 
-- name: Create Wireshark group for Debian
-  ansible.builtin.expect:
-    command: dpkg-reconfigure wireshark-common
-    responses:
-      Should non-superusers be able to capture packets?: y
+- name: Configure Wireshark group for Debian
+  ansible.builtin.debconf:
+    name: wireshark-common
+    question: wireshark-common/install-setuid
+    value: true
+    vtype: boolean
   become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Create Wireshark group for Debian
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure wireshark-common
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
   when: ansible_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
