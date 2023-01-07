@@ -3,8 +3,8 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/muesli/duf/releases/latest
-  register: duf_release
+    url: https://formulae.brew.sh/api/formula/duf.json
+  register: duf_formula
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Duf for Alpine distributions
@@ -19,9 +19,10 @@
 - name: Install Duf for Debian distributions
   ansible.builtin.apt:
     deb: >-
-      https://github.com/muesli/duf/releases/download/{{
-      duf_release.json.tag_name }}/duf_{{ duf_release.json.tag_name[1:]
-      }}_linux_{{ duf_arch[ansible_architecture] }}.deb
+      https://github.com/muesli/duf/releases/download/v{{
+      duf_formula.json.versions.stable }}/duf_{{
+      duf_formula.json.versions.stable }}_linux_{{
+      duf_arch[ansible_architecture] }}.deb
   become: true
   vars:
     duf_arch:

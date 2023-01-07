@@ -3,8 +3,8 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/kubernetes-sigs/kind/releases/latest
-  register: kind_release
+    url: https://formulae.brew.sh/api/formula/kind.json
+  register: kind_formula
   when: ansible_system == "Linux"
 
 - name: Install Kind for Linux
@@ -13,8 +13,8 @@
     mode: "755"
     owner: root
     url: >-
-      https://github.com/kubernetes-sigs/kind/releases/download/{{
-      kind_release.json.tag_name }}/kind-linux-{{
+      https://github.com/kubernetes-sigs/kind/releases/download/v{{
+      kind_formula.json.versions.stable }}/kind-linux-{{
       kind_arch[ansible_architecture] }}
   become: true
   vars:

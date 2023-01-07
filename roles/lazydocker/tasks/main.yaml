@@ -3,8 +3,8 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/jesseduffield/lazydocker/releases/latest
-  register: lazydocker_release
+    url: https://formulae.brew.sh/api/formula/lazydocker.json
+  register: lazydocker_formula
   when: ansible_system == "Linux"
 
 - name: Download Lazydocker for Linux
@@ -13,9 +13,9 @@
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/jesseduffield/lazydocker/releases/download/{{
-      lazydocker_release.json.tag_name }}/lazydocker_{{
-      lazydocker_release.json.tag_name[1:] }}_Linux_{{
+      https://github.com/jesseduffield/lazydocker/releases/download/v{{
+      lazydocker_formula.json.versions.stable }}/lazydocker_{{
+      lazydocker_formula.json.versions.stable }}_Linux_{{
       lazydocker_arch[ansible_architecture] }}.tar.gz
   become: true
   vars:
