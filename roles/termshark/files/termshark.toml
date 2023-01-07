@@ -1,0 +1,8 @@
+# Termshark configuration file.
+#
+# For more information, visit
+# https://github.com/gcla/termshark/blob/master/docs/UserGuide.md#config-file.
+
+[main]
+dark-mode = false
+theme-truecolor = "solarized"
