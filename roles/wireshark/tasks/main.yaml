@@ -50,11 +50,11 @@
     DEBIAN_FRONTEND: noninteractive
   when: ansible_pkg_mgr == "apt"
 
-- name: Add user to Wireshark group for Unix
+- name: Add user to Wireshark group for Linux
   ansible.builtin.user:
     append: true
     name: "{{ ansible_user_id }}"
     groups:
       - wireshark
   become: true
-  when: ansible_system not in ["Darwin", "Win32NT"]
+  when: ansible_system == "Linux"

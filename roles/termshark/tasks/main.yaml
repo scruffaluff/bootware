@@ -87,14 +87,14 @@
     DEBIAN_FRONTEND: noninteractive
   when: ansible_pkg_mgr == "apt"
 
-- name: Add user to Wireshark group for Unix
+- name: Add user to Wireshark group for Linux
   ansible.builtin.user:
     append: true
     name: "{{ ansible_user_id }}"
     groups:
       - wireshark
   become: true
-  when: ansible_system not in ["Darwin", "Win32NT"]
+  when: ansible_system == "Linux"
 
 - name: Create Termshark configuration directory for Unix
   ansible.builtin.file:
@@ -114,7 +114,7 @@
 
 - name: Create Termshark configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/AppData/Local/termshark"
+    path: "{{ ansible_env.HOME }}/AppData/Roaming/termshark"
     state: directory
   when: ansible_system == "Win32NT"
 
@@ -140,7 +140,7 @@
 
 - name: Copy Termshark configuration file for Windows
   ansible.windows.win_copy:
-    dest: "{{ ansible_env.HOME }}/AppData/Local/termshark/termshark.toml"
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/termshark/termshark.toml"
     force: true
     src: termshark.toml
   when: ansible_system == "Win32NT"

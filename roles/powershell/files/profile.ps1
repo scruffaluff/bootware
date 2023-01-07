@@ -104,11 +104,16 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         # Use solarized light compatible colors for predictions.
         Set-PSReadLineOption -Colors @{
             Default          = '#657b83'
+            Emphasis         = '#859900'
             InlinePrediction = '#268bd2'
+            Member           = '#657b83'
             Number           = '#657b83'
             Parameter        = '#657b83'
             String           = '#657b83'
         }
+
+        # PSStyle requires ANSI color codes and double quotes.
+        $PSStyle.FileInfo.Directory = "`e[34;1m"
     }
 
     # Disable sounds for errors.
