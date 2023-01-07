@@ -35,7 +35,7 @@
 
 - name: Download and install Git Delta for Linux
   vars:
-    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu' }}"
+    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apt' else 'gnu' }}"
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
     ansible_architecture == "x86_64")

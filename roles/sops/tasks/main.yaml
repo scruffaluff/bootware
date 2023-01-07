@@ -44,7 +44,7 @@
     owner: root
     url: >-
       https://github.com/mozilla/sops/releases/download/v{{
-      sops_formula.json.versions.stable }}/sops-{{
+      sops_formula.json.versions.stable }}/sops-v{{
       sops_formula.json.versions.stable }}.linux.{{
       sops_arch[ansible_architecture] }}
   become: true

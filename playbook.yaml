@@ -988,7 +988,6 @@
         - container
         - desktop
         - extras
-        - never
         - server
         - terminal
         - tmux

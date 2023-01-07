@@ -15,6 +15,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Beekeeper from AppImage to Flatpak installation.
 - Moved Libvirt, Vagrant and Vault roles to extras tag.
 - Switched Lazygit role to GitUI.
 
