@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - GDB enhanced features installation.
-- Kubeshark, Restic, and Wireshark roles.
+- Kubeshark, Restic, Termshark, and Wireshark roles.
 - PNPM shell integration.
 
 ### Changed

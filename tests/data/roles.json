@@ -348,6 +348,10 @@
     "tests": ["sudo --version"]
   },
   { "name": "system" },
+  {
+    "name": "termshark",
+    "tests": ["termshark --version", "tshark --version"]
+  },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
   {
@@ -389,10 +393,7 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
-  {
-    "name": "wireshark",
-    "tests": ["termshark --version", "tshark --version", "wireshark --version"]
-  },
+  { "name": "wireshark", "tests": ["wireshark --version"] },
   {
     "name": "xh",
     "tests": {

@@ -147,6 +147,14 @@
         - chrome
         - desktop
 
+    - name: Install MongoDB Compass database graphical client
+      ansible.builtin.import_role:
+        name: compass
+      tags:
+        - compass
+        - database
+        - desktop
+
     - name: Install Croc secure file transfer
       ansible.builtin.import_role:
         name: croc
@@ -156,14 +164,6 @@
         - desktop
         - server
         - wsl
-
-    - name: Install MongoDB Compass database graphical client
-      ansible.builtin.import_role:
-        name: compass
-      tags:
-        - compass
-        - database
-        - desktop
 
     - name: Install Nvidia CUDA CPU acceleration toolkit
       ansible.builtin.import_role:
@@ -212,7 +212,6 @@
     - name: Configure system desktop environment
       ansible.builtin.import_role:
         name: deskenv
-
       tags:
         - deskenv
         - desktop
@@ -361,10 +360,8 @@
       ansible.builtin.import_role:
         name: font
       tags:
-        - container
         - desktop
         - font
-        - server
 
     - name: Install FzF fuzzy searcher
       ansible.builtin.import_role:
@@ -413,7 +410,20 @@
         name: gitlab
       tags:
         - desktop
+        - extras
         - gitlab
+        - never
+        - server
+        - vcs
+        - wsl
+
+    - name: Install GitUI Git manager
+      ansible.builtin.import_role:
+        name: gitui
+      tags:
+        - container
+        - desktop
+        - gitui
         - server
         - vcs
         - wsl
@@ -613,17 +623,6 @@
         - desktop
         - lazydocker
         - server
-        - wsl
-
-    - name: Install GitUI Git manager
-      ansible.builtin.import_role:
-        name: gitui
-      tags:
-        - container
-        - desktop
-        - gitui
-        - server
-        - vcs
         - wsl
 
     - name: Install Libvirt virtualization API
@@ -929,6 +928,16 @@
         - sudo
         - wsl
 
+    - name: Install Termshark network analyzer
+      ansible.builtin.import_role:
+        name: termshark
+      tags:
+        - container
+        - desktop
+        - server
+        - termshark
+        - wsl
+
     - name: Install Terraform infrastructure as code software
       ansible.builtin.import_role:
         name: terraform
@@ -978,6 +987,8 @@
       tags:
         - container
         - desktop
+        - extras
+        - never
         - server
         - terminal
         - tmux
