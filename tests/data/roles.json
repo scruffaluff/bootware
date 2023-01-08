@@ -213,11 +213,6 @@
   },
   { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
-  {
-    "name": "julia",
-    "skip": [{ "arch": "arm64", "os": "alpine" }],
-    "tests": ["julia --version"]
-  },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },
   {
@@ -308,7 +303,6 @@
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
-  { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   {
     "name": "scc",
@@ -334,7 +328,6 @@
     "skip": [{ "os": "windows" }],
     "tests": ["shfmt --version"]
   },
-  { "name": "snap" },
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   {
@@ -373,16 +366,6 @@
   },
   { "name": "vault", "tests": ["vault --version"] },
   {
-    "name": "virtualbox",
-    "skip": [
-      { "arch": "arm64" },
-      { "os": "alpine" },
-      { "os": "debian" },
-      { "os": "windows" }
-    ],
-    "tests": ["virtualbox --help"]
-  },
-  {
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["code --version"]
@@ -411,11 +394,6 @@
     "name": "zellij",
     "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["zellij --version"]
-  },
-  {
-    "name": "zola",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["zola --version"]
   },
   {
     "name": "zoxide",

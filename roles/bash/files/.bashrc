@@ -100,10 +100,6 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
   fi
 fi
 
-# Julia settings.
-
-prepend_path '/usr/local/julia/bin'
-
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
