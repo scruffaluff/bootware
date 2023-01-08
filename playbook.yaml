@@ -409,13 +409,9 @@
       ansible.builtin.import_role:
         name: gitlab
       tags:
-        - desktop
         - extras
         - gitlab
         - never
-        - server
-        - vcs
-        - wsl
 
     - name: Install GitUI Git manager
       ansible.builtin.import_role:
@@ -621,11 +617,9 @@
       ansible.builtin.import_role:
         name: libvirt
       tags:
-        - desktop
         - extras
         - libvirt
         - never
-        - vm
 
     - name: Install Lua language
       ansible.builtin.import_role:
@@ -984,26 +978,17 @@
       ansible.builtin.import_role:
         name: vagrant
       tags:
-        - desktop
         - extras
-        - hashicorp
         - never
-        - server
         - vagrant
-        - wsl
 
     - name: Install Vault secrets manager
       ansible.builtin.import_role:
         name: vault
       tags:
-        - container
-        - desktop
         - extras
-        - hashicorp
         - never
-        - server
         - vault
-        - wsl
 
     - name: Install VSCode text exitor
       ansible.builtin.import_role:
