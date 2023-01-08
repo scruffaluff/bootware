@@ -547,14 +547,6 @@
         - shell
         - wsl
 
-    - name: Install Julia language
-      ansible.builtin.import_role:
-        name: julia
-      tags:
-        - extras
-        - julia
-        - never
-
     - name: Install K3d Kubernetes development cluster manager
       ansible.builtin.import_role:
         name: k3d
@@ -818,14 +810,6 @@
         - shell
         - wsl
 
-    - name: Install Ruby language
-      ansible.builtin.import_role:
-        name: ruby
-      tags:
-        - extras
-        - never
-        - ruby
-
     - name: Install Rust language
       ansible.builtin.import_role:
         name: rust
@@ -878,13 +862,6 @@
         - shell
         - shfmt
         - wsl
-
-    - name: Install Snap packages
-      ansible.builtin.import_role:
-        name: snap
-      tags:
-        - never
-        - snap
 
     - name: Install Sops secrets editor
       ansible.builtin.import_role:
@@ -1028,14 +1005,6 @@
         - vault
         - wsl
 
-    - name: Install Virtualbox virtualization manager
-      ansible.builtin.import_role:
-        name: virtualbox
-      tags:
-        - extras
-        - never
-        - virtualbox
-
     - name: Install VSCode text exitor
       ansible.builtin.import_role:
         name: vscode
@@ -1110,14 +1079,6 @@
         - termianl
         - wsl
         - zellij
-
-    - name: Install Zola static website generator
-      ansible.builtin.import_role:
-        name: zola
-      tags:
-        - extras
-        - never
-        - zola
 
     - name: Install Zoxide directory navigator helper
       ansible.builtin.import_role:

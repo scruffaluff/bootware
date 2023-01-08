@@ -134,9 +134,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: |
-            skip=virtualbox
-            test=true
+          build-args: test=true
           context: .
           file: ./tests/integration/fedora.Dockerfile
           platforms: linux/amd64
@@ -203,7 +201,9 @@ jobs:
         run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
-      - name: Initialize Brew to avoid brew link errors with kmutil
+      # Github actions MacOS VM has issues where the first homebrew upgrade
+      # often fails with kmutil virtualization errors.
+      - name: Initialize Brew to avoid weird GitHub actions error
         continue-on-error: true
         run: bootware bootstrap --dev --no-passwd --tags system
       # Bats is already installed with NPM and causes a conflict. Docker is not
