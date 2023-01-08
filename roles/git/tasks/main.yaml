@@ -14,7 +14,7 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
-  when: ansible_pkg_mgr == "apk" and ansible_architecture != "x86_64"
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Git for FreeBSD
   become: true
@@ -36,9 +36,7 @@
 - name: Download and install Git Delta for Linux
   vars:
     git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apt' else 'gnu' }}"
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    ansible_architecture == "x86_64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
   block:
     - name: Download Git Delta for Linux
       ansible.builtin.unarchive:

@@ -23,8 +23,6 @@
       x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
-# TODO: Add GPG key signing support. For more information, visit
-# https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3243.
 - name: Install GitLab Runner for Fedora distributions
   ansible.builtin.dnf:
     disable_gpg_check: true

@@ -33,7 +33,6 @@
       - ruby
   when: ansible_system == "Win32NT"
 
-# TODO: Switch to Ansible Gem module.
 - name: Install or update Ruby CLI applications for Unix
   ansible.builtin.shell:
     cmd: |

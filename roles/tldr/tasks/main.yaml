@@ -10,7 +10,6 @@
   when: ansible_pkg_mgr == "apk"
 
 # Arch TLDR package has file conflicts with Arch Python package.
-# TODO: Solve GPG error in order to use pre-built tealdeer-bin package.
 - name: Install TLDR for Arch distributions
   ansible.builtin.command: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"

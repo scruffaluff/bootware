@@ -41,7 +41,6 @@
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon.
-# TODO: Add back GDB when available for Apple silicon.
 - name: Install build tools for MacOS
   community.general.homebrew:
     name:

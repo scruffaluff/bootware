@@ -8,7 +8,6 @@
     - .config/nvim
     - .config/nvim/colors
     - .config/nvim/lua
-    - .local/share/nvim/site/pack/packer/start
   when: ansible_system != "Win32NT"
 
 - name: Copy Neovim settings file for Unix
@@ -17,7 +16,7 @@
     force: true
     mode: "644"
     src: init.vim
-  when: ansible_system != "Win32NT" and not nvchad
+  when: ansible_system != "Win32NT"
 
 - name: Install NeoSolarized color scheme for Unix
   ansible.builtin.get_url:
@@ -25,22 +24,6 @@
     mode: "644"
     url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
   when: ansible_system != "Win32NT"
-
-- name: Install Packer Neovim plugin manager for Unix
-  ansible.builtin.git:
-    depth: 1
-    dest: >-
-      {{ ansible_env.HOME
-      }}/.local/share/nvim/site/pack/packer/start/packer.nvim
-    repo: https://github.com/wbthomason/packer.nvim
-  when: ansible_system != "Win32NT"
-
-# TODO: Make headless Neovim error exit instead of waiting for user input.
-# - name: Run Neovim Packer updates for Unix
-#   ansible.builtin.shell:
-#     cmd: |
-#       nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
-#   when: ansible_system != "Win32NT"
 
 - name: Create Neovim settings directories for Windows
   ansible.windows.win_file:
@@ -57,27 +40,10 @@
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/init.vim"
     src: init.vim
-  when: ansible_system == "Win32NT" and not nvchad
+  when: ansible_system == "Win32NT"
 
 - name: Install NeoSolarized color scheme for Windows
   ansible.windows.win_get_url:
     dest: "{{ ansible_env.HOME }}/AppData/Local/nvim/colors/NeoSolarized.vim"
     url: https://raw.githubusercontent.com/overcache/NeoSolarized/master/colors/NeoSolarized.vim
   when: ansible_system == "Win32NT"
-
-# Ansible does not provide a Git module for Windows.
-- name: Install Packer Neovim plugin manager for Windows
-  ansible.windows.win_command: >-
-    git clone --depth 1 https://github.com/wbthomason/packer.nvim {{
-    ansible_env.HOME
-    }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
-  args:
-    creates: >-
-      {{ ansible_env.HOME
-      }}/AppData/Local/nvim-data/site/pack/packer/start/packer.nvim
-  when: ansible_system == "Win32NT"
-# TODO: Make headless Neovim error exit instead of waiting for user input.
-# - name: Run Neovim Packer updates for Windows
-#   ansible.windows.win_command: >-
-#     nvim --headless -c "autocmd User PackerComplete quitall" -c "PackerSync"
-#   when: ansible_system == "Win32NT"

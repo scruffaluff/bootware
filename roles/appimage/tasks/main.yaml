@@ -6,12 +6,6 @@
     name: fuse3
   when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
 
-# TODO: Figure out stable method to install AppImageLauncher.
-# - name: Install AppImageLauncher for Arch distributions
-#   ansible.builtin.shell:
-#     cmd: yay -Sy --noconfirm appimagelauncher-git
-#   when: ansible_pkg_mgr == "pacman"
-
 - name: Create AppImages directory for Linux
   ansible.builtin.file:
     mode: "755"

@@ -203,6 +203,8 @@ jobs:
         run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
+      - name: Initialize Brew to avoid brew link errors with kmutil
+        run: brew install zip
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
