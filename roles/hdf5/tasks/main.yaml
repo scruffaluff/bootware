@@ -9,4 +9,3 @@
   community.general.homebrew:
     name: hdf5
   when: ansible_system == "Darwin"
-# TODO: Install HDF5 tools for Windows.

@@ -1,0 +1,60 @@
+---
+- name: Install Wireshark for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: wireshark
+  when: ansible_system == "FreeBSD"
+
+- name: Install Wireshark for Linux
+  ansible.builtin.package:
+    name: "{{ wireshark_package[ansible_pkg_mgr] }}"
+  become: true
+  vars:
+    wireshark_package:
+      apk: wireshark
+      apt: wireshark
+      dnf: wireshark
+      pacman: wireshark-qt
+  when: ansible_system == "Linux"
+
+# TODO: Manual install of ChmodBPF is required as a Wireshark dependency.
+# Automate in the future.
+- name: Install Wireshark for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: wireshark
+    state: present
+  when: ansible_system == "Darwin"
+
+# TODO: Manual install of NPCap is required as a Wireshark dependency.
+# Automate in the future.
+- name: Install Wireshark for Windows
+  community.windows.win_scoop:
+    name: wireshark
+  when: ansible_system == "Win32NT"
+
+- name: Configure Wireshark group for Debian
+  ansible.builtin.debconf:
+    name: wireshark-common
+    question: wireshark-common/install-setuid
+    value: true
+    vtype: boolean
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Create Wireshark group for Debian
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure wireshark-common
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add user to Wireshark group for Linux
+  ansible.builtin.user:
+    append: true
+    name: "{{ ansible_user_id }}"
+    groups:
+      - wireshark
+  become: true
+  when: ansible_system == "Linux"

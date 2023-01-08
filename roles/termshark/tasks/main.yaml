@@ -1,0 +1,146 @@
+---
+- name: Get latest Termshark version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/termshark.json
+  register: termshark_formula
+  when: ansible_system == "Linux"
+
+- name: Install Termshark for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - tshark
+      - termshark
+  when: ansible_system == "FreeBSD"
+
+- name: Install Wireshark CLI for Linux
+  ansible.builtin.package:
+    name: "{{ wireshark_package[ansible_pkg_mgr] }}"
+  become: true
+  vars:
+    wireshark_package:
+      apk: tshark
+      apt: tshark
+      dnf: wireshark-cli
+      pacman: wireshark-cli
+  when: ansible_system == "Linux"
+
+- name: Download Termshark for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/gcla/termshark/releases/download/v{{
+      termshark_formula.json.versions.stable }}/termshark_{{
+      termshark_formula.json.versions.stable }}_linux_{{
+      termshark_arch[ansible_architecture] }}.tar.gz
+  become: true
+  vars:
+    termshark_arch:
+      aarch64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Termshark for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/termshark
+    mode: "755"
+    src: >-
+      /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
+      termshark_arch[ansible_architecture] }}/termshark
+  become: true
+  vars:
+    termshark_arch:
+      aarch64: arm64
+      x86_64: x64
+  when: ansible_system == "Linux"
+
+- name: Install Termshark for MacOS
+  community.general.homebrew:
+    name:
+      - termshark
+      - wireshark
+  when: ansible_system == "Darwin"
+
+- name: Install Wireshark for Windows
+  community.windows.win_scoop:
+    name: termshark
+  when: ansible_system == "Win32NT"
+
+- name: Configure Wireshark group for Debian
+  ansible.builtin.debconf:
+    name: wireshark-common
+    question: wireshark-common/install-setuid
+    value: true
+    vtype: boolean
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Create Wireshark group for Debian
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure wireshark-common
+  become: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add user to Wireshark group for Linux
+  ansible.builtin.user:
+    append: true
+    name: "{{ ansible_user_id }}"
+    groups:
+      - wireshark
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Create Termshark configuration directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/termshark"
+    state: directory
+  when: ansible_system not in ["Darwin", "Win32NT"]
+
+- name: Create Termshark configuration directory for MacOS
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/Library/Application Support/termshark"
+    state: directory
+  when: ansible_system == "Darwin"
+
+- name: Create Termshark configuration directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/AppData/Roaming/termshark"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Termshark configuration file for Unix
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/termshark/termshark.toml"
+    force: true
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: termshark.toml
+  when: ansible_system not in ["Darwin", "Win32NT"]
+
+- name: Copy Termshark configuration file for MacOS
+  ansible.builtin.copy:
+    dest: >-
+      {{ ansible_env.HOME }}/Library/Application
+      Support/termshark/termshark.toml
+    force: true
+    mode: "644"
+    owner: "{{ ansible_user_id }}"
+    src: termshark.toml
+  when: ansible_system == "Darwin"
+
+- name: Copy Termshark configuration file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/AppData/Roaming/termshark/termshark.toml"
+    force: true
+    src: termshark.toml
+  when: ansible_system == "Win32NT"

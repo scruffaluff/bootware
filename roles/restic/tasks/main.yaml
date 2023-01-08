@@ -1,0 +1,40 @@
+---
+- name: Install Restic for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: restic
+  when: ansible_system == "FreeBSD"
+
+- name: Install Restic for Linux
+  ansible.builtin.package:
+    name: restic
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Restic for MacOS
+  community.general.homebrew:
+    name: restic
+  when: ansible_system == "Darwin"
+
+- name: Install Restic for Windows
+  community.windows.win_scoop:
+    name: restic
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+# Debian 11's old version of Restic does not support shell completion.
+- name: Install Restic Fish completion for Unix
+  ansible.builtin.command:
+    cmd: >-
+      restic generate --fish-completion {{ ansible_env.HOME
+      }}/.config/fish/completions/restic.fish
+  when: >-
+    ansible_system != "Win32NT"and (ansible_pkg_mgr != "apt" or deb_distro_base
+    != "debian")

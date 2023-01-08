@@ -23,6 +23,7 @@ _cargo_applications:
   Linux:
     aarch64: []
     always:
+      # TODO: Figure out why cargo-arch is disabled.
       # - cargo-arch
       - cargo-binutils
       - cargo-deb

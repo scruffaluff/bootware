@@ -3,8 +3,8 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/FiloSottile/age/releases/latest
-  register: age_release
+    url: https://formulae.brew.sh/api/formula/age.json
+  register: age_formula
   when: ansible_system == "Linux"
 
 - name: Install Age for FreeBSD
@@ -19,8 +19,9 @@
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/FiloSottile/age/releases/download/{{
-      age_release.json.tag_name }}/age-{{ age_release.json.tag_name }}-linux-{{
+      https://github.com/FiloSottile/age/releases/download/v{{
+      age_formula.json.versions.stable }}//age-v{{
+      age_formula.json.versions.stable }}-linux-{{
       age_arch[ansible_architecture] }}.tar.gz
   become: true
   vars:

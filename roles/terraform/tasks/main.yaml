@@ -1,6 +1,4 @@
 ---
-# TODO: Install Terraform language server,
-# https://github.com/hashicorp/terraform-ls.
 - name: Get latest Terraform version
   ansible.builtin.uri:
     method: GET

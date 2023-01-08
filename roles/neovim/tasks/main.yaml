@@ -4,7 +4,3 @@
 
 - name: Configure Neovim settings
   ansible.builtin.import_tasks: settings.yaml
-
-- name: Install and configure NvChad
-  ansible.builtin.import_tasks: nvchad.yaml
-  when: nvchad

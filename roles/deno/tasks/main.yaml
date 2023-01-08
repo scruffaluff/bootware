@@ -32,8 +32,6 @@
     state: directory
   when: ansible_system != "Win32NT"
 
-# TODO: Add Bash completions with deno completions bash >
-# /usr/local/etc/bash_completion.d/deno.bash.
 - name: Generate Deno Fish completions for Unix
   ansible.builtin.shell: >-
     deno completions fish > {{ ansible_env.HOME

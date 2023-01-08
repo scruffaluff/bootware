@@ -1,0 +1,68 @@
+---
+- name: Get latest Kubeshark version for Unix
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
+  register: kubeshark_release_unix
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Get latest Kubeshark version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
+  register: kubeshark_release_windows
+  when: ansible_system == "Win32NT"
+
+- name: Install Kubeshark for Unix
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/kubeshark
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/kubeshark/kubeshark/releases/download/{{
+      kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
+      lower }}_{{ kubeshark_arch[ansible_architecture] }}
+  become: true
+  vars:
+    kubeshark_arch:
+      aarch64: arm64
+      arm64: arm64
+      x86_64: amd64
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Create Kubeshark program directory for Windows
+  ansible.windows.win_file:
+    dest: "C:/Program Files/Kubeshark"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include Kubeshark program directory for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\Kubeshark"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Install Kubeshark for Windows
+  ansible.windows.win_get_url:
+    dest: "C:/Program Files/Kubeshark/kubeshark.exe"
+    url: >-
+      https://github.com/kubeshark/kubeshark/releases/download/{{
+      kubeshark_release_windows.json.tag_name }}/kubeshark.exe
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Install Kubeshark Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      kubeshark completion fish > {{ ansible_env.HOME
+      }}/.config/fish/completions/kubeshark.fish
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
