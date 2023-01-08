@@ -204,7 +204,8 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Initialize Brew to avoid brew link errors with kmutil
-        run: brew install zip
+        continue-on-error: true
+        run: bootware bootstrap --dev --no-passwd --tags system
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
