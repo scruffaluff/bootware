@@ -7,7 +7,7 @@
   register: go_formula
   when: ansible_system == "Linux"
 
-- name: Install Go for Alpine distributions
+- name: Install Go for Alpine
   become: true
   community.general.apk:
     name: go

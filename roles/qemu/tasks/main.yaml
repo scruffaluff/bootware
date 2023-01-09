@@ -1,19 +1,19 @@
 ---
-- name: Install QEMU support libraries for Debian distributions
-  ansible.builtin.apt:
-    name:
-      - binfmt-support
-      - qemu-user-static
-  become: true
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
-
-- name: Install Qemu for Alpine distributions
+- name: Install Qemu for Alpine
   become: true
   community.general.apk:
     name:
       - qemu
       - qemu-img
   when: ansible_pkg_mgr == "apk"
+
+- name: Install QEMU dependencies for Debian
+  ansible.builtin.apt:
+    name:
+      - binfmt-support
+      - qemu-user-static
+  become: true
+  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
 
 - name: Install Qemu for FreeBSD
   become: true

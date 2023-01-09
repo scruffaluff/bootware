@@ -7,19 +7,19 @@
   register: bat_formula
   when: ansible_system == "Linux"
 
-- name: Install Bat for Alpine distributions
+- name: Install Bat for Alpine
   become: true
   community.general.apk:
     name: bat
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Bat for Arch distributions
+- name: Install Bat for Arch
   become: true
   community.general.pacman:
     name: bat
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Bat for Debian distributions
+- name: Install Bat for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/sharkdp/bat/releases/download/v{{
@@ -28,7 +28,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Bat for Fedora distributions
+- name: Install Bat for Fedora
   ansible.builtin.dnf:
     name: bat
   become: true

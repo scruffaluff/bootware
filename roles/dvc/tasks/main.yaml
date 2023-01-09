@@ -7,7 +7,7 @@
   register: dvc_formula
   when: ansible_system == "Linux"
 
-- name: Install DVC for Debian distributions
+- name: Install DVC for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/iterative/dvc/releases/download/{{
@@ -16,7 +16,7 @@
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install DVC for Fedora distributions
+- name: Install DVC for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-

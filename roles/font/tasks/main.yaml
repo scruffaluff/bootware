@@ -4,13 +4,13 @@
     name: homebrew/cask-fonts
   when: ansible_system == "Darwin"
 
-- name: Install Fira Code for Arch distributions
+- name: Install Fira Code for Arch
   become: true
   community.general.pacman:
     name: ttf-fira-code
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Fira Code font for Debian distributions
+- name: Install Fira Code font for Debian
   ansible.builtin.apt:
     name: fonts-firacode
   become: true
@@ -22,7 +22,7 @@
     name: firacode
   when: ansible_system == "FreeBSD"
 
-- name: Install Fira Code for Fedora distributions
+- name: Install Fira Code for Fedora
   ansible.builtin.dnf:
     name: fira-code-fonts
   become: true

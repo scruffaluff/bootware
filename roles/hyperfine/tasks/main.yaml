@@ -7,7 +7,7 @@
   register: hyperfine_formula
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Hyperfine for Debian distributions
+- name: Install Hyperfine for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/sharkdp/hyperfine/releases/download/v{{

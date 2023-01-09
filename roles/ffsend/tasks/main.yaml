@@ -7,9 +7,8 @@
   register: ffsend_formula
   when: ansible_system == "Linux"
 
-# As of 12/18/2021 the FFsend package on Alpine does not have a reliable
-# installation.
-# - name: Install FFSend for Alpine distributions
+# TODO: Integrate once installation becomes stable.
+# - name: Install FFSend for Alpine
 #   become: true
 # community.general.apk:
 #     name: ffsend

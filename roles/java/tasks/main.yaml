@@ -1,5 +1,5 @@
 ---
-- name: Install Java for Alpine distributions
+- name: Install Java for Alpine
   become: true
   community.general.apk:
     name:
@@ -7,7 +7,7 @@
       - openjdk17
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Java for Arch distributions
+- name: Install Java for Arch
   become: true
   community.general.pacman:
     name:
@@ -15,7 +15,7 @@
       - maven
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Java for Debian distributions
+- name: Install Java for Debian
   ansible.builtin.apt:
     name:
       - maven
@@ -23,7 +23,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Java for Fedora distributions
+- name: Install Java for Fedora
   ansible.builtin.dnf:
     name:
       - java-latest-openjdk

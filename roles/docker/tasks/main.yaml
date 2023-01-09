@@ -1,17 +1,17 @@
 ---
-- name: Install Docker for Alpine distributions
+- name: Install Docker for Alpine
   become: true
   community.general.apk:
     name: docker
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Docker for Arch distributions
+- name: Install Docker for Arch
   become: true
   community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install repository dependencies for Debian distributions
+- name: Install Docker repository dependencies for Debian
   ansible.builtin.apt:
     name:
       - apt-transport-https
@@ -21,7 +21,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker key for Debian distributions
+- name: Add Docker key for Debian
   # prettier-ignore
   ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: >-
@@ -31,7 +31,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker repository for Debian distributions
+- name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
       deb [arch={{ system_architecture }}
@@ -43,7 +43,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Docker for Debian distributions
+- name: Install Docker for Debian
   ansible.builtin.apt:
     name:
       - containerd.io
@@ -53,7 +53,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker repository for Fedora distributions
+- name: Add Docker repository for Fedora
   ansible.builtin.get_url:
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: "644"
@@ -61,7 +61,7 @@
   become: true
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install Docker for Fedora distributions
+- name: Install Docker for Fedora
   ansible.builtin.dnf:
     name:
       - containerd.io

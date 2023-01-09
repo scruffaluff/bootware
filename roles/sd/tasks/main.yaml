@@ -7,7 +7,7 @@
   register: sd_formula
   when: ansible_system == "Linux"
 
-- name: Install SD for Alpine distributions
+- name: Install SD for Alpine
   become: true
   community.general.apk:
     name: sd

@@ -1,5 +1,5 @@
 ---
-- name: Download Balena Etcher repository key for Debian distributions
+- name: Download Balena Etcher repository key for Debian
   ansible.builtin.get_url:
     dest: /tmp/balena-etcher.gpg
     mode: "644"
@@ -7,7 +7,7 @@
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install Balena Etcher repository key for Debian distributions
+- name: Install Balena Etcher repository key for Debian
   ansible.builtin.command:
     cmd: >-
       gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
@@ -16,7 +16,7 @@
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Add Balena Etcher repository for Debian distributions
+- name: Add Balena Etcher repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
       deb [signed-by=/usr/share/keyrings/balena-etcher.gpg]
@@ -27,7 +27,7 @@
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Add Balena Etcher RPM repository for Fedora distributions
+- name: Add Balena Etcher RPM repository for Fedora
   # prettier-ignore
   ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: >-
@@ -36,18 +36,18 @@
   become: true
   when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
-# Balena Etcher package conflicts with NodeJS.
-# - name: Install Balena Etcher for Arch distributions
+# TODO: Solve Etcher package conflict with NodeJS.
+# - name: Install Balena Etcher for Arch
 #   ansible.builtin.command: yay -Sy --noconfirm balena-etcher
 #   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Balena Etcher for Debian distributions
+- name: Install Balena Etcher for Debian
   ansible.builtin.apt:
     name: balena-etcher-electron
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install Balena Etcher for Fedora distributions
+- name: Install Balena Etcher for Fedora
   ansible.builtin.dnf:
     name: balena-etcher-electron
   become: true

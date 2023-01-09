@@ -7,11 +7,11 @@
   register: glow_formula
   when: ansible_system == "Linux"
 
-- name: Install Glow for Arch distributions
+- name: Install Glow for Arch
   ansible.builtin.command: yay -Sy --noconfirm glow
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Glow for Debian distributions
+- name: Install Glow for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
@@ -20,7 +20,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Glow for Fedora distributions
+- name: Install Glow for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-

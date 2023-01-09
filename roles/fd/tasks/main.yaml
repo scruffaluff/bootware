@@ -7,7 +7,7 @@
   register: fd_formula
   when: ansible_system == "Linux"
 
-- name: Install FD for Alpine distributions
+- name: Install FD for Alpine
   become: true
   community.general.apk:
     name: fd

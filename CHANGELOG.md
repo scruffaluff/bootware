@@ -223,9 +223,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Early XFCE desktop support.
 - Error messaging for incorrect subcommands.
 - Fuzz testing for Ansible roles.
-- GCloud installation for Arch and Fedora distributions.
+- GCloud installation for Arch and Fedora.
 - Windows terminal settings.
-- Yay AUR helper for Arch distributions.
+- Yay AUR helper for Arch.
 
 ### Changed
 
@@ -233,7 +233,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Python and VSCode installations for Arch distributions.
+- Python and VSCode installations for Arch.
 - System path for Apple Silicon binaries.
 
 ## 0.3.0 - 2021-04-02
@@ -251,7 +251,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Made setup depenency checking more flexible.
-- Upgraded Ansible version for Debian distributions.
+- Upgraded Ansible version for Debian.
 - Upgraded Docker installation version.
 
 ### Fixed
@@ -292,4 +292,4 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Alacritty installation on Fedora distributions.
+- Alacritty installation on Fedora.

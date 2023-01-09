@@ -7,9 +7,8 @@
   register: mdbook_formula
   when: ansible_system == "Linux"
 
-# As of 12/18/2021 the Mdbook package on Alpine does not have a reliable
-# installation.
-# - name: Install Mdbook for Alpine distributions
+# TODO: Integrate once installation becomes stable.
+# - name: Install Mdbook for Alpine
 #   become: true
 #   community.general.apk:
 #     name: mdbook

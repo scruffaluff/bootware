@@ -559,7 +559,7 @@ setup() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Alpine distributions.
+# Configure boostrapping services and utilities for Alpine.
 #######################################
 setup_alpine() {
   # Install dependencies for Bootware.
@@ -595,7 +595,7 @@ setup_alpine() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Arch distributions.
+# Configure boostrapping services and utilities for Arch.
 #######################################
 setup_arch() {
   # Install dependencies for Bootware.
@@ -635,7 +635,7 @@ setup_arch() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Debian distributions.
+# Configure boostrapping services and utilities for Debian.
 #######################################
 setup_debian() {
   # Avoid APT interactively requesting to configure tzdata.
@@ -671,7 +671,7 @@ setup_debian() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Fedora distributions.
+# Configure boostrapping services and utilities for Fedora.
 #######################################
 setup_fedora() {
   # Install dependencies for Bootware.
@@ -817,7 +817,7 @@ setup_macos() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Suse distributions.
+# Configure boostrapping services and utilities for OpenSuse.
 #######################################
 setup_suse() {
   # Install dependencies for Bootware.

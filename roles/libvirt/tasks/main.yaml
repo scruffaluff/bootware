@@ -1,11 +1,11 @@
 ---
-- name: Install Libvirt for Alpine distributions
+- name: Install Libvirt for Alpine
   become: true
   community.general.apk:
     name: libvirt-client
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Libvirt for Arch distributions
+- name: Install Libvirt for Arch
   become: true
   community.general.pacman:
     name:
@@ -14,7 +14,7 @@
       - virt-viewer
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Libvirt for Debian distributions
+- name: Install Libvirt for Debian
   ansible.builtin.apt:
     name:
       - libvirt-clients
@@ -30,7 +30,7 @@
     name: libvirt
   when: ansible_system == "FreeBSD"
 
-- name: Install Libvirt for Fedora distributions
+- name: Install Libvirt for Fedora
   ansible.builtin.dnf:
     name:
       - libvirt

@@ -7,7 +7,7 @@
   register: kubectl_version
   when: ansible_system == "Linux"
 
-- name: Install Kubectl for Alpine distributions
+- name: Install Kubectl for Alpine
   become: true
   community.general.apk:
     name: kubectl

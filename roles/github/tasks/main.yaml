@@ -7,13 +7,13 @@
   register: gh_formula
   when: ansible_system == "Linux"
 
-- name: Install GitHub CLI for Alpine distributions
+- name: Install GitHub CLI for Alpine
   become: true
   community.general.apk:
     name: github-cli
   when: ansible_pkg_mgr == "apk"
 
-- name: Install GitHub CLI for Debian distributions
+- name: Install GitHub CLI for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/cli/cli/releases/download/v{{
@@ -22,7 +22,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install GitHub CLI for Fedora distributions
+- name: Install GitHub CLI for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-

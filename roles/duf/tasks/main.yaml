@@ -7,7 +7,7 @@
   register: duf_formula
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Duf for Alpine distributions
+- name: Install Duf for Alpine
   become: true
   community.general.apk:
     name: duf
@@ -16,7 +16,7 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Duf for Debian distributions
+- name: Install Duf for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/muesli/duf/releases/download/v{{

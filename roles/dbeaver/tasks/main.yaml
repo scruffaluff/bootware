@@ -1,17 +1,17 @@
 ---
-- name: Install DBeaver for Arch distributions
+- name: Install DBeaver for Arch
   become: true
   community.general.pacman:
     name: dbeaver
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install DBeaver for Debian distributions
+- name: Install DBeaver for Debian
   ansible.builtin.apt:
     deb: https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install DBeaver for Fedora distributions
+- name: Install DBeaver for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm

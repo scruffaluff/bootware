@@ -1,17 +1,17 @@
 ---
-- name: Install GitLab Runner for Alpine distributions
+- name: Install GitLab Runner for Alpine
   become: true
   community.general.apk:
     name: gitlab-runner
   when: ansible_pkg_mgr == "apk"
 
-- name: Install GitLab Runner for Arch distributions
+- name: Install GitLab Runner for Arch
   become: true
   community.general.pacman:
     name: gitlab-runner
   when: ansible_pkg_mgr == "pacman" and system_architecture == "amd64"
 
-- name: Install GitLab Runner for Debian distributions
+- name: Install GitLab Runner for Debian
   ansible.builtin.apt:
     deb: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
@@ -19,7 +19,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install GitLab Runner for Fedora distributions
+- name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-

@@ -1,19 +1,19 @@
 ---
-- name: Update packages for Alpine distributions
+- name: Update packages for Alpine
   become: true
   community.general.apk:
     update_cache: true
     upgrade: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Update packages for Arch distributions
+- name: Update packages for Arch
   become: true
   community.general.pacman:
     update_cache: true
     upgrade: true
   when: ansible_pkg_mgr == "pacman"
 
-- name: Update packages for Debian distributions
+- name: Update packages for Debian
   ansible.builtin.apt:
     autoremove: true
     update_cache: true
@@ -21,7 +21,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Update packages for Fedora distributions
+- name: Update packages for Fedora
   ansible.builtin.dnf:
     autoremove: true
     # Updating all packages causes an error since dnf would be removed.

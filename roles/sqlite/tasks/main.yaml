@@ -1,17 +1,17 @@
 ---
-- name: Install SQLite for Alpine distributions
+- name: Install SQLite for Alpine
   become: true
   community.general.apk:
     name: sqlite
   when: ansible_pkg_mgr == "apk"
 
-- name: Install SQLite for Arch distributions
+- name: Install SQLite for Arch
   become: true
   community.general.pacman:
     name: sqlite
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install SQLite for Debian distributions
+- name: Install SQLite for Debian
   ansible.builtin.apt:
     name: sqlite3
   become: true
@@ -23,7 +23,7 @@
     name: sqlite3
   when: ansible_system == "FreeBSD"
 
-- name: Install SQLite for Fedora distributions
+- name: Install SQLite for Fedora
   ansible.builtin.dnf:
     name: sqlite
   become: true

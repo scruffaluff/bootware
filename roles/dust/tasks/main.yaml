@@ -7,7 +7,7 @@
   register: dust_formula
   when: ansible_system == "Linux"
 
-- name: Install Dust for Alpine distributions
+- name: Install Dust for Alpine
   become: true
   community.general.apk:
     name: dust

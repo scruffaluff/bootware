@@ -5,7 +5,7 @@
     name: awscli
   when: ansible_system == "FreeBSD"
 
-- name: Install AWSCLI for Alpine distributions
+- name: Install AWSCLI for Alpine
   become: true
   community.general.apk:
     name: aws-cli

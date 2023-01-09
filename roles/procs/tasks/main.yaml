@@ -7,7 +7,7 @@
   register: procs_formula
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Procs for Alpine distributions
+- name: Install Procs for Alpine
   become: true
   community.general.apk:
     name: procs

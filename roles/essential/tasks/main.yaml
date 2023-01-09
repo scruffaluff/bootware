@@ -1,11 +1,11 @@
 ---
-- name: Install essential packages for Alpine distributions
+- name: Install essential packages for Alpine
   become: true
   community.general.apk:
     name: xz
   when: ansible_pkg_mgr == "apk"
 
-- name: Install essential packages for Arch distributions
+- name: Install essential packages for Arch
   become: true
   community.general.pacman:
     name:
@@ -15,7 +15,7 @@
       - which
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install essential packages for Debian distributions
+- name: Install essential packages for Debian
   ansible.builtin.apt:
     name:
       - apt-file
@@ -28,7 +28,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install essential packages for Fedora distributions
+- name: Install essential packages for Fedora
   ansible.builtin.dnf:
     name:
       - dnf-plugins-core
@@ -85,7 +85,7 @@
       - zip
   when: ansible_system == "Darwin"
 
-- name: Install essential packages for Suse distributions
+- name: Install essential packages for OpenSuse
   community.general.zypper:
     name: gzip
   become: true

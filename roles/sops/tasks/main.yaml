@@ -7,7 +7,7 @@
   register: sops_formula
   when: ansible_system == "Linux"
 
-- name: Install Sops For Debian distributions
+- name: Install Sops For Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/mozilla/sops/releases/download/v{{
@@ -16,7 +16,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Sops For Fedora distributions
+- name: Install Sops For Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-

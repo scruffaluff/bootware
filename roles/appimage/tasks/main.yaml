@@ -1,6 +1,5 @@
 ---
-# AppImages requires FUSE.
-- name: Install FUSE for Arch distributions
+- name: Install FUSE for Arch
   become: true
   community.general.pacman:
     name: fuse3

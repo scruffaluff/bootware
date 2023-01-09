@@ -1,5 +1,5 @@
 ---
-- name: Install Python packages for Alpine distributions
+- name: Install Python packages for Alpine
   become: true
   community.general.apk:
     name:
@@ -7,7 +7,7 @@
       - python3
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Python packages for Arch distributions
+- name: Install Python packages for Arch
   become: true
   community.general.pacman:
     name:
@@ -15,7 +15,7 @@
       - python-pip
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Python packages for Debian distributions
+- name: Install Python packages for Debian
   ansible.builtin.apt:
     name:
       - python3
@@ -25,7 +25,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Python packages for Fedora distributions
+- name: Install Python packages for Fedora
   ansible.builtin.dnf:
     name:
       - python3
@@ -41,7 +41,7 @@
       - python3
   when: ansible_system == "FreeBSD"
 
-- name: Install ONNX dependencies for Arch distributions
+- name: Install ONNX dependencies for Arch
   become: true
   community.general.pacman:
     name:
@@ -49,7 +49,7 @@
       - protobuf
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install ONNX dependencies for Debian distributions
+- name: Install ONNX dependencies for Debian
   ansible.builtin.apt:
     name:
       - cmake

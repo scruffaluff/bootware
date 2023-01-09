@@ -1,5 +1,5 @@
 ---
-- name: Dowload Google Cloud SDK for Alpine distributions
+- name: Dowload Google Cloud SDK for Alpine
   ansible.builtin.unarchive:
     dest: /usr/lib/
     mode: "755"
@@ -8,13 +8,13 @@
   become: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Google Cloud SDK binaries for Alpine distributions
+- name: Install Google Cloud SDK binaries for Alpine
   ansible.builtin.command:
     cmd: /usr/lib/google-cloud-sdk/install.sh --quiet
   become: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Create links to Google Cloud SDK binaries for Alpine distributions
+- name: Create links to Google Cloud SDK binaries for Alpine
   ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
@@ -27,11 +27,11 @@
     - gsutil
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Google Cloud SDK for Arch distributions
+- name: Install Google Cloud SDK for Arch
   ansible.builtin.command: yay -Sy --noconfirm google-cloud-sdk
   when: ansible_pkg_mgr == "pacman"
 
-- name: Add Google Cloud SDK key for Debian distributions
+- name: Add Google Cloud SDK key for Debian
   ansible.builtin.get_url:
     dest: /usr/share/keyrings/cloud-google.gpg
     mode: "644"
@@ -39,7 +39,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Google Cloud SDK package list for Debian distributions
+- name: Add Google Cloud SDK package list for Debian
   ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/google-cloud-sdk.list
     force: true
@@ -49,14 +49,14 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Google Cloud SDK for Debian distributions
+- name: Install Google Cloud SDK for Debian
   ansible.builtin.apt:
     name: google-cloud-sdk
     update_cache: true
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Google Cloud SDK repository for Fedora distributions
+- name: Add Google Cloud SDK repository for Fedora
   ansible.builtin.yum_repository:
     baseurl: https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64
     description: Google Cloud SDK
@@ -70,7 +70,7 @@
   become: true
   when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
-- name: Install Google Cloud SDK for Fedora distributions
+- name: Install Google Cloud SDK for Fedora
   ansible.builtin.dnf:
     name: google-cloud-sdk
   become: true
