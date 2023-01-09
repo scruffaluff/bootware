@@ -25,7 +25,9 @@
     name: tldr
     state: present
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
+    "zypper"]
 
 - name: Install TLDR for MacOS
   community.general.homebrew:
@@ -49,7 +51,7 @@
   ansible.builtin.command: tldr --update
   environment:
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "zypper"
 
 - name: Update TLDR documentation for Windows
   ansible.windows.win_command: tldr --update

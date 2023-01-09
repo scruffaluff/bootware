@@ -19,6 +19,7 @@
       apt: libnss3-tools
       dnf: nss-tools
       pacman: nss
+      zypper: mozilla-nss
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for Linux

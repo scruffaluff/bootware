@@ -29,14 +29,14 @@
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
-- name: Download Hyper for Fedora
+- name: Download Hyper for Fedora and Suse
   ansible.builtin.get_url:
     dest: /tmp/hyper.rpm
     mode: "600"
     url: >-
       https://releases.hyper.is/download/rpm{{ '_arm64' if system_architecture
       == 'arm64' else '' }}
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install Hyper for Fedora
   ansible.builtin.dnf:
@@ -51,6 +51,12 @@
     name: hyper
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Hyper for Suse
+  become: true
+  community.general.zypper:
+    name: /tmp/hyper.rpm
+  when: ansible_pkg_mgr == "zypper"
 
 - name: Install Hyper for Windows
   community.windows.win_scoop:

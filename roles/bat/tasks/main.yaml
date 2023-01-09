@@ -5,19 +5,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/bat.json
   register: bat_formula
-  when: ansible_system == "Linux"
-
-- name: Install Bat for Alpine
-  become: true
-  community.general.apk:
-    name: bat
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Bat for Arch
-  become: true
-  community.general.pacman:
-    name: bat
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Bat for Debian
   ansible.builtin.apt:
@@ -28,17 +16,17 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Bat for Fedora
-  ansible.builtin.dnf:
-    name: bat
-  become: true
-  when: ansible_pkg_mgr == "dnf"
-
 - name: Install Bat for FreeBSD
   become: true
   community.general.pkgng:
     name: bat
   when: ansible_system == "FreeBSD"
+
+- name: Install Bat for Linux
+  ansible.builtin.package:
+    name: bat
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Bat for MacOS
   community.general.homebrew:

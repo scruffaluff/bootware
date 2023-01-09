@@ -74,7 +74,7 @@ function shouldSkip(system, conditions) {
     return false;
   }
 
-  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
+  const distros = ["alpine", "arch", "fedora", "debian", "suse", "ubuntu"];
   for (const condition of conditions) {
     let skipMatch = true;
     for (const key in condition) {

@@ -32,7 +32,9 @@
   ansible.builtin.package:
     name: procs
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
+    "zypper"]
 
 - name: Install Procs for MacOS
   community.general.homebrew:
@@ -58,5 +60,5 @@
       procs --completion-out fish > {{ ansible_env.HOME
       }}/.config/fish/completions/procs.fish
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
-    "amd64"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "zypper"
+    and system_architecture == "amd64"

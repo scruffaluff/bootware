@@ -48,14 +48,22 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Java for Window
+- name: Install Java for Suse
+  become: true
+  community.general.zypper:
+    name:
+      - java-17-openjdk
+      - maven
+  when: ansible_pkg_mgr == "zypper" and system_architecture == "amd64"
+
+- name: Install Java for Windows
   community.windows.win_scoop:
     name:
       - maven
       - openjdk
   when: ansible_system == "Win32NT"
 
-- name: Make Java discover OpenJDK on MacOS
+- name: Make OpenJDK discoverable by Java on MacOS
   ansible.builtin.file:
     src: "{{ openjdk_path[system_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk

@@ -42,3 +42,11 @@
   community.general.homebrew:
     name: libvirt
   when: ansible_system == "Darwin"
+
+- name: Install Libvirt for Suse
+  become: true
+  community.general.zypper:
+    name:
+      - libvirt
+      - virt-viewer
+  when: ansible_pkg_mgr == "zypper"

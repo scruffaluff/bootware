@@ -49,6 +49,7 @@
     "skip": [
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "fedora" },
+      { "arch": "arm64", "os": "suse" },
       { "arch": "arm64", "os": "ubuntu" },
       { "os": "alpine" },
       { "os": "arch" },
@@ -141,7 +142,7 @@
   { "name": "fzf", "tests": ["fzf --version"] },
   {
     "name": "gcp",
-    "skip": [{ "arch": "arm64", "os": "fedora" }],
+    "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },
   { "name": "gdu", "skip": [{ "os": "alpine" }], "tests": ["gdu --version"] },
@@ -272,7 +273,8 @@
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "ubuntu" },
       { "os": "alpine" },
-      { "os": "freebsd" }
+      { "os": "freebsd" },
+      { "os": "suse" }
     ],
     "tests": ["procs --version"]
   },
@@ -282,7 +284,7 @@
   },
   {
     "name": "qemu",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "suse" }, { "os": "windows" }],
     "tests": ["qemu-img --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
@@ -337,7 +339,7 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["tilt version"]
   },
-  { "name": "tldr", "tests": ["tldr --version"] },
+  { "name": "tldr", "skip": [{ "os": "suse" }], "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
@@ -382,6 +384,7 @@
   },
   {
     "name": "zoxide",
+    "skip": [{ "os": "suse" }],
     "tests": ["zoxide --version"]
   }
 ]

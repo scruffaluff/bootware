@@ -5,7 +5,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/duf.json
   register: duf_formula
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr in ["apt", "zypper"]
 
 - name: Install Duf for Alpine
   become: true
@@ -36,12 +36,23 @@
     name: duf
   become: true
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
+    "zypper"]
 
 - name: Install Duf for MacOS
   community.general.homebrew:
     name: duf
   when: ansible_system == "Darwin"
+
+- name: Install Duf for Suse
+  become: true
+  community.general.zypper:
+    disable_gpg_check: true
+    name: >-
+      https://github.com/muesli/duf/releases/download/v{{
+      duf_formula.json.versions.stable }}/duf_{{
+      duf_formula.json.versions.stable }}_linux_{{ system_architecture }}.rpm
+  when: ansible_pkg_mgr == "zypper"
 
 - name: Install Duf for Windows
   community.windows.win_scoop:

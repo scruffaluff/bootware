@@ -15,6 +15,7 @@
       apt: wireshark
       dnf: wireshark
       pacman: wireshark-qt
+      zypper: wireshark-ui-qt
   when: ansible_system == "Linux"
 
 # TODO: Manual install of ChmodBPF is required as a Wireshark dependency.

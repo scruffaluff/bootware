@@ -7,12 +7,6 @@
   register: cargo_binstall_release
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install pkg-config for Linux
-  ansible.builtin.package:
-    name: "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
-  become: true
-  when: ansible_system == "Linux"
-
 - name: Install Rust and Cargo applications for Unix
   environment:
     PATH: >-

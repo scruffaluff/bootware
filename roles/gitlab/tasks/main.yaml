@@ -19,11 +19,11 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add GitLab GPG key for Fedora
+- name: Add GitLab GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
     key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-4C80FB51394521E9.pub.gpg
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
@@ -43,6 +43,14 @@
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"
+
+- name: Install GitLab Runner for Suse
+  become: true
+  community.general.zypper:
+    name: >-
+      https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
+      system_architecture }}.rpm
+  when: ansible_pkg_mgr == "zypper"
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:

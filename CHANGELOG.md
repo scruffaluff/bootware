@@ -10,6 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - GDU role.
+- Suse support for several roles.
 
 ### Changed
 
