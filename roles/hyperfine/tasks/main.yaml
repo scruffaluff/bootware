@@ -14,7 +14,7 @@
       hyperfine_formula.json.versions.stable }}/hyperfine_{{
       hyperfine_formula.json.versions.stable }}_amd64.deb
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Hyperfine for FreeBSD
   become: true

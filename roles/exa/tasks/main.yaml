@@ -7,12 +7,6 @@
   register: exa_formula
   when: ansible_system == "Linux"
 
-- name: Install Exa for Alpine distributions
-  become: true
-  community.general.apk:
-    name: exa
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Exa for FreeBSD
   become: true
   community.general.pkgng:
@@ -26,17 +20,10 @@
     remote_src: true
     src: >-
       https://github.com/ogham/exa/releases/download/v{{
-      exa_formula.json.versions.stable }}/exa-linux-{{
-      exa_arch[ansible_architecture] }}-v{{ exa_formula.json.versions.stable
-      }}.zip
+      exa_formula.json.versions.stable }}/exa-linux-x86_64-musl-v{{
+      exa_formula.json.versions.stable }}.zip
   become: true
-  vars:
-    exa_arch:
-      armv7l: armv7
-      x86_64: x86_64
-  when: >-
-    ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
-    and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Exa for Linux
   ansible.builtin.copy:
@@ -44,9 +31,7 @@
     mode: "755"
     src: /tmp/bin/exa
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_architecture in ["armv7l", "x86_64"]
-    and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Exa for MacOS
   community.general.homebrew:

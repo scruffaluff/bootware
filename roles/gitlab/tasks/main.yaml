@@ -9,18 +9,14 @@
   become: true
   community.general.pacman:
     name: gitlab-runner
-  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "pacman" and system_architecture == "amd64"
 
 - name: Install GitLab Runner for Debian distributions
   ansible.builtin.apt:
     deb: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
-      gitlab_arch[ansible_architecture] }}.deb
+      system_architecture }}.deb
   become: true
-  vars:
-    gitlab_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install GitLab Runner for Fedora distributions
@@ -28,12 +24,8 @@
     disable_gpg_check: true
     name: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
-      gitlab_arch[ansible_architecture] }}.rpm
+      system_architecture }}.rpm
   become: true
-  vars:
-    gitlab_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install GitLab Runner for FreeBSD

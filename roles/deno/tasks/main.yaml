@@ -1,11 +1,15 @@
 ---
-# Shell installer for Deno accidentally installs ARM64 version on FreeBSD.
 - name: Install Deno for FreeBSD
   become: true
   community.general.pkgng:
     name: deno
   when: ansible_system == "FreeBSD"
 
+# TODO: Add Deno Alpine install when supported. See
+# https://github.com/denoland/deno/issues/3711 for status.
+#
+# TODO: Add Deno Linux ARM install when supported. See
+# https://github.com/denoland/deno/issues/1846 for status.
 - name: Download Deno installer for Unix
   ansible.builtin.get_url:
     dest: /tmp/deno_install.sh
@@ -13,16 +17,18 @@
     url: https://deno.land/x/install/install.sh
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
-    != "apk" and ansible_architecture == "x86_64")
+    != "apk" and system_architecture == "amd64")
 
-# Deno Linux ARM support is in progress. See
-# https://github.com/denoland/deno/issues/1846. Deno requires glibc, which is
-# not available on Alpine.
 - name: Install Deno for Unix
   ansible.builtin.command: /tmp/deno_install.sh
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
-    != "apk" and ansible_architecture == "x86_64")
+    != "apk" and system_architecture == "amd64")
+
+- name: Install Deno for Windows
+  community.windows.win_scoop:
+    name: deno
+  when: ansible_system == "Win32NT"
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
@@ -40,12 +46,7 @@
     PATH: "{{ ansible_env.HOME }}/.deno/bin:{{ ansible_env.PATH }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    ansible_pkg_mgr != "apk" and ansible_architecture == "x86_64")
-
-- name: Install Deno for Windows
-  community.windows.win_scoop:
-    name: deno
-  when: ansible_system == "Win32NT"
+    ansible_pkg_mgr != "apk" and system_architecture == "amd64")
 
 - name: Create Deno PowerShell completions directory for Windows
   ansible.windows.win_file:

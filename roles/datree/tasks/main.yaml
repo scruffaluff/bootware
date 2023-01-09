@@ -25,12 +25,12 @@
       https://github.com/datreeio/datree/releases/download/{{
       datree_formula_linux.json.versions.stable }}/datree-cli_{{
       datree_formula_linux.json.versions.stable }}_Linux_{{
-      datree_arch[ansible_architecture] }}.zip
+      datree_arch[system_architecture] }}.zip
   become: true
   vars:
     datree_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux"
 
 - name: Install Datree for Linux

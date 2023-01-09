@@ -57,7 +57,7 @@
 
 - name: Make Java discover OpenJDK on MacOS
   ansible.builtin.file:
-    src: "{{ openjdk_path[ansible_architecture] }}"
+    src: "{{ openjdk_path[system_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: true
     mode: "755"
@@ -66,8 +66,8 @@
   become: true
   vars:
     openjdk_path:
+      amd64: /usr/local/opt/openjdk/libexec/openjdk.jdk
       arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
-      x86_64: /usr/local/opt/openjdk/libexec/openjdk.jdk
   when: ansible_system == "Darwin"
 
 - name: Create Java Jar directory for Linux

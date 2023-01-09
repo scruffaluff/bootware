@@ -15,15 +15,13 @@
   register: mongodb_compass_formula_windows
   when: ansible_system == "Win32NT"
 
-# MongoDB does not appear to have a Compass release for Arch distributions.
-
 - name: Install MongoDB Compass For Debian distributions
   ansible.builtin.apt:
     deb: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       mongodb_compass_formula_linux.json.version }}_amd64.deb
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Fedora distributions
   ansible.builtin.dnf:
@@ -32,7 +30,7 @@
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       mongodb_compass_formula_linux.json.version }}.x86_64.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
   community.general.homebrew_cask:

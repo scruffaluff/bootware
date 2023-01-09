@@ -7,7 +7,7 @@
   register: usql_release
   when: >-
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
-    ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
+    ansible_pkg_mgr == "dnf") and system_architecture == "amd64"
 
 - name: Install Usql dependencies for Fedora distributions
   ansible.builtin.dnf:
@@ -45,7 +45,7 @@
   become: true
   when: >-
     ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
-    ansible_pkg_mgr == "dnf") and ansible_architecture == "x86_64"
+    ansible_pkg_mgr == "dnf") and system_architecture == "amd64"
 
 - name: Gather installed package facts for Fedora distributions
   ansible.builtin.package_facts:

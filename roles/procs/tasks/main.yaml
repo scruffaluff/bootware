@@ -26,7 +26,7 @@
       procs_formula.json.versions.stable }}/procs-v{{
       procs_formula.json.versions.stable }}-x86_64-linux.zip
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Procs for Linux
   ansible.builtin.package:
@@ -58,5 +58,5 @@
       procs --completion-out fish > {{ ansible_env.HOME
       }}/.config/fish/completions/procs.fish
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_architecture ==
-    "x86_64"
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
+    "amd64"

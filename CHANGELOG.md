@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Refactor architecture variables.
 - Split system role into essential and update roles.
 
 ### Fixed

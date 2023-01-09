@@ -16,12 +16,12 @@
       https://github.com/jesseduffield/lazydocker/releases/download/v{{
       lazydocker_formula.json.versions.stable }}/lazydocker_{{
       lazydocker_formula.json.versions.stable }}_Linux_{{
-      lazydocker_arch[ansible_architecture] }}.tar.gz
+      lazydocker_arch[system_architecture] }}.tar.gz
   become: true
   vars:
     lazydocker_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux"
 
 - name: Install Lazydocker for Linux

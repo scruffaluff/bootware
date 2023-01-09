@@ -24,32 +24,30 @@
   become: true
   when: ansible_system == "Linux"
 
-- name: Download and install Git Delta for Linux
-  vars:
-    git_delta_env:
-      "{{ 'musl' if ansible_pkg_mgr in ['apk', 'apt'] else 'gnu' }}"
+- name: Download Git Delta for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/dandavison/delta/releases/download/{{
+      git_delta_formula.json.versions.stable }}/delta-{{
+      git_delta_formula.json.versions.stable }}-{{
+      _git_delta_arch[system_architecture] }}-unknown-linux-{{ _git_delta_env
+      }}.tar.gz
+  become: true
   when: ansible_system == "Linux"
-  block:
-    - name: Download Git Delta for Linux
-      ansible.builtin.unarchive:
-        dest: /tmp/
-        mode: "755"
-        remote_src: true
-        src: >-
-          https://github.com/dandavison/delta/releases/download/{{
-          git_delta_formula.json.versions.stable }}/delta-{{
-          git_delta_formula.json.versions.stable }}-{{ ansible_architecture
-          }}-unknown-linux-{{ git_delta_env }}.tar.gz
-      become: true
 
-    - name: Install Git Delta for Linux
-      ansible.builtin.copy:
-        dest: /usr/local/bin/delta
-        mode: "755"
-        src: >-
-          /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
-          ansible_architecture }}-unknown-linux-{{ git_delta_env }}/delta
-      become: true
+- name: Install Git Delta for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/delta
+    mode: "755"
+    src: >-
+      /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
+      _git_delta_arch[system_architecture] }}-unknown-linux-{{ _git_delta_env
+      }}/delta
+  become: true
+  when: ansible_system == "Linux"
 
 - name: Install Git for MacOS
   community.general.homebrew:

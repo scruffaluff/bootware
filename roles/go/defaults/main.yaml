@@ -1,7 +1,7 @@
 ---
 _go_root:
   Darwin: >-
-    {{ '/opt/homebrew/opt/go/libexec' if ansible_architecture == 'arm64' else
+    {{ '/opt/homebrew/opt/go/libexec' if system_architecture == 'arm64' else
     '/usr/local/opt/go/libexec' }}
   FreeBSD: ""
   Linux: /usr/local/go

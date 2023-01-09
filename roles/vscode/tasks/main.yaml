@@ -11,12 +11,8 @@
   ansible.builtin.apt:
     deb: >-
       https://update.code.visualstudio.com/latest/linux-deb-{{
-      vscode_arch[ansible_architecture] }}/stable
+      _vscode_arch[system_architecture] }}/stable
   become: true
-  vars:
-    vscode_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
 - name: Add Microsoft GPG key for Fedora distributions
@@ -33,12 +29,8 @@
     mode: "600"
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{
-      vscode_arch[ansible_architecture] }}/stable
+      _vscode_arch[system_architecture] }}/stable
   become: true
-  vars:
-    vscode_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install VSCode for Fedora distributions

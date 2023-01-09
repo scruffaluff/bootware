@@ -14,13 +14,8 @@
     owner: root
     url: >-
       https://github.com/kubernetes-sigs/kind/releases/download/v{{
-      kind_formula.json.versions.stable }}/kind-linux-{{
-      kind_arch[ansible_architecture] }}
+      kind_formula.json.versions.stable }}/kind-linux-{{ system_architecture }}
   become: true
-  vars:
-    kind_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Kind for MacOS

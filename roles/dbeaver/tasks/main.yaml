@@ -9,14 +9,14 @@
   ansible.builtin.apt:
     deb: https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install DBeaver for Fedora distributions
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install DBeaver for MacOS
   community.general.homebrew_cask:

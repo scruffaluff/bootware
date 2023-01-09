@@ -32,7 +32,7 @@
       }}-x86_64-unknown-linux-gnu
   become: true
   when: >-
-    ansible_system == "Linux" and ansible_architecture == "x86_64" and
+    ansible_system == "Linux" and system_architecture == "amd64" and
     ansible_pkg_mgr != "apk"
 
 - name: Install SD for MacOS

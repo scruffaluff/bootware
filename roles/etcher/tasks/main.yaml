@@ -5,7 +5,7 @@
     mode: "644"
     url: https://dl.cloudsmith.io/public/balena/etcher/gpg.70528471AFF9A051.key
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Balena Etcher repository key for Debian distributions
   ansible.builtin.command:
@@ -14,7 +14,7 @@
       /tmp/balena-etcher.gpg
     creates: /usr/share/keyrings/balena-etcher.gpg
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Add Balena Etcher repository for Debian distributions
   ansible.builtin.apt_repository:
@@ -25,7 +25,7 @@
     state: present
     filename: balena-etcher
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Add Balena Etcher RPM repository for Fedora distributions
   # prettier-ignore
@@ -34,7 +34,7 @@
       curl -LSfs https://dl.cloudsmith.io/public/balena/etcher/setup.rpm.sh |
       bash
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 # Balena Etcher package conflicts with NodeJS.
 # - name: Install Balena Etcher for Arch distributions
@@ -45,13 +45,13 @@
   ansible.builtin.apt:
     name: balena-etcher-electron
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Balena Etcher for Fedora distributions
   ansible.builtin.dnf:
     name: balena-etcher-electron
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Balena Etcher for MacOS
   community.general.homebrew_cask:

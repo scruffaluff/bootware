@@ -23,13 +23,8 @@
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
       kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
-      lower }}_{{ kubeshark_arch[ansible_architecture] }}
+      lower }}_{{ system_architecture }}
   become: true
-  vars:
-    kubeshark_arch:
-      aarch64: arm64
-      arm64: arm64
-      x86_64: amd64
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Create Kubeshark program directory for Windows

@@ -68,13 +68,13 @@
       - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     name: google-cloud-sdk
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Google Cloud SDK for Fedora distributions
   ansible.builtin.dnf:
     name: google-cloud-sdk
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Google Cloud SDK for FreeBSD
   become: true

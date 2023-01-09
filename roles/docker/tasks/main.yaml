@@ -34,17 +34,13 @@
 - name: Add Docker repository for Debian distributions
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ docker_arch[ansible_architecture] }}
+      deb [arch={{ system_architecture }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
       https://download.docker.com/linux/{{ deb_distro_base }} {{
       ansible_distribution_release | lower }} stable
     state: present
     filename: docker
   become: true
-  vars:
-    docker_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Docker for Debian distributions

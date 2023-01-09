@@ -5,7 +5,7 @@
   become: true
   when: >-
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
+    ansible_distribution != "Pop!_OS" and system_architecture == "amd64"
 
 - name: Install Alacritty for FreeBSD
   become: true
@@ -32,7 +32,7 @@
   become: true
   when: >-
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:

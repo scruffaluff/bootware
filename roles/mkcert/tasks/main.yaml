@@ -28,13 +28,8 @@
     url: >-
       https://github.com/FiloSottile/mkcert/releases/download/v{{
       mkcert_formula.json.versions.stable }}/mkcert-v{{
-      mkcert_formula.json.versions.stable }}-linux-{{
-      mkcert_arch[ansible_architecture] }}
+      mkcert_formula.json.versions.stable }}-linux-{{ system_architecture }}
   become: true
-  vars:
-    mkcert_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for MacOS

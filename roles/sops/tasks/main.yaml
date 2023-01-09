@@ -12,13 +12,8 @@
     deb: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops_{{
-      sops_formula.json.versions.stable }}_{{ sops_arch[ansible_architecture]
-      }}.deb
+      sops_formula.json.versions.stable }}_{{ system_architecture }}.deb
   become: true
-  vars:
-    sops_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Sops For Fedora distributions
@@ -27,7 +22,7 @@
     name: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-{{
-      sops_formula.json.versions.stable }}-1.{{ ansible_architecture }}.rpm
+      sops_formula.json.versions.stable }}-1.{{ system_architecture }}.rpm
   become: true
   when: ansible_pkg_mgr == "dnf"
 
@@ -45,13 +40,8 @@
     url: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-v{{
-      sops_formula.json.versions.stable }}.linux.{{
-      sops_arch[ansible_architecture] }}
+      sops_formula.json.versions.stable }}.linux.{{ system_architecture }}
   become: true
-  vars:
-    sops_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf"]
 
 - name: Install Sops for MacOS

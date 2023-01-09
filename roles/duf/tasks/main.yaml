@@ -21,13 +21,8 @@
     deb: >-
       https://github.com/muesli/duf/releases/download/v{{
       duf_formula.json.versions.stable }}/duf_{{
-      duf_formula.json.versions.stable }}_linux_{{
-      duf_arch[ansible_architecture] }}.deb
+      duf_formula.json.versions.stable }}_linux_{{ system_architecture }}.deb
   become: true
-  vars:
-    duf_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Duf for FreeBSD

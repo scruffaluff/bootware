@@ -16,22 +16,14 @@
     remote_src: true
     src: >-
       https://github.com/kubernetes-sigs/krew/releases/download/v{{
-      krew_formula.json.versions.stable }}/krew-linux_{{
-      krew_arch[ansible_architecture] }}.tar.gz
+      krew_formula.json.versions.stable }}/krew-linux_{{ system_architecture
+      }}.tar.gz
   become: true
-  vars:
-    krew_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Krew for Linux
   ansible.builtin.command:
-    cmd: "/tmp/krew-linux_{{ krew_arch[ansible_architecture] }} install krew"
-  vars:
-    krew_arch:
-      aarch64: arm64
-      x86_64: amd64
+    cmd: "/tmp/krew-linux_{{ system_architecture }} install krew"
   when: ansible_system == "Linux"
 
 - name: Install Krew for MacOS

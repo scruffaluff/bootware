@@ -24,7 +24,7 @@
       https://releases.hashicorp.com/vagrant/{{ vagrant_formula.json.version
       }}/vagrant_{{ vagrant_formula.json.version }}_linux_amd64.zip
   become: true
-  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Vagrant for MacOS
   community.general.homebrew_cask:

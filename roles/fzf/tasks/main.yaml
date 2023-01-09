@@ -23,13 +23,8 @@
     src: >-
       https://github.com/junegunn/fzf/releases/download/{{
       fzf_formula.json.versions.stable }}/fzf-{{
-      fzf_formula.json.versions.stable }}-linux_{{
-      fzf_arch[ansible_architecture] }}.tar.gz
+      fzf_formula.json.versions.stable }}-linux_{{ system_architecture }}.tar.gz
   become: true
-  vars:
-    fzf_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Fzf for Linux

@@ -25,7 +25,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install Dust for Linux
   ansible.builtin.copy:
@@ -37,7 +37,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install Dust for MacOS
   community.general.homebrew:

@@ -8,13 +8,9 @@
     mode: "755"
     owner: root
     url: >-
-      https://releases.hyper.is/download/{{ hyper_appimage[ansible_architecture]
-      }}
+      https://releases.hyper.is/download/AppImage{{ '_arm64' if
+      system_architecture == 'arm64' else '' }}
   become: true
-  vars:
-    hyper_appimage:
-      aarch64: AppImage_arm64
-      x86_64: AppImage
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Hyper dependencies for Fedora distributions
@@ -26,12 +22,9 @@
 - name: Install Hyper for Debian distributions
   ansible.builtin.apt:
     deb: >-
-      https://releases.hyper.is/download/{{ hyper_deb[ansible_architecture] }}
+      https://releases.hyper.is/download/deb{{ '_arm64' if system_architecture
+      == 'arm64' else '' }}
   become: true
-  vars:
-    hyper_deb:
-      aarch64: deb_arm64
-      x86_64: deb
   when: ansible_pkg_mgr == "apt"
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
@@ -41,11 +34,8 @@
     dest: /tmp/hyper.rpm
     mode: "600"
     url: >-
-      https://releases.hyper.is/download/{{ hyper_rpm[ansible_architecture] }}
-  vars:
-    hyper_rpm:
-      aarch64: rpm_arm64
-      x86_64: rpm
+      https://releases.hyper.is/download/rpm{{ '_arm64' if system_architecture
+      == 'arm64' else '' }}
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Hyper for Fedora distributions

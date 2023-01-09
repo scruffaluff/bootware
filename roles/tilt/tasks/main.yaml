@@ -16,12 +16,12 @@
       https://github.com/tilt-dev/tilt/releases/download/v{{
       tilt_formula.json.versions.stable }}/tilt.{{
       tilt_formula.json.versions.stable }}.linux.{{
-      tilt_arch[ansible_architecture] }}.tar.gz
+      tilt_arch[system_architecture] }}.tar.gz
   become: true
   vars:
     tilt_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tilt for Linux

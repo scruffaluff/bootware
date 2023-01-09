@@ -22,12 +22,12 @@
       https://github.com/schollz/croc/releases/download/v{{
       croc_formula.json.versions.stable }}/croc_{{
       croc_formula.json.versions.stable }}_Linux-{{
-      croc_arch[ansible_architecture] }}.tar.gz
+      croc_arch[system_architecture] }}.tar.gz
   become: true
   vars:
     croc_arch:
-      aarch64: ARM64
-      x86_64: 64bit
+      arm64: ARM64
+      amd64: 64bit
   when: ansible_system == "Linux"
 
 - name: Install Croc for Linux
