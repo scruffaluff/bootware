@@ -34,9 +34,10 @@
 
 - name: Install essential packages for Linux
   ansible.builtin.package:
-    name: "{{ linux_essential_packages }}"
+    name: "{{ item }}"
     state: present
   become: true
+  loop: "{{ essential_linux_packages }}"
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS

@@ -6,7 +6,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/cask/powershell.json
-  register: powershell_formula
+  register: powershell_cask
   when: ansible_system == "Win32NT"
 
 - name: Install PowerShell Core for Windows
@@ -18,8 +18,8 @@
       - REGISTER_MANIFEST=1
     path: >-
       https://github.com/PowerShell/PowerShell/releases/download/v{{
-      powershell_formula.json.version }}/PowerShell-{{
-      powershell_formula.json.version }}-win-x64.msi
+      powershell_cask.json.version }}/PowerShell-{{ powershell_cask.json.version
+      }}-win-x64.msi
   when: ansible_system == "Win32NT"
 
 - name: Create PowerShell settings directories for Windows

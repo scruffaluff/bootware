@@ -35,8 +35,8 @@
       ffsend_formula.json.versions.stable }}-linux-x64-static
   become: true
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install FFSend for MacOS
   community.general.homebrew:

@@ -6,8 +6,8 @@
     url: https://api.github.com/repos/helix-editor/helix/releases/latest
   register: helix_release
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Helix for FreeBSD
   become: true
@@ -26,8 +26,8 @@
       }}-x86_64-linux.tar.xz
   become: true
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
@@ -36,8 +36,8 @@
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/hx
   become: true
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Tap Helix for MacOS
   community.general.homebrew_tap:
@@ -68,8 +68,8 @@
     mode: "755"
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Copy Helix configuration files for Unix
   ansible.builtin.copy:

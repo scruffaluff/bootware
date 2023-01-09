@@ -5,7 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
   register: cargo_binstall_release
-  when: ansible_pkg_mgr != "apk" and system_architecture == "amd64"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install pkg-config for Linux
   ansible.builtin.package:

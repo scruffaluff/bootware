@@ -1,5 +1,5 @@
 ---
-_linux_essential_packages:
+_essential_linux_packages:
   always:
     - bzip2
     - ca-certificates
@@ -24,6 +24,6 @@ _linux_essential_packages:
   zypper:
     - which
     - xz
-linux_essential_packages: >-
-  {{ _linux_essential_packages.always +
-  _linux_essential_packages[ansible_pkg_mgr] }}
+essential_linux_packages: >-
+  {{ _essential_linux_packages.always +
+  _essential_linux_packages.get(ansible_pkg_mgr, []) }}

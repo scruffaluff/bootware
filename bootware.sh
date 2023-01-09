@@ -827,7 +827,7 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
@@ -836,13 +836,13 @@ setup_suse() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y git
   fi
 }

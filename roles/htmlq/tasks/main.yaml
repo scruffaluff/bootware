@@ -23,8 +23,8 @@
       htmlq_formula.json.versions.stable }}/htmlq-x86_64-linux.tar.gz
   become: true
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Htmlq for Linux
   ansible.builtin.copy:
@@ -33,8 +33,8 @@
     src: /tmp/htmlq
   become: true
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Htmlq for MacOS
   community.general.homebrew:
