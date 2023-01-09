@@ -2,7 +2,7 @@
 - name: Install AWSCLI for FreeBSD
   become: true
   community.general.pkgng:
-    name: awscli
+    name: py39-awscli
   when: ansible_system == "FreeBSD"
 
 - name: Install AWSCLI for Alpine
