@@ -7,6 +7,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Changed
+
+- Split system role into essential and update roles.
+
 ### Removed
 
 - Julia, Ruby, Snap, Virtualbox, and Zola roles.

@@ -7,14 +7,24 @@
 - name: Install software with Bootware
   hosts: all
   tasks:
-    - name: Update system package managers and install essential packages
+    - name: Update system package managers
       ansible.builtin.import_role:
-        name: system
+        name: update
       tags:
         - container
         - desktop
         - server
-        - system
+        - update
+        - wsl
+
+    - name: Install essential packages
+      ansible.builtin.import_role:
+        name: essential
+      tags:
+        - container
+        - desktop
+        - essential
+        - server
         - wsl
 
     - name: Install Age encryption tool

@@ -205,7 +205,7 @@ jobs:
       # often fails with kmutil virtualization errors.
       - name: Initialize Brew to avoid weird GitHub actions error
         continue-on-error: true
-        run: bootware bootstrap --dev --no-passwd --tags system
+        run: bootware bootstrap --dev --no-passwd --tags update
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
