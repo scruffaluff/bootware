@@ -394,6 +394,16 @@
         - server
         - wsl
 
+    - name: Install GDU disk space analyzer
+      ansible.builtin.import_role:
+        name: gdu
+      tags:
+        - container
+        - desktop
+        - gdu
+        - server
+        - wsl
+
     - name: Install Git version control
       ansible.builtin.import_role:
         name: git

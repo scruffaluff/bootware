@@ -26,8 +26,8 @@
   become: true
   vars:
     croc_arch:
-      arm64: ARM64
       amd64: 64bit
+      arm64: ARM64
   when: ansible_system == "Linux"
 
 - name: Install Croc for Linux

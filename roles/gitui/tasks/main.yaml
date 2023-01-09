@@ -25,8 +25,8 @@
   become: true
   vars:
     gitui_env:
-      arm64: aarch64
       amd64: musl
+      arm64: aarch64
   when: ansible_system == "Linux"
 
 - name: Install GitUI for Linux

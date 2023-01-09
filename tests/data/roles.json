@@ -160,6 +160,7 @@
     "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },
+  { "name": "gdu", "skip": [{ "os": "alpine" }], "tests": ["gdu --version"] },
   {
     "name": "git",
     "tests": ["delta --version", "git --version", "git-lfs --version"]
