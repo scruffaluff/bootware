@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Split system role into essential and update roles.
 
+### Fixed
+
+- Delta installation on Alpine.
+
 ### Removed
 
 - Julia, Ruby, Snap, Virtualbox, and Zola roles.

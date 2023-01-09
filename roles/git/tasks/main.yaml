@@ -7,15 +7,6 @@
   register: git_delta_formula
   when: ansible_system == "Linux"
 
-- name: Install Git Delta for Alpine distributions
-  become: true
-  community.general.apk:
-    name: delta
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Git for FreeBSD
   become: true
   community.general.pkgng:
@@ -35,8 +26,9 @@
 
 - name: Download and install Git Delta for Linux
   vars:
-    git_delta_env: "{{ 'musl' if ansible_pkg_mgr == 'apt' else 'gnu' }}"
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+    git_delta_env:
+      "{{ 'musl' if ansible_pkg_mgr in ['apk', 'apt'] else 'gnu' }}"
+  when: ansible_system == "Linux"
   block:
     - name: Download Git Delta for Linux
       ansible.builtin.unarchive:
