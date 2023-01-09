@@ -12,4 +12,4 @@ _kubectl_plugins:
     - ns
   Win32NT: []
 kubectl_plugins: >-
-  {{ _kubectl_plugins.always + _kubectl_plugins[ansible_system] }}
+  {{ _kubectl_plugins.always + _kubectl_plugins.get(ansible_system, []) }}

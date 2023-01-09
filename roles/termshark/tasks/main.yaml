@@ -25,6 +25,7 @@
       apt: tshark
       dnf: wireshark-cli
       pacman: wireshark-cli
+      zypper: wireshark
   when: ansible_system == "Linux"
 
 - name: Download Termshark for Linux
@@ -50,11 +51,10 @@
   become: true
   when: ansible_system == "Linux"
 
+# Do not install the Wireshark formula. It conflicts with the Wireshark cask.
 - name: Install Termshark for MacOS
   community.general.homebrew:
-    name:
-      - termshark
-      - wireshark
+    name: termshark
   when: ansible_system == "Darwin"
 
 - name: Install Wireshark for Windows

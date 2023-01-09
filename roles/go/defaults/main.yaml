@@ -7,7 +7,7 @@ _go_root:
   Linux: /usr/local/go
   Win32NT: ""
 go_path: "{{ ansible_env.HOME }}/.go"
-go_root: "{{ _go_root[ansible_system] }}"
+go_root: "{{ _go_root.get(ansible_system, '/usr/local/go') }}"
 go_applications:
   - github.com/go-delve/delve/cmd/dlv@latest
   - github.com/ramya-rao-a/go-outline@latest

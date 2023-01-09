@@ -41,7 +41,7 @@ _cargo_applications:
     arm64: []
 cargo_applications: >-
   {{ _cargo_applications.always + _cargo_applications[ansible_system].always +
-  _cargo_applications[ansible_system][system_architecture] }}
+  _cargo_applications[ansible_system].get(system_architecture, []) }}
 rustup_components:
   - clippy
   - llvm-tools-preview

@@ -5,6 +5,7 @@ _essential_linux_packages:
     - ca-certificates
     - findutils
     - gnupg
+    - gzip
     - openssl
     - sudo
     - tar
