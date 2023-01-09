@@ -22,8 +22,13 @@
     name: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-{{
-      sops_formula.json.versions.stable }}-1.{{ system_architecture }}.rpm
+      sops_formula.json.versions.stable }}-1.{{
+      sops_fedora_arch[system_architecture] }}.rpm
   become: true
+  vars:
+    sops_fedora_arch:
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Sops for FreeBSD

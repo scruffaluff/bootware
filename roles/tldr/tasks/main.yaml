@@ -9,7 +9,7 @@
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: ansible_pkg_mgr == "apk"
 
-# Arch TLDR package has file conflicts with Arch Python package.
+# Arch tldr package has file conflicts with Arch Python package.
 - name: Install TLDR for Arch
   ansible.builtin.command: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"

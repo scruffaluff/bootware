@@ -1,4 +1,6 @@
 ---
+# Do not integrate PSGallery! Its trust workflow is exceedingly unrealiable on
+# Windows 11.
 - name: Get latest PowerShell Core version
   ansible.windows.win_uri:
     method: GET
@@ -63,16 +65,3 @@
         force: true
         src: "{{ item[1] }}.psm1"
       loop: "{{ psmodule_folders | product(psmodules) | list }}"
-# Disabled since trusting PSGallery is an absurdly frustrating process on
-# Windows 11.
-# - name: Trust default PowerShell repository
-#   community.windows.win_psrepository: name: PSGallery installation_policy:
-#   trusted when: ansible_system == "Win32NT"
-
-# - name: Install PowerShell modules
-#   community.windows.win_psmodule:
-#     name: "{{ item }}"
-#     skip_publisher_check: true
-#     state: latest
-#   loop: "{{ powershell_modules }}"
-#   when: ansible_system == "Win32NT"

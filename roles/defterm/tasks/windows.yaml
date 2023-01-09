@@ -4,8 +4,8 @@
     name: windows-terminal
   when: ansible_system == "Win32NT"
 
-# Settings file can be in multiple locations depending on package installer and
-# Windows version.
+# Configuration file can be in multiple locations depending on package installer
+# and Windows version.
 - name: Create Windows Terminal configuration directories for Windows
   ansible.windows.win_file:
     path: "{{ ansible_env.HOME }}/AppData/Local/{{ item }}"

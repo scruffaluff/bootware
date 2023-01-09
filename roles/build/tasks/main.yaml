@@ -40,7 +40,8 @@
   when: ansible_system != "Win32NT"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
-# available for Apple silicon.
+# available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
+# status.
 - name: Install build tools for MacOS
   community.general.homebrew:
     name:

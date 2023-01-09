@@ -82,7 +82,8 @@
       become: true
       when: system_architecture == "amd64" and ansible_pkg_mgr != "apk"
 
-    # Cargo Binstall has OpenSSL issues on several platforms.
+    # TODO: Integrate when Cargo Binstall no longer has OpenSSL issues on
+    # multiple platforms.
     # - name: Update or install Cargo packages for Amd64 Unix
     #   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
     #   changed_when: "'This will install' in cargo_binstall.stdout"
