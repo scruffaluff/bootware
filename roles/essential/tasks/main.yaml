@@ -1,28 +1,10 @@
 ---
-- name: Install essential packages for Alpine
-  become: true
-  community.general.apk:
-    name: xz
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install essential packages for Arch
-  become: true
-  community.general.pacman:
-    name:
-      - libxcrypt-compat
-      - openssh
-      - pkgconf
-      - which
-  when: ansible_pkg_mgr == "pacman"
-
 - name: Install essential packages for Debian
   ansible.builtin.apt:
     name:
       - apt-file
       - apt-transport-https
-      - gnupg2
       - lsb-release
-      - openssh-client
       - pbuilder
       - ubuntu-dev-tools
   become: true
@@ -30,29 +12,21 @@
 
 - name: Install essential packages for Fedora
   ansible.builtin.dnf:
-    name:
-      - dnf-plugins-core
-      - findutils
-      - openssl-devel
-      - perl-FindBin
-      - procps
-      - python
-      - which
+    name: dnf-plugins-core
   become: true
   when: ansible_pkg_mgr == "dnf"
 
-# TODO: Solve eror wherer adding openssl to the package list causes Node to
+# TODO: Solve eror where adding openssl to the package list causes Node to
 # throw the error 'version OPENSSL_1_1_1e required by /usr/local/bin/node not
 # found' in the CI tests.
 - name: Install essential packages for FreeBSD
   become: true
   community.general.pkgng:
     name:
+      - bzip2
       - gnupg
       - gtar
-      - htop
-      - iftop
-      - neofetch
+      - gzip
       - sudo
       - unzip
       - zip
@@ -60,19 +34,7 @@
 
 - name: Install essential packages for Linux
   ansible.builtin.package:
-    name:
-      - ca-certificates
-      - flatpak
-      - gnupg
-      - htop
-      - iftop
-      - iotop
-      - neofetch
-      - openssl
-      - sudo
-      - tar
-      - unzip
-      - zip
+    name: "{{ linux_essential_packages }}"
     state: present
   become: true
   when: ansible_system == "Linux"
@@ -80,17 +42,12 @@
 - name: Install essential packages for MacOS
   community.general.homebrew:
     name:
-      - neofetch
-      - openssh
+      - bzip2
+      - gnupg
       - unzip
+      - xz
       - zip
   when: ansible_system == "Darwin"
-
-- name: Install essential packages for OpenSuse
-  community.general.zypper:
-    name: gzip
-  become: true
-  when: ansible_pkg_mgr == "zypper"
 
 - name: Add essential Scoop buckets for Windows
   community.windows.win_scoop_bucket:
@@ -109,10 +66,10 @@
   community.windows.win_scoop:
     name:
       - 7zip
-      - neofetch
-      - openssl
+      - bzip2
       - scoop-completion
       - sudo
       - unzip
+      - xz
       - zip
   when: ansible_system == "Win32NT"

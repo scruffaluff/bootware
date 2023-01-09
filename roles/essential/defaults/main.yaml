@@ -1,0 +1,29 @@
+---
+_linux_essential_packages:
+  always:
+    - bzip2
+    - ca-certificates
+    - findutils
+    - gnupg
+    - openssl
+    - sudo
+    - tar
+    - unzip
+    - zip
+  apk:
+    - which
+    - xz
+  apt:
+    - xz-utils
+  dnf:
+    - which
+    - xz
+  pacman:
+    - which
+    - xz
+  zypper:
+    - which
+    - xz
+linux_essential_packages: >-
+  {{ _linux_essential_packages.always +
+  _linux_essential_packages[ansible_pkg_mgr] }}

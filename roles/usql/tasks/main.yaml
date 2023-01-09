@@ -5,79 +5,34 @@
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
   register: usql_release
-  when: >-
-    ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
-    ansible_pkg_mgr == "dnf") and system_architecture == "amd64"
-
-# Pre-built Usql binaries require a libicu version that is different from the
-# supported version on Arch.
-- name: Install Usql for Arch
-  ansible.builtin.command: yay -Sy --noconfirm usql
-  when: ansible_pkg_mgr == "pacman"
-
-# Pre-built Usql binaries require a libicu version that is different from the
-# supported version on Debian.
-- name: Install Usql for Debian
-  ansible.builtin.command: "go install github.com/xo/usql@latest"
-  environment:
-    GOPATH: "{{ ansible_env.HOME }}/.go"
-    GOROOT: "/usr/local/go"
-    PATH: >-
-      /usr/local/go/bin:{{ ansible_env.HOME }}/.go/bin:{{ ansible_env.PATH }}
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
-
-- name: Install Usql dependencies for Fedora
-  ansible.builtin.dnf:
-    name:
-      - bzip2
-      - libicu
-  become: true
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Install Usql for Fedora and Ubuntu
-  ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
-    remote_src: true
-    src: >-
-      https://github.com/xo/usql/releases/download/{{ usql_release.json.tag_name
-      }}/usql-{{ usql_release.json.tag_name[1:] }}-linux-amd64.tar.bz2
-  become: true
-  when: >-
-    ((ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu") or
-    ansible_pkg_mgr == "dnf") and system_architecture == "amd64"
-
-- name: Gather installed package facts for Fedora
-  ansible.builtin.package_facts:
-    manager: rpm
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Get Libicu major version for Fedora
-  ansible.builtin.set_fact:
-    libicu_major_version: >-
-      {{ ansible_facts.packages.libicu[0].version.split('.')[0] }}
-  when: ansible_pkg_mgr == "dnf"
-
-# Usql as of 12/10/2021 depends on Libicu version 67 which is outdated on
-# Fedora. For more information, visit https://github.com/xo/usql/issues/117.
-- name: Make libicu symlinks for Fedora
-  ansible.builtin.file:
-    src: "/usr/lib64/{{ item }}.so.{{ libicu_major_version }}"
-    dest: "/usr/lib64/{{ item }}.so.67"
-    force: true
-    mode: "755"
-    state: link
-  become: true
-  loop:
-    - libicuuc
-    - libicui18n
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Usql for FreeBSD
   become: true
   community.general.pkgng:
     name: usql
   when: ansible_system == "FreeBSD"
+
+# Use only static binaries of Usql. Dynamic binaries often depend on libicu
+# versions that are not supported on Linux distributions.
+- name: Download Usql for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/xo/usql/releases/download/{{ usql_release.json.tag_name
+      }}/usql_static-{{ usql_release.json.tag_name[1:] }}-linux-amd64.tar.bz2
+  become: true
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
+- name: Install Usql for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/usql
+    mode: "755"
+    src: /tmp/usql_static
+  become: true
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Tap Usql for MacOS
   community.general.homebrew_tap:

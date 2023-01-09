@@ -19,9 +19,14 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
+- name: Add GitLab GPG key for Fedora
+  ansible.builtin.rpm_key:
+    key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-4C80FB51394521E9.pub.gpg
+  become: true
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
-    disable_gpg_check: true
     name: >-
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm

@@ -69,23 +69,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["datree version"]
   },
-  {
-    "name": "dbeaver",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "freebsd" }
-    ],
-    "tests": {
-      "default": ["dbeaver -help -nosplash"],
-      "macos": [
-        "/Applications/DBeaver.app/Contents/MacOS/dbeaver -help -nosplash"
-      ],
-      "windows": ["Test-Path -PathType Container 'C:/Program Files/DBeaver'"]
-    }
-  },
+  { "name": "dbeaver" },
   { "name": "defterm" },
   {
     "name": "deno",

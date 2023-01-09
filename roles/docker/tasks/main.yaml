@@ -21,12 +21,19 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker key for Debian
-  # prettier-ignore
-  ansible.builtin.shell:  # noqa command-instead-of-module
+- name: Download Docker GPG key for Debian
+  ansible.builtin.get_url:
+    dest: /tmp/docker-archive-keyring.gpg
+    mode: "644"
+    url: https://download.docker.com/linux/{{ deb_distro_base }}/gpg
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Docker GPG key for Debian
+  ansible.builtin.command:
     cmd: >-
-      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg |
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      /tmp/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
   become: true
   when: ansible_pkg_mgr == "apt"

@@ -6,7 +6,6 @@
   community.general.pacman:
     name:
       - base-devel
-      - openssl
       - zlib
   when: ansible_pkg_mgr == "pacman"
 
@@ -38,7 +37,6 @@
 - name: Install Pyenv dependencies for Fedora
   ansible.builtin.dnf:
     name:
-      - bzip2
       - bzip2-devel
       - findutils
       - libffi-devel
