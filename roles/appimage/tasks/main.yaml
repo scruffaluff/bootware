@@ -1,10 +1,9 @@
 ---
-# AppImages requires FUSE.
-- name: Install FUSE for Arch distributions
+- name: Install FUSE for Arch
   become: true
   community.general.pacman:
     name: fuse3
-  when: ansible_pkg_mgr == "pacman" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "pacman" and system_architecture == "amd64"
 
 - name: Create AppImages directory for Linux
   ansible.builtin.file:

@@ -11,7 +11,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and not (ansible_pkg_mgr == "apt" and
-    deb_distro_base == "ubuntu")
+    deb_distro_base == "ubuntu") and ansible_pkg_mgr != "zypper"
 
 - name: Install Zoxide for MacOS
   community.general.homebrew:

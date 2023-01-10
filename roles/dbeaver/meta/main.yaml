@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: flatpak
+    when: ansible_system == "Linux"

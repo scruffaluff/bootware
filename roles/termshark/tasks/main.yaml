@@ -25,6 +25,7 @@
       apt: tshark
       dnf: wireshark-cli
       pacman: wireshark-cli
+      zypper: wireshark
   when: ansible_system == "Linux"
 
 - name: Download Termshark for Linux
@@ -36,12 +37,8 @@
       https://github.com/gcla/termshark/releases/download/v{{
       termshark_formula.json.versions.stable }}/termshark_{{
       termshark_formula.json.versions.stable }}_linux_{{
-      termshark_arch[ansible_architecture] }}.tar.gz
+      _termshark_arch[system_architecture] }}.tar.gz
   become: true
-  vars:
-    termshark_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_system == "Linux"
 
 - name: Install Termshark for Linux
@@ -50,19 +47,14 @@
     mode: "755"
     src: >-
       /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
-      termshark_arch[ansible_architecture] }}/termshark
+      _termshark_arch[system_architecture] }}/termshark
   become: true
-  vars:
-    termshark_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_system == "Linux"
 
+# Do not install the Wireshark formula. It conflicts with the Wireshark cask.
 - name: Install Termshark for MacOS
   community.general.homebrew:
-    name:
-      - termshark
-      - wireshark
+    name: termshark
   when: ansible_system == "Darwin"
 
 - name: Install Wireshark for Windows

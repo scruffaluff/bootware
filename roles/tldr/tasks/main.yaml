@@ -1,5 +1,5 @@
 ---
-- name: Install TLDR for Alpine distributions
+- name: Install TLDR for Alpine
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
@@ -9,8 +9,8 @@
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: ansible_pkg_mgr == "apk"
 
-# Arch TLDR package has file conflicts with Arch Python package.
-- name: Install TLDR for Arch distributions
+# Arch tldr package has file conflicts with Arch Python package.
+- name: Install TLDR for Arch
   ansible.builtin.command: yay -Sy --noconfirm tealdeer
   when: ansible_pkg_mgr == "pacman"
 
@@ -25,7 +25,9 @@
     name: tldr
     state: present
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
+    "zypper"]
 
 - name: Install TLDR for MacOS
   community.general.homebrew:
@@ -49,7 +51,7 @@
   ansible.builtin.command: tldr --update
   environment:
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "zypper"
 
 - name: Update TLDR documentation for Windows
   ansible.windows.win_command: tldr --update

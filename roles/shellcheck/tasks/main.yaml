@@ -1,11 +1,23 @@
 ---
+# TODO: Integrate once installation becomes stable.
+# - name: Install ShellCheck for Alpine
+#   become: true
+#   community.general.apk:
+#     name: shellcheck
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
+
 - name: Install ShellCheck for Linux
   ansible.builtin.package:
-    name: "{{ 'ShellCheck' if ansible_pkg_mgr == 'dnf' else 'shellcheck' }}"
+    name: >-
+      {{ 'ShellCheck' if ansible_pkg_mgr in ['dnf', 'zypper'] else 'shellcheck'
+      }}
   become: true
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    ansible_architecture == "x86_64")
+    system_architecture == "amd64")
 
 - name: Install ShellCheck for MacOS
   community.general.homebrew:

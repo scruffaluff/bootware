@@ -1,5 +1,5 @@
 ---
-- name: Install Firefox for Debian distributions
+- name: Install Firefox for Debian
   ansible.builtin.apt:
     name: firefox-esr
   become: true

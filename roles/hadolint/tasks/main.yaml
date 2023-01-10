@@ -15,12 +15,12 @@
     url: >-
       https://github.com/hadolint/hadolint/releases/download/v{{
       hadolint_formula.json.versions.stable }}/hadolint-Linux-{{
-      hadolint_arch[ansible_architecture] }}
+      hadolint_arch[system_architecture] }}
   become: true
   vars:
     hadolint_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux"
 
 - name: Install Hadolint for MacOS

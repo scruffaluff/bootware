@@ -1,17 +1,17 @@
 ---
-- name: Install Docker for Alpine distributions
+- name: Install Docker for Alpine
   become: true
   community.general.apk:
     name: docker
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Docker for Arch distributions
+- name: Install Docker for Arch
   become: true
   community.general.pacman:
     name: docker
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install repository dependencies for Debian distributions
+- name: Install Docker repository dependencies for Debian
   ansible.builtin.apt:
     name:
       - apt-transport-https
@@ -21,33 +21,36 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker key for Debian distributions
-  # prettier-ignore
-  ansible.builtin.shell:  # noqa command-instead-of-module
+- name: Download Docker GPG key for Debian
+  ansible.builtin.get_url:
+    dest: /tmp/docker-archive-keyring.gpg
+    mode: "644"
+    url: https://download.docker.com/linux/{{ deb_distro_base }}/gpg
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Docker GPG key for Debian
+  ansible.builtin.command:
     cmd: >-
-      curl -fsSL https://download.docker.com/linux/{{ deb_distro_base }}/gpg |
       gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      /tmp/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker repository for Debian distributions
+- name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ docker_arch[ansible_architecture] }}
+      deb [arch={{ system_architecture }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
       https://download.docker.com/linux/{{ deb_distro_base }} {{
       ansible_distribution_release | lower }} stable
     state: present
     filename: docker
   become: true
-  vars:
-    docker_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Docker for Debian distributions
+- name: Install Docker for Debian
   ansible.builtin.apt:
     name:
       - containerd.io
@@ -57,7 +60,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Add Docker repository for Fedora distributions
+- name: Add Docker repository for Fedora
   ansible.builtin.get_url:
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: "644"
@@ -65,7 +68,7 @@
   become: true
   when: ansible_pkg_mgr == "dnf"
 
-- name: Install Docker for Fedora distributions
+- name: Install Docker for Fedora
   ansible.builtin.dnf:
     name:
       - containerd.io

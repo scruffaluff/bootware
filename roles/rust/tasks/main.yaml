@@ -30,17 +30,19 @@
     owner: root
     url: >-
       https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
-      ansible_architecture }}-unknown-linux-gnu.gz
+      rust_analyzer_arch[system_architecture] }}-unknown-linux-gnu.gz
   become: true
+  vars:
+    rust_analyzer_arch:
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Decompress Rust Analyzer for Linux
   ansible.builtin.command:
     cmd: gunzip --force /tmp/rust-analyzer.gz
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or ansible_system ==
-    "x86_64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
@@ -48,9 +50,7 @@
     mode: "755"
     src: /tmp/rust-analyzer
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or ansible_system ==
-    "x86_64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Rust Analyzer for MacOS
   community.general.homebrew:

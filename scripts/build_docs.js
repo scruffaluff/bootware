@@ -64,14 +64,14 @@ function rolesTable(repoPath) {
     { arch: "amd64", os: "alpine" },
     { arch: "amd64", os: "arch" },
     { arch: "amd64", os: "debian" },
-    { arch: "arm64", os: "debian" },
     { arch: "amd64", os: "fedora" },
-    { arch: "arm64", os: "fedora" },
     { arch: "amd64", os: "freebsd" },
     { arch: "amd64", os: "macos" },
     { arch: "amd64", os: "ubuntu" },
-    { arch: "arm64", os: "ubuntu" },
     { arch: "amd64", os: "windows" },
+    { arch: "arm64", os: "debian" },
+    { arch: "arm64", os: "fedora" },
+    { arch: "arm64", os: "ubuntu" },
   ];
 
   const rolesPath = path.join(repoPath, "tests/data/roles.json");

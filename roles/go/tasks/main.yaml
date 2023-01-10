@@ -7,7 +7,7 @@
   register: go_formula
   when: ansible_system == "Linux"
 
-- name: Install Go for Alpine distributions
+- name: Install Go for Alpine
   become: true
   community.general.apk:
     name: go
@@ -28,12 +28,8 @@
     remote_src: true
     src: >-
       https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{
-      go_arch[ansible_architecture] }}.tar.gz
+      system_architecture }}.tar.gz
   become: true
-  vars:
-    go_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Go for MacOS

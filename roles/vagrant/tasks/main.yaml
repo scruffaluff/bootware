@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/cask/vagrant.json
-  register: vagrant_formula
+  register: vagrant_cask
   when: ansible_system == "Linux"
 
 - name: Install Vagrant for FreeBSD
@@ -21,10 +21,10 @@
     owner: root
     remote_src: true
     src: >-
-      https://releases.hashicorp.com/vagrant/{{ vagrant_formula.json.version
-      }}/vagrant_{{ vagrant_formula.json.version }}_linux_amd64.zip
+      https://releases.hashicorp.com/vagrant/{{ vagrant_cask.json.version
+      }}/vagrant_{{ vagrant_cask.json.version }}_linux_amd64.zip
   become: true
-  when: ansible_system == "Linux" and ansible_architecture == "x86_64"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Vagrant for MacOS
   community.general.homebrew_cask:

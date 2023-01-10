@@ -138,10 +138,6 @@ if test (uname -s) = 'Darwin'
   end
 end
 
-# Julia settings.
-
-fish_add_path '/usr/local/julia/bin'
-
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.

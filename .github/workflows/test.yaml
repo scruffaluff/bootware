@@ -26,7 +26,7 @@ on:
         description: Use TMate session for debugging on failure
         required: false
       os:
-        default: alpine arch debian fedora freebsd macos ubuntu windows
+        default: alpine arch debian fedora freebsd macos suse ubuntu windows
         description: Space separated list of operating systems
         required: false
 
@@ -134,9 +134,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: |
-            skip=virtualbox
-            test=true
+          build-args: test=true
           context: .
           file: ./tests/integration/fedora.Dockerfile
           platforms: linux/amd64
@@ -203,9 +201,11 @@ jobs:
         run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
-      - name: Initialize Brew to avoid brew link errors with kmutil
+      # Github actions MacOS VM has issues where the first homebrew upgrade
+      # often fails with kmutil virtualization errors.
+      - name: Initialize Brew to avoid weird GitHub actions error
         continue-on-error: true
-        run: bootware bootstrap --dev --no-passwd --tags system
+        run: bootware bootstrap --dev --no-passwd --tags update
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
@@ -220,6 +220,35 @@ jobs:
         run: |
           source ${HOME}/.bashrc
           node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt,wasm macos
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          github.event.inputs.debug == 'true' }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  test-suse:
+    name: Test bootstrapping software for Amd64 Suse Linux
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' &&
+      contains(github.event.inputs.os, 'suse') }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          build-args: test=true
+          context: .
+          file: ./tests/integration/suse.Dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: scruffaluff/bootware:suse-latest
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&

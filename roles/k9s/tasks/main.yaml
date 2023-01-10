@@ -21,12 +21,12 @@
     src: >-
       https://github.com/derailed/k9s/releases/download/v{{
       k9s_formula.json.versions.stable }}/k9s_Linux_{{
-      k9s_arch[ansible_architecture] }}.tar.gz
+      k9s_arch[system_architecture] }}.tar.gz
   become: true
   vars:
     k9s_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux"
 
 - name: Install K9s for Linux

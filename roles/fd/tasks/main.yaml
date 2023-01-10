@@ -7,7 +7,7 @@
   register: fd_formula
   when: ansible_system == "Linux"
 
-- name: Install FD for Alpine distributions
+- name: Install FD for Alpine
   become: true
   community.general.apk:
     name: fd
@@ -31,7 +31,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install FD for Linux
   ansible.builtin.copy:
@@ -42,7 +42,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install FD for MacOS
   community.general.homebrew:

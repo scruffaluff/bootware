@@ -7,28 +7,28 @@
   register: sops_formula
   when: ansible_system == "Linux"
 
-- name: Install Sops For Debian distributions
+- name: Install Sops For Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops_{{
-      sops_formula.json.versions.stable }}_{{ sops_arch[ansible_architecture]
-      }}.deb
+      sops_formula.json.versions.stable }}_{{ system_architecture }}.deb
   become: true
-  vars:
-    sops_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Sops For Fedora distributions
+- name: Install Sops For Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-{{
-      sops_formula.json.versions.stable }}-1.{{ ansible_architecture }}.rpm
+      sops_formula.json.versions.stable }}-1.{{
+      sops_fedora_arch[system_architecture] }}.rpm
   become: true
+  vars:
+    sops_fedora_arch:
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Sops for FreeBSD
@@ -45,13 +45,8 @@
     url: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-v{{
-      sops_formula.json.versions.stable }}.linux.{{
-      sops_arch[ansible_architecture] }}
+      sops_formula.json.versions.stable }}.linux.{{ system_architecture }}
   become: true
-  vars:
-    sops_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf"]
 
 - name: Install Sops for MacOS

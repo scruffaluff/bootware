@@ -7,7 +7,7 @@
   register: kubectl_version
   when: ansible_system == "Linux"
 
-- name: Install Kubectl for Alpine distributions
+- name: Install Kubectl for Alpine
   become: true
   community.general.apk:
     name: kubectl
@@ -29,12 +29,8 @@
     owner: root
     url: >-
       https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
-      kubectl_arch[ansible_architecture] }}/kubectl
+      system_architecture }}/kubectl
   become: true
-  vars:
-    kubectl_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Kubectl for MacOS

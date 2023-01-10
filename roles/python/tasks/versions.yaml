@@ -1,17 +1,15 @@
 ---
 # Pyenv dependencies are listed at
 # https://github.com/pyenv/pyenv/wiki#suggested-build-environment.
-
-- name: Install Pyenv dependencies for Arch distributions
+- name: Install Pyenv dependencies for Arch
   become: true
   community.general.pacman:
     name:
       - base-devel
-      - openssl
       - zlib
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Pyenv dependencies for Debian distributions
+- name: Install Pyenv dependencies for Debian
   ansible.builtin.apt:
     name:
       - build-essential
@@ -36,10 +34,9 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Pyenv dependencies for Fedora distributions
+- name: Install Pyenv dependencies for Fedora
   ansible.builtin.dnf:
     name:
-      - bzip2
       - bzip2-devel
       - findutils
       - libffi-devel

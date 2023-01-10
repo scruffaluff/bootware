@@ -15,13 +15,13 @@
     src: >-
       https://github.com/boyter/scc/releases/download/v{{
       scc_formula.json.versions.stable }}/scc_{{
-      scc_formula.json.versions.stable }}_Linux_{{
-      scc_arch[ansible_architecture] }}.tar.gz
+      scc_formula.json.versions.stable }}_Linux_{{ scc_arch[system_architecture]
+      }}.tar.gz
   become: true
   vars:
     scc_arch:
-      aarch64: arm64
-      x86_64: x86_64
+      amd64: x86_64
+      arm64: arm64
   when: ansible_system == "Linux"
 
 - name: Install Croc for Linux

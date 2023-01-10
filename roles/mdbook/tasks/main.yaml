@@ -7,9 +7,8 @@
   register: mdbook_formula
   when: ansible_system == "Linux"
 
-# As of 12/18/2021 the Mdbook package on Alpine does not have a reliable
-# installation.
-# - name: Install Mdbook for Alpine distributions
+# TODO: Integrate once installation becomes stable.
+# - name: Install Mdbook for Alpine
 #   become: true
 #   community.general.apk:
 #     name: mdbook
@@ -37,13 +36,13 @@
       mdbook_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
   become: true
   when: >-
-    ansible_system == "Linux" and ansible_architecture == "x86_64" and
-    ansible_pkg_mgr != "apk"
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Mdbook for MacOS
   community.general.homebrew:
     name: mdbook
-  when: ansible_system == "Darwin" and ansible_architecture == "x86_64"
+  when: ansible_system == "Darwin" and system_architecture == "amd64"
 
 - name: Install Mdbook for Windows
   community.windows.win_scoop:

@@ -14,9 +14,13 @@
     remote_src: true
     src: >-
       https://github.com/zellij-org/zellij/releases/download/v{{
-      zellij_formula.json.versions.stable }}/zellij-{{ ansible_architecture
-      }}-unknown-linux-musl.tar.gz
+      zellij_formula.json.versions.stable }}/zellij-{{
+      zellij_arch[system_architecture] }}-unknown-linux-musl.tar.gz
   become: true
+  vars:
+    zellij_arch:
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS

@@ -21,12 +21,12 @@
     src: >-
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
-      gitui_arch[ansible_architecture] }}.tar.gz
+      gitui_env[system_architecture] }}.tar.gz
   become: true
   vars:
-    gitui_arch:
-      aarch64: aarch64
-      x86_64: musl
+    gitui_env:
+      amd64: musl
+      arm64: aarch64
   when: ansible_system == "Linux"
 
 - name: Install GitUI for Linux

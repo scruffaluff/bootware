@@ -1,18 +1,18 @@
 ---
-- name: Download Nvidia Docker repository key for Ubuntu distributions
+- name: Download Nvidia Docker repository key for Ubuntu
   ansible.builtin.get_url:
     dest: /tmp/nvidia-docker-archive-keyring.pub
     mode: "644"
     url: https://nvidia.github.io/nvidia-docker/gpgkey
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install Nvidia Docker repository key for Ubuntu distributions
+- name: Install Nvidia Docker repository key for Ubuntu
   ansible.builtin.command: >-
     gpg --dearmor -o /usr/share/keyrings/nvidia-docker-archive-keyring.gpg
     /tmp/nvidia-docker-archive-keyring.pub
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Add Nvidia Docker repository for Ubuntu distribution
   ansible.builtin.template:
@@ -21,11 +21,11 @@
     mode: "644"
     src: nvidia-docker.list.j2
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install Nvidia Docker for Ubuntu distributions
+- name: Install Nvidia Docker for Ubuntu
   ansible.builtin.apt:
     name: nvidia-docker2
     update_cache: true
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"

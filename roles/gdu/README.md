@@ -1,6 +1,6 @@
-# Ruby
+# GDU
 
-Ruby is an Ansible role
+GDU is an Ansible role
 
 ## Requirements
 

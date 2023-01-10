@@ -5,13 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
   register: cargo_binstall_release
-  when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
-
-- name: Install pkg-config for Linux
-  ansible.builtin.package:
-    name: "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
-  become: true
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Rust and Cargo applications for Unix
   environment:
@@ -56,7 +50,7 @@
         owner: "{{ ansible_user_id }}"
         path: "{{ ansible_env.HOME }}/.local/bin"
         state: directory
-      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+      when: ansible_system in ["Darwin", "Linux"]
 
     - name: Download Cargo Binstall for Amd64 Unix
       ansible.builtin.unarchive:
@@ -65,14 +59,20 @@
         remote_src: true
         src: >-
           https://github.com/ryankurte/cargo-binstall/releases/download/{{
-          cargo_binstall_release.json.tag_name }}/cargo-binstall-x86_64-{{
+          cargo_binstall_release.json.tag_name }}/cargo-binstall-{{
+          cargo_binstall_arch[system_architecture] }}-{{
           cargo_binstall_suffix[ansible_system] }}
       become: true
       vars:
+        cargo_binstall_arch:
+          amd64: x86_64
+          arm64: aarch64
         cargo_binstall_suffix:
           Darwin: apple-darwin.zip
-          Linux: unknown-linux-gnu.tgz
-      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+          Linux: >-
+            unknown-linux-{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu'
+            }}.tgz
+      when: ansible_system in ["Darwin", "Linux"]
 
     - name: Install Cargo Binstall for Amd64 Unix
       ansible.builtin.copy:
@@ -80,15 +80,16 @@
         mode: "755"
         src: /tmp/cargo-binstall
       become: true
-      when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+      when: ansible_system in ["Darwin", "Linux"]
 
-    # Cargo Binstall has OpenSSL issues on several platforms.
+    # TODO: Integrate when Cargo Binstall no longer has OpenSSL issues on
+    # multiple platforms.
     # - name: Update or install Cargo packages for Amd64 Unix
     #   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
     #   changed_when: "'This will install' in cargo_binstall.stdout"
     #   loop: "{{ cargo_applications }}"
     #   register: cargo_binstall
-    #   when: ansible_architecture == "x86_64" and ansible_pkg_mgr != "apk"
+    #   when: ansible_system in ["Darwin", "Linux"]
 
     - name: Update or install Cargo packages for Unix
       ansible.builtin.command: "cargo install {{ item }}"

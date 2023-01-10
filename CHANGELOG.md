@@ -5,6 +5,26 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- GDU role.
+- Suse support for several roles.
+
+### Changed
+
+- Refactor architecture variables.
+- Split system role into essential and update roles.
+
+### Fixed
+
+- Delta installation on Alpine.
+
+### Removed
+
+- Julia, Ruby, Snap, Virtualbox, and Zola roles.
+
 ## 0.4.1 - 2023-01-08
 
 ### Added
@@ -204,9 +224,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Early XFCE desktop support.
 - Error messaging for incorrect subcommands.
 - Fuzz testing for Ansible roles.
-- GCloud installation for Arch and Fedora distributions.
+- GCloud installation for Arch and Fedora.
 - Windows terminal settings.
-- Yay AUR helper for Arch distributions.
+- Yay AUR helper for Arch.
 
 ### Changed
 
@@ -214,7 +234,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Python and VSCode installations for Arch distributions.
+- Python and VSCode installations for Arch.
 - System path for Apple Silicon binaries.
 
 ## 0.3.0 - 2021-04-02
@@ -232,7 +252,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Made setup depenency checking more flexible.
-- Upgraded Ansible version for Debian distributions.
+- Upgraded Ansible version for Debian.
 - Upgraded Docker installation version.
 
 ### Fixed
@@ -273,4 +293,4 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Alacritty installation on Fedora distributions.
+- Alacritty installation on Fedora.

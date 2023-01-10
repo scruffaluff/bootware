@@ -1,12 +1,4 @@
 ---
-- name: Add Alacritty PPA for Debian distributions
-  ansible.builtin.apt_repository:
-    repo: ppa:aslatter/ppa
-  become: true
-  when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_distribution != "Pop!_OS" and ansible_architecture == "x86_64"
-
 - name: Install Alacritty for FreeBSD
   become: true
   community.general.pkgng:
@@ -26,13 +18,21 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Alacritty for Ubuntu distributions
+- name: Add Alacritty PPA for Ubuntu
+  ansible.builtin.apt_repository:
+    repo: ppa:aslatter/ppa
+  become: true
+  when: >-
+    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
+    ansible_distribution != "Pop!_OS" and system_architecture == "amd64"
+
+- name: Install Alacritty for Ubuntu
   ansible.builtin.apt:
     name: alacritty
   become: true
   when: >-
     ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_architecture == "x86_64"
+    system_architecture == "amd64"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:

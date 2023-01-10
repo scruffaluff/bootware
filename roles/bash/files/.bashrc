@@ -100,10 +100,6 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
   fi
 fi
 
-# Julia settings.
-
-prepend_path '/usr/local/julia/bin'
-
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
@@ -326,7 +322,6 @@ prepend_path "${HOME}/.local/bin"
 
 # Wasmtime settings.
 export WASMTIME_HOME="${HOME}/.wasmtime"
-
 prepend_path "${WASMTIME_HOME}/bin"
 
 # Apple Silicon support.

@@ -2,19 +2,10 @@
 - name: Install AWSCLI for FreeBSD
   become: true
   community.general.pkgng:
-    name: awscli
+    name: py39-awscli
   when: ansible_system == "FreeBSD"
 
-# Temporarily disabled since most distributions ship AWSCLI version 1, which now
-# always complains that version 2 should be installed instead.
-# - name: Install AWSCLI for Linux
-#   ansible.builtin.package:
-#     name: >-
-#       {{ 'aws-cli' if ansible_pkg_mgr in ['apk', 'pacman'] else 'awscli' }}
-#   become: true
-#   when: ansible_system == "Linux"
-
-- name: Install AWSCLI for Alpine distributions
+- name: Install AWSCLI for Alpine
   become: true
   community.general.apk:
     name: aws-cli
@@ -27,9 +18,13 @@
     mode: "777"
     remote_src: true
     src: >-
-      https://awscli.amazonaws.com/awscli-exe-linux-{{ ansible_architecture
-      }}.zip
+      https://awscli.amazonaws.com/awscli-exe-linux-{{
+      aws_arch[system_architecture] }}.zip
   become: true
+  vars:
+    aws_arch:
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for Linux

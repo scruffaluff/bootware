@@ -1,5 +1,5 @@
 ---
-- name: Install Java for Alpine distributions
+- name: Install Java for Alpine
   become: true
   community.general.apk:
     name:
@@ -7,7 +7,7 @@
       - openjdk17
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Java for Arch distributions
+- name: Install Java for Arch
   become: true
   community.general.pacman:
     name:
@@ -15,7 +15,7 @@
       - maven
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install Java for Debian distributions
+- name: Install Java for Debian
   ansible.builtin.apt:
     name:
       - maven
@@ -23,7 +23,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Java for Fedora distributions
+- name: Install Java for Fedora
   ansible.builtin.dnf:
     name:
       - java-latest-openjdk
@@ -48,16 +48,24 @@
     state: present
   when: ansible_system == "Darwin"
 
-- name: Install Java for Window
+- name: Install Java for Suse
+  become: true
+  community.general.zypper:
+    name:
+      - java-17-openjdk
+      - maven
+  when: ansible_pkg_mgr == "zypper" and system_architecture == "amd64"
+
+- name: Install Java for Windows
   community.windows.win_scoop:
     name:
       - maven
       - openjdk
   when: ansible_system == "Win32NT"
 
-- name: Make Java discover OpenJDK on MacOS
+- name: Make OpenJDK discoverable by Java on MacOS
   ansible.builtin.file:
-    src: "{{ openjdk_path[ansible_architecture] }}"
+    src: "{{ openjdk_path[system_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: true
     mode: "755"
@@ -66,8 +74,8 @@
   become: true
   vars:
     openjdk_path:
+      amd64: /usr/local/opt/openjdk/libexec/openjdk.jdk
       arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
-      x86_64: /usr/local/opt/openjdk/libexec/openjdk.jdk
   when: ansible_system == "Darwin"
 
 - name: Create Java Jar directory for Linux

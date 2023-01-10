@@ -1,33 +1,18 @@
 ---
-- name: Install SQLite for Alpine distributions
-  become: true
-  community.general.apk:
-    name: sqlite
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install SQLite for Arch distributions
-  become: true
-  community.general.pacman:
-    name: sqlite
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install SQLite for Debian distributions
-  ansible.builtin.apt:
-    name: sqlite3
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install SQLite for FreeBSD
   become: true
   community.general.pkgng:
     name: sqlite3
   when: ansible_system == "FreeBSD"
 
-- name: Install SQLite for Fedora distributions
-  ansible.builtin.dnf:
-    name: sqlite
+- name: Install SQLite for Linux
+  ansible.builtin.package:
+    name: "{{ sqlite_package.get(ansible_pkg_mgr, 'sqlite') }}"
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  vars:
+    sqlite_package:
+      apt: sqlite3
+  when: ansible_system == "Linux"
 
 - name: Install SQLite for MacOS
   community.general.homebrew:

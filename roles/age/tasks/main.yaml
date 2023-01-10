@@ -21,13 +21,8 @@
     src: >-
       https://github.com/FiloSottile/age/releases/download/v{{
       age_formula.json.versions.stable }}//age-v{{
-      age_formula.json.versions.stable }}-linux-{{
-      age_arch[ansible_architecture] }}.tar.gz
+      age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
   become: true
-  vars:
-    age_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Age for Linux

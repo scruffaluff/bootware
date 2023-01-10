@@ -8,8 +8,12 @@
 # Lua 5.4 is not available on all LTS Ubuntu releases.
 - name: Install Lua for Linux
   ansible.builtin.package:
-    name: "{{ 'lua5.3' if ansible_pkg_mgr == 'apt' else 'lua' }}"
+    name: "{{ lua_package.get(ansible_pkg_mgr, 'lua') }}"
   become: true
+  vars:
+    lua_package:
+      apt: lua5.3
+      zypper: lua53
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS

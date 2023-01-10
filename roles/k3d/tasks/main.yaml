@@ -14,13 +14,8 @@
     owner: root
     url: >-
       https://github.com/k3d-io/k3d/releases/download/v{{
-      k3d_formula.json.versions.stable }}/k3d-linux-{{
-      k3d_arch[ansible_architecture] }}
+      k3d_formula.json.versions.stable }}/k3d-linux-{{ system_architecture }}
   become: true
-  vars:
-    k3d_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install K3d for MacOS

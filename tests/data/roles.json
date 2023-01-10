@@ -49,6 +49,7 @@
     "skip": [
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "fedora" },
+      { "arch": "arm64", "os": "suse" },
       { "arch": "arm64", "os": "ubuntu" },
       { "os": "alpine" },
       { "os": "arch" },
@@ -69,23 +70,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["datree version"]
   },
-  {
-    "name": "dbeaver",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "freebsd" }
-    ],
-    "tests": {
-      "default": ["dbeaver -help -nosplash"],
-      "macos": [
-        "/Applications/DBeaver.app/Contents/MacOS/dbeaver -help -nosplash"
-      ],
-      "windows": ["Test-Path -PathType Container 'C:/Program Files/DBeaver'"]
-    }
-  },
+  { "name": "dbeaver" },
   { "name": "defterm" },
   {
     "name": "deno",
@@ -157,9 +142,10 @@
   { "name": "fzf", "tests": ["fzf --version"] },
   {
     "name": "gcp",
-    "skip": [{ "arch": "arm64", "os": "fedora" }],
+    "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },
+  { "name": "gdu", "skip": [{ "os": "alpine" }], "tests": ["gdu --version"] },
   {
     "name": "git",
     "tests": ["delta --version", "git --version", "git-lfs --version"]
@@ -178,7 +164,7 @@
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {
@@ -213,11 +199,6 @@
   },
   { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
-  {
-    "name": "julia",
-    "skip": [{ "arch": "arm64", "os": "alpine" }],
-    "tests": ["julia --version"]
-  },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },
   {
@@ -292,7 +273,8 @@
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "ubuntu" },
       { "os": "alpine" },
-      { "os": "freebsd" }
+      { "os": "freebsd" },
+      { "os": "suse" }
     ],
     "tests": ["procs --version"]
   },
@@ -302,13 +284,12 @@
   },
   {
     "name": "qemu",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "suse" }, { "os": "windows" }],
     "tests": ["qemu-img --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
-  { "name": "ruby", "tests": ["gem --version", "ruby --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
   {
     "name": "scc",
@@ -334,7 +315,6 @@
     "skip": [{ "os": "windows" }],
     "tests": ["shfmt --version"]
   },
-  { "name": "snap" },
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   {
@@ -359,7 +339,7 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["tilt version"]
   },
-  { "name": "tldr", "tests": ["tldr --version"] },
+  { "name": "tldr", "skip": [{ "os": "suse" }], "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
@@ -372,16 +352,6 @@
     "tests": ["vagrant version"]
   },
   { "name": "vault", "tests": ["vault --version"] },
-  {
-    "name": "virtualbox",
-    "skip": [
-      { "arch": "arm64" },
-      { "os": "alpine" },
-      { "os": "debian" },
-      { "os": "windows" }
-    ],
-    "tests": ["virtualbox --help"]
-  },
   {
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
@@ -413,12 +383,8 @@
     "tests": ["zellij --version"]
   },
   {
-    "name": "zola",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["zola --version"]
-  },
-  {
     "name": "zoxide",
+    "skip": [{ "os": "suse" }],
     "tests": ["zoxide --version"]
   }
 ]

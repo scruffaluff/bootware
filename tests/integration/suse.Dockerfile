@@ -12,7 +12,7 @@ ARG TARGETARCH
 RUN useradd -lm -s /bin/bash -u 1000 suse
 
 # Update DNF package lists.
-RUN zypper update
+RUN zypper update -y
 
 # Install Bash, Curl, and Sudo.  
 RUN zypper install -y bash curl sudo

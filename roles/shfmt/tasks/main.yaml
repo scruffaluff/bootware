@@ -21,13 +21,8 @@
     url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
-      shfmt_formula.json.versions.stable }}_linux_{{
-      shfmt_arch[ansible_architecture] }}
+      shfmt_formula.json.versions.stable }}_linux_{{ system_architecture }}
   become: true
-  vars:
-    shfmt_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for MacOS

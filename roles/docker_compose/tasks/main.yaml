@@ -36,8 +36,13 @@
     url: >-
       https://github.com/docker/compose/releases/download/v{{
       docker_compose_formula.json.versions.stable }}/docker-compose-linux-{{
-      ansible_architecture }}
+      docker_compose_arch[system_architecture] }}
   become: true
+  vars:
+    docker_compose_arch:
+      amd64: x86_64
+      arm64: aarch64
+      riscv64: riscv64
   when: ansible_system == "Linux"
 
 - name: Install Docker Compose for MacOS

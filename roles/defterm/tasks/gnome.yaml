@@ -1,5 +1,5 @@
 ---
-- name: Install Gnome Terminal for Debian distributions
+- name: Install Gnome Terminal for Debian
   ansible.builtin.apt:
     name: gnome-terminal
   become: true

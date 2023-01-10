@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
-  register: mongodb_compass_formula_linux
+  register: compass_cask_linux
   when: ansible_system == "Linux"
 
 - name: Get latest MongoDB Compass version for Windows
@@ -12,27 +12,25 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
-  register: mongodb_compass_formula_windows
+  register: compass_cask_windows
   when: ansible_system == "Win32NT"
 
-# MongoDB does not appear to have a Compass release for Arch distributions.
-
-- name: Install MongoDB Compass For Debian distributions
+- name: Install MongoDB Compass For Debian
   ansible.builtin.apt:
     deb: >-
       https://downloads.mongodb.com/compass/mongodb-compass_{{
-      mongodb_compass_formula_linux.json.version }}_amd64.deb
+      compass_cask_linux.json.version }}_amd64.deb
   become: true
-  when: ansible_pkg_mgr == "apt" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install MongoDB Compass For Fedora distributions
+- name: Install MongoDB Compass For Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
-      mongodb_compass_formula_linux.json.version }}.x86_64.rpm
+      compass_cask_linux.json.version }}.x86_64.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf" and ansible_architecture == "x86_64"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
   community.general.homebrew_cask:
@@ -45,5 +43,5 @@
   ansible.windows.win_package:
     path: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
-      mongodb_compass_formula_windows.json.version }}-win32-x64.msi
+      compass_cask_windows.json.version }}-win32-x64.msi
   when: ansible_system == "Win32NT"

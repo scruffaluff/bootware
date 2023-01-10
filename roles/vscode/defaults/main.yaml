@@ -1,5 +1,8 @@
 ---
 _ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+_vscode_arch:
+  amd64: x64
+  arm64: arm64
 vscode_extensions:
   - "antfu.vite"
   - "bierner.markdown-mermaid"

@@ -1,5 +1,5 @@
 ---
-- name: Install audio packages for Arch distributions
+- name: Install audio packages for Arch
   become: true
   community.general.pacman:
     name:
@@ -7,7 +7,7 @@
       - alsa-utils
   when: ansible_pkg_mgr == "pacman"
 
-- name: Install audio packages for Debian distributions
+- name: Install audio packages for Debian
   ansible.builtin.apt:
     name:
       - alsa-utils
@@ -15,7 +15,7 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install audio packages for Fedora distributions
+- name: Install audio packages for Fedora
   ansible.builtin.dnf:
     name:
       - alsa-lib-devel

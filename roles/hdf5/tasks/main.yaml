@@ -1,9 +1,11 @@
 ---
+# Alpine HDF5 package does not contain command line tools. It only contains
+# shared object libraries.
 - name: Install HDF5 tools for Linux
   ansible.builtin.package:
     name: "{{ 'hdf5-tools' if ansible_pkg_mgr == 'apt' else 'hdf5' }}"
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install H5Dump for MacOS
   community.general.homebrew:

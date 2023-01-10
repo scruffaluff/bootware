@@ -559,7 +559,7 @@ setup() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Alpine distributions.
+# Configure boostrapping services and utilities for Alpine.
 #######################################
 setup_alpine() {
   # Install dependencies for Bootware.
@@ -595,7 +595,7 @@ setup_alpine() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Arch distributions.
+# Configure boostrapping services and utilities for Arch.
 #######################################
 setup_arch() {
   # Install dependencies for Bootware.
@@ -635,7 +635,7 @@ setup_arch() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Debian distributions.
+# Configure boostrapping services and utilities for Debian.
 #######################################
 setup_debian() {
   # Avoid APT interactively requesting to configure tzdata.
@@ -671,7 +671,7 @@ setup_debian() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Fedora distributions.
+# Configure boostrapping services and utilities for Fedora.
 #######################################
 setup_fedora() {
   # Install dependencies for Bootware.
@@ -817,7 +817,7 @@ setup_macos() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Suse distributions.
+# Configure boostrapping services and utilities for OpenSuse.
 #######################################
 setup_suse() {
   # Install dependencies for Bootware.
@@ -827,7 +827,7 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log "Installing Ansible"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
@@ -836,13 +836,13 @@ setup_suse() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log "Installing Curl"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log "Installing Git"
-    ${1:+sudo} zypper update
+    ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y git
   fi
 }
@@ -950,7 +950,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.4.1"
+  echo "Bootware 0.5.0"
 }
 
 #######################################

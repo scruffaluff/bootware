@@ -1,7 +1,15 @@
 ---
+- name: Get latest Mkcert version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/mkcert.json
+  register: mkcert_formula
+  when: ansible_system == "Linux"
+
 # Certificate generation requires Certutil from the Nss package. For more
 # information, visit https://github.com/FiloSottile/mkcert#installation.
-- name: Install network security service libraries for Linux
+- name: Install Mkcert dependencies for Linux
   ansible.builtin.package:
     name: "{{ mkcert_dependencies[ansible_pkg_mgr] }}"
   become: true
@@ -11,14 +19,7 @@
       apt: libnss3-tools
       dnf: nss-tools
       pacman: nss
-  when: ansible_system == "Linux"
-
-- name: Get latest Mkcert version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/mkcert.json
-  register: mkcert_formula
+      zypper: mozilla-nss
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for Linux
@@ -28,13 +29,8 @@
     url: >-
       https://github.com/FiloSottile/mkcert/releases/download/v{{
       mkcert_formula.json.versions.stable }}/mkcert-v{{
-      mkcert_formula.json.versions.stable }}-linux-{{
-      mkcert_arch[ansible_architecture] }}
+      mkcert_formula.json.versions.stable }}-linux-{{ system_architecture }}
   become: true
-  vars:
-    mkcert_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for MacOS

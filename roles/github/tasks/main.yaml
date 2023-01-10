@@ -7,44 +7,39 @@
   register: gh_formula
   when: ansible_system == "Linux"
 
-- name: Install GitHub CLI for Alpine distributions
+- name: Install GitHub CLI for Alpine
   become: true
   community.general.apk:
     name: github-cli
   when: ansible_pkg_mgr == "apk"
-
-- name: Install GitHub CLI for Debian distributions
-  ansible.builtin.apt:
-    deb: >-
-      https://github.com/cli/cli/releases/download/v{{
-      gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
-      }}_linux_{{ gh_arch[ansible_architecture] }}.deb
-  become: true
-  vars:
-    gh_arch:
-      aarch64: arm64
-      x86_64: amd64
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install GitHub CLI for Fedora distributions
-  ansible.builtin.dnf:
-    disable_gpg_check: true
-    name: >-
-      https://github.com/cli/cli/releases/download/v{{
-      gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
-      }}_linux_{{ gh_arch[ansible_architecture] }}.rpm
-  become: true
-  vars:
-    gh_arch:
-      aarch64: arm64
-      x86_64: amd64
-  when: ansible_pkg_mgr == "dnf"
 
 - name: Install GitHub CLI for FreeBSD
   become: true
   community.general.pkgng:
     name: gh
   when: ansible_system == "FreeBSD"
+
+- name: Download GitHub CLI for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/cli/cli/releases/download/v{{
+      gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
+      }}_linux_{{ system_architecture }}.tar.gz
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install GitHub CLI for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/gh
+    mode: "755"
+    src: >-
+      /tmp/gh_{{ gh_formula.json.versions.stable }}_linux_{{ system_architecture
+      }}/bin/gh
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitHub CLI for MacOS
   community.general.homebrew:

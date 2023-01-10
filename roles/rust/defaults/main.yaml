@@ -5,31 +5,18 @@ _cargo_applications:
     - cargo-cache
     - cross
   Darwin:
-    aarch64: []
-    always:
-      - cargo-audit
-    arm64: []
-    x86_64: []
-  # On some FreeBSD servers Ansible discovers the architecture as AMD64 instead
-  # of x86_64.
-  FreeBSD:
-    aarch64: []
-    always:
-      - cargo-audit
-      - cargo-binutils
     amd64: []
-    arm64: []
-    x86_64: []
-  Linux:
-    aarch64: []
     always:
-      # TODO: Figure out why cargo-arch is disabled.
-      # - cargo-arch
-      - cargo-binutils
-      - cargo-deb
-      - cargo-rpm
+      - cargo-audit
     arm64: []
-    x86_64:
+  FreeBSD:
+    amd64: []
+    always:
+      - cargo-audit
+      - cargo-binutils
+    arm64: []
+  Linux:
+    amd64:
       - cargo-audit
       - cargo-edit
       - cargo-expand
@@ -40,16 +27,21 @@ _cargo_applications:
       # - cargo-generate
       - cargo-make
       - cargo-tarpaulin
+    always:
+      # TODO: Figure out why cargo-arch is disabled.
+      # - cargo-arch
+      - cargo-binutils
+      - cargo-deb
+      - cargo-rpm
+    arm64: []
   Win32NT:
-    64-bit: []
-    aarch64: []
+    amd64: []
     always:
       - cargo-audit
     arm64: []
-    x86_64: []
 cargo_applications: >-
   {{ _cargo_applications.always + _cargo_applications[ansible_system].always +
-  _cargo_applications[ansible_system][ansible_architecture] }}
+  _cargo_applications[ansible_system].get(system_architecture, []) }}
 rustup_components:
   - clippy
   - llvm-tools-preview

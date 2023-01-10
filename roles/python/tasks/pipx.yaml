@@ -1,5 +1,5 @@
 ---
-# FreeBSD py39-pipx package is broken.
+# FreeBSD py39-pipx package is often broken.
 - name: Install Pipx for FreeBSD
   become: true
   ansible.builtin.command: /usr/local/bin/python3 -m pip install --upgrade pipx
@@ -45,14 +45,4 @@
   environment:
     Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
   loop: "{{ pipx_applications }}"
-  when: ansible_system == "Win32NT"
-
-- name: Update Pipx command line applications for Unix
-  ansible.builtin.command: pipx upgrade-all
-  when: ansible_system != "Win32NT"
-
-- name: Update Pipx command line applications for Windows
-  ansible.windows.win_command: pipx upgrade-all
-  environment:
-    Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"

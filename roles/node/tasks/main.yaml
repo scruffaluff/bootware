@@ -7,8 +7,9 @@
   register: nvm_formula
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
-# NVM is not well-supported for Alpine.
-- name: Install Node for Alpine distributions
+# NVM is not well-supported for Alpine. For more information, visit
+# https://github.com/nvm-sh/nvm/blob/master/README.md#installing-nvm-on-alpine-linux.
+- name: Install Node for Alpine
   become: true
   community.general.apk:
     name:
@@ -16,7 +17,7 @@
       - npm
   when: ansible_pkg_mgr == "apk"
 
-# NVM does not provide binaries for FreeBSD. Node versions 16 and 17 have
+# NVM does not provide binaries for FreeBSD and Node versions 16 and 17 have
 # OpenSSL errors on FreeBSD 13.
 - name: Install Node for FreeBSD
   become: true
@@ -59,7 +60,7 @@
   loop: "{{ node_versions }}"
   when: ansible_system == "Win32NT"
 
-- name: Configure NPM for Alpine distributions and FreeBSD
+- name: Configure NPM for Alpine and FreeBSD
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
@@ -91,7 +92,7 @@
     and ansible_pkg_mgr != "apk"
 
 - name: >-
-    Install or update Node CLI applications for Alpine distributions and FreeBSD
+    Install or update Node CLI applications for Alpine and FreeBSD
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc

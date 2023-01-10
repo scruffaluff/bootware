@@ -23,12 +23,8 @@
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{
-      mongosh_arch[ansible_architecture] }}.tgz
+      _mongosh_arch[system_architecture] }}.tgz
   become: true
-  vars:
-    mongosh_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for Linux
@@ -37,12 +33,8 @@
     mode: "755"
     src: >-
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
-      mongosh_arch[ansible_architecture] }}/bin/mongosh
+      _mongosh_arch[system_architecture] }}/bin/mongosh
   become: true
-  vars:
-    mongosh_arch:
-      aarch64: arm64
-      x86_64: x64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for MacOS

@@ -20,12 +20,8 @@
     remote_src: true
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
-      helm_arch[ansible_architecture] }}.tar.gz
+      system_architecture }}.tar.gz
   become: true
-  vars:
-    helm_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Helm for Linux
@@ -33,12 +29,8 @@
     dest: /usr/local/bin/helm
     mode: "755"
     owner: root
-    src: /tmp/linux-{{ helm_arch[ansible_architecture] }}/helm
+    src: /tmp/linux-{{ system_architecture }}/helm
   become: true
-  vars:
-    helm_arch:
-      aarch64: arm64
-      x86_64: amd64
   when: ansible_system == "Linux"
 
 - name: Install Helm for MacOS

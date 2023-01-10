@@ -1,3 +1,7 @@
 ---
+_git_delta_arch:
+  amd64: x86_64
+  arm64: aarch64
+_git_delta_env: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'apt'] else 'gnu' }}"
 git_user_email: "{{ git_user_name | lower | replace(' ', '.') }}@gmail.com"
 git_user_name: User Name

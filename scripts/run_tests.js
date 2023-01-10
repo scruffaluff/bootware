@@ -17,6 +17,7 @@ function main() {
       "arch",
       "debian",
       "fedora",
+      "suse",
       "ubuntu",
     ])
     .option("-s, --skip <roles...>", "Ansible roles to skip", null)
