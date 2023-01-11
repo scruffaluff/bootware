@@ -1,0 +1,6 @@
+---
+dependencies:
+  # Wireshark GUI cask needs to be installed first on MacOS due to conflict with
+  # Wireshark CLI formula, which Termshark depends on.
+  - role: wireshark
+    when: ansible_system == "Darwin"
