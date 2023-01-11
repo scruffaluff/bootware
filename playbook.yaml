@@ -50,10 +50,7 @@
         name: appimage
       tags:
         - appimage
-        - container
         - desktop
-        - server
-        - wsl
 
     - name: Install audio tools
       ansible.builtin.import_role:
@@ -360,11 +357,8 @@
       ansible.builtin.import_role:
         name: flatpak
       tags:
-        - container
         - desktop
         - flatpak
-        - server
-        - wsl
 
     - name: Install fonts
       ansible.builtin.import_role:
@@ -1084,13 +1078,3 @@
         - termianl
         - wsl
         - zellij
-
-    - name: Install Zoxide directory navigator helper
-      ansible.builtin.import_role:
-        name: zoxide
-      tags:
-        - container
-        - desktop
-        - server
-        - wsl
-        - zoxide

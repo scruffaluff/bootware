@@ -267,14 +267,6 @@ if [[ -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
   eval "$(navi widget bash)"
 fi
 
-# Initialize Zoxide if available.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v zoxide)" ]]; then
-  eval "$(zoxide init bash)"
-fi
-
 # TypeScript settings.
 
 # Add Deno binaries to system path.

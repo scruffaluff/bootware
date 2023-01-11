@@ -23,7 +23,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Julia, Ruby, Snap, Virtualbox, and Zola roles.
+- Julia, Ruby, Snap, Virtualbox, Zola, and Zoxide roles.
 
 ## 0.4.1 - 2023-01-08
 

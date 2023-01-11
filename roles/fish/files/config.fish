@@ -292,14 +292,6 @@ if type -q navi
   navi widget fish | source
 end
 
-# Initialize Zoxide if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q zoxide
-  zoxide init fish --cmd cd | source
-end
-
 # TypeScript settings.
 
 # Add Deno binaries to system path.

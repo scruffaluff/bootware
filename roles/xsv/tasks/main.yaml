@@ -1,5 +1,5 @@
 ---
-- name: Get latest Exa version
+- name: Get latest Xsv version
   ansible.builtin.uri:
     method: GET
     return_content: true

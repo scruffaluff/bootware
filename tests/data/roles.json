@@ -381,10 +381,5 @@
     "name": "zellij",
     "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["zellij --version"]
-  },
-  {
-    "name": "zoxide",
-    "skip": [{ "os": "suse" }],
-    "tests": ["zoxide --version"]
   }
 ]

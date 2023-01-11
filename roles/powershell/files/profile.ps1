@@ -187,21 +187,6 @@ If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
 }
 
-# Initialize Zoxide if available.
-If (Get-Command zoxide -ErrorAction SilentlyContinue) {
-    Invoke-Expression (
-        & {
-            If ($PSVersionTable.PSVersion.Major -lt 6) {
-                $Hook = 'prompt'
-            }
-            Else {
-                $Hook = 'pwd'
-            }
-            zoxide init --hook $Hook powershell --cmd cd | Out-String
-        }
-    )
-}
-
 # # TypeScript settings.
 
 # Load Deno autocompletion if available.
