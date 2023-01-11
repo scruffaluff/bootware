@@ -28,6 +28,23 @@ setup() {
   export -f ansible-pull
 }
 
+@test "Bootstrap subcommand finds first task associated with role" {
+  local actual
+  local expected
+
+  export BOOTWARE_NOPASSWD=1
+  export BOOTWARE_SKIP=""
+  export BOOTWARE_TAGS=""
+
+  expected="ansible-playbook --connection local --extra-vars \
+ansible_python_interpreter=auto_silent --extra-vars \
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+--start-at-task 'Install Deno for FreeBSD' playbook.yaml"
+
+  actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
+  assert_equal "${actual}" "${expected}"
+}
+
 @test "Bootstrap subcommand passes pull arguments to Ansible" {
   local actual
   local expected
@@ -101,4 +118,34 @@ ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
 @test "Bootstrap subcommand sets Ansible environment variable" {
   bootstrap --debug
   assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" "True"
+}
+
+@test "Bootstrap subcommand uses local copy during start at task" {
+  local actual
+  local expected
+  local tmp_dir
+  tmp_dir="$(mktemp -u)"
+
+  export BOOTWARE_NOPASSWD=1
+  export BOOTWARE_SKIP=""
+  export BOOTWARE_TAGS=""
+
+  source bootware.sh
+
+  # Mock functions for child processes by printing received arguments.
+  #
+  # Args:
+  #   -f: Use override as a function instead of a variable.
+  mktemp() {
+    echo "${tmp_dir}"
+  }
+  export -f mktemp
+
+  expected="ansible-playbook --connection local --extra-vars \
+ansible_python_interpreter=auto_silent --extra-vars \
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+--start-at-task 'Install Deno for FreeBSD' ${tmp_dir}/playbook.yaml"
+
+  actual="$(bootstrap --start-at-role deno)"
+  assert_equal "${actual}" "${expected}"
 }

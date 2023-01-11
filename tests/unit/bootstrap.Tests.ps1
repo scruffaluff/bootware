@@ -8,17 +8,32 @@ BeforeAll {
     Mock FindRelativeIP { Write-Output "192.48.16.0" }
     Mock Setup { }
 
+    # Flatten array logic taken from https://stackoverflow.com/a/712205.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        Mock wsl { Write-Output "wsl $Args" }
+        Mock wsl { Write-Output "wsl $($Args | % {$_})" }
     }
     Else {
         Function wsl() {
-            Write-Output "wsl $Args"
+            Write-Output "wsl $($Args | % {$_})"
         }
     }
 }
 
 Describe "Bootstrap" {
+    It "Subcommand finds first task associated with role" {
+        $Env:BOOTWARE_NOLOG = 1
+        $Playbook = "$(Get-Location)\playbook.yaml"
+        $Expected = "wsl bootware bootstrap --windows --config " `
+            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
+            + "192.48.16.0, --playbook $(WSLPath $Playbook) " `
+            + "--skip none --ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
+            + "$Env:UserName --start-at-task Install Deno for FreeBSD"
+
+        $Actual = "$(& "$Bootware" bootstrap --start-at-role deno --playbook "$Playbook")"
+        $Actual | Should -Be $Expected
+    }
+
     It "Subcommand passes default arguments to WSL copy of Bootware" {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = "wsl bootware bootstrap --windows --config " `

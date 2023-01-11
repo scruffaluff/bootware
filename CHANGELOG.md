@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Flag to start execution at a role.
 - GDU role.
 - Suse support for several roles.
 

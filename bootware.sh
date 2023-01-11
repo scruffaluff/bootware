@@ -40,6 +40,7 @@ OPTIONS:
         --password <PASSWORD>       Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
         --ssh-key <FILE-NAME>       Path to SSH private key
+        --start-at-role <ROLE>      Begin execution with role
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
@@ -182,6 +183,7 @@ bootstrap() {
   local playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
   local skip="${BOOTWARE_SKIP:-""}"
   local ssh_key
+  local start_role
   local tags="${BOOTWARE_TAGS:-""}"
   local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
   local use_playbook
@@ -262,6 +264,10 @@ bootstrap() {
         ssh_key="$2"
         shift 2
         ;;
+      --start-at-role)
+        start_role="$2"
+        shift 2
+        ;;
       -u | --url)
         url="$2"
         shift 2
@@ -301,6 +307,30 @@ bootstrap() {
   #   -z: Check if string has zero length.
   if [[ -z "${no_setup:-}" ]]; then
     setup
+  fi
+
+  # Configure run to find task associated with start role.
+  #
+  # Flags:
+  #   -n: Check if the string has nonzero length.
+  #   -z: Check if string has zero length.
+  if [[ -n "${start_role:-}" ]]; then
+    if [[ -z "${use_playbook:-}" ]]; then
+      assert_cmd git
+      tmp_dir="$(mktemp -u)"
+      git clone --depth 1 "${url}" "${tmp_dir}"
+
+      cmd="playbook"
+      use_playbook=1
+      use_pull=""
+      playbook="${tmp_dir}/playbook.yaml"
+    else
+      tmp_dir="$(pwd)"
+    fi
+
+    assert_cmd yq
+    start_task="$(yq '.[0].name' "${tmp_dir}/roles/${start_role}/tasks/main.yaml")"
+    extra_args+=("--start-at-task" "'${start_task}'")
   fi
 
   find_config_path "${config_path}"

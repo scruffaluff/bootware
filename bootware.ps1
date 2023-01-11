@@ -24,6 +24,7 @@ OPTIONS:
     -p, --playbook <FILE-NAME>      Name of play to execute
         --password <PASSWORD>       Remote host user password
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip in quotes
+        --start-at-role <ROLE>      Begin execution with role
     -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes
     -u, --url <URL>                 URL of playbook repository
         --user <USER-NAME>          Remote host user login name
@@ -162,6 +163,11 @@ Function Bootstrap() {
                 $ArgIdx += 2
                 Break
             }
+            '--start-at-role' {
+                $StartRole = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+                Break
+            }
             { $_ -In '-t', '--tags' } {
                 $Tags = $Args[0][$ArgIdx + 1] -Join ","
                 $ArgIdx += 2
@@ -194,15 +200,24 @@ Function Bootstrap() {
         Exit 1
     }
 
+    # Configure run to find task associated with start role.
+    If ($StartRole) {
+        $RepoPath = "$(Split-Path -Path $Playbook -Parent)"
+        $StartTask = "$(yq '.[0].name' "$RepoPath/roles/$StartRole/tasks/main.yaml")"
+        $ExtraArgs += @("--start-at-task", "$StartTask")
+    }
+
     FindConfigPath "$ConfigPath"
     $ConfigPath = $(WSLPath "$Global:RetVal")
     $Inventory = "$(FindRelativeIP)"
     $PlaybookPath = $(WSLPath "$Playbook")
-    $ExtraArgsString = $($ExtraArgs -Join ' ')
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish. Have not found a way to optionally include arguments in
     # PowerShell. If a simpler solution exists, please edit.
+    #
+    # $ExtraArgs needs to be passed as an array to WSL. Do not change it into a
+    # string.
     If ($Debug -And $ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap --debug --windows `
             --config "$ConfigPath" `
@@ -213,7 +228,7 @@ Function Bootstrap() {
             --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User" `
-            $ExtraArgsString
+            $ExtraArgs
     }
     ElseIf ($Debug) {
         wsl bootware bootstrap --debug --windows `
@@ -236,7 +251,7 @@ Function Bootstrap() {
             --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User" `
-            $ExtraArgsString
+            $ExtraArgs
     }
     Else {
         wsl bootware bootstrap --windows `
