@@ -131,9 +131,7 @@ async function main(): Promise<void> {
   }
 
   if (program.skip) {
-    roles = roles.filter(
-      (role: RoleTest) => !program.skip.includes(role.name)
-    );
+    roles = roles.filter((role: RoleTest) => !program.skip.includes(role.name));
   }
 
   let error = false;

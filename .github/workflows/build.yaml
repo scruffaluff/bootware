@@ -149,9 +149,7 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install YQ YAML parser
-        run: |
-          Invoke-WebRequest -UseBasicParsing -Uri 'https://get.scoop.sh' | Invoke-Expression
-          scoop install yq
+        run: choco install -y yq
       - name: Install PSScriptAnalyzer
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
