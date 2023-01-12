@@ -171,7 +171,6 @@ assert_cmd() {
 bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
-  local check
   local checkout
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
@@ -180,14 +179,12 @@ bootstrap() {
   local inventory="127.0.0.1,"
   local no_setup="${BOOTWARE_NOSETUP:-""}"
   local passwd
-  local playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
+  local playbook
   local skip="${BOOTWARE_SKIP:-""}"
   local ssh_key
   local start_role
   local tags="${BOOTWARE_TAGS:-""}"
   local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
-  local use_playbook
-  local use_pull=1
   local user_account="${USER:-root}"
   local windows
 
@@ -196,7 +193,7 @@ bootstrap() {
   # Flags:
   #   -z: Check if string has zero length.
   if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
-    ask_passwd=1
+    ask_passwd='true'
   fi
 
   # Parse command line arguments.
@@ -206,18 +203,13 @@ bootstrap() {
         config_path="$2"
         shift 2
         ;;
-      --check)
-        check=1
-        shift 1
-        ;;
       --checkout)
         checkout="$2"
         shift 2
         ;;
       -d | --dev)
         cmd="playbook"
-        use_playbook=1
-        use_pull=""
+        playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
         shift 1
         ;;
       --debug)
@@ -232,16 +224,14 @@ bootstrap() {
         cmd="playbook"
         connection="ssh"
         inventory="$2"
-        use_playbook=1
-        use_pull=""
         shift 2
         ;;
       --no-passwd)
-        ask_passwd=""
+        ask_passwd=''
         shift 1
         ;;
       --no-setup)
-        no_setup=1
+        no_setup='true'
         shift 1
         ;;
       -p | --playbook)
@@ -266,6 +256,7 @@ bootstrap() {
         ;;
       --start-at-role)
         start_role="$2"
+        cmd='playbook'
         shift 2
         ;;
       -u | --url)
@@ -277,12 +268,10 @@ bootstrap() {
         shift 2
         ;;
       --windows)
-        ask_passwd=""
+        ask_passwd=''
         cmd="playbook"
         connection="ssh"
-        use_playbook=1
-        use_pull=""
-        windows=1
+        windows='true'
         shift 1
         ;;
       *)
@@ -292,7 +281,7 @@ bootstrap() {
     esac
   done
 
-  # Check if Ansible has data required if using a Windows connection.
+  # Check if Ansible has arguments required when using a Windows connection.
   #
   # Flags:
   #   -n: Check if the string has nonzero length.
@@ -309,28 +298,39 @@ bootstrap() {
     setup
   fi
 
-  # Configure run to find task associated with start role.
+  # Download repository if no playbook is selected.
+  #
+  # Flags:
+  #   -z: Check if string has zero length.
+  if [[ "${cmd}" == 'playbook' && -z "${playbook:-}" ]]; then
+    tmp_dir="$(mktemp -u)"
+    git clone --depth 1 "${url}" "${tmp_dir}"
+    playbook="${tmp_dir}/playbook.yaml"
+  fi
+
+  # Find task associated with start role.
   #
   # Flags:
   #   -n: Check if the string has nonzero length.
-  #   -z: Check if string has zero length.
   if [[ -n "${start_role:-}" ]]; then
-    if [[ -z "${use_playbook:-}" ]]; then
-      assert_cmd git
-      tmp_dir="$(mktemp -u)"
-      git clone --depth 1 "${url}" "${tmp_dir}"
-
-      cmd="playbook"
-      use_playbook=1
-      use_pull=""
-      playbook="${tmp_dir}/playbook.yaml"
-    else
-      tmp_dir="$(pwd)"
-    fi
-
     assert_cmd yq
-    start_task="$(yq '.[0].name' "${tmp_dir}/roles/${start_role}/tasks/main.yaml")"
+    repo_dir="$(dirname "${playbook}")"
+    start_task="$(
+      yq '.[0].name' "${repo_dir}/roles/${start_role}/tasks/main.yaml"
+    )"
     extra_args+=("--start-at-task" "'${start_task}'")
+  fi
+
+  # Convenience logic for using a single host without a trailing comma.
+  if [[ ! "${inventory}" =~ .*','.* ]]; then
+    inventory="${inventory},"
+  fi
+
+  if [[ "${cmd}" == 'playbook' ]]; then
+    extra_args+=('--connection' "${connection}")
+  elif [[ "${cmd}" == 'pull' ]]; then
+    playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
+    extra_args+=('--url' "${url}")
   fi
 
   find_config_path "${config_path}"
@@ -341,9 +341,7 @@ bootstrap() {
 
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
-    ${check:+--check} \
     ${checkout:+--checkout "${checkout}"} \
-    ${use_playbook:+--connection "${connection}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
@@ -352,7 +350,6 @@ bootstrap() {
     ${windows:+--extra-vars "ansible_user=${user_account}"} \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
-    ${use_pull:+--url "${url}"} \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
     ${extra_args:+"${extra_args[@]}"} \
@@ -536,7 +533,7 @@ log() {
 setup() {
   local os_type
   local tmp_dir
-  local use_sudo=""
+  local use_sudo
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -555,7 +552,7 @@ setup() {
 
   # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then
-    use_sudo=1
+    use_sudo='true'
   fi
 
   # Get operating system.
@@ -884,7 +881,7 @@ setup_suse() {
 #######################################
 uninstall() {
   local dst_file
-  local use_sudo=""
+  local use_sudo
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -909,7 +906,7 @@ uninstall() {
   #   -w: Check if file exists and it writable.
   if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
-    use_sudo=1
+    use_sudo='true'
   fi
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
@@ -929,7 +926,7 @@ uninstall() {
 update() {
   local dst_file
   local src_url
-  local use_sudo=""
+  local use_sudo
   local version="main"
 
   # Parse command line arguments.
@@ -961,7 +958,7 @@ update() {
   #   -w: Check if file exists and it writable.
   if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
-    use_sudo=1
+    use_sudo='true'
   fi
 
   log "Updating Bootware"

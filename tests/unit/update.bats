@@ -14,11 +14,13 @@ setup() {
   # Args:
   #   -f: Use override as a function instead of a variable.
   command() {
+    # shellcheck disable=SC2317
     echo "/bin/bash"
   }
   export -f command
 
   curl() {
+    # shellcheck disable=SC2317
     echo "curl $*"
   }
   export -f curl

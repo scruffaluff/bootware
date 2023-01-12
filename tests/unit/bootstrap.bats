@@ -18,11 +18,13 @@ setup() {
   # Args:
   #   -f: Use override as a function instead of a variable.
   ansible-playbook() {
+    # shellcheck disable=SC2317
     echo "ansible-playbook $*"
   }
   export -f ansible-playbook
 
   ansible-pull() {
+    # shellcheck disable=SC2317
     echo "ansible-pull $*"
   }
   export -f ansible-pull
@@ -36,10 +38,10 @@ setup() {
   export BOOTWARE_SKIP=""
   export BOOTWARE_TAGS=""
 
-  expected="ansible-playbook --connection local --extra-vars \
+  expected="ansible-playbook --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task 'Install Deno for FreeBSD' playbook.yaml"
+--start-at-task 'Install Deno for FreeBSD' --connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
   assert_equal "${actual}" "${expected}"
@@ -68,9 +70,10 @@ https://github.com/scruffaluff/bootware.git playbook.yaml"
   export BOOTWARE_SKIP=""
   export BOOTWARE_TAGS=""
   
-  expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
+  expected="ansible-playbook --ask-become-pass --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
-@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none playbook.yaml"
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
+--connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --tags none)"
   assert_equal "${actual}" "${expected}"
@@ -83,12 +86,12 @@ ansible_python_interpreter=auto_silent --extra-vars \
   export BOOTWARE_SKIP=""
   export BOOTWARE_TAGS=""
   
-  expected="ansible-playbook --ask-become-pass --connection local --extra-vars \
+  expected="ansible-playbook --ask-become-pass --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
-@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none --timeout 60 \
-playbook.yaml"
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none --check \
+--timeout 60 --connection local playbook.yaml"
 
-  actual="$(bootware.sh bootstrap --dev --tags none --timeout 60)"
+  actual="$(bootware.sh bootstrap --check --dev --tags none --timeout 60)"
   assert_equal "${actual}" "${expected}"
 }
 
@@ -98,15 +101,15 @@ playbook.yaml"
 
   export BOOTWARE_TAGS=""
   
-  expected="ansible-playbook --connection ssh --extra-vars \
-ansible_pkg_mgr=scoop --extra-vars ansible_python_interpreter=auto_silent \
+  expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
+--extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell --extra-vars \
 ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
---skip-tags sometag playbook.yaml"
+--skip-tags sometag --connection ssh main.yaml"
 
   actual="$(bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
-    --ssh-key /fake/key/path --user fakeuser)"
+    --ssh-key /fake/key/path --playbook main.yaml --user fakeuser)"
   assert_equal "${actual}" "${expected}"
 }
 
@@ -141,10 +144,11 @@ ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
   }
   export -f mktemp
 
-  expected="ansible-playbook --connection local --extra-vars \
+  expected="ansible-playbook --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task 'Install Deno for FreeBSD' ${tmp_dir}/playbook.yaml"
+--start-at-task 'Install Deno for FreeBSD' --connection local \
+${tmp_dir}/playbook.yaml"
 
   actual="$(bootstrap --start-at-role deno)"
   assert_equal "${actual}" "${expected}"

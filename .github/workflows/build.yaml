@@ -75,6 +75,10 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Install YQ YAML parser
+        run: |
+          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -o /usr/local/bin/yq
+          sudo chmod 755 /usr/local/bin/yq
       - name: Install Node interpreter
         uses: actions/setup-node@v2
         with:
@@ -144,6 +148,8 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
+      - name: Install YQ YAML parser
+        run: scoop install yq
       - name: Install PSScriptAnalyzer
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
