@@ -130,9 +130,9 @@ async function main(): Promise<void> {
     roles = roles.filter((role: RoleTest) => program.tags.includes(role.name));
   }
 
-  if (program.skips) {
+  if (program.skip) {
     roles = roles.filter(
-      (role: RoleTest) => !program.skips.includes(role.name)
+      (role: RoleTest) => !program.skip.includes(role.name)
     );
   }
 
