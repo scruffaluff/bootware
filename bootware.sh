@@ -36,10 +36,10 @@ OPTIONS:
     -i, --inventory <IP-List>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Bootware dependency installation
-    -p, --playbook <FILE-NAME>      Path to playbook to execute
         --password <PASSWORD>       Remote host user password
+    -p, --playbook <FILE-NAME>      Path to playbook to execute
+        --private-key <FILE-NAME>   Path to SSH private key
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
-        --ssh-key <FILE-NAME>       Path to SSH private key
         --start-at-role <ROLE>      Begin execution with role
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
     -u, --url <URL>                 URL of playbook repository
@@ -171,7 +171,6 @@ assert_cmd() {
 bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
-  local checkout
   local cmd="pull"
   local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
   local connection="local"
@@ -181,11 +180,9 @@ bootstrap() {
   local passwd
   local playbook
   local skip="${BOOTWARE_SKIP:-""}"
-  local ssh_key
   local start_role
   local tags="${BOOTWARE_TAGS:-""}"
   local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
-  local user_account="${USER:-root}"
   local windows
 
   # Check if Ansible should ask for user password.
@@ -201,10 +198,6 @@ bootstrap() {
     case "$1" in
       -c | --config)
         config_path="$2"
-        shift 2
-        ;;
-      --checkout)
-        checkout="$2"
         shift 2
         ;;
       -d | --dev)
@@ -250,10 +243,6 @@ bootstrap() {
         tags="$2"
         shift 2
         ;;
-      --ssh-key)
-        ssh_key="$2"
-        shift 2
-        ;;
       --start-at-role)
         start_role="$2"
         cmd='playbook'
@@ -261,10 +250,6 @@ bootstrap() {
         ;;
       -u | --url)
         url="$2"
-        shift 2
-        ;;
-      --user)
-        user_account="$2"
         shift 2
         ;;
       --windows)
@@ -280,15 +265,6 @@ bootstrap() {
         ;;
     esac
   done
-
-  # Check if Ansible has arguments required when using a Windows connection.
-  #
-  # Flags:
-  #   -n: Check if the string has nonzero length.
-  #   -z: Check if string has zero length.
-  if [[ -n "${windows:-}" && -z "${ssh_key:-}" ]]; then
-    error "An SSH key must be provided for Windows connection"
-  fi
 
   # Check if Bootware setup should be run.
   #
@@ -318,7 +294,7 @@ bootstrap() {
     start_task="$(
       yq '.[0].name' "${repo_dir}/roles/${start_role}/tasks/main.yaml"
     )"
-    extra_args+=("--start-at-task" "'${start_task}'")
+    extra_args+=("--start-at-task" "${start_task}")
   fi
 
   # Convenience logic for using a single host without a trailing comma.
@@ -346,8 +322,6 @@ bootstrap() {
     ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
     --extra-vars "ansible_python_interpreter=auto_silent" \
     ${windows:+--extra-vars "ansible_shell_type=powershell"} \
-    ${windows:+--extra-vars "ansible_ssh_private_key_file=${ssh_key}"} \
-    ${windows:+--extra-vars "ansible_user=${user_account}"} \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \

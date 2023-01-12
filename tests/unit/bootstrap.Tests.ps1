@@ -10,11 +10,11 @@ BeforeAll {
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        Mock wsl { Write-Output "wsl $($Args | % {$_})" }
+        Mock wsl { Write-Output "wsl $($Args | ForEach-Object {$_})" }
     }
     Else {
         Function wsl() {
-            Write-Output "wsl $($Args | % {$_})"
+            Write-Output "wsl $($Args | ForEach-Object {$_})"
         }
     }
 }
@@ -26,9 +26,10 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook $(WSLPath $Playbook) " `
-            + "--skip none --ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
-            + "$Env:UserName --start-at-task Install Deno for FreeBSD"
+            + "--private-key `$HOME/.ssh/bootware --skip none " `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
+            + "--tags desktop --user $Env:UserName " `
+            + "--start-at-task Install Deno for FreeBSD"
 
         $Actual = "$(& "$Bootware" bootstrap --start-at-role deno --playbook "$Playbook")"
         $Actual | Should -Be $Expected
@@ -39,9 +40,9 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
-            + "--skip none --ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--ssh-key `$HOME/.ssh/bootware --tags desktop --user " `
-            + "$Env:UserName"
+            + "--private-key `$HOME/.ssh/bootware --skip none " `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
+            + "--user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/playbook.yaml)"
         $Actual | Should -Be $Expected
@@ -52,10 +53,9 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --debug --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
-            + "--skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go " `
-            + "--user $Env:UserName"
+            + "--tags fd,go --user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --debug --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
@@ -67,10 +67,9 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
-            + "--skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go " `
-            + "--user $Env:UserName"
+            + "--tags fd,go --user $Env:UserName"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
@@ -82,10 +81,9 @@ Describe "Bootstrap" {
         $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
-            + "--skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--ssh-key `$HOME/.ssh/bootware --tags fd,go "`
-            + "--user $Env:UserName --timeout 60"
+            + "--tags fd,go --user $Env:UserName --timeout 60"
 
         $Actual = "$(& "$Bootware" bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --timeout 60 `

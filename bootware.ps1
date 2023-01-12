@@ -223,9 +223,9 @@ Function Bootstrap() {
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
+            --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
-            --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User" `
             $ExtraArgs
@@ -235,9 +235,9 @@ Function Bootstrap() {
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
+            --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
-            --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User"
     }
@@ -246,9 +246,9 @@ Function Bootstrap() {
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
+            --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
-            --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User" `
             $ExtraArgs
@@ -258,9 +258,9 @@ Function Bootstrap() {
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
+            --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
-            --ssh-key "`$HOME/.ssh/bootware" `
             --tags "$Tags" `
             --user "$User"
     }
