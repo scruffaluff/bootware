@@ -33,6 +33,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/gitui
     mode: "755"
+    remote_src: true
     src: /tmp/gitui
   become: true
   when: ansible_system == "Linux"

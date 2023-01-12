@@ -28,6 +28,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/scc
     mode: "755"
+    remote_src: true
     src: /tmp/scc
   become: true
   when: ansible_system == "Linux"

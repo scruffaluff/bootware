@@ -28,6 +28,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/lazydocker
     mode: "755"
+    remote_src: true
     src: /tmp/lazydocker
   become: true
   when: ansible_system == "Linux"

@@ -41,7 +41,7 @@ setup() {
   expected="ansible-playbook --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task 'Install Deno for FreeBSD' --connection local playbook.yaml"
+--start-at-task Install Deno for FreeBSD --connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
   assert_equal "${actual}" "${expected}"
@@ -103,10 +103,10 @@ ansible_python_interpreter=auto_silent --extra-vars \
   
   expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_python_interpreter=auto_silent \
---extra-vars ansible_shell_type=powershell --extra-vars \
-ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
+--extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
---skip-tags sometag --connection ssh main.yaml"
+--skip-tags sometag --ssh-key /fake/key/path --user fakeuser --connection ssh \
+main.yaml"
 
   actual="$(bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
     --ssh-key /fake/key/path --playbook main.yaml --user fakeuser)"
@@ -147,7 +147,7 @@ ansible_ssh_private_key_file=/fake/key/path --extra-vars ansible_user=fakeuser \
   expected="ansible-playbook --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task 'Install Deno for FreeBSD' --connection local \
+--start-at-task Install Deno for FreeBSD --connection local \
 ${tmp_dir}/playbook.yaml"
 
   actual="$(bootstrap --start-at-role deno)"

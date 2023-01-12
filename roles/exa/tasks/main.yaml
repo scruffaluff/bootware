@@ -29,6 +29,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/exa
     mode: "755"
+    remote_src: true
     src: /tmp/bin/exa
   become: true
   when: ansible_system == "Linux" and system_architecture == "amd64"

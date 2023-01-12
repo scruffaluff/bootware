@@ -28,6 +28,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/tilt
     mode: "755"
+    remote_src: true
     src: /tmp/tilt
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

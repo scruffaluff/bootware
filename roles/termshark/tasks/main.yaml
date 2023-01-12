@@ -45,6 +45,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/termshark
     mode: "755"
+    remote_src: true
     src: >-
       /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
       _termshark_arch[system_architecture] }}/termshark

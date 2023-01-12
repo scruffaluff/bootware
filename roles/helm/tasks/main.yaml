@@ -29,6 +29,7 @@
     dest: /usr/local/bin/helm
     mode: "755"
     owner: root
+    remote_src: true
     src: /tmp/linux-{{ system_architecture }}/helm
   become: true
   when: ansible_system == "Linux"

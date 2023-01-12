@@ -29,6 +29,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/xh
     mode: "755"
+    remote_src: true
     src: >-
       /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{
       _xh_arch[system_architecture] }}-unknown-linux-musl/xh

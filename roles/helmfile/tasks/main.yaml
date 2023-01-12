@@ -30,6 +30,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/helmfile
     mode: "755"
+    remote_src: true
     src: /tmp/helmfile
   become: true
   when: ansible_system == "Linux"

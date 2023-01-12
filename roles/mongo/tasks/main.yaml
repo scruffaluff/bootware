@@ -31,6 +31,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/mongosh
     mode: "755"
+    remote_src: true
     src: >-
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
       _mongosh_arch[system_architecture] }}/bin/mongosh

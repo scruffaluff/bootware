@@ -33,6 +33,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/hx
     mode: "755"
+    remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/hx
   become: true
   when: >-
@@ -66,6 +67,7 @@
   ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.config/helix/"
     mode: "755"
+    remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and

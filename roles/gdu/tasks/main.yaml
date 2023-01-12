@@ -29,6 +29,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/gdu
     mode: "755"
+    remote_src: true
     src: /tmp/gdu_linux_{{ system_architecture }}
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

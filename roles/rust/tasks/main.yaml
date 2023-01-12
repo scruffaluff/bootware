@@ -48,6 +48,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/rust-analyzer
     mode: "755"
+    remote_src: true
     src: /tmp/rust-analyzer
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

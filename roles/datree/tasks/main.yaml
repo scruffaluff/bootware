@@ -37,6 +37,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/datree
     mode: "755"
+    remote_src: true
     src: /tmp/datree
   become: true
   when: ansible_system == "Linux"

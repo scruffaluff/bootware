@@ -29,6 +29,7 @@
   ansible.builtin.copy:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
+    remote_src: true
     src: "/tmp/age/{{ item }}"
   become: true
   loop:

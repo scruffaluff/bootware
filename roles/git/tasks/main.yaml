@@ -42,6 +42,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/delta
     mode: "755"
+    remote_src: true
     src: >-
       /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
       _git_delta_arch[system_architecture] }}-unknown-linux-{{ _git_delta_env

@@ -35,6 +35,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/gh
     mode: "755"
+    remote_src: true
     src: >-
       /tmp/gh_{{ gh_formula.json.versions.stable }}_linux_{{ system_architecture
       }}/bin/gh

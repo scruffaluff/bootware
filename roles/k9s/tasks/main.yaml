@@ -33,6 +33,7 @@
   ansible.builtin.copy:
     dest: /usr/local/bin/k9s
     mode: "755"
+    remote_src: true
     src: /tmp/k9s
   become: true
   when: ansible_system == "Linux"
