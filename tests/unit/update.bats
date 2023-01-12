@@ -3,11 +3,11 @@
 
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load "../../node_modules/bats-support/load"
-  load "../../node_modules/bats-assert/load"
+  load '../../node_modules/bats-support/load'
+  load '../../node_modules/bats-assert/load'
 
   # Disable logging to simplify stdout for testing.
-  export BOOTWARE_NOLOG="true"
+  export BOOTWARE_NOLOG='true'
 
   # Mock functions for child processes by printing received arguments.
   #
@@ -15,7 +15,7 @@ setup() {
   #   -f: Use override as a function instead of a variable.
   command() {
     # shellcheck disable=SC2317
-    echo "/bin/bash"
+    echo '/bin/bash'
   }
   export -f command
 
@@ -26,7 +26,7 @@ setup() {
   export -f curl
 }
 
-@test "Update subcommand passes Bootware executable path to Curl" {
+@test 'Update subcommand passes Bootware executable path to Curl' {
   local actual
   local expected
   
@@ -38,7 +38,7 @@ https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Functon update uses sudo when destination is not writable" {
+@test 'Functon update uses sudo when destination is not writable' {
   local actual
   local expected="sudo curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
@@ -51,7 +51,7 @@ https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
   # Args:
   #   -f: Use override as a function instead of a variable.
   fullpath() {
-    echo "/bin/bash"
+    echo '/bin/bash'
   }
   export -f fullpath
 

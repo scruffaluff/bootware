@@ -77,6 +77,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Install YQ YAML parser
         run: |
+          Invoke-WebRequest -UseBasicParsing -Uri 'https://get.scoop.sh' | Invoke-Expression
           sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -o /usr/local/bin/yq
           sudo chmod 755 /usr/local/bin/yq
       - name: Install Node interpreter

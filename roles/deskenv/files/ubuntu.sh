@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Use Yaru-lightcolor theme.
-gsettings set org.gnome.desktop.interface gtk-theme "Yaru-light"
+gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-light'
 # Hide dock.
 gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
 # Do not show home folder icon on desktop.

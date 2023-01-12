@@ -93,8 +93,8 @@ configure_shell() {
 #   Writes error message to stderr.
 #######################################
 error() {
-  local bold_red="\033[1;31m"
-  local default="\033[0m"
+  local bold_red='\033[1;31m'
+  local default='\033[0m'
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
@@ -106,8 +106,8 @@ error() {
 #   Writes error message to stderr.
 #######################################
 error_usage() {
-  local bold_red="\033[1;31m"
-  local default="\033[0m"
+  local bold_red='\033[1;31m'
+  local default='\033[0m'
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   printf "Run 'bootware --help' for usage.\n" >&2
@@ -128,9 +128,9 @@ install_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${2:-}" ]]; then
-    ${1:+sudo} mkdir -p "/etc/fish/completions"
-    ${1:+sudo} curl -LSfs "${fish_url}" -o "/etc/fish/completions/bootware.fish"
-    ${1:+sudo} chmod 664 "/etc/fish/completions/bootware.fish"
+    ${1:+sudo} mkdir -p '/etc/fish/completions'
+    ${1:+sudo} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+    ${1:+sudo} chmod 664 '/etc/fish/completions/bootware.fish'
   else
     mkdir -p "${HOME}/.config/fish/completions"
     curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
@@ -148,9 +148,9 @@ install_man() {
   local man_url
   man_url="https://raw.githubusercontent.com/scruffaluff/bootware/$2/bootware.1"
 
-  ${1:+sudo} mkdir -p "/usr/local/share/man/man1"
-  ${1:+sudo} curl -LSfs "${man_url}" -o "/usr/local/share/man/man1/bootware.1"
-  ${1:+sudo} chmod 664 "/usr/local/share/man/man1/bootware.1"
+  ${1:+sudo} mkdir -p '/usr/local/share/man/man1'
+  ${1:+sudo} curl -LSfs "${man_url}" -o '/usr/local/share/man/man1/bootware.1'
+  ${1:+sudo} chmod 664 '/usr/local/share/man/man1/bootware.1'
 }
 
 #######################################
@@ -175,11 +175,11 @@ log() {
 #######################################
 main() {
   local dst_dir
-  local dst_file="/usr/local/bin/bootware"
+  local dst_file='/usr/local/bin/bootware'
   local src_url
-  local use_sudo=""
+  local use_sudo=''
   local user_install
-  local version="main"
+  local version='main'
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -219,11 +219,11 @@ main() {
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${user_install:-}" && ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
-    use_sudo=1
+    use_sudo='true'
   fi
   dst_dir="$(dirname "${dst_file}")"
 
-  log "Installing Bootware"
+  log 'Installing Bootware'
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.

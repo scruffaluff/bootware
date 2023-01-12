@@ -3,15 +3,15 @@
 
 setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load "../../node_modules/bats-support/load"
-  load "../../node_modules/bats-assert/load"
+  load '../../node_modules/bats-support/load'
+  load '../../node_modules/bats-assert/load'
   source bootware.sh
 
   # Disable logging to simplify stdout for testing.
-  export BOOTWARE_NOLOG="true"
+  export BOOTWARE_NOLOG='true'
   # Set BOOTWARE_NOPASSWD to a specific value, to avoid external effects from a
   # user's environment.
-  export BOOTWARE_NOPASSWD=""
+  export BOOTWARE_NOPASSWD=''
 
   # Mock functions for child processes by printing received arguments.
   #
@@ -30,13 +30,13 @@ setup() {
   export -f ansible-pull
 }
 
-@test "Bootstrap subcommand finds first task associated with role" {
+@test 'Bootstrap subcommand finds first task associated with role' {
   local actual
   local expected
 
   export BOOTWARE_NOPASSWD=1
-  export BOOTWARE_SKIP=""
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_SKIP=''
+  export BOOTWARE_TAGS=''
 
   expected="ansible-playbook --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
@@ -47,13 +47,13 @@ ansible_python_interpreter=auto_silent --extra-vars \
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand passes pull arguments to Ansible" {
+@test 'Bootstrap subcommand passes pull arguments to Ansible' {
   local actual
   local expected
 
   export BOOTWARE_NOPASSWD=1
-  export BOOTWARE_SKIP=""
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_SKIP=''
+  export BOOTWARE_TAGS=''
 
   expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --url \
@@ -63,12 +63,12 @@ https://github.com/scruffaluff/bootware.git playbook.yaml"
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand passes dev arguments to Ansible" {
+@test 'Bootstrap subcommand passes dev arguments to Ansible' {
   local actual
   local expected
 
-  export BOOTWARE_SKIP=""
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_SKIP=''
+  export BOOTWARE_TAGS=''
   
   expected="ansible-playbook --ask-become-pass --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
@@ -79,12 +79,12 @@ ansible_python_interpreter=auto_silent --extra-vars \
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand passes extra arguments to Ansible" {
+@test 'Bootstrap subcommand passes extra arguments to Ansible' {
   local actual
   local expected
 
-  export BOOTWARE_SKIP=""
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_SKIP=''
+  export BOOTWARE_TAGS=''
   
   expected="ansible-playbook --ask-become-pass --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
@@ -95,11 +95,11 @@ ansible_python_interpreter=auto_silent --extra-vars \
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand passes Windows SSH arguments to Ansible" {
+@test 'Bootstrap subcommand passes Windows SSH arguments to Ansible' {
   local actual
   local expected
 
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_TAGS=''
   
   expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_python_interpreter=auto_silent \
@@ -113,25 +113,25 @@ main.yaml"
   assert_equal "${actual}" "${expected}"
 }
 
-@test "Bootstrap subcommand does not set Ansible environment variable" {
+@test 'Bootstrap subcommand does not set Ansible environment variable' {
   bootstrap
-  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ""
+  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ''
 }
 
-@test "Bootstrap subcommand sets Ansible environment variable" {
+@test 'Bootstrap subcommand sets Ansible environment variable' {
   bootstrap --debug
-  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" "True"
+  assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" 'True'
 }
 
-@test "Bootstrap subcommand uses local copy during start at task" {
+@test 'Bootstrap subcommand uses local copy during start at task' {
   local actual
   local expected
   local tmp_dir
   tmp_dir="$(mktemp -u)"
 
   export BOOTWARE_NOPASSWD=1
-  export BOOTWARE_SKIP=""
-  export BOOTWARE_TAGS=""
+  export BOOTWARE_SKIP=''
+  export BOOTWARE_TAGS=''
 
   source bootware.sh
 

@@ -171,18 +171,18 @@ assert_cmd() {
 bootstrap() {
   # /dev/null is never a normal file.
   local ask_passwd
-  local cmd="pull"
-  local config_path="${BOOTWARE_CONFIG:-"/dev/null"}"
-  local connection="local"
+  local cmd='pull'
+  local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
+  local connection='local'
   local extra_args=()
-  local inventory="127.0.0.1,"
-  local no_setup="${BOOTWARE_NOSETUP:-""}"
+  local inventory='127.0.0.1,'
+  local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
   local playbook
-  local skip="${BOOTWARE_SKIP:-""}"
+  local skip="${BOOTWARE_SKIP:-}"
   local start_role
-  local tags="${BOOTWARE_TAGS:-""}"
-  local url="${BOOTWARE_URL:-"https://github.com/scruffaluff/bootware.git"}"
+  local tags="${BOOTWARE_TAGS:-}"
+  local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
   local windows
 
   # Check if Ansible should ask for user password.
@@ -201,21 +201,21 @@ bootstrap() {
         shift 2
         ;;
       -d | --dev)
-        cmd="playbook"
-        playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
+        cmd='playbook'
+        playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
         shift 1
         ;;
       --debug)
-        export ANSIBLE_ENABLE_TASK_DEBUGGER="True"
+        export ANSIBLE_ENABLE_TASK_DEBUGGER='True'
         shift 1
         ;;
       -h | --help)
-        usage "bootstrap"
+        usage 'bootstrap'
         exit 0
         ;;
       -i | --inventory)
-        cmd="playbook"
-        connection="ssh"
+        cmd='playbook'
+        connection='ssh'
         inventory="$2"
         shift 2
         ;;
@@ -254,8 +254,8 @@ bootstrap() {
         ;;
       --windows)
         ask_passwd=''
-        cmd="playbook"
-        connection="ssh"
+        cmd='playbook'
+        connection='ssh'
         windows='true'
         shift 1
         ;;
@@ -294,7 +294,7 @@ bootstrap() {
     start_task="$(
       yq '.[0].name' "${repo_dir}/roles/${start_role}/tasks/main.yaml"
     )"
-    extra_args+=("--start-at-task" "${start_task}")
+    extra_args+=('--start-at-task' "${start_task}")
   fi
 
   # Convenience logic for using a single host without a trailing comma.
@@ -305,23 +305,23 @@ bootstrap() {
   if [[ "${cmd}" == 'playbook' ]]; then
     extra_args+=('--connection' "${connection}")
   elif [[ "${cmd}" == 'pull' ]]; then
-    playbook="${BOOTWARE_PLAYBOOK:-"playbook.yaml"}"
+    playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
     extra_args+=('--url' "${url}")
   fi
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
 
-  log "Executing Ansible ${cmd:-pull}"
-  log "Enter your user account password if prompted"
+  log "Executing Ansible ${cmd}"
+  log 'Enter your user account password if prompted'
 
   "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
-    ${windows:+--extra-vars "ansible_pkg_mgr=scoop"} \
-    --extra-vars "ansible_python_interpreter=auto_silent" \
-    ${windows:+--extra-vars "ansible_shell_type=powershell"} \
+    ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
+    --extra-vars 'ansible_python_interpreter=auto_silent' \
+    ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
@@ -352,11 +352,11 @@ config() {
         shift 2
         ;;
       -e | --empty)
-        empty_cfg="true"
+        empty_cfg='true'
         shift 1
         ;;
       -h | --help)
-        usage "config"
+        usage 'config'
         exit 0
         ;;
       -s | --source)
@@ -377,9 +377,9 @@ config() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [[ "${empty_cfg:-}" == "true" || -z "${src_url:-}" ]]; then
+  if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
-    printf "passwordless_sudo: false" > "${dst_file}"
+    printf 'passwordless_sudo: false' > "${dst_file}"
   else
     assert_cmd curl
 
@@ -420,8 +420,8 @@ dnf_check_update() {
 #   Writes error message to stderr.
 #######################################
 error() {
-  local bold_red="\033[1;31m"
-  local default="\033[0m"
+  local bold_red='\033[1;31m'
+  local default='\033[0m'
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
@@ -433,8 +433,8 @@ error() {
 #   Writes error message to stderr.
 #######################################
 error_usage() {
-  local bold_red="\033[1;31m"
-  local default="\033[0m"
+  local bold_red='\033[1;31m'
+  local default='\033[0m'
 
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
@@ -464,7 +464,7 @@ find_config_path() {
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
   else
-    log "Unable to find Bootware configuation file."
+    log 'Unable to find Bootware configuation file.'
     config --empty
     RET_VAL="${HOME}/.bootware/config.yaml"
   fi
@@ -507,13 +507,13 @@ log() {
 setup() {
   local os_type
   local tmp_dir
-  local use_sudo
+  local use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
       -h | --help)
-        usage "setup"
+        usage 'setup'
         exit 0
         ;;
       *)
@@ -553,7 +553,7 @@ setup() {
   collections=('chocolatey.chocolatey' 'community.general' 'community.windows')
   for collection in "${collections[@]}"; do
     collection_status="$(ansible-galaxy collection list "${collection}" 2>&1)"
-    if [[ "${collection_status}" =~ "unable to find" ]]; then
+    if [[ "${collection_status}" =~ 'unable to find' ]]; then
       ansible-galaxy collection install "${collection}"
     fi
   done
@@ -569,7 +569,7 @@ setup_alpine() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} apk update
@@ -583,13 +583,13 @@ setup_alpine() {
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     ${1:+sudo} apk update
     ${1:+sudo} apk add curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     ${1:+sudo} apk update
     ${1:+sudo} apk add git
   fi
@@ -605,31 +605,31 @@ setup_arch() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
-    log "Installing Yay package manager"
+    log 'Installing Yay package manager'
     ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm base-devel
 
     tmp_dir="$(mktemp -u)"
-    git clone --depth 1 "https://aur.archlinux.org/yay.git" "${tmp_dir}"
+    git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
     (cd "${tmp_dir}" && makepkg --noconfirm -is)
     yay --noconfirm -Suy
   fi
@@ -640,7 +640,7 @@ setup_arch() {
 #######################################
 setup_debian() {
   # Avoid APT interactively requesting to configure tzdata.
-  export DEBIAN_FRONTEND="noninteractive"
+  export DEBIAN_FRONTEND='noninteractive'
 
   # Install dependencies for Bootware.
   #
@@ -650,7 +650,7 @@ setup_debian() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
-    log "Installing Ansible"
+    log 'Installing Ansible'
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
 
@@ -659,13 +659,13 @@ setup_debian() {
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y git
   fi
@@ -681,7 +681,7 @@ setup_fedora() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "$1"
@@ -689,13 +689,13 @@ setup_fedora() {
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y git
   fi
@@ -709,7 +709,7 @@ setup_freebsd() {
 
   # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     ${1:+sudo} pkg update
@@ -725,14 +725,14 @@ setup_freebsd() {
 
   # Install Curl if not already installed.
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     ${1:+sudo} pkg update
     ${1:+sudo} pkg install -y curl
   fi
 
   # Install Git if not already installed.
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     ${1:+sudo} pkg update
     ${1:+sudo} pkg install -y git
   fi
@@ -758,7 +758,7 @@ setup_linux() {
   elif [[ -x "$(command -v zypper)" ]]; then
     setup_suse "$1"
   else
-    error "Unable to find supported package manager"
+    error 'Unable to find supported package manager'
   fi
 }
 
@@ -777,7 +777,7 @@ setup_macos() {
   # Flags:
   #   -p: Print path to active developer directory.
   if ! xcode-select -p &> /dev/null; then
-    log "Installing command line tools for XCode"
+    log 'Installing command line tools for XCode'
     sudo xcode-select --install
   fi
 
@@ -787,7 +787,7 @@ setup_macos() {
   # Flags:
   #   -d: Check if path exists and is a directory.
   #   -p: Print machine processor name.
-  if [[ "$(uname -p)" == "arm" && ! -d "/opt/homebrew" ]]; then
+  if [[ "$(uname -p)" == 'arm' && ! -d '/opt/homebrew' ]]; then
     softwareupdate --agree-to-license --install-rosetta
   fi
 
@@ -800,19 +800,19 @@ setup_macos() {
   #   -s: Disable progress bars.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v brew)" ]]; then
-    log "Installing Homebrew"
-    curl -LSfs "https://raw.githubusercontent.com/Homebrew/install/master/install.sh" | bash
+    log 'Installing Homebrew'
+    curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
   fi
 
   # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     brew install ansible
   fi
 
   # Install Git if not already installed.
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     brew install git
   fi
 }
@@ -827,7 +827,7 @@ setup_suse() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
-    log "Installing Ansible"
+    log 'Installing Ansible'
     ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y python3 python3-pip
 
@@ -836,13 +836,13 @@ setup_suse() {
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
-    log "Installing Curl"
+    log 'Installing Curl'
     ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
-    log "Installing Git"
+    log 'Installing Git'
     ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y git
   fi
@@ -855,13 +855,13 @@ setup_suse() {
 #######################################
 uninstall() {
   local dst_file
-  local use_sudo
+  local use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
       -h | --help)
-        usage "uninstall"
+        usage 'uninstall'
         exit 0
         ;;
       *)
@@ -887,7 +887,7 @@ uninstall() {
   # unable to find the "" command.
   ${use_sudo:+sudo} rm "${dst_file}"
 
-  log "Uninstalled Bootware"
+  log 'Uninstalled Bootware'
 }
 
 #######################################
@@ -900,14 +900,14 @@ uninstall() {
 update() {
   local dst_file
   local src_url
-  local use_sudo
-  local version="main"
+  local use_sudo=''
+  local version='main'
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
       -h | --help)
-        usage "update"
+        usage 'update'
         exit 0
         ;;
       -v | --version)
@@ -935,7 +935,7 @@ update() {
     use_sudo='true'
   fi
 
-  log "Updating Bootware"
+  log 'Updating Bootware'
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
@@ -951,7 +951,7 @@ update() {
 #   Bootware version string.
 #######################################
 version() {
-  echo "Bootware 0.5.0"
+  echo 'Bootware 0.5.0'
 }
 
 #######################################
@@ -981,7 +981,7 @@ main() {
       update "$@"
       ;;
     -h | --help)
-      usage "main"
+      usage 'main'
       ;;
     -v | --version)
       version

@@ -19,10 +19,10 @@ gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
 
 # Maximize application windows when double clicking the title bar.
-gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar "toggle-maximize"
+gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'toggle-maximize'
 
 # Add maximize and minimize buttons to application window title bars.
-gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
 # Use dynamic workspaces.
 gsettings set org.gnome.mutter dynamic-workspaces true
