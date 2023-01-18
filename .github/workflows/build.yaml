@@ -58,12 +58,10 @@ jobs:
           sudo chmod 755 "/usr/local/bin/shfmt"
       - name: Check format of shell scripts
         run: npm run shfmt:test
+      - name: Install ShellCheck
+        run: sudo apt install -y shellcheck
       - name: Run ShellCheck on shell scripts
-        uses: ludeeus/action-shellcheck@master
-        with:
-          additional_files: .bash_profile .bashrc '*.bats'
-          ignore_paths: .venv node_modules
-          severity: style
+        run: npm run shellcheck:test
       - name: Lint Ansible playbook and roles
         run: |
           poetry run ansible-lint --version

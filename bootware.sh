@@ -959,37 +959,50 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  case "${1:-}" in
-    bootstrap)
-      shift 1
-      bootstrap "$@"
-      ;;
-    config)
-      shift 1
-      config "$@"
-      ;;
-    setup)
-      shift 1
-      setup "$@"
-      ;;
-    uninstall)
-      shift 1
-      uninstall "$@"
-      ;;
-    update)
-      shift 1
-      update "$@"
-      ;;
-    -h | --help)
-      usage 'main'
-      ;;
-    -v | --version)
-      version
-      ;;
-    *)
-      error_usage "No such subcommand '${1:-}'"
-      ;;
-  esac
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      --debug)
+        set -o xtrace
+        shift 1
+        ;;
+      bootstrap)
+        shift 1
+        bootstrap "$@"
+        exit 0
+        ;;
+      config)
+        shift 1
+        config "$@"
+        exit 0
+        ;;
+      setup)
+        shift 1
+        setup "$@"
+        exit 0
+        ;;
+      uninstall)
+        shift 1
+        uninstall "$@"
+        exit 0
+        ;;
+      update)
+        shift 1
+        update "$@"
+        exit 0
+        ;;
+      -h | --help)
+        usage 'main'
+        exit 0
+        ;;
+      -v | --version)
+        version
+        exit 0
+        ;;
+      *)
+        error_usage "No such subcommand or option '$1'"
+        ;;
+    esac
+  done
 }
 
 # Only run main if invoked as script. Otherwise import functions as library.

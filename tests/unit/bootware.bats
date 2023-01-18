@@ -14,7 +14,7 @@ setup() {
 @test 'Bootware throws error for unkown subcommand' {
   run bootware.sh notasubcommand
   assert_equal "${status}" 2
-  assert_output --partial "No such subcommand 'notasubcommand'"
+  assert_output --partial "No such subcommand or option 'notasubcommand'"
 }
 
 @test 'Function find_config_path returns given executable files' {

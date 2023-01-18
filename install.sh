@@ -184,6 +184,10 @@ main() {
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
     case "$1" in
+      --debug)
+        set -o xtrace
+        shift 1
+        ;;
       -d | --dest)
         dst_file="$2"
         shift 2

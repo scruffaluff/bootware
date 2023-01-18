@@ -5,3 +5,4 @@
 
 disable=SC1091
 enable=add-default-case,avoid-nullary-conditions,quote-safe-variables,require-variable-braces
+severity=style

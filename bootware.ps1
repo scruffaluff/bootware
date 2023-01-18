@@ -159,7 +159,7 @@ Function Bootstrap() {
                 Break
             }
             { $_ -In '-s', '--skip' } {
-                $Skip = $Args[0][$ArgIdx + 1] -Join ","
+                $Skip = $Args[0][$ArgIdx + 1] -Join ','
                 $ArgIdx += 2
                 Break
             }
@@ -169,7 +169,7 @@ Function Bootstrap() {
                 Break
             }
             { $_ -In '-t', '--tags' } {
-                $Tags = $Args[0][$ArgIdx + 1] -Join ","
+                $Tags = $Args[0][$ArgIdx + 1] -Join ','
                 $ArgIdx += 2
                 Break
             }
@@ -503,7 +503,7 @@ Function SetupSSHKeys {
         $WindowsKeyPath = [System.IO.Path]::GetTempFileName()
         Remove-Item -Force -Path "$WindowsKeyPath"
 
-        ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519
+        ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
             -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `

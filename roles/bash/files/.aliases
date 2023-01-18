@@ -3,6 +3,20 @@
 alias cargo-expand="cargo expand --theme 'Solarized (light)'"
 alias cargo-testpath="cargo test --no-run --message-format=json | jq -r 'select(.profile.test == true) | .filenames[]'"
 alias diff='diff -u'
-alias emacs='emacs -nw'
 alias exa='exa -Fhl -s type --color auto'
 alias procs='procs --theme light'
+
+# Add unified clipboard aliases.
+#
+# Flags:
+#   -s: Print machine kernel name.
+#   -x: Check if file exists and execute permission is granted.
+if [[ "$(uname -s)" == 'Darwin' ]]; then
+  alias cbcopy='pbcopy'
+  alias cbpaste='pbpaste'
+else
+  if [[ -x "$(command -v wl-copy)" ]]; then
+    alias cbcopy='wl-copy'
+    alias cbpaste='wl-paste'
+  fi
+fi
