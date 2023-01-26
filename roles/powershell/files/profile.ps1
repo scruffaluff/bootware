@@ -1,8 +1,24 @@
-﻿# PowerShell settings file.
+# PowerShell settings file.
 #
-# For more information, visit
+# To progile PowerShell profile startup time, install PSProfiler,
+# https://github.com/IISResetMe/PSProfiler, with command
+# 'Install-Module -Name PSProfiler'. Then run command
+# 'Measure-Script -Path $Profile'. For more information about the PowerShell
+# profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
+Function HistoryDelete($Command) {
+    $Reply = Read-Host -Prompt "Delete command '$Command' from PowerShell history? [Y/n]"
+
+    If ($Reply -In 'Y', 'y', 'Yes', 'yes') {
+        $HistoryPath = $(Get-PSReadLineOption).HistorySavePath
+        $Content = $(Get-Content -Path "$HistoryPath" | Select-String -NotMatch -SimpleMatch -Pattern "$Command")
+
+        # Do not quote $Content variable. It will remove newlines.
+        Set-Content -Path "$HistoryPath" -Value $Content
+        Write-Output "Removed command '$Command' from PowerShell history"
+    }
+}
 
 # Convenience functions.
 Function Export($Name, $Value) {
@@ -129,6 +145,20 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         Set-PsFzfOption `
             -PSReadlineChordProvider 'Ctrl+t' `
             -PSReadlineChordReverseHistory 'Ctrl+r'
+    }
+
+    # Add ctrl+d key binding to delete current command from PowerShell history.
+    Set-PSReadLineKeyHandler -Chord Ctrl+d -ScriptBlock {
+        $Command = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Command, [ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineBelow()
+
+        If ($Command) {
+            HistoryDelete "$Command"
+            Start-Sleep -Seconds 1
+            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        }
     }
 }
 

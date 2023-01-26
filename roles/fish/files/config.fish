@@ -1,6 +1,8 @@
 # Fish settings file.
 #
-# For more information, visit
+# To profile Fish configuration startup time, run command
+# 'fish --command exit --profile-startup profile.log'. For more information
+# about the Fish configuration file, visit
 # https://fishshell.com/docs/current/index.html#configuration-files.
 
 # Do not use flag '--query' instead of '-q'. Flag '--quiet' was renamed to
@@ -23,6 +25,21 @@ if not type -q fish_add_path
     if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
       set --export PATH "$argv[1]" $PATH
     end
+  end
+end
+
+# Prompt user to remove current command from Fish history.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function delete_commandline_from_history
+  set command_ (commandline)
+
+  if test -n (string trim "$command_")
+    echo ''
+    history delete "$command_"
+    history save
+    commandline --function kill-whole-line
   end
 end
 
@@ -317,6 +334,23 @@ if type -q nvm
   nvm use default
 end
 
+# Zellij settings.
+
+# Autostart Zellij or connect to existing session if within Alacritty terminal.
+#
+# For more information, visit https://zellij.dev/documentation/integration.html.
+if type -q zellij; and not ssh_session; and test "$TERM" = 'alacritty'
+  # Attach to a default session if it exists.
+  set --export ZELLIJ_AUTO_ATTACH 'true'
+  # Exit the shell when Zellij exits.
+  set --export ZELLIJ_AUTO_EXIT 'true'
+  
+  # If within an interactive shell, create or connect to Zellij session.
+  if status is-interactive
+    eval (zellij setup --generate-auto-start fish | string collect)
+  end
+end
+
 # User settings.
 
 # Helix settings.
@@ -337,24 +371,15 @@ fish_add_path "$HOME/.local/bin"
 set --export WASMTIME_HOME "$HOME/.wasmtime"
 fish_add_path "$WASMTIME_HOME/bin"
 
-# Zellij settings.
-
-# Autostart Zellij or connect to existing session if within Alacritty terminal.
-#
-# For more information, visit https://zellij.dev/documentation/integration.html.
-if type -q zellij; and not ssh_session; and test "$TERM" = 'alacritty'
-  # Attach to a default session if it exists.
-  set --export ZELLIJ_AUTO_ATTACH 'true'
-  # Exit the shell when Zellij exits.
-  set --export ZELLIJ_AUTO_EXIT 'true'
-  
-  # If within an interactive shell, create or connect to Zellij session.
-  if status is-interactive
-    eval (zellij setup --generate-auto-start fish | string collect)
-  end
-end
-
-# Apple Silicon support.
-
-# Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
+# Ensure Homebrew Arm64 binaries are found before x86_64 binaries on Apple
+# silicon computers.
 fish_add_path '/opt/homebrew/bin'
+
+# Fish user key bindings. 
+#
+# To discover Fish character sequences for keybindings, use the
+# 'fish_key_reader' command. For more information, visit
+# https://fishshell.com/docs/current/cmds/bind.html.
+function fish_user_key_bindings
+  bind \cD delete_commandline_from_history
+end

@@ -316,7 +316,5 @@ prepend_path "${HOME}/.local/bin"
 export WASMTIME_HOME="${HOME}/.wasmtime"
 prepend_path "${WASMTIME_HOME}/bin"
 
-# Apple Silicon support.
-
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
 prepend_path '/opt/homebrew/bin'
