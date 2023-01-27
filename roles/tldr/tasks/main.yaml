@@ -1,18 +1,11 @@
 ---
-- name: Install TLDR for Alpine
-  ansible.builtin.shell:
-    cmd: |
-      source {{ ansible_env.HOME }}/.bashrc
-      npm install -g tldr
-    executable: "{{ bash_executable }}"
-  environment:
-    PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
-  when: ansible_pkg_mgr == "apk"
-
-# Arch tldr package has file conflicts with Arch Python package.
-- name: Install TLDR for Arch
-  ansible.builtin.command: yay -Sy --noconfirm tealdeer
-  when: ansible_pkg_mgr == "pacman"
+- name: Get latest TLDR version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/tealdeer.json
+  register: tldr_formula
+  when: ansible_system != "Win32NT"
 
 - name: Install TLDR for FreeBSD
   become: true
@@ -21,22 +14,29 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install TLDR for Linux
-  ansible.builtin.package:
-    name: tldr
-    state: present
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/tldr
+    mode: "755"
+    owner: root
+    url: >-
+      https://github.com/dbrgn/tealdeer/releases/download/v{{
+      tldr_formula.json.versions.stable }}/tealdeer-linux-{{
+      tldr_arch[system_architecture] }}
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "pacman",
-    "zypper"]
+  vars:
+    tldr_arch:
+      amd64: x86_64-musl
+      arm64: arm-musleabihf
+  when: ansible_system == "Linux"
 
 - name: Install TLDR for MacOS
   community.general.homebrew:
-    name: tldr
+    name: tealdeer
   when: ansible_system == "Darwin"
 
 - name: Install TDLR for Windows
   community.windows.win_scoop:
-    name: tldr
+    name: tealdeer
   when: ansible_system == "Win32NT"
 
 - name: Create TLDR repository directory for Linux
@@ -49,10 +49,25 @@
 
 - name: Update TLDR documentation for Unix
   ansible.builtin.command: tldr --update
-  environment:
-    PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "zypper"
+  when: ansible_system != "Win32NT"
 
 - name: Update TLDR documentation for Windows
   ansible.windows.win_command: tldr --update
   when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    state: directory
+  when: ansible_system != "Win32NT"
+
+- name: Install TLDR Fish completion for Unix
+  ansible.builtin.get_url:
+    dest: "{{ ansible_env.HOME }}/.config/fish/completions/tldr.fish"
+    mode: "755"
+    url: >-
+      https://github.com/dbrgn/tealdeer/releases/download/v{{
+      tldr_formula.json.versions.stable }}/completions_fish
+  when: ansible_system != "Win32NT"

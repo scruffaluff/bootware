@@ -9,14 +9,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Debug flags for shell scripts.
 - Flag to start execution at a role.
 - GDU role.
+- History deletion key bindings.
 - Suse support for several roles.
 
 ### Changed
 
 - Refactor architecture variables.
 - Split system role into essential and update roles.
+- TLDR role to use Tealdeer.
 
 ### Fixed
 

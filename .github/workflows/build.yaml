@@ -156,10 +156,8 @@ jobs:
           Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting
           CodeFormatting
         shell: pwsh
-      # EnableExit flag is not used since ScriptAnalyzer fails to exclude
-      # PSUseDeclaredVarsMoreThanAssignment rule.
       - name: Run PSScriptAnalyzer code lints on all PowerShell scripts
-        run: Invoke-ScriptAnalyzer -Recurse -Path .
+        run: Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
         shell: pwsh
       - name: Install Pester
         run: Install-Module -Force -Name Pester

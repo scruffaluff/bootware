@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: node
-    when: ansible_pkg_mgr == "apk"

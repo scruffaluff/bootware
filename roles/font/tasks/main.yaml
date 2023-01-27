@@ -39,5 +39,6 @@
 
 - name: Install Fira Code font for Windows
   community.windows.win_scoop:
+    global: true
     name: firacode
   when: ansible_system == "Win32NT"

@@ -2,7 +2,7 @@
 - name: Install Windows Terminal for Windows
   community.windows.win_scoop:
     name: windows-terminal
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and "Windows 10" in ansible_distribution
 
 # Configuration file can be in multiple locations depending on package installer
 # and Windows version.

@@ -381,12 +381,9 @@
       ansible.builtin.import_role:
         name: gcp
       tags:
-        - cloud
-        - container
-        - desktop
+        - extras
         - gcp
-        - server
-        - wsl
+        - never
 
     - name: Install GDU disk space analyzer
       ansible.builtin.import_role:

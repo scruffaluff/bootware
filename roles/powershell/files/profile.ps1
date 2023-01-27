@@ -12,10 +12,18 @@ Function HistoryDelete($Command) {
 
     If ($Reply -In 'Y', 'y', 'Yes', 'yes') {
         $HistoryPath = $(Get-PSReadLineOption).HistorySavePath
-        $Content = $(Get-Content -Path "$HistoryPath" | Select-String -NotMatch -SimpleMatch -Pattern "$Command")
-
+        $Content = $(Get-Content -Path "$HistoryPath" | Where-Object { $_ -NE "$Command" })
         # Do not quote $Content variable. It will remove newlines.
         Set-Content -Path "$HistoryPath" -Value $Content
+
+        # Clear the current PSReadLine history session and repopulate it with
+        # filtered commands.
+        #
+        # Solution taken from
+        # https://github.com/PowerShell/PSReadLine/issues/494#issuecomment-273358367.
+        [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory()
+        $Content | Where-Object { [Microsoft.PowerShell.PSConsoleReadLine]::AddToHistory($_) }
+
         Write-Output "Removed command '$Command' from PowerShell history"
     }
 }
@@ -156,7 +164,6 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
         If ($Command) {
             HistoryDelete "$Command"
-            Start-Sleep -Seconds 1
             [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
         }
     }
@@ -194,6 +201,8 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 # Tool settings.
 
 $Env:BAT_THEME = 'Solarized (light)'
+Set-Alias -Name cbcopy -Value Set-Clipboard
+Set-Alias -Name cbpaste -Value Get-Clipboard
 Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 

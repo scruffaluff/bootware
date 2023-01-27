@@ -50,12 +50,12 @@ Describe "Bootstrap" {
 
     It "Subcommand passes debug argument to WSL copy of Bootware" {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --debug --windows --config " `
+        $Expected = "wsl bootware bootstrap --windows --config " `
             + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
             + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd,go --user $Env:UserName"
+            + "--tags fd,go --user $Env:UserName --debug"
 
         $Actual = "$(& "$Bootware" bootstrap --debug --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"

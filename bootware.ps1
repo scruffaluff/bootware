@@ -17,6 +17,7 @@ USAGE:
 
 OPTIONS:
     -c, --config <PATH>             Path to bootware user configuation file
+        --debug                     Enable Ansible task debugger
     -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
         --no-passwd                 Do not ask for user password
@@ -57,6 +58,7 @@ USAGE:
     bootware [OPTIONS] [SUBCOMMAND]
 
 OPTIONS:
+        --debug      Enable shell debug traces
     -h, --help       Print help information
     -v, --version    Print version information
 
@@ -117,7 +119,6 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ''
-    $Debug = 0
     $ExtraArgs = @()
     $Playbook = "$PSScriptRoot/repo/playbook.yaml"
     $Skip = 'none'
@@ -136,11 +137,6 @@ Function Bootstrap() {
             { $_ -In '-d', '--dev' } {
                 $Playbook = "$(Get-Location)/playbook.yaml"
                 $UseSetup = 0
-                $ArgIdx += 1
-                Break
-            }
-            '--debug' {
-                $Debug = 1
                 $ArgIdx += 1
                 Break
             }
@@ -186,6 +182,7 @@ Function Bootstrap() {
             Default {
                 $ExtraArgs += $Args[0][$ArgIdx]
                 $ArgIdx += 1
+                Break
             }
         }
     }
@@ -218,8 +215,8 @@ Function Bootstrap() {
     #
     # $ExtraArgs needs to be passed as an array to WSL. Do not change it into a
     # string.
-    If ($Debug -And $ExtraArgs.Count -GT 0) {
-        wsl bootware bootstrap --debug --windows `
+    If ($Global:Debug -And $ExtraArgs.Count -GT 0) {
+        wsl bootware --debug bootstrap --windows `
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
@@ -230,8 +227,8 @@ Function Bootstrap() {
             --user "$User" `
             $ExtraArgs
     }
-    ElseIf ($Debug) {
-        wsl bootware bootstrap --debug --windows `
+    ElseIf ($Global:Debug) {
+        wsl bootware --debug bootstrap --windows `
             --config "$ConfigPath" `
             --inventory "$Inventory," `
             --playbook "$PlaybookPath" `
@@ -354,6 +351,7 @@ Function FindConfigPath($FilePath) {
     }
 
     Log "Using $ConfigPath as configuration file"
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
     $Global:RetVal = "$ConfigPath"
 }
 
@@ -374,6 +372,16 @@ Function FindRelativeIP {
     }
     Else {
         Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
+    }
+}
+
+# Get parameters for subcommands.
+Function GetParameters($Params, $Index) {
+    If ($Params.Length -GT $Index) {
+        Return $Params[$Index..($Params.Length - 1)]
+    }
+    Else {
+        Return @()
     }
 }
 
@@ -642,7 +650,12 @@ Function SetupWSL($Branch) {
         wsl curl -LSfs `
             https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh `
             `| bash -s -- --version "$Branch"
-        wsl bootware setup
+        If ($Global:Debug) {
+            wsl bootware --debug setup
+        }
+        Else {
+            wsl bootware setup
+        }
     }
 }
 
@@ -666,7 +679,12 @@ Function Uninstall() {
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
-            wsl bootware uninstall `> /dev/null
+            If ($Global:Debug) {
+                wsl bootware --debug uninstall
+            }
+            Else {
+                wsl bootware uninstall `> /dev/null
+            }
         }
     }
 
@@ -703,7 +721,12 @@ Function Update() {
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
-            wsl bootware update --version "$Version" `> /dev/null
+            If ($Global:Debug) {
+                wsl bootware --debug update --version "$Version"
+            }
+            Else {
+                wsl bootware update --version "$Version" `> /dev/null
+            }
         }
     }
 
@@ -730,45 +753,53 @@ Function WSLPath($FilePath) {
 
 # Script entrypoint.
 Function Main() {
-    # Get subcommand parameters.
-    If ($Args[0].Length -GT 1) {
-        $Slice = $Args[0][1..($Args[0].Length - 1)]
-    }
-    Else {
-        $Slice = @()
-    }
+    $ArgIdx = 0
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
+    $Global:Debug = 0
 
-    Switch ($Args[0][0]) {
-        { $_ -In '-h', '--help' } {
-            Usage 'main'
-            Break
-        }
-        { $_ -In '-v', '--version' } {
-            Version
-            Break
-        }
-        'bootstrap' {
-            Bootstrap $Slice
-            Break
-        }
-        'config' {
-            Config $Slice
-            Break
-        }
-        'setup' {
-            Setup $Slice
-            Break
-        }
-        'uninstall' {
-            Uninstall $Slice
-            Break
-        }
-        'update' {
-            Update $Slice
-            Break
-        }
-        Default {
-            ErrorUsage "No such subcommand '$($Args[0][0])'"
+    While ($ArgIdx -LT $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
+            '--debug' {
+                $Global:Debug = 1
+                $ArgIdx += 1
+                Break
+            }
+            { $_ -In '-h', '--help' } {
+                Usage 'main'
+                Exit 0
+            }
+            { $_ -In '-v', '--version' } {
+                Version
+                Exit 0
+            }
+            'bootstrap' {
+                $ArgIdx += 1
+                Bootstrap $(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            'config' {
+                $ArgIdx += 1
+                Config $(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            'setup' {
+                $ArgIdx += 1
+                Setup $(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            'uninstall' {
+                $ArgIdx += 1
+                Uninstall $(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            'update' {
+                $ArgIdx += 1
+                Update $(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            Default {
+                ErrorUsage "No such subcommand or option '$($Args[0][0])'"
+            }
         }
     }
 }
