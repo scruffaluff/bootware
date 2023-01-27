@@ -774,27 +774,27 @@ Function Main() {
             }
             'bootstrap' {
                 $ArgIdx += 1
-                Bootstrap $(GetParameters $Args[0] $ArgIdx)
+                Bootstrap @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             'config' {
                 $ArgIdx += 1
-                Config $(GetParameters $Args[0] $ArgIdx)
+                Config @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             'setup' {
                 $ArgIdx += 1
-                Setup $(GetParameters $Args[0] $ArgIdx)
+                Setup @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             'uninstall' {
                 $ArgIdx += 1
-                Uninstall $(GetParameters $Args[0] $ArgIdx)
+                Uninstall @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             'update' {
                 $ArgIdx += 1
-                Update $(GetParameters $Args[0] $ArgIdx)
+                Update @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             Default {

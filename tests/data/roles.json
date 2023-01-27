@@ -363,7 +363,11 @@
     "tests": ["wasmtime --version"]
   },
   { "name": "winman" },
-  { "name": "wireshark", "tests": ["wireshark --version"] },
+  {
+    "name": "wireshark",
+    "skip": [{ "os": "macos" }],
+    "tests": ["wireshark --version"]
+  },
   {
     "name": "xh",
     "tests": {

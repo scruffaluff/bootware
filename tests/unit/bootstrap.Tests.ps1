@@ -3,9 +3,9 @@ BeforeAll {
     . "$Bootware"
 
     Mock FindConfigPath {
-        $Global:RetVal = "C:\Users\Administrator\.bootware\config.yaml"
+        $Global:RetVal = 'C:\Users\Administrator\.bootware\config.yaml'
     }
-    Mock FindRelativeIP { Write-Output "192.48.16.0" }
+    Mock FindRelativeIP { Write-Output '192.48.16.0' }
     Mock Setup { }
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
@@ -19,27 +19,27 @@ BeforeAll {
     }
 }
 
-Describe "Bootstrap" {
-    It "Subcommand finds first task associated with role" {
+Describe 'Bootstrap' {
+    It 'Subcommand finds first task associated with role' {
         $Env:BOOTWARE_NOLOG = 1
         $Playbook = "$(Get-Location)\playbook.yaml"
-        $Expected = "wsl bootware bootstrap --windows --config " `
-            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
+        $Expected = 'wsl bootware bootstrap --windows --config ' `
+            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + "192.48.16.0, --playbook $(WSLPath $Playbook) " `
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
-            + "--start-at-task Install Deno for FreeBSD"
+            + '--start-at-task Install Deno for FreeBSD'
 
         $Actual = "$(& "$Bootware" bootstrap --start-at-role deno --playbook "$Playbook")"
         $Actual | Should -Be $Expected
     }
 
-    It "Subcommand passes default arguments to WSL copy of Bootware" {
+    It 'Subcommand passes default arguments to WSL copy of Bootware' {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --config " `
-            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
-            + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
+        $Expected = 'wsl bootware bootstrap --windows --config ' `
+            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
+            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
             + "--user $Env:UserName"
@@ -48,11 +48,11 @@ Describe "Bootstrap" {
         $Actual | Should -Be $Expected
     }
 
-    It "Subcommand passes debug argument to WSL copy of Bootware" {
+    It 'Subcommand passes debug argument to WSL copy of Bootware' {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --config " `
-            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
-            + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
+        $Expected = 'wsl bootware bootstrap --windows --config ' `
+            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
+            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --debug"
@@ -62,11 +62,11 @@ Describe "Bootstrap" {
         $Actual | Should -Be $Expected
     }
 
-    It "Subcommand passes list arguments to WSL copy of Bootware" {
+    It 'Subcommand passes list arguments to WSL copy of Bootware' {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --config " `
-            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
-            + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
+        $Expected = 'wsl bootware bootstrap --windows --config ' `
+            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
+            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName"
@@ -76,11 +76,11 @@ Describe "Bootstrap" {
         $Actual | Should -Be $Expected
     }
 
-    It "Subcommand passes extra arguments to WSL copy of Bootware" {
+    It 'Subcommand passes extra arguments to WSL copy of Bootware' {
         $Env:BOOTWARE_NOLOG = 1
-        $Expected = "wsl bootware bootstrap --windows --config " `
-            + "/mnt/c/Users/Administrator/.bootware/config.yaml --inventory " `
-            + "192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml " `
+        $Expected = 'wsl bootware bootstrap --windows --config ' `
+            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
+            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --timeout 60"

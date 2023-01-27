@@ -225,12 +225,12 @@ jobs:
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
       # exectuable is installed. Since Docker is not installable, the Docker
-      # Compose check will fail. Wireshark CLI and WASM are installed but test
-      # suite mysteriously does not catch them.
+      # Compose check will fail. WASM is installed but test suite often fails to
+      # find it mysteriously.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,termshark,tilt,wasm macos
+          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt,wasm macos
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
