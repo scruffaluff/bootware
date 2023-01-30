@@ -392,5 +392,4 @@ fish_add_path '/opt/homebrew/bin'
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
   bind \cD delete_commandline_from_history
-  bind \cY edit-history
 end

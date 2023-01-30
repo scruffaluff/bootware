@@ -7,7 +7,7 @@
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
-Function Delete-History($Command) {
+Function DeleteCommandlineFromHistory($Command) {
     $Reply = Read-Host -Prompt "Delete command '$Command' from PowerShell history? [Y/n]"
 
     If ($Reply -In 'Y', 'y', 'Yes', 'yes') {
@@ -30,7 +30,9 @@ Function Delete-History($Command) {
 
 # Convenience functions.
 Function Edit-History() {
-    $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
+    If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {
+        & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
+    }
 }
 
 Function Export($Name, $Value) {
@@ -167,14 +169,9 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineBelow()
 
         If ($Command) {
-            Delete-History "$Command"
+            DeleteCommandlineFromHistory "$Command"
             [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
         }
-    }
-
-    # Add ctrl+y key binding to edit PowerShell history file.
-    Set-PSReadLineKeyHandler -Chord Ctrl+y -ScriptBlock {
-        Edit-History
     }
 }
 

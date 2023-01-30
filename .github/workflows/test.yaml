@@ -171,7 +171,8 @@ jobs:
           # the test suite cannot find it.
           run: |
             set -eou pipefail
-            curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
+            ./install.sh
+            sudo cp bootware.sh $(which bootware)
             bootware setup
             bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip vagrant,termshark freebsd'
@@ -195,10 +196,9 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Bootware
-        run: >
-          curl -LSfs
-          https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh
-          | bash
+        run: |
+          ./install.sh
+          sudo cp bootware.sh $(which bootware)
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: >-
           Install Ansible with Python since Brew installation appears to be
