@@ -172,7 +172,7 @@ jobs:
           run: |
             set -eou pipefail
             ./install.sh
-            sudo cp bootware.sh $(which bootware)
+            bash -c 'sudo cp bootware.sh /usr/local/bin/bootware'
             bootware setup
             bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip vagrant,termshark freebsd'
