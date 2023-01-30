@@ -33,12 +33,13 @@ OPTIONS:
     -d, --dev                       Run bootstrapping in development mode
         --debug                     Enable Ansible task debugger
     -h, --help                      Print help information
-    -i, --inventory <IP-List>       Ansible host IP addesses
+    -i, --inventory <IP-LIST>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
         --no-setup                  Skip Bootware dependency installation
         --password <PASSWORD>       Remote host user password
     -p, --playbook <FILE-NAME>      Path to playbook to execute
         --private-key <FILE-NAME>   Path to SSH private key
+        --retries <INTEGER>         Playbook retry limit during failure
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip
         --start-at-role <ROLE>      Begin execution with role
     -t, --tags <TAG-LIST>           Ansible playbook tags to select
@@ -180,6 +181,7 @@ bootstrap() {
   local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
   local playbook
+  local retries=1
   local skip="${BOOTWARE_SKIP:-}"
   local start_role
   local tags="${BOOTWARE_TAGS:-}"
@@ -236,17 +238,21 @@ bootstrap() {
         passwd="$2"
         shift 2
         ;;
-      -s | --skip)
-        skip="$2"
+      --retries)
+        retries=$2
         shift 2
         ;;
-      -t | --tags)
-        tags="$2"
+      -s | --skip)
+        skip="$2"
         shift 2
         ;;
       --start-at-role)
         start_role="$2"
         cmd='playbook'
+        shift 2
+        ;;
+      -t | --tags)
+        tags="$2"
         shift 2
         ;;
       -u | --url)
@@ -316,7 +322,7 @@ bootstrap() {
   log "Executing Ansible ${cmd}"
   log 'Enter your user account password if prompted'
 
-  "ansible-${cmd}" \
+  until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
@@ -328,7 +334,10 @@ bootstrap() {
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
     ${extra_args:+"${extra_args[@]}"} \
-    "${playbook}"
+    "${playbook}"; do
+
+    ((retries--)) && ((retries == 0)) && break
+  done
 }
 
 #######################################
