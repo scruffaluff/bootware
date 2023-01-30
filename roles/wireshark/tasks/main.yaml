@@ -18,8 +18,9 @@
       zypper: wireshark-ui-qt
   when: ansible_system == "Linux"
 
-# TODO: Manual install of ChmodBPF is required as a Wireshark dependency.
-# Automate in the future.
+# Manual configuration of ChmodBPF is required for Wireshark by following the
+# instructions at
+# https://www.wireshark.org/docs/wsug_html_chunked/ChBuildInstallOSXInstall.html.
 - name: Install Wireshark for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
@@ -27,8 +28,9 @@
     state: present
   when: ansible_system == "Darwin"
 
-# TODO: Manual install of NPCap is required as a Wireshark dependency.
-# Automate in the future.
+# Manual install of NPCap is required as a Wireshark dependency. However, only
+# the paid version of NPCap supports automated installation. For more
+# information, visit https://npcap.com/oem/internal.html.
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
     name: wireshark

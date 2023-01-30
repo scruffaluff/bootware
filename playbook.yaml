@@ -713,7 +713,8 @@
       ansible.builtin.import_role:
         name: obsidian
       tags:
-        - desktop
+        - extras
+        - never
         - obsidian
 
     - name: Install optional packages

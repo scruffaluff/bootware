@@ -15,6 +15,12 @@
     name: pipx
   when: ansible_system == "Darwin"
 
+- name: Update user path to include Pipx binaries for Windows
+  ansible.windows.win_path:
+    elements: "{{ ansible_env.HOME }}\\.local\\bin"
+    scope: user
+  when: ansible_system == "Win32NT"
+
 - name: Install Pipx for Windows
   ansible.windows.win_command: python -m pip install --upgrade pipx
   environment:
