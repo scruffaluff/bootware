@@ -172,9 +172,8 @@ jobs:
           run: |
             set -eou pipefail
             ./install.sh
-            bash -c 'sudo cp bootware.sh /usr/local/bin/bootware'
-            bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
+            ./bootware.sh setup
+            ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip vagrant,termshark freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -220,12 +219,11 @@ jobs:
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
       # exectuable is installed. Since Docker is not installable, the Docker
-      # Compose check will fail. WASM is installed but test suite often fails to
-      # find it mysteriously.
+      # Compose check will fail.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt,wasm macos
+          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt macos
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&

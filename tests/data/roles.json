@@ -357,11 +357,7 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["code --version"]
   },
-  {
-    "name": "wasm",
-    "skip": [{ "arch": "arm64" }, { "os": "alpine" }, { "os": "freebsd" }],
-    "tests": ["wasmtime --version"]
-  },
+  { "name": "wasm" },
   { "name": "winman" },
   {
     "name": "wireshark",

@@ -184,6 +184,7 @@ bootstrap() {
   local retries=1
   local skip="${BOOTWARE_SKIP:-}"
   local start_role
+  local status
   local tags="${BOOTWARE_TAGS:-}"
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
   local windows
@@ -336,7 +337,11 @@ bootstrap() {
     ${extra_args:+"${extra_args[@]}"} \
     "${playbook}"; do
 
-    ((retries--)) && ((retries == 0)) && break
+    status=$?
+    ((retries--)) && ((retries == 0)) && exit "${status}"
+    printf "\nBootstrapping attempt failed with exit code %s." "${status}"
+    printf "\nRetrying bootstrapping with %s attempts left.\n" "${retries}"
+    sleep 4
   done
 }
 
