@@ -43,6 +43,16 @@ function delete_commandline_from_history
   end
 end
 
+# Open Fish history file with default editor.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+function edit-history
+  if type -q "$EDITOR"
+    $EDITOR "$HOME/.local/share/fish/fish_history"
+  end
+end
+
 # Check if current shell is within a remote SSH session.
 #
 # Flags:

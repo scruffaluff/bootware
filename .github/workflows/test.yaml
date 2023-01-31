@@ -171,9 +171,9 @@ jobs:
           # the test suite cannot find it.
           run: |
             set -eou pipefail
-            curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
-            bootware setup
-            bootware bootstrap --dev --no-passwd --tags desktop,extras
+            ./install.sh
+            ./bootware.sh setup
+            ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip vagrant,termshark freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -195,10 +195,9 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v2
       - name: Install Bootware
-        run: >
-          curl -LSfs
-          https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh
-          | bash
+        run: |
+          ./install.sh
+          sudo cp bootware.sh $(which bootware)
       # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
       - name: >-
           Install Ansible with Python since Brew installation appears to be
@@ -214,23 +213,17 @@ jobs:
       # Bats is already installed with NPM and causes a conflict. Docker is not
       # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
-        uses: nick-fields/retry@v2
-        with:
-          command: >-
-            bootware bootstrap --dev --no-passwd --skip bats,docker --tags
-            desktop,extras
-          max_attempts: 3
-          retry_on: error
-          timeout_minutes: 120
+        run: >-
+          bootware bootstrap --dev --no-passwd --retries 3 --skip bats,docker
+          --tags desktop,extras
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
       # exectuable is installed. Since Docker is not installable, the Docker
-      # Compose check will fail. WASM is installed but test suite often fails to
-      # find it mysteriously.
+      # Compose check will fail.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt,wasm macos
+          node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt macos
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
@@ -342,14 +335,10 @@ jobs:
           bootware config --empty
         shell: powershell
       - name: Test bootstrapping
-        uses: nick-fields/retry@v2
-        with:
-          command: |
-            $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-            bootware bootstrap --no-setup
-          max_attempts: 3
-          retry_on: error
-          timeout_minutes: 120
+        run: |
+          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          bootware bootstrap --no-setup --retries 3
+        shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles

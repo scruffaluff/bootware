@@ -24,6 +24,7 @@ OPTIONS:
         --no-setup                  Skip Bootware dependency installation
     -p, --playbook <FILE-NAME>      Name of play to execute
         --password <PASSWORD>       Remote host user password
+        --retries <INTEGER>         Playbook retry limit during failure
     -s, --skip <TAG-LIST>           Ansible playbook tags to skip in quotes
         --start-at-role <ROLE>      Begin execution with role
     -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes

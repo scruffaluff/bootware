@@ -7,7 +7,7 @@
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
-Function HistoryDelete($Command) {
+Function DeleteCommandlineFromHistory($Command) {
     $Reply = Read-Host -Prompt "Delete command '$Command' from PowerShell history? [Y/n]"
 
     If ($Reply -In 'Y', 'y', 'Yes', 'yes') {
@@ -29,6 +29,12 @@ Function HistoryDelete($Command) {
 }
 
 # Convenience functions.
+Function Edit-History() {
+    If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {
+        & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
+    }
+}
+
 Function Export($Name, $Value) {
     Set-Content Env:$Name $Value
 }
@@ -163,7 +169,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineBelow()
 
         If ($Command) {
-            HistoryDelete "$Command"
+            DeleteCommandlineFromHistory "$Command"
             [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
         }
     }
@@ -226,7 +232,7 @@ If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
 }
 
-# # TypeScript settings.
+# TypeScript settings.
 
 # Load Deno autocompletion if available.
 If (Get-Module -ListAvailable -Name DenoCompletion) {
@@ -236,4 +242,12 @@ If (Get-Module -ListAvailable -Name DenoCompletion) {
 # Load NPM autocompletion if available.
 If (Get-Module -ListAvailable -Name npm-completion) {
     Import-Module npm-completion
+}
+
+# User settings.
+
+# Set default editor if Helix is installed.
+If (Get-Command hx -ErrorAction SilentlyContinue) {
+    $Env:COLORTERM = 'truecolor'
+    $Env:EDITOR = 'hx'
 }
