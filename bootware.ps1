@@ -469,8 +469,13 @@ Function Setup() {
 
     # Git is required for addding Scoop buckets.
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
-        Log 'Downloading Git version control'
+        Log 'Installing Git'
         scoop install git
+    }
+
+    If (-Not (Get-Command yq -ErrorAction SilentlyContinue)) {
+        Log 'Installing YQ'
+        scoop install yq
     }
 
     $ScoopBuckets = $(scoop bucket list)

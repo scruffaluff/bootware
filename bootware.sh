@@ -464,7 +464,7 @@ error_usage() {
 #   User supplied configuration path.
 # Outputs:
 #   Writes error message to stderr if unable to find configuration file.
-# Retunrs:
+# Returns:
 #   Configuration file path.
 #######################################
 find_config_path() {
@@ -499,6 +499,49 @@ fullpath() {
   working_dir="$(cd "$(dirname "$1")" && pwd -P)"
 
   echo "${working_dir}/$(basename "$1")"
+}
+
+#######################################
+# Install YQ parser for YAML files.
+# Arguments:
+#   Whether to use sudo command.
+#######################################
+install_yq() {
+  local arch
+  local os_type
+  local url
+  local version
+
+  # Get operating system and architecture.
+  #
+  # FLAGS:
+  #   -m: Print machine processor name.
+  #   -s: Print the kernel name.
+  arch="$(uname -m)"
+  arch="${arch/#x86_64/amd64}"
+  arch="${arch/%x64/amd64}"
+  arch="${arch/#aarch64/arm64}"
+  arch="${arch/%arm/arm64}"
+  os_type="$(uname -s)"
+
+  # Get latest YQ version.
+  #
+  # FLAGS:
+  #   -L: Follow redirect request.
+  #   -S: Show errors.
+  #   -f: Fail silently on server errors.
+  #   -o file: Save output to file.
+  #   -s: Disable progress bars.
+  version="$(
+    curl -LSfs https://formulae.brew.sh/api/formula/yq.json |
+      jq --exit-status --raw-output .versions.stable
+  )"
+  url="https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os_type}_${arch}"
+
+  # Do not quote the sudo parameter expansion. Bash will error due to be being
+  # unable to find the "" command.
+  ${1:+sudo} curl -LSfs "${url}" -o /usr/local/bin/yq
+  ${1:+sudo} chmod 755 /usr/local/bin/yq
 }
 
 #######################################
@@ -576,6 +619,8 @@ setup() {
 
 #######################################
 # Configure boostrapping services and utilities for Alpine.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_alpine() {
   # Install dependencies for Bootware.
@@ -608,10 +653,23 @@ setup_alpine() {
     ${1:+sudo} apk update
     ${1:+sudo} apk add git
   fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    ${1:+sudo} apk update
+    ${1:+sudo} apk add jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
+  fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for Arch.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_arch() {
   # Install dependencies for Bootware.
@@ -638,6 +696,12 @@ setup_arch() {
     ${1:+sudo} pacman -S --noconfirm git
   fi
 
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    ${1:+sudo} pacman -Suy --noconfirm
+    ${1:+sudo} pacman -S --noconfirm jq
+  fi
+
   if [[ ! -x "$(command -v yay)" ]]; then
     log 'Installing Yay package manager'
     ${1:+sudo} pacman -Suy --noconfirm
@@ -648,10 +712,17 @@ setup_arch() {
     (cd "${tmp_dir}" && makepkg --noconfirm -is)
     yay --noconfirm -Suy
   fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
+  fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for Debian.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_debian() {
   # Avoid APT interactively requesting to configure tzdata.
@@ -684,10 +755,23 @@ setup_debian() {
     ${1:+sudo} apt-get -qq update
     ${1:+sudo} apt-get -qq install -y git
   fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    ${1:+sudo} apt-get -qq update
+    ${1:+sudo} apt-get -qq install -y jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
+  fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for Fedora.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_fedora() {
   # Install dependencies for Bootware.
@@ -714,15 +798,27 @@ setup_fedora() {
     dnf_check_update "$1"
     ${1:+sudo} dnf install -y git
   fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    dnf_check_update "$1"
+    ${1:+sudo} dnf install -y jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
+  fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for FreeBSD.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_freebsd() {
   assert_cmd pkg
 
-  # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
@@ -738,23 +834,34 @@ setup_freebsd() {
     ${1:+sudo} python3 -m pip install ansible
   fi
 
-  # Install Curl if not already installed.
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     ${1:+sudo} pkg update
     ${1:+sudo} pkg install -y curl
   fi
 
-  # Install Git if not already installed.
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     ${1:+sudo} pkg update
     ${1:+sudo} pkg install -y git
   fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    ${1:+sudo} pkg update
+    ${1:+sudo} pkg install -y jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
+  fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for Linux.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_linux() {
   # Install dependencies for Bootware base on available package manager.
@@ -819,21 +926,31 @@ setup_macos() {
     curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
   fi
 
-  # Install Ansible if not already installed.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     brew install ansible
   fi
 
-  # Install Git if not already installed.
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     brew install git
+  fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    brew install jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    brew install yq
   fi
 }
 
 #######################################
 # Configure boostrapping services and utilities for OpenSuse.
+# Arguments:
+#   Whether to use sudo command.
 #######################################
 setup_suse() {
   # Install dependencies for Bootware.
@@ -860,6 +977,17 @@ setup_suse() {
     log 'Installing Git'
     ${1:+sudo} zypper update -y
     ${1:+sudo} zypper install -y git
+  fi
+
+  if [[ ! -x "$(command -v jq)" ]]; then
+    log 'Installing JQ'
+    ${1:+sudo} zypper update -y
+    ${1:+sudo} zypper install -y jq
+  fi
+
+  if [[ ! -x "$(command -v yq)" ]]; then
+    log 'Installing YQ'
+    install_yq "$1"
   fi
 }
 
