@@ -18,7 +18,7 @@ complete --no-files --command bootware
 #   -r: Completion must have an argument before another option.
 #   -s <character>: Add character as a short switch flag.
 #   -x: Apply both -f and -r flags.
-complete -c bootware -n '__fish_use_subcommand' -l debug -d 'Enable Bash debug traces'
+complete -c bootware -n '__fish_use_subcommand' -l debug -d 'Enable shell debug traces'
 complete -c bootware -n '__fish_use_subcommand' -s h -l help -d 'Print help information'
 complete -c bootware -n '__fish_use_subcommand' -s v -l version -d 'Print version information'
 

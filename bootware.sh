@@ -75,7 +75,7 @@ USAGE:
     bootware [OPTIONS] [SUBCOMMAND]
 
 OPTIONS:
-        --debug      Enable Bash debug traces
+        --debug      Enable shell debug traces
     -h, --help       Print help information
     -v, --version    Print version information
 

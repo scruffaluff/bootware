@@ -438,7 +438,7 @@ Function Roles() {
         }
     }
 
-    Get-ChildItem "$PSScriptRoot/repo/roles"
+    Get-ChildItem -Name -Path "$PSScriptRoot/repo/roles"
 }
 
 # Subcommand to configure boostrapping services and utilities.
