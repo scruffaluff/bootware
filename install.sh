@@ -128,6 +128,8 @@ install_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${2:-}" ]]; then
+    # Do not use long form --parents flag for mkdir. It is not supported on
+    # MacOS.
     ${1:+sudo} mkdir -p '/etc/fish/completions'
     ${1:+sudo} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
     ${1:+sudo} chmod 664 '/etc/fish/completions/bootware.fish'
@@ -148,6 +150,7 @@ install_man() {
   local man_url
   man_url="https://raw.githubusercontent.com/scruffaluff/bootware/$2/bootware.1"
 
+  # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${1:+sudo} mkdir -p '/usr/local/share/man/man1'
   ${1:+sudo} curl -LSfs "${man_url}" -o '/usr/local/share/man/man1/bootware.1'
   ${1:+sudo} chmod 664 '/usr/local/share/man/man1/bootware.1'
@@ -231,6 +234,7 @@ main() {
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
+  # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${use_sudo:+sudo} mkdir -p "${dst_dir}"
   ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"

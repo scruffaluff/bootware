@@ -19,6 +19,9 @@ bootstrap [OPTIONS]
 config [OPTIONS]
 .PP
 .B bootware
+roles [OPTIONS]
+.PP
+.B bootware
 setup [OPTIONS]
 .PP
 .B bootware
@@ -29,6 +32,9 @@ update [OPTIONS]
 bootstraps software installations with Ansible.
 
 .SH OPTIONS
+.TP
+.BR \-\-debug
+Enable Bash debug traces
 .TP
 .BR \-h ", " \-\-help
 Print help information
@@ -62,9 +68,8 @@ man bootware\-bootstrap
 Macklan Weinstein <macklan.weinstein@gmail.com>
 
 .SH COPYRIGHT
-Copyright © 2020 Macklan Weinstein. Bootware is distributed under the MIT
-license.
+Copyright © 2021-PRESENT Macklan Weinstein. Bootware is distributed under the
+MIT license.
 
-.SH SEE ALSO 
-Full documentation is available at
-<https://scruffaluff.github.io/bootware>. 
+.SH SEE ALSO
+Full documentation is available at <https://scruffaluff.github.io/bootware>. 

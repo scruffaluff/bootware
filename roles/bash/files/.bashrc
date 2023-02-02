@@ -57,7 +57,8 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 
 # Find and export Go root directory.
 #
-# On Alpine Linux, there does not appear to exist a GOROOT directory.
+# On Alpine Linux, there does not appear to exist a GOROOT directory. Do not use
+# long form --kernel-name flag for uname. It is not supported on MacOS.
 #
 # Flags:
 #   -d: Check if inode is a directory.
