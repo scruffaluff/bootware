@@ -38,6 +38,8 @@ prepend_path '/usr/local/bin'
 #   -f: Check if file exists and is a regular file.
 if [[ -f '/etc/bash_completion' ]]; then
   source '/etc/bash_completion'
+elif [[ -f '/etc/profile.d/bash_completion.sh' ]]; then
+  source '/etc/profile.d/bash_completion.sh'
 elif [[ -f '/opt/homebrew/etc/bash_completion' ]]; then
   source '/opt/homebrew/etc/bash_completion'
 fi
