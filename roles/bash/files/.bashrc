@@ -30,6 +30,14 @@ prepend_path '/usr/local/bin'
 
 # Bash settings
 
+# Configure up and down arrow key history search to match commands starting with
+# text before the cursor.
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# Configure tab key to cycle through all possible completions.
+bind 'TAB:menu-complete'
+
 # Load Bash completion if it exists.
 #
 # Bash completion file is not executable but can be sourced.
@@ -54,6 +62,15 @@ export DOCKER_BUILDKIT=1
 _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
 export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
+
+# Load Fzf keybindings if available.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v fzf)" && -f "${HOME}/.fzf_key_bindings.bash" ]]; then
+  source "${HOME}/.fzf_key_bindings.bash"
+fi
 
 # Go settings.
 
