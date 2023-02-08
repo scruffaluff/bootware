@@ -122,8 +122,8 @@ end
 
 # Find and export Go root directory.
 #
-# Use the short form '-s' flag instead of the less portable long form
-# '--kernel-name' flag.
+# Do not use long form --kernel-name flag for uname. It is not supported on
+# MacOS.
 #
 # Flags:
 #   -d: Check if inode is a directory.
@@ -151,8 +151,8 @@ fish_add_path "$GOPATH/bin"
 
 # Find and add Java OpenJDK directory to path.
 #
-# Use the short form '-s' flag instead of the less portable long form
-# '--kernel-name' flag.
+# Do not use long form --kernel-name flag for uname. It is not supported on
+# MacOS.
 #
 # Flags:
 #   -d: Check if inode is a directory.
@@ -172,8 +172,8 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT 'true'
 
 # Make numerical compute libraries findable on MacOS.
 #
-# Use the short form '-s' flag instead of the less portable long form
-# '--kernel-name' flag.
+# Do not use long form --kernel-name flag for uname. It is not supported on
+# MacOS.
 #
 # Flags:
 #   -d: Check if inode is a directory.
@@ -290,8 +290,8 @@ end
 
 # Initialize GCloud if on MacOS and available.
 #
-# GCloud completion is provided on Linux via a Fish package. Use the short form
-# '-s' flag instead of the less portable long form '--kernel-name' flag.
+# GCloud completion is provided on Linux via a Fish package. Do not use long
+# form --kernel-name flag for uname. It is not supported on MacOS.
 #
 # Flags:
 #   -f: Check if inode is a regular file.

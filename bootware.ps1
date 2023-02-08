@@ -73,6 +73,18 @@ SUBCOMMANDS:
 See 'bootware <subcommand> --help' for more information on a specific command.
 '@
         }
+        'roles' {
+            Write-Output @'
+Bootware roles
+List all Bootware roles
+
+USAGE:
+    bootware roles [OPTIONS]
+
+OPTIONS:
+    -h, --help      Print help information
+'@
+        }
         'setup' {
             Write-Output @'
 Bootware setup
@@ -410,6 +422,25 @@ Function RemoteScript($URL) {
     Invoke-WebRequest -UseBasicParsing -Uri "$URL" | Invoke-Expression
 }
 
+# Subcommand to list all Bootware roles.
+Function Roles() {
+    $ArgIdx = 0
+
+    While ($ArgIdx -LT $Args[0].Count) {
+        Switch ($Args[0][$ArgIdx]) {
+            { $_ -In '-h', '--help' } {
+                Usage 'roles'
+                Exit 0
+            }
+            Default {
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+            }
+        }
+    }
+
+    Get-ChildItem -Name -Path "$PSScriptRoot/repo/roles"
+}
+
 # Subcommand to configure boostrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
@@ -528,6 +559,8 @@ Function SetupSSHKeys {
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
+        # Do not use long form --parents flag for mkdir. It is not supported on
+        # MacOS.
         wsl mkdir -p -m 700 "`$HOME/.ssh/"
         wsl mv "$WSLKeyPath" "`$HOME/.ssh/bootware"
         wsl chmod 600 "`$HOME/.ssh/bootware"
@@ -786,6 +819,11 @@ Function Main() {
             'config' {
                 $ArgIdx += 1
                 Config @(GetParameters $Args[0] $ArgIdx)
+                Exit 0
+            }
+            'roles' {
+                $ArgIdx += 1
+                Roles @(GetParameters $Args[0] $ArgIdx)
                 Exit 0
             }
             'setup' {

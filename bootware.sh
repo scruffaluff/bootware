@@ -27,11 +27,11 @@ USAGE:
     bootware bootstrap [OPTIONS]
 
 OPTIONS:
-    -c, --config <PATH>             Path to bootware user configuation file
         --check                     Perform dry run and show possible changes
         --checkout <REF>            Git reference to run against
-    -d, --dev                       Run bootstrapping in development mode
+    -c, --config <PATH>             Path to bootware user configuation file
         --debug                     Enable Ansible task debugger
+    -d, --dev                       Run bootstrapping in development mode
     -h, --help                      Print help information
     -i, --inventory <IP-LIST>       Ansible host IP addesses
         --no-passwd                 Do not ask for user password
@@ -75,13 +75,14 @@ USAGE:
     bootware [OPTIONS] [SUBCOMMAND]
 
 OPTIONS:
-        --debug      Enable Bash debug traces
+        --debug      Enable shell debug traces
     -h, --help       Print help information
     -v, --version    Print version information
 
 SUBCOMMANDS:
     bootstrap        Boostrap install computer software
     config           Generate Bootware configuration file
+    roles            List all Bootware roles
     setup            Install dependencies for Bootware
     uninstall        Remove Bootware files
     update           Update Bootware to latest version
@@ -96,6 +97,19 @@ ENVIRONMENT VARIABLES:
     BOOTWARE_URL        Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
+EOF
+      ;;
+    roles)
+      cat 1>&2 << EOF
+Bootware roles
+List all Bootware roles
+
+USAGE:
+    bootware roles [OPTIONS]
+
+OPTIONS:
+    -h, --help        Print help information
+    -u, --url <URL>   URL of playbook repository
 EOF
       ;;
     setup)
@@ -287,8 +301,9 @@ bootstrap() {
   # Flags:
   #   -z: Check if string has zero length.
   if [[ "${cmd}" == 'playbook' && -z "${playbook:-}" ]]; then
+    # Do not use long form --dry-run flag. It is not supported on MacOS.
     tmp_dir="$(mktemp -u)"
-    git clone --depth 1 "${url}" "${tmp_dir}"
+    git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
     playbook="${tmp_dir}/playbook.yaml"
   fi
 
@@ -384,8 +399,7 @@ config() {
     esac
   done
 
-  assert_cmd mkdir
-
+  # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   mkdir -p "$(dirname "${dst_file}")"
 
   # Check if empty configuration file should be generated.
@@ -512,11 +526,11 @@ install_yq() {
   local url
   local version
 
-  # Get operating system and architecture.
-  #
-  # FLAGS:
-  #   -m: Print machine processor name.
-  #   -s: Print the kernel name.
+  assert_cmd curl
+  assert_cmd jq
+
+  # Do not use long form --kernel-name or --machine flags for uname. They are
+  # not supported on MacOS.
   arch="$(uname -m)"
   arch="${arch/#x86_64/amd64}"
   arch="${arch/%x64/amd64}"
@@ -560,6 +574,36 @@ log() {
 }
 
 #######################################
+# Subcommand to list all Bootware roles.
+#######################################
+roles() {
+  local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
+
+  # Parse command line arguments.
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      -h | --help)
+        usage 'roles'
+        exit 0
+        ;;
+      -u | --url)
+        url="$2"
+        shift 2
+        ;;
+      *)
+        error_usage "No such option '$1'" "roles"
+        ;;
+    esac
+  done
+
+  # Do not use long form --dry-run flag for mktemp. It is not supported on
+  # MacOS.
+  tmp_dir="$(mktemp -u)"
+  git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
+  ls -1 "${tmp_dir}/roles"
+}
+
+#######################################
 # Subcommand to configure boostrapping services and utilities.
 #######################################
 setup() {
@@ -587,12 +631,9 @@ setup() {
     use_sudo='true'
   fi
 
-  # Get operating system.
-  #
-  # FLAGS:
-  #   -s: Print the kernel name.
+  # Do not use long form --kernel-name flag for uname. It is not supported on
+  # MacOS.
   os_type="$(uname -s)"
-
   case "${os_type}" in
     Darwin)
       setup_macos
@@ -707,6 +748,8 @@ setup_arch() {
     ${1:+sudo} pacman -Suy --noconfirm
     ${1:+sudo} pacman -S --noconfirm base-devel
 
+    # Do not use long form --dry-run flag for mktemp. It is not supported on
+    # MacOS.
     tmp_dir="$(mktemp -u)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
     (cd "${tmp_dir}" && makepkg --noconfirm -is)
@@ -905,10 +948,11 @@ setup_macos() {
 
   # Install Rosetta 2 for Apple Silicon if not already installed.
   #
-  # TODO: Create better check to see if Rosetta 2 is already installed.
+  # # Do not use long form --processor flag for uname. It is not supported on
+  # MacOS.
+  #
   # Flags:
   #   -d: Check if path exists and is a directory.
-  #   -p: Print machine processor name.
   if [[ "$(uname -p)" == 'arm' && ! -d '/opt/homebrew' ]]; then
     softwareupdate --agree-to-license --install-rosetta
   fi
@@ -1116,6 +1160,11 @@ main() {
       config)
         shift 1
         config "$@"
+        exit 0
+        ;;
+      roles)
+        shift 1
+        roles "$@"
         exit 0
         ;;
       setup)

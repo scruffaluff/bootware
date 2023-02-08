@@ -54,7 +54,7 @@
   community.windows.win_scoop_bucket:
     name: "{{ item }}"
   environment:
-    Path: "{{ ansible_env.HOME }}\\scoop\\shims\\scoop;{{ ansible_env.Path }}"
+    Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
   loop:
     - extras
     - java

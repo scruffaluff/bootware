@@ -67,8 +67,8 @@ keybinds {
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     tab {
-        bind "j" "Left" "Up" "k" { GoToPreviousTab; }
-        bind ";" "Right" "Down" "j" { GoToNextTab; }
+        bind "j" "Left" { GoToPreviousTab; }
+        bind ";" "Right" { GoToNextTab; }
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }

@@ -127,6 +127,8 @@ main.yaml"
   local actual
   local expected
   local tmp_dir
+  # Do not use long form --dry-run flag for mktemp. It is not supported on
+  # MacOS.
   tmp_dir="$(mktemp -u)"
 
   export BOOTWARE_NOPASSWD=1
