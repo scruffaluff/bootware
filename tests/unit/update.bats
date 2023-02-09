@@ -19,11 +19,23 @@ setup() {
   }
   export -f command
 
+  chmod() {
+    # shellcheck disable=SC2317
+    :
+  }
+  export -f chmod
+
   curl() {
     # shellcheck disable=SC2317
     echo "curl $*"
   }
   export -f curl
+
+  mkdir() {
+    # shellcheck disable=SC2317
+    :
+  }
+  export -f mkdir
 }
 
 @test 'Update subcommand passes Bootware executable path to Curl' {
@@ -32,7 +44,9 @@ setup() {
   
   expected="curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
--o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)"
+-o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.fish \
+-o ${HOME}/.config/fish/completions/bootware.fish"
 
   actual="$(bootware.sh update --version develop)"
   assert_equal "${actual}" "${expected}"
