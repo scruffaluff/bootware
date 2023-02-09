@@ -1088,6 +1088,7 @@ update() {
   local dst_file
   local src_url
   local use_sudo=''
+  local user_install
   local version='main'
 
   # Parse command line arguments.
@@ -1120,6 +1121,8 @@ update() {
   if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     assert_cmd sudo
     use_sudo='true'
+  elif [[ -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+    user_install=1
   fi
 
   log 'Updating Bootware'
@@ -1129,7 +1132,39 @@ update() {
   ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
+  update_completions "${use_sudo}" "${user_install:-}" "${version}"
   log "Updated to version $(bootware --version)"
+}
+
+#######################################
+# Update completion scripts for Bootware.
+# Arguments:
+#   Whether to use sudo for installation.
+#   Whether to install for entire system.
+#   GitHub version reference.
+#######################################
+update_completions() {
+  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/$3"
+  local bash_url="${repo_url}/completions/bootware.bash"
+  local fish_url="${repo_url}/completions/bootware.fish"
+
+  # Flags:
+  #   -z: Check if the string has zero length or is null.
+  if [[ -z "${2:-}" ]]; then
+    # Do not use long form --parents flag for mkdir. It is not supported on
+    # MacOS.
+    ${1:+sudo} mkdir -p '/etc/bash_completion.d'
+    ${1:+sudo} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
+    ${1:+sudo} chmod 664 '/etc/bash_completion.d/bootware.bash'
+
+    ${1:+sudo} mkdir -p '/etc/fish/completions'
+    ${1:+sudo} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+    ${1:+sudo} chmod 664 '/etc/fish/completions/bootware.fish'
+  else
+    mkdir -p "${HOME}/.config/fish/completions"
+    curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+  fi
 }
 
 #######################################

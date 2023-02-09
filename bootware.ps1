@@ -755,6 +755,7 @@ Function Update() {
 
     $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     DownloadFile "$SrcURL" "$PSScriptRoot/bootware.ps1"
+    UpdateCompletion "$Version"
 
     # Update WSL copy of Bootware.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
@@ -776,6 +777,20 @@ Function Update() {
     }
 
     Log "Updated to version $(bootware --version)"
+}
+
+# Update completion script for Bootware.
+Function UpdateCompletion($Version) {
+    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/BootwareCompletion.psm1"
+
+    $Paths = @(
+        "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
+        "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
+    )
+    ForEach ($Path in $Paths) {
+        New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
+        DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
+    }
 }
 
 # Print Bootware version string.
