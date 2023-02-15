@@ -224,12 +224,17 @@
   },
   {
     "name": "libvirt",
-    "skip": [{ "os": "alpine" }, { "os": "macos" }, { "os": "windows" }],
-    "tests": [
-      "guestfish --version",
-      "virsh --version",
-      "virt-customize --version"
-    ]
+    "skip": [{ "os": "windows" }],
+    "tests": {
+      "alpine": ["virsh --version"],
+      "freebsd": ["virsh --version"],
+      "macos": ["virsh --version"],
+      "default": [
+        "guestfish --version",
+        "virsh --version",
+        "virt-customize --version"
+      ]
+    }
   },
   {
     "name": "lua",

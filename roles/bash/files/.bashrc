@@ -28,28 +28,30 @@ prepend_path '/usr/bin'
 # Necessary since path is missing on some MacOS systems.
 prepend_path '/usr/local/bin'
 
-# Bash settings
+# Bash interactive settings
 
-# Configure up and down arrow key history search to match commands starting with
-# text before the cursor.
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
+if [[ "$-" == *i* ]]; then
+  # Configure up and down arrow key history search to match commands starting
+  # with text before the cursor.
+  bind '"\e[A": history-search-backward'
+  bind '"\e[B": history-search-forward'
 
-# Configure tab key to cycle through all possible completions.
-bind 'TAB:menu-complete'
+  # Configure tab key to cycle through all possible completions.
+  bind 'TAB:menu-complete'
 
-# Load Bash completion if it exists.
-#
-# Bash completion file is not executable but can be sourced.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-if [[ -f '/etc/bash_completion' ]]; then
-  source '/etc/bash_completion'
-elif [[ -f '/etc/profile.d/bash_completion.sh' ]]; then
-  source '/etc/profile.d/bash_completion.sh'
-elif [[ -f '/opt/homebrew/etc/bash_completion' ]]; then
-  source '/opt/homebrew/etc/bash_completion'
+  # Load Bash completion if it exists.
+  #
+  # Bash completion file is not executable but can be sourced.
+  #
+  # Flags:
+  #   -f: Check if file exists and is a regular file.
+  if [[ -f '/etc/bash_completion' ]]; then
+    source '/etc/bash_completion'
+  elif [[ -f '/etc/profile.d/bash_completion.sh' ]]; then
+    source '/etc/profile.d/bash_completion.sh'
+  elif [[ -f '/opt/homebrew/etc/bash_completion' ]]; then
+    source '/opt/homebrew/etc/bash_completion'
+  fi
 fi
 
 # Docker settings.
@@ -68,7 +70,7 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v fzf)" && -f "${HOME}/.fzf_key_bindings.bash" ]]; then
+if [[ "$-" == *i* && -x "$(command -v fzf)" && -f "${HOME}/.fzf_key_bindings.bash" ]]; then
   source "${HOME}/.fzf_key_bindings.bash"
 fi
 
@@ -150,8 +152,9 @@ if [[ -x "$(command -v pyenv)" ]]; then
   prepend_path "${PYENV_ROOT}/bin"
   eval "$(pyenv init --path)"
 
-  # Load Pyenv completions.
-  source "$(pyenv root)/completions/pyenv.bash"
+  if [[ "$-" == *i* ]]; then
+    source "$(pyenv root)/completions/pyenv.bash"
+  fi
 fi
 
 # Ruby settings.
@@ -210,7 +213,7 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v starship)" ]]; then
+if [[ "$-" == *i* && -x "$(command -v starship)" ]]; then
   eval "$(starship init bash)"
 fi
 
@@ -227,7 +230,7 @@ prepend_path '/usr/share/code/bin'
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v doctl)" ]]; then
+if [[ "$-" == *i* && -x "$(command -v doctl)" ]]; then
   source <(doctl completion bash)
 fi
 
@@ -235,7 +238,7 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v direnv)" ]]; then
+if [[ "$-" == *i* && -x "$(command -v direnv)" ]]; then
   eval "$(direnv hook bash)"
 fi
 
@@ -271,7 +274,7 @@ prepend_path "${HOME}/.krew/bin"
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v kubectl)" ]]; then
+if [[ "$-" == *i* && -x "$(command -v kubectl)" ]]; then
   source <(kubectl completion bash)
 fi
 
@@ -283,7 +286,7 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
+if [[ "$-" == *i* && -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
   eval "$(navi widget bash)"
 fi
 
@@ -297,7 +300,7 @@ prepend_path "${DENO_INSTALL}/bin"
 prepend_path "${HOME}/.npm-global/bin"
 
 # Source TabTab shell completion for PNPM.
-if [[ -f "${HOME}/.config/tabtab/bash/__tabtab.bash" ]]; then
+if [[ "$-" == *i* && -f "${HOME}/.config/tabtab/bash/__tabtab.bash" ]]; then
   source "${HOME}/.config/tabtab/bash/__tabtab.bash"
 fi
 
@@ -309,7 +312,7 @@ export NVM_DIR="${HOME}/.nvm"
 if [[ -f "${NVM_DIR}/nvm.sh" ]]; then
   source "${NVM_DIR}/nvm.sh"
 fi
-if [[ -f "${NVM_DIR}/bash_completion" ]]; then
+if [[ "$-" == *i* && -f "${NVM_DIR}/bash_completion" ]]; then
   source "${NVM_DIR}/bash_completion"
 fi
 

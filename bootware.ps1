@@ -274,6 +274,8 @@ Function Bootstrap() {
             --tags "$Tags" `
             --user "$User"
     }
+
+    Exit $LastExitCode
 }
 
 # Subcommand to generate or download Bootware configuration file.
