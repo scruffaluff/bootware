@@ -2,24 +2,26 @@
 - name: Install Libvirt for Alpine
   become: true
   community.general.apk:
-    name: libvirt-client
+    name:
+      - libvirt
+      - virt-install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch
   become: true
   community.general.pacman:
     name:
+      - guestfs-tools
+      - libguestfs
       - libvirt
       - virt-install
-      - virt-viewer
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian
   ansible.builtin.apt:
     name:
+      - libguestfs-tools
       - libvirt-clients
-      - libvirt-daemon-system
-      - virt-viewer
       - virtinst
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -33,8 +35,10 @@
 - name: Install Libvirt for Fedora
   ansible.builtin.dnf:
     name:
+      - guestfs-tools
+      - libguestfs
       - libvirt
-      - virt-viewer
+      - virt-install
   become: true
   when: ansible_pkg_mgr == "dnf"
 
@@ -47,6 +51,8 @@
   become: true
   community.general.zypper:
     name:
+      - guestfs-tools
+      - libguestfs
       - libvirt
-      - virt-viewer
+      - virt-install
   when: ansible_pkg_mgr == "zypper"

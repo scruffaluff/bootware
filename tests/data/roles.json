@@ -224,8 +224,12 @@
   },
   {
     "name": "libvirt",
-    "skip": [{ "os": "windows" }],
-    "tests": ["virsh --version"]
+    "skip": [{ "os": "alpine" }, { "os": "macos" }, { "os": "windows" }],
+    "tests": [
+      "guestfish --version",
+      "virsh --version",
+      "virt-customize --version"
+    ]
   },
   {
     "name": "lua",

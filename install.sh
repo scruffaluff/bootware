@@ -25,6 +25,7 @@ USAGE:
     bootware-installer [OPTIONS]
 
 OPTIONS:
+        --debug                 Enable shell debug traces
     -d, --dest <PATH>           Path to install bootware
     -h, --help                  Print help information
     -u, --user                  Install bootware for current user
