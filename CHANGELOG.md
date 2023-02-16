@@ -5,6 +5,24 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Fzf keybindings for Bash.
+- Improvements to shell completions.
+- Roles subcommand to view all available roles.
+- Security role for basic security settings.
+
+### Fixed
+
+- Exit code for bootstrap command in Windows.
+- Update logic for shell completions.
+
+### Removed
+
+- Virt Viewer from Libvirt role.
+
 ## 0.5.0 - 2023-01-30
 
 ### Added
