@@ -186,7 +186,6 @@
         - datree
         - desktop
         - server
-        - vm
         - wsl
 
     - name: Install DBeaver database client
@@ -494,7 +493,6 @@
         - desktop
         - helm
         - server
-        - vm
         - wsl
 
     - name: Install Helmfile Kubernetes Helm deployment tool

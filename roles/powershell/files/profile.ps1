@@ -16,14 +16,6 @@ Function DeleteCommandlineFromHistory($Command) {
         # Do not quote $Content variable. It will remove newlines.
         Set-Content -Path "$HistoryPath" -Value $Content
 
-        # Clear the current PSReadLine history session and repopulate it with
-        # filtered commands.
-        #
-        # Solution taken from
-        # https://github.com/PowerShell/PSReadLine/issues/494#issuecomment-273358367.
-        [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory()
-        $Content | Where-Object { [Microsoft.PowerShell.PSConsoleReadLine]::AddToHistory($_) }
-
         Write-Output "Removed command '$Command' from PowerShell history"
     }
 }

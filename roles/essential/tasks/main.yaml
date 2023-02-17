@@ -68,8 +68,8 @@
     name:
       - 7zip
       - bzip2
+      - gsudo
       - scoop-completion
-      - sudo
       - unzip
       - xz
       - zip

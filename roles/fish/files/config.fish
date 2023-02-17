@@ -36,7 +36,7 @@ function delete_commandline_from_history
   set command_ (commandline)
 
   if test -n (string trim "$command_")
-    echo ''
+    printf '\nFish History Entry Delete\n\n'
     history delete "$command_"
     history save
     commandline --function kill-whole-line
