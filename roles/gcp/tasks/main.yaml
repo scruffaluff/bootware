@@ -28,7 +28,7 @@
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Google Cloud SDK for Arch
-  ansible.builtin.command: yay -Sy --noconfirm google-cloud-sdk
+  ansible.builtin.command: yay -Sy --noconfirm google-cloud-cli
   when: ansible_pkg_mgr == "pacman"
 
 - name: Add Google Cloud SDK key for Debian
