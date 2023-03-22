@@ -7,19 +7,6 @@
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
-Function DeleteCommandlineFromHistory($Command) {
-    $Reply = Read-Host -Prompt "Delete command '$Command' from PowerShell history? [Y/n]"
-
-    If ($Reply -In 'Y', 'y', 'Yes', 'yes') {
-        $HistoryPath = $(Get-PSReadLineOption).HistorySavePath
-        $Content = $(Get-Content -Path "$HistoryPath" | Where-Object { $_ -NE "$Command" })
-        # Do not quote $Content variable. It will remove newlines.
-        Set-Content -Path "$HistoryPath" -Value $Content
-
-        Write-Output "Removed command '$Command' from PowerShell history"
-    }
-}
-
 # Convenience functions.
 Function Edit-History() {
     If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {

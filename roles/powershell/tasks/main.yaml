@@ -13,7 +13,6 @@
   ansible.windows.win_package:
     arguments:
       - /quiet
-      - ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1
       - ENABLE_PSREMOTING=1
       - REGISTER_MANIFEST=1
     path: >-

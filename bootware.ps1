@@ -729,7 +729,7 @@ Function Uninstall() {
         }
     }
 
-    Remove-Item -Force -Recurse "$PSScriptRoot"
+    Remove-Item -Force -Recurse -Path "$PSScriptRoot"
     Log 'Uninstalled Bootware'
 }
 
