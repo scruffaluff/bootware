@@ -25,6 +25,7 @@
         - desktop
         - essential
         - server
+        - sysadmin
         - wsl
 
     - name: Install Age encryption tool
@@ -35,6 +36,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - wsl
 
     - name: Install Alacritty terminal
@@ -76,6 +78,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - wsl
 
     - name: Install Bash shell
@@ -87,6 +90,7 @@
         - desktop
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install Bashdb Bash debugger
@@ -109,6 +113,7 @@
         - desktop
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install Bats Bash test framework
@@ -212,6 +217,7 @@
         - desktop
         - language
         - server
+        - sysadmin
         - typescript
         - wsl
 
@@ -271,6 +277,7 @@
         - desktop
         - duf
         - server
+        - sysadmin
         - wsl
 
     - name: Install Dust disk space analyzer
@@ -281,6 +288,7 @@
         - desktop
         - dust
         - server
+        - sysadmin
         - wsl
 
     - name: Install Data Version Control
@@ -310,6 +318,7 @@
         - exa
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install FD file searcher
@@ -321,6 +330,7 @@
         - fd
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install FFSend secure file sharer
@@ -350,6 +360,7 @@
         - fish
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install Flatpak packages
@@ -374,6 +385,7 @@
         - desktop
         - fzf
         - server
+        - sysadmin
         - wsl
 
     - name: Install Google Cloud Platform development tools
@@ -392,6 +404,7 @@
         - desktop
         - gdu
         - server
+        - sysadmin
         - wsl
 
     - name: Install Git version control
@@ -402,6 +415,7 @@
         - desktop
         - git
         - server
+        - sysadmin
         - vcs
         - wsl
 
@@ -431,6 +445,7 @@
         - desktop
         - gitui
         - server
+        - sysadmin
         - vcs
         - wsl
 
@@ -442,6 +457,7 @@
         - desktop
         - glow
         - server
+        - sysadmin
         - wsl
 
     - name: Install Go language
@@ -484,6 +500,7 @@
         - editor
         - helix
         - server
+        - sysadmin
         - wsl
 
     - name: Install Helm Kubernetes manager
@@ -550,6 +567,7 @@
         - jq
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install K3d Kubernetes development cluster manager
@@ -682,6 +700,7 @@
         - desktop
         - navi
         - server
+        - sysadmin
         - wsl
 
     - name: Install Neovim terminal text editor
@@ -801,6 +820,7 @@
         - desktop
         - restic
         - server
+        - sysadmin
         - wsl
 
     - name: Install Ripgrep text searcher
@@ -812,6 +832,7 @@
         - ripgrep
         - server
         - shell
+        - sysadmin
         - wsl
 
     - name: Install Rust language
@@ -833,6 +854,7 @@
         - desktop
         - scc
         - server
+        - sysadmin
         - wsl
 
     - name: Install SD find and replace tool
@@ -843,6 +865,7 @@
         - desktop
         - server
         - sd
+        - sysadmin
         - wsl
 
     - name: Configure system security settings
@@ -861,6 +884,7 @@
         - server
         - shell
         - shellcheck
+        - sysadmin
         - wsl
 
     - name: Install Shfmt shell formatter
@@ -872,6 +896,7 @@
         - server
         - shell
         - shfmt
+        - sysadmin
         - wsl
 
     - name: Install Sops secrets editor
@@ -882,6 +907,7 @@
         - desktop
         - server
         - sops
+        - sysadmin
         - wsl
 
     - name: Install SQLite database
@@ -904,6 +930,7 @@
         - server
         - shell
         - starship
+        - sysadmin
         - wsl
 
     - name: Configure sudo settings
@@ -923,6 +950,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - termshark
         - wsl
 
@@ -966,6 +994,7 @@
         - desktop
         - server
         - shell
+        - sysadmin
         - tldr
         - wsl
 
@@ -988,6 +1017,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - usql
         - wsl
 
@@ -1047,6 +1077,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - wsl
         - xh
 
@@ -1058,6 +1089,7 @@
         - desktop
         - server
         - shell
+        - sysadmin
         - wsl
         - xsv
 
@@ -1068,6 +1100,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - wsl
         - yq
 
@@ -1078,6 +1111,7 @@
         - container
         - desktop
         - server
+        - sysadmin
         - termianl
         - wsl
         - zellij
