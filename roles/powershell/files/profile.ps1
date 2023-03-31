@@ -1,11 +1,20 @@
 # PowerShell settings file.
 #
-# To progile PowerShell profile startup time, install PSProfiler,
+# To profile PowerShell profile startup time, install PSProfiler,
 # https://github.com/IISResetMe/PSProfiler, with command
 # 'Install-Module -Name PSProfiler'. Then run command
 # 'Measure-Script -Path $Profile'. For more information about the PowerShell
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
+
+# Check if only minimally functional shell settings should be loaded.
+#
+# If file ~/.shell_minimal_config exists, then most shell completion will not be
+# configured. These are useful to disable if on a slow system where shell
+# startup takes too long.
+If (Test-Path "$HOME/.shell_minimal_config") {
+    $Env:SHELL_MINIMAL_CONFIG = 'true'
+}
 
 # Convenience functions.
 Function Edit-History() {
@@ -31,11 +40,15 @@ Function Which($Name) {
 }
 
 # Docker settings.
-$Env:COMPOSE_DOCKER_CLI_BUILD = 1
-$Env:DOCKER_BUILDKIT = 1
+
+$Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
+$Env:DOCKER_BUILDKIT = 'true'
 
 # Load Docker autocompletion if available.
-If (Get-Module -ListAvailable -Name DockerCompletion) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name DockerCompletion)
+) {
     Import-Module DockerCompletion
 }
 
@@ -50,19 +63,20 @@ $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-If (Get-Command bat -ErrorAction SilentlyContinue) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Command bat -ErrorAction SilentlyContinue)
+) {
     $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
-}
-
-# Load Kubectl autocompletion if available.
-If (Get-Module -ListAvailable -Name PSKubectlCompletion) {
-    Import-Module PSKubectlCompletion
 }
 
 # Git settings.
 
 # Load Git autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-git) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name posh-git)
+) {
     Import-Module posh-git
 }
 
@@ -131,26 +145,16 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Setup Fzf PowerShell integration if available.
     #
     # Fzf PowerShell integration depends on PSReadLine being activated first.
-    If (Get-Module -ListAvailable -Name PsFzf) {
+    If (
+        (!$Env:SHELL_MINIMAL_CONFIG) -And
+        (Get-Module -ListAvailable -Name PsFzf)
+     ) {
         Import-Module PsFzf
 
         # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
         Set-PsFzfOption `
             -PSReadlineChordProvider 'Ctrl+t' `
             -PSReadlineChordReverseHistory 'Ctrl+r'
-    }
-
-    # Add ctrl+d key binding to delete current command from PowerShell history.
-    Set-PSReadLineKeyHandler -Chord Ctrl+d -ScriptBlock {
-        $Command = $Null
-        $Cursor = $Null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$Command, [ref]$Cursor)
-        [Microsoft.PowerShell.PSConsoleReadLine]::InsertLineBelow()
-
-        If ($Command) {
-            DeleteCommandlineFromHistory "$Command"
-            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        }
     }
 }
 
@@ -179,7 +183,10 @@ If (Test-Path "$HOME/.secrets.ps1") {
 # Starship settings.
 
 # Initialize Starship if available.
-If (Get-Command starship -ErrorAction SilentlyContinue) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Command starship -ErrorAction SilentlyContinue)
+) {
     Invoke-Expression (&starship init powershell)
 }
 
@@ -192,35 +199,45 @@ Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
 # Load Bootware autocompletion if available.
-If (Get-Module -ListAvailable -Name BootwareCompletion) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name BootwareCompletion)
+) {
     Import-Module BootwareCompletion
 }
 
 # Load Chocolatey autocompletion if available.
-If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1")
+) {
     Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 }
 
 # Load Scoop autocompletion if available.
-If (Get-Module -ListAvailable -Name scoop-completion) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name scoop-completion)
+) {
     Import-Module scoop-completion
 }
 
 # Load SSH autocompletion if available.
-If (Get-Module -ListAvailable -Name SSHCompletion) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name SSHCompletion)
+) {
     Import-Module SSHCompletion
 }
 
 # TypeScript settings.
 
 # Load Deno autocompletion if available.
-If (Get-Module -ListAvailable -Name DenoCompletion) {
+If (
+    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (Get-Module -ListAvailable -Name DenoCompletion)
+) {
     Import-Module DenoCompletion
-}
-
-# Load NPM autocompletion if available.
-If (Get-Module -ListAvailable -Name npm-completion) {
-    Import-Module npm-completion
 }
 
 # User settings.
