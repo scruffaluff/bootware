@@ -60,10 +60,7 @@ assert_cmd() {
 #   Parent directory of Bootware script.
 #######################################
 configure_shell() {
-  local export_cmd="export PATH=\"$1:\$PATH\""
-  local profile
-  local shell_name
-
+  local export_cmd="export PATH=\"$1:\$PATH\"" profile shell_name
   shell_name="$(basename "${SHELL}")"
 
   case "${shell_name}" in
@@ -85,7 +82,8 @@ configure_shell() {
       ;;
   esac
 
-  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" >> "${profile}"
+  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" \
+    >> "${profile}"
 }
 
 #######################################
@@ -94,9 +92,7 @@ configure_shell() {
 #   Writes error message to stderr.
 #######################################
 error() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
 }
@@ -107,9 +103,7 @@ error() {
 #   Writes error message to stderr.
 #######################################
 error_usage() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   printf "Run 'bootware --help' for usage.\n" >&2
   exit 2
@@ -182,12 +176,8 @@ log() {
 # Script entrypoint.
 #######################################
 main() {
-  local dst_dir
-  local dst_file='/usr/local/bin/bootware'
-  local src_url
-  local use_sudo=''
-  local user_install
-  local version='main'
+  local dst_dir dst_file='/usr/local/bin/bootware' src_url use_sudo='' \
+    user_install version='main'
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -206,7 +196,7 @@ main() {
         ;;
       -u | --user)
         dst_file="${HOME}/.local/bin/bootware"
-        user_install=1
+        user_install='true'
         shift 1
         ;;
       -v | --version)
@@ -241,7 +231,7 @@ main() {
   # unable to find the "" command.
   # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${use_sudo:+sudo} mkdir -p "${dst_dir}"
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" --output "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
   # Add Bootware to shell profile if not in system path.

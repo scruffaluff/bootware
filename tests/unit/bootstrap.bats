@@ -31,10 +31,8 @@ setup() {
 }
 
 @test 'Bootstrap subcommand finds first task associated with role' {
-  local actual
-  local expected
-
-  export BOOTWARE_NOPASSWD=1
+  local actual expected
+  export BOOTWARE_NOPASSWD='true'
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
@@ -48,10 +46,8 @@ ansible_python_interpreter=auto_silent --extra-vars \
 }
 
 @test 'Bootstrap subcommand passes pull arguments to Ansible' {
-  local actual
-  local expected
-
-  export BOOTWARE_NOPASSWD=1
+  local actual expected
+  export BOOTWARE_NOPASSWD='true'
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
@@ -64,9 +60,7 @@ https://github.com/scruffaluff/bootware.git playbook.yaml"
 }
 
 @test 'Bootstrap subcommand passes dev arguments to Ansible' {
-  local actual
-  local expected
-
+  local actual expected
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
   
@@ -80,9 +74,7 @@ ansible_python_interpreter=auto_silent --extra-vars \
 }
 
 @test 'Bootstrap subcommand passes extra arguments to Ansible' {
-  local actual
-  local expected
-
+  local actual expected
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
   
@@ -96,9 +88,7 @@ ansible_python_interpreter=auto_silent --extra-vars \
 }
 
 @test 'Bootstrap subcommand passes Windows SSH arguments to Ansible' {
-  local actual
-  local expected
-
+  local actual expected
   export BOOTWARE_TAGS=''
   
   expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
@@ -124,14 +114,12 @@ main.yaml"
 }
 
 @test 'Bootstrap subcommand uses local copy during start at task' {
-  local actual
-  local expected
-  local tmp_dir
+  local actual expected tmp_dir
   # Do not use long form --dry-run flag for mktemp. It is not supported on
   # MacOS.
   tmp_dir="$(mktemp -u)"
 
-  export BOOTWARE_NOPASSWD=1
+  export BOOTWARE_NOPASSWD='true'
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 

@@ -346,7 +346,7 @@ fi
 # User settings.
 
 # Disable MacOS default shell is now Zsh message.
-export BASH_SILENCE_DEPRECATION_WARNING=1
+export BASH_SILENCE_DEPRECATION_WARNING='true'
 
 # Helix settings.
 #

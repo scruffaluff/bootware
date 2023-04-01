@@ -18,8 +18,7 @@ setup() {
 }
 
 @test 'Function find_config_path returns given executable files' {
-  local actual
-  local expected='/bin/bash'
+  local actual expected='/bin/bash'
 
   find_config_path "${expected}"
   actual="${RET_VAL}"
@@ -27,8 +26,7 @@ setup() {
 }
 
 @test 'Function find_config_path returns environment variable' {
-  local actual
-  local expected='/usr/bin/cat'
+  local actual expected='/usr/bin/cat'
 
   BOOTWARE_CONFIG="${expected}" find_config_path
   actual="${RET_VAL}"
@@ -36,8 +34,7 @@ setup() {
 }
 
 @test 'Function find_config_path returns default when given non-executable file' {
-  local actual
-  local expected="${HOME}/.bootware/config.yaml"
+  local actual expected="${HOME}/.bootware/config.yaml"
 
   find_config_path '/dev/null'
   actual="${RET_VAL}"

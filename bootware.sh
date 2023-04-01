@@ -370,9 +370,7 @@ bootstrap() {
 #   Writes status information to stdout.
 #######################################
 config() {
-  local src_url
-  local dst_file="${HOME}/.bootware/config.yaml"
-  local empty_cfg
+  local src_url dst_file="${HOME}/.bootware/config.yaml" empty_cfg
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -420,8 +418,7 @@ config() {
     #   -L: Follow redirect request.
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
-    #   -o <path>: Write output to path instead of stdout.
-    curl -LSfs "${src_url}" -o "${dst_file}"
+    curl -LSfs "${src_url}" --output "${dst_file}"
   fi
 }
 
@@ -436,6 +433,7 @@ config() {
 #   Whether to use sudo command.
 #######################################
 dnf_check_update() {
+  local code
   ${1:+sudo} dnf check-update || {
     code="$?"
     [[ "${code}" -eq 100 ]] && return 0
@@ -449,9 +447,7 @@ dnf_check_update() {
 #   Writes error message to stderr.
 #######################################
 error() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
 }
@@ -462,9 +458,7 @@ error() {
 #   Writes error message to stderr.
 #######################################
 error_usage() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
   exit 2
@@ -521,11 +515,7 @@ fullpath() {
 #   Whether to use sudo command.
 #######################################
 install_yq() {
-  local arch
-  local os_type
-  local url
-  local version
-
+  local arch os_type url version
   assert_cmd curl
   assert_cmd jq
 
@@ -554,7 +544,7 @@ install_yq() {
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
-  ${1:+sudo} curl -LSfs "${url}" -o /usr/local/bin/yq
+  ${1:+sudo} curl -LSfs "${url}" --output /usr/local/bin/yq
   ${1:+sudo} chmod 755 /usr/local/bin/yq
 }
 
@@ -577,6 +567,7 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local tmp_dir
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
@@ -607,9 +598,7 @@ roles() {
 # Subcommand to configure boostrapping services and utilities.
 #######################################
 setup() {
-  local os_type
-  local tmp_dir
-  local use_sudo=''
+  local collections collection_status os_type tmp_dir use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -713,6 +702,8 @@ setup_alpine() {
 #   Whether to use sudo command.
 #######################################
 setup_arch() {
+  local tmp_dir
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -858,7 +849,7 @@ setup_fedora() {
 #   Whether to use sudo command.
 #######################################
 setup_freebsd() {
-  assert_cmd pkg
+  assert_cmd pkg python_version
 
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
@@ -868,8 +859,10 @@ setup_freebsd() {
     # Python's cryptography package requires a Rust compiler on FreeBSD.
     ${1:+sudo} pkg install --yes python3 rust
 
-    py_ver="$(python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))')"
-    ${1:+sudo} pkg install --yes "py${py_ver}-pip"
+    python_version="$(
+      python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))'
+    )"
+    ${1:+sudo} pkg install --yes "py${python_version}-pip"
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -1039,8 +1032,7 @@ setup_suse() {
 #   Writes status information about removed files.
 #######################################
 uninstall() {
-  local dst_file
-  local use_sudo=''
+  local dst_file use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -1083,11 +1075,7 @@ uninstall() {
 #   Writes status information and updated Bootware version to stdout.
 #######################################
 update() {
-  local dst_file
-  local src_url
-  local use_sudo=''
-  local user_install
-  local version='main'
+  local dst_file src_url use_sudo='' user_install version='main'
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -1120,14 +1108,14 @@ update() {
     assert_cmd sudo
     use_sudo='true'
   elif [[ -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
-    user_install=1
+    user_install='true'
   fi
 
   log 'Updating Bootware'
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" --output "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
   update_completions "${use_sudo}" "${user_install:-}" "${version}"

@@ -39,12 +39,11 @@ setup() {
 }
 
 @test 'Update subcommand passes Bootware executable path to Curl' {
-  local actual
-  local expected
+  local actual expected
   
   expected="curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
--o $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
+--output $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
 curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.fish \
 -o ${HOME}/.config/fish/completions/bootware.fish"
 
@@ -56,7 +55,7 @@ curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/comple
   local actual
   local expected="sudo curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
--o /bin/bash"
+--output /bin/bash"
 
   source bootware.sh
 
