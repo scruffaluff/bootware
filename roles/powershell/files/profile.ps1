@@ -148,7 +148,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     If (
         (!$Env:SHELL_MINIMAL_CONFIG) -And
         (Get-Module -ListAvailable -Name PsFzf)
-     ) {
+    ) {
         Import-Module PsFzf
 
         # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.

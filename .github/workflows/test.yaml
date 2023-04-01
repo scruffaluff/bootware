@@ -162,7 +162,7 @@ jobs:
           prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
-            pkg install -y bash curl
+            pkg install --yes bash curl
           release: "13.1"
           # Vagrant is not tested temporarily since FreeBSD vagrant package
           # installs Ruby net-sftp dependency with version 4 while needing

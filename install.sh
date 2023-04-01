@@ -77,7 +77,7 @@ configure_shell() {
       profile="${HOME}/.profile"
       ;;
     fish)
-      export_cmd="set -x PATH \"$1\" \$PATH"
+      export_cmd="set --export PATH \"$1\" \$PATH"
       profile="${HOME}/.config/fish/config.fish"
       ;;
     *)

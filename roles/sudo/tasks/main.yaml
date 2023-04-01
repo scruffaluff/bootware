@@ -13,7 +13,7 @@
     mode: "440"
     owner: root
     path: /etc/sudoers
-    validate: visudo -cf %s
+    validate: visudo --check --file %s
   become: true
   when: ansible_system != "Win32NT"
 
@@ -27,7 +27,7 @@
     mode: "440"
     owner: root
     path: /etc/sudoers
-    validate: visudo -cf %s
+    validate: visudo --check --file %s
   become: true
   when: passwordless_sudo and ansible_system != "Win32NT"
 

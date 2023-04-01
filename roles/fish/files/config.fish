@@ -212,7 +212,7 @@ fish_add_path "$HOME/.cargo/bin"
 # Shell settings
 
 alias cargo-expand "cargo expand --theme 'Solarized (light)'"
-alias cargo-testpath "cargo test --no-run --message-format=json | jq -r 'select(.profile.test == true) | .filenames[]'"
+alias cargo-testpath "cargo test --no-run --message-format=json | jq --raw-output 'select(.profile.test == true) | .filenames[]'"
 alias procs 'procs --theme light'
 
 # Add unified clipboard aliases.

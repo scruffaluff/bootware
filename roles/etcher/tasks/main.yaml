@@ -10,7 +10,7 @@
 
 # TODO: Solve Etcher package conflict with NodeJS.
 # - name: Install Balena Etcher for Arch
-#   ansible.builtin.command: yay -Sy --noconfirm balena-etcher
+#   ansible.builtin.command: yay --noconfirm --refresh --sync balena-etcher
 #   when: ansible_pkg_mgr == "pacman"
 
 - name: Download Balena Etcher repository key for Debian
@@ -24,7 +24,7 @@
 - name: Install Balena Etcher repository key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --dearmor -o /usr/share/keyrings/balena-etcher.gpg
+      gpg --dearmor --output /usr/share/keyrings/balena-etcher.gpg
       /tmp/balena-etcher.gpg
     creates: /usr/share/keyrings/balena-etcher.gpg
   become: true

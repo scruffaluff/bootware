@@ -17,7 +17,7 @@
 
 - name: Install Nvidia CUDA repository key for Ubuntu
   ansible.builtin.command: >-
-    gpg --dearmor -o /usr/share/keyrings/cuda-archive-keyring.gpg
+    gpg --dearmor --output /usr/share/keyrings/cuda-archive-keyring.gpg
     /tmp/cuda-archive-keyring.pub
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"

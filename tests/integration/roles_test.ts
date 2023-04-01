@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-run
+#!/usr/bin/env --split-string deno run --allow-read --allow-run
 
 // Execute shell commands to test binaries installed from roles.
 import Denomander from "https://deno.land/x/denomander@0.9.1/mod.ts";

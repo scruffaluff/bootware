@@ -721,39 +721,37 @@ setup_arch() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm ansible
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --syncansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm curl
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm git
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm jq
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync jq
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log 'Installing Yay package manager'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm base-devel
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync base-devel
 
-    # Do not use long form --dry-run flag for mktemp. It is not supported on
-    # MacOS.
-    tmp_dir="$(mktemp -u)"
+    tmp_dir="$(mktemp --dry-run)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
-    (cd "${tmp_dir}" && makepkg --noconfirm -is)
-    yay --noconfirm -Suy
+    (cd "${tmp_dir}" && makepkg --install --noconfirm --syncdeps)
+    yay --noconfirm --refresh --sync --sysupgrade
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -780,8 +778,8 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes python3 python3-pip python3-apt
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -789,20 +787,20 @@ setup_debian() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y curl
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y git
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y jq
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -827,25 +825,25 @@ setup_fedora() {
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible
+    ${1:+sudo} dnf install --assumeyes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y curl
+    ${1:+sudo} dnf install --assumeyes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y git
+    ${1:+sudo} dnf install --assumeyes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y jq
+    ${1:+sudo} dnf install --assumeyes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -868,10 +866,10 @@ setup_freebsd() {
     # version of Ansible.
     ${1:+sudo} pkg update
     # Python's cryptography package requires a Rust compiler on FreeBSD.
-    ${1:+sudo} pkg install -y python3 rust
+    ${1:+sudo} pkg install --yes python3 rust
 
     py_ver="$(python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))')"
-    ${1:+sudo} pkg install -y "py${py_ver}-pip"
+    ${1:+sudo} pkg install --yes "py${py_ver}-pip"
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -880,19 +878,19 @@ setup_freebsd() {
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y curl
+    ${1:+sudo} pkg install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y git
+    ${1:+sudo} pkg install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y jq
+    ${1:+sudo} pkg install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -1004,8 +1002,8 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y python3 python3-pip
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -1013,20 +1011,20 @@ setup_suse() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y curl
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y git
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y jq
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
