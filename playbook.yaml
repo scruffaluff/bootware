@@ -707,12 +707,9 @@
       ansible.builtin.import_role:
         name: neovim
       tags:
-        - container
-        - desktop
-        - editor
+        - extras
         - neovim
-        - server
-        - wsl
+        - never
 
     - name: Install Node JavaScript runtime
       ansible.builtin.import_role:

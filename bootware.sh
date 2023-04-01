@@ -722,7 +722,7 @@ setup_arch() {
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --syncansible
+    ${1:+sudo} pacman --noconfirm --sync ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
