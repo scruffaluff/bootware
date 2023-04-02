@@ -1173,6 +1173,14 @@ main() {
         set -o xtrace
         shift 1
         ;;
+      -h | --help)
+        usage 'main'
+        exit 0
+        ;;
+      -v | --version)
+        version
+        exit 0
+        ;;
       bootstrap)
         shift 1
         bootstrap "$@"
@@ -1201,14 +1209,6 @@ main() {
       update)
         shift 1
         update "$@"
-        exit 0
-        ;;
-      -h | --help)
-        usage 'main'
-        exit 0
-        ;;
-      -v | --version)
-        version
         exit 0
         ;;
       *)
