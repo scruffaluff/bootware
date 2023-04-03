@@ -17,7 +17,7 @@
       # prettier-ignore
       ansible.builtin.shell:  # noqa command-instead-of-module
         cmd: >-
-          curl -Sfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
+          curl -LSfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
           -y --no-modify-path
         creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
 

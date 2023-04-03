@@ -9,6 +9,15 @@
 # '--query' in Fish version 3.2.0, but short flag '-q' is compatible across all
 # versions.
 
+# Check if only minimally functional shell settings should be loaded.
+#
+# If file ~/.shell_minimal_config exists, then most shell completion will not be
+# configured. These are useful to disable if on a slow system where shell
+# startup takes too long.
+if test -f "$HOME/.shell_minimal_config"
+  set --export SHELL_MINIMAL_CONFIG 'true'
+end
+
 # Function fish_add_path was not added until Fish version 3.2.0.
 #
 # Flags:
@@ -80,8 +89,8 @@ fish_add_path '/usr/bin'
 fish_add_path '/usr/local/bin'
 
 # Docker settings.
-set --export COMPOSE_DOCKER_CLI_BUILD 1
-set --export DOCKER_BUILDKIT 1
+set --export COMPOSE_DOCKER_CLI_BUILD 'true'
+set --export DOCKER_BUILDKIT 'true'
 
 # Fish settings.
 
@@ -99,7 +108,7 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q bat; and type -q tree
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q bat; and type -q tree
   function fzf_inode_preview
     bat --color always --style numbers $argv 2> /dev/null
 
@@ -114,7 +123,7 @@ if type -q bat; and type -q tree
   set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
 end
 
-if type -q fzf
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q fzf
   fzf_key_bindings
 end
 
@@ -193,20 +202,8 @@ fish_add_path "$HOME/.pyenv/bin"
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q pyenv
-  status is-interactive; and pyenv init --path | source
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q pyenv; and status is-interactive
   pyenv init - | source
-end
-
-# Ruby settings.
-fish_add_path "$HOME/bin"
-
-# Add gems binaries to path if Ruby is available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q ruby
-  fish_add_path (ruby -r rubygems -e 'puts Gem.user_dir')'/bin'
 end
 
 # Rust settings.
@@ -214,27 +211,21 @@ fish_add_path "$HOME/.cargo/bin"
 
 # Shell settings
 
-# Custom environment variable function to faciliate other shell compatibility.
-#
-# Taken from https://unix.stackexchange.com/a/176331.
-#
-# Examples:
-#   setenv PATH 'usr/local/bin'
-function setenv
-  if [ $argv[1] = PATH ]
-    # Replace colons and spaces with newlines.
-    set --export PATH (echo "$argv[2]" | tr ': ' \n)
-  else
-    set --export $argv
-  end
-end
+alias cargo-expand "cargo expand --theme 'Solarized (light)'"
+alias cargo-testpath "cargo test --no-run --message-format=json | jq --raw-output 'select(.profile.test == true) | .filenames[]'"
+alias procs 'procs --theme light'
 
-# Load aliases if file exists.
+# Add unified clipboard aliases.
 #
 # Flags:
-#   -f: Check if inode is a regular file.
-if test -f "$HOME/.aliases"; and type -q bass
-  bass source "$HOME/.aliases"
+#   -s: Print machine kernel name.
+#   -x: Check if file exists and execute permission is granted.
+if test (uname -s) = 'Darwin'
+  alias cbcopy pbcopy
+  alias cbpaste pbpaste
+elif type -q wl-copy
+  alias cbcopy wl-copy
+  alias cbpaste wl-paste
 end
 
 # Load environment variables if file exists.
@@ -261,7 +252,7 @@ end
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q starship
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q starship
   starship init fish | source
 end
 
@@ -276,7 +267,7 @@ fish_add_path '/usr/share/code/bin'
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q doctl
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q doctl
   source (doctl completion fish | psub)
 end
 
@@ -284,7 +275,7 @@ end
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q direnv
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q direnv
   direnv hook fish | source
 end
 
@@ -296,7 +287,7 @@ end
 # Flags:
 #   -f: Check if inode is a regular file.
 #   -s: Print machine kernel name.
-if test (uname -s) = 'Darwin'
+if test -z "$SHELL_MINIMAL_CONFIG"; and test (uname -s) = 'Darwin'
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   set ARM_GCLOUD_PATH '/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
   set INTEL_GCLOUD_PATH '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
@@ -315,7 +306,7 @@ fish_add_path "$HOME/.krew/bin"
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q navi
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q navi
   navi widget fish | source
 end
 
@@ -332,7 +323,8 @@ fish_add_path "$HOME/.npm-global/bin"
 #
 # Flags:
 #   -f: Check if inode is a regular file.
-if test -f "$HOME/.config/tabtab/fish/__tabtab.fish"
+if test -z "$SHELL_MINIMAL_CONFIG"; and \
+  test -f "$HOME/.config/tabtab/fish/__tabtab.fish"
   source "$HOME/.config/tabtab/fish/__tabtab.fish"
 end
 
@@ -340,7 +332,7 @@ end
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q nvm
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q nvm
   nvm use default
 end
 
@@ -349,7 +341,8 @@ end
 # Autostart Zellij or connect to existing session if within Alacritty terminal.
 #
 # For more information, visit https://zellij.dev/documentation/integration.html.
-if type -q zellij; and not ssh_session; and test "$TERM" = 'alacritty'
+if test -z "$SHELL_MINIMAL_CONFIG"; and type -q zellij; \
+  and not ssh_session; and test "$TERM" = 'alacritty'
   # Attach to a default session if it exists.
   set --export ZELLIJ_AUTO_ATTACH 'true'
   # Exit the shell when Zellij exits.

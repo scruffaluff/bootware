@@ -4,6 +4,15 @@
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
 
+# Check if only minimally functional shell settings should be loaded.
+#
+# If file ~/.shell_minimal_config exists, then most shell completion will not be
+# configured. These are useful to disable if on a slow system where shell
+# startup takes too long.
+if [[ -f "${HOME}/.shell_minimal_config" ]]; then
+  export SHELL_MINIMAL_CONFIG='true'
+fi
+
 # Prepend directory to the system path if it exists and is not already there.
 #
 # Flags:
@@ -30,7 +39,7 @@ prepend_path '/usr/local/bin'
 
 # Bash interactive settings
 
-if [[ "$-" == *i* ]]; then
+if [[ -z "${SHELL_MINIMAL_CONFIG}" && "$-" == *i* ]]; then
   # Configure up and down arrow key history search to match commands starting
   # with text before the cursor.
   bind '"\e[A": history-search-backward'
@@ -55,8 +64,8 @@ if [[ "$-" == *i* ]]; then
 fi
 
 # Docker settings.
-export COMPOSE_DOCKER_CLI_BUILD=1
-export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD='true'
+export DOCKER_BUILDKIT='true'
 
 # Fzf settings.
 
@@ -70,7 +79,11 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v fzf)" && -f "${HOME}/.fzf_key_bindings.bash" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && -x "$(command -v fzf)" && \
+  -f "${HOME}/.fzf_key_bindings.bash" \
+]]; then
   source "${HOME}/.fzf_key_bindings.bash"
 fi
 
@@ -147,7 +160,7 @@ prepend_path "${HOME}/.pyenv/bin"
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v pyenv)" ]]; then
+if [[ -z "${SHELL_MINIMAL_CONFIG}" && -x "$(command -v pyenv)" ]]; then
   export PYENV_ROOT="${HOME}/.pyenv"
   prepend_path "${PYENV_ROOT}/bin"
   eval "$(pyenv init --path)"
@@ -157,38 +170,26 @@ if [[ -x "$(command -v pyenv)" ]]; then
   fi
 fi
 
-# Ruby settings.
-prepend_path "${HOME}/bin"
-
-# Add gems binaries to path if Ruby is available.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v ruby)" ]]; then
-  prepend_path "$(ruby -r rubygems -e 'puts Gem.user_dir')/bin"
-fi
-
 # Rust settings.
 prepend_path "${HOME}/.cargo/bin"
 
 # Shell settings.
 
-# Custom environment variable function to faciliate Fish shell compatibility.
-#
-# Taken from https://unix.stackexchange.com/a/176331.
-#
-# Examples:
-#   setenv PATH "usr/local/bin"
-function setenv() {
-  export "$1=$2"
-}
+alias cargo-expand="cargo expand --theme 'Solarized (light)'"
+alias cargo-testpath="cargo test --no-run --message-format=json | jq --raw-output 'select(.profile.test == true) | .filenames[]'"
+alias procs='procs --theme light'
 
-# Load aliases if file exists.
+# Add unified clipboard aliases.
 #
 # Flags:
-#   -f: Check if file exists and is a regular file.
-if [[ -f "${HOME}/.aliases" ]]; then
-  source "${HOME}/.aliases"
+#   -s: Print machine kernel name.
+#   -x: Check if file exists and execute permission is granted.
+if [[ "$(uname -s)" == 'Darwin' ]]; then
+  alias cbcopy='pbcopy'
+  alias cbpaste='pbpaste'
+elif [[ -x "$(command -v wl-copy)" ]]; then
+  alias cbcopy='wl-copy'
+  alias cbpaste='wl-paste'
 fi
 
 # Load environment variables if file exists.
@@ -213,7 +214,10 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v starship)" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && -x "$(command -v starship)" \
+]]; then
   eval "$(starship init bash)"
 fi
 
@@ -230,7 +234,10 @@ prepend_path '/usr/share/code/bin'
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v doctl)" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && -x "$(command -v doctl)" \
+]]; then
   source <(doctl completion bash)
 fi
 
@@ -238,7 +245,10 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v direnv)" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && -x "$(command -v direnv)" \
+]]; then
   eval "$(direnv hook bash)"
 fi
 
@@ -247,7 +257,7 @@ fi
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -s: Print machine kernel name.
-if [[ "$(uname -s)" == 'Darwin' ]]; then
+if [[ -z "${SHELL_MINIMAL_CONFIG}" && "$(uname -s)" == 'Darwin' ]]; then
   # (brew --prefix) gives the incorrect path when sourced on Apple silicon.
   ARM_GCLOUD_PATH='/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
   INTEL_GCLOUD_PATH='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk'
@@ -274,7 +284,11 @@ prepend_path "${HOME}/.krew/bin"
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v kubectl)" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && \
+  -x "$(command -v kubectl)" \
+]]; then
   source <(kubectl completion bash)
 fi
 
@@ -286,7 +300,12 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ "$-" == *i* && -x "$(command -v navi)" && "${SHELLOPTS}" =~ (vi|emacs) ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && \
+  -x "$(command -v navi)" && \
+  "${SHELLOPTS}" =~ (vi|emacs) \
+]]; then
   eval "$(navi widget bash)"
 fi
 
@@ -300,7 +319,11 @@ prepend_path "${DENO_INSTALL}/bin"
 prepend_path "${HOME}/.npm-global/bin"
 
 # Source TabTab shell completion for PNPM.
-if [[ "$-" == *i* && -f "${HOME}/.config/tabtab/bash/__tabtab.bash" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && \
+  -f "${HOME}/.config/tabtab/bash/__tabtab.bash" \
+]]; then
   source "${HOME}/.config/tabtab/bash/__tabtab.bash"
 fi
 
@@ -309,17 +332,21 @@ fi
 # Flags:
 #   -f: Check if file exists and is a regular file.
 export NVM_DIR="${HOME}/.nvm"
-if [[ -f "${NVM_DIR}/nvm.sh" ]]; then
+if [[ -z "${SHELL_MINIMAL_CONFIG}" && -f "${NVM_DIR}/nvm.sh" ]]; then
   source "${NVM_DIR}/nvm.sh"
 fi
-if [[ "$-" == *i* && -f "${NVM_DIR}/bash_completion" ]]; then
+if [[ \
+  -z "${SHELL_MINIMAL_CONFIG}" && \
+  "$-" == *i* && \
+  -f "${NVM_DIR}/bash_completion" \
+]]; then
   source "${NVM_DIR}/bash_completion"
 fi
 
 # User settings.
 
 # Disable MacOS default shell is now Zsh message.
-export BASH_SILENCE_DEPRECATION_WARNING=1
+export BASH_SILENCE_DEPRECATION_WARNING='true'
 
 # Helix settings.
 #

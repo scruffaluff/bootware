@@ -32,15 +32,14 @@ setup() {
   local actual
   local expected="curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
--o ${HOME}/.local/bin/bootware"
+--output ${HOME}/.local/bin/bootware"
 
   actual="$(install.sh --user --version develop)"
   assert_equal "${actual}" "${expected}"
 }
 
 @test 'Installer uses sudo when destination is not writable' {
-  local actual
-  local expected
+  local actual expected
 
   # Mock functions for child processes by printing received arguments.
   #

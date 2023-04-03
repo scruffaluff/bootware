@@ -7,7 +7,7 @@
 
 # Pop Shell requires TypeScript as a build dependency
 - name: Install Typescript for GNOME desktops
-  ansible.builtin.command: npm install -g typescript
+  ansible.builtin.command: npm install --global typescript
   environment:
     PATH: "{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.PATH }}"
   when: pop_shell_check is failed and gnome_desktop
@@ -16,10 +16,10 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      tmp_dir="${HOME}$(mktemp -u)"
+      tmp_dir="${HOME}$(mktemp --dry-run)"
       git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
-      echo y | make -C "${tmp_dir}" local-install
-      rm -fr "${tmp_dir}"
+      echo y | make --directory "${tmp_dir}" local-install
+      rm --force --recursive "${tmp_dir}"
     executable: "{{ bash_executable }}"
   when: pop_shell_check is failed and gnome_desktop
 

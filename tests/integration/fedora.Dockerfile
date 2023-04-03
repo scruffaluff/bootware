@@ -3,25 +3,19 @@ FROM fedora:37
 ARG TARGETARCH
 
 # Create non-priviledged user.
-#
-# Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/bash: Set user login shell to Bash.
-#     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 fedora
+RUN useradd --create-home --no-log-init --shell /bin/bash fedora
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
 # Install Bash, Curl, and Sudo.  
-RUN dnf install -y bash curl sudo
+RUN dnf install --assumeyes bash curl sudo
 
 # Create sudo group.
 RUN groupadd sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo fedora
+RUN usermod --append --groups sudo fedora
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -73,7 +67,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v node)" ]]; then \
-            sudo dnf install -y nodejs; \
+            sudo dnf install --assumeyes nodejs; \
         fi; \
         node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi

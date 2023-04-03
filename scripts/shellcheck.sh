@@ -14,12 +14,20 @@ set -eou pipefail
 # Script entrypoint.
 #######################################
 main() {
-  bats_files="$(find . -type f -name '*.bats' -not -path '*/.venv/*' -not -path '*/node_modules/*')";
+  local bats_files sh_files
+
+  bats_files="$(
+    find . -type f -name '*.bats' -not -path '*/.venv/*' \
+      -not -path '*/node_modules/*'
+  )"
   for file in ${bats_files}; do
     shellcheck --shell bash "${file}"
   done
 
-  sh_files="$(find . -type f -name '*.sh' -not -path '*/.venv/*' -not -path '*/node_modules/*')";
+  sh_files="$(
+    find . -type f -name '*.sh' -not -path '*/.venv/*' \
+      -not -path '*/node_modules/*'
+  )"
   for file in ${sh_files}; do
     shellcheck "${file}"
   done

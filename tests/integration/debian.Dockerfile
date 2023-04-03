@@ -3,24 +3,13 @@ FROM debian:11
 ARG TARGETARCH
 
 # Create non-priviledged user.
-#
-# Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/bash: Set user login shell to Bash.
-#     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 debian
+RUN useradd --create-home --no-log-init --shell /bin/bash debian
 
 # Install Bash, Curl and Sudo.
-#
-# Flags:
-#     -m: Ignore missing packages and handle result.
-#     -q: Produce log suitable output by omitting progress indicators.
-#     -y: Assume "yes" as answer to all prompts and run non-interactively.
-RUN apt-get update -m && apt-get install -qy bash curl sudo
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes bash curl sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo debian
+RUN usermod --append --groups sudo debian
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -72,7 +61,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v node)" ]]; then \
-            sudo apt-get install -qy nodejs; \
+            sudo apt-get install --quiet --yes nodejs; \
         fi; \
         node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

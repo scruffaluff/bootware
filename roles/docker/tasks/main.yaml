@@ -32,7 +32,7 @@
 - name: Add Docker GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      gpg --dearmor --output /usr/share/keyrings/docker-archive-keyring.gpg
       /tmp/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
   become: true

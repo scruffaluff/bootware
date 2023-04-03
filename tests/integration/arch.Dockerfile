@@ -3,22 +3,17 @@ FROM archlinux:base-20230319.0.135218
 ARG TARGETARCH
 
 # Create non-priviledged user.
-#
-# Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/bash: Set user login shell to Bash.
-#     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 arch
+RUN useradd --create-home --no-log-init --shell /bin/bash arch
 
 # Install Bash, Curl, and Sudo.
-RUN pacman --noconfirm -Suy && pacman --noconfirm -S bash curl sudo
+RUN pacman --noconfirm --refresh --sync --sysupgrade && \
+    pacman --noconfirm --sync bash curl sudo
 
 # Create sudo group.
 RUN groupadd sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo arch
+RUN usermod --append --groups sudo arch
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -70,7 +65,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v deno)" ]]; then \
-            sudo pacman -S --noconfirm unzip; \
+            sudo pacman --noconfirm --sync unzip; \
             curl -LSfs https://deno.land/install.sh | sh; \
             export PATH="${HOME}/.deno/bin:${PATH}"; \
         fi; \

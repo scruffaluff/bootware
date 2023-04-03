@@ -561,9 +561,7 @@ Function SetupSSHKeys {
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        # Do not use long form --parents flag for mkdir. It is not supported on
-        # MacOS.
-        wsl mkdir -p -m 700 "`$HOME/.ssh/"
+        wsl mkdir --parents --mode 700 "`$HOME/.ssh/"
         wsl mv "$WSLKeyPath" "`$HOME/.ssh/bootware"
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"

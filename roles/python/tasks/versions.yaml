@@ -65,7 +65,7 @@
 - name: Install Pyenv for Unix
   # prettier-ignore
   ansible.builtin.shell:  # noqa command-instead-of-module
-    cmd: curl -Sfs https://pyenv.run | bash
+    cmd: curl -LSfs https://pyenv.run | bash
     creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
@@ -81,7 +81,7 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      pyenv install --list | grep -E "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
+      pyenv install --list | grep --extended-regexp "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
   loop: "{{ python_versions }}"
   register: pyenv_releases
@@ -97,7 +97,7 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      pyenv install -s {{ item }}
+      pyenv install --skip-existing {{ item }}
     executable: "{{ bash_executable }}"
   loop: "{{ python_releases }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"

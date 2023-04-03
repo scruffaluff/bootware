@@ -5,7 +5,7 @@ ARG version=1.0.0
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
-RUN dnf install -y nodejs rpm-build
+RUN dnf install --assumeyes nodejs rpm-build
 
 # # Copy bootware package build files.
 COPY scripts/ /bootware/scripts/
@@ -30,7 +30,7 @@ RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 COPY --from=builder "/bootware/dist/bootware-${version}-1.fc33.noarch.rpm" /tmp/
 
 # Install Fedora package.
-RUN dnf install -y "/tmp/bootware-${version}-1.fc33.noarch.rpm"
+RUN dnf install --assumeyes "/tmp/bootware-${version}-1.fc33.noarch.rpm"
 
 # Test package was installed successfully.
 RUN bootware --help

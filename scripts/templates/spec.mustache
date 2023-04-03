@@ -17,11 +17,11 @@ Vendor: Macklan Weinstein <macklan.weinstein@gmail.com>
 Bootstrap software installations with Ansible
 
 %prep
-%setup -q
+%setup
 
 %install
-mkdir -p %{buildroot}/usr/local/bin/
-install -m 755 bootware %{buildroot}/usr/local/bin/bootware
+mkdir --parents %{buildroot}/usr/local/bin/
+install --mode 755 bootware %{buildroot}/usr/local/bin/bootware
 
 %files
 /usr/local/bin/%{name}

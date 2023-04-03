@@ -64,7 +64,7 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      mkdir -p {{ ansible_env.HOME }}/.npm-global
+      mkdir --parents {{ ansible_env.HOME }}/.npm-global
       npm config set prefix {{ ansible_env.HOME }}/.npm-global
     executable: "{{ bash_executable }}"
   when: >-
@@ -96,7 +96,7 @@
   ansible.builtin.shell:
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
-      npm install -g {{ item }}
+      npm install --global {{ item }}
     executable: "{{ bash_executable }}"
   loop: "{{ node_applications }}"
   when: >-
@@ -108,7 +108,7 @@
     cmd: |
       source {{ ansible_env.HOME }}/.bashrc
       nvm use {{ node_versions[-1] }}
-      npm install -g {{ item }}
+      npm install --global {{ item }}
     executable: "{{ bash_executable }}"
   loop: "{{ node_applications }}"
   when: >-
@@ -117,7 +117,7 @@
 
 - name: Install or update Node CLI applications for Windows
   ansible.windows.win_shell: |
-    (npm install -g {{ item }}) -Or (npm update -g {{ item }})
+    (npm install --global {{ item }}) -Or (npm update --global {{ item }})
   environment:
     Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
   loop: "{{ node_applications }}"

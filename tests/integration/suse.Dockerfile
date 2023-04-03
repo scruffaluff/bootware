@@ -3,25 +3,19 @@ FROM opensuse/leap:15.4
 ARG TARGETARCH
 
 # Create non-priviledged user.
-#
-# Flags:
-#     -l: Do not add user to lastlog database.
-#     -m: Create user home directory if it does not exist.
-#     -s /usr/bin/bash: Set user login shell to Bash.
-#     -u 1000: Give new user UID value 1000.
-RUN useradd -lm -s /bin/bash -u 1000 suse
+RUN useradd --create-home --no-log-init --shell /bin/bash suse
 
 # Update DNF package lists.
-RUN zypper update -y
+RUN zypper update --no-confirm
 
 # Install Bash, Curl, and Sudo.  
-RUN zypper install -y bash curl sudo
+RUN zypper install --no-confirm bash curl sudo
 
 # Create sudo group.
 RUN groupadd sudo
 
 # Add standard user to sudoers group.
-RUN usermod -a -G sudo suse
+RUN usermod --append --groups sudo suse
 
 # Allow sudo commands with no password.
 RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
@@ -73,7 +67,7 @@ SHELL ["/bin/bash", "-c"]
 RUN if [[ -n "$test" ]]; then \
         source "${HOME}/.bashrc"; \
         if [[ ! -x "$(command -v node)" ]]; then \
-            sudo zypper install -y nodejs-default; \
+            sudo zypper install --no-confirm nodejs-default; \
         fi; \
         node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
     fi

@@ -24,8 +24,7 @@ setup() {
 }
 
 @test 'Config subcommand makes empty configuration log' {
-  local actual
-  local expected
+  local actual expected
 
   expected='Writing empty configuration file to /dev/null'
   actual="$(bootware.sh config -e --dest /dev/null)"
@@ -33,13 +32,12 @@ setup() {
 }
 
 @test 'Config subcommand passes source to Curl' {
-  local actual
-  local expected
+  local actual expected
 
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'
 
-  expected="curl -LSfs https://fakedomain.com -o ${HOME}/.bootware/config.yaml"
+  expected="curl -LSfs https://fakedomain.com --output ${HOME}/.bootware/config.yaml"
   actual="$(bootware.sh config --source https://fakedomain.com)"
   assert_equal "${actual}" "${expected}"
 }

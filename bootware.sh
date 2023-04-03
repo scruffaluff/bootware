@@ -370,9 +370,7 @@ bootstrap() {
 #   Writes status information to stdout.
 #######################################
 config() {
-  local src_url
-  local dst_file="${HOME}/.bootware/config.yaml"
-  local empty_cfg
+  local src_url dst_file="${HOME}/.bootware/config.yaml" empty_cfg
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -420,8 +418,7 @@ config() {
     #   -L: Follow redirect request.
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
-    #   -o <path>: Write output to path instead of stdout.
-    curl -LSfs "${src_url}" -o "${dst_file}"
+    curl -LSfs "${src_url}" --output "${dst_file}"
   fi
 }
 
@@ -436,6 +433,7 @@ config() {
 #   Whether to use sudo command.
 #######################################
 dnf_check_update() {
+  local code
   ${1:+sudo} dnf check-update || {
     code="$?"
     [[ "${code}" -eq 100 ]] && return 0
@@ -449,9 +447,7 @@ dnf_check_update() {
 #   Writes error message to stderr.
 #######################################
 error() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   exit 1
 }
@@ -462,9 +458,7 @@ error() {
 #   Writes error message to stderr.
 #######################################
 error_usage() {
-  local bold_red='\033[1;31m'
-  local default='\033[0m'
-
+  local bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "$1" >&2
   printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
   exit 2
@@ -521,11 +515,7 @@ fullpath() {
 #   Whether to use sudo command.
 #######################################
 install_yq() {
-  local arch
-  local os_type
-  local url
-  local version
-
+  local arch os_type url version
   assert_cmd curl
   assert_cmd jq
 
@@ -554,7 +544,7 @@ install_yq() {
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
-  ${1:+sudo} curl -LSfs "${url}" -o /usr/local/bin/yq
+  ${1:+sudo} curl -LSfs "${url}" --output /usr/local/bin/yq
   ${1:+sudo} chmod 755 /usr/local/bin/yq
 }
 
@@ -577,6 +567,7 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local tmp_dir
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
@@ -607,9 +598,7 @@ roles() {
 # Subcommand to configure boostrapping services and utilities.
 #######################################
 setup() {
-  local os_type
-  local tmp_dir
-  local use_sudo=''
+  local collections collection_status os_type tmp_dir use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -713,6 +702,8 @@ setup_alpine() {
 #   Whether to use sudo command.
 #######################################
 setup_arch() {
+  local tmp_dir
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -721,39 +712,37 @@ setup_arch() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm ansible
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm curl
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm git
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm jq
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync jq
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log 'Installing Yay package manager'
-    ${1:+sudo} pacman -Suy --noconfirm
-    ${1:+sudo} pacman -S --noconfirm base-devel
+    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+sudo} pacman --noconfirm --sync base-devel
 
-    # Do not use long form --dry-run flag for mktemp. It is not supported on
-    # MacOS.
-    tmp_dir="$(mktemp -u)"
+    tmp_dir="$(mktemp --dry-run)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
-    (cd "${tmp_dir}" && makepkg --noconfirm -is)
-    yay --noconfirm -Suy
+    (cd "${tmp_dir}" && makepkg --install --noconfirm --syncdeps)
+    yay --noconfirm --refresh --sync --sysupgrade
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -780,8 +769,8 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y python3 python3-pip python3-apt
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes python3 python3-pip python3-apt
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -789,20 +778,20 @@ setup_debian() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y curl
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y git
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} apt-get -qq update
-    ${1:+sudo} apt-get -qq install -y jq
+    ${1:+sudo} apt-get --quiet update
+    ${1:+sudo} apt-get --quiet install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -827,25 +816,25 @@ setup_fedora() {
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y ansible
+    ${1:+sudo} dnf install --assumeyes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y curl
+    ${1:+sudo} dnf install --assumeyes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y git
+    ${1:+sudo} dnf install --assumeyes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
     dnf_check_update "$1"
-    ${1:+sudo} dnf install -y jq
+    ${1:+sudo} dnf install --assumeyes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -860,7 +849,7 @@ setup_fedora() {
 #   Whether to use sudo command.
 #######################################
 setup_freebsd() {
-  assert_cmd pkg
+  assert_cmd pkg python_version
 
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
@@ -868,10 +857,12 @@ setup_freebsd() {
     # version of Ansible.
     ${1:+sudo} pkg update
     # Python's cryptography package requires a Rust compiler on FreeBSD.
-    ${1:+sudo} pkg install -y python3 rust
+    ${1:+sudo} pkg install --yes python3 rust
 
-    py_ver="$(python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))')"
-    ${1:+sudo} pkg install -y "py${py_ver}-pip"
+    python_version="$(
+      python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))'
+    )"
+    ${1:+sudo} pkg install --yes "py${python_version}-pip"
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -880,19 +871,19 @@ setup_freebsd() {
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y curl
+    ${1:+sudo} pkg install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y git
+    ${1:+sudo} pkg install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
     ${1:+sudo} pkg update
-    ${1:+sudo} pkg install -y jq
+    ${1:+sudo} pkg install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -1004,8 +995,8 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y python3 python3-pip
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm python3 python3-pip
 
     ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
     ${1:+sudo} python3 -m pip install ansible
@@ -1013,20 +1004,20 @@ setup_suse() {
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y curl
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y git
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} zypper update -y
-    ${1:+sudo} zypper install -y jq
+    ${1:+sudo} zypper update --no-confirm
+    ${1:+sudo} zypper install --no-confirm jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -1041,8 +1032,7 @@ setup_suse() {
 #   Writes status information about removed files.
 #######################################
 uninstall() {
-  local dst_file
-  local use_sudo=''
+  local dst_file use_sudo=''
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -1085,11 +1075,7 @@ uninstall() {
 #   Writes status information and updated Bootware version to stdout.
 #######################################
 update() {
-  local dst_file
-  local src_url
-  local use_sudo=''
-  local user_install
-  local version='main'
+  local dst_file src_url use_sudo='' user_install version='main'
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
@@ -1122,14 +1108,14 @@ update() {
     assert_cmd sudo
     use_sudo='true'
   elif [[ -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
-    user_install=1
+    user_install='true'
   fi
 
   log 'Updating Bootware'
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" -o "${dst_file}"
+  ${use_sudo:+sudo} curl -LSfs "${src_url}" --output "${dst_file}"
   ${use_sudo:+sudo} chmod 755 "${dst_file}"
 
   update_completions "${use_sudo}" "${user_install:-}" "${version}"
@@ -1187,6 +1173,14 @@ main() {
         set -o xtrace
         shift 1
         ;;
+      -h | --help)
+        usage 'main'
+        exit 0
+        ;;
+      -v | --version)
+        version
+        exit 0
+        ;;
       bootstrap)
         shift 1
         bootstrap "$@"
@@ -1215,14 +1209,6 @@ main() {
       update)
         shift 1
         update "$@"
-        exit 0
-        ;;
-      -h | --help)
-        usage 'main'
-        exit 0
-        ;;
-      -v | --version)
-        version
         exit 0
         ;;
       *)
