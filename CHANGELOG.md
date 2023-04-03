@@ -11,16 +11,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fzf keybindings for Bash.
 - Improvements to shell completions.
+- Minimal shell configuration option.
 - Roles subcommand to view all available roles.
 - Security role for basic security settings.
+- Tag `sysadmin` for operations systems.
+
+### Changed
+
+- Moved Neovim role to `extras` tag.
+- Switched to GSudo on Windows.
 
 ### Fixed
 
 - Exit code for bootstrap command in Windows.
+- Installation of Procs shell completion.
 - Update logic for shell completions.
 
 ### Removed
 
+- Some Windows File Explorer context menus.
 - Virt Viewer from Libvirt role.
 
 ## 0.5.0 - 2023-01-30

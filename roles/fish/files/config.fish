@@ -223,7 +223,7 @@ alias procs 'procs --theme light'
 if test (uname -s) = 'Darwin'
   alias cbcopy pbcopy
   alias cbpaste pbpaste
-elif type -q wl-copy
+else if type -q wl-copy
   alias cbcopy wl-copy
   alias cbpaste wl-paste
 end
