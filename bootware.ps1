@@ -680,7 +680,7 @@ Function SetupWSL($Branch) {
         Log 'Installing Ubuntu distribution'
         Log "Complete pop up window and then run 'bootware setup' again"
         wsl --set-default-version 2
-        wsl --install --distribution Ubuntu
+        wsl --install --distribution Debian
         exit 0
     }
 

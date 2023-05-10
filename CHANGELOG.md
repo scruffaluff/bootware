@@ -18,6 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Default WSL distribution to Debian.
 - Moved Neovim role to `extras` tag.
 - Switched to GSudo on Windows.
 

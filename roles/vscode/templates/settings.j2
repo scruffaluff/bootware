@@ -135,12 +135,12 @@
   "python.testing.pytestEnabled": true,
   "python.venvPath": "${workspaceFolder}/.venv",
   "redhat.telemetry.enabled": false,
-{% if vscode_extensions | length > 0 %}
+{% if vscode_remote_extensions | length > 0 %}
   "remote.SSH.defaultExtensions": [
-{% for extension in vscode_extensions[:-1] %}
+{% for extension in vscode_remote_extensions[:-1] %}
     "{{ extension }}",
 {% endfor %}
-    "{{ vscode_extensions[-1] }}"
+    "{{ vscode_remote_extensions[-1] }}"
   ],
 {% endif %}
   "remote.SSH.useLocalServer": false,
@@ -163,8 +163,6 @@
   "typescript.updateImportsOnFileMove.enabled": "never",
   "update.mode": "none",
   "vite.autoStart": false,
-  "volar.doctor.statusBarItem": false,
-  "volar.updateImportsOnFileMove.enabled": false,
   "vs-kubernetes": {
     "vs-kubernetes.crd-code-completion": "enabled"
   },

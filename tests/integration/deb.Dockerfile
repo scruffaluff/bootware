@@ -1,4 +1,4 @@
-FROM node:18.0.0 AS builder
+FROM node:20.1.0 AS builder
 
 ARG version=1.0.0
 
@@ -14,7 +14,7 @@ RUN npm install
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
-FROM ubuntu:22.04
+FROM ubuntu:23.04
 
 ARG version=1.0.0
 

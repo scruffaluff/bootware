@@ -17,4 +17,4 @@ node_applications:
   - wikit
   - yaml-language-server
 node_versions:
-  - "18"
+  - "20"

@@ -1,4 +1,4 @@
-FROM fedora:37 AS builder
+FROM fedora:38 AS builder
 
 ARG version=1.0.0
 
