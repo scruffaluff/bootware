@@ -660,16 +660,8 @@ setup_alpine() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
     ${1:+sudo} apk update
-    ${1:+sudo} apk add python3 python3-dev py3-pip
-
-    # There are no Alpine Ansible wheels. Additional libraries are required to
-    # build Ansible from scratch.
-    ${1:+sudo} apk add gcc libffi-dev musl-dev openssl-dev
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} apk add ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -770,10 +762,7 @@ setup_debian() {
     # version of Ansible.
     log 'Installing Ansible'
     ${1:+sudo} apt-get --quiet update
-    ${1:+sudo} apt-get --quiet install --yes python3 python3-pip python3-apt
-
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+sudo} apt-get --quiet install --yes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then

@@ -15,7 +15,9 @@
 
 - name: Install Docker Compose for Linux
   ansible.builtin.package:
-    name: docker-compose
+    name: >-
+      {{ 'docker-cli-compose' if ansible_pkg_mgr == 'apk' else 'docker-compose'
+      }}
   become: true
   when: ansible_system == "Linux"
 

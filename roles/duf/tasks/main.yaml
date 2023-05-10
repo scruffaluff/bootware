@@ -16,14 +16,23 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Duf for Debian
+# On some Debian systems, Duf is available as an APT package.
+- name: Install Duf for Debian via APT
+  ansible.builtin.apt:
+    name: duf
+  become: true
+  ignore_errors: true
+  register: duf_apt
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Duf for Debian via GitHub
   ansible.builtin.apt:
     deb: >-
       https://github.com/muesli/duf/releases/download/v{{
       duf_formula.json.versions.stable }}/duf_{{
       duf_formula.json.versions.stable }}_linux_{{ system_architecture }}.deb
   become: true
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and duf_apt is failed
 
 - name: Install Duf for FreeBSD
   become: true

@@ -1,54 +1,22 @@
 ---
 # Homebrew Balena Etcher cask is unmaintained.
-- name: Get latest Balena Etcher version for Fedora
+- name: Get latest Balena Etcher version for Debian and Fedora
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://api.github.com/repos/balena-io/etcher/releases/latest
   register: etcher_release
-  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
-
-# TODO: Solve Etcher package conflict with NodeJS.
-# - name: Install Balena Etcher for Arch
-#   ansible.builtin.command: yay --noconfirm --refresh --sync balena-etcher
-#   when: ansible_pkg_mgr == "pacman"
-
-- name: Download Balena Etcher repository key for Debian
-  ansible.builtin.get_url:
-    dest: /tmp/balena-etcher.gpg
-    mode: "644"
-    url: https://dl.cloudsmith.io/public/balena/etcher/gpg.70528471AFF9A051.key
-  become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
-
-- name: Install Balena Etcher repository key for Debian
-  ansible.builtin.command:
-    cmd: >-
-      gpg --dearmor --output /usr/share/keyrings/balena-etcher.gpg
-      /tmp/balena-etcher.gpg
-    creates: /usr/share/keyrings/balena-etcher.gpg
-  become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
-
-- name: Add Balena Etcher repository for Debian
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [signed-by=/usr/share/keyrings/balena-etcher.gpg]
-      https://dl.cloudsmith.io/public/balena/etcher/deb/{{ deb_distro_base }} {{
-      ansible_distribution_release }} main
-    state: present
-    filename: balena-etcher
-  become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: ansible_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install Balena Etcher for Debian
   ansible.builtin.apt:
-    name: balena-etcher-electron
+    deb: >-
+      https://github.com/balena-io/etcher/releases/download/{{
+      etcher_release.json.tag_name }}/balena-etcher_{{
+      etcher_release.json.tag_name[1:] }}_amd64.deb
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-# Do not install Balena Etcher via CloudSmith RPM key. Their key is always out
-# of sync and creates terribly verbose import messages during DNF search.
 - name: Install Balena Etcher for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true

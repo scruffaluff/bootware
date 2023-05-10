@@ -636,7 +636,7 @@ Function SetupSSHServer() {
     Start-Service sshd
 }
 
-# Install WSL2 with Ubuntu.
+# Install WSL2 with Debian.
 #
 # Implemented based on instructions at
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
@@ -661,7 +661,7 @@ Function SetupWSL($Branch) {
             /NoRestart
 
         Log 'Restart your system to finish WSL installation'
-        Log "Then run 'bootware setup' again to install Ubuntu"
+        Log "Then run 'bootware setup' again to install Debian"
         Exit 0
     }
 
@@ -677,7 +677,7 @@ Function SetupWSL($Branch) {
             $TempFile
         Start-Process -Wait $TempFile /Passive
 
-        Log 'Installing Ubuntu distribution'
+        Log 'Installing Debian distribution'
         Log "Complete pop up window and then run 'bootware setup' again"
         wsl --set-default-version 2
         wsl --install --distribution Debian

@@ -30,8 +30,7 @@
     remote_src: true
     src: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
-      glow_formula.json.versions.stable }}/glow_{{
-      glow_formula.json.versions.stable }}_linux_{{
+      glow_formula.json.versions.stable }}/glow_Linux_{{
       glow_arch[system_architecture] }}.tar.gz
   become: true
   vars:

@@ -10,9 +10,7 @@
 - name: Install Termshark for FreeBSD
   become: true
   community.general.pkgng:
-    name:
-      - tshark
-      - termshark
+    name: termshark
   when: ansible_system == "FreeBSD"
 
 - name: Install Wireshark CLI for Linux

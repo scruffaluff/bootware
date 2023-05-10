@@ -303,7 +303,7 @@ jobs:
         uses: tj-actions/branch-names@v4
       - uses: Vampire/setup-wsl@v1
         with:
-          distribution: Ubuntu-20.04
+          distribution: Debian
           set-as-default: "true"
       - name: Install Bootware
         run: |

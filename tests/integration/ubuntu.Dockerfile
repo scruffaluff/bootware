@@ -2,9 +2,6 @@ FROM ubuntu:23.04
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash ubuntu
-
 # Install Bash, Curl, and Sudo.
 RUN apt-get update --ignore-missing && apt-get install --quiet --yes bash curl sudo
 
@@ -21,6 +18,7 @@ RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 # https://github.com/sudo-project/sudo/issues/42
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
+# Ubuntu container comes with a builtin Ubuntu user.
 ENV HOME=/home/ubuntu USER=ubuntu
 USER ubuntu
 
