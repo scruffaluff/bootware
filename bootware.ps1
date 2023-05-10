@@ -565,6 +565,9 @@ Function SetupSSHKeys {
         wsl mv "$WSLKeyPath" "`$HOME/.ssh/bootware"
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
+
+        wsl sudo apt-get update
+        wsl sudo apt-get --quiet install --yes openssh-client
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
         Log 'Disabling SSH password authentication'
