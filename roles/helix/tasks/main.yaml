@@ -40,6 +40,10 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64"
 
+- name: Patch Helix for older Debian
+  ansible.builtin.import_tasks: patch.yaml
+  when: ansible_pkg_mgr == "apt"
+
 - name: Tap Helix for MacOS
   community.general.homebrew_tap:
     name: helix-editor/helix

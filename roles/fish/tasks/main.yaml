@@ -67,7 +67,9 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-  when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
+  when: >-
+    ansible_system != "Win32NT" and fish_version is
+    ansible.builtin.version("3.0", ">=")
 
 - name: Install Bass Bash compatibility utility for Unix
   ansible.builtin.shell:
@@ -75,7 +77,9 @@
       source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
-  when: ansible_system != "Win32NT" and fish_version is version("3.0", ">=")
+  when: >-
+    ansible_system != "Win32NT" and fish_version is
+    ansible.builtin.version("3.0", ">=")
 
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:

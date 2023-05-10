@@ -163,7 +163,7 @@ prepend_path "${HOME}/.pyenv/bin"
 if [[ -z "${SHELL_MINIMAL_CONFIG}" && -x "$(command -v pyenv)" ]]; then
   export PYENV_ROOT="${HOME}/.pyenv"
   prepend_path "${PYENV_ROOT}/bin"
-  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
 
   if [[ "$-" == *i* ]]; then
     source "$(pyenv root)/completions/pyenv.bash"

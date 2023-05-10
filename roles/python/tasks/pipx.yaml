@@ -5,10 +5,18 @@
   ansible.builtin.command: /usr/local/bin/python3 -m pip install --upgrade pipx
   when: ansible_system == "FreeBSD"
 
-- name: Install Pipx for Linux
+- name: Install Pipx via package manager for Linux
+  ansible.builtin.package:
+    name: pipx
+  become: true
+  ignore_errors: true
+  register: pipx_package
+  when: ansible_system == "Linux"
+
+- name: Install Pipx via Pip for Linux
   ansible.builtin.command: /usr/bin/python3 -m pip install --upgrade pipx
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and pipx_package is failed
 
 - name: Install Pipx for MacOS
   community.general.homebrew:

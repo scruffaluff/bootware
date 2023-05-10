@@ -1,9 +1,11 @@
-#!/usr/bin/env --split-string deno run --allow-read --allow-run
+#!/usr/bin/env --split-string=deno run --allow-read --allow-run
+// Option format of --split-string with "=" is necessary on some Arch Linux
+// systems.
 
 // Execute shell commands to test binaries installed from roles.
-import Denomander from "https://deno.land/x/denomander@0.9.1/mod.ts";
-import * as path from "https://deno.land/std@0.130.0/path/mod.ts";
-import * as conversion from "https://deno.land/std@0.130.0/streams/conversion.ts";
+import Denomander from "https://deno.land/x/denomander@0.9.3/mod.ts";
+import * as path from "https://deno.land/std@0.186.0/path/mod.ts";
+import * as streams from "https://deno.land/std@0.186.0/streams/mod.ts";
 
 interface Dict {
   [key: string]: string;
@@ -66,7 +68,7 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
   const decoder = new TextDecoder();
   let tests: Array<string>;
   const message = new TextEncoder().encode(`testing: ${role.name}`);
-  await conversion.writeAll(Deno.stdout, message);
+  await streams.writeAll(Deno.stdout, message);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
     if (Array.isArray(role.tests)) {

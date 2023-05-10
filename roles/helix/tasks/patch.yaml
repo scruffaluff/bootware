@@ -1,0 +1,44 @@
+- name: Get system Glibc version
+  ansible.builtin.command: ldd --version
+  register: glibc_version_text
+
+- name: Parse system Glibc version
+  ansible.builtin.set_fact:
+    glibc_version: >-
+      {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
+
+- name: Check if newer Glibc is installed
+  ansible.builtin.stat:
+    path: /usr/local/lib/libc6
+  register: newer_glibc
+
+- name: Install newer glibc if necessary
+  block:
+    - name: Install Patchelf
+      ansible.builtin.apt:
+        name: patchelf
+      become: true
+
+    - name: Download newer Glibc version
+      ansible.builtin.get_url:
+        dest: /tmp/libc6.deb
+        mode: "644"
+        url: https://snapshot.debian.org/archive/debian/20230411T024318Z/pool/main/g/glibc/libc6-amd64_2.36-8_i386.deb
+      become: true
+
+    - name: Extract newer Glibc
+      ansible.builtin.command:
+        cmd: dpkg-deb --extract /tmp/libc6.deb /usr/local/lib/libc6
+      become: true
+
+    - name: Patch Helix to use newer Glibc
+      ansible.builtin.command:
+        cmd: >-
+          patchelf --set-interpreter
+          /usr/local/lib/libc6/lib64/ld-linux-x86-64.so.2 --set-rpath
+          /usr/local/lib/libc6/lib64 /usr/local/bin/hx
+      become: true
+
+  when: >-
+    glibc_version is ansible.builtin.version("2.32", "<") and not
+    newer_glibc.stat.exists
