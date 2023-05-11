@@ -550,7 +550,7 @@ Function SetupSSHKeys {
         $WindowsKeyPath = [System.IO.Path]::GetTempFileName()
         Remove-Item -Force -Path "$WindowsKeyPath"
 
-        ssh-keygen -N '""' -q -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
+        ssh-keygen -q -N '' -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
             -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `
@@ -566,7 +566,7 @@ Function SetupSSHKeys {
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
 
-        wsl sudo apt-get update
+        wsl sudo apt-get --quiet update
         wsl sudo apt-get --quiet install --yes openssh-client
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
@@ -690,7 +690,7 @@ Function SetupWSL($Branch) {
     If (-Not (wsl command -v bootware)) {
         Log 'Installing a WSL copy of Bootware'
 
-        wsl sudo apt-get update
+        wsl sudo apt-get --quiet update
         wsl sudo apt-get --quiet install --yes curl
         wsl curl -LSfs `
             https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh `

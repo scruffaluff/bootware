@@ -2,3 +2,4 @@
 _termshark_arch:
   amd64: x64
   arm64: arm64
+termshark_arch: "{{ _termshark_arch[system_architecture] }}"

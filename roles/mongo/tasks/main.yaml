@@ -22,8 +22,7 @@
     remote_src: true
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
-      mongosh_formula_linux.json.versions.stable }}-linux-{{
-      _mongosh_arch[system_architecture] }}.tgz
+      mongosh_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch }}.tgz
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -34,7 +33,7 @@
     remote_src: true
     src: >-
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
-      _mongosh_arch[system_architecture] }}/bin/mongosh
+      mongosh_arch }}/bin/mongosh
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 

@@ -5,6 +5,7 @@
     name:
       - py3-pip
       - python3
+      - python3-dev
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Python packages for Arch

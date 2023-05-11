@@ -33,9 +33,8 @@
     src: >-
       https://github.com/dandavison/delta/releases/download/{{
       git_delta_formula.json.versions.stable }}/delta-{{
-      git_delta_formula.json.versions.stable }}-{{
-      _git_delta_arch[system_architecture] }}-unknown-linux-{{ git_delta_env
-      }}.tar.gz
+      git_delta_formula.json.versions.stable }}-{{ git_delta_arch
+      }}-unknown-linux-{{ git_delta_env }}.tar.gz
   become: true
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
@@ -47,9 +46,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{
-      _git_delta_arch[system_architecture] }}-unknown-linux-{{ git_delta_env
-      }}/delta
+      /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
+      }}-unknown-linux-{{ git_delta_env }}/delta
   become: true
   when: >-
     ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or

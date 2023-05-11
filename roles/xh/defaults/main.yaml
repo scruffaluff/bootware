@@ -2,3 +2,4 @@
 _xh_arch:
   amd64: x86_64
   arm64: aarch64
+xh_arch: "{{ _xh_arch[system_architecture] }}"

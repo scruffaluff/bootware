@@ -21,7 +21,7 @@
     src: >-
       https://github.com/ducaale/xh/releases/download/v{{
       xh_formula.json.versions.stable }}/xh-v{{ xh_formula.json.versions.stable
-      }}-{{ _xh_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+      }}-{{ xh_arch }}-unknown-linux-musl.tar.gz
   become: true
   when: ansible_system == "Linux"
 
@@ -31,8 +31,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{
-      _xh_arch[system_architecture] }}-unknown-linux-musl/xh
+      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
+      }}-unknown-linux-musl/xh
   become: true
   when: ansible_system == "Linux"
 

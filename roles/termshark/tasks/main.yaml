@@ -34,8 +34,8 @@
     src: >-
       https://github.com/gcla/termshark/releases/download/v{{
       termshark_formula.json.versions.stable }}/termshark_{{
-      termshark_formula.json.versions.stable }}_linux_{{
-      _termshark_arch[system_architecture] }}.tar.gz
+      termshark_formula.json.versions.stable }}_linux_{{ termshark_arch
+      }}.tar.gz
   become: true
   when: ansible_system == "Linux"
 
@@ -46,7 +46,7 @@
     remote_src: true
     src: >-
       /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
-      _termshark_arch[system_architecture] }}/termshark
+      termshark_arch }}/termshark
   become: true
   when: ansible_system == "Linux"
 

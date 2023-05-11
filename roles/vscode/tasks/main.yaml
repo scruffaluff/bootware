@@ -11,8 +11,8 @@
 - name: Install VSCode for Debian
   ansible.builtin.apt:
     deb: >-
-      https://update.code.visualstudio.com/latest/linux-deb-{{
-      _vscode_arch[system_architecture] }}/stable
+      https://update.code.visualstudio.com/latest/linux-deb-{{ vscode_arch
+      }}/stable
   become: true
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
 
@@ -29,8 +29,8 @@
     dest: /tmp/vscode.rpm
     mode: "600"
     url: >-
-      https://update.code.visualstudio.com/latest/linux-rpm-{{
-      _vscode_arch[system_architecture] }}/stable
+      https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
+      }}/stable
   become: true
   when: ansible_pkg_mgr in ["dnf", "zypper"]
 

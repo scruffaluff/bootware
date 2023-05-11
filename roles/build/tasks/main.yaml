@@ -1,4 +1,10 @@
 ---
+- name: Install build tools for Alpine
+  become: true
+  community.general.apk:
+    name: build-base
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install build tools for FreeBSD
   become: true
   community.general.pkgng:
