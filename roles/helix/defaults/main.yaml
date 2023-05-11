@@ -1,0 +1,6 @@
+---
+_helix_arch:
+  amd64: x86_64
+  arm64: aarch64
+  riscv64: riscv64
+helix_arch: "{{ _helix_arch[system_architecture] }}"

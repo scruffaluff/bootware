@@ -5,7 +5,9 @@
 [core]
     autocrlf = input
     editor = hx
+{% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
     pager = delta
+{% endif %}
 [delta]
     line-numbers = true
     navigate = true
@@ -13,8 +15,10 @@
     colorMoved = default
 [init]
     defaultBranch = main
+{% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
 [interactive]
     diffFilter = delta --color-only
+{% endif %}
 [merge]
     conflictstyle = diff3
 [pull]

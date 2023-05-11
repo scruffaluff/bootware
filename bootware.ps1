@@ -689,9 +689,13 @@ Function SetupWSL($Branch) {
 
     If (-Not (wsl command -v bootware)) {
         Log 'Installing a WSL copy of Bootware'
+
+        wsl sudo apt-get update
+        wsl sudo apt-get --quiet install --yes curl
         wsl curl -LSfs `
             https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh `
             `| bash -s -- --version "$Branch"
+
         If ($Global:Debug) {
             wsl bootware --debug setup
         }

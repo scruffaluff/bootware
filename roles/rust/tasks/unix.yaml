@@ -52,7 +52,7 @@
         state: directory
       when: ansible_system in ["Darwin", "Linux"]
 
-    - name: Download Cargo Binstall for Amd64 Unix
+    - name: Download Cargo Binstall for Unix
       ansible.builtin.unarchive:
         dest: /tmp/
         mode: "755"
@@ -74,7 +74,7 @@
             }}.tgz
       when: ansible_system in ["Darwin", "Linux"]
 
-    - name: Install Cargo Binstall for Amd64 Unix
+    - name: Install Cargo Binstall for Unix
       ansible.builtin.copy:
         dest: "{{ ansible_env.HOME }}/.local/bin/cargo-binstall"
         mode: "755"
@@ -83,17 +83,9 @@
       become: true
       when: ansible_system in ["Darwin", "Linux"]
 
-    # TODO: Integrate when Cargo Binstall no longer has OpenSSL issues on
-    # multiple platforms.
-    # - name: Update or install Cargo packages for Amd64 Unix
-    #   ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
-    #   changed_when: "'This will install' in cargo_binstall.stdout"
-    #   loop: "{{ cargo_applications }}"
-    #   register: cargo_binstall
-    #   when: ansible_system in ["Darwin", "Linux"]
-
     - name: Update or install Cargo packages for Unix
-      ansible.builtin.command: "cargo install {{ item }}"
-      changed_when: "'Installing' in cargo_install.stdout"
+      ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+      changed_when: "'This will install' in cargo_binstall.stdout"
       loop: "{{ cargo_applications }}"
-      register: cargo_install
+      register: cargo_binstall
+      when: ansible_system in ["Darwin", "Linux"]

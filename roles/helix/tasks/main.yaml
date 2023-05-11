@@ -5,9 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/helix-editor/helix/releases/latest
   register: helix_release
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Helix for FreeBSD
   become: true
@@ -22,36 +20,27 @@
     remote_src: true
     src: >-
       https://github.com/helix-editor/helix/releases/download/{{
-      helix_release.json.tag_name }}/helix-{{ helix_release.json.tag_name
-      }}-x86_64-linux.tar.xz
+      helix_release.json.tag_name }}/helix-{{ helix_release.json.tag_name }}-{{
+      helix_arch }}-linux.tar.xz
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/hx
     mode: "755"
     remote_src: true
-    src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/hx
+    src: /tmp/helix-{{ helix_release.json.tag_name }}-{{ helix_arch }}-linux/hx
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Patch Helix for older Debian
   ansible.builtin.import_tasks: patch.yaml
-  when: ansible_pkg_mgr == "apt"
-
-- name: Tap Helix for MacOS
-  community.general.homebrew_tap:
-    name: helix-editor/helix
-  when: ansible_system == "Darwin"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Helix for MacOS
   community.general.homebrew:
-    name: helix-editor/helix/helix
+    name: helix
   when: ansible_system == "Darwin"
 
 - name: Install Helix for Windows

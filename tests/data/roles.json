@@ -8,16 +8,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
     "tests": ["alacritty --version"]
   },
-  {
-    "name": "appimage",
-    "skip": [
-      { "os": "freebsd" },
-      { "os": "linux" },
-      { "os": "macos" },
-      { "os": "windows" }
-    ],
-    "tests": ["ail-cli --version"]
-  },
+  { "name": "appimage" },
   { "name": "audio" },
   {
     "name": "avro",
@@ -157,9 +148,14 @@
   },
   {
     "name": "gitlab",
+    "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gitlab-runner --version"]
   },
-  { "name": "gitui", "tests": ["gitui --version"] },
+  {
+    "name": "gitui",
+    "skip": [{ "arch": "arm64", "os": "alpine" }],
+    "tests": ["gitui --version"]
+  },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
@@ -174,7 +170,7 @@
   },
   {
     "name": "helix",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "debian" }, { "os": "alpine" }],
     "tests": ["hx --version"]
   },
   { "name": "helm", "tests": ["helm version --short"] },
@@ -186,7 +182,12 @@
   },
   {
     "name": "hyper",
-    "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
+    "skip": [
+      { "arch": "arm64", "os": "fedora" },
+      { "os": "alpine" },
+      { "os": "arch" },
+      { "os": "freebsd" }
+    ],
     "tests": ["hyper --version"]
   },
   {

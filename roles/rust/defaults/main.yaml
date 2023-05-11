@@ -20,19 +20,11 @@ _cargo_applications:
       - cargo-audit
       - cargo-edit
       - cargo-expand
-      # TODO: Cargo generate depends on an outdated version of OpenSSL, i.e.
-      # 1.1. On some newer Linux distributions, OpenSSL 1.1 is no longer
-      # supported. Cargo generate should be added back once it works with
-      # OpenSSL 3.
-      # - cargo-generate
+      - cargo-generate
       - cargo-make
       - cargo-tarpaulin
     always:
-      # TODO: Figure out why cargo-arch is disabled.
-      # - cargo-arch
       - cargo-binutils
-      - cargo-deb
-      - cargo-rpm
     arm64: []
   Win32NT:
     amd64: []

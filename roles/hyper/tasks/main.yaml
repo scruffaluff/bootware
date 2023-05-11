@@ -17,7 +17,7 @@
   ansible.builtin.dnf:
     name: mesa-libgbm
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Hyper for Debian
   ansible.builtin.apt:
@@ -36,14 +36,15 @@
     url: >-
       https://releases.hyper.is/download/rpm{{ '_arm64' if system_architecture
       == 'arm64' else '' }}
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "zypper"] and system_architecture == "amd64"
 
+# Hyper Arm64 DNF package is broken.
 - name: Install Hyper for Fedora
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: /tmp/hyper.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Hyper for MacOS
   community.general.homebrew_cask:
@@ -56,7 +57,7 @@
   become: true
   community.general.zypper:
     name: /tmp/hyper.rpm
-  when: ansible_pkg_mgr == "zypper"
+  when: ansible_pkg_mgr == "zypper" and system_architecture == "amd64"
 
 - name: Install Hyper for Windows
   community.windows.win_scoop:

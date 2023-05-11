@@ -27,7 +27,9 @@
     gitui_env:
       amd64: musl
       arm64: aarch64
-  when: ansible_system == "Linux"
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "alpine" or
+    system_architecture != "arm64")
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -36,7 +38,9 @@
     remote_src: true
     src: /tmp/gitui
   become: true
-  when: ansible_system == "Linux"
+  when: >-
+    ansible_system == "Linux" and (ansible_pkg_mgr != "alpine" or
+    system_architecture != "arm64")
 
 - name: Install GitUI for MacOS
   community.general.homebrew:

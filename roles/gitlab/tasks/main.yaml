@@ -19,11 +19,12 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
+# Gitlab runner Arm64 DNF package is broken.
 - name: Add GitLab GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
     key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-4C80FB51394521E9.pub.gpg
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "zypper"] and system_architecture == "amd64"
 
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
@@ -31,7 +32,7 @@
       https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install GitLab Runner for FreeBSD
   become: true

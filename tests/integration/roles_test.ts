@@ -1,6 +1,6 @@
-#!/usr/bin/env --split-string=deno run --allow-read --allow-run
-// Option format of --split-string with "=" is necessary on some Arch Linux
-// systems.
+#!/usr/bin/env -S deno run --allow-read --allow-run
+// Do not use long form --split-string flag for env. It does not work properly
+// on some versions of Arch Linux.
 
 // Execute shell commands to test binaries installed from roles.
 import Denomander from "https://deno.land/x/denomander@0.9.3/mod.ts";
