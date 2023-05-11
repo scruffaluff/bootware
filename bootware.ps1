@@ -550,7 +550,14 @@ Function SetupSSHKeys {
         $WindowsKeyPath = [System.IO.Path]::GetTempFileName()
         Remove-Item -Force -Path "$WindowsKeyPath"
 
-        ssh-keygen -q -N '' -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
+        # SSH key generation behavior for empty passphrases is different between
+        # PowerShell versions.
+        If ($PSVersionTable.PSVersion.Major -GE 7) {
+            ssh-keygen -q -N '' -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
+        }
+        Else {
+            ssh-keygen -q -N '""' -f "$WindowsKeyPath" -t ed25519 -C 'bootware'
+        }
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
             -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `
