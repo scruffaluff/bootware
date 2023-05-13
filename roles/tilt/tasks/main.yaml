@@ -38,12 +38,24 @@
     name: tilt
   when: ansible_system == "Darwin"
 
+# Replaced temporarily by task below since win_scoop_bucket does not properly
+# capture output and "scoop bucket add" now fail if bucket is already added.
+# - name: Install Tilt Scoop bucket for Windows
+#   community.windows.win_scoop_bucket:
+#     name: tilt-dev
+#     repo: https://github.com/tilt-dev/scoop-bucket
+#   environment:
+#     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+#   when: ansible_system == "Win32NT"
+
 - name: Install Tilt Scoop bucket for Windows
-  community.windows.win_scoop_bucket:
-    name: tilt-dev
-    repo: https://github.com/tilt-dev/scoop-bucket
+  ansible.windows.win_shell: >-
+    scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   environment:
     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+  failed_when: >-
+    tilt_bucket.rc != 0 and 'bucket already exists' not in tilt_bucket.stdout
+  register: tilt_bucket
   when: ansible_system == "Win32NT"
 
 - name: Install Tilt for Windows

@@ -301,7 +301,7 @@ jobs:
       - name: Get current branch
         id: branch
         uses: tj-actions/branch-names@v4
-      - uses: Vampire/setup-wsl@v1
+      - uses: Vampire/setup-wsl@v2
         with:
           distribution: Debian
           set-as-default: "true"
