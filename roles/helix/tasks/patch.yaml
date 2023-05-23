@@ -38,11 +38,11 @@
       become: true
       changed_when: true
 
-    - name: Patch Helix to use newer Glibc
-      ansible.builtin.command:
-        cmd: >-
-          patchelf --set-interpreter
-          /usr/local/lib/libc6/lib64/ld-linux-x86-64.so.2 --set-rpath
-          /usr/local/lib/libc6/lib64 /usr/local/bin/hx
-      become: true
-      changed_when: true
+- name: Patch Helix to use newer Glibc
+  ansible.builtin.command:
+    cmd: >-
+      patchelf --set-interpreter /usr/local/lib/libc6/lib64/ld-linux-x86-64.so.2
+      --set-rpath /usr/local/lib/libc6/lib64 /usr/local/bin/hx
+  become: true
+  changed_when: true
+  when: glibc_version is ansible.builtin.version("2.32", "<")
