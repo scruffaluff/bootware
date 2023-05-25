@@ -33,7 +33,7 @@
 
 - name: Add Google Cloud SDK key for Debian
   ansible.builtin.get_url:
-    dest: /usr/share/keyrings/cloud-google.gpg
+    dest: /usr/share/keyrings/cloud.google.gpg
     mode: "644"
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
   become: true

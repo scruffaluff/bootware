@@ -22,7 +22,7 @@
 # Gitlab runner Arm64 DNF package is broken.
 - name: Add GitLab GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
-    key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-4C80FB51394521E9.pub.gpg
+    key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-49F16C5CC3A0F81F.pub.gpg
   become: true
   when: ansible_pkg_mgr in ["dnf", "zypper"] and system_architecture == "amd64"
 

@@ -34,10 +34,11 @@
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Install GDU for MacOS
-  community.general.homebrew:
-    name: gdu
-  when: ansible_system == "Darwin"
+# Disabled since GDU conflicts with an internal Homebrew binary.
+# - name: Install GDU for MacOS
+#   community.general.homebrew:
+#     name: gdu
+#   when: ansible_system == "Darwin"
 
 - name: Install GDU for Windows
   community.windows.win_scoop:
