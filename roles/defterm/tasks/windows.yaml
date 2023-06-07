@@ -2,7 +2,7 @@
 - name: Install Windows Terminal for Windows
   community.windows.win_scoop:
     name: windows-terminal
-  when: ansible_system == "Win32NT" and "Windows 10" in ansible_distribution
+  when: "'Windows 10' in ansible_distribution"
 
 # Configuration file can be in multiple locations depending on package installer
 # and Windows version.
@@ -13,7 +13,12 @@
   loop:
     - Microsoft/Windows Terminal
     - Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState
-  when: ansible_system == "Win32NT"
+
+- name: Create Windows Terminal Scoop configuration directory for Windows 10
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/scoop/apps/windows-terminal/current/settings"
+    state: directory
+  when: "'Windows 10' in ansible_distribution"
 
 - name: Copy Windows Terminal configuration file for Windows
   ansible.windows.win_template:
@@ -23,4 +28,12 @@
   loop:
     - Microsoft/Windows Terminal/settings.json
     - Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json
-  when: ansible_system == "Win32NT"
+
+- name: Copy Windows Terminal Scoop configuration file for Windows 10
+  ansible.windows.win_template:
+    dest: >-
+      {{ ansible_env.HOME
+      }}/scoop/apps/windows-terminal/current/settings/settings.json
+    force: true
+    src: windows.j2
+  when: "'Windows 10' in ansible_distribution"

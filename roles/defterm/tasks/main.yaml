@@ -1,9 +1,12 @@
 ---
 - name: Install GNOME terminals
   ansible.builtin.import_tasks: gnome.yaml
+  when: ansible_system == "Linux"
 
 - name: Install MacOS terminals
   ansible.builtin.import_tasks: macos.yaml
+  when: ansible_system == "Darwin"
 
 - name: Install Windows terminals
   ansible.builtin.import_tasks: windows.yaml
+  when: ansible_system == "Win32NT"
