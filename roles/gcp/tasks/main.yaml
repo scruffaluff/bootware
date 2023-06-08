@@ -35,11 +35,20 @@
   register: gcp_arch_install
   when: ansible_pkg_mgr == "pacman"
 
-- name: Add Google Cloud SDK key for Debian
+- name: Download Google Cloud SDK GPG key for Debian
   ansible.builtin.get_url:
-    dest: /usr/share/keyrings/cloud.google.gpg
+    dest: /tmp/google-cloud-sdk.gpg
     mode: "644"
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Google Cloud SDK GPG key for Debian
+  ansible.builtin.command:
+    cmd: >-
+      gpg --batch --dearmor --yes --output
+      /usr/share/keyrings/google-cloud-sdk.gpg /tmp/google-cloud-sdk.gpg
+    creates: /usr/share/keyrings/google-cloud-sdk.gpg
   become: true
   when: ansible_pkg_mgr == "apt"
 

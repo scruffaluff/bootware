@@ -14,7 +14,7 @@ RUN npm install
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
-FROM ubuntu:23.04
+FROM debian:11.7
 
 ARG version=1.0.0
 

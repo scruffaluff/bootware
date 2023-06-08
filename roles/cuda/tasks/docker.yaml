@@ -8,13 +8,13 @@
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Nvidia Docker repository key for Ubuntu
-  ansible.builtin.command: >-
-    gpg --batch --dearmor --yes --output
-    /usr/share/keyrings/nvidia-docker-archive-keyring.gpg
-    /tmp/nvidia-docker-archive-keyring.pub
+  ansible.builtin.command:
+    cmd: >-
+      gpg --batch --dearmor --yes --output
+      /usr/share/keyrings/nvidia-docker-archive-keyring.gpg
+      /tmp/nvidia-docker-archive-keyring.pub
+    creates: /usr/share/keyrings/nvidia-docker-archive-keyring.gpg
   become: true
-  # Command does not provide stdout information to determine a change.
-  changed_when: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Add Nvidia Docker repository for Ubuntu distribution

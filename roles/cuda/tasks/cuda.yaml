@@ -16,12 +16,12 @@
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install Nvidia CUDA repository key for Ubuntu
-  ansible.builtin.command: >-
-    gpg --batch --dearmor --yes --output
-    /usr/share/keyrings/cuda-archive-keyring.gpg /tmp/cuda-archive-keyring.pub
+  ansible.builtin.command:
+    cmd: >-
+      gpg --batch --dearmor --yes --output
+      /usr/share/keyrings/cuda-archive-keyring.gpg /tmp/cuda-archive-keyring.pub
+    creates: /usr/share/keyrings/cuda-archive-keyring.gpg
   become: true
-  # Command does not provide stdout information to determine a change.
-  changed_when: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Add Nvidia CUDA repository for Ubuntu
