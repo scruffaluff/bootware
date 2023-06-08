@@ -46,16 +46,19 @@
 
 - name: Install Helm plugins for Unix
   ansible.builtin.command: "helm plugin install {{ item }}"
+  changed_when: "'Installed plugin' in helm_plugin_install"
   failed_when: >-
-    helm_plugin.rc != 0 and 'plugin already exists' not in helm_plugin.stderr
+    helm_plugin_install.rc != 0 and 'plugin already exists' not in
+    helm_plugin_install.stderr
   loop: "{{ helm_plugins }}"
-  register: helm_plugin
+  register: helm_plugin_install
   when: ansible_system != "Win32NT"
 
 - name: Install Helm plugins for Windows
   ansible.windows.win_command: "helm plugin install {{ item }}"
   failed_when: >-
-    helm_plugin.rc != 0 and 'plugin already exists' not in helm_plugin.stderr
+    helm_plugin_install.rc != 0 and 'plugin already exists' not in
+    helm_plugin_install.stderr
   loop: "{{ helm_plugins }}"
-  register: helm_plugin
+  register: helm_plugin_install
   when: ansible_system == "Win32NT"

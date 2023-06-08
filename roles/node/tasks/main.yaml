@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/nvm.json
-  register: nvm_formula
+  register: node_nvm_formula
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 # NVM is not well-supported for Alpine. For more information, visit
@@ -33,12 +33,14 @@
     mode: "755"
     url: >-
       https://raw.githubusercontent.com/nvm-sh/nvm/v{{
-      nvm_formula.json.versions.stable }}/install.sh
+      node_nvm_formula.json.versions.stable }}/install.sh
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install Node version manager for Unix
   ansible.builtin.command: /tmp/nvm_install.sh
+  changed_when: "'start using nvm' in node_nvm_install"
+  register: node_nvm_install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
@@ -48,7 +50,9 @@
       source {{ ansible_env.HOME }}/.bashrc
       nvm install {{ item }}
     executable: "{{ bash_executable }}"
+  changed_when: "'Now using node' in node_version_install"
   loop: "{{ node_versions }}"
+  register: node_version_install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
@@ -67,6 +71,8 @@
       mkdir --parents {{ ansible_env.HOME }}/.npm-global
       npm config set prefix {{ ansible_env.HOME }}/.npm-global
     executable: "{{ bash_executable }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
   when: >-
     (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and
     ansible_user_id != "root"
@@ -77,6 +83,7 @@
       source {{ ansible_env.HOME }}/.bashrc
       nvm alias default {{ node_versions[-1] }}
     executable: "{{ bash_executable }}"
+  changed_when: true
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
 
@@ -87,6 +94,8 @@
       source {{ ansible_env.HOME }}/.bashrc
       nvm install-latest-npm
     executable: "{{ bash_executable }}"
+  changed_when: "'npm upgraded' in node_npm_update"
+  register: node_npm_update
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_user_id != "root"
     and ansible_pkg_mgr != "apk"
@@ -98,6 +107,8 @@
       source {{ ansible_env.HOME }}/.bashrc
       npm install --global {{ item }}
     executable: "{{ bash_executable }}"
+  # Command always marks application as changed.
+  changed_when: true
   loop: "{{ node_applications }}"
   when: >-
     (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and
@@ -110,6 +121,8 @@
       nvm use {{ node_versions[-1] }}
       npm install --global {{ item }}
     executable: "{{ bash_executable }}"
+  # Command always marks application as changed.
+  changed_when: true
   loop: "{{ node_applications }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_user_id != "root"

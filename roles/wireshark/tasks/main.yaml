@@ -49,6 +49,8 @@
   ansible.builtin.command:
     cmd: dpkg-reconfigure wireshark-common
   become: true
+  # TODO: Figure out update message.
+  changed_when: true
   environment:
     DEBIAN_FRONTEND: noninteractive
   when: ansible_pkg_mgr == "apt"

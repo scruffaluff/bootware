@@ -42,6 +42,7 @@
   ansible.builtin.command:
     cmd: gunzip --force /tmp/rust-analyzer.gz
   become: true
+  changed_when: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Rust Analyzer for Linux

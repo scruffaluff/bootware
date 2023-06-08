@@ -4,6 +4,7 @@
 
 .DS_Store
 .env
+.hypothesis/
 .local/
 .vagrant/
 .venv/

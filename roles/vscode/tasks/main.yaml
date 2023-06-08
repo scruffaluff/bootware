@@ -4,8 +4,10 @@
 # information, see
 # https://wiki.archlinux.org/index.php/Visual_Studio_Code#No_extensions_found.
 - name: Install VSCode for Arch
-  ansible.builtin.command:
+  ansible.builtin.command: >-
     yay --noconfirm --refresh --sync visual-studio-code-bin
+  changed_when: "'installing visual-studio-code-bin' in vscode_arch_install"
+  register: vscode_arch_install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install VSCode for Debian
@@ -157,7 +159,9 @@
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
+  changed_when: "'successfully installed' in vscode_extension_install"
   loop: "{{ vscode_extensions }}"
+  register: vscode_extension_install
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Windows

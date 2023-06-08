@@ -35,6 +35,7 @@
     cmd: >-
       restic generate --fish-completion {{ ansible_env.HOME
       }}/.config/fish/completions/restic.fish
+  changed_when: true
   when: >-
     ansible_system != "Win32NT" and (ansible_pkg_mgr != "apt" or deb_distro_base
     != "debian")

@@ -5,4 +5,9 @@
 
 ---
 skip_list:
+  # In Bootware, always using the latest Git commit is desired.
   - git-latest
+  # Setting pipefail may cause errors on Linux systems where Bash is not the
+  # default shell. For more information, visit
+  # https://github.com/ansible/ansible-lint/issues/497.
+  - risky-shell-pipe

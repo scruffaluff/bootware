@@ -50,4 +50,5 @@
     cmd: >-
       doctl completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/doctl.fish
+  changed_when: true
   when: ansible_system != "Win32NT"

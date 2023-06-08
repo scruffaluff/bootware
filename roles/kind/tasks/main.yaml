@@ -40,4 +40,5 @@
   ansible.builtin.shell: >-
     kind completion fish > {{ ansible_env.HOME
     }}/.config/fish/completions/kind.fish
+  changed_when: true
   when: ansible_system in ["Darwin", "Linux"]

@@ -51,6 +51,7 @@
 
 - name: Get installed Fish version
   ansible.builtin.command: fish --version
+  changed_when: false
   register: fish_version_text
   when: ansible_system != "Win32NT"
 
@@ -67,6 +68,8 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
+  changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install"
+  register: fish_fisher_install
   when: >-
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
@@ -77,6 +80,8 @@
       source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install edc/bass
     executable: "{{ fish_executable }}"
+  changed_when: "'Installing edc/bass' in fish_bass_install"
+  register: fish_bass_install
   when: >-
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")

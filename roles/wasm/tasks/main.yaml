@@ -8,6 +8,8 @@
 
 - name: Install Wasmtime for Unix
   ansible.builtin.command: /tmp/wasmtime_install.sh
+  changed_when: "'Finished installation' in wasm_install"
+  register: wasm_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Wasmtime for Windows
@@ -26,10 +28,12 @@
 
 - name: Install Wasm Pack for Unix
   ansible.builtin.command: /tmp/wasm_pack_init.sh
+  changed_when: "'successfully installed' in wasm_pack_install"
   environment:
     PATH: >-
       {{ ansible_env.HOME }}/.wasmtime/bin:{{ ansible_env.HOME }}/.cargo/bin:{{
       ansible_env.PATH }}
+  register: wasm_pack_install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"

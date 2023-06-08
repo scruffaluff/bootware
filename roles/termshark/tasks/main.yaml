@@ -15,10 +15,10 @@
 
 - name: Install Wireshark CLI for Linux
   ansible.builtin.package:
-    name: "{{ wireshark_package[ansible_pkg_mgr] }}"
+    name: "{{ termshark_package[ansible_pkg_mgr] }}"
   become: true
   vars:
-    wireshark_package:
+    termshark_package:
       apk: tshark
       apt: tshark
       dnf: wireshark-cli
@@ -74,6 +74,8 @@
   ansible.builtin.command:
     cmd: dpkg-reconfigure wireshark-common
   become: true
+  # TODO: Figure out update message.
+  changed_when: true
   environment:
     DEBIAN_FRONTEND: noninteractive
   when: ansible_pkg_mgr == "apt"

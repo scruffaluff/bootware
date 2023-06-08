@@ -7,11 +7,10 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Starship shell prompt for Unix
-  ansible.builtin.command:
-    argv:
-      - /tmp/starship_install.sh
-      - --yes
+  ansible.builtin.command: /tmp/starship_install.sh --yes
   become: true
+  changed_when: "'Starship installed' in starship_install"
+  register: starship_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Starship shell prompt for Windows

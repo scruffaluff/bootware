@@ -65,7 +65,7 @@
 
 - name: Make OpenJDK discoverable by Java on MacOS
   ansible.builtin.file:
-    src: "{{ openjdk_path[system_architecture] }}"
+    src: "{{ java_openjdk_path[system_architecture] }}"
     dest: /Library/Java/JavaVirtualMachines/openjdk.jdk
     force: true
     mode: "755"
@@ -73,7 +73,7 @@
     state: link
   become: true
   vars:
-    openjdk_path:
+    java_openjdk_path:
       amd64: /usr/local/opt/openjdk/libexec/openjdk.jdk
       arm64: /opt/homebrew/opt/openjdk/libexec/openjdk.jdk
   when: ansible_system == "Darwin"

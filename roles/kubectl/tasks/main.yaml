@@ -49,4 +49,5 @@
       source {{ ansible_env.HOME }}/.config/fish/config.fish
       fisher install evanlucas/fish-kubectl-completions
     executable: "{{ fish_executable }}"
+  changed_when: true
   when: ansible_system != "Win32NT"

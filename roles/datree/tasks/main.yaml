@@ -94,4 +94,5 @@
     cmd: >-
       datree completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/datree.fish
+  changed_when: true
   when: ansible_system not in ["FreeBSD", "Win32NT"]

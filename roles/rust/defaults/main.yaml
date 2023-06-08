@@ -34,9 +34,9 @@ _cargo_applications:
 cargo_applications: >-
   {{ _cargo_applications.always + _cargo_applications[ansible_system].always +
   _cargo_applications[ansible_system].get(system_architecture, []) }}
-rustup_components:
+rust_components:
   - clippy
   - llvm-tools-preview
   - rust-src
   - rustfmt
-rustup_targets: []
+rust_targets: []

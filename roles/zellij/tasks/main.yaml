@@ -58,4 +58,5 @@
     cmd: >-
       zellij setup --generate-completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/zellij.fish
+  changed_when: true
   when: ansible_system in ["Darwin", "Linux"]

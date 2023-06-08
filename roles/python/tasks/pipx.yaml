@@ -3,6 +3,8 @@
 - name: Install Pipx for FreeBSD
   become: true
   ansible.builtin.command: /usr/local/bin/python3 -m pip install --upgrade pipx
+  changed_when: "'Successfully installed' in python_pipx_freebsd_install"
+  register: python_pipx_freebsd_install
   when: ansible_system == "FreeBSD"
 
 - name: Install Pipx via package manager for Linux
@@ -10,13 +12,15 @@
     name: pipx
   become: true
   ignore_errors: true
-  register: pipx_package
+  register: python_pipx_install
   when: ansible_system == "Linux"
 
 - name: Install Pipx via Pip for Linux
   ansible.builtin.command: /usr/bin/python3 -m pip install --upgrade pipx
   become: true
-  when: ansible_system == "Linux" and pipx_package is failed
+  changed_when: "'Successfully installed' in python_pipx_linux_install"
+  register: python_pipx_linux_install
+  when: ansible_system == "Linux" and python_pipx_install is failed
 
 - name: Install Pipx for MacOS
   community.general.homebrew:
@@ -48,7 +52,11 @@
       pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force
       {{ item }}
     executable: "{{ bash_executable }}"
+  changed_when: >-
+    "installed package" in python_pipx_application_install or "upgraded package"
+    in python_pipx_application_install
   loop: "{{ pipx_applications }}"
+  register: python_pipx_application_install
   when: ansible_system != "Win32NT"
 
 - name: Install Pipx command line applications for Windows

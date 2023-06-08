@@ -60,4 +60,5 @@
     cmd: >-
       kubeshark completion fish > {{ ansible_env.HOME
       }}/.config/fish/completions/kubeshark.fish
+  changed_when: true
   when: ansible_system not in ["FreeBSD", "Win32NT"]

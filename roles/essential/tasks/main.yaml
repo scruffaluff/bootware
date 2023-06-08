@@ -70,14 +70,15 @@
   environment:
     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
   failed_when: >-
-    scoop_bucket.rc != 0 and 'bucket already exists' not in scoop_bucket.stdout
+    essential_scoop_bucket_add.rc != 0 and 'bucket already exists' not in
+    essential_scoop_bucket_add.stdout
   loop:
     - extras
     - java
     - main
     - nerd-fonts
     - versions
-  register: scoop_bucket
+  register: essential_scoop_bucket_add
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows

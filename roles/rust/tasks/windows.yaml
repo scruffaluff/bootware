@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
-  register: cargo_binstall_release
+  register: rust_binstall_release
 
 - name: Install Rust for Windows
   community.windows.win_scoop:
@@ -20,7 +20,7 @@
       {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   failed_when: >-
     rustup_update.rc != 0 and 'update is disabled' not in rustup_update.stderr
-  register: rustup_update
+  register: rust_update
 
 - name: Add Rust components for Windows
   ansible.windows.win_command: rustup component add {{ item }}

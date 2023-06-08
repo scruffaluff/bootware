@@ -45,10 +45,12 @@
 
 - name: Install Go command line applications for Unix
   ansible.builtin.command: "go install {{ item }}"
+  changed_when: "'go: downloading' in go_application_install"
   environment:
     GOPATH: "{{ go_path }}"
     PATH: "{{ go_root }}/bin:{{ go_path }}/bin:{{ ansible_env.PATH }}"
   loop: "{{ go_applications }}"
+  register: go_application_install
   when: ansible_system != "Win32NT"
 
 # Scoop installer automatically sets $HOME/go as GOTPATH and does not allow a

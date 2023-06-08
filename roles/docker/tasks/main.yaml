@@ -98,7 +98,7 @@
 - name: Check if systemd is available for Linux
   ansible.builtin.stat:
     path: /usr/bin/systemctl
-  register: systemd_available
+  register: docker_systemd
   when: ansible_system == "Linux"
 
 - name: Start Containerd on system boot for Linux
@@ -106,14 +106,14 @@
     enabled: true
     name: containerd
   become: true
-  when: ansible_system == "Linux" and systemd_available.stat.exists
+  when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Start Docker on system boot for Linux
   ansible.builtin.systemd:
     enabled: true
     name: docker
   become: true
-  when: ansible_system == "Linux" and systemd_available.stat.exists
+  when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
@@ -122,7 +122,7 @@
     groups:
       - docker
   become: true
-  when: ansible_system == "Linux" and systemd_available.stat.exists
+  when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:

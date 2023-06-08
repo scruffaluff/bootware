@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/gh.json
-  register: gh_formula
+  register: github_formula
   when: ansible_system == "Linux"
 
 - name: Install GitHub CLI for Alpine
@@ -26,8 +26,9 @@
     remote_src: true
     src: >-
       https://github.com/cli/cli/releases/download/v{{
-      gh_formula.json.versions.stable }}/gh_{{ gh_formula.json.versions.stable
-      }}_linux_{{ system_architecture }}.tar.gz
+      github_formula.json.versions.stable }}/gh_{{
+      github_formula.json.versions.stable }}_linux_{{ system_architecture
+      }}.tar.gz
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -37,8 +38,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/gh_{{ gh_formula.json.versions.stable }}_linux_{{ system_architecture
-      }}/bin/gh
+      /tmp/gh_{{ github_formula.json.versions.stable }}_linux_{{
+      system_architecture }}/bin/gh
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 

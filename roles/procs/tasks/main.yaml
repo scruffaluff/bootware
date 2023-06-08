@@ -61,6 +61,7 @@
       (procs --gen-completion-out fish > {{ ansible_env.HOME
       }}/.config/fish/completions/procs.fish) || (procs --completion-out fish >
       {{ ansible_env.HOME }}/.config/fish/completions/procs.fish)
+  changed_when: true
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "zypper"
     and system_architecture == "amd64"

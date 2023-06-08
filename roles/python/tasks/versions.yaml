@@ -90,6 +90,8 @@
       source {{ ansible_env.HOME }}/.bashrc
       pyenv update
     executable: "{{ bash_executable }}"
+  # TODO: Figure out update message.
+  changed_when: true
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix
@@ -98,14 +100,15 @@
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install --list | grep --extended-regexp "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
+  changed_when: false
   loop: "{{ python_versions }}"
-  register: pyenv_releases
+  register: python_pyenv_releases
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Extract Python versions from Pyenv outputs for Unix
   ansible.builtin.set_fact:
     python_releases:
-      "{{ pyenv_releases.results | map(attribute='stdout') | list }}"
+      "{{ python_pyenv_releases.results | map(attribute='stdout') | list }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Unix
@@ -114,7 +117,9 @@
       source {{ ansible_env.HOME }}/.bashrc
       pyenv install --skip-existing {{ item }}
     executable: "{{ bash_executable }}"
+  changed_when: "'Installed Python' in python_version_install"
   loop: "{{ python_releases }}"
+  register: python_version_install
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Install multiple Python versions for Windows
@@ -129,4 +134,6 @@
       source {{ ansible_env.HOME }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: "{{ bash_executable }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"

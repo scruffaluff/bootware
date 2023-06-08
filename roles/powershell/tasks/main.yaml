@@ -44,10 +44,10 @@
 
 - name: Install local PowerShell modules
   vars:
-    psmodule_folders:
+    powershell_module_folders:
       - Documents/PowerShell/Modules
       - Documents/WindowsPowerShell/Modules
-    psmodules:
+    powershell_modules:
       - SSHCompletion
   when: ansible_system == "Win32NT"
   block:
@@ -55,7 +55,8 @@
       ansible.windows.win_file:
         path: "{{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}"
         state: directory
-      loop: "{{ psmodule_folders | product(psmodules) | list }}"
+      loop:
+        "{{ powershell_module_folders | product(powershell_modules) | list }}"
 
     - name: Copy PowerShell modules for Windows
       ansible.windows.win_copy:
@@ -63,4 +64,5 @@
           {{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}/{{ item[1] }}.psm1
         force: true
         src: "{{ item[1] }}.psm1"
-      loop: "{{ psmodule_folders | product(psmodules) | list }}"
+      loop:
+        "{{ powershell_module_folders | product(powershell_modules) | list }}"
