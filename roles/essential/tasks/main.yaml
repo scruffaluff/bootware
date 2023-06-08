@@ -51,7 +51,8 @@
   when: ansible_system == "Darwin"
 
 # Replaced temporarily by task below since win_scoop_bucket does not properly
-# capture output and "scoop bucket add" now fail if bucket is already added.
+# capture output and "scoop bucket add" now fails if the bucket is already
+# added.
 # - name: Add essential Scoop buckets for Windows
 #   community.windows.win_scoop_bucket:
 #     name: "{{ item }}"
@@ -67,18 +68,19 @@
 
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: "scoop bucket add {{ item }}"
+  changed_when: "'bucket was added successfully' in essential_bucket_add"
   environment:
     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
   failed_when: >-
-    essential_scoop_bucket_add.rc != 0 and 'bucket already exists' not in
-    essential_scoop_bucket_add.stdout
+    essential_bucket_add.rc != 0 and 'bucket already exists' not in
+    essential_bucket_add.stdout
   loop:
     - extras
     - java
     - main
     - nerd-fonts
     - versions
-  register: essential_scoop_bucket_add
+  register: essential_bucket_add
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows

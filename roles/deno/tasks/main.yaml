@@ -62,4 +62,5 @@
   ansible.windows.win_shell: >-
     deno completions powershell > {{ ansible_env.HOME
     }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1
+  changed_when: true
   when: ansible_system == "Win32NT"

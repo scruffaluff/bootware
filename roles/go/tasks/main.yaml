@@ -57,8 +57,10 @@
 # custom path.
 - name: Install Go command line applications for Windows
   ansible.windows.win_shell: go install {{ item }}
+  changed_when: "'go: downloading' in go_application_install"
   environment:
     GOPATH: "{{ ansible_env.HOME }}\\go"
     Path: "{{ scoop_apps }}\\go\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ go_applications }}"
+  register: go_application_install
   when: ansible_system == "Win32NT"

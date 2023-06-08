@@ -166,9 +166,11 @@
 
 - name: Install VSCode extensions for Windows
   ansible.windows.win_shell: code --install-extension {{ item }}
+  changed_when: "'successfully installed' in vscode_extension_install"
   environment:
     Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ vscode_extensions }}"
+  register: vscode_extension_install
   when: ansible_system == "Win32NT"
 
 - name: Add VSCode Firewall rules for Windows

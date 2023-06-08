@@ -17,7 +17,7 @@
 
 - name: Install newer glibc if necessary
   when: >-
-    glibc_version is ansible.builtin.version("2.32", "<") and not
+    helix_glibc_version is ansible.builtin.version("2.32", "<") and not
     helix_newer_glibc.stat.exists
   block:
     - name: Install Patchelf

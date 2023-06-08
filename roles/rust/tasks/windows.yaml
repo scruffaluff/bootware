@@ -14,6 +14,7 @@
   ansible.windows.win_shell: |
     rustup self update
     rustup update stable
+  changed_when: "' changed' in rust_update"
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
@@ -24,26 +25,30 @@
 
 - name: Add Rust components for Windows
   ansible.windows.win_command: rustup component add {{ item }}
+  changed_when: "'installing' in rust_component_add"
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ rust_components }}"
+  register: rust_component_add
 
 - name: Add Rust targets for Windows
   ansible.windows.win_command: rustup target add {{ item }}
+  changed_when: "'installing' in rust_target_add"
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ rust_targets }}"
+  register: rust_target_add
 
 - name: Download Cargo Binstall archive for Windows
   ansible.windows.win_get_url:
     dest: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
     url: >-
       https://github.com/ryankurte/cargo-binstall/releases/download/{{
-      cargo_binstall_release.json.tag_name
+      rust_binstall_release.json.tag_name
       }}/cargo-binstall-x86_64-pc-windows-msvc.zip
 
 - name: Decompress Cargo Binstall archive for Windows
@@ -64,8 +69,10 @@
 
 - name: Update or install Cargo packages for Windows
   ansible.windows.win_command: cargo binstall --no-confirm {{ item }}
+  changed_when: "'This will install' in rust_binstall_package"
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
   loop: "{{ cargo_applications }}"
+  register: rust_binstall_package

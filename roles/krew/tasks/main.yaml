@@ -50,7 +50,9 @@
 
 - name: Install Kubectl plugins for Windows
   ansible.windows.win_command: kubectl-krew install {{ item }}
+  changed_when: "'Installed plugin' in krew_plugin_install"
   environment:
     Path: "{{ ansible_env.HOME }}\\.krew\\bin;{{ ansible_env.Path }}"
   loop: "{{ kubectl_plugins }}"
+  register: krew_plugin_install
   when: ansible_system == "Win32NT"
