@@ -6,13 +6,22 @@
 authors:
   - Macklan Weinstein <macklan.weinstein@gmail.com>
 build_ignore:
+  - .dockerignore
+  - .editorconfig
   - .github
+  - .shellcheckrc
   - .venv
-  - /completions
-  - /docs
-  - /scripts
-  - /tests
+  - bootware.1
+  - completions
+  - docs
   - node_modules
+  - package-lock.json
+  - package.json
+  - poetry.lock
+  - PSScriptAnalyzerSettings.psd1
+  - pyproject.toml
+  - scripts
+  - tests
   - tmp
 dependencies:
   chocolatey.chocolatey: ">=1.1.0"
