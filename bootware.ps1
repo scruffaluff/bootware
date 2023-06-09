@@ -52,7 +52,7 @@ OPTIONS:
         }
         'main' {
             Write-Output @'
-Bootware 0.5.0
+Bootware 0.5.1
 Boostrapping software installer
 
 USAGE:
@@ -809,7 +809,7 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.5.0'
+    Write-Output 'Bootware 0.5.1'
 }
 
 # Convert path to WSL relative path.
