@@ -1,6 +1,6 @@
 FROM node:20.1.0 AS builder
 
-ARG version=1.0.0
+ARG version=0.5.1
 
 # Copy bootware package build files.
 COPY scripts/ /bootware/scripts/
@@ -9,14 +9,14 @@ COPY bootware.sh /bootware/
 COPY package.json /bootware/
 
 WORKDIR /bootware
-RUN npm install
+RUN npm ci
 
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
 FROM debian:11.7
 
-ARG version=1.0.0
+ARG version=0.5.1
 
 # Update Apt package cache.
 RUN apt-get update

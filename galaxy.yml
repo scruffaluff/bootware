@@ -5,6 +5,15 @@
 
 authors:
   - Macklan Weinstein <macklan.weinstein@gmail.com>
+build_ignore:
+  - .github
+  - .venv
+  - /completions
+  - /docs
+  - /scripts
+  - /tests
+  - node_modules
+  - tmp
 dependencies:
   chocolatey.chocolatey: ">=1.1.0"
   community.general: ">=4.0.0"

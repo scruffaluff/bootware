@@ -9,6 +9,7 @@
 .vagrant/
 .venv/
 .vscode/
+*.tar.gz
 /build/
 /docs/index.md
 /docs/software.md

@@ -21,34 +21,40 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Node interpreter
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Cache Node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: >-
-            node-18_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
-        run: npm install
+        run: |
+          node --version
+          npm --version
+          npm ci
       - name: Install Python interpreter
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Cache Python packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: >-
-            python-3.10_${{ runner.os }}_poetry-${{ hashFiles('poetry.lock') }}
+            python-3.11_${{ runner.os }}_poetry-${{ hashFiles('poetry.lock') }}
       - name: Install Python packages
         run: |
-          python -m pip install --upgrade pip poetry setuptools wheel
+          python --version
+          python -m pip --version
+          python -m pip install poetry
           poetry config virtualenvs.in-project true
-          poetry install -v
+          poetry lock --check
+          poetry install --verbose
       - name: Check format of configuration files
         run: npm run prettier:test
       - name: Install Shfmt
@@ -66,29 +72,33 @@ jobs:
         run: |
           poetry run ansible-lint --version
           poetry run ansible-lint playbook.yaml
+          poetry run ansbile-galaxy collection build .
 
   test-bash:
     name: Run unit tests for Bash scripts
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install YQ YAML parser
         run: |
-          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 --output /usr/local/bin/yq
+          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.34.1/yq_linux_amd64 --output /usr/local/bin/yq
           sudo chmod 755 /usr/local/bin/yq
       - name: Install Node interpreter
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Cache Node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: >-
-            node-18_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
-        run: npm install
+        run: |
+          node --version
+          npm --version
+          npm ci
       - name: Run Bash unit tests with Bats
         run: npm run bats:test
 
@@ -97,19 +107,22 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Node interpreter
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Cache Node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: >-
-            node-18_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
-        run: npm install
+        run: |
+          node --version
+          npm --version
+          npm ci
       - name: Build documentation
         # Vuepress incompatible with OpenSSL version 3, which is used on Ubuntu
         # 22.04. Vuepress is in maintenance mode and users are recommended to
@@ -129,11 +142,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: Build Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./tests/integration/${{ matrix.format }}.Dockerfile
@@ -145,7 +158,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install YQ YAML parser
         run: choco install --yes yq
       - name: Install PSScriptAnalyzer

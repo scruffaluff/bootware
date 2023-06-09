@@ -1,6 +1,6 @@
 FROM fedora:38 AS builder
 
-ARG version=1.0.0
+ARG version=0.5.1
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
@@ -14,14 +14,14 @@ COPY bootware.sh /bootware/
 COPY package.json /bootware/
 
 WORKDIR /bootware
-RUN npm install
+RUN npm ci
 
 # Build Fedora package.
 RUN node scripts/build_package.js rpm "${version}"
 
-FROM fedora:37
+FROM fedora:38
 
-ARG version=1.0.0
+ARG version=0.5.1
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
