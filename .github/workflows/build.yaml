@@ -72,7 +72,6 @@ jobs:
         run: |
           poetry run ansible-lint --version
           poetry run ansible-lint playbook.yaml
-          poetry run ansbile-galaxy collection build .
 
   test-bash:
     name: Run unit tests for Bash scripts

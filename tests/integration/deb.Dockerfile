@@ -3,10 +3,8 @@ FROM node:20.1.0 AS builder
 ARG version=0.5.1
 
 # Copy bootware package build files.
+COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
 COPY scripts/ /bootware/scripts/
-COPY bootware.1 /bootware/
-COPY bootware.sh /bootware/
-COPY package.json /bootware/
 
 WORKDIR /bootware
 RUN npm ci

@@ -8,10 +8,8 @@ RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN dnf install --assumeyes nodejs rpm-build
 
 # # Copy bootware package build files.
+COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
 COPY scripts/ /bootware/scripts/
-COPY bootware.1 /bootware/
-COPY bootware.sh /bootware/
-COPY package.json /bootware/
 
 WORKDIR /bootware
 RUN npm ci
