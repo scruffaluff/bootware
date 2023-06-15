@@ -9,6 +9,5 @@
 .github/
 .gitignore
 .venv/
-Dockerfile
-*.Dockerfile
+*.dockerfile
 node_modules/
