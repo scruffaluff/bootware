@@ -15,6 +15,7 @@ function main() {
     .option("-d, --distros <distributions...>", "Linux distributions list", [
       "alpine",
       "arch",
+      "collection",
       "debian",
       "fedora",
       "suse",
