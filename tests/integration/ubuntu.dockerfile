@@ -33,9 +33,8 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY --chown="${USER}" group_vars/ ./group_vars/
-COPY --chown="${USER}" playbook.yaml ./
 COPY --chown="${USER}" roles/ ./roles/
+COPY --chown="${USER}" playbook.yaml ./
 
 ARG skip
 ARG tags
