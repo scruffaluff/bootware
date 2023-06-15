@@ -148,7 +148,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./tests/integration/${{ matrix.format }}.Dockerfile
+          file: ./tests/integration/${{ matrix.format }}.dockerfile
           tags: bootware:${{ matrix.format }}
           push: false
 

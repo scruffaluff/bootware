@@ -49,7 +49,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/alpine.Dockerfile
+          file: ./tests/integration/alpine.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:alpine-latest
@@ -78,7 +78,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/arch.Dockerfile
+          file: ./tests/integration/arch.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:arch-latest
@@ -107,7 +107,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/debian.Dockerfile
+          file: ./tests/integration/debian.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:debian-latest
@@ -136,7 +136,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/fedora.Dockerfile
+          file: ./tests/integration/fedora.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:fedora-latest
@@ -249,7 +249,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/suse.Dockerfile
+          file: ./tests/integration/suse.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:suse-latest
@@ -278,7 +278,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/ubuntu.Dockerfile
+          file: ./tests/integration/ubuntu.dockerfile
           platforms: linux/amd64
           push: false
           tags: scruffaluff/bootware:ubuntu-22.04
