@@ -9,7 +9,7 @@
 
 - name: Install Pipx via package manager for Linux
   ansible.builtin.package:
-    name: pipx
+    name: "{{ 'python-pipx' if ansible_pkg_mgr == 'pacman' else 'pipx' }}"
   become: true
   ignore_errors: true
   register: python_pipx_package_install

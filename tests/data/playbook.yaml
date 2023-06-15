@@ -18,7 +18,6 @@
     - role: scruffaluff.bootware.chrome
     - role: scruffaluff.bootware.compass
     - role: scruffaluff.bootware.croc
-    - role: scruffaluff.bootware.cuda
     - role: scruffaluff.bootware.datree
     - role: scruffaluff.bootware.dbeaver
     - role: scruffaluff.bootware.defterm
@@ -88,7 +87,6 @@
     - role: scruffaluff.bootware.rust
     - role: scruffaluff.bootware.scc
     - role: scruffaluff.bootware.sd
-    - role: scruffaluff.bootware.security
     - role: scruffaluff.bootware.shellcheck
     - role: scruffaluff.bootware.shfmt
     - role: scruffaluff.bootware.sops

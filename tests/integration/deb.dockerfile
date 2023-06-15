@@ -12,7 +12,7 @@ RUN npm ci
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
-FROM debian:11.7
+FROM debian:12.0
 
 ARG version=0.5.2
 
