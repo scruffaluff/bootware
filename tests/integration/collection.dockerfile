@@ -36,13 +36,12 @@ COPY --chown="${USER}" tests/data/playbook.yaml /home/collection/
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
-# Test Bootware collection.
-RUN ansible-playbook --inventory localhost, playbook.yaml
-
+# Test Bootware collection with 3 retries on failure.
+ENV retries=3
 RUN until ansible-playbook --inventory localhost, playbook.yaml; do \
-        status=$? \
-        ((retries--)) && ((retries == 0)) && exit "${status}" \
-        printf "\nCollection run failed with exit code %s." "${status}" \
-        printf "\nRetrying playbook with %s attempts left.\n" "${retries}" \
-        sleep 4 \
+        status=$?; \
+        ((retries--)) && ((retries == 0)) && exit "${status}"; \
+        printf "\nCollection run failed with exit code %s." "${status}"; \
+        printf "\nRetrying playbook with %s attempts left.\n" "${retries}"; \
+        sleep 4; \
     done
