@@ -77,3 +77,8 @@
     mode: "644"
     owner: "{{ ansible_user_id }}"
     src: gitconfig.j2
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    git_role_executed: true

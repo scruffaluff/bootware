@@ -75,3 +75,8 @@
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
   become: true
   when: ansible_system != "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    fzf_role_executed: true

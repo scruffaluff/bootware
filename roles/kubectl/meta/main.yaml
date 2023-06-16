@@ -1,5 +1,5 @@
 ---
 dependencies:
-  - role: essential
+  - role: variable
   - role: fish
-    when: ansible_system != "Win32NT"
+    when: fish_role_executed is not defined and ansible_system != "Win32NT"
