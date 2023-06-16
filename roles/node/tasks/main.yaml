@@ -145,3 +145,8 @@
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    node_role_executed: true

@@ -2,6 +2,8 @@
 - connection: local
   hosts: localhost
   roles:
+    - role: scruffaluff.bootware.update
+    - role: scruffaluff.bootware.essential
     - role: scruffaluff.bootware.age
     - role: scruffaluff.bootware.alacritty
     - role: scruffaluff.bootware.appimage
@@ -30,7 +32,6 @@
     - role: scruffaluff.bootware.duf
     - role: scruffaluff.bootware.dust
     - role: scruffaluff.bootware.dvc
-    - role: scruffaluff.bootware.essential
     - role: scruffaluff.bootware.etcher
     - role: scruffaluff.bootware.exa
     - role: scruffaluff.bootware.fd
@@ -99,7 +100,6 @@
     - role: scruffaluff.bootware.tilt
     - role: scruffaluff.bootware.tldr
     - role: scruffaluff.bootware.tmux
-    - role: scruffaluff.bootware.update
     - role: scruffaluff.bootware.usql
     - role: scruffaluff.bootware.vagrant
     - role: scruffaluff.bootware.vault

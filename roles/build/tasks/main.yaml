@@ -84,3 +84,8 @@
     cmd: /tmp/gef_install.sh
     creates: "{{ ansible_env.HOME }}/.gdbinit"
   when: ansible_system != "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    build_role_executed: true

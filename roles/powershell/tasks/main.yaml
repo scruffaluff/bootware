@@ -66,3 +66,8 @@
         src: "{{ item[1] }}.psm1"
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    powershell_role_executed: true

@@ -1,7 +1,8 @@
 ---
 dependencies:
-  - role: essential
+  - role: variable
   - role: appimage
-    when: ansible_pkg_mgr == "pacman"
+    when: appimage_role_executed is not defined and ansible_pkg_mgr == "pacman"
   - role: powershell
-    when: ansible_system == "Win32NT"
+    when: >-
+      powershell_role_executed is not defined and ansible_system == "Win32NT"

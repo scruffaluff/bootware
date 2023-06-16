@@ -85,3 +85,8 @@
     state: directory
   become: true
   when: ansible_system == "Linux"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    java_role_executed: true

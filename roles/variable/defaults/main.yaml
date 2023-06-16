@@ -1,0 +1,52 @@
+---
+_bash_executable:
+  Darwin: >-
+    {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+    }}/bin/bash
+  FreeBSD: /usr/local/bin/bash
+  Linux: /bin/bash
+_fish_executable:
+  Darwin: >-
+    {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+    }}/bin/fish
+  FreeBSD: /usr/local/bin/fish
+  Linux: /usr/bin/fish
+_gnome_desktops:
+  - elementary
+  - gnome
+  - pop
+  - ubuntu
+  - zorin
+_system_architecture:
+  64-bit: amd64
+  64bit: amd64
+  aarch64: arm64
+  amd64: amd64
+  arm64: arm64
+  riscv64: riscv64
+  x64: amd64
+  x86_64: amd64
+_ubuntu_distros:
+  - Elementary OS
+  - "Pop!_OS"
+  - Ubuntu
+  - Zorin OS
+_user_shell:
+  Darwin: >-
+    {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
+    }}/bin/fish
+  FreeBSD: /usr/local/bin/fish
+  Linux: /usr/bin/fish
+  Win32NT: C:/Program Files/PowerShell/7/pwsh.exe
+bash_executable: "{{ _bash_executable.get(ansible_system, '/bin/bash') }}"
+deb_distro_base:
+  "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
+desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
+display_manager: "{{ lookup('env', 'XDG_SESSION_TYPE') }}"
+fish_executable: "{{  _fish_executable.get(ansible_system, '/usr/bin/fish') }}"
+font_size: 14
+gnome_desktop: "{{ desktop in _gnome_desktops }}"
+# Backslashes are required for Windows Defender firewall rules.
+scoop_apps: "{{ ansible_env.HOME }}\\scoop\\apps"
+system_architecture: "{{ _system_architecture.get(ansible_architecture, '') }}"
+user_shell: "{{ _user_shell.get(ansible_system, '/usr/bin/fish') }}"

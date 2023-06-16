@@ -39,3 +39,8 @@
   become: true
   loop: "{{ appimage_packages }}"
   when: ansible_system == "Linux"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    appimage_role_executed: true

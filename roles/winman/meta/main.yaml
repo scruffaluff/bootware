@@ -1,11 +1,17 @@
 ---
 dependencies:
-  - role: essential
+  - role: variable
   - role: bash
-    when: ansible_system != "Win32NT"
+    when: bash_role_executed is not defined and ansible_system != "Win32NT"
   - role: build
-    when: ansible_system == "Linux" and gnome_desktop
+    when: >-
+      build_role_executed is not defined and ansible_system == "Linux" and
+      gnome_desktop
   - role: git
-    when: ansible_system == "Linux" and gnome_desktop
+    when: >-
+      git_role_executed is not defined and ansible_system == "Linux" and
+      gnome_desktop
   - role: node
-    when: ansible_system == "Linux" and gnome_desktop
+    when: >-
+      node_role_executed is not defined and ansible_system == "Linux" and
+      gnome_desktop
