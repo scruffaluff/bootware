@@ -6,24 +6,29 @@
 ---
 name: pages
 
-# Trigger workflow on push to the main and master branches.
+# Makes workflow run on push to the main branch.
 on:
   push:
     branches:
       - main
-      - master
+  workflow_dispatch:
+    inputs:
+      debug:
+        default: false
+        description: Use TMate session for debugging on failure
+        type: boolean
 
 jobs:
   docs:
     name: Build and publish documentation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
       - name: Cache Node packages
         uses: actions/cache@v3
         with:
@@ -49,3 +54,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: site
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3

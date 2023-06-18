@@ -6,7 +6,7 @@
 ---
 name: build
 
-# Trigger workflow on any push or pull request.
+# Makes workflow run on any push or pull request.
 on:
   pull_request:
     branches:
@@ -14,11 +14,28 @@ on:
   push:
     branches:
       - "**"
+  workflow_dispatch:
+    inputs:
+      debug:
+        default: false
+        description: Use TMate session for debugging on failure
+        type: boolean
+      job:
+        default: test
+        description: CI job to run
+        options:
+          - lint
+          - test-bash
+          - test-documenation
+          - test-package
+          - test-powershell
+        type: choice
 
 jobs:
   lint:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'lint' }}
     name: Check code with formatter and linter
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -74,8 +91,11 @@ jobs:
           poetry run ansible-lint playbook.yaml
 
   test-bash:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'test-bash'
+      }}
     name: Run unit tests for Bash scripts
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -100,10 +120,19 @@ jobs:
           npm ci
       - name: Run Bash unit tests with Bats
         run: npm run bats:test
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
   test-documenation:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==
+      'test-documentation' }}
     name: Build documentation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -131,14 +160,25 @@ jobs:
         env:
           NODE_OPTIONS: --openssl-legacy-provider
         run: npm run vuepress:build
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
   test-package:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==
+      'test-package' }}
     name: Test building a ${{ matrix.format }} package
     strategy:
       fail-fast: false
       matrix:
-        format: [deb]
-    runs-on: ubuntu-22.04
+        format:
+          - deb
+          - rpm
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -151,10 +191,19 @@ jobs:
           file: ./tests/integration/${{ matrix.format }}.dockerfile
           tags: bootware:${{ matrix.format }}
           push: false
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
   test-powershell:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==
+      'test-powershell' }}
     name: Run linter and unit tests for PowerShell scripts
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -177,3 +226,9 @@ jobs:
       - name: Run PowerShell unit tests with Pester
         run: Invoke-Pester -Output Detailed ./tests/unit/
         shell: pwsh
+      - name: Setup tmate session if job failed
+        if: >-
+          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3

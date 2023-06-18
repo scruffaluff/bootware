@@ -6,37 +6,49 @@
 ---
 name: test
 
-# Trigger workflow on push or pull request to the develop, main, and master
-# branches.
+# Makes workflow run on push or pull request to the main branch.
 on:
   pull_request:
     branches:
-      - develop
       - main
-      - master
   push:
     branches:
-      - develop
       - main
-      - master
   workflow_dispatch:
     inputs:
       debug:
-        default: "false"
+        default: false
         description: Use TMate session for debugging on failure
-        required: false
-      os:
-        default: alpine arch debian fedora freebsd macos suse ubuntu windows
-        description: Space separated list of operating systems
-        required: false
+        type: boolean
+      job:
+        default: debian
+        description: CI job to run
+        options:
+          - alpine
+          - arch
+          - collection
+          - debian
+          - fedora
+          - freebsd
+          - macos
+          - suse
+          - ubuntu
+          - windows
+        type: choice
+      platform:
+        default: amd64
+        description: Docker architecture platform
+        options:
+          - amd64
+          - arm64
+        type: choice
 
 jobs:
-  test-alpine:
-    name: Test bootstrapping software for Amd64 Alpine Linux
+  alpine:
+    name: Test bootstrapping software for Alpine Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'alpine') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'alpine' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -50,22 +62,21 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/alpine.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:alpine
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-arch:
-    name: Test bootstrapping software for Amd64 Arch Linux
+  arch:
+    name: Test bootstrapping software for Arch Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'arch') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==  'arch' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -79,22 +90,22 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/arch.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:arch
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-collection:
+  collection:
     name: Test Bootware collection on Debian
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'collection') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'collection'
+      }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -108,22 +119,21 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/collection.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:collection
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-debian:
-    name: Test bootstrapping software for Amd64 Debian Linux
+  debian:
+    name: Test bootstrapping software for Debian Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'debian') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'debian' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -137,22 +147,21 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/debian.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:debian
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-fedora:
-    name: Test bootstrapping software for Amd64 Fedora Linux
+  fedora:
+    name: Test bootstrapping software for Fedora Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'fedora') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'fedora' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -166,21 +175,20 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/fedora.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:fedora
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-freebsd:
-    name: Test bootstrapping software for Amd64 FreeBSD
+  freebsd:
+    name: Test bootstrapping software for FreeBSD
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'freebsd') }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
     runs-on: macos-12
     steps:
       - name: Checkout code repository
@@ -210,15 +218,14 @@ jobs:
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-macos:
-    name: Test bootstrapping software for Amd64 MacOS
+  macos:
+    name: Test bootstrapping software for MacOS
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'macos') }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'macos' }}
     runs-on: macos-12
     steps:
       - name: Checkout code repository
@@ -256,16 +263,15 @@ jobs:
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-suse:
-    name: Test bootstrapping software for Amd64 Suse Linux
+  suse:
+    name: Test bootstrapping software for Suse Linux
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' &&
-      contains(github.event.inputs.os, 'suse') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job ==  'suse' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -279,22 +285,21 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/suse.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:suse
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-ubuntu:
-    name: Test bootstrapping software for Amd64 Ubuntu Linux
+  ubuntu:
+    name: Test bootstrapping software for Ubuntu Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'ubuntu') }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -308,22 +313,21 @@ jobs:
           build-args: test=true
           context: .
           file: ./tests/integration/ubuntu.dockerfile
-          platforms: linux/amd64
+          platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:ubuntu
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  test-windows:
-    name: Test bootstrapping software for Amd64 Windows
+  windows:
+    name: Test bootstrapping software for Windows
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' ||
-      contains(github.event.inputs.os, 'windows') }}
-    runs-on: windows-2022
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'windows' }}
+    runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -378,6 +382,6 @@ jobs:
       - name: Setup tmate session if job failed
         if: >-
           ${{ failure() && github.event_name == 'workflow_dispatch' &&
-          github.event.inputs.debug == 'true' }}
+          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
