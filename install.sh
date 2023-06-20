@@ -45,8 +45,8 @@ assert_cmd() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v "$1")" ]]; then
-    error "Cannot find required $1 command on computer."
+  if [[ ! -x "$(command -v "${1}")" ]]; then
+    error "Cannot find required ${1} command on computer."
   fi
 }
 
@@ -60,7 +60,7 @@ assert_cmd() {
 #   Parent directory of Bootware script.
 #######################################
 configure_shell() {
-  local export_cmd="export PATH=\"$1:\$PATH\"" profile shell_name
+  local export_cmd="export PATH=\"${1}:\$PATH\"" profile shell_name
   shell_name="$(basename "${SHELL}")"
 
   case "${shell_name}" in
@@ -74,7 +74,7 @@ configure_shell() {
       profile="${HOME}/.profile"
       ;;
     fish)
-      export_cmd="set --export PATH \"$1\" \$PATH"
+      export_cmd="set --export PATH \"${1}\" \$PATH"
       profile="${HOME}/.config/fish/config.fish"
       ;;
     *)
@@ -93,7 +93,7 @@ configure_shell() {
 #######################################
 error() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "$1" >&2
+  printf "${bold_red}error${default}: %s\n" "${1}" >&2
   exit 1
 }
 
@@ -104,7 +104,7 @@ error() {
 #######################################
 error_usage() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "$1" >&2
+  printf "${bold_red}error${default}: %s\n" "${1}" >&2
   printf "Run 'bootware --help' for usage.\n" >&2
   exit 2
 }
@@ -117,7 +117,7 @@ error_usage() {
 #   GitHub version reference.
 #######################################
 install_completions() {
-  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/$3"
+  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
   local bash_url="${repo_url}/completions/bootware.bash"
   local fish_url="${repo_url}/completions/bootware.fish"
 
@@ -147,7 +147,7 @@ install_completions() {
 #   GitHub version reference.
 #######################################
 install_man() {
-  local man_url="https://raw.githubusercontent.com/scruffaluff/bootware/$2/bootware.1"
+  local man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/bootware.1"
 
   # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${1:+sudo} mkdir -p '/usr/local/share/man/man1'
@@ -181,13 +181,13 @@ main() {
 
   # Parse command line arguments.
   while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+    case "${1}" in
       --debug)
         set -o xtrace
         shift 1
         ;;
       -d | --dest)
-        dst_file="$2"
+        dst_file="${2}"
         shift 2
         ;;
       -h | --help)
@@ -200,11 +200,11 @@ main() {
         shift 1
         ;;
       -v | --version)
-        version="$2"
+        version="${2}"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'."
+        error_usage "No such option '${1}'."
         ;;
     esac
   done
