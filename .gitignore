@@ -8,6 +8,8 @@
 .local/
 .vagrant/
 .venv/
+.vitepress/cache/
+.vitepress/dist/
 .vscode/
 *.tar.gz
 /build/

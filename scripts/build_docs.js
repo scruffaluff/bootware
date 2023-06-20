@@ -8,7 +8,7 @@ const fs = require("fs");
 const mustache = require("mustache");
 const path = require("path");
 const prettier = require("prettier");
-const vuepress = require("vuepress");
+const vitepress = require("vitepress");
 
 /**
  * Copy Markdown files into docs directory.
@@ -130,11 +130,7 @@ function main() {
   copyFiles(repoPath);
   writeSoftware(repoPath);
 
-  vuepress.build({
-    theme: "@vuepress/theme-default",
-    dest: "site",
-    sourceDir: "docs",
-  });
+  vitepress.build(".");
 }
 
 main();

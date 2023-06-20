@@ -41,14 +41,7 @@ jobs:
           npm --version
           npm ci
       - name: Build documentation
-        # Vuepress incompatible with OpenSSL version 3, which is used on Ubuntu
-        # 22.04. Vuepress is in maintenance mode and users are recommended to
-        # migrate to its successor is Vitepress,
-        # https://github.com/vuejs/vitepress. Migration will occur after
-        # Vitepress makes a stable release.
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-        run: npm run vuepress:build
+        run: npm run vitepress:build
       - name: Publish documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
