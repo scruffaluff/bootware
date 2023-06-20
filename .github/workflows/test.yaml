@@ -18,7 +18,7 @@ on:
     inputs:
       debug:
         default: false
-        description: Use TMate session for debugging on failure
+        description: Use Tmate session for debugging
         type: boolean
       job:
         default: debian
@@ -65,9 +65,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:alpine
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -93,9 +93,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:arch
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -116,15 +116,16 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
-          build-args: test=true
           context: .
           file: ./tests/integration/collection.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:collection
-      - name: Setup tmate session if job failed
+      - name: Test bootstrapping
+        run: docker run --interactive --tty scruffaluff/bootware:collection
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -150,9 +151,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:debian
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -178,9 +179,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:fedora
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -215,9 +216,9 @@ jobs:
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -260,9 +261,9 @@ jobs:
         run: |
           source ${HOME}/.bashrc
           node tests/integration/roles.spec.js --arch amd64 --skip bats,docker,docker_compose,tilt macos
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -288,9 +289,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:suse
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -316,9 +317,9 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:ubuntu
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -379,9 +380,9 @@ jobs:
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
           node tests/integration/roles.spec.js --arch amd64 --skip krew windows
-      - name: Setup tmate session if job failed
+      - name: Setup Tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
