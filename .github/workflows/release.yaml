@@ -15,7 +15,7 @@ on:
     inputs:
       debug:
         default: false
-        description: Use TMate session for debugging on failure
+        description: Use TMate session for debugging
         type: boolean
       job:
         default: test
@@ -40,9 +40,9 @@ jobs:
         uses: artis3n/ansible_galaxy_collection@v2
         with:
           api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -93,9 +93,9 @@ jobs:
           asset_path: ${{ steps.build_package.outputs.package_path }}
           asset_name: ${{ steps.build_package.outputs.package_name }}
           asset_content_type: application/octet-stream
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -124,9 +124,9 @@ jobs:
           body: >-
             See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
             steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3

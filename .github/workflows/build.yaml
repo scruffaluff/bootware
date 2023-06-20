@@ -18,7 +18,7 @@ on:
     inputs:
       debug:
         default: false
-        description: Use TMate session for debugging on failure
+        description: Use TMate session for debugging
         type: boolean
       job:
         default: test
@@ -89,6 +89,12 @@ jobs:
         run: |
           poetry run ansible-lint --version
           poetry run ansible-lint playbook.yaml
+      - name: Setup tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
   test-bash:
     if: >-
@@ -120,9 +126,9 @@ jobs:
           npm ci
       - name: Run Bash unit tests with Bats
         run: npm run bats:test
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -160,9 +166,9 @@ jobs:
         env:
           NODE_OPTIONS: --openssl-legacy-provider
         run: npm run vuepress:build
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -191,9 +197,9 @@ jobs:
           file: ./tests/integration/${{ matrix.format }}.dockerfile
           tags: bootware:${{ matrix.format }}
           push: false
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
@@ -226,9 +232,9 @@ jobs:
       - name: Run PowerShell unit tests with Pester
         run: Invoke-Pester -Output Detailed ./tests/unit/
         shell: pwsh
-      - name: Setup tmate session if job failed
+      - name: Setup tmate session if debug enabled
         if: >-
-          ${{ failure() && github.event_name == 'workflow_dispatch' &&
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
           inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
