@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Install Bootware for MacOS or Linux systems.
+# Install Bootware for FreeBSD, MacOS, or Linux systems.
 
 # Exit immediately if a command exits or pipes a non-zero return code.
 #
@@ -18,18 +18,16 @@ set -eou pipefail
 #######################################
 usage() {
   cat 1>&2 << EOF
-Bootware Installer
-Installer script for Bootware
+Installer script for Bootware.
 
-USAGE:
-    bootware-installer [OPTIONS]
+Usage: install [OPTIONS]
 
-OPTIONS:
-        --debug                 Enable shell debug traces
-    -d, --dest <PATH>           Path to install bootware
-    -h, --help                  Print help information
-    -u, --user                  Install bootware for current user
-    -v, --version <VERSION>     Version of Bootware to install
+Options:
+      --debug               Enable shell debug traces
+  -d, --dest <PATH>         Path to install bootware
+  -h, --help                Print help information
+  -u, --user                Install bootware for current user
+  -v, --version <VERSION>   Version of Bootware to install
 EOF
 }
 
@@ -180,7 +178,7 @@ main() {
     user_install version='main'
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       --debug)
         set -o xtrace
@@ -225,7 +223,7 @@ main() {
   fi
   dst_dir="$(dirname "${dst_file}")"
 
-  log 'Installing Bootware'
+  log 'Installing Bootware...'
 
   # Do not quote the sudo parameter expansion. Bash will error due to be being
   # unable to find the "" command.
@@ -254,7 +252,7 @@ main() {
     install_man "${use_sudo}" "${version}"
   fi
 
-  log "Installed $(bootware --version)"
+  log "Installed $(bootware --version)."
 }
 
 # Variable BASH_SOURCE cannot be used to load script as a library. Piping the

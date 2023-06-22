@@ -20,133 +20,119 @@ usage() {
   case "${1}" in
     bootstrap)
       cat 1>&2 << EOF
-Bootware bootstrap
 Boostrap install computer software
 
-USAGE:
-    bootware bootstrap [OPTIONS]
+Usage: bootware bootstrap [OPTIONS]
 
-OPTIONS:
-        --check                     Perform dry run and show possible changes
-        --checkout <REF>            Git reference to run against
-    -c, --config <PATH>             Path to bootware user configuation file
-        --debug                     Enable Ansible task debugger
-    -d, --dev                       Run bootstrapping in development mode
-    -h, --help                      Print help information
-    -i, --inventory <IP-LIST>       Ansible host IP addesses
-        --no-passwd                 Do not ask for user password
-        --no-setup                  Skip Bootware dependency installation
-        --password <PASSWORD>       Remote host user password
-    -p, --playbook <FILE-NAME>      Path to playbook to execute
-        --private-key <FILE-NAME>   Path to SSH private key
-        --retries <INTEGER>         Playbook retry limit during failure
-    -s, --skip <TAG-LIST>           Ansible playbook tags to skip
-        --start-at-role <ROLE>      Begin execution with role
-    -t, --tags <TAG-LIST>           Ansible playbook tags to select
-    -u, --url <URL>                 URL of playbook repository
-        --user <USER-NAME>          Remote host user login name
-        --windows                   Connect to a Windows host with SSH
+Options:
+      --check                     Perform dry run and show possible changes
+      --checkout <REF>            Git reference to run against
+  -c, --config <PATH>             Path to bootware user configuation file
+      --debug                     Enable Ansible task debugger
+  -d, --dev                       Run bootstrapping in development mode
+  -h, --help                      Print help information
+  -i, --inventory <IP-LIST>       Ansible host IP addesses
+      --no-passwd                 Do not ask for user password
+      --no-setup                  Skip Bootware dependency installation
+      --password <PASSWORD>       Remote host user password
+  -p, --playbook <FILE-NAME>      Path to playbook to execute
+      --private-key <FILE-NAME>   Path to SSH private key
+      --retries <INTEGER>         Playbook retry limit during failure
+  -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+      --start-at-role <ROLE>      Begin execution with role
+  -t, --tags <TAG-LIST>           Ansible playbook tags to select
+  -u, --url <URL>                 URL of playbook repository
+      --user <USER-NAME>          Remote host user login name
+      --windows                   Connect to a Windows host with SSH
 
-ANSIBLE-OPTIONS:
+Ansible Options:
 EOF
       ansible --help
       ;;
     config)
       cat 1>&2 << EOF
-Bootware config
 Download default Bootware configuration file
 
-USAGE:
-    bootware config [OPTIONS]
+Usage: bootware config [OPTIONS]
 
-OPTIONS:
-    -d, --dest <PATH>       Path to alternate download destination
-    -e, --empty             Write empty configuration file
-    -h, --help              Print help information
-    -s, --source <URL>      URL to configuration file
+Options:
+  -d, --dest <PATH>     Path to alternate download destination
+  -e, --empty           Write empty configuration file
+  -h, --help            Print help information
+  -s, --source <URL>    URL to configuration file
 EOF
       ;;
     main)
       cat 1>&2 << EOF
-$(version)
 Boostrapping software installer
 
-USAGE:
-    bootware [OPTIONS] [SUBCOMMAND]
+Usage: bootware [OPTIONS] [SUBCOMMAND]
 
-OPTIONS:
-        --debug      Enable shell debug traces
-    -h, --help       Print help information
-    -v, --version    Print version information
+Options:
+      --debug     Enable shell debug traces
+  -h, --help      Print help information
+  -v, --version   Print version information
 
-SUBCOMMANDS:
-    bootstrap        Boostrap install computer software
-    config           Generate Bootware configuration file
-    roles            List all Bootware roles
-    setup            Install dependencies for Bootware
-    uninstall        Remove Bootware files
-    update           Update Bootware to latest version
+Subcommands:
+  bootstrap   Boostrap install computer software
+  config      Generate Bootware configuration file
+  roles       List all Bootware roles
+  setup       Install dependencies for Bootware
+  uninstall   Remove Bootware files
+  update      Update Bootware to latest version
 
-ENVIRONMENT VARIABLES:
-    BOOTWARE_CONFIG     Set the configuration file path
-    BOOTWARE_NOPASSWD   Assume passwordless sudo
-    BOOTWARE_NOSETUP    Skip Ansible install and system setup
-    BOOTWARE_PLAYBOOK   Set Ansible playbook name
-    BOOTWARE_SKIP       Set skip tags for Ansible roles
-    BOOTWARE_TAGS       Set tags for Ansible roles
-    BOOTWARE_URL        Set location of Ansible repository
+Environment Variables:
+  BOOTWARE_CONFIG     Set the configuration file path
+  BOOTWARE_NOPASSWD   Assume passwordless sudo
+  BOOTWARE_NOSETUP    Skip Ansible install and system setup
+  BOOTWARE_PLAYBOOK   Set Ansible playbook name
+  BOOTWARE_SKIP       Set skip tags for Ansible roles
+  BOOTWARE_TAGS       Set tags for Ansible roles
+  BOOTWARE_URL        Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     roles)
       cat 1>&2 << EOF
-Bootware roles
 List all Bootware roles
 
-USAGE:
-    bootware roles [OPTIONS]
+Usage: bootware roles [OPTIONS]
 
-OPTIONS:
-    -h, --help        Print help information
-    -u, --url <URL>   URL of playbook repository
+Options:
+  -h, --help        Print help information
+  -u, --url <URL>   URL of playbook repository
 EOF
       ;;
     setup)
       cat 1>&2 << EOF
-Bootware setup
 Install dependencies for Bootware
 
-USAGE:
-    bootware setup [OPTIONS]
+Usage: bootware setup [OPTIONS]
 
-OPTIONS:
-    -h, --help      Print help information
+Options:
+  -h, --help    Print help information
 EOF
       ;;
     uninstall)
       cat 1>&2 << EOF
-Bootware uninstall
 Remove Bootware files
 
-USAGE:
-    bootware uninstall
+Usage: bootware uninstall
 
-OPTIONS:
-    -h, --help                  Print help information
+Options:
+  -h, --help    Print help information
 EOF
       ;;
     update)
       cat 1>&2 << EOF
-Bootware update
 Update Bootware to latest version
 
-USAGE:
-    bootware update [OPTIONS]
+Usage: bootware update [OPTIONS]
 
-OPTIONS:
-    -h, --help                  Print help information
-    -v, --version <VERSION>     Version override for update
+Options:
+  -h, --help                Print help information
+  -v, --version <VERSION>   Version override for update
 EOF
       ;;
     *)
@@ -212,7 +198,7 @@ bootstrap() {
   fi
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -c | --config)
         config_path="${2}"
@@ -373,7 +359,7 @@ config() {
   local src_url dst_file="${HOME}/.bootware/config.yaml" empty_cfg
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -d | --dest)
         dst_file="${2}"
@@ -571,7 +557,7 @@ roles() {
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -h | --help)
         usage 'roles'
@@ -601,7 +587,7 @@ setup() {
   local collections collection_status os_type tmp_dir use_sudo=''
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -h | --help)
         usage 'setup'
@@ -1024,7 +1010,7 @@ uninstall() {
   local dst_file use_sudo=''
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -h | --help)
         usage 'uninstall'
@@ -1067,7 +1053,7 @@ update() {
   local dst_file src_url use_sudo='' user_install version='main'
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       -h | --help)
         usage 'update'
@@ -1156,7 +1142,7 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
+  while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
       --debug)
         set -o xtrace

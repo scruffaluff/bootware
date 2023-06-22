@@ -1,3 +1,9 @@
+<#
+.SYNOPSIS
+    Installs Bootware for Windows systems.
+#>
+
+
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
@@ -10,13 +16,12 @@ Function Usage() {
 Bootware Installer
 Installer script for Bootware
 
-USAGE:
-    bootware-installer [OPTIONS]
+Usage: install [OPTIONS]
 
-OPTIONS:
-    -h, --help                  Print help information
-    -u, --user                  Install bootware for current user
-    -v, --version <VERSION>     Version of Bootware to install
+Options:
+  -h, --help                Print help information
+  -u, --user                Install bootware for current user
+  -v, --version <VERSION>   Version of Bootware to install
 '@
 }
 
@@ -39,7 +44,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         Exit 1
     }
 
-    If ($Target -Eq 'Machine' -And !(IsAdministrator)) {
+    If (($Target -Eq 'Machine') -And (-Not IsAdministrator)) {
         Write-Output @"
 System level installation requires an administrator console.
 Run this script from an administrator console or execute with the '--user' flag.
@@ -53,12 +58,7 @@ Run this script from an administrator console or execute with the '--user' flag.
 # Required as a seperate function, since the default progress bar updates every
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
-Function DownloadFile {
-    Param(
-        [String] $SrcURL,
-        [String] $DstFile
-    )
-
+Function DownloadFile($SrcURL, $DstFile) {
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
 }
@@ -93,7 +93,7 @@ Function IsAdministrator {
 
 # Print log message to stdout if logging is enabled.
 Function Log($Message) {
-    If (!"$Env:BOOTWARE_NOLOG") {
+    If (-Not "$Env:BOOTWARE_NOLOG") {
         Write-Output "$Message"
     }
 }
@@ -147,12 +147,12 @@ Function Main() {
         )
     }
 
-    Log 'Installing Bootware'
+    Log 'Installing Bootware...'
 
     New-Item -Force -ItemType Directory -Path "$DestDir" | Out-Null
     DownloadFile "$Source" "$Dest"
     InstallCompletion "$Version"
-    Log "Installed $(bootware --version)"
+    Log "Installed $(bootware --version)."
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.
