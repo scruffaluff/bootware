@@ -147,8 +147,8 @@
   },
   {
     "name": "github",
-    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
-    "tests": ["gh --version"]
+    "skip": [{ "os": "freebsd" }],
+    "tests": []
   },
   {
     "name": "gitlab",

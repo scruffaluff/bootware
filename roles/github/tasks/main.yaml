@@ -1,54 +1,61 @@
 ---
-- name: Get latest GitHub CLI version
+- name: Get latest GitHub runner version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://formulae.brew.sh/api/formula/gh.json
-  register: github_formula
-  when: ansible_system == "Linux"
+    url: https://api.github.com/repos/actions/runner/releases/latest
+  register: github_release
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install GitHub CLI for Alpine
-  become: true
-  community.general.apk:
-    name: github-cli
-  when: ansible_pkg_mgr == "apk"
+- name: Get latest GitHub runner version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/actions/runner/releases/latest
+  register: github_release
+  when: ansible_system == "Win32NT"
 
-- name: Install GitHub CLI for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: gh
-  when: ansible_system == "FreeBSD"
+- name: Create GitHub runner directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    owner: "{{ ansible_user_id }}"
+    path: "{{ ansible_env.HOME }}/.local/github-runner"
+    state: directory
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Download GitHub CLI for Linux
+- name: Create GitHub runner directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.HOME }}/.local/github-runner"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Download GitHub runner for Unix
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: "{{ ansible_env.HOME }}/.local/github-runner"
     mode: "755"
     remote_src: true
     src: >-
-      https://github.com/cli/cli/releases/download/v{{
-      github_formula.json.versions.stable }}/gh_{{
-      github_formula.json.versions.stable }}_linux_{{ system_architecture
-      }}.tar.gz
-  become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+      https://github.com/actions/runner/releases/download/{{
+      github_release.json.tag_name }}/actions-runner-{{
+      github_os[ansible_system] }}-{{ github_arch }}-{{
+      github_release.json.tag_name[1:] }}.tar.gz
+  vars:
+    github_os:
+      Darwin: osx
+      Linux: linux
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install GitHub CLI for Linux
-  ansible.builtin.copy:
-    dest: /usr/local/bin/gh
-    mode: "755"
-    remote_src: true
-    src: >-
-      /tmp/gh_{{ github_formula.json.versions.stable }}_linux_{{
-      system_architecture }}/bin/gh
-  become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+- name: Download GitHub runner archive for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/github_runner.zip"
+    url: >-
+      https://github.com/actions/runner/releases/download/{{
+      github_release.json.tag_name }}/actions-runner-win-{{ github_arch }}-{{
+      github_release.json.tag_name[1:] }}.zip
+  when: ansible_system == "Win32NT"
 
-- name: Install GitHub CLI for MacOS
-  community.general.homebrew:
-    name: gh
-  when: ansible_system == "Darwin"
-
-- name: Install GitHub CLI for Windows
-  community.windows.win_scoop:
-    name: gh
+- name: Decompress GitHub runner archive for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.HOME }}/.local/github-runner"
+    src: "{{ ansible_env.TEMP }}/github_runner.zip"
   when: ansible_system == "Win32NT"

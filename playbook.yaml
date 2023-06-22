@@ -412,17 +412,15 @@
         - vcs
         - wsl
 
-    - name: Install GitHub helper tools
+    - name: Install GitHub runner
       ansible.builtin.import_role:
         name: github
       tags:
-        - desktop
+        - extras
         - github
-        - server
-        - vcs
-        - wsl
+        - never
 
-    - name: Install GitLab helper tools
+    - name: Install GitLab runner
       ansible.builtin.import_role:
         name: gitlab
       tags:

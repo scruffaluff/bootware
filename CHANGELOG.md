@@ -7,6 +7,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Changed
+
+- GitHub role to install GitHub runner.
+
 ### Removed
 
 - Cuda, Obsidian, and Vagrant roles.
