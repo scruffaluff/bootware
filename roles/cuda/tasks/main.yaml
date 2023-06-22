@@ -1,6 +1,0 @@
----
-- name: Install Nvidia CUDA GPU toolkit
-  ansible.builtin.import_tasks: cuda.yaml
-
-- name: Install Nvidia Docker container toolkit
-  ansible.builtin.import_tasks: docker.yaml

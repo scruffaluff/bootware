@@ -177,13 +177,6 @@
         - server
         - wsl
 
-    - name: Install Nvidia CUDA CPU acceleration toolkit
-      ansible.builtin.import_role:
-        name: cuda
-      tags:
-        - cuda
-        - never
-
     - name: Install Datree Kubernetes linter
       ansible.builtin.import_role:
         name: datree
@@ -723,14 +716,6 @@
         - typescript
         - wsl
 
-    - name: Install Obsidian notetaking application
-      ansible.builtin.import_role:
-        name: obsidian
-      tags:
-        - extras
-        - never
-        - obsidian
-
     - name: Install optional packages
       ansible.builtin.import_role:
         name: package
@@ -1017,14 +1002,6 @@
         - sysadmin
         - usql
         - wsl
-
-    - name: Install Vagrant virtualization manager
-      ansible.builtin.import_role:
-        name: vagrant
-      tags:
-        - extras
-        - never
-        - vagrant
 
     - name: Install Vault secrets manager
       ansible.builtin.import_role:

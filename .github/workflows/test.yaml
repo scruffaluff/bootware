@@ -202,9 +202,7 @@ jobs:
             sudo freebsd-update install
             pkg install --yes bash curl
           release: "13.1"
-          # Vagrant is not tested temporarily since FreeBSD vagrant package
-          # installs Ruby net-sftp dependency with version 4 while needing
-          # version 3. Termshark is installed at /usr/local/bin/termshark on
+          # Termshark is installed at /usr/local/bin/termshark on
           # FreeBSD in the job's VM, which is in the system path. No idea why
           # the test suite cannot find it.
           run: |
@@ -212,7 +210,7 @@ jobs:
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip vagrant,termshark freebsd'
+            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip termshark freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
