@@ -7,5 +7,8 @@ arrowParens: always
 printWidth: 80
 proseWrap: always
 semi: true
+# Setting "singleQuote: true" changes double quoted strings containing variables
+# to single quoted strings, which causes incorrect interpolation in YAML files.
+singleQuote: false
 tabWidth: 2
 trailingComma: es5

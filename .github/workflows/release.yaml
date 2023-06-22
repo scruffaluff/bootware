@@ -6,39 +6,33 @@
 ---
 name: release
 
-# Trigger workflow on SemVer compatible tags.
+# Makes workflow run on Git tag.
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+      - "**"
+  workflow_dispatch:
+    inputs:
+      debug:
+        default: false
+        description: Use Tmate session for debugging
+        type: boolean
+      job:
+        default: test
+        description: CI job to run
+        options:
+          - collection
+          - package
+          - release
+        type: choice
 
 jobs:
-  release:
-    name: Get Git tag and make GitHub release
-    runs-on: ubuntu-22.04
-    outputs:
-      tag: ${{ steps.extract_tag.outputs.tag }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Extract Git tag
-        id: extract_tag
-        shell: bash
-        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
-      - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Bootware ${{ steps.extract_tag.outputs.tag }}
-          body: >-
-            See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
-            steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
-
   collection:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'collection'
+      }}
     name: Publish collection to Ansible Galaxy
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -46,15 +40,25 @@ jobs:
         uses: artis3n/ansible_galaxy_collection@v2
         with:
           api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
   package:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
     name: Create and upload ${{ matrix.package }} package
     strategy:
       fail-fast: false
       matrix:
-        package: [deb]
+        package:
+          - deb
+          - rpm
     needs: release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -89,3 +93,40 @@ jobs:
           asset_path: ${{ steps.build_package.outputs.package_path }}
           asset_name: ${{ steps.build_package.outputs.package_name }}
           asset_content_type: application/octet-stream
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  release:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'release' }}
+    name: Get Git tag and make GitHub release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.extract_tag.outputs.tag }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Extract Git tag
+        id: extract_tag
+        shell: bash
+        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Bootware ${{ steps.extract_tag.outputs.tag }}
+          body: >-
+            See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
+            steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3

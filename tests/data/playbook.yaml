@@ -74,7 +74,6 @@
     - role: scruffaluff.bootware.navi
     - role: scruffaluff.bootware.neovim
     - role: scruffaluff.bootware.node
-    - role: scruffaluff.bootware.obsidian
     - role: scruffaluff.bootware.package
     - role: scruffaluff.bootware.packer
     - role: scruffaluff.bootware.parquet
@@ -101,7 +100,6 @@
     - role: scruffaluff.bootware.tldr
     - role: scruffaluff.bootware.tmux
     - role: scruffaluff.bootware.usql
-    - role: scruffaluff.bootware.vagrant
     - role: scruffaluff.bootware.vault
     - role: scruffaluff.bootware.vscode
     - role: scruffaluff.bootware.wasm

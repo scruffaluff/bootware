@@ -46,7 +46,7 @@ $Env:DOCKER_BUILDKIT = 'true'
 
 # Load Docker autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name DockerCompletion)
 ) {
     Import-Module DockerCompletion
@@ -64,7 +64,7 @@ $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 # Flags:
 #   -q: Only check for exit status by supressing output.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Command bat -ErrorAction SilentlyContinue)
 ) {
     $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
@@ -74,7 +74,7 @@ If (
 
 # Load Git autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name posh-git)
 ) {
     Import-Module posh-git
@@ -146,7 +146,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     #
     # Fzf PowerShell integration depends on PSReadLine being activated first.
     If (
-        (!$Env:SHELL_MINIMAL_CONFIG) -And
+        (-Not $Env:SHELL_MINIMAL_CONFIG) -And
         (Get-Module -ListAvailable -Name PsFzf)
     ) {
         Import-Module PsFzf
@@ -184,7 +184,7 @@ If (Test-Path "$HOME/.secrets.ps1") {
 
 # Initialize Starship if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Command starship -ErrorAction SilentlyContinue)
 ) {
     Invoke-Expression (&starship init powershell)
@@ -200,7 +200,7 @@ Set-Alias -Name touch -Value New-Item
 
 # Load Bootware autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name BootwareCompletion)
 ) {
     Import-Module BootwareCompletion
@@ -208,7 +208,7 @@ If (
 
 # Load Chocolatey autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1")
 ) {
     Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
@@ -216,7 +216,7 @@ If (
 
 # Load Scoop autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name scoop-completion)
 ) {
     Import-Module scoop-completion
@@ -224,7 +224,7 @@ If (
 
 # Load SSH autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name SSHCompletion)
 ) {
     Import-Module SSHCompletion
@@ -234,7 +234,7 @@ If (
 
 # Load Deno autocompletion if available.
 If (
-    (!$Env:SHELL_MINIMAL_CONFIG) -And
+    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
     (Get-Module -ListAvailable -Name DenoCompletion)
 ) {
     Import-Module DenoCompletion

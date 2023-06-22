@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Vuepress documentation builder.
  */
@@ -8,13 +6,23 @@ const fs = require("fs");
 const mustache = require("mustache");
 const path = require("path");
 const prettier = require("prettier");
-const vuepress = require("vuepress");
+const vitepress = require("vitepress");
+
+interface Condition {
+  arch?: string;
+  os?: string;
+}
+
+interface System {
+  arch: string;
+  os: string;
+}
 
 /**
  * Copy Markdown files into docs directory.
- * @param {string} repoPath - System path to the repository.
+ * @param repoPath - System path to the repository.
  */
-function copyFiles(repoPath) {
+function copyFiles(repoPath: string): void {
   fs.copyFileSync(
     path.join(repoPath, "README.md"),
     path.join(repoPath, "docs/index.md")
@@ -23,31 +31,32 @@ function copyFiles(repoPath) {
 
 /**
  * Check if system matches any of the skip conditions.
- * @param {Object} system - The host architecture and os information.
- * @patam {Array<Object>} conditions - The skip conditions for the role.
- * @return {boolean} Whether system should be skipped.
+ * @param system - The host architecture and os information.
+ * @patam conditions - The skip conditions for the role.
+ * @return Whether system should be skipped.
  */
-function shouldSkip(system, conditions) {
+function shouldSkip(system: System, conditions: Array<Condition>): boolean {
   if (!conditions) {
     return false;
   }
+  const distros = ["alpine", "arch", "fedora", "debian", "suse", "ubuntu"];
+  const systemDistro = distros.includes(system.os);
 
-  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
   for (const condition of conditions) {
-    let skipMatch = true;
-    for (const key in condition) {
-      // Skip if os condition is Linux and system is a Linux distro.
-      if (key === "os" && condition[key] === "linux") {
-        if (!distros.includes(system[key])) {
-          skipMatch = false;
-        }
-      } else if (condition[key] !== system[key]) {
-        skipMatch = false;
+    if (condition.arch === undefined) {
+      if (system.os === condition.os) {
+        return true;
+      } else if (condition.os === "linux" && systemDistro) {
+        return true;
       }
-    }
-
-    if (skipMatch) {
-      return true;
+    } else if (system.arch === condition.arch) {
+      if (condition.os === undefined) {
+        return true;
+      } else if (system.os === condition.os) {
+        return true;
+      } else if (condition.os === "linux" && systemDistro) {
+        return true;
+      }
     }
   }
 
@@ -56,10 +65,10 @@ function shouldSkip(system, conditions) {
 
 /**
  * Generate, template, and write software roles documentation file.
- * @param {string} repoPath - System path to the repository.
- * @return {string} Markdown table of tested roles.
+ * @param repoPath - System path to the repository.
+ * @return Markdown table of tested roles.
  */
-function rolesTable(repoPath) {
+function rolesTable(repoPath: string): string {
   const systems = [
     { arch: "amd64", os: "alpine" },
     { arch: "amd64", os: "arch" },
@@ -107,9 +116,9 @@ function rolesTable(repoPath) {
 
 /**
  * Generate, template, and write software roles documentation file.
- * @param {string} repoPath - System path to the repository.
+ * @param repoPath - System path to the repository.
  */
-function writeSoftware(repoPath) {
+function writeSoftware(repoPath: string): void {
   const table = rolesTable(repoPath);
 
   const templatePath = path.join(
@@ -124,17 +133,13 @@ function writeSoftware(repoPath) {
   fs.writeFileSync(softwarePath, prettyText);
 }
 
-function main() {
+function main(): void {
   const repoPath = path.dirname(__dirname);
 
   copyFiles(repoPath);
   writeSoftware(repoPath);
 
-  vuepress.build({
-    theme: "@vuepress/theme-default",
-    dest: "site",
-    sourceDir: "docs",
-  });
+  vitepress.build(".");
 }
 
 main();

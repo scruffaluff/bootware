@@ -6,7 +6,7 @@
 ---
 name: build
 
-# Trigger workflow on any push or pull request.
+# Makes workflow run on any push or pull request.
 on:
   pull_request:
     branches:
@@ -14,11 +14,97 @@ on:
   push:
     branches:
       - "**"
+  workflow_dispatch:
+    inputs:
+      debug:
+        default: false
+        description: Use Tmate session for debugging
+        type: boolean
+      job:
+        default: test
+        description: CI job to run
+        options:
+          - bash
+          - documenation
+          - lint
+          - package
+          - powershell
+        type: choice
 
 jobs:
+  bash:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'bash' }}
+    name: Run unit tests for Bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v3
+      - name: Install YQ YAML parser
+        run: |
+          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.34.1/yq_linux_amd64 --output /usr/local/bin/yq
+          sudo chmod 755 /usr/local/bin/yq
+      - name: Install Node interpreter
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Cache Node packages
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: >-
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+      - name: Install Node packages
+        run: |
+          node --version
+          npm --version
+          npm ci
+      - name: Run Bash unit tests with Bats
+        run: npm run bats:test
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  documenation:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==
+      'documentation' }}
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v3
+      - name: Install Node interpreter
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Cache Node packages
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: >-
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+      - name: Install Node packages
+        run: |
+          node --version
+          npm --version
+          npm ci
+      - name: Build documentation
+        run: npm run vitepress:build
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
   lint:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'lint' }}
     name: Check code with formatter and linter
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -72,73 +158,24 @@ jobs:
         run: |
           poetry run ansible-lint --version
           poetry run ansible-lint playbook.yaml
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
-  test-bash:
-    name: Run unit tests for Bash scripts
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Install YQ YAML parser
-        run: |
-          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.34.1/yq_linux_amd64 --output /usr/local/bin/yq
-          sudo chmod 755 /usr/local/bin/yq
-      - name: Install Node interpreter
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
-      - name: Run Bash unit tests with Bats
-        run: npm run bats:test
-
-  test-documenation:
-    name: Build documentation
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Install Node interpreter
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
-      - name: Build documentation
-        # Vuepress incompatible with OpenSSL version 3, which is used on Ubuntu
-        # 22.04. Vuepress is in maintenance mode and users are recommended to
-        # migrate to its successor is Vitepress,
-        # https://github.com/vuejs/vitepress. Migration will occur after
-        # Vitepress makes a stable release.
-        env:
-          NODE_OPTIONS: --openssl-legacy-provider
-        run: npm run vuepress:build
-
-  test-package:
+  package:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
     name: Test building a ${{ matrix.format }} package
     strategy:
       fail-fast: false
       matrix:
-        format: [deb]
-    runs-on: ubuntu-22.04
+        format:
+          - deb
+          - rpm
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -151,10 +188,19 @@ jobs:
           file: ./tests/integration/${{ matrix.format }}.dockerfile
           tags: bootware:${{ matrix.format }}
           push: false
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
 
-  test-powershell:
+  powershell:
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'powershell'
+      }}
     name: Run linter and unit tests for PowerShell scripts
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
@@ -175,5 +221,11 @@ jobs:
         run: Install-Module -Force -Name Pester
         shell: pwsh
       - name: Run PowerShell unit tests with Pester
-        run: Invoke-Pester -Output Detailed ./tests/unit/
+        run: Invoke-Pester -Output Detailed tests/unit
         shell: pwsh
+      - name: Setup Tmate session if debug enabled
+        if: >-
+          ${{ always() && github.event_name == 'workflow_dispatch' &&
+          inputs.debug }}
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3

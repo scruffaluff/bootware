@@ -17,140 +17,126 @@ set -eou pipefail
 #   Writes help information to stdout.
 #######################################
 usage() {
-  case "$1" in
+  case "${1}" in
     bootstrap)
       cat 1>&2 << EOF
-Bootware bootstrap
 Boostrap install computer software
 
-USAGE:
-    bootware bootstrap [OPTIONS]
+Usage: bootware bootstrap [OPTIONS]
 
-OPTIONS:
-        --check                     Perform dry run and show possible changes
-        --checkout <REF>            Git reference to run against
-    -c, --config <PATH>             Path to bootware user configuation file
-        --debug                     Enable Ansible task debugger
-    -d, --dev                       Run bootstrapping in development mode
-    -h, --help                      Print help information
-    -i, --inventory <IP-LIST>       Ansible host IP addesses
-        --no-passwd                 Do not ask for user password
-        --no-setup                  Skip Bootware dependency installation
-        --password <PASSWORD>       Remote host user password
-    -p, --playbook <FILE-NAME>      Path to playbook to execute
-        --private-key <FILE-NAME>   Path to SSH private key
-        --retries <INTEGER>         Playbook retry limit during failure
-    -s, --skip <TAG-LIST>           Ansible playbook tags to skip
-        --start-at-role <ROLE>      Begin execution with role
-    -t, --tags <TAG-LIST>           Ansible playbook tags to select
-    -u, --url <URL>                 URL of playbook repository
-        --user <USER-NAME>          Remote host user login name
-        --windows                   Connect to a Windows host with SSH
+Options:
+      --check                     Perform dry run and show possible changes
+      --checkout <REF>            Git reference to run against
+  -c, --config <PATH>             Path to bootware user configuation file
+      --debug                     Enable Ansible task debugger
+  -d, --dev                       Run bootstrapping in development mode
+  -h, --help                      Print help information
+  -i, --inventory <IP-LIST>       Ansible host IP addesses
+      --no-passwd                 Do not ask for user password
+      --no-setup                  Skip Bootware dependency installation
+      --password <PASSWORD>       Remote host user password
+  -p, --playbook <FILE-NAME>      Path to playbook to execute
+      --private-key <FILE-NAME>   Path to SSH private key
+      --retries <INTEGER>         Playbook retry limit during failure
+  -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+      --start-at-role <ROLE>      Begin execution with role
+  -t, --tags <TAG-LIST>           Ansible playbook tags to select
+  -u, --url <URL>                 URL of playbook repository
+      --user <USER-NAME>          Remote host user login name
+      --windows                   Connect to a Windows host with SSH
 
-ANSIBLE-OPTIONS:
+Ansible Options:
 EOF
       ansible --help
       ;;
     config)
       cat 1>&2 << EOF
-Bootware config
 Download default Bootware configuration file
 
-USAGE:
-    bootware config [OPTIONS]
+Usage: bootware config [OPTIONS]
 
-OPTIONS:
-    -d, --dest <PATH>       Path to alternate download destination
-    -e, --empty             Write empty configuration file
-    -h, --help              Print help information
-    -s, --source <URL>      URL to configuration file
+Options:
+  -d, --dest <PATH>     Path to alternate download destination
+  -e, --empty           Write empty configuration file
+  -h, --help            Print help information
+  -s, --source <URL>    URL to configuration file
 EOF
       ;;
     main)
       cat 1>&2 << EOF
-$(version)
 Boostrapping software installer
 
-USAGE:
-    bootware [OPTIONS] [SUBCOMMAND]
+Usage: bootware [OPTIONS] [SUBCOMMAND]
 
-OPTIONS:
-        --debug      Enable shell debug traces
-    -h, --help       Print help information
-    -v, --version    Print version information
+Options:
+      --debug     Enable shell debug traces
+  -h, --help      Print help information
+  -v, --version   Print version information
 
-SUBCOMMANDS:
-    bootstrap        Boostrap install computer software
-    config           Generate Bootware configuration file
-    roles            List all Bootware roles
-    setup            Install dependencies for Bootware
-    uninstall        Remove Bootware files
-    update           Update Bootware to latest version
+Subcommands:
+  bootstrap   Boostrap install computer software
+  config      Generate Bootware configuration file
+  roles       List all Bootware roles
+  setup       Install dependencies for Bootware
+  uninstall   Remove Bootware files
+  update      Update Bootware to latest version
 
-ENVIRONMENT VARIABLES:
-    BOOTWARE_CONFIG     Set the configuration file path
-    BOOTWARE_NOPASSWD   Assume passwordless sudo
-    BOOTWARE_NOSETUP    Skip Ansible install and system setup
-    BOOTWARE_PLAYBOOK   Set Ansible playbook name
-    BOOTWARE_SKIP       Set skip tags for Ansible roles
-    BOOTWARE_TAGS       Set tags for Ansible roles
-    BOOTWARE_URL        Set location of Ansible repository
+Environment Variables:
+  BOOTWARE_CONFIG     Set the configuration file path
+  BOOTWARE_NOPASSWD   Assume passwordless sudo
+  BOOTWARE_NOSETUP    Skip Ansible install and system setup
+  BOOTWARE_PLAYBOOK   Set Ansible playbook name
+  BOOTWARE_SKIP       Set skip tags for Ansible roles
+  BOOTWARE_TAGS       Set tags for Ansible roles
+  BOOTWARE_URL        Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     roles)
       cat 1>&2 << EOF
-Bootware roles
 List all Bootware roles
 
-USAGE:
-    bootware roles [OPTIONS]
+Usage: bootware roles [OPTIONS]
 
-OPTIONS:
-    -h, --help        Print help information
-    -u, --url <URL>   URL of playbook repository
+Options:
+  -h, --help        Print help information
+  -u, --url <URL>   URL of playbook repository
 EOF
       ;;
     setup)
       cat 1>&2 << EOF
-Bootware setup
 Install dependencies for Bootware
 
-USAGE:
-    bootware setup [OPTIONS]
+Usage: bootware setup [OPTIONS]
 
-OPTIONS:
-    -h, --help      Print help information
+Options:
+  -h, --help    Print help information
 EOF
       ;;
     uninstall)
       cat 1>&2 << EOF
-Bootware uninstall
 Remove Bootware files
 
-USAGE:
-    bootware uninstall
+Usage: bootware uninstall
 
-OPTIONS:
-    -h, --help                  Print help information
+Options:
+  -h, --help    Print help information
 EOF
       ;;
     update)
       cat 1>&2 << EOF
-Bootware update
 Update Bootware to latest version
 
-USAGE:
-    bootware update [OPTIONS]
+Usage: bootware update [OPTIONS]
 
-OPTIONS:
-    -h, --help                  Print help information
-    -v, --version <VERSION>     Version override for update
+Options:
+  -h, --help                Print help information
+  -v, --version <VERSION>   Version override for update
 EOF
       ;;
     *)
-      error "No such usage option '$1'"
+      error "No such usage option '${1}'"
       ;;
   esac
 }
@@ -167,8 +153,8 @@ assert_cmd() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v "$1")" ]]; then
-    error "Cannot find required $1 command on computer"
+  if [[ ! -x "$(command -v "${1}")" ]]; then
+    error "Cannot find required ${1} command on computer"
   fi
 }
 
@@ -212,10 +198,10 @@ bootstrap() {
   fi
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -c | --config)
-        config_path="$2"
+        config_path="${2}"
         shift 2
         ;;
       -d | --dev)
@@ -234,7 +220,7 @@ bootstrap() {
       -i | --inventory)
         cmd='playbook'
         connection='ssh'
-        inventory="$2"
+        inventory="${2}"
         shift 2
         ;;
       --no-passwd)
@@ -246,32 +232,32 @@ bootstrap() {
         shift 1
         ;;
       -p | --playbook)
-        playbook="$2"
+        playbook="${2}"
         shift 2
         ;;
       --password)
-        passwd="$2"
+        passwd="${2}"
         shift 2
         ;;
       --retries)
-        retries=$2
+        retries=${2}
         shift 2
         ;;
       -s | --skip)
-        skip="$2"
+        skip="${2}"
         shift 2
         ;;
       --start-at-role)
-        start_role="$2"
+        start_role="${2}"
         cmd='playbook'
         shift 2
         ;;
       -t | --tags)
-        tags="$2"
+        tags="${2}"
         shift 2
         ;;
       -u | --url)
-        url="$2"
+        url="${2}"
         shift 2
         ;;
       --windows)
@@ -282,7 +268,7 @@ bootstrap() {
         shift 1
         ;;
       *)
-        extra_args+=("$1")
+        extra_args+=("${1}")
         shift 1
         ;;
     esac
@@ -373,10 +359,10 @@ config() {
   local src_url dst_file="${HOME}/.bootware/config.yaml" empty_cfg
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -d | --dest)
-        dst_file="$2"
+        dst_file="${2}"
         shift 2
         ;;
       -e | --empty)
@@ -388,11 +374,11 @@ config() {
         exit 0
         ;;
       -s | --source)
-        src_url="$2"
+        src_url="${2}"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'" "config"
+        error_usage "No such option '${1}'" "config"
         ;;
     esac
   done
@@ -448,7 +434,7 @@ dnf_check_update() {
 #######################################
 error() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "$1" >&2
+  printf "${bold_red}error${default}: %s\n" "${1}" >&2
   exit 1
 }
 
@@ -459,8 +445,8 @@ error() {
 #######################################
 error_usage() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "$1" >&2
-  printf "Run \'bootware %s--help\' for usage.\n" "${2:+$2 }" >&2
+  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  printf "Run \'bootware %s--help\' for usage.\n" "${2:+${2} }" >&2
   exit 2
 }
 
@@ -481,7 +467,7 @@ find_config_path() {
   #   -n: Check if the string has nonzero length.
   #   -v: Only show file path of command.
   if [[ -f "${1:-}" ]]; then
-    RET_VAL="$1"
+    RET_VAL="${1}"
   elif [[ -n "${BOOTWARE_CONFIG:-}" ]]; then
     RET_VAL="${BOOTWARE_CONFIG}"
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
@@ -504,9 +490,9 @@ fullpath() {
 
   # Flags:
   #   -P: Resolve any symbolic links in the path.
-  working_dir="$(cd "$(dirname "$1")" && pwd -P)"
+  working_dir="$(cd "$(dirname "${1}")" && pwd -P)"
 
-  echo "${working_dir}/$(basename "$1")"
+  echo "${working_dir}/$(basename "${1}")"
 }
 
 #######################################
@@ -571,18 +557,18 @@ roles() {
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -h | --help)
         usage 'roles'
         exit 0
         ;;
       -u | --url)
-        url="$2"
+        url="${2}"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'" "roles"
+        error_usage "No such option '${1}'" "roles"
         ;;
     esac
   done
@@ -601,14 +587,14 @@ setup() {
   local collections collection_status os_type tmp_dir use_sudo=''
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -h | --help)
         usage 'setup'
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'" "setup"
+        error_usage "No such option '${1}'" "setup"
         ;;
     esac
   done
@@ -684,7 +670,7 @@ setup_alpine() {
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -739,7 +725,7 @@ setup_arch() {
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -785,7 +771,7 @@ setup_debian() {
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -804,31 +790,31 @@ setup_fedora() {
     log 'Installing Ansible'
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
-    dnf_check_update "$1"
+    dnf_check_update "${1}"
     ${1:+sudo} dnf install --assumeyes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    dnf_check_update "$1"
+    dnf_check_update "${1}"
     ${1:+sudo} dnf install --assumeyes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    dnf_check_update "$1"
+    dnf_check_update "${1}"
     ${1:+sudo} dnf install --assumeyes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    dnf_check_update "$1"
+    dnf_check_update "${1}"
     ${1:+sudo} dnf install --assumeyes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -877,7 +863,7 @@ setup_freebsd() {
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -893,15 +879,15 @@ setup_linux() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [[ -x "$(command -v apk)" ]]; then
-    setup_alpine "$1"
+    setup_alpine "${1}"
   elif [[ -x "$(command -v pacman)" ]]; then
-    setup_arch "$1"
+    setup_arch "${1}"
   elif [[ -x "$(command -v apt-get)" ]]; then
-    setup_debian "$1"
+    setup_debian "${1}"
   elif [[ -x "$(command -v dnf)" ]]; then
-    setup_fedora "$1"
+    setup_fedora "${1}"
   elif [[ -x "$(command -v zypper)" ]]; then
-    setup_suse "$1"
+    setup_suse "${1}"
   else
     error 'Unable to find supported package manager'
   fi
@@ -1011,7 +997,7 @@ setup_suse() {
 
   if [[ ! -x "$(command -v yq)" ]]; then
     log 'Installing YQ'
-    install_yq "$1"
+    install_yq "${1}"
   fi
 }
 
@@ -1024,14 +1010,14 @@ uninstall() {
   local dst_file use_sudo=''
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -h | --help)
         usage 'uninstall'
         exit 0
         ;;
       *)
-        error_usage "No such option '$1'" "update"
+        error_usage "No such option '${1}'" "update"
         ;;
     esac
   done
@@ -1067,18 +1053,18 @@ update() {
   local dst_file src_url use_sudo='' user_install version='main'
 
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       -h | --help)
         usage 'update'
         exit 0
         ;;
       -v | --version)
-        version="$2"
+        version="${2}"
         shift 2
         ;;
       *)
-        error_usage "No such option '$1'" "update"
+        error_usage "No such option '${1}'" "update"
         ;;
     esac
   done
@@ -1119,7 +1105,7 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
-  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/$3"
+  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
   local bash_url="${repo_url}/completions/bootware.bash"
   local fish_url="${repo_url}/completions/bootware.fish"
 
@@ -1156,8 +1142,8 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  while [[ "$#" -gt 0 ]]; do
-    case "$1" in
+  while [[ "${#}" -gt 0 ]]; do
+    case "${1}" in
       --debug)
         set -o xtrace
         shift 1
@@ -1201,7 +1187,7 @@ main() {
         exit 0
         ;;
       *)
-        error_usage "No such subcommand or option '$1'"
+        error_usage "No such subcommand or option '${1}'"
         ;;
     esac
   done

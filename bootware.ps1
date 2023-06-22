@@ -9,120 +9,117 @@ Function Usage() {
     Switch ($Args[0]) {
         'bootstrap' {
             Write-Output @'
-Bootware bootstrap
 Boostrap install computer software
 
-USAGE:
-    bootware bootstrap [OPTIONS]
+Usage: bootware bootstrap [OPTIONS]
 
-OPTIONS:
-    -c, --config <PATH>             Path to bootware user configuation file
-        --debug                     Enable Ansible task debugger
-    -d, --dev                       Run bootstrapping in development mode
-    -h, --help                      Print help information
-        --no-passwd                 Do not ask for user password
-        --no-setup                  Skip Bootware dependency installation
-    -p, --playbook <FILE-NAME>      Name of play to execute
-        --password <PASSWORD>       Remote host user password
-        --retries <INTEGER>         Playbook retry limit during failure
-    -s, --skip <TAG-LIST>           Ansible playbook tags to skip in quotes
-        --start-at-role <ROLE>      Begin execution with role
-    -t, --tags <TAG-LIST>           Ansible playbook tags to select in quotes
-    -u, --url <URL>                 URL of playbook repository
-        --user <USER-NAME>          Remote host user login name
+Options:
+      --check                     Perform dry run and show possible changes
+  -c, --config <PATH>             Path to bootware user configuation file
+      --debug                     Enable Ansible task debugger
+  -d, --dev                       Run bootstrapping in development mode
+  -h, --help                      Print help information
+      --no-passwd                 Do not ask for user password
+      --no-setup                  Skip Bootware dependency installation
+      --password <PASSWORD>       Remote host user password
+      --retries <INTEGER>         Playbook retry limit during failure
+  -s, --skip <TAG-LIST>           Ansible playbook tags to skip
+      --start-at-role <ROLE>      Begin execution with role
+  -t, --tags <TAG-LIST>           Ansible playbook tags to select
+  -u, --url <URL>                 URL of playbook repository
+      --user <USER-NAME>          Remote host user login name
 
-ANSIBLE-OPTIONS:
+Ansible Options:
 '@
             wsl ansible --help
         }
         'config' {
             Write-Output @'
-Bootware config
 Download default Bootware configuration file
 
-USAGE:
-    bootware config [OPTIONS]
+Usage: bootware config [OPTIONS]
 
-OPTIONS:
-    -d, --dest <PATH>       Path to alternate download destination
-    -e, --empty             Write empty configuration file
-    -h, --help              Print help information
-    -s, --source <URL>      URL to configuration file
+Options:
+  -d, --dest <PATH>     Path to alternate download destination
+  -e, --empty           Write empty configuration file
+  -h, --help            Print help information
+  -s, --source <URL>    URL to configuration file
 '@
         }
         'main' {
             Write-Output @'
-Bootware 0.5.2
 Boostrapping software installer
 
-USAGE:
-    bootware [OPTIONS] [SUBCOMMAND]
+Usage: bootware [OPTIONS] [SUBCOMMAND]
 
-OPTIONS:
-        --debug      Enable shell debug traces
-    -h, --help       Print help information
-    -v, --version    Print version information
+Options:
+      --debug     Enable shell debug traces
+  -h, --help      Print help information
+  -v, --version   Print version information
 
-SUBCOMMANDS:
-    bootstrap        Boostrap install computer software
-    config           Generate Bootware configuration file
-    setup            Install dependencies for Bootware
-    uninstall        Remove Bootware files
-    update           Update Bootware to latest version
+Subcommands:
+  bootstrap   Boostrap install computer software
+  config      Generate Bootware configuration file
+  roles       List all Bootware roles
+  setup       Install dependencies for Bootware
+  uninstall   Remove Bootware files
+  update      Update Bootware to latest version
+
+Environment Variables:
+  BOOTWARE_CONFIG     Set the configuration file path
+  BOOTWARE_NOPASSWD   Assume passwordless sudo
+  BOOTWARE_NOSETUP    Skip Ansible install and system setup
+  BOOTWARE_PLAYBOOK   Set Ansible playbook name
+  BOOTWARE_SKIP       Set skip tags for Ansible roles
+  BOOTWARE_TAGS       Set tags for Ansible roles
+  BOOTWARE_URL        Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 '@
         }
         'roles' {
             Write-Output @'
-Bootware roles
 List all Bootware roles
 
-USAGE:
-    bootware roles [OPTIONS]
+Usage: bootware roles [OPTIONS]
 
-OPTIONS:
-    -h, --help      Print help information
+Options:
+  -h, --help    Print help information
 '@
         }
         'setup' {
             Write-Output @'
-Bootware setup
 Install dependencies for Bootware
 
-USAGE:
+Usage:
     bootware setup [OPTIONS]
 
-OPTIONS:
-    -h, --help              Print help information
-        --checkout <REF>    Git reference to run against
-    --no-wsl                Do not configure WSL
-    -u, --url <URL>         URL of playbook repository
+Options:
+  -h, --help             Print help information
+      --checkout <REF>   Git reference to run against
+  --no-wsl               Do not configure WSL
+  -u, --url <URL>        URL of playbook repository
 '@
         }
         'uninstall' {
             Write-Output @'
-Bootware uninstall
 Remove Bootware files
 
-USAGE:
-    bootware uninstall
+Usage: bootware uninstall
 
 FLAGS:
-    -h, --help      Print help information
+  -h, --help    Print help information
 '@
         }
         'update' {
             Write-Output @'
-Bootware update
 Update Bootware to latest version
 
-USAGE:
-    bootware update [FLAGS]
+Usage: bootware update [FLAGS]
 
 FLAGS:
-    -h, --help                  Print help information
-    -v, --version <VERSION>     Version override for update
+  -h, --help                Print help information
+  -v, --version <VERSION>   Version override for update
 '@
         }
     }
