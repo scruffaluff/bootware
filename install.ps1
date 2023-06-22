@@ -44,7 +44,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         Exit 1
     }
 
-    If (($Target -Eq 'Machine') -And (-Not IsAdministrator)) {
+    If (($Target -Eq 'Machine') -And (-Not (IsAdministrator))) {
         Write-Output @"
 System level installation requires an administrator console.
 Run this script from an administrator console or execute with the '--user' flag.

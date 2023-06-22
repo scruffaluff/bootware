@@ -5,18 +5,21 @@
     "prettier:format": "prettier --write .",
     "prettier:test": "prettier --check .",
     "shellcheck:test": "bash scripts/shellcheck.sh",
-    "shfmt:format": "node scripts/shfmt.js format",
-    "shfmt:test": "node scripts/shfmt.js test",
-    "vitepress:build": "node scripts/build_docs.js",
+    "shfmt:format": "ts-node scripts/shfmt.ts format",
+    "shfmt:test": "ts-node scripts/shfmt.ts test",
+    "vitepress:build": "ts-node scripts/build_docs.ts",
     "vitepress:dev": "vitepress dev ."
   },
   "devDependencies": {
+    "@types/node": "^20.3.0",
     "bats": "^1.8.0",
     "bats-assert": "https://github.com/ztombol/bats-assert",
     "bats-support": "https://github.com/ztombol/bats-support",
     "commander": "^11.0.0",
     "mustache": "^4.2.0",
     "prettier": "^2.8.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.1.0",
     "vitepress": "1.0.0-beta.2",
     "vue": "^3.3.0"
   }

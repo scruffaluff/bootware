@@ -275,7 +275,6 @@
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   { "name": "parquet" },
-  { "name": "postgres" },
   {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
@@ -359,11 +358,6 @@
     "name": "usql",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["usql --version"]
-  },
-  {
-    "name": "vagrant",
-    "skip": [{ "os": "linux" }],
-    "tests": ["vagrant version"]
   },
   { "name": "vault", "tests": ["vault --version"] },
   {

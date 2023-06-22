@@ -14,6 +14,7 @@ export default defineConfig({
   outDir: "site",
   srcDir: "docs",
   themeConfig: {
+    aside: false,
     footer: {
       message: "Released under the MIT License.",
       copyright: "Copyright © 2021-Present Macklan Weinstein",
