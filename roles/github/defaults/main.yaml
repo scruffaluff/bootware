@@ -2,4 +2,10 @@
 _github_arch:
   amd64: x64
   arm64: arm64
+_github_folder:
+  Darwin: /Users/github-runner
+  Win32NT: C:/Users/github-runner
 github_arch: "{{ _github_arch[system_architecture] }}"
+github_folder: >-
+  {{ _github_folder.get(ansible_system, '/home/github-runner')
+  }}/.local/github-runner
