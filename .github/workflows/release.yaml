@@ -17,47 +17,12 @@ on:
         default: false
         description: Use Tmate session for debugging
         type: boolean
-      job:
-        default: test
-        description: CI job to run
-        options:
-          - collection
-          - package
-          - release
-        type: choice
 
 jobs:
-  collection:
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'collection'
-      }}
-    name: Publish collection to Ansible Galaxy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Build and Deploy Collection
-        uses: artis3n/ansible_galaxy_collection@v2
-        with:
-          api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  package:
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
-    name: Create and upload ${{ matrix.package }} package
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - deb
-          - rpm
-    needs: release
+  release:
+    name: Make GitHub release
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -65,7 +30,7 @@ jobs:
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
       - name: Cache Node packages
         uses: actions/cache@v3
         with:
@@ -77,53 +42,45 @@ jobs:
           node --version
           npm --version
           npm ci
-      - name: Build package
-        id: build_package
+      - name: Install Python interpreter
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Python packages
         run: |
-          package_path=$(node scripts/build_package.js ${{ matrix.package }} ${{ needs.release.outputs.tag }})
-          package_name=$(basename $package_path)
-          echo "::set-output name=package_name::$package_name"
-          echo "::set-output name=package_path::$package_path"
-      - name: Upload release archive
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          python --version
+          python -m pip --version
+          python -m pip install poetry
+          poetry install
+      - name: Cache Python packages
+        uses: actions/cache@v3
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ${{ steps.build_package.outputs.package_path }}
-          asset_name: ${{ steps.build_package.outputs.package_name }}
-          asset_content_type: application/octet-stream
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  release:
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'release' }}
-    name: Get Git tag and make GitHub release
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.extract_tag.outputs.tag }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Extract Git tag
-        id: extract_tag
-        shell: bash
-        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tags/})"
+          path: .venv
+          key: >-
+            python-3.11_${{ runner.os }}_poetry-${{ hashFiles('poetry.lock') }}
+      - name: Build packages
+        run: |
+          sudo apt-get install --yes rpm
+          node scripts/build_package.js deb ${{ github.ref_name }}
+          node scripts/build_package.js rpm ${{ github.ref_name }}
+      - name: Build and publish collection
+        env:
+          ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+        run: |
+          poetry run ansible-galaxy collection build .
+          poetry run ansible-galaxy collection publish --token "${ANSIBLE_GALAXY_TOKEN}" scruffaluff-bootware-${{ github.ref_name }}.tar.gz
       - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Bootware ${{ steps.extract_tag.outputs.tag }}
           body: >-
             See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
-            steps.extract_tag.outputs.tag }}/CHANGELOG.md) for more information.
+            github.ref_name }}/CHANGELOG.md) for more information.
+          files: |
+            scruffaluff-bootware-${{ github.ref_name }}.tar.gz
+            dist/bootware_${{ github.ref_name }}_all.deb
+            dist/bootware-${{ github.ref_name }}-1.fc33.noarch.rpm
+          name: Bootware ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

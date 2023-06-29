@@ -21,6 +21,8 @@ on:
 jobs:
   docs:
     name: Build and publish documentation
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
@@ -45,7 +47,7 @@ jobs:
       - name: Publish documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           publish_dir: site
       - name: Setup Tmate session if debug enabled
         if: >-
