@@ -267,7 +267,7 @@ bootstrap() {
         extra_args+=(
           "--private-key"
           "${2}"
-          "--ssh-common-args"
+          "--ssh-extra-args"
           "${temp_ssh_args[*]}"
         )
         shift 2
