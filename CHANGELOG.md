@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Remote bootstrapping for Windows.
 - Temporary SSH connection argument.
 
 ### Changed
