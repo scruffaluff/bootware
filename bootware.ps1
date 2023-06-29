@@ -26,6 +26,7 @@ Options:
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
+      --temp-key <FILE-NAME>      Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER-NAME>          Remote host user login name
 

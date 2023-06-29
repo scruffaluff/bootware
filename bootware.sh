@@ -41,6 +41,7 @@ Options:
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
+      --temp-key <FILE-NAME>      Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER-NAME>          Remote host user login name
       --windows                   Connect to a Windows host with SSH
@@ -186,6 +187,12 @@ bootstrap() {
   local start_role
   local status
   local tags="${BOOTWARE_TAGS:-}"
+  local temp_ssh_args=(
+    "-o IdentitiesOnly=no"
+    "-o LogLevel=ERROR"
+    "-o StrictHostKeyChecking=no"
+    "-o UserKnownHostsFile=/dev/null"
+  )
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
   local windows
 
@@ -254,6 +261,15 @@ bootstrap() {
         ;;
       -t | --tags)
         tags="${2}"
+        shift 2
+        ;;
+      --temp-key)
+        extra_args+=(
+          "--private-key"
+          "${2}"
+          "--ssh-common-args"
+          "${temp_ssh_args[*]}"
+        )
         shift 2
         ;;
       -u | --url)

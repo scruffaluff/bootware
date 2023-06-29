@@ -7,6 +7,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added
+
+- Temporary SSH connection argument.
+
 ### Changed
 
 - GitHub role to install GitHub runner.
