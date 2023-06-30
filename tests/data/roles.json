@@ -84,15 +84,6 @@
   { "name": "docker_compose", "tests": ["docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
   {
-    "name": "dvc",
-    "skip": [
-      { "arch": "arm64", "os": "linux" },
-      { "os": "alpine" },
-      { "os": "arch" }
-    ],
-    "tests": ["dvc --version"]
-  },
-  {
     "name": "etcher",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },

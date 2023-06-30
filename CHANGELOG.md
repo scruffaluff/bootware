@@ -18,7 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Cuda, Obsidian, and Vagrant roles.
+- Cuda, DVC, Obsidian, and Vagrant roles.
 
 ## 0.5.2 - 2023-06-16
 

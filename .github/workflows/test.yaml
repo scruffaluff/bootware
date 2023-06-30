@@ -334,9 +334,14 @@ jobs:
         with:
           distribution: Debian
           set-as-default: "true"
+      # Variable ${{ github.ref_name }} does not replace this step, since
+      # ref_name will be name of the pull request instead of the branch.
+      - name: Get current branch
+        id: branch
+        uses: tj-actions/branch-names@v4
       - name: Install Bootware
         run: |
-          ./install.ps1 --version ${{ github.ref_name }}
+          ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}
           Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.

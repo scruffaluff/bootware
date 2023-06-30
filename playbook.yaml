@@ -284,17 +284,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Data Version Control
-      ansible.builtin.import_role:
-        name: dvc
-      tags:
-        - container
-        - desktop
-        - dvc
-        - server
-        - vcs
-        - wsl
-
     - name: Install Balena Etcher ISO flasher
       ansible.builtin.import_role:
         name: etcher
