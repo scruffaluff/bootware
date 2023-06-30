@@ -155,7 +155,7 @@
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
-    "skip": [{ "os": "alpine" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {
