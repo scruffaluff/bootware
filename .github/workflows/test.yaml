@@ -121,8 +121,6 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:collection
-      - name: Test bootstrapping
-        run: docker run --interactive --tty scruffaluff/bootware:collection
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
