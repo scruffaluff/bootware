@@ -1,6 +1,7 @@
-FROM debian:12.0
+FROM debian:11.7
 
 ARG TARGETARCH
+ARG version=0.5.3
 
 # Create non-priviledged user.
 RUN useradd --create-home --no-log-init --shell /bin/bash collection
@@ -28,7 +29,9 @@ ENV DONT_PROMPT_WSL_INSTALL='true'
 
 COPY --chown="${USER}" . $HOME/repo
 
-RUN ansible-galaxy collection install $HOME/repo && rm -fr $HOME/repo
+RUN ansible-galaxy collection build $HOME/repo && \
+    ansible-galaxy collection install "scruffaluff-bootware-${version}.tar.gz" && \
+    rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
 
 # Copy Bootware test playbook.
 COPY --chown="${USER}" tests/data/playbook.yaml /home/collection/

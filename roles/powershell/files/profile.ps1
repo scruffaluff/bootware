@@ -161,7 +161,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
-$Env:POETRY_VIRTUALENVS_IN_PROJECT = 1
+$Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
 
 # Shell settings.
 

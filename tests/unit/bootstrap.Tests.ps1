@@ -25,7 +25,7 @@ Describe 'Bootstrap' {
         $Playbook = "$(Get-Location)\playbook.yaml"
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + "192.48.16.0, --playbook $(WSLPath $Playbook) " `
+            + "192.48.16.0 --playbook $(WSLPath $Playbook) " `
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
@@ -39,7 +39,7 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
+            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
             + "--user $Env:UserName"
@@ -52,7 +52,7 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
+            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --debug"
@@ -66,7 +66,7 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
+            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName"
@@ -80,7 +80,7 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 1
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0, --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
+            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --timeout 60"

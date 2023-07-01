@@ -47,7 +47,7 @@ jobs:
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
       - name: Cache Node packages
         uses: actions/cache@v3
         with:
@@ -80,7 +80,7 @@ jobs:
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
       - name: Cache Node packages
         uses: actions/cache@v3
         with:
@@ -111,7 +111,7 @@ jobs:
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "20"
       - name: Cache Node packages
         uses: actions/cache@v3
         with:

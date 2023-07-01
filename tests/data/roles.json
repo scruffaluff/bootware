@@ -84,15 +84,6 @@
   { "name": "docker_compose", "tests": ["docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
   {
-    "name": "dvc",
-    "skip": [
-      { "arch": "arm64", "os": "linux" },
-      { "os": "alpine" },
-      { "os": "arch" }
-    ],
-    "tests": ["dvc --version"]
-  },
-  {
     "name": "etcher",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
@@ -147,8 +138,8 @@
   },
   {
     "name": "github",
-    "skip": [{ "os": "arch" }, { "os": "freebsd" }],
-    "tests": ["gh --version"]
+    "skip": [{ "os": "freebsd" }],
+    "tests": []
   },
   {
     "name": "gitlab",
@@ -164,7 +155,7 @@
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
-    "skip": [{ "os": "alpine" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {

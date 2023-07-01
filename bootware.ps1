@@ -26,6 +26,7 @@ Options:
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
+      --temp-key <FILE-NAME>      Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER-NAME>          Remote host user login name
 
@@ -130,11 +131,13 @@ Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ''
     $ExtraArgs = @()
+    $Inventory = ''
     $Playbook = "$PSScriptRoot/repo/playbook.yaml"
+    $Remote = $False
     $Skip = 'none'
     $Tags = 'desktop'
     $URL = 'https://github.com/scruffaluff/bootware.git'
-    $UseSetup = 1
+    $UseSetup = $True
     $User = "$Env:UserName"
 
     While ($ArgIdx -LT $Args[0].Count) {
@@ -146,7 +149,7 @@ Function Bootstrap() {
             }
             { $_ -In '-d', '--dev' } {
                 $Playbook = "$(Get-Location)/playbook.yaml"
-                $UseSetup = 0
+                $UseSetup = $False
                 $ArgIdx += 1
                 Break
             }
@@ -154,13 +157,25 @@ Function Bootstrap() {
                 Usage 'bootstrap'
                 Exit 0
             }
+            { $_ -In '-i', '--inventory' } {
+                $Inventory = $Args[0][$ArgIdx + 1] -Join ','
+                $Remote = $True
+                $ArgIdx += 2
+                Break
+            }
             '--no-setup' {
-                $UseSetup = 0
+                $UseSetup = $False
                 $ArgIdx += 1
                 Break
             }
             { $_ -In '-p', '--playbook' } {
                 $Playbook = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+                Break
+            }
+            '--private-key' {
+                $ExtraArgs += "--private-key"
+                $ExtraArgs += "$(MakeWSLKey $Args[0][$ArgIdx + 1])"
                 $ArgIdx += 2
                 Break
             }
@@ -176,6 +191,12 @@ Function Bootstrap() {
             }
             { $_ -In '-t', '--tags' } {
                 $Tags = $Args[0][$ArgIdx + 1] -Join ','
+                $ArgIdx += 2
+                Break
+            }
+            '--temp-key' {
+                $ExtraArgs += "--temp-key"
+                $ExtraArgs += "$(MakeWSLKey $Args[0][$ArgIdx + 1])"
                 $ArgIdx += 2
                 Break
             }
@@ -216,7 +237,9 @@ Function Bootstrap() {
 
     FindConfigPath "$ConfigPath"
     $ConfigPath = $(WSLPath "$Global:RetVal")
-    $Inventory = "$(FindRelativeIP)"
+    If (-Not $Remote) {
+        $Inventory = "$(FindRelativeIP)"
+    }
     $PlaybookPath = $(WSLPath "$Playbook")
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
@@ -225,10 +248,48 @@ Function Bootstrap() {
     #
     # $ExtraArgs needs to be passed as an array to WSL. Do not change it into a
     # string.
-    If ($Global:Debug -And $ExtraArgs.Count -GT 0) {
+    If ($Global:Debug -And $Remote -And $ExtraArgs.Count -GT 0) {
+        wsl bootware --debug bootstrap `
+            --config "$ConfigPath" `
+            --inventory "$Inventory" `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgs
+    }
+    ElseIf ($Global:Debug -And $Remote) {
+        wsl bootware --debug bootstrap `
+            --config "$ConfigPath" `
+            --inventory "$Inventory" `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --tags "$Tags" `
+            --user "$User"
+    }
+    ElseIf ($Remote -And $ExtraArgs.Count -GT 0) {
+        wsl bootware bootstrap `
+            --config "$ConfigPath" `
+            --inventory "$Inventory" `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --tags "$Tags" `
+            --user "$User" `
+            $ExtraArgs
+    }
+    ElseIf ($Remote) {
+        wsl bootware bootstrap `
+            --config "$ConfigPath" `
+            --inventory "$Inventory" `
+            --playbook "$PlaybookPath" `
+            --skip "$Skip" `
+            --tags "$Tags" `
+            --user "$User"
+    }
+    ElseIf ($Global:Debug -And $ExtraArgs.Count -GT 0) {
         wsl bootware --debug bootstrap --windows `
             --config "$ConfigPath" `
-            --inventory "$Inventory," `
+            --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
@@ -240,7 +301,7 @@ Function Bootstrap() {
     ElseIf ($Global:Debug) {
         wsl bootware --debug bootstrap --windows `
             --config "$ConfigPath" `
-            --inventory "$Inventory," `
+            --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
@@ -251,7 +312,7 @@ Function Bootstrap() {
     ElseIf ($ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap --windows `
             --config "$ConfigPath" `
-            --inventory "$Inventory," `
+            --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
@@ -263,7 +324,7 @@ Function Bootstrap() {
     Else {
         wsl bootware bootstrap --windows `
             --config "$ConfigPath" `
-            --inventory "$Inventory," `
+            --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
             --skip "$Skip" `
@@ -280,7 +341,7 @@ Function Config() {
     $ArgIdx = 0
     $SrcURL = ''
     $DstFile = "$HOME/.bootware/config.yaml"
-    $EmptyCfg = 0
+    $EmptyCfg = $False
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
@@ -290,7 +351,7 @@ Function Config() {
                 Break
             }
             { $_ -In '-e', '--empty' } {
-                $EmptyCfg = 1
+                $EmptyCfg = $True
                 $ArgIdx += 1
                 Break
             }
@@ -411,6 +472,17 @@ Function Log($Message) {
     }
 }
 
+# Copy SSH private key to WSL temporary path with correct permissions.
+#
+# Required when SSH private key lives in Windows file system, since its open
+# permissions cannot be changed.
+Function MakeWSLKey($FilePath) {
+    $WSLFile = "$(wsl mktemp --dry-run)"
+    wsl cp "$(WSLPath $FilePath)" "$WSLFile"
+    wsl chmod 600 "$WSLFile"
+    Write-Output "$WSLFile"
+}
+
 # Request remote script and execution efficiently.
 #
 # Required as a seperate function, since the default progress bar updates every
@@ -445,7 +517,7 @@ Function Setup() {
     $ArgIdx = 0
     $Branch = 'main'
     $URL = 'https://github.com/scruffaluff/bootware.git'
-    $WSL = 1
+    $WSL = $True
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
@@ -459,7 +531,7 @@ Function Setup() {
                 Break
             }
             '--no-wsl' {
-                $WSL = 0
+                $WSL = $False
                 $ArgIdx += 1
                 Break
             }
@@ -806,11 +878,12 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.5.2'
+    Write-Output 'Bootware 0.5.3'
 }
 
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
+    $FilePath = $($FilePath -Replace '~', "$HOME")
     $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':', ''
     $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace '\\', '/'
     Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
@@ -820,12 +893,12 @@ Function WSLPath($FilePath) {
 Function Main() {
     $ArgIdx = 0
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
-    $Global:Debug = 0
+    $Global:Debug = $False
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
             '--debug' {
-                $Global:Debug = 1
+                $Global:Debug = $True
                 $ArgIdx += 1
                 Break
             }

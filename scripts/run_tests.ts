@@ -35,7 +35,7 @@ function main(): void {
   for (const distro of config.distros) {
     const command = `docker build ${
       config.cache ? "" : "--no-cache"
-    } --file tests/integration/${distro}.dockerfile --tag bootware:${distro} --platform linux/${
+    } --file tests/integration/${distro}.dockerfile --tag scruffaluff/bootware:${distro} --platform linux/${
       config.arch
     }`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });

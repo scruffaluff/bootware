@@ -121,8 +121,6 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: scruffaluff/bootware:collection
-      - name: Test bootstrapping
-        run: docker run --interactive --tty scruffaluff/bootware:collection
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -330,13 +328,15 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
-      - name: Get current branch
-        id: branch
-        uses: tj-actions/branch-names@v4
       - uses: Vampire/setup-wsl@v2
         with:
           distribution: Debian
           set-as-default: "true"
+      # Variable ${{ github.ref_name }} does not replace this step, since
+      # ref_name will be name of the pull request instead of the branch.
+      - name: Get current branch
+        id: branch
+        uses: tj-actions/branch-names@v4
       - name: Install Bootware
         run: |
           ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}

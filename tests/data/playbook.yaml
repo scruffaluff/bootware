@@ -31,7 +31,6 @@
     - role: scruffaluff.bootware.doctl
     - role: scruffaluff.bootware.duf
     - role: scruffaluff.bootware.dust
-    - role: scruffaluff.bootware.dvc
     - role: scruffaluff.bootware.etcher
     - role: scruffaluff.bootware.exa
     - role: scruffaluff.bootware.fd
