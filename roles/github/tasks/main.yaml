@@ -17,7 +17,25 @@
 
 - name: Create GitHub runner user for Unix
   ansible.builtin.user:
+    append: true
     name: github-runner
+    groups: >-
+      {{ ["sudo"] if ansible_system == "Darwin" else ["docker", "sudo"] }}
+    shell: /bin/bash
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Enable GitHub runner passwordless sudo for Unix
+  ansible.builtin.blockinfile:
+    block: |
+      # Enable passwordless sudo for github-runner user.
+      github-runner ALL=(ALL) NOPASSWD:ALL
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED passwordless sudo for github-runner BLOCK"
+    mode: "440"
+    owner: root
+    path: /etc/sudoers
+    validate: visudo --check --file %s
   become: true
   when: ansible_system in ["Darwin", "Linux"]
 

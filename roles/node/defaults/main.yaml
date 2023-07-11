@@ -11,6 +11,7 @@ node_applications:
   - prettier
   - speed-test
   - speedscope
+  - taze
   - typescript-language-server
   - vls
   - vscode-langservers-extracted
