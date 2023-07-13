@@ -14,7 +14,7 @@ DOCUMENTATION = r"""
 ---
 author:
     - Macklan Weinstein (@scruffaluff)
-description: Find name and path of Firefox default profile for current user.
+description: Find path of Firefox default profile folder for current user.
 module: firefox_default_profile
 options: {}
 short_description: Firefox default profile information
@@ -30,11 +30,6 @@ EXAMPLES = r"""
 
 RETURN = r"""
 ---
-name:
-  description: Firefox default profile name
-  returned: always
-  sample: 8hs6hkt.default-release
-  type: strg
 path:
   description: Firefox default profile path
   returned: always
@@ -57,7 +52,7 @@ def default_profile(module: AnsibleModule, path: Path) -> str:
         )
 
     for _, data in parser.items():
-        if "default" in data:
+        if data.get("locked") and "default" in data:
             return data["default"]
     else:
         module.fail_json(
@@ -87,7 +82,6 @@ def main() -> None:
             **result,
         )
 
-    result["name"] = default
     result["path"] = str(path.parent / default)
     module.exit_json(**result)
 
@@ -95,20 +89,9 @@ def main() -> None:
 def profiles_path(module: AnsibleModule, system: str) -> Path:
     """Find Firefox profiles file path."""
     if system == "Darwin":
-        path = Path.home() / "/Library/Application Support/Firefox/profiles.ini"
+        path = Path.home() / "Library/Application Support/Firefox/profiles.ini"
     elif system in ["FreeBSD", "Linux"]:
         path = Path.home() / ".mozilla/firefox/profiles.ini"
-    elif system == "Windows":
-        try:
-            app_data = os.environ.get["APPDATA"]
-        except KeyError:
-            module.fail_json(
-                msg=(
-                    "Module requires environment variable APPDATA to be defined"
-                    "on Windows."
-                )
-            )
-        path = Path(app_data) / "Mozilla/Firefox/profiles.ini"
     else:
         module.fail_json(
             msg=f"Module does not support operating system '{system}'.",

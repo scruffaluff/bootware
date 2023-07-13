@@ -16,7 +16,7 @@ $Applications = @(
     'Microsoft.BingWeather'
 )
 
-ForEach ($Application in $Applications) {
+ForEach ($Application In $Applications) {
     Get-AppxPackage -AllUsers -Name $Application | Remove-AppxPackage -AllUsers
 
     Get-AppxProvisionedPackage -Online |
@@ -33,7 +33,7 @@ $Services = @(
     'XboxNetApiSvc' # Xbox live networking service.
 )
 
-ForEach ($Service in $Services) {
+ForEach ($Service In $Services) {
     Get-Service -Name $Service -ErrorAction SilentlyContinue |
         Set-Service -StartupType Manual
 }
@@ -117,7 +117,7 @@ $ContextKeys = @(
     'HKCR:\Directory\Background\shell\PowerShell7x64' # PowerShell 7
 )
 
-ForEach ($ContextKey in $ContextKeys) {
+ForEach ($ContextKey In $ContextKeys) {
     If (Test-Path "$ContextKey") {
         Remove-Item -Force -Recurse -Path "$ContextKey"
     }

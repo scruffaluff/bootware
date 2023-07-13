@@ -581,7 +581,7 @@ Function Setup() {
     }
 
     $ScoopBuckets = $(scoop bucket list)
-    ForEach ($Bucket in @('extras', 'main', 'nerd-fonts', 'versions')) {
+    ForEach ($Bucket In @('extras', 'main', 'nerd-fonts', 'versions')) {
         If ($Bucket -NotIn $ScoopBuckets.Name) {
             scoop bucket add "$Bucket"
         }
@@ -870,7 +870,7 @@ Function UpdateCompletion($Version) {
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
         "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
     )
-    ForEach ($Path in $Paths) {
+    ForEach ($Path In $Paths) {
         New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
         DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
     }
