@@ -30,13 +30,7 @@ Function ReadIni($File) {
 }
 
 # Script entrypoint.
-Function Main() {
-    $Spec = @{
-        options             = @{}
-        supports_check_mode = $true
-    }
-
-    $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
+Function DefaultProfile($Module) {
     $ProfileName = ''
     $ProfilesPath = "$Env:APPDATA/Mozilla/Firefox/profiles.ini"
     $Parser = $(ReadIni $ProfilesPath)
@@ -61,6 +55,13 @@ Function Main() {
 
 # Only run Main if invoked as script. Otherwise import functions as library.
 If ($MyInvocation.InvocationName -NE '.') {
-    $Module = $(Main $Args)
+    # Variables Module and Spec need to be defined at the root of the script.
+    $Spec = @{
+        options             = @{}
+        supports_check_mode = $true
+    }
+
+    $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
+    $Module = $(DefaultProfile $Module)
     Write-Output $Module
 }

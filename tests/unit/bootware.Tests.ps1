@@ -15,22 +15,24 @@ Describe 'FindConfigPath' {
         Mock Test-Path { Write-Output 1 }
 
         $Expected = 'C:\Windows\regedit.exe'
-        FindConfigPath "$Expected"
-        $Global:RetVal | Should -Be $Expected
+        $Actual = $(FindConfigPath "$Expected")
+        $Actual| Should -Be $Expected
     }
 
     It 'Return environment variable' {
         Mock Test-Path { Write-Output 1 }
 
         $expected = 'C:\Windows\regedit.exe'
-        $Env:BOOTWARE_CONFIG = "$Expected"; FindConfigPath
-        $Global:RetVal | Should -Be $Expected
+        $Env:BOOTWARE_CONFIG = "$Expected"
+        $Actual = $(FindConfigPath)
+        $Actual | Should -Be $Expected
     }
 
     It 'Return default when given non-existent file' {
         $Expected = "$HOME/.bootware/config.yaml"
-        $Env:BOOTWARE_CONFIG = '/a/fake/nonsense/path'; FindConfigPath
-        $Global:RetVal | Should -Be $Expected
+        $Env:BOOTWARE_CONFIG = '/a/fake/nonsense/path'
+        $Actual = $(FindConfigPath)
+        $Actual | Should -Be $Expected
     }
 }
 
