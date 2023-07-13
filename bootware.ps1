@@ -236,8 +236,10 @@ Function Bootstrap() {
         $ExtraArgs += @("--start-at-task", "$StartTask")
     }
 
-    $ConfigPath = $(FindConfigPath "$ConfigPath")
-    If (-Not $ConfigPath) {
+    Try {
+        $ConfigPath = $(FindConfigPath "$ConfigPath")
+    }
+    Catch [System.IO.FileNotFoundException] {
         $Params = @()
         $Params += @('--empty')
         Config $Params
@@ -423,6 +425,10 @@ Function FindConfigPath($FilePath) {
     }
     ElseIf (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
+    }
+    Else {
+        Throw [System.IO.FileNotFoundException] `
+            'Unable to find Bootware configuation file'
     }
 
     Return $ConfigPath

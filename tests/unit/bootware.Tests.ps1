@@ -28,11 +28,11 @@ Describe 'FindConfigPath' {
         $Actual | Should -Be $Expected
     }
 
-    It 'Return default when given non-existent file' {
-        $Expected = "$HOME/.bootware/config.yaml"
+    It 'Throw error when given non-existent file' {
+        Mock Test-Path { Write-Output 0 }
         $Env:BOOTWARE_CONFIG = '/a/fake/nonsense/path'
-        $Actual = $(FindConfigPath)
-        $Actual | Should -Be $Expected
+        { FindConfigPath } |
+            Should -Throw 'Unable to find Bootware configuation file'
     }
 }
 
