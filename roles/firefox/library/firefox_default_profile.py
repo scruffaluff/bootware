@@ -3,9 +3,9 @@
 
 
 from configparser import ConfigParser
-import os
 from pathlib import Path
 import platform
+import subprocess
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -51,13 +51,21 @@ def default_profile(module: AnsibleModule, path: Path) -> str:
             )
         )
 
-    for _, data in parser.items():
+    # Parse each profile and its "Path". A default profile may not exist. If so
+    # use the first found profile with a path.
+    paths = []
+    for section, data in parser.items():
+        if section.startswith("Profile") and "path" in data:
+            paths.append(data["path"])
         if data.get("locked") and "default" in data:
             return data["default"]
     else:
-        module.fail_json(
-            msg=f"No default profile found in '{path}'.",
-        )
+        if paths:
+            return paths[0]
+        else:
+            module.fail_json(
+                msg=f"No default profile found in '{path}'.",
+            )
 
 
 def main() -> None:
@@ -95,6 +103,15 @@ def profiles_path(module: AnsibleModule, system: str) -> Path:
     else:
         module.fail_json(
             msg=f"Module does not support operating system '{system}'.",
+        )
+
+    # Firefox profiles file may not exist after initial Firefox install. If so,
+    # try creating a default profile from the command line.qw
+    if not path.exists():
+        subprocess.run(
+            ["firefox", "--headless", "--createprofile", "default"],
+            capture_output=True,
+            check=True,
         )
 
     if not path.exists():
