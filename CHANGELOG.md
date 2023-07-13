@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Firefox profile settings.
 
+### Changed
+
+- Extended integration for GitHub and GitLab runner roles.
+
 ## 0.5.3 - 2023-06-29
 
 ### Added

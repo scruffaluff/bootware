@@ -31,13 +31,19 @@
     name: firefox
   when: ansible_system == "Win32NT"
 
-- name: Find default Firefox profile
+- name: Find default Firefox profile for Unix
   firefox_default_profile: {}
-  register: firefox_profile
+  register: firefox_profile_unix
+  when: ansible_system != "Win32NT"
+
+- name: Find default Firefox profile for Windows
+  win_firefox_default_profile: {}
+  register: firefox_profile_windows
+  when: ansible_system == "Win32NT"
 
 - name: Copy Firefox user preferences for Unix
   ansible.builtin.copy:
-    dest: "{{ firefox_profile['path'] }}/user.js"
+    dest: "{{ firefox_profile_unix['path'] }}/user.js"
     force: true
     mode: "600"
     owner: "{{ ansible_user_id }}"
@@ -46,6 +52,6 @@
 
 - name: Copy Firefox user preferences for Windows
   ansible.windows.win_copy:
-    dest: "{{ firefox_profile['path'] }}/user.js"
+    dest: "{{ firefox_profile_windows['path'] }}/user.js"
     src: user.js
   when: ansible_system == "Win32NT"
