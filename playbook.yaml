@@ -1021,7 +1021,8 @@
       ansible.builtin.import_role:
         name: winman
       tags:
-        - desktop
+        - extras
+        - never
         - winman
 
     - name: Install Wireshark network analyzer

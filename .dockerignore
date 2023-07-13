@@ -9,5 +9,6 @@
 .github/
 .gitignore
 .venv/
+*.bak
 *.dockerfile
 node_modules/

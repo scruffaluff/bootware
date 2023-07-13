@@ -2,6 +2,7 @@
 #
 # For more information, visit https://git-scm.com/docs/gitignore.
 
+__pycache__/
 .DS_Store
 .env
 .hypothesis/
@@ -11,6 +12,7 @@
 .vitepress/cache/
 .vitepress/dist/
 .vscode/
+*.bak
 *.tar.gz
 /build/
 /docs/index.md
