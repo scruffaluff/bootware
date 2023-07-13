@@ -19,17 +19,6 @@ interface System {
 }
 
 /**
- * Copy Markdown files into docs directory.
- * @param repoPath - System path to the repository.
- */
-function copyFiles(repoPath: string): void {
-  fs.copyFileSync(
-    path.join(repoPath, "README.md"),
-    path.join(repoPath, "docs/index.md")
-  );
-}
-
-/**
  * Check if system matches any of the skip conditions.
  * @param system - The host architecture and os information.
  * @patam conditions - The skip conditions for the role.
@@ -135,10 +124,7 @@ function writeSoftware(repoPath: string): void {
 
 function main(): void {
   const repoPath = path.dirname(__dirname);
-
-  copyFiles(repoPath);
   writeSoftware(repoPath);
-
   vitepress.build(".");
 }
 

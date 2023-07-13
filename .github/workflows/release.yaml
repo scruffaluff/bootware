@@ -18,6 +18,15 @@ on:
         description: Use Tmate session for debugging
         type: boolean
 
+env:
+  NPM_CONFIG_CACHE: "${{ github.workspace }}/.cache/npm"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  PIP_DISABLE_PIP_VERSION_CHECK: "true"
+  PIP_ROOT_USER_ACTION: ignore
+  POETRY_CACHE_DIR: "${{ github.workspace }}/.cache/pypoetry"
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
+
 jobs:
   release:
     name: Make GitHub release
@@ -27,16 +36,21 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
+      - name: Cache packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            .cache
+            .venv
+            node_modules
+          key: >-
+            node-20_python-3.11_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: |
           node --version
@@ -52,12 +66,6 @@ jobs:
           python -m pip --version
           python -m pip install poetry
           poetry install
-      - name: Cache Python packages
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: >-
-            python-3.11_${{ runner.os }}_poetry-${{ hashFiles('poetry.lock') }}
       - name: Build packages
         run: |
           sudo apt-get install --yes rpm

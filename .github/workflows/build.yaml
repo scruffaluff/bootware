@@ -31,6 +31,15 @@ on:
           - powershell
         type: choice
 
+env:
+  NPM_CONFIG_CACHE: "${{ github.workspace }}/.cache/npm"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  PIP_DISABLE_PIP_VERSION_CHECK: "true"
+  PIP_ROOT_USER_ACTION: ignore
+  POETRY_CACHE_DIR: "${{ github.workspace }}/.cache/pypoetry"
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
+
 jobs:
   bash:
     if: >-
@@ -40,6 +49,14 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
+      - name: Cache Node packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            .cache
+            node_modules
+          key: >-
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install YQ YAML parser
         run: |
           sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.34.1/yq_linux_amd64 --output /usr/local/bin/yq
@@ -48,12 +65,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: |
           node --version
@@ -77,16 +88,18 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
+      - name: Cache Node packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            .cache
+            node_modules
+          key: >-
+            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: |
           node --version
@@ -108,16 +121,21 @@ jobs:
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
+      - name: Cache packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            .cache
+            .venv
+            node_modules
+          key: >-
+            node-20_python-3.11_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
           node-version: "20"
-      - name: Cache Node packages
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node packages
         run: |
           node --version
@@ -127,18 +145,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Cache Python packages
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: >-
-            python-3.11_${{ runner.os }}_poetry-${{ hashFiles('poetry.lock') }}
       - name: Install Python packages
         run: |
           python --version
           python -m pip --version
           python -m pip install poetry
-          poetry config virtualenvs.in-project true
           poetry lock --check
           poetry install --verbose
       - name: Check format of configuration files
