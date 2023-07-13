@@ -10,11 +10,11 @@ BeforeAll {
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        Mock wsl { Write-Output "wsl $($Args | ForEach-Object {$_})" }
+        Mock wsl { Return "wsl $($Args | ForEach-Object {$_})" }
     }
     Else {
         Function wsl() {
-            Write-Output "wsl $($Args | ForEach-Object {$_})"
+            Return "wsl $($Args | ForEach-Object {$_})"
         }
     }
 }

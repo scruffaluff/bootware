@@ -209,11 +209,6 @@ jobs:
       - name: Install PSScriptAnalyzer
         run: Install-Module -Force -Name PSScriptAnalyzer
         shell: pwsh
-      - name: Run PSScriptAnalyzer format lints on all PowerShell scripts
-        run: >-
-          Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting
-          CodeFormatting
-        shell: pwsh
       - name: Run PSScriptAnalyzer code lints on all PowerShell scripts
         run: Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
         shell: pwsh

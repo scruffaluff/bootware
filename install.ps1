@@ -13,8 +13,7 @@ $ErrorActionPreference = 'Stop'
 # Show CLI help information.
 Function Usage() {
     Write-Output @'
-Bootware Installer
-Installer script for Bootware
+Install Bootware PowerShell script
 
 Usage: install [OPTIONS]
 

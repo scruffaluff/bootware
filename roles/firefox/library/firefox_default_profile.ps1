@@ -1,7 +1,9 @@
 #!powershell
 
 #AnsibleRequires -CSharpUtil Ansible.Basic
-#AnsibleRequires -PowerShell Ansible.ModuleUtils.AddType
+
+# Exit immediately if a PowerShell Cmdlet encounters an error.
+$ErrorActionPreference = 'Stop'
 
 # Taken from https://stackoverflow.com/a/422529.
 Function ReadIni($File) {
@@ -24,30 +26,41 @@ Function ReadIni($File) {
         }
     }
 
-    $Data
+    Return $Data
 }
 
-$Spec = @{
-    options             = @{}
-    supports_check_mode = $true
-}
-
-$Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
-$ProfileName = ''
-$ProfilesPath = "$Env:APPDATA/Mozilla/Firefox/profiles.ini"
-$Parser = $(ReadIni $ProfilesPath)
-
-ForEach ($Section In $Parser.Keys) {
-    $Keys = $Parser[$Section].Keys
-    If (($Keys -Contains 'Locked') -And ($Keys -Contains 'Default')) {
-        $ProfileName = $Parser[$Section]['Default']
+# Script entrypoint.
+Function Main() {
+    $Spec = @{
+        options             = @{}
+        supports_check_mode = $true
     }
+
+    $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
+    $ProfileName = ''
+    $ProfilesPath = "$Env:APPDATA/Mozilla/Firefox/profiles.ini"
+    $Parser = $(ReadIni $ProfilesPath)
+
+    ForEach ($Section In $Parser.Keys) {
+        $Keys = $Parser[$Section].Keys
+        If (($Keys -Contains 'Locked') -And ($Keys -Contains 'Default')) {
+            $ProfileName = $Parser[$Section]['Default']
+        }
+    }
+
+    If ($ProfileName) {
+        $Module.Result.path = "$Env:APPDATA/Mozilla/Firefox/$ProfileName"
+        $Module.ExitJson()
+    }
+    Else {
+        $Module.FailJson("No default profile found in '$ProfilesPath'.")
+    }
+
+    Return $Module
 }
 
-If ($ProfileName) {
-    $Module.Result.path = "$Env:APPDATA/Mozilla/Firefox/$ProfileName"
-    $Module.ExitJson()
-}
-Else {
-    $Module.FailJson("No default profile found in '$ProfilesPath'.")
+# Only run Main if invoked as script. Otherwise import functions as library.
+If ($MyInvocation.InvocationName -NE '.') {
+    $Module = $(Main $Args)
+    Write-Output $Module
 }
