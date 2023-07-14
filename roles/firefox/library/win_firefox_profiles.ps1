@@ -31,25 +31,35 @@ Function ReadIni($File) {
 
 # Script entrypoint.
 Function DefaultProfile($Module) {
-    $ProfileName = ''
-    $ProfilesPath = "$Env:APPDATA/Mozilla/Firefox/profiles.ini"
-    $Parser = $(ReadIni $ProfilesPath)
+    If (Test-Path "$HOME\scoop\persist\firefox\profile") {
+        $Paths = @("$HOME\scoop\persist\firefox\profile")
+    }
+    Else {
+        $Paths = @()
+    }
+    $ProfilesPath = "$Env:APPDATA\Mozilla\Firefox\profiles.ini"
 
+    $Parser = $(ReadIni $ProfilesPath)
     ForEach ($Section In $Parser.Keys) {
         $Keys = $Parser[$Section].Keys
-        If (($Keys -Contains 'Locked') -And ($Keys -Contains 'Default')) {
-            $ProfileName = $Parser[$Section]['Default']
+        If (($Section -Like 'Profile*') -And ($Keys -Contains 'Path')) {
+            $Paths += $Parser[$Section]['Path']
+        }
+        Elseif (($Keys -Contains 'Locked') -And ($Keys -Contains 'Default')) {
+            $Paths += $Parser[$Section]['Default']
         }
     }
 
-    If ($ProfileName) {
-        $Module.Result.path = "$Env:APPDATA/Mozilla/Firefox/$ProfileName"
-        $Module.ExitJson()
+    $Module.Result.paths = @()
+    ForEach ($Path in $($Paths | Sort-Object -Unique)) {
+        If ([System.IO.Path]::IsPathRooted($Path)) {
+            $Module.Result.paths += $Path
+        }
+        Else {
+            $Module.Result.paths += "$Env:APPDATA\Mozilla\Firefox\$Path"
+        }
     }
-    Else {
-        $Module.FailJson("No default profile found in '$ProfilesPath'.")
-    }
-
+    $Module.ExitJson()
     Return $Module
 }
 

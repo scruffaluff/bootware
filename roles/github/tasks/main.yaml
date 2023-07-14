@@ -15,12 +15,20 @@
   register: github_release_windows
   when: ansible_system == "Win32NT"
 
+- name: Get all groups for Unix
+  ansible.builtin.getent:
+    database: group
+    split: ":"
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Create GitHub runner user for Unix
   ansible.builtin.user:
     append: true
     name: github-runner
     groups: >-
-      {{ ["sudo"] if ansible_system == "Darwin" else ["docker", "sudo"] }}
+      {{ ['docker', 'sudo', 'wheel'] |
+      intersect(ansible_facts.getent_group.keys()) }}
     shell: /bin/bash
   become: true
   when: ansible_system in ["Darwin", "Linux"]

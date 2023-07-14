@@ -31,27 +31,30 @@
     name: firefox
   when: ansible_system == "Win32NT"
 
-- name: Find default Firefox profile for Unix
-  firefox_default_profile: {}
-  register: firefox_profile_unix
-  when: ansible_system != "Win32NT"
+# Ubuntu is skipped because its version of Firefox depends on Snap.
+- name: Find Firefox profiles for Unix
+  firefox_profiles: {}
+  register: firefox_profiles_unix
+  when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 
-- name: Find default Firefox profile for Windows
-  win_firefox_default_profile: {}
-  register: firefox_profile_windows
+- name: Find Firefox profiles for Windows
+  win_firefox_profiles: {}
+  register: firefox_profiles_windows
   when: ansible_system == "Win32NT"
 
 - name: Copy Firefox user preferences for Unix
   ansible.builtin.copy:
-    dest: "{{ firefox_profile_unix['path'] }}/user.js"
+    dest: "{{ item }}/user.js"
     force: true
     mode: "600"
     owner: "{{ ansible_user_id }}"
     src: user.js
-  when: ansible_system != "Win32NT"
+  loop: "{{ firefox_profiles_unix['paths'] }}"
+  when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 
 - name: Copy Firefox user preferences for Windows
   ansible.windows.win_copy:
-    dest: "{{ firefox_profile_windows['path'] }}/user.js"
+    dest: "{{ item }}/user.js"
     src: user.js
+  loop: "{{ firefox_profiles_windows['paths'] }}"
   when: ansible_system == "Win32NT"
