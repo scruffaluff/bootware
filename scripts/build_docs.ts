@@ -117,7 +117,9 @@ async function writeSoftware(repoPath: string): Promise<void> {
   const template = fs.readFileSync(templatePath, "utf8");
   const softwareText = mustache.render(template, { table });
 
-  const prettyText = await prettier.format(softwareText, { parser: "markdown" });
+  const prettyText = await prettier.format(softwareText, {
+    parser: "markdown",
+  });
   const softwarePath = path.join(repoPath, "docs/software.md");
   fs.writeFileSync(softwarePath, prettyText);
 }
