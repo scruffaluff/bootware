@@ -107,7 +107,7 @@ function rolesTable(repoPath: string): string {
  * Generate, template, and write software roles documentation file.
  * @param repoPath - System path to the repository.
  */
-function writeSoftware(repoPath: string): void {
+async function writeSoftware(repoPath: string): Promise<void> {
   const table = rolesTable(repoPath);
 
   const templatePath = path.join(
@@ -117,12 +117,12 @@ function writeSoftware(repoPath: string): void {
   const template = fs.readFileSync(templatePath, "utf8");
   const softwareText = mustache.render(template, { table });
 
-  const prettyText = prettier.format(softwareText, { parser: "markdown" });
+  const prettyText = await prettier.format(softwareText, { parser: "markdown" });
   const softwarePath = path.join(repoPath, "docs/software.md");
   fs.writeFileSync(softwarePath, prettyText);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const repoPath = path.dirname(__dirname);
   writeSoftware(repoPath);
   vitepress.build(".");

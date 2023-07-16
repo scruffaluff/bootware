@@ -11,4 +11,5 @@
 .venv/
 *.bak
 *.dockerfile
+ansible_collections/
 node_modules/

@@ -11,13 +11,13 @@
     "vitepress:dev": "vitepress dev ."
   },
   "devDependencies": {
-    "@types/node": "^20.3.0",
-    "bats": "^1.8.0",
+    "@types/node": "^20.4.0",
+    "bats": "^1.10.0",
     "bats-assert": "https://github.com/ztombol/bats-assert",
     "bats-support": "https://github.com/ztombol/bats-support",
     "commander": "^11.0.0",
     "mustache": "^4.2.0",
-    "prettier": "^2.8.0",
+    "prettier": "^3.0.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.1.0",
     "vitepress": "1.0.0-beta.5",

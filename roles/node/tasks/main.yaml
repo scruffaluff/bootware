@@ -17,14 +17,13 @@
       - npm
   when: ansible_pkg_mgr == "apk"
 
-# NVM does not provide binaries for FreeBSD and Node versions 16 and 17 have
-# OpenSSL errors on FreeBSD 13.
+# NVM does not provide binaries for FreeBSD.
 - name: Install Node for FreeBSD
   become: true
   community.general.pkgng:
     name:
-      - node14
-      - npm-node14
+      - node20
+      - npm-node20
   when: ansible_system == "FreeBSD"
 
 - name: Download Node version manager installer for Unix
