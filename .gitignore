@@ -15,11 +15,12 @@ __pycache__/
 *.bak
 *.tar.gz
 /build/
-/docs/index.md
 /docs/software.md
 /site/
 /tmp/
 ansible_collections/*
+CHANGELOG.md
 dist/
 node_modules/
+!/CHANGELOG.md
 !ansible_collections/scruffaluff
