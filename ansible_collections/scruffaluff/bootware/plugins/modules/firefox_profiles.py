@@ -19,7 +19,7 @@ description: Find path of each Firefox profile folder for current user.
 module: firefox_profiles
 options: {}
 short_description: Firefox profile paths
-version_added: "0.5.4"
+version_added: "0.6.0"
 """
 
 EXAMPLES = r"""

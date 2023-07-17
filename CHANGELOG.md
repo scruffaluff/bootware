@@ -14,6 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Extended integration for GitHub and GitLab runner roles.
+- Repository layout to use a local Ansible collection.
 
 ## 0.5.3 - 2023-06-29
 
