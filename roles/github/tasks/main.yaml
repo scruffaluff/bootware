@@ -20,18 +20,28 @@
     database: group
     split: ":"
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Create GitHub runner user for Unix
+- name: Create GitHub runner user for MacOS
   ansible.builtin.user:
     append: true
+    groups:
+      - wheel
     name: github-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Create GitHub runner user for Linux
+  ansible.builtin.user:
+    append: true
     groups: >-
       {{ ['docker', 'sudo', 'wheel'] |
       intersect(ansible_facts.getent_group.keys()) }}
+    name: github-runner
     shell: /bin/bash
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
 - name: Enable GitHub runner passwordless sudo for Unix
   ansible.builtin.blockinfile:

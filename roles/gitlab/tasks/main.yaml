@@ -63,18 +63,28 @@
     database: group
     split: ":"
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Configure GitLab runner user for MacOS
+  ansible.builtin.user:
+    append: true
+    groups:
+      - wheel
+    name: gitlab-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system == "Darwin"
 
 - name: Configure Gitlab runner user for Unix
   ansible.builtin.user:
     append: true
-    name: gitlab-runner
     groups: >-
       {{ ['docker', 'sudo', 'wheel'] |
       intersect(ansible_facts.getent_group.keys()) }}
+    name: gitlab-runner
     shell: /bin/bash
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Enable GitLab runner passwordless sudo for Unix
   ansible.builtin.blockinfile:

@@ -119,9 +119,9 @@
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
     append: true
-    name: "{{ ansible_user_id }}"
     groups:
       - docker
+    name: "{{ ansible_user_id }}"
   become: true
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 

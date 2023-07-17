@@ -33,10 +33,11 @@
     name: krew
   when: ansible_system == "Darwin"
 
-- name: Install Krew for Windows
-  community.windows.win_scoop:
-    name: krew
-  when: ansible_system == "Win32NT"
+# Krew does not yet work properly on Windows.
+# - name: Install Krew for Windows
+#   community.windows.win_scoop:
+#     name: krew
+#   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl plugins for Unix
   ansible.builtin.command:
@@ -47,12 +48,11 @@
   loop: "{{ kubectl_plugins }}"
   register: krew_plugin_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
-
-- name: Install Kubectl plugins for Windows
-  ansible.windows.win_command: kubectl-krew install {{ item }}
-  changed_when: "'Installed plugin' in krew_plugin_install"
-  environment:
-    Path: "{{ ansible_env.HOME }}\\.krew\\bin;{{ ansible_env.Path }}"
-  loop: "{{ kubectl_plugins }}"
-  register: krew_plugin_install
-  when: ansible_system == "Win32NT"
+# - name: Install Kubectl plugins for Windows
+#   ansible.windows.win_command: kubectl-krew install {{ item }}
+#   changed_when: "'Installed plugin' in krew_plugin_install"
+#   environment:
+#     Path: "{{ ansible_env.HOME }}\\.krew\\bin;{{ ansible_env.Path }}"
+#   loop: "{{ kubectl_plugins }}"
+#   register: krew_plugin_install
+#   when: ansible_system == "Win32NT"
