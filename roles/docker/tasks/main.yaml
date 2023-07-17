@@ -119,9 +119,9 @@
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
     append: true
-    name: "{{ ansible_user_id }}"
     groups:
       - docker
+    name: "{{ ansible_user_id }}"
   become: true
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
@@ -140,3 +140,8 @@
     owner: "{{ ansible_user_id }}"
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
   when: ansible_system != "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    docker_role_executed: true

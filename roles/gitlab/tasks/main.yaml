@@ -57,3 +57,45 @@
   community.windows.win_scoop:
     name: gitlab-runner
   when: ansible_system == "Win32NT"
+
+- name: Get all groups for Unix
+  ansible.builtin.getent:
+    database: group
+    split: ":"
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Configure GitLab runner user for MacOS
+  ansible.builtin.user:
+    append: true
+    groups:
+      - wheel
+    name: gitlab-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Configure Gitlab runner user for Unix
+  ansible.builtin.user:
+    append: true
+    groups: >-
+      {{ ['docker', 'sudo', 'wheel'] |
+      intersect(ansible_facts.getent_group.keys()) }}
+    name: gitlab-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Enable GitLab runner passwordless sudo for Unix
+  ansible.builtin.blockinfile:
+    block: |
+      # Enable passwordless sudo for gitlab-runner user.
+      gitlab-runner ALL=(ALL) NOPASSWD:ALL
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED passwordless sudo for gitlab-runner BLOCK"
+    mode: "440"
+    owner: root
+    path: /etc/sudoers
+    validate: visudo --check --file %s
+  become: true
+  when: ansible_system != "Win32NT"

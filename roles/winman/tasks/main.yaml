@@ -33,6 +33,14 @@
   changed_when: true
   when: ansible_system== "Linux" and gnome_desktop
 
+- name: Notify user to reset keyboard shortcuts for GNOME desktops
+  ansible.builtin.debug:
+    msg:
+      - Pop Shell may have overriden the system's keyboard shortcuts. To reset
+      - the shortcuts, go to 'Settings.Keyboard.View and Customize Shortcuts'
+      - and click the 'Reset All' button.
+  when: winman_pop_shell_check is failed and gnome_desktop
+
 - name: Change Pop Shell settings for GNOME desktops
   ansible.builtin.script: pop_shell.sh
   when: ansible_system == "Linux" and gnome_desktop

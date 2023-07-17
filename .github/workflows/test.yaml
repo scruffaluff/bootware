@@ -87,7 +87,9 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
-          build-args: test=true
+          build-args: |
+            skip=duf
+            test=true
           context: .
           file: ./tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
@@ -366,18 +368,18 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
+      # Scoop Avro installation is temporarily incorrect.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --tags desktop,extras
+          bootware bootstrap --no-setup --retries 3 --skip avro --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
-      # Appears to work on other Windows servers. Scoop Krew installation is
-      # temporarily incorrect.
+      # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 --skip krew windows
+          node tests/integration/roles.spec.js --arch amd64 --skip avro windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

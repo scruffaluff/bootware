@@ -18,13 +18,13 @@ keywords = []
 license = "MIT"
 name = "bootware"
 readme = "README.md"
-version = "0.5.3"
+version = "0.5.4"
 
 [tool.poetry.dependencies]
 python = "^3.9.0"
 
 [tool.poetry.dev-dependencies]
-ansible = "^7.6.0"
+ansible = "^8.1.0"
 ansible-compat = "^4.1.0"
 ansible-lint = { markers = "platform_system != 'Windows'", version = "^6.17.0" }
 yamllint = "^1.32.0"

@@ -7,6 +7,7 @@
 .vitepress/cache/
 .vitepress/dist/
 *.bats
+ansible_collections/
 node_modules/
 package-lock.json
 site/

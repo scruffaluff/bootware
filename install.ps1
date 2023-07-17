@@ -13,8 +13,7 @@ $ErrorActionPreference = 'Stop'
 # Show CLI help information.
 Function Usage() {
     Write-Output @'
-Bootware Installer
-Installer script for Bootware
+Install Bootware PowerShell script
 
 Usage: install [OPTIONS]
 
@@ -77,7 +76,7 @@ Function InstallCompletion($Version) {
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
         "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
     )
-    ForEach ($Path in $Paths) {
+    ForEach ($Path In $Paths) {
         New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
         DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
     }

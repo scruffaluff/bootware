@@ -9,7 +9,7 @@
       # information.
       Defaults !sudoedit_checkdir
     create: true
-    marker: "# {mark} ANSIBLE MANAGED SUDOEDIT BLOCK"
+    marker: "# {mark} ANSIBLE MANAGED sudoedit BLOCK"
     mode: "440"
     owner: root
     path: /etc/sudoers
@@ -23,7 +23,8 @@
       # Enable passwordless sudo for {{ ansible_user_id }} user.
       {{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL
     create: true
-    marker: "# {mark} ANSIBLE MANAGED PASSWORDLESS SUDO BLOCK"
+    marker: >-
+      # {mark} ANSIBLE MANAGED passwordless sudo for {{ ansible_user_id }} BLOCK
     mode: "440"
     owner: root
     path: /etc/sudoers

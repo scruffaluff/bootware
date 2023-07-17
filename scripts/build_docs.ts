@@ -19,17 +19,6 @@ interface System {
 }
 
 /**
- * Copy Markdown files into docs directory.
- * @param repoPath - System path to the repository.
- */
-function copyFiles(repoPath: string): void {
-  fs.copyFileSync(
-    path.join(repoPath, "README.md"),
-    path.join(repoPath, "docs/index.md")
-  );
-}
-
-/**
  * Check if system matches any of the skip conditions.
  * @param system - The host architecture and os information.
  * @patam conditions - The skip conditions for the role.
@@ -118,7 +107,7 @@ function rolesTable(repoPath: string): string {
  * Generate, template, and write software roles documentation file.
  * @param repoPath - System path to the repository.
  */
-function writeSoftware(repoPath: string): void {
+async function writeSoftware(repoPath: string): Promise<void> {
   const table = rolesTable(repoPath);
 
   const templatePath = path.join(
@@ -128,17 +117,16 @@ function writeSoftware(repoPath: string): void {
   const template = fs.readFileSync(templatePath, "utf8");
   const softwareText = mustache.render(template, { table });
 
-  const prettyText = prettier.format(softwareText, { parser: "markdown" });
+  const prettyText = await prettier.format(softwareText, {
+    parser: "markdown",
+  });
   const softwarePath = path.join(repoPath, "docs/software.md");
   fs.writeFileSync(softwarePath, prettyText);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const repoPath = path.dirname(__dirname);
-
-  copyFiles(repoPath);
   writeSoftware(repoPath);
-
   vitepress.build(".");
 }
 

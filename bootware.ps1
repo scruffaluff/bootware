@@ -130,6 +130,7 @@ FLAGS:
 Function Bootstrap() {
     $ArgIdx = 0
     $ConfigPath = ''
+    $Debug = $Global:Debug
     $ExtraArgs = @()
     $Inventory = ''
     $Playbook = "$PSScriptRoot/repo/playbook.yaml"
@@ -235,8 +236,18 @@ Function Bootstrap() {
         $ExtraArgs += @("--start-at-task", "$StartTask")
     }
 
-    FindConfigPath "$ConfigPath"
-    $ConfigPath = $(WSLPath "$Global:RetVal")
+    Try {
+        $ConfigPath = $(FindConfigPath "$ConfigPath")
+    }
+    Catch [System.IO.FileNotFoundException] {
+        $Params = @()
+        $Params += @('--empty')
+        Config $Params
+        $ConfigPath = "$HOME/.bootware/config.yaml"
+    }
+
+    Log "Using $ConfigPath as configuration file"
+    $WSLConfigPath = $(WSLPath $ConfigPath)
     If (-Not $Remote) {
         $Inventory = "$(FindRelativeIP)"
     }
@@ -248,9 +259,9 @@ Function Bootstrap() {
     #
     # $ExtraArgs needs to be passed as an array to WSL. Do not change it into a
     # string.
-    If ($Global:Debug -And $Remote -And $ExtraArgs.Count -GT 0) {
+    If ($Debug -And $Remote -And $ExtraArgs.Count -GT 0) {
         wsl bootware --debug bootstrap `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --skip "$Skip" `
@@ -258,9 +269,9 @@ Function Bootstrap() {
             --user "$User" `
             $ExtraArgs
     }
-    ElseIf ($Global:Debug -And $Remote) {
+    ElseIf ($Debug -And $Remote) {
         wsl bootware --debug bootstrap `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --skip "$Skip" `
@@ -269,7 +280,7 @@ Function Bootstrap() {
     }
     ElseIf ($Remote -And $ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --skip "$Skip" `
@@ -279,16 +290,16 @@ Function Bootstrap() {
     }
     ElseIf ($Remote) {
         wsl bootware bootstrap `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --skip "$Skip" `
             --tags "$Tags" `
             --user "$User"
     }
-    ElseIf ($Global:Debug -And $ExtraArgs.Count -GT 0) {
+    ElseIf ($Debug -And $ExtraArgs.Count -GT 0) {
         wsl bootware --debug bootstrap --windows `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
@@ -298,9 +309,9 @@ Function Bootstrap() {
             --user "$User" `
             $ExtraArgs
     }
-    ElseIf ($Global:Debug) {
+    ElseIf ($Debug) {
         wsl bootware --debug bootstrap --windows `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
@@ -311,7 +322,7 @@ Function Bootstrap() {
     }
     ElseIf ($ExtraArgs.Count -GT 0) {
         wsl bootware bootstrap --windows `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
@@ -323,7 +334,7 @@ Function Bootstrap() {
     }
     Else {
         wsl bootware bootstrap --windows `
-            --config "$ConfigPath" `
+            --config "$WSLConfigPath" `
             --inventory "$Inventory" `
             --playbook "$PlaybookPath" `
             --private-key "`$HOME/.ssh/bootware" `
@@ -332,8 +343,6 @@ Function Bootstrap() {
             --tags "$Tags" `
             --user "$User"
     }
-
-    Exit $LastExitCode
 }
 
 # Subcommand to generate or download Bootware configuration file.
@@ -406,6 +415,8 @@ Function ErrorUsage($Message) {
 
 # Find path of Bootware configuation file.
 Function FindConfigPath($FilePath) {
+    $ConfigPath = ''
+
     If (($FilePath) -And (Test-Path -Path "$FilePath" -PathType Leaf)) {
         $ConfigPath = $FilePath
     }
@@ -416,16 +427,11 @@ Function FindConfigPath($FilePath) {
         $ConfigPath = "$HOME/.bootware/config.yaml"
     }
     Else {
-        Log 'Unable to find Bootware configuation file'
-        $Params = @()
-        $Params += @('--empty')
-        Config $Params
-        $ConfigPath = "$HOME/.bootware/config.yaml"
+        Throw [System.IO.FileNotFoundException] `
+            'Unable to find Bootware configuation file'
     }
 
-    Log "Using $ConfigPath as configuration file"
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
-    $Global:RetVal = "$ConfigPath"
+    Return $ConfigPath
 }
 
 # Find IP address of Windows host relative from WSL.
@@ -441,10 +447,10 @@ Function FindRelativeIP {
         -Name DefaultVersion
 
     If ($WSLVersion -Eq 1) {
-        Write-Output '127.0.0.1'
+        Return '127.0.0.1'
     }
     Else {
-        Write-Output "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
+        Return "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
     }
 }
 
@@ -480,7 +486,7 @@ Function MakeWSLKey($FilePath) {
     $WSLFile = "$(wsl mktemp --dry-run)"
     wsl cp "$(WSLPath $FilePath)" "$WSLFile"
     wsl chmod 600 "$WSLFile"
-    Write-Output "$WSLFile"
+    Return "$WSLFile"
 }
 
 # Request remote script and execution efficiently.
@@ -581,7 +587,7 @@ Function Setup() {
     }
 
     $ScoopBuckets = $(scoop bucket list)
-    ForEach ($Bucket in @('extras', 'main', 'nerd-fonts', 'versions')) {
+    ForEach ($Bucket In @('extras', 'main', 'nerd-fonts', 'versions')) {
         If ($Bucket -NotIn $ScoopBuckets.Name) {
             scoop bucket add "$Bucket"
         }
@@ -720,6 +726,7 @@ Function SetupSSHServer() {
 # Implemented based on instructions at
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL($Branch) {
+    $Debug = $Global:Debug
     $WSLExe = $(Get-Command wsl -ErrorAction SilentlyContinue)
     $MWSL = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
     $VMP = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
@@ -772,7 +779,7 @@ Function SetupWSL($Branch) {
             https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh `
             `| bash -s -- --version "$Branch"
 
-        If ($Global:Debug) {
+        If ($Debug) {
             wsl bootware --debug setup
         }
         Else {
@@ -784,6 +791,7 @@ Function SetupWSL($Branch) {
 # Subcommand to remove Bootware files.
 Function Uninstall() {
     $ArgIdx = 0
+    $Debug = $Global:Debug
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
@@ -801,7 +809,7 @@ Function Uninstall() {
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
-            If ($Global:Debug) {
+            If ($Debug) {
                 wsl bootware --debug uninstall
             }
             Else {
@@ -817,6 +825,7 @@ Function Uninstall() {
 # Subcommand to update Bootware script.
 Function Update() {
     $ArgIdx = 0
+    $Debug = $Global:Debug
     $Version = 'main'
 
     While ($ArgIdx -LT $Args[0].Count) {
@@ -844,7 +853,7 @@ Function Update() {
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
-            If ($Global:Debug) {
+            If ($Debug) {
                 wsl bootware --debug update --version "$Version"
             }
             Else {
@@ -870,7 +879,7 @@ Function UpdateCompletion($Version) {
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
         "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
     )
-    ForEach ($Path in $Paths) {
+    ForEach ($Path In $Paths) {
         New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
         DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
     }
@@ -878,7 +887,7 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.5.3'
+    Write-Output 'Bootware 0.5.4'
 }
 
 # Convert path to WSL relative path.
@@ -886,7 +895,7 @@ Function WSLPath($FilePath) {
     $FilePath = $($FilePath -Replace '~', "$HOME")
     $Drive = $(Split-Path -Path "$FilePath" -Qualifier) -Replace ':', ''
     $ChildPath = $(Split-Path -Path "$FilePath" -NoQualifier) -Replace '\\', '/'
-    Write-Output "/mnt/$($Drive.ToLower())$ChildPath"
+    Return "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
 # Script entrypoint.
@@ -913,7 +922,7 @@ Function Main() {
             'bootstrap' {
                 $ArgIdx += 1
                 Bootstrap @(GetParameters $Args[0] $ArgIdx)
-                Exit 0
+                Exit $LastExitCode
             }
             'config' {
                 $ArgIdx += 1

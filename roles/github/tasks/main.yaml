@@ -15,9 +15,45 @@
   register: github_release_windows
   when: ansible_system == "Win32NT"
 
-- name: Create GitHub runner user for Unix
+- name: Get all groups for Unix
+  ansible.builtin.getent:
+    database: group
+    split: ":"
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Create GitHub runner user for MacOS
   ansible.builtin.user:
+    append: true
+    groups:
+      - wheel
     name: github-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Create GitHub runner user for Linux
+  ansible.builtin.user:
+    append: true
+    groups: >-
+      {{ ['docker', 'sudo', 'wheel'] |
+      intersect(ansible_facts.getent_group.keys()) }}
+    name: github-runner
+    shell: /bin/bash
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Enable GitHub runner passwordless sudo for Unix
+  ansible.builtin.blockinfile:
+    block: |
+      # Enable passwordless sudo for github-runner user.
+      github-runner ALL=(ALL) NOPASSWD:ALL
+    create: true
+    marker: "# {mark} ANSIBLE MANAGED passwordless sudo for github-runner BLOCK"
+    mode: "440"
+    owner: root
+    path: /etc/sudoers
+    validate: visudo --check --file %s
   become: true
   when: ansible_system in ["Darwin", "Linux"]
 

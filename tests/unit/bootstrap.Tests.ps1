@@ -3,18 +3,18 @@ BeforeAll {
     . "$Bootware"
 
     Mock FindConfigPath {
-        $Global:RetVal = 'C:\Users\Administrator\.bootware\config.yaml'
+        Return 'C:\Users\Administrator\.bootware\config.yaml'
     }
     Mock FindRelativeIP { Write-Output '192.48.16.0' }
     Mock Setup { }
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
     If (Get-Command wsl -ErrorAction SilentlyContinue) {
-        Mock wsl { Write-Output "wsl $($Args | ForEach-Object {$_})" }
+        Mock wsl { Return "wsl $($Args | ForEach-Object {$_})" }
     }
     Else {
         Function wsl() {
-            Write-Output "wsl $($Args | ForEach-Object {$_})"
+            Return "wsl $($Args | ForEach-Object {$_})"
         }
     }
 }

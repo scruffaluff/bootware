@@ -7,8 +7,6 @@
     ExcludeRules = @(
         'PSAvoidGlobalVars',
         'PSAvoidUsingInvokeExpression',
-        'PSAvoidUsingPositionalParameters',
-        'PSReviewUnusedParameter',
-        'PSUseDeclaredVarsMoreThanAssignment'
+        'PSAvoidUsingPositionalParameters'
     )
 }
