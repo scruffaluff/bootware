@@ -173,6 +173,7 @@ assert_cmd() {
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
+  local ansible_config_path
   local ask_passwd
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
@@ -207,6 +208,10 @@ bootstrap() {
   # Parse command line arguments.
   while [[ "${#}" -gt 0 ]]; do
     case "${1}" in
+      --ansible-config)
+        export ANSIBLE_CONFIG="${2}"
+        shift 2
+        ;;
       -c | --config)
         config_path="${2}"
         shift 2
@@ -328,6 +333,10 @@ bootstrap() {
   fi
 
   if [[ "${cmd}" == 'playbook' ]]; then
+    ansible_config_path="$(dirname "${playbook}")/ansible.cfg"
+    if [[ -z "${ANSIBLE_CONFIG:-}" && -f "${ansible_config_path}" ]]; then
+      export ANSIBLE_CONFIG="${ansible_config_path}"
+    fi
     extra_args+=('--connection' "${connection}")
   elif [[ "${cmd}" == 'pull' ]]; then
     playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
