@@ -75,7 +75,7 @@ jobs:
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         run: |
-          cp CHANGELOG.md ansible_collections/scruffaluff/bootware/
+          cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
           poetry run ansible-galaxy collection build ansible_collections/scruffaluff/bootware
           poetry run ansible-galaxy collection publish --token "${ANSIBLE_GALAXY_TOKEN}" scruffaluff-bootware-${{ github.ref_name }}.tar.gz
       - name: Create GitHub release

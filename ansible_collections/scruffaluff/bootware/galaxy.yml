@@ -7,6 +7,8 @@
 authors:
   - Macklan Weinstein <macklan.weinstein@gmail.com>
 build_ignore:
+  - __pycache__
+  - .DS_Store
   - .dockerignore
   - .editorconfig
   - .github

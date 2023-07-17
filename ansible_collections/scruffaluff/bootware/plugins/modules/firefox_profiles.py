@@ -25,7 +25,7 @@ version_added: "0.6.0"
 EXAMPLES = r"""
 ---
 - name: Find Firefox profile paths
-  firefox_profiles: {}
+  scruffaluff.bootware.firefox_profiles: {}
   register: profiles
 """
 
@@ -34,7 +34,7 @@ RETURN = r"""
 path:
   description: Firefox profile_paths
   returned: always
-  sample: 
+  sample:
     - /home/user/.mozilla/firefox/8hs6hkt.default-release
   type: list
 """
