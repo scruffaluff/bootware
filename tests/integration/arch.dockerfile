@@ -1,4 +1,4 @@
-FROM archlinux:base-20230611.0.157136
+FROM archlinux:base-20230709.0.163418
 
 ARG TARGETARCH
 

@@ -39,7 +39,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Test Bootware collection with 3 retries on failure.
 ENV retries=3
-RUN until ansible-playbook --inventory localhost, playbook.yaml; do \
+RUN until ansible-playbook --connection local --inventory localhost, playbook.yaml; do \
         status=$?; \
         ((retries--)) && ((retries == 0)) && exit "${status}"; \
         printf "\nCollection run failed with exit code %s." "${status}"; \

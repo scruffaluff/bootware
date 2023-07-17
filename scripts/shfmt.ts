@@ -7,7 +7,8 @@ const childProcess = require("child_process");
 function main(): void {
   const command = process.argv[2];
   let options;
-  let paths = "bootware.sh install.sh completions/ roles/";
+  let paths =
+    "bootware.sh install.sh completions/ ansible_collections/scruffaluff";
 
   switch (command) {
     case "format":

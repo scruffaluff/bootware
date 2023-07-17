@@ -317,7 +317,7 @@ bootstrap() {
     assert_cmd yq
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
-      yq '.[0].name' "${repo_dir}/roles/${start_role}/tasks/main.yaml"
+      yq '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
     )"
     extra_args+=('--start-at-task' "${start_task}")
   fi

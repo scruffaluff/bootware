@@ -33,12 +33,12 @@
 
 # Ubuntu is skipped because its version of Firefox depends on Snap.
 - name: Find Firefox profiles for Unix
-  firefox_profiles: {}
+  scruffaluff.bootware.firefox_profiles: {}
   register: firefox_profiles_unix
   when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 
 - name: Find Firefox profiles for Windows
-  win_firefox_profiles: {}
+  scruffaluff.bootware.win_firefox_profiles: {}
   register: firefox_profiles_windows
   when: ansible_system == "Win32NT"
 

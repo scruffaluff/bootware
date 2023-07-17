@@ -168,6 +168,7 @@ jobs:
       - name: Lint Ansible playbook and roles
         run: |
           poetry run ansible-lint --version
+          poetry run ansible-lint ansible_collections/scruffaluff
           poetry run ansible-lint playbook.yaml
       - name: Setup Tmate session if debug enabled
         if: >-
