@@ -75,7 +75,8 @@ jobs:
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         run: |
-          poetry run ansible-galaxy collection build .
+          cp CHANGELOG.md ansible_collections/scruffaluff/bootware/
+          poetry run ansible-galaxy collection build ansible_collections/scruffaluff/bootware
           poetry run ansible-galaxy collection publish --token "${ANSIBLE_GALAXY_TOKEN}" scruffaluff-bootware-${{ github.ref_name }}.tar.gz
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1

@@ -232,7 +232,7 @@ Function Bootstrap() {
     # Configure run to find task associated with start role.
     If ($StartRole) {
         $RepoPath = "$(Split-Path -Path $Playbook -Parent)"
-        $StartTask = "$(yq '.[0].name' "$RepoPath/roles/$StartRole/tasks/main.yaml")"
+        $StartTask = "$(yq '.[0].name' "$RepoPath/ansible_collections/scruffaluff/bootware/roles/$StartRole/tasks/main.yaml")"
         $ExtraArgs += @("--start-at-task", "$StartTask")
     }
 
@@ -887,7 +887,7 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.5.4'
+    Write-Output 'Bootware 0.6.0'
 }
 
 # Convert path to WSL relative path.

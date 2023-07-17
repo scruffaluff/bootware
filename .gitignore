@@ -19,6 +19,7 @@ __pycache__/
 /docs/software.md
 /site/
 /tmp/
-ansible_collections/
+ansible_collections/*
 dist/
 node_modules/
+!ansible_collections/scruffaluff

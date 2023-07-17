@@ -1,4 +1,4 @@
-FROM archlinux:base-20230611.0.157136
+FROM archlinux:base-20230709.0.163418
 
 ARG TARGETARCH
 
@@ -36,8 +36,8 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY --chown="${USER}" roles/ ./roles/
-COPY --chown="${USER}" playbook.yaml ./
+COPY --chown="${USER}" ansible_collections/ ./ansible_collections/
+COPY --chown="${USER}" ansible.cfg playbook.yaml ./
 
 ARG skip
 ARG tags

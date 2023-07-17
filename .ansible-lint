@@ -5,6 +5,11 @@
 
 ---
 skip_list:
+  # Changelog is in root directory of project. It is copied into the collection
+  # during publishing.
+  - galaxy[no-changelog]
+  # Requiring that collection version is greater than 1.0.0 is ridiculous.
+  - galaxy[version-incorrect]
   # In Bootware, always using the latest Git commit is desired.
   - git-latest
   # Setting pipefail may cause errors on Linux systems where Bash is not the

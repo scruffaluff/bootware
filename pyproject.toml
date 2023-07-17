@@ -18,7 +18,7 @@ keywords = []
 license = "MIT"
 name = "bootware"
 readme = "README.md"
-version = "0.5.4"
+version = "0.6.0"
 
 [tool.poetry.dependencies]
 python = "^3.9.0"
