@@ -11,5 +11,6 @@
 .venv/
 *.bak
 *.dockerfile
-ansible_collections/
+ansible_collections/*
 node_modules/
+!ansible_collections/scruffaluff

@@ -29,12 +29,10 @@ ENV DONT_PROMPT_WSL_INSTALL='true'
 
 COPY --chown="${USER}" . $HOME/repo
 
-RUN ansible-galaxy collection build $HOME/repo && \
+RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/bootware && \
     ansible-galaxy collection install "scruffaluff-bootware-${version}.tar.gz" && \
+    cp $HOME/repo/playbook.yaml . && \
     rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
-
-# Copy Bootware test playbook.
-COPY --chown="${USER}" tests/data/playbook.yaml /home/collection/
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]

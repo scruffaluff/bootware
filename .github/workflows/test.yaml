@@ -87,9 +87,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
-          build-args: |
-            skip=duf
-            test=true
+          build-args: test=true
           context: .
           file: ./tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}

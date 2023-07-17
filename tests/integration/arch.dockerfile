@@ -36,8 +36,8 @@ RUN mkdir $HOME/bootware
 WORKDIR $HOME/bootware
 
 # Copy bootware project files.
-COPY --chown="${USER}" roles/ ./roles/
-COPY --chown="${USER}" playbook.yaml ./
+COPY --chown="${USER}" ansible_collections/ ./ansible_collections/
+COPY --chown="${USER}" ansible.cfg playbook.yaml ./
 
 ARG skip
 ARG tags
