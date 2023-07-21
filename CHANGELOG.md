@@ -13,7 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Direnv role.
+- Avro, Direnv, Java, and Parquet roles.
 
 ## 0.6.0 - 2023-07-17
 

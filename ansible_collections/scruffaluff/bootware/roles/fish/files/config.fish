@@ -156,24 +156,6 @@ fish_add_path "$GOROOT/bin"
 set --export GOPATH "$HOME/.go"
 fish_add_path "$GOPATH/bin"
 
-# Java settings.
-
-# Find and add Java OpenJDK directory to path.
-#
-# Do not use long form --kernel-name flag for uname. It is not supported on
-# MacOS.
-#
-# Flags:
-#   -d: Check if inode is a directory.
-#   -s: Print machine kernel name.
-if test (uname -s) = 'Darwin'
-  if test -d '/opt/homebrew/opt/openjdk/bin'
-    fish_add_path '/opt/homebrew/opt/openjdk/bin'
-  else if test -d '/usr/local/opt/openjdk/bin'
-    fish_add_path '/usr/local/opt/openjdk/bin'
-  end
-end
-
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.

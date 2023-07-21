@@ -1,5 +1,0 @@
----
-dependencies:
-  - role: variable
-  - role: java
-    when: java_role_executed is not defined and ansible_system == "Linux"
