@@ -42,7 +42,6 @@ vscode_extensions:
   - "ms-vscode-remote.vscode-remote-extensionpack"
   - "ms-vscode.vscode-serial-monitor"
   - "mhutchie.git-graph"
-  - "RandomFractalsInc.vscode-data-preview"
   - "redhat.vscode-yaml"
   - "ritwickdey.liveserver"
   - "rust-lang.rust-analyzer"

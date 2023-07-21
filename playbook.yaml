@@ -221,16 +221,6 @@
         - deskenv
         - desktop
 
-    - name: Install Direnv environment variables shell extension
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.direnv
-      tags:
-        - container
-        - desktop
-        - direnv
-        - server
-        - wsl
-
     - name: Install Docker container platform
       ansible.builtin.import_role:
         name: scruffaluff.bootware.docker

@@ -271,14 +271,6 @@ if test -z "$SHELL_MINIMAL_CONFIG"; and type -q doctl
   source (doctl completion fish | psub)
 end
 
-# Initialize Direnv if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if test -z "$SHELL_MINIMAL_CONFIG"; and type -q direnv
-  direnv hook fish | source
-end
-
 # Initialize GCloud if on MacOS and available.
 #
 # GCloud completion is provided on Linux via a Fish package. Do not use long

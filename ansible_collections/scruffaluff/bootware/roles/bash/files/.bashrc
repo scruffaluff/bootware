@@ -241,17 +241,6 @@ if [[ \
   source <(doctl completion bash)
 fi
 
-# Initialize Direnv if available.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && -x "$(command -v direnv)" \
-]]; then
-  eval "$(direnv hook bash)"
-fi
-
 # Initialize GCloud if on MacOS and available.
 #
 # Flags:

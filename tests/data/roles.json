@@ -70,11 +70,6 @@
   },
   { "name": "deskenv" },
   {
-    "name": "direnv",
-    "skip": [{ "os": "windows" }],
-    "tests": ["direnv --version"]
-  },
-  {
     "name": "dust",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["dust --version"]
