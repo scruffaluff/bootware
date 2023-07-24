@@ -1,6 +1,0 @@
----
-- name: Install Neovim
-  ansible.builtin.import_tasks: install.yaml
-
-- name: Configure Neovim settings
-  ansible.builtin.import_tasks: settings.yaml

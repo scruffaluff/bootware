@@ -249,7 +249,6 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["navi --version"]
   },
-  { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
@@ -331,7 +330,6 @@
     "tests": ["tilt version"]
   },
   { "name": "tldr", "skip": [{ "os": "suse" }], "tests": ["tldr --version"] },
-  { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
