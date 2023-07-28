@@ -925,6 +925,18 @@
         - tldr
         - wsl
 
+    - name: Install Tmux terminal multiplexer
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.tmux
+      tags:
+        - container
+        - desktop
+        - extras
+        - server
+        - terminal
+        - tmux
+        - wsl
+
     - name: Install USQL
       ansible.builtin.import_role:
         name: scruffaluff.bootware.usql
