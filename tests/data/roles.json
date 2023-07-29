@@ -10,11 +10,6 @@
   },
   { "name": "appimage" },
   { "name": "audio" },
-  {
-    "name": "avro",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["avro-tools cat"]
-  },
   { "name": "aws", "tests": ["aws --version"] },
   {
     "name": "bash",
@@ -69,11 +64,6 @@
     "tests": ["deno --version"]
   },
   { "name": "deskenv" },
-  {
-    "name": "direnv",
-    "skip": [{ "os": "windows" }],
-    "tests": ["direnv --version"]
-  },
   {
     "name": "dust",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
@@ -143,7 +133,6 @@
   },
   {
     "name": "gitlab",
-    "skip": [{ "arch": "arm64", "os": "fedora" }],
     "tests": ["gitlab-runner --version"]
   },
   {
@@ -193,7 +182,6 @@
     ],
     "tests": ["hyperfine --version"]
   },
-  { "name": "java", "tests": ["java -version", "mvn --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },
@@ -260,11 +248,9 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["navi --version"]
   },
-  { "name": "neovim", "tests": ["nvim --version"] },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
-  { "name": "parquet" },
   {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],

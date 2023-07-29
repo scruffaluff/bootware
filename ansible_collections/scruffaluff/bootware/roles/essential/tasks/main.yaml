@@ -60,7 +60,6 @@
 #     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
 #   loop:
 #     - extras
-#     - java
 #     - main
 #     - nerd-fonts
 #     - versions
@@ -76,7 +75,6 @@
     essential_bucket_add.stdout
   loop:
     - extras
-    - java
     - main
     - nerd-fonts
     - versions

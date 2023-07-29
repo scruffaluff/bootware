@@ -1,7 +1,0 @@
----
-dependencies:
-  - role: variable
-  # Neovim requires C++ redistributables on Windows to start.
-  - role: build
-    when: ansible_system == "Win32NT"
-  - role: git

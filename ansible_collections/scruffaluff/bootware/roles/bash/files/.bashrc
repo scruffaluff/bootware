@@ -120,21 +120,6 @@ fi
 export GOPATH="${HOME}/.go"
 prepend_path "${GOPATH}/bin"
 
-# Java settings.
-
-# Find and add Java OpenJDK directory to path.
-#
-# Flags:
-#   -d: Check if inode is a directory.
-#   -s: Print machine kernel name.
-if [[ "$(uname -s)" == 'Darwin' ]]; then
-  if [[ -d '/opt/homebrew/opt/openjdk/bin' ]]; then
-    prepend_path '/opt/homebrew/opt/openjdk/bin'
-  elif [[ -d '/usr/local/opt/openjdk/bin' ]]; then
-    prepend_path '/usr/local/opt/openjdk/bin'
-  fi
-fi
-
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
@@ -239,17 +224,6 @@ if [[ \
   "$-" == *i* && -x "$(command -v doctl)" \
 ]]; then
   source <(doctl completion bash)
-fi
-
-# Initialize Direnv if available.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && -x "$(command -v direnv)" \
-]]; then
-  eval "$(direnv hook bash)"
 fi
 
 # Initialize GCloud if on MacOS and available.

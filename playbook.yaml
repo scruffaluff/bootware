@@ -61,14 +61,6 @@
         - audio
         - desktop
 
-    - name: Install Avro file serialization tools
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.avro
-      tags:
-        - avro
-        - extras
-        - never
-
     - name: Install Amazon Web Services development tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.aws
@@ -220,16 +212,6 @@
       tags:
         - deskenv
         - desktop
-
-    - name: Install Direnv environment variables shell extension
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.direnv
-      tags:
-        - container
-        - desktop
-        - direnv
-        - server
-        - wsl
 
     - name: Install Docker container platform
       ansible.builtin.import_role:
@@ -530,14 +512,6 @@
         - server
         - wsl
 
-    - name: Install Java language
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.java
-      tags:
-        - extras
-        - java
-        - never
-
     - name: Install Jq JSON parser
       ansible.builtin.import_role:
         name: scruffaluff.bootware.jq
@@ -683,14 +657,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Neovim terminal text editor
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.neovim
-      tags:
-        - extras
-        - neovim
-        - never
-
     - name: Install Node JavaScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.node
@@ -723,14 +689,6 @@
         - packer
         - server
         - wsl
-
-    - name: Install Parquet file serialization tools
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.parquet
-      tags:
-        - extras
-        - never
-        - parquet
 
     - name: Install PowerShell shell
       ansible.builtin.import_role:

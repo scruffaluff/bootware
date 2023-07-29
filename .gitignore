@@ -19,10 +19,9 @@ __pycache__/
 /site/
 /tmp/
 ansible_collections/*
+ansible_collections/scruffaluff/bootware/CHANGELOG.md
+ansible_collections/scruffaluff/bootware/README.md
 CHANGELOG.md
 dist/
 node_modules/
-README.md
-!/CHANGELOG.md
-!/README.md
 !ansible_collections/scruffaluff
