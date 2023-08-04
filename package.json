@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/mustache": "^4.2.2",
     "@types/node": "^20.4.0",
     "bats": "^1.10.0",
     "bats-assert": "https://github.com/ztombol/bats-assert",
