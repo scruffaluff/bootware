@@ -2,11 +2,11 @@
  * Vuepress documentation builder.
  */
 
-const fs = require("fs");
-const mustache = require("mustache");
-const path = require("path");
-const prettier = require("prettier");
-const vitepress = require("vitepress");
+import fs from "node:fs";
+import path from "node:path";
+import mustache from "mustache";
+import prettier from "prettier";
+import vitepress from "vitepress";
 
 interface Condition {
   arch?: string;
