@@ -29,7 +29,7 @@
 
 - name: Update user path to include Pipx binaries for Windows
   ansible.windows.win_path:
-    elements: "{{ ansible_env.HOME }}\\.local\\bin"
+    elements: "{{ user_home }}\\.local\\bin"
     scope: user
   when: ansible_system == "Win32NT"
 

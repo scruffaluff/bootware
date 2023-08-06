@@ -179,6 +179,7 @@ bootstrap() {
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
   local extra_args=()
+  local install_user
   local inventory='127.0.0.1,'
   local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
@@ -233,6 +234,10 @@ bootstrap() {
         cmd='playbook'
         connection='ssh'
         inventory="${2}"
+        shift 2
+        ;;
+      --install-user)
+        install_user="${2}"
         shift 2
         ;;
       --no-passwd)
@@ -352,6 +357,7 @@ bootstrap() {
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
+    ${install_user:+--extra-vars "user_id=${install_user}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \

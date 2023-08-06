@@ -72,11 +72,12 @@
 
 - name: Copy Git configuration file
   ansible.builtin.template:
-    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    dest: "{{ user_home }}/.gitconfig"
     force: true
     mode: "644"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: gitconfig.j2
+  become: true
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

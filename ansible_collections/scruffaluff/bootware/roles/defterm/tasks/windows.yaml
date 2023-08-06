@@ -8,7 +8,7 @@
 # and Windows version.
 - name: Create Windows Terminal configuration directories for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/AppData/Local/{{ item }}"
+    path: "{{ user_home }}/AppData/Local/{{ item }}"
     state: directory
   loop:
     - Microsoft/Windows Terminal
@@ -16,13 +16,13 @@
 
 - name: Create Windows Terminal Scoop configuration directory for Windows 10
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/scoop/apps/windows-terminal/current/settings"
+    path: "{{ user_home }}/scoop/apps/windows-terminal/current/settings"
     state: directory
   when: "'Windows 10' in ansible_distribution"
 
 - name: Copy Windows Terminal configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ ansible_env.HOME }}/AppData/Local/{{ item }}"
+    dest: "{{ user_home }}/AppData/Local/{{ item }}"
     force: true
     src: windows.j2
   loop:
@@ -32,8 +32,7 @@
 - name: Copy Windows Terminal Scoop configuration file for Windows 10
   ansible.windows.win_template:
     dest: >-
-      {{ ansible_env.HOME
-      }}/scoop/apps/windows-terminal/current/settings/settings.json
+      {{ user_home }}/scoop/apps/windows-terminal/current/settings/settings.json
     force: true
     src: windows.j2
   when: "'Windows 10' in ansible_distribution"

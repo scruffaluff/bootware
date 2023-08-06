@@ -60,6 +60,6 @@
     append: true
     groups:
       - wireshark
-    name: "{{ ansible_user_id }}"
+    name: "{{ user_id }}"
   become: true
   when: ansible_system == "Linux"

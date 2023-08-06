@@ -31,32 +31,37 @@
 - name: Create Zellij settings directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/zellij"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/zellij"
     state: directory
+  become: true
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Zellij settings file for Unix
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.config/zellij/config.kdl"
+    dest: "{{ user_home }}/.config/zellij/config.kdl"
     force: true
     mode: "644"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: config.kdl
+  become: true
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
     state: directory
+  become: true
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Zellij Fish completion for Unix
   ansible.builtin.shell:
     cmd: >-
-      zellij setup --generate-completion fish > {{ ansible_env.HOME
+      zellij setup --generate-completion fish > {{ user_home
       }}/.config/fish/completions/zellij.fish
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: true
   when: ansible_system in ["Darwin", "Linux"]

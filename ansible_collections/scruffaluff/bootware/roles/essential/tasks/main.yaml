@@ -57,7 +57,7 @@
 #   community.windows.win_scoop_bucket:
 #     name: "{{ item }}"
 #   environment:
-#     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+#     Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
 #   loop:
 #     - extras
 #     - main
@@ -69,7 +69,7 @@
   ansible.windows.win_shell: "scoop bucket add {{ item }}"
   changed_when: "'bucket was added successfully' in essential_bucket_add"
   environment:
-    Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+    Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     essential_bucket_add.rc != 0 and 'bucket already exists' not in
     essential_bucket_add.stdout

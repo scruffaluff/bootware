@@ -26,8 +26,9 @@
 
 - name: Copy SQLite settings file
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.sqliterc"
+    dest: "{{ user_home }}/.sqliterc"
     force: true
     mode: "644"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: .sqliterc
+  become: true

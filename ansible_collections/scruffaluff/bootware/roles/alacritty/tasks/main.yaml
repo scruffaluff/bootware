@@ -42,29 +42,31 @@
 - name: Create Alacritty configuration directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/alacritty/"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/alacritty/"
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Create Alacritty configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/AppData/Roaming/alacritty/"
+    path: "{{ user_home }}/AppData/Roaming/alacritty/"
     state: directory
   when: ansible_system == "Win32NT"
 
 - name: Copy Alacritty configuration file for Unix
   ansible.builtin.template:
-    dest: "{{ ansible_env.HOME }}/.config/alacritty/alacritty.yml"
+    dest: "{{ user_home }}/.config/alacritty/alacritty.yml"
     force: true
     mode: "644"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: alacritty.j2
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ ansible_env.HOME }}/AppData/Roaming/alacritty/alacritty.yml"
+    dest: "{{ user_home }}/AppData/Roaming/alacritty/alacritty.yml"
     force: true
     src: alacritty.j2
   when: ansible_system == "Win32NT"

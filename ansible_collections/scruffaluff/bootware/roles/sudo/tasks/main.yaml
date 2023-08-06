@@ -20,11 +20,11 @@
 - name: Enable passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
-      # Enable passwordless sudo for {{ ansible_user_id }} user.
-      {{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL
+      # Enable passwordless sudo for {{ user_id }} user.
+      {{ user_id }} ALL=(ALL) NOPASSWD:ALL
     create: true
     marker: >-
-      # {mark} ANSIBLE MANAGED passwordless sudo for {{ ansible_user_id }} BLOCK
+      # {mark} ANSIBLE MANAGED passwordless sudo for {{ user_id }} BLOCK
     mode: "440"
     owner: root
     path: /etc/sudoers

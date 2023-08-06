@@ -47,8 +47,9 @@
     dest: "{{ item }}/user.js"
     force: true
     mode: "600"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: user.js
+  become: true
   loop: "{{ firefox_profiles_unix['paths'] }}"
   when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 

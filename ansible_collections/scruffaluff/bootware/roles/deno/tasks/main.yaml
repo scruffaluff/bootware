@@ -15,12 +15,16 @@
     dest: /tmp/deno_install.sh
     mode: "755"
     url: https://deno.land/x/install/install.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
     != "apk" and system_architecture == "amd64")
 
 - name: Install Deno for Unix
   ansible.builtin.command: /tmp/deno_install.sh
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'installed successfully' in deno_install"
   register: deno_install
   when: >-
@@ -35,18 +39,20 @@
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/fish/completions"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Generate Deno Fish completions for Unix
   ansible.builtin.shell: >-
-    deno completions fish > {{ ansible_env.HOME
-    }}/.config/fish/completions/deno.fish
+    deno completions fish > {{ user_home }}/.config/fish/completions/deno.fish
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: true
   environment:
-    PATH: "{{ ansible_env.HOME }}/.deno/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ user_home }}/.deno/bin:{{ ansible_env.PATH }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     ansible_pkg_mgr != "apk" and system_architecture == "amd64")
@@ -54,13 +60,13 @@
 - name: Create Deno PowerShell completions directory for Windows
   ansible.windows.win_file:
     path: >-
-      {{ ansible_env.HOME }}/Documents/WindowsPowerShell/Modules/DenoCompletion
+      {{ user_home }}/Documents/WindowsPowerShell/Modules/DenoCompletion
     state: directory
   when: ansible_system == "Win32NT"
 
 - name: Generate Deno PowerShell completions module for Windows
   ansible.windows.win_shell: >-
-    deno completions powershell > {{ ansible_env.HOME
+    deno completions powershell > {{ user_home
     }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1
   changed_when: true
   when: ansible_system == "Win32NT"

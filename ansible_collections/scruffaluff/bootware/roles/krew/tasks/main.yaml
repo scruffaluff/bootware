@@ -42,9 +42,11 @@
 - name: Install Kubectl plugins for Unix
   ansible.builtin.command:
     cmd: "kubectl-krew install {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_plugin_install"
   environment:
-    PATH: "{{ ansible_env.HOME }}/.krew/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ user_home }}/.krew/bin:{{ ansible_env.PATH }}"
   loop: "{{ kubectl_plugins }}"
   register: krew_plugin_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
@@ -52,7 +54,7 @@
 #   ansible.windows.win_command: kubectl-krew install {{ item }}
 #   changed_when: "'Installed plugin' in krew_plugin_install"
 #   environment:
-#     Path: "{{ ansible_env.HOME }}\\.krew\\bin;{{ ansible_env.Path }}"
+#     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_env.Path }}"
 #   loop: "{{ kubectl_plugins }}"
 #   register: krew_plugin_install
 #   when: ansible_system == "Win32NT"

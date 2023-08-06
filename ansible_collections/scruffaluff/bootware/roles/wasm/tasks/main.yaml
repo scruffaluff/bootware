@@ -28,10 +28,12 @@
 
 - name: Install Wasm Pack for Unix
   ansible.builtin.command: /tmp/wasm_pack_init.sh
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in wasm_pack_install"
   environment:
     PATH: >-
-      {{ ansible_env.HOME }}/.wasmtime/bin:{{ ansible_env.HOME }}/.cargo/bin:{{
+      {{ user_home }}/.wasmtime/bin:{{ user_home }}/.cargo/bin:{{
       ansible_env.PATH }}
   register: wasm_pack_install
   when: >-

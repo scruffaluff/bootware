@@ -52,9 +52,9 @@
 
 - name: Download Fzf Bash key bindings file for Unix
   ansible.builtin.get_url:
-    dest: "{{ ansible_env.HOME }}/.fzf_key_bindings.bash"
+    dest: "{{ user_home }}/.fzf_key_bindings.bash"
     mode: "755"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.bash
   become: true
   when: ansible_system != "Win32NT"
@@ -62,16 +62,17 @@
 - name: Create Fish functions directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/fish/functions"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/functions"
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Download Fzf Fish key bindings file for Unix
   ansible.builtin.get_url:
-    dest: "{{ ansible_env.HOME }}/.config/fish/functions/fzf_key_bindings.fish"
+    dest: "{{ user_home }}/.config/fish/functions/fzf_key_bindings.fish"
     mode: "755"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
   become: true
   when: ansible_system != "Win32NT"

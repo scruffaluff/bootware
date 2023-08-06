@@ -10,8 +10,8 @@
 - name: Install Rust and Cargo applications for Unix
   environment:
     PATH: >-
-      {{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{
-      ansible_env.PATH }}
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
+      }}
   block:
     - name: Install Rust for Unix
       # prettier-ignore
@@ -19,10 +19,14 @@
         cmd: >-
           curl -LSfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
           -y --no-modify-path
-        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+        creates: "{{ user_home }}/.cargo/bin/rustup"
+      become: true
+      become_user: "{{ user_id }}"
 
     - name: Update Rust for Unix
       ansible.builtin.command: "{{ item }}"
+      become: true
+      become_user: "{{ user_id }}"
       changed_when: "' changed' in rust_update"
       failed_when: >-
         rust_update.rc != 0 and 'update is disabled' not in rust_update.stderr
@@ -33,12 +37,16 @@
 
     - name: Add Rust components for Unix
       ansible.builtin.command: "rustup component add {{ item }}"
+      become: true
+      become_user: "{{ user_id }}"
       changed_when: "'installing' in rust_component_add"
       loop: "{{ rust_components }}"
       register: rust_component_add
 
     - name: Add Rust targets for Unix
       ansible.builtin.command: "rustup target add {{ item }}"
+      become: true
+      become_user: "{{ user_id }}"
       changed_when: "'installing' in rust_target_add"
       loop: "{{ rust_targets }}"
       register: rust_target_add
@@ -46,9 +54,10 @@
     - name: Create Cargo Binstall applications directory for Unix
       ansible.builtin.file:
         mode: "755"
-        owner: "{{ ansible_user_id }}"
-        path: "{{ ansible_env.HOME }}/.local/bin"
+        owner: "{{ user_id }}"
+        path: "{{ user_home }}/.local/bin"
         state: directory
+      become: true
       when: ansible_system in ["Darwin", "Linux"]
 
     - name: Download Cargo Binstall for Unix
@@ -75,8 +84,9 @@
 
     - name: Install Cargo Binstall for Unix
       ansible.builtin.copy:
-        dest: "{{ ansible_env.HOME }}/.local/bin/cargo-binstall"
+        dest: "{{ user_home }}/.local/bin/cargo-binstall"
         mode: "755"
+        owner: "{{ user_id }}"
         remote_src: true
         src: /tmp/cargo-binstall
       become: true
@@ -84,6 +94,8 @@
 
     - name: Update or install Cargo packages for Unix
       ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+      become: true
+      become_user: "{{ user_id }}"
       changed_when: "'This will install' in rust_binstall_package"
       loop: "{{ cargo_applications }}"
       register: rust_binstall_package

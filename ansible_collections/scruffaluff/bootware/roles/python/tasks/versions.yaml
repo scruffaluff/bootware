@@ -81,15 +81,19 @@
   # prettier-ignore
   ansible.builtin.shell:  # noqa command-instead-of-module
     cmd: curl -LSfs https://pyenv.run | bash
-    creates: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv"
+    creates: "{{ user_home }}/.pyenv/bin/pyenv"
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Update Pyenv for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.bashrc
+      source {{ user_home }}/.bashrc
       pyenv update
     executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   # TODO: Figure out update message.
   changed_when: true
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
@@ -97,9 +101,11 @@
 - name: Get latest patch release for each Python minor version for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.bashrc
+      source {{ user_home }}/.bashrc
       pyenv install --list | grep --extended-regexp "^\\s*{{ item }}.[0-9]+\\s*$" | tail -1 | xargs
     executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: false
   loop: "{{ python_versions }}"
   register: python_pyenv_releases
@@ -114,9 +120,11 @@
 - name: Install multiple Python versions for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.bashrc
+      source {{ user_home }}/.bashrc
       pyenv install --skip-existing {{ item }}
     executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Installed Python' in python_version_install"
   loop: "{{ python_releases }}"
   register: python_version_install
@@ -131,9 +139,11 @@
 - name: Set Python global versions for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.bashrc
+      source {{ user_home }}/.bashrc
       pyenv global system {{ python_releases | reverse | join(' ') }}
     executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   # Command does not provide stdout information to determine a change.
   changed_when: true
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"

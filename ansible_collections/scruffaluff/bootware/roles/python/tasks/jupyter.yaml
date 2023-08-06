@@ -2,21 +2,23 @@
 - name: Create Jupyter settings directory for Unix
   ansible.builtin.file:
     mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.jupyter"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.jupyter"
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Create Jupyter settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/.jupyter"
+    path: "{{ user_home }}/.jupyter"
     state: directory
   when: ansible_system == "Win32NT"
 
 - name: Copy Jupyter notebook settings file
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.jupyter/jupyter_notebook_config.py"
+    dest: "{{ user_home }}/.jupyter/jupyter_notebook_config.py"
     force: true
     mode: "755"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: jupyter_notebook_config.py
+  become: true

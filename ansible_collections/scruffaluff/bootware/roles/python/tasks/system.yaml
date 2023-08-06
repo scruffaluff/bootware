@@ -72,8 +72,7 @@
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
   ansible.windows.win_file:
-    path:
-      "{{ ansible_env.HOME }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    path: "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
     state: absent
   loop:
     - python.exe
