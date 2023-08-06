@@ -17,6 +17,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: lua
   when: ansible_system == "Darwin"

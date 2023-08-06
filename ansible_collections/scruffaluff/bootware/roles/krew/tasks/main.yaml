@@ -29,6 +29,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Krew for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: krew
   when: ansible_system == "Darwin"

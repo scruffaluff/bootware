@@ -35,6 +35,8 @@
   when: ansible_system == "Linux"
 
 - name: Install K9s for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: k9s
   when: ansible_system == "Darwin"

@@ -41,6 +41,8 @@
   when: ansible_system == "Darwin"
 
 - name: Install Usql for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: xo/xo/usql
   when: ansible_system == "Darwin"

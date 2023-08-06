@@ -1,5 +1,7 @@
 ---
 - name: Install desktop management dependencies for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: duti
   when: ansible_system == "Darwin"

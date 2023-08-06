@@ -20,6 +20,8 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install Yq for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: yq
   when: ansible_system == "Darwin"

@@ -38,6 +38,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Mongo Shell for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: mongosh
   when: ansible_system == "Darwin"

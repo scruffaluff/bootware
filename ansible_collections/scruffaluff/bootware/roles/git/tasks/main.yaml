@@ -54,6 +54,8 @@
     system_architecture != "arm64")
 
 - name: Install Git for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - git

@@ -40,6 +40,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Croc for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: croc
   when: ansible_system == "Darwin"

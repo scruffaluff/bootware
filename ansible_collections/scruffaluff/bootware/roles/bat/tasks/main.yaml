@@ -29,6 +29,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Bat for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: bat
   when: ansible_system == "Darwin"

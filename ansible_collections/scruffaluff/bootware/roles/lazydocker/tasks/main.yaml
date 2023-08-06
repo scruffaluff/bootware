@@ -34,6 +34,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Lazydocker for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: lazydocker
   when: ansible_system == "Darwin"

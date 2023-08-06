@@ -26,6 +26,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Shfmt for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: shfmt
   when: ansible_system == "Darwin"

@@ -52,6 +52,8 @@
 
 # Do not install the Wireshark formula. It conflicts with the Wireshark cask.
 - name: Install Termshark for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: termshark
   when: ansible_system == "Darwin"

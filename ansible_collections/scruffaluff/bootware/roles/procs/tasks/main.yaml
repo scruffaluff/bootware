@@ -37,6 +37,8 @@
     "zypper"]
 
 - name: Install Procs for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: procs
   when: ansible_system == "Darwin"

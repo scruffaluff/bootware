@@ -36,6 +36,8 @@
 
 # Disabled since GDU conflicts with an internal Homebrew binary.
 # - name: Install GDU for MacOS
+#   become: true
+#   become_user: "{{ user_id }}"
 #   community.general.homebrew:
 #     name: gdu
 #   when: ansible_system == "Darwin"

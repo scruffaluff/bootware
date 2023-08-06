@@ -29,6 +29,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Hyperfine for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: hyperfine
   when: ansible_system == "Darwin"

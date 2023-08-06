@@ -19,6 +19,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Kind for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: kind
   when: ansible_system == "Darwin"

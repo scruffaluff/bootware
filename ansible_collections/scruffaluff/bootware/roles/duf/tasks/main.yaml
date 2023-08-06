@@ -49,6 +49,8 @@
     "zypper"]
 
 - name: Install Duf for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: duf
   when: ansible_system == "Darwin"

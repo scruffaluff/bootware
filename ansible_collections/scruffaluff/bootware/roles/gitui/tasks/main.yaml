@@ -43,6 +43,8 @@
     system_architecture != "arm64")
 
 - name: Install GitUI for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: gitui
   when: ansible_system == "Darwin"

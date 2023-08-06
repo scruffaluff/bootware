@@ -29,6 +29,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Terraform for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: terraform
   when: ansible_system == "Darwin"

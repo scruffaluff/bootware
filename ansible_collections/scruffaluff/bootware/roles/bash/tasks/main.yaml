@@ -14,6 +14,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Bash for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - bash

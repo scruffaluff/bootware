@@ -24,6 +24,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: zellij
   when: ansible_system == "Darwin"

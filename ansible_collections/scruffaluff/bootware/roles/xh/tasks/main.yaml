@@ -47,6 +47,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Xh for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: xh
   when: ansible_system == "Darwin"

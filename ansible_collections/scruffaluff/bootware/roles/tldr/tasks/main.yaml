@@ -30,6 +30,8 @@
   when: ansible_system == "Linux"
 
 - name: Install TLDR for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: tealdeer
   when: ansible_system == "Darwin"

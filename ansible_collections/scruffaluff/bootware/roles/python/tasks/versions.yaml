@@ -66,6 +66,8 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Pyenv dependencies for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - openssl

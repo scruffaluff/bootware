@@ -23,6 +23,8 @@
   when: ansible_system == "Linux" and python_pipx_package_install is failed
 
 - name: Install Pipx for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"

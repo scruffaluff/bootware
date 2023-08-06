@@ -43,6 +43,8 @@
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew packages for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: "{{ item }}"
     state: present

@@ -20,6 +20,8 @@
     system_architecture == "amd64")
 
 - name: Install ShellCheck for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: shellcheck
   when: ansible_system == "Darwin"

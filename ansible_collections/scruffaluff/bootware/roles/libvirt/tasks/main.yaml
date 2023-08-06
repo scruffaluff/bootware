@@ -44,6 +44,8 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: libvirt
   when: ansible_system == "Darwin"

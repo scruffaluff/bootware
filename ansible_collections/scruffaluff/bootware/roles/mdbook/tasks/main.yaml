@@ -40,6 +40,8 @@
     system_architecture == "amd64"
 
 - name: Install Mdbook for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: mdbook
   when: ansible_system == "Darwin" and system_architecture == "amd64"

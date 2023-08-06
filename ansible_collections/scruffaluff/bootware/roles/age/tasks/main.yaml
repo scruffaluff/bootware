@@ -38,6 +38,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Age for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: age
   when: ansible_system == "Darwin"

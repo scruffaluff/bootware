@@ -31,6 +31,8 @@
   when: ansible_pkg_mgr == "dnf"
 
 - name: Update packages for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     update_homebrew: true
     upgrade_all: true

@@ -28,6 +28,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: doctl
   when: ansible_system == "Darwin"

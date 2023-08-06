@@ -50,6 +50,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf"]
 
 - name: Install Sops for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: sops
   when: ansible_system == "Darwin"

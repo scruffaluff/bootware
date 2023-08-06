@@ -19,6 +19,8 @@
   when: ansible_system == "Linux"
 
 - name: Install K3d for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: k3d
   when: ansible_system == "Darwin"

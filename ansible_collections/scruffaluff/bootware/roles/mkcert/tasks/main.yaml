@@ -34,6 +34,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Mkcert for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - mkcert

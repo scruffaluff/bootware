@@ -26,6 +26,8 @@
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Xsv for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: xsv
   when: ansible_system == "Darwin"
