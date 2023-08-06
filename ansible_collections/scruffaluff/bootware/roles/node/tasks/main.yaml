@@ -38,6 +38,8 @@
 
 - name: Install Node version manager for Unix
   ansible.builtin.command: /tmp/nvm_install.sh
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'start using nvm' in node_nvm_install"
   register: node_nvm_install
   when: >-

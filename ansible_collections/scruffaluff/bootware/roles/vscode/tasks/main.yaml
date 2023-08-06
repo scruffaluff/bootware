@@ -6,6 +6,8 @@
 - name: Install VSCode for Arch
   ansible.builtin.command: >-
     yay --noconfirm --refresh --sync visual-studio-code-bin
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'installing visual-studio-code-bin' in vscode_arch_install"
   register: vscode_arch_install
   when: ansible_pkg_mgr == "pacman"

@@ -12,4 +12,6 @@
       defaults write com.googlecode.iterm2 "Cursor Type" -float 1
       defaults write com.googlecode.iterm2 PromptOnQuit -bool 0
       defaults write com.googlecode.iterm2 QuitWhenAllWindowsClosed -float 1
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: true

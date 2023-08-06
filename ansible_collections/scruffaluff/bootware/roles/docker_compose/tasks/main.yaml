@@ -52,7 +52,6 @@
   become_user: "{{ user_id }}"
   community.general.homebrew:
     name: docker-compose
-    state: present
   when: ansible_system == "Darwin"
 
 - name: Install Docker Compose for Windows

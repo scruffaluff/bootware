@@ -52,6 +52,8 @@
 
 - name: Update TLDR documentation for Unix
   ansible.builtin.command: tldr --update
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Successfully updated' in tldr_update"
   register: tldr_update
   when: ansible_system != "Win32NT"

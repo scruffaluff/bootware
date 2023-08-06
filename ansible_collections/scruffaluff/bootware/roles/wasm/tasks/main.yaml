@@ -8,6 +8,8 @@
 
 - name: Install Wasmtime for Unix
   ansible.builtin.command: /tmp/wasmtime_install.sh
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Finished installation' in wasm_install"
   register: wasm_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]

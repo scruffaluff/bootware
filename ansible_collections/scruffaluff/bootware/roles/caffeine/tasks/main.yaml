@@ -1,6 +1,8 @@
 ---
 - name: Check if Caffeine shell extension is installed for GNOME desktops
   ansible.builtin.command: gnome-extensions show caffeine@patapon.info
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: false
   ignore_errors: true
   register: caffeine_shell_check
@@ -18,6 +20,8 @@
 - name: Install Caffeine shell extension for GNOME desktops
   ansible.builtin.command: >-
     gnome-extensions install /tmp/caffeinepatapon.info.shell-extension.zip
+  become: true
+  become_user: "{{ user_id }}"
   # Command does not provide stdout information to determine a change.
   changed_when: true
   when: >-
@@ -28,6 +32,8 @@
   block:
     - name: Enable Caffeine shell extension for GNOME desktops
       ansible.builtin.command: gnome-extensions enable caffeine@patapon.info
+      become: true
+      become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.
       changed_when: true
       when: ansible_system == "Linux" and gnome_desktop

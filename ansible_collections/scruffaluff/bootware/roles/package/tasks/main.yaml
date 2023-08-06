@@ -47,7 +47,6 @@
   become_user: "{{ user_id }}"
   community.general.homebrew:
     name: "{{ item }}"
-    state: present
   loop: "{{ homebrew_packages }}"
   when: ansible_system == "Darwin"
 

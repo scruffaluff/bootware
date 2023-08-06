@@ -24,6 +24,8 @@
 - name: Install Krew for Linux
   ansible.builtin.command:
     cmd: "/tmp/krew-linux_{{ system_architecture }} install krew"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_install"
   register: krew_install
   when: ansible_system == "Linux"

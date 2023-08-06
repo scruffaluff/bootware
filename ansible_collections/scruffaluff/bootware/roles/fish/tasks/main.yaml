@@ -74,6 +74,8 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install"
   register: fish_fisher_install
   when: >-
