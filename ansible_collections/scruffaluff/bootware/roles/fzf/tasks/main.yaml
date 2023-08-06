@@ -73,7 +73,7 @@
 - name: Download Fzf Fish key bindings file for Unix
   ansible.builtin.get_url:
     dest: "{{ user_home }}/.config/fish/functions/fzf_key_bindings.fish"
-    mode: "755"
+    mode: "644"
     owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
   become: true

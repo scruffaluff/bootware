@@ -128,7 +128,7 @@ end
 # Flags:
 #   -f: Check if inode is a regular file.
 if test -z "$SHELL_MINIMAL_CONFIG"; and \
-  type -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
+  test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
   fzf_key_bindings
 end
 
