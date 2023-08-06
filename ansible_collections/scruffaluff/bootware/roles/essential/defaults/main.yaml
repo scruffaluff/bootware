@@ -1,6 +1,7 @@
 ---
 _essential_linux_packages:
   always:
+    - acl
     - bzip2
     - ca-certificates
     - findutils

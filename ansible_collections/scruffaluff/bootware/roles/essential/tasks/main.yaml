@@ -45,6 +45,7 @@
   become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
+      - acl
       - bzip2
       - gnupg
       - unzip

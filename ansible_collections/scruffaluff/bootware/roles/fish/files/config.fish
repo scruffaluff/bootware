@@ -123,7 +123,12 @@ if test -z "$SHELL_MINIMAL_CONFIG"; and type -q bat; and type -q tree
   set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
 end
 
-if test -z "$SHELL_MINIMAL_CONFIG"; and type -q fzf
+# Load Fzf keybindings if they exist.
+#
+# Flags:
+#   -f: Check if inode is a regular file.
+if test -z "$SHELL_MINIMAL_CONFIG"; and \
+  type -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
   fzf_key_bindings
 end
 
