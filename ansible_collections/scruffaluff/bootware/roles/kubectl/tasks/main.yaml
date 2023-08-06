@@ -45,6 +45,12 @@
     name: kubectl
   when: ansible_system == "Win32NT"
 
+- name: Check if Fish executable is available
+  ansible.builtin.stat:
+    path: "{{ fish_executable }}"
+  register: kubectl_fish
+  when: ansible_system != "Win32NT"
+
 - name: Install Kubectl Fish completion for Unix
   ansible.builtin.shell:
     cmd: |
@@ -54,4 +60,4 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and kubectl_fish.stat.exists
