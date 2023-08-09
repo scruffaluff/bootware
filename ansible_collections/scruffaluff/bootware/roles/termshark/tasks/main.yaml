@@ -42,6 +42,7 @@
 - name: Install Termshark for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/termshark
+    force: true
     mode: "755"
     remote_src: true
     src: >-
@@ -93,7 +94,7 @@
 
 - name: Create Termshark configuration directory for Unix
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/termshark"
     state: directory
@@ -102,7 +103,7 @@
 
 - name: Create Termshark configuration directory for MacOS
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/termshark"
     state: directory
@@ -111,6 +112,7 @@
 
 - name: Create Termshark configuration directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/termshark"
     state: directory
   when: ansible_system == "Win32NT"
@@ -119,7 +121,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/termshark/termshark.toml"
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: termshark.toml
   become: true
@@ -130,7 +132,7 @@
     dest: >-
       {{ user_home }}/Library/Application Support/termshark/termshark.toml
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: termshark.toml
   become: true
@@ -140,5 +142,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}/AppData/Roaming/termshark/termshark.toml"
     force: true
+    owner: "{{ user_id }}"
     src: termshark.toml
   when: ansible_system == "Win32NT"

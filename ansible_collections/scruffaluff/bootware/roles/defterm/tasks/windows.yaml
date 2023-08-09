@@ -16,6 +16,7 @@
 
 - name: Create Windows Terminal Scoop configuration directory for Windows 10
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/scoop/apps/windows-terminal/current/settings"
     state: directory
   when: "'Windows 10' in ansible_distribution"

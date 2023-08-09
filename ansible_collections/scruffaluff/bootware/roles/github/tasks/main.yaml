@@ -74,6 +74,7 @@
 
 - name: Create GitHub runner directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ github_folder }}"
     state: directory
   when: ansible_system == "Win32NT"

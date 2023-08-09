@@ -29,6 +29,7 @@
 - name: Install Htmlq for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/htmlq
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/htmlq

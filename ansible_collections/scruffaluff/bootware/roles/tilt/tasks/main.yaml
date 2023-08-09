@@ -27,6 +27,7 @@
 - name: Install Tilt for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/tilt
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/tilt

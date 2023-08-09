@@ -34,6 +34,7 @@
 - name: Install GitUI for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/gitui
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/gitui

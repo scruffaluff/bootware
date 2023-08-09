@@ -28,6 +28,7 @@
 - name: Install Helix for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/hx
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-{{ helix_arch }}-linux/hx
@@ -52,7 +53,7 @@
 
 - name: Create Helix configuration directory for Unix
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/helix/"
     state: directory
@@ -62,7 +63,8 @@
 - name: Install Helix runtime files for Linux
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix/"
-    mode: "755"
+    force: true
+    mode: "770"
     owner: "{{ user_id }}"
     remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
@@ -75,7 +77,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix/{{ item }}"
     force: true
-    mode: "664"
+    mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
   become: true
@@ -86,6 +88,7 @@
 
 - name: Create Helix configuration directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/helix"
     state: directory
   when: ansible_system == "Win32NT"
@@ -94,6 +97,7 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}/AppData/Roaming/helix/{{ item }}"
     force: true
+    owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - config.toml

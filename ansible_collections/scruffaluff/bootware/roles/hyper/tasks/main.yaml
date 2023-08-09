@@ -78,7 +78,7 @@
 
 - name: Create Hyper configuration directory for Linux
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/Hyper/"
     state: directory
@@ -87,7 +87,7 @@
 
 - name: Create Hyper configuration directory for MacOS
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/Hyper/"
     state: directory
@@ -96,6 +96,7 @@
 
 - name: Create Hyper configuration directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/Hyper/"
     state: directory
   when: ansible_system == "Win32NT"
@@ -124,5 +125,6 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}/AppData/Roaming/Hyper/.hyper.js"
     force: true
+    owner: "{{ user_id }}"
     src: hyper.j2
   when: ansible_system == "Win32NT"

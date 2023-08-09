@@ -28,6 +28,7 @@
 - name: Install K9s for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/k9s
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/k9s
@@ -48,7 +49,7 @@
 
 - name: Create K9s configuration directory for FreeBSD
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.k9s"
     state: directory
@@ -57,7 +58,7 @@
 
 - name: Create K9s configuration directory for Linux
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/k9s"
     state: directory
@@ -66,7 +67,7 @@
 
 - name: Create K9s configuration directory for MacOS
   ansible.builtin.file:
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/k9s"
     state: directory
@@ -75,6 +76,7 @@
 
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Local/k9s"
     state: directory
   when: ansible_system == "Win32NT"
@@ -83,7 +85,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.k9s/skin.yml"
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
@@ -93,7 +95,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/k9s/skin.yml"
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
@@ -103,7 +105,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/Library/Application Support/k9s/skin.yml"
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
@@ -113,5 +115,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}/AppData/Local/k9s/skin.yml"
     force: true
+    owner: "{{ user_id }}"
     src: skin.yml
   when: ansible_system == "Win32NT"

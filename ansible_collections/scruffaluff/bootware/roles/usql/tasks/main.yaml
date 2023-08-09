@@ -29,6 +29,7 @@
 - name: Install Usql for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/usql
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/usql_static
@@ -52,11 +53,20 @@
     name: usql
   when: ansible_system == "Win32NT"
 
-- name: Copy Usql settings file
+- name: Copy Usql settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.usqlrc"
     force: true
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
     src: .usqlrc
   become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Usql settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.usqlrc"
+    force: true
+    owner: "{{ user_id }}"
+    src: .usqlrc
+  when: ansible_system == "Win32NT"

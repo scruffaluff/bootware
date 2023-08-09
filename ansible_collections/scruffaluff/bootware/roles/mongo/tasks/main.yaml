@@ -29,6 +29,7 @@
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/mongosh
+    force: true
     mode: "755"
     remote_src: true
     src: >-

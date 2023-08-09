@@ -21,7 +21,7 @@
 - name: Create Starship settings directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     state: directory
   become: true
@@ -30,7 +30,8 @@
 - name: Create Starship settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/starship.toml"
-    mode: "644"
+    force: true
+    mode: "640"
     owner: "{{ user_id }}"
     src: starship.toml
   become: true
@@ -38,6 +39,7 @@
 
 - name: Create Starship settings directory for Windows
   ansible.windows.win_file:
+    owner: "{{ user_id }}"
     path: "{{ user_home }}/.config"
     state: directory
   when: ansible_system == "Win32NT"
@@ -45,5 +47,7 @@
 - name: Create Starship settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/.config/starship.toml"
+    force: true
+    owner: "{{ user_id }}"
     src: starship.toml
   when: ansible_system == "Win32NT"

@@ -20,6 +20,7 @@
   ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
+    owner: root
     src: "/usr/lib/google-cloud-sdk/bin/{{ item }}"
     state: link
   become: true

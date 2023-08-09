@@ -17,7 +17,7 @@
 - name: Create AppImageLauncher settings directory for Linux
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
-    mode: "755"
+    mode: "750"
     owner: "{{ user_id }}"
     state: directory
   become: true
@@ -26,6 +26,7 @@
 - name: Copy AppImageLauncher settings file for Linux
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/appimagelauncher.cfg"
+    force: true
     mode: "644"
     owner: "{{ user_id }}"
     src: appimagelauncher.cfg

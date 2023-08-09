@@ -26,7 +26,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.bashrc"
     force: true
-    mode: "754"
+    mode: "640"
     owner: "{{ user_id }}"
     src: .bashrc
   become: true
@@ -36,7 +36,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.bash_profile"
     force: true
-    mode: "754"
+    mode: "640"
     owner: "{{ user_id }}"
     src: .bash_profile
   become: true

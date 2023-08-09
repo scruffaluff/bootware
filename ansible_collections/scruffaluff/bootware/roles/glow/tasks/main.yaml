@@ -42,6 +42,7 @@
 - name: Install Glow for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/glow
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/glow

@@ -28,6 +28,7 @@
 - name: Install Xh for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/xh
+    force: true
     mode: "755"
     remote_src: true
     src: >-
@@ -42,6 +43,7 @@
     dest: /usr/local/bin/xhs
     force: true
     mode: "755"
+    owner: root
     state: link
   become: true
   when: ansible_system == "Linux"

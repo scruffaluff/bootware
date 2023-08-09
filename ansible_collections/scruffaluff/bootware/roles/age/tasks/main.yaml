@@ -28,6 +28,7 @@
 - name: Install Age for Linux
   ansible.builtin.copy:
     dest: "/usr/local/bin/{{ item }}"
+    force: true
     mode: "755"
     remote_src: true
     src: "/tmp/age/{{ item }}"

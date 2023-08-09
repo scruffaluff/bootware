@@ -43,6 +43,7 @@
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/delta
+    force: true
     mode: "755"
     remote_src: true
     src: >-
@@ -72,7 +73,7 @@
       - posh-git
   when: ansible_system == "Win32NT"
 
-- name: Copy Git configuration file
+- name: Copy Git configuration file for Unix
   ansible.builtin.template:
     dest: "{{ user_home }}/.gitconfig"
     force: true
@@ -80,6 +81,15 @@
     owner: "{{ user_id }}"
     src: gitconfig.j2
   become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Git configuration file for Windows
+  ansible.windows.win_template:
+    dest: "{{ user_home }}/.gitconfig"
+    force: true
+    owner: "{{ user_id }}"
+    src: gitconfig.j2
+  when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

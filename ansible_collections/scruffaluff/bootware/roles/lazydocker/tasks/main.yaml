@@ -27,6 +27,7 @@
 - name: Install Lazydocker for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/lazydocker
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/lazydocker

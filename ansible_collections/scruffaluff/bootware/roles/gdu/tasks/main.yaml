@@ -28,6 +28,7 @@
 - name: Install GDU for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/gdu
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/gdu_linux_{{ system_architecture }}

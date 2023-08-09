@@ -27,6 +27,7 @@
 - name: Install Croc for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/scc
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/scc

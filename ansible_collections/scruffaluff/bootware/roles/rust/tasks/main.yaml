@@ -48,6 +48,7 @@
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/rust-analyzer
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/rust-analyzer

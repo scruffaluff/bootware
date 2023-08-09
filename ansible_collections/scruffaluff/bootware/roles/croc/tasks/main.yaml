@@ -33,6 +33,7 @@
 - name: Install Croc for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/croc
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/croc
@@ -55,7 +56,6 @@
   community.windows.win_firewall_rule:
     action: allow
     direction: "{{ item['direction'] }}"
-    enabled: true
     localport: any
     name: Croc
     profiles:
@@ -64,7 +64,6 @@
       - public
     program: "{{ scoop_apps }}\\croc\\current\\croc.exe"
     protocol: "{{ item['protocol'] }}"
-    state: present
   loop:
     - direction: in
       protocol: tcp

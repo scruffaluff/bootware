@@ -29,6 +29,7 @@
 - name: Install Helmfile for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/helmfile
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/helmfile
