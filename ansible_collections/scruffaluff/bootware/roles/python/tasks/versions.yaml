@@ -96,8 +96,8 @@
     executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
-  # TODO: Figure out update message.
-  changed_when: true
+  changed_when: "'file changed' in python_pyenv_update"
+  register: python_pyenv_update
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Get latest patch release for each Python minor version for Unix

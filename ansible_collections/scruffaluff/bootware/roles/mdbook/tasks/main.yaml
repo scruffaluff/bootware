@@ -7,15 +7,14 @@
   register: mdbook_formula
   when: ansible_system == "Linux"
 
-# TODO: Integrate once installation becomes stable.
-# - name: Install Mdbook for Alpine
-#   become: true
-#   community.general.apk:
-#     name: mdbook
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
+- name: Install Mdbook for Alpine
+  become: true
+  community.general.apk:
+    name: mdbook
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Mdbook for FreeBSD
   become: true

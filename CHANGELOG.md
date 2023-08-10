@@ -5,6 +5,21 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Mdbook and Shellcheck support for Alpine.
+- User selection flags for installations.
+
+### Changed
+
+- User file permissions to be more restrictive.
+
+### Removed
+
+- Fish shell as a role dependency.
+
 ## 0.6.1 - 2023-07-28
 
 ### Changed

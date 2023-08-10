@@ -336,7 +336,7 @@ jobs:
       # ref_name will be name of the pull request instead of the branch.
       - name: Get current branch
         id: branch
-        uses: tj-actions/branch-names@v4
+        uses: tj-actions/branch-names@v7
       - name: Install Bootware
         run: |
           ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}

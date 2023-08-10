@@ -230,7 +230,7 @@
   },
   {
     "name": "mdbook",
-    "skip": [{ "arch": "arm64" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64" }],
     "tests": ["mdbook --version"]
   },
   {
@@ -292,11 +292,7 @@
   },
   {
     "name": "shellcheck",
-    "skip": [
-      { "arch": "arm64", "os": "alpine" },
-      { "os": "freebsd" },
-      { "os": "windows" }
-    ],
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {
