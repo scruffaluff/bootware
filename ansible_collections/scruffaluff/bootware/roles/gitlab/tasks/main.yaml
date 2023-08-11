@@ -42,6 +42,8 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install GitLab Runner for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"

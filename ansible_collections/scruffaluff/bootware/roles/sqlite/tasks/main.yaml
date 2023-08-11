@@ -15,6 +15,8 @@
   when: ansible_system == "Linux"
 
 - name: Install SQLite for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: sqlite
   when: ansible_system == "Darwin"
@@ -24,10 +26,20 @@
     name: sqlite
   when: ansible_system == "Win32NT"
 
-- name: Copy SQLite settings file
+- name: Copy SQLite settings file for Unix
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.sqliterc"
+    dest: "{{ user_home }}/.sqliterc"
     force: true
-    mode: "644"
-    owner: "{{ ansible_user_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
     src: .sqliterc
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy SQLite settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.sqliterc"
+    force: true
+    owner: "{{ user_id }}"
+    src: .sqliterc
+  when: ansible_system == "Win32NT"

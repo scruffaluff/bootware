@@ -82,7 +82,9 @@
 - name: Install GEF for Unix
   ansible.builtin.command:
     cmd: /tmp/gef_install.sh
-    creates: "{{ ansible_env.HOME }}/.gdbinit"
+    creates: "{{ user_home }}/.gdbinit"
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns

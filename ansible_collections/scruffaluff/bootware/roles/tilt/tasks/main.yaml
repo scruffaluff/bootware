@@ -27,6 +27,7 @@
 - name: Install Tilt for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/tilt
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/tilt
@@ -34,6 +35,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tilt for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: tilt
   when: ansible_system == "Darwin"
@@ -46,7 +49,7 @@
 #     name: tilt-dev
 #     repo: https://github.com/tilt-dev/scoop-bucket
 #   environment:
-#     Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+#     Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
 #   when: ansible_system == "Win32NT"
 
 - name: Install Tilt Scoop bucket for Windows
@@ -54,7 +57,7 @@
     scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   changed_when: "'bucket was added successfully' in tilt_bucket_add"
   environment:
-    Path: "{{ ansible_env.HOME }}\\scoop\\shims;{{ ansible_env.Path }}"
+    Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     tilt_bucket_add.rc != 0 and 'bucket already exists' not in
     tilt_bucket_add.stdout

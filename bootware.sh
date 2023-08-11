@@ -31,6 +31,7 @@ Options:
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
+      --user-install <USER-NAME>  Remote host user to install software for
   -i, --inventory <IP-LIST>       Ansible host IP addesses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
@@ -179,6 +180,7 @@ bootstrap() {
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
   local extra_args=()
+  local install_user
   local inventory='127.0.0.1,'
   local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
@@ -233,6 +235,10 @@ bootstrap() {
         cmd='playbook'
         connection='ssh'
         inventory="${2}"
+        shift 2
+        ;;
+      --install-user)
+        install_user="${2}"
         shift 2
         ;;
       --no-passwd)
@@ -352,6 +358,7 @@ bootstrap() {
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
+    ${install_user:+--extra-vars "user_id=${install_user}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
@@ -1159,7 +1166,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.6.1'
+  echo 'Bootware 0.6.2'
 }
 
 #######################################

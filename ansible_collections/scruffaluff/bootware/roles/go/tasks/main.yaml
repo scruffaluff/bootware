@@ -33,9 +33,10 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Go for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: go
-    state: present
   when: ansible_system == "Darwin"
 
 - name: Install Go for Windows
@@ -45,6 +46,8 @@
 
 - name: Install Go command line applications for Unix
   ansible.builtin.command: "go install {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'go: downloading' in go_application_install"
   environment:
     GOPATH: "{{ go_path }}"
@@ -59,7 +62,7 @@
   ansible.windows.win_shell: go install {{ item }}
   changed_when: "'go: downloading' in go_application_install"
   environment:
-    GOPATH: "{{ ansible_env.HOME }}\\go"
+    GOPATH: "{{ user_home }}\\go"
     Path: "{{ scoop_apps }}\\go\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ go_applications }}"
   register: go_application_install

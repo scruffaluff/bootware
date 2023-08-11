@@ -28,6 +28,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"

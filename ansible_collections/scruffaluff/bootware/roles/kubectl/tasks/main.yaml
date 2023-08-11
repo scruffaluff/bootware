@@ -34,6 +34,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Kubectl for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: kubectl
   when: ansible_system == "Darwin"
@@ -43,11 +45,19 @@
     name: kubectl
   when: ansible_system == "Win32NT"
 
+- name: Check if Fish executable is available
+  ansible.builtin.stat:
+    path: "{{ fish_executable }}"
+  register: kubectl_fish
+  when: ansible_system != "Win32NT"
+
 - name: Install Kubectl Fish completion for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.config/fish/config.fish
+      source {{ user_home }}/.config/fish/config.fish
       fisher install evanlucas/fish-kubectl-completions
     executable: "{{ fish_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and kubectl_fish.stat.exists

@@ -1,13 +1,12 @@
 ---
-# TODO: Integrate once installation becomes stable.
-# - name: Install ShellCheck for Alpine
-#   become: true
-#   community.general.apk:
-#     name: shellcheck
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
+- name: Install ShellCheck for Alpine
+  become: true
+  community.general.apk:
+    name: shellcheck
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install ShellCheck for Linux
   ansible.builtin.package:
@@ -20,6 +19,8 @@
     system_architecture == "amd64")
 
 - name: Install ShellCheck for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: shellcheck
   when: ansible_system == "Darwin"

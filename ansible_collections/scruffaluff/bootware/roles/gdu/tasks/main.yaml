@@ -28,6 +28,7 @@
 - name: Install GDU for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/gdu
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/gdu_linux_{{ system_architecture }}
@@ -36,6 +37,8 @@
 
 # Disabled since GDU conflicts with an internal Homebrew binary.
 # - name: Install GDU for MacOS
+#   become: true
+#   become_user: "{{ user_id }}"
 #   community.general.homebrew:
 #     name: gdu
 #   when: ansible_system == "Darwin"

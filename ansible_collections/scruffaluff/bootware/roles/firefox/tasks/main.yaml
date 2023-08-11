@@ -46,15 +46,18 @@
   ansible.builtin.copy:
     dest: "{{ item }}/user.js"
     force: true
-    mode: "600"
-    owner: "{{ ansible_user_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
     src: user.js
+  become: true
   loop: "{{ firefox_profiles_unix['paths'] }}"
   when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 
 - name: Copy Firefox user preferences for Windows
   ansible.windows.win_copy:
     dest: "{{ item }}/user.js"
+    force: true
+    owner: "{{ user_id }}"
     src: user.js
   loop: "{{ firefox_profiles_windows['paths'] }}"
   when: ansible_system == "Win32NT"

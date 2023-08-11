@@ -24,6 +24,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - tmate

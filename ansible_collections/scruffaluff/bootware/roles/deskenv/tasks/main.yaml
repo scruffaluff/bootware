@@ -1,29 +1,41 @@
 ---
 - name: Install desktop management dependencies for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: duti
   when: ansible_system == "Darwin"
 
 - name: Change desktop settings for GNOME
   ansible.builtin.script: gnome.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system == "Linux" and gnome_desktop
 
 # Linux distributions with GNOME desktops should be configured after general
 # GNOME settings in order to use overrides.
 - name: Change desktop settings for Fedora
   ansible.builtin.script: fedora.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_pkg_mgr == "dnf" and gnome_desktop
 
 - name: Change desktop settings for PopOS
   ansible.builtin.script: popos.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system == "Linux" and desktop == "pop"
 
 - name: Change desktop settings for Ubuntu
   ansible.builtin.script: ubuntu.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system == "Linux" and desktop == "ubuntu"
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system == "Darwin"
 
 - name: Change desktop settings for Windows
@@ -32,6 +44,8 @@
 
 - name: Change desktop settings for XFCE
   ansible.builtin.script: xfce.sh
+  become: true
+  become_user: "{{ user_id }}"
   when: ansible_system == "Linux" and desktop == "xfce"
 
 - name: Add clipboard commands for Linux with Wayland display

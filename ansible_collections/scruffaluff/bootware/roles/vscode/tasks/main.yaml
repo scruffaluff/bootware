@@ -6,6 +6,8 @@
 - name: Install VSCode for Arch
   ansible.builtin.command: >-
     yay --noconfirm --refresh --sync visual-studio-code-bin
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'installing visual-studio-code-bin' in vscode_arch_install"
   register: vscode_arch_install
   when: ansible_pkg_mgr == "pacman"
@@ -68,64 +70,70 @@
 
 - name: Create VSCode user directory for Linux
   ansible.builtin.file:
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/Code/User/"
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/Code/User/"
     state: directory
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode keybindings file for Linux
   ansible.builtin.template:
-    dest: "{{ ansible_env.HOME }}/.config/Code/User/keybindings.json"
+    dest: "{{ user_home }}/.config/Code/User/keybindings.json"
     force: true
     mode: "640"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: keybindings.j2
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy VSCode settings file for Linux
   ansible.builtin.template:
-    dest: "{{ ansible_env.HOME }}/.config/Code/User/settings.json"
+    dest: "{{ user_home }}/.config/Code/User/settings.json"
     force: true
     mode: "640"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: settings.j2
+  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/Library/Application Support/Code/User/"
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/Library/Application Support/Code/User"
     state: directory
+  become: true
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode keybindings file for MacOS
   ansible.builtin.template:
     dest: >-
-      {{ ansible_env.HOME }}/Library/Application
-      Support/Code/User/keybindings.json
+      {{ user_home }}/Library/Application Support/Code/User/keybindings.json
     force: true
     mode: "640"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: keybindings.j2
+  become: true
   when: ansible_system == "Darwin"
 
 - name: Copy VSCode settings file for MacOS
   ansible.builtin.template:
     dest: >-
-      {{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json
+      {{ user_home }}/Library/Application Support/Code/User/settings.json
     force: true
     mode: "640"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: settings.j2
+  become: true
   when: ansible_system == "Darwin"
 
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
 - name: Create VSCode user directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/{{ item }}"
     state: directory
   loop:
     - AppData/Roaming/Code/User
@@ -136,7 +144,7 @@
 # and Windows version.
 - name: Copy VSCode keybindings file for Windows
   ansible.windows.win_template:
-    dest: "{{ ansible_env.HOME }}/{{ item }}"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     src: keybindings.j2
   loop:
@@ -148,9 +156,9 @@
 # Windows version.
 - name: Copy VSCode settings file for Windows
   ansible.windows.win_template:
-    dest: "{{ ansible_env.HOME }}/{{ item }}"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
-    mode: "644"
+    owner: "{{ user_id }}"
     src: settings.j2
   loop:
     - AppData/Roaming/Code/User/settings.json
@@ -159,6 +167,8 @@
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in vscode_extension_install"
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
@@ -177,7 +187,6 @@
   community.windows.win_firewall_rule:
     action: allow
     direction: "{{ item['direction'] }}"
-    enabled: true
     localport: any
     name: VSCode
     profiles:
@@ -186,7 +195,6 @@
       - public
     program: "{{ scoop_apps }}\\vscode\\current\\bin\\code"
     protocol: "{{ item['protocol'] }}"
-    state: present
   loop:
     - direction: in
       protocol: tcp

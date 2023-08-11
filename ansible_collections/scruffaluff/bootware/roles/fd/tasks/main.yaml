@@ -36,6 +36,7 @@
 - name: Install FD for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/fd
+    force: true
     mode: "755"
     remote_src: true
     src: >-
@@ -46,6 +47,8 @@
     system_architecture == "amd64"
 
 - name: Install FD for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: fd
   when: ansible_system == "Darwin"

@@ -16,18 +16,21 @@
 
 - name: Create AppImageLauncher settings directory for Linux
   ansible.builtin.file:
-    dest: "{{ ansible_env.HOME }}/.config"
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
+    dest: "{{ user_home }}/.config"
+    mode: "750"
+    owner: "{{ user_id }}"
     state: directory
+  become: true
   when: ansible_system == "Linux"
 
 - name: Copy AppImageLauncher settings file for Linux
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.config/appimagelauncher.cfg"
+    dest: "{{ user_home }}/.config/appimagelauncher.cfg"
+    force: true
     mode: "644"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ user_id }}"
     src: appimagelauncher.cfg
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install AppImage packages for Linux

@@ -28,6 +28,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install QEMU for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"

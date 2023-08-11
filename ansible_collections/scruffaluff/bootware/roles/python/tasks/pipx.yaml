@@ -23,13 +23,15 @@
   when: ansible_system == "Linux" and python_pipx_package_install is failed
 
 - name: Install Pipx for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"
 
 - name: Update user path to include Pipx binaries for Windows
   ansible.windows.win_path:
-    elements: "{{ ansible_env.HOME }}\\.local\\bin"
+    elements: "{{ user_home }}\\.local\\bin"
     scope: user
   when: ansible_system == "Win32NT"
 
@@ -54,6 +56,8 @@
       pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force
       {{ item }}
     executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: >-
     "installed package" in python_pipx_application_install or "upgraded package"
     in python_pipx_application_install

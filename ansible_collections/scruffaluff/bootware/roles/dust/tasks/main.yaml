@@ -30,6 +30,7 @@
 - name: Install Dust for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/dust
+    force: true
     mode: "755"
     remote_src: true
     src: >-

@@ -28,6 +28,7 @@
 - name: Install Exa for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/exa
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/bin/exa
@@ -35,6 +36,8 @@
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Exa for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: exa
   when: ansible_system == "Darwin"

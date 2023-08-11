@@ -27,6 +27,7 @@
 - name: Install Helm for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/helm
+    force: true
     mode: "755"
     owner: root
     remote_src: true
@@ -35,6 +36,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Helm for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: helm
   when: ansible_system == "Darwin"
@@ -46,6 +49,8 @@
 
 - name: Install Helm plugins for Unix
   ansible.builtin.command: "helm plugin install {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install"
   failed_when: >-
     helm_plugin_install.rc != 0 and 'plugin already exists' not in

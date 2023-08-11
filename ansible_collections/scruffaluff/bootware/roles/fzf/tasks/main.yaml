@@ -30,6 +30,7 @@
 - name: Install Fzf for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/fzf
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/fzf
@@ -37,6 +38,8 @@
   when: ansible_system == "Linux"
 
 - name: Install FzF for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name:
       - fzf
@@ -52,26 +55,27 @@
 
 - name: Download Fzf Bash key bindings file for Unix
   ansible.builtin.get_url:
-    dest: "{{ ansible_env.HOME }}/.fzf_key_bindings.bash"
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
+    dest: "{{ user_home }}/.fzf_key_bindings.bash"
+    mode: "750"
+    owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.bash
   become: true
   when: ansible_system != "Win32NT"
 
 - name: Create Fish functions directory for Unix
   ansible.builtin.file:
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
-    path: "{{ ansible_env.HOME }}/.config/fish/functions"
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/functions"
     state: directory
+  become: true
   when: ansible_system != "Win32NT"
 
 - name: Download Fzf Fish key bindings file for Unix
   ansible.builtin.get_url:
-    dest: "{{ ansible_env.HOME }}/.config/fish/functions/fzf_key_bindings.fish"
-    mode: "755"
-    owner: "{{ ansible_user_id }}"
+    dest: "{{ user_home }}/.config/fish/functions/fzf_key_bindings.fish"
+    mode: "644"
+    owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
   become: true
   when: ansible_system != "Win32NT"

@@ -1,4 +1,13 @@
 ---
+user_id: "{{ ansible_user_id }}"
+_user_home:
+  Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
+  FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
+  Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
+  # Backslashes are required for Windows Defender firewall rules.
+  Win32NT: "C:\\Users\\{{ user_id }}"
+user_home: "{{ _user_home.get(ansible_system, '/home/' + user_id) }}"
+
 _bash_executable:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_processor == 'Apple M1' else '/usr/local'
@@ -37,7 +46,7 @@ _user_shell:
     }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
-  Win32NT: C:/Program Files/PowerShell/7/pwsh.exe
+  Win32NT: "C:/Program Files/PowerShell/7/pwsh.exe"
 bash_executable: "{{ _bash_executable.get(ansible_system, '/bin/bash') }}"
 deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
@@ -47,6 +56,6 @@ fish_executable: "{{  _fish_executable.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
 gnome_desktop: "{{ desktop in _gnome_desktops }}"
 # Backslashes are required for Windows Defender firewall rules.
-scoop_apps: "{{ ansible_env.HOME }}\\scoop\\apps"
+scoop_apps: "{{ user_home }}\\scoop\\apps"
 system_architecture: "{{ _system_architecture.get(ansible_architecture, '') }}"
 user_shell: "{{ _user_shell.get(ansible_system, '/usr/bin/fish') }}"

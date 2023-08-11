@@ -29,6 +29,7 @@
 - name: Install Htmlq for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/htmlq
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/htmlq
@@ -38,6 +39,8 @@
     system_architecture == "amd64"
 
 - name: Install Htmlq for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: htmlq
   when: ansible_system == "Darwin"

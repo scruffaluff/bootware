@@ -48,6 +48,7 @@
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/rust-analyzer
+    force: true
     mode: "755"
     remote_src: true
     src: /tmp/rust-analyzer
@@ -55,6 +56,8 @@
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Rust Analyzer for MacOS
+  become: true
+  become_user: "{{ user_id }}"
   community.general.homebrew:
     name: rust-analyzer
   when: ansible_system == "Darwin"

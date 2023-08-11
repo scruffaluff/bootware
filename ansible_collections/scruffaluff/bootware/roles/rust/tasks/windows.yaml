@@ -58,12 +58,15 @@
 
 - name: Create Cargo Binstall directory for Windows
   ansible.windows.win_file:
-    dest: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin"
+    owner: "{{ user_id }}"
+    path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin"
     state: directory
 
 - name: Install Cargo Binstall for Windows
   ansible.windows.win_copy:
     dest: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/cargo-binstall.exe"
+    force: true
+    owner: "{{ user_id }}"
     remote_src: true
     src: "{{ ansible_env.TEMP }}/cargo_binstall/cargo-binstall.exe"
 

@@ -23,7 +23,8 @@
 
 - name: Create PowerShell settings directories for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/{{ item }}"
     state: directory
   loop:
     - Documents/PowerShell
@@ -34,8 +35,9 @@
 
 - name: Copy PowerShell settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ ansible_env.HOME }}/{{ item }}"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
+    owner: "{{ user_id }}"
     src: profile.ps1
   loop:
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
@@ -53,7 +55,8 @@
   block:
     - name: Create PowerShell module directories for Windows
       ansible.windows.win_file:
-        path: "{{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}"
+        owner: "{{ user_id }}"
+        path: "{{ user_home }}/{{ item[0] }}/{{ item[1] }}"
         state: directory
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"
@@ -61,8 +64,9 @@
     - name: Copy PowerShell modules for Windows
       ansible.windows.win_copy:
         dest: >-
-          {{ ansible_env.HOME }}/{{ item[0] }}/{{ item[1] }}/{{ item[1] }}.psm1
+          {{ user_home }}/{{ item[0] }}/{{ item[1] }}/{{ item[1] }}.psm1
         force: true
+        owner: "{{ user_id }}"
         src: "{{ item[1] }}.psm1"
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"

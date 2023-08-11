@@ -20,6 +20,7 @@
   ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
+    owner: root
     src: "/usr/lib/google-cloud-sdk/bin/{{ item }}"
     state: link
   become: true
@@ -31,6 +32,8 @@
 
 - name: Install Google Cloud SDK for Arch
   ansible.builtin.command: yay --noconfirm --refresh --sync google-cloud-cli
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'installing google-cloud-cli' in gcp_arch_install"
   register: gcp_arch_install
   when: ansible_pkg_mgr == "pacman"
@@ -95,14 +98,22 @@
     name: google-cloud-sdk
   when: ansible_system == "FreeBSD"
 
+- name: Check if Fish executable is available
+  ansible.builtin.stat:
+    path: "{{ fish_executable }}"
+  register: gcp_fish
+  when: ansible_system == "Linux"
+
 - name: Install Google Cloud SDK Fish completion for Linux
   ansible.builtin.shell:
     cmd: |
-      source {{ ansible_env.HOME }}/.config/fish/config.fish
+      source {{ user_home }}/.config/fish/config.fish
       fisher install aliz-ai/google-cloud-sdk-fish-completion
     executable: "{{ fish_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and gcp_fish.stat.exists
 
 - name: Install Google Cloud SDK for MacOS
   community.general.homebrew_cask:

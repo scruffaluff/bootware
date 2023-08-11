@@ -66,14 +66,15 @@
     dest: /usr/bin/python
     force: true
     mode: "755"
+    owner: root
     state: link
   become: true
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
   ansible.windows.win_file:
-    path:
-      "{{ ansible_env.HOME }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
     state: absent
   loop:
     - python.exe
