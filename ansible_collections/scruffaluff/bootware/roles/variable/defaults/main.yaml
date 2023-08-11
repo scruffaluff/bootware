@@ -1,9 +1,9 @@
 ---
 user_id: "{{ ansible_user_id }}"
 _user_home:
-  Darwin: /Users/{{ user_id }}
-  FreeBSD: /home/{{ user_id }}
-  Linux: /home/{{ user_id }}
+  Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
+  FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
+  Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   # Backslashes are required for Windows Defender firewall rules.
   Win32NT: "C:\\Users\\{{ user_id }}"
 user_home: "{{ _user_home.get(ansible_system, '/home/' + user_id) }}"
@@ -46,7 +46,7 @@ _user_shell:
     }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
-  Win32NT: C:/Program Files/PowerShell/7/pwsh.exe"
+  Win32NT: "C:/Program Files/PowerShell/7/pwsh.exe"
 bash_executable: "{{ _bash_executable.get(ansible_system, '/bin/bash') }}"
 deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in _ubuntu_distros else 'debian' }}"
