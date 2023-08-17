@@ -252,6 +252,11 @@
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   {
+    "name": "pocketbase",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["pocketbase --version"]
+  },
+  {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
     "tests": ["pwsh --version"]

@@ -10,11 +10,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Mdbook and Shellcheck support for Alpine.
+- Pocketbase role.
 - User selection flags for installations.
 
 ### Changed
 
 - User file permissions to be more restrictive.
+- VSCode Python settings to match upstream updates.
 
 ### Removed
 
