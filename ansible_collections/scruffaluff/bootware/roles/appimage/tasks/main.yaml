@@ -36,6 +36,7 @@
 - name: Install AppImage packages for Linux
   ansible.builtin.get_url:
     dest: /usr/local/appimages/{{ item.name }}
+    force: true
     mode: "755"
     owner: root
     url: "{{ item.url }}"

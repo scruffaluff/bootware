@@ -13,7 +13,7 @@
     name: xsv-rs
   when: ansible_system == "FreeBSD"
 
-- name: Download Xsv for Linux
+- name: Install Xsv for Linux
   ansible.builtin.unarchive:
     dest: /usr/local/bin
     mode: "755"

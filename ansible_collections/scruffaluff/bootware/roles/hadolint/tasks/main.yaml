@@ -10,6 +10,7 @@
 - name: Install Hadolint for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/hadolint
+    force: true
     mode: "755"
     owner: root
     url: >-

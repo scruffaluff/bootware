@@ -5,6 +5,7 @@
 - name: Install Hyper for Arch
   ansible.builtin.get_url:
     dest: /usr/local/appimages/hyper.appimage
+    force: true
     mode: "755"
     owner: root
     url: >-

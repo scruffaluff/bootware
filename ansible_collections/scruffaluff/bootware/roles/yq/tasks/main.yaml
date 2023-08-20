@@ -10,6 +10,7 @@
 - name: Install Yq for FreeBSD and Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/yq
+    force: true
     mode: "755"
     owner: root
     url: >-

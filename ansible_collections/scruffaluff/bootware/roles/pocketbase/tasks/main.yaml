@@ -1,0 +1,81 @@
+---
+- name: Get latest Pocketbase version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/pocketbase.json
+  register: pocketbase_formula_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Pocketbase version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/pocketbase.json
+  register: pocketbase_formula_windows
+  when: ansible_system == "Win32NT"
+
+- name: Download Pocketbase for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    owner: root
+    remote_src: true
+    src: >-
+      https://github.com/pocketbase/pocketbase/releases/download/v{{
+      pocketbase_formula_linux.json.versions.stable }}/pocketbase_{{
+      pocketbase_formula_linux.json.versions.stable }}_linux_{{
+      system_architecture }}.zip
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Pocketbase for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/pocketbase
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/pocketbase
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Pocketbase for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: pocketbase
+  when: ansible_system == "Darwin"
+# As of 08/19/2023, Pocketbase only works on Windows when its binary is in the
+# current working directory.
+# - name: Download Pocketbase archive for Windows ansible.windows.win_get_url:
+#   dest: "{{ ansible_env.TEMP }}/pocketbase.zip" url: >-
+#   https://github.com/pocketbase/pocketbase/releases/download/v{{
+#   pocketbase_formula_windows.json.versions.stable }}/pocketbase_{{
+#   pocketbase_formula_windows.json.versions.stable }}_windows_{{
+#   system_architecture }}.zip when: ansible_system == "Win32NT"
+
+# - name: Decompress Pocketbase archive for Windows
+#   community.windows.win_unzip:
+#     dest: "{{ ansible_env.TEMP }}/pocketbase"
+#     src: "{{ ansible_env.TEMP }}/pocketbase.zip"
+#   when: ansible_system == "Win32NT"
+
+# - name: Create Pocketbase program directory for Windows
+#   ansible.windows.win_file:
+#     path: "C:/Program Files/Pocketbase"
+#     state: directory
+#   when: ansible_system == "Win32NT"
+
+# - name: Update system path to include Pocketbase program directory for Windows
+#   ansible.windows.win_path:
+#     elements: "C:\\Program Files\\Pocketbase"
+#     scope: machine
+#   when: ansible_system == "Win32NT"
+
+# - name: Install Pocketbase for Windows
+#   ansible.windows.win_copy:
+#     dest: "C:/Program Files/Pocketbase/pocketbase.exe"
+#     force: true
+#     remote_src: true
+#     src: "{{ ansible_env.TEMP }}/pocketbase/pocketbase.exe"
+#   when: ansible_system == "Win32NT"

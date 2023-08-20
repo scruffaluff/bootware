@@ -1,5 +1,4 @@
 {
-  "data.preview.theme": "light",
   "debug.toolBarLocation": "docked",
   "deno.suggest.autoImports": false,
   "editor.acceptSuggestionOnEnter": "off",
@@ -11,6 +10,7 @@
   "editor.fontFamily": "Fira Code",
   "editor.fontLigatures": true,
   "editor.fontSize": {{ font_size }},
+  "editor.formatOnSave": true,
   "editor.guides.bracketPairs":"active",
   "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.minimap.enabled": false,
@@ -18,9 +18,11 @@
   "editor.rulers": [80],
   "editor.tabSize": 4,
   "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[dockercompose]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[fish]": {
@@ -30,45 +32,61 @@
     "editor.tabSize": 2
   },
   "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
-  "[ruby]": {
-    "editor.tabSize": 2
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.rulers": [100]
   },
   "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[shellscript]": {
     "editor.tabSize": 2
   },
+  "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
   "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
     "editor.tabSize": 2
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[xml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "emmet.excludeLanguages": [],
@@ -117,20 +135,15 @@
   "git.openRepositoryInParentFolders": "never",
   "javascript.suggest.autoImports": false,
   "javascript.updateImportsOnFileMove.enabled": "never",
-  "jupyter.askForKernelRestart": false,
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
   "liveServer.settings.donotShowInfoMsg": true,
   "lldb.suppressUpdateNotifications": true,
   "notebook.lineNumbers": "on",
+  "prettier.resolveGlobalModules": true,
   "python.analysis.autoImportCompletions": false,
-  "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
-  "python.linting.flake8Args": ["--max-line-length=80"],
-  "python.linting.flake8Enabled": true,
-  "python.linting.mypyEnabled": true,
-  "python.linting.pylintEnabled": false,
   "python.terminal.activateEnvironment": false,
   "python.testing.promptToConfigure": false,
   "python.testing.pytestEnabled": true,
@@ -148,6 +161,7 @@
   "rust-analyzer.notifications.cargoTomlNotFound": false,
   "rust-analyzer.showUnlinkedFileNotification": false,
   "security.workspace.trust.enabled": false,
+  "svelte.enable-ts-plugin": true,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.fontFamily": "Fira Code",

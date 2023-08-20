@@ -195,7 +195,7 @@
     "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["kubectl-krew version"]
   },
-  { "name": "kubectl", "tests": ["kubectl version --client --short"] },
+  { "name": "kubectl", "tests": ["kubectl version --client"] },
   {
     "name": "kubeshark",
     "skip": [{ "os": "freebsd" }],
@@ -234,6 +234,10 @@
     "tests": ["mdbook --version"]
   },
   {
+    "name": "miniserve",
+    "tests": ["miniserve --version"]
+  },
+  {
     "name": "mkcert",
     "skip": [{ "os": "freebsd" }],
     "tests": ["mkcert --version"]
@@ -251,6 +255,11 @@
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
+  {
+    "name": "pocketbase",
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "tests": ["pocketbase --version"]
+  },
   {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],

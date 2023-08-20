@@ -16,6 +16,7 @@
 - name: Install TLDR for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/tldr
+    force: true
     mode: "755"
     owner: root
     url: >-

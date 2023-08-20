@@ -366,18 +366,18 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Scoop Avro installation is temporarily incorrect.
+      # 2022 Visual Studio packages are failing during installation.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip avro --tags desktop,extras
+          bootware bootstrap --no-setup --retries 3 --skip build --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 --skip avro windows
+          node tests/integration/roles.spec.js --arch amd64 windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

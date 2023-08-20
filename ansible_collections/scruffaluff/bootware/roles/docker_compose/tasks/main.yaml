@@ -33,6 +33,7 @@
 - name: Install Docker Compose plugin for Linux
   ansible.builtin.get_url:
     dest: /usr/lib/docker/cli-plugins/docker-compose
+    force: true
     mode: "755"
     owner: root
     url: >-

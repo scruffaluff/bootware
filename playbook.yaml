@@ -624,6 +624,17 @@
         - website
         - wsl
 
+    - name: Install Miniserve HTTP server
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.miniserve
+      tags:
+        - container
+        - desktop
+        - miniserve
+        - server
+        - website
+        - wsl
+
     - name: Install Mkcert web certificate generator
       ansible.builtin.import_role:
         name: scruffaluff.bootware.mkcert
@@ -687,6 +698,16 @@
         - desktop
         - hashicorp
         - packer
+        - server
+        - wsl
+
+    - name: Install Pocketbase web backend
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.pocketbase
+      tags:
+        - container
+        - desktop
+        - pocketbase
         - server
         - wsl
 
@@ -931,7 +952,6 @@
       tags:
         - container
         - desktop
-        - extras
         - server
         - terminal
         - tmux
