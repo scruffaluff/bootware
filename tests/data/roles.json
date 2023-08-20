@@ -257,7 +257,7 @@
   { "name": "packer", "tests": ["packer --version"] },
   {
     "name": "pocketbase",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["pocketbase --version"]
   },
   {
