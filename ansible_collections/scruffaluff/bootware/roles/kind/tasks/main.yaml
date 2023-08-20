@@ -10,6 +10,7 @@
 - name: Install Kind for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/kind
+    force: true
     mode: "755"
     owner: root
     url: >-

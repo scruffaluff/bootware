@@ -16,6 +16,7 @@
 - name: Install Terragrunt for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/terragrunt
+    force: true
     mode: "755"
     url: >-
       https://github.com/gruntwork-io/terragrunt/releases/download/v{{

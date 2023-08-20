@@ -28,6 +28,7 @@
 - name: Install FFSend for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/ffsend
+    force: true
     mode: "755"
     url: >-
       https://github.com/timvisee/ffsend/releases/download/v{{

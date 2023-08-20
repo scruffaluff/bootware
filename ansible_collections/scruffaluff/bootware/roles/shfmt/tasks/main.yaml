@@ -16,6 +16,7 @@
 - name: Install Shfmt for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/shfmt
+    force: true
     mode: "755"
     owner: root
     url: >-

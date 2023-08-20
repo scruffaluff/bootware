@@ -10,6 +10,7 @@
 - name: Install K3d for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/k3d
+    force: true
     mode: "755"
     owner: root
     url: >-

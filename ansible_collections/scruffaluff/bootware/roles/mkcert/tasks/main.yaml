@@ -25,6 +25,7 @@
 - name: Install Mkcert for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/mkcert
+    force: true
     mode: "755"
     url: >-
       https://github.com/FiloSottile/mkcert/releases/download/v{{

@@ -18,6 +18,7 @@
 - name: Install Kubeshark for Unix
   ansible.builtin.get_url:
     dest: /usr/local/bin/kubeshark
+    force: true
     mode: "755"
     owner: root
     url: >-
