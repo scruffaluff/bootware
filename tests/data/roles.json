@@ -195,7 +195,7 @@
     "skip": [{ "os": "freebsd" }, { "os": "windows" }],
     "tests": ["kubectl-krew version"]
   },
-  { "name": "kubectl", "tests": ["kubectl version --client --short"] },
+  { "name": "kubectl", "tests": ["kubectl version --client"] },
   {
     "name": "kubeshark",
     "skip": [{ "os": "freebsd" }],

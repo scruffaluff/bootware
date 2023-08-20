@@ -705,9 +705,11 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.pocketbase
       tags:
-        - extras
-        - never
+        - container
+        - desktop
         - pocketbase
+        - server
+        - wsl
 
     - name: Install PowerShell shell
       ansible.builtin.import_role:
@@ -950,7 +952,6 @@
       tags:
         - container
         - desktop
-        - extras
         - server
         - terminal
         - tmux
