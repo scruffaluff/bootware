@@ -30,6 +30,7 @@ vscode_extensions:
   - "denoland.vscode-deno"
   - "dorzey.vscode-sqlfluff"
   - "esbenp.prettier-vscode"
+  - "firefox-devtools.vscode-firefox-debug"
   - "foxundermoon.shell-format"
   - "golang.Go"
   - "hashicorp.terraform"
