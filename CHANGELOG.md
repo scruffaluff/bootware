@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Mdbook and Shellcheck support for Alpine.
-- Pocketbase role.
+- Miniserve and Pocketbase roles.
 - User selection flags for installations.
 
 ### Changed

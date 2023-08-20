@@ -234,6 +234,10 @@
     "tests": ["mdbook --version"]
   },
   {
+    "name": "miniserve",
+    "tests": ["miniserve --version"]
+  },
+  {
     "name": "mkcert",
     "skip": [{ "os": "freebsd" }],
     "tests": ["mkcert --version"]

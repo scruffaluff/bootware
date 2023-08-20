@@ -624,6 +624,17 @@
         - website
         - wsl
 
+    - name: Install Miniserve HTTP server
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.miniserve
+      tags:
+        - container
+        - desktop
+        - miniserve
+        - server
+        - website
+        - wsl
+
     - name: Install Mkcert web certificate generator
       ansible.builtin.import_role:
         name: scruffaluff.bootware.mkcert
