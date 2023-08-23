@@ -203,12 +203,16 @@ jobs:
           # Termshark is installed at /usr/local/bin/termshark on
           # FreeBSD in the job's VM, which is in the system path. No idea why
           # the test suite cannot find it.
+          #
+          # As of 08/22/2023, checks for Libvirt, QEMU, and Wireshark are
+          # failing due to a temporary undefined symbol issue with
+          # /usr/local/lib/libtasn1.so.6.
           run: |
             set -eou pipefail
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip termshark freebsd'
+            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip libvirt,qemu,termshark,wireshark freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
