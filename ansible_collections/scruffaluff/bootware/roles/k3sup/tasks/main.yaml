@@ -1,0 +1,55 @@
+---
+- name: Get latest K3sup version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/k3sup.json
+  register: k3sup_formula
+  when: ansible_system == "Linux"
+
+- name: Install K3sup for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/k3sup
+    force: true
+    mode: "755"
+    url: >-
+      https://github.com/alexellis/k3sup/releases/download/{{
+      k3sup_formula.json.versions.stable }}/k3sup{{
+      k3sup_arch[system_architecture] }}
+  become: true
+  vars:
+    k3sup_arch:
+      amd64: ""
+      arm64: -arm64
+  when: ansible_system == "Linux"
+
+- name: Install K3sup for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: k3sup
+  when: ansible_system == "Darwin"
+
+- name: Install K3sup for Windows
+  community.windows.win_scoop:
+    name: k3sup
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
+    state: directory
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install K3sup Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      k3sup completion fish > {{ user_home
+      }}/.config/fish/completions/k3sup.fish
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  when: ansible_system in ["Darwin", "Linux"]

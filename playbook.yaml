@@ -534,6 +534,14 @@
         - server
         - wsl
 
+    - name: Install K3sup SSH installer for K3s
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.k3sup
+      tags:
+        - extras
+        - k3sup
+        - never
+
     - name: Install K9s Kubernetes manager
       ansible.builtin.import_role:
         name: scruffaluff.bootware.k9s
@@ -975,6 +983,14 @@
         - extras
         - never
         - vault
+
+    - name: Install Velero backup manager for Kubernetes
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.velero
+      tags:
+        - extras
+        - never
+        - velero
 
     - name: Install VSCode text exitor
       ansible.builtin.import_role:
