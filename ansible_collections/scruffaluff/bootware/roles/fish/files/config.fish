@@ -327,8 +327,9 @@ if test -z "$SHELL_MINIMAL_CONFIG"; and type -q zellij; \
   # Exit the shell when Zellij exits.
   set --export ZELLIJ_AUTO_EXIT 'true'
   
-  # If within an interactive shell, create or connect to Zellij session.
-  if status is-interactive
+  # If within an interactive shell for the login user, create or connect to
+  # Zellij session.
+  if status is-interactive; and test (logname) = "$USER"
     eval (zellij setup --generate-auto-start fish | string collect)
   end
 end
