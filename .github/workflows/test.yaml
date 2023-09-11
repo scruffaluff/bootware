@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -285,7 +285,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
@@ -315,7 +315,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
-        uses: jlumbroso/free-disk-space@v1
+        uses: jlumbroso/free-disk-space@v1.2.0
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Set up QEMU
