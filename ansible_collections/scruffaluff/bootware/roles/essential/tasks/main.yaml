@@ -1,4 +1,10 @@
 ---
+- name: Install essential packages for Alpine
+  community.general.apk:
+    name: openssl-dev
+  become: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install essential packages for Debian
   ansible.builtin.apt:
     name:

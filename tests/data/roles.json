@@ -349,7 +349,7 @@
   {
     "name": "velero",
     "skip": [{ "os": "freebsd" }],
-    "tests": ["velero version"]
+    "tests": ["velero help"]
   },
   {
     "name": "vscode",
