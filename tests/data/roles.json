@@ -184,6 +184,11 @@
   },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
+  {
+    "name": "k3sup",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["k3sup version"]
+  },
   { "name": "k9s", "tests": ["k9s version"] },
   {
     "name": "kind",
@@ -341,6 +346,11 @@
     "tests": ["usql --version"]
   },
   { "name": "vault", "tests": ["vault --version"] },
+  {
+    "name": "velero",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["velero help"]
+  },
   {
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
