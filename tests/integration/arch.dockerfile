@@ -1,4 +1,4 @@
-FROM archlinux:base-20230709.0.163418
+FROM archlinux:base-20230910.0.177821
 
 ARG TARGETARCH
 
@@ -62,11 +62,11 @@ SHELL ["/bin/bash", "-c"]
 # Flags:
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
-        source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v deno)" ]]; then \
-            sudo pacman --noconfirm --sync unzip; \
-            curl -LSfs https://deno.land/install.sh | sh; \
-            export PATH="${HOME}/.deno/bin:${PATH}"; \
-        fi; \
-        ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+    source "${HOME}/.bashrc"; \
+    if [[ ! -x "$(command -v deno)" ]]; then \
+    sudo pacman --noconfirm --sync unzip; \
+    curl -LSfs https://deno.land/install.sh | sh; \
+    export PATH="${HOME}/.deno/bin:${PATH}"; \
+    fi; \
+    ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

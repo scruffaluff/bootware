@@ -1,4 +1,4 @@
-FROM alpine:3.18.2
+FROM alpine:3.18.3
 
 ARG TARGETARCH
 
@@ -60,9 +60,9 @@ SHELL ["/bin/bash", "-c"]
 # Flags:
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
-        source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v node)" ]]; then \
-            sudo apk add nodejs; \
-        fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+    source "${HOME}/.bashrc"; \
+    if [[ ! -x "$(command -v node)" ]]; then \
+    sudo apk add nodejs; \
+    fi; \
+    node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
     fi

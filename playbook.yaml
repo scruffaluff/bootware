@@ -221,7 +221,6 @@
         - docker
         - server
         - vm
-        - wsl
 
     - name: Install Docker Compose container orchestrator
       ansible.builtin.import_role:
