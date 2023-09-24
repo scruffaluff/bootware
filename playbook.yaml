@@ -185,14 +185,6 @@
         - dbeaver
         - desktop
 
-    - name: Configure default system terminal
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.defterm
-      tags:
-        - defterm
-        - desktop
-        - terminal
-
     - name: Install Deno JavaScript and TypeScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.deno
