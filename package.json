@@ -15,7 +15,7 @@
   },
   "private": true,
   "scripts": {
-    "bats:test": "bats --recursive tests/unit/",
+    "bats:test": "bats --recursive tests/unit",
     "prettier:format": "prettier --write .",
     "prettier:test": "prettier --check .",
     "shellcheck:test": "bash scripts/shellcheck.sh",

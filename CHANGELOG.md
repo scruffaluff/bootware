@@ -10,6 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - K3sup, Wezterm, and Velero roles.
+- GlazeWM tiling window manager for Windows.
 
 ### Fixed
 

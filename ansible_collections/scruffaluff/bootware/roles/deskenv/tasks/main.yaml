@@ -6,6 +6,11 @@
     name: duti
   when: ansible_system == "Darwin"
 
+- name: Install Power Toys for Windows
+  community.windows.win_scoop:
+    name: powertoys
+  when: ansible_system == "Win32NT"
+
 - name: Change desktop settings for GNOME
   ansible.builtin.script: gnome.sh
   become: true

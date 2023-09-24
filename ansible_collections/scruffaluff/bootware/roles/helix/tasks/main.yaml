@@ -55,14 +55,14 @@
   ansible.builtin.file:
     mode: "750"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/helix/"
+    path: "{{ user_home }}/.config/helix"
     state: directory
   become: true
   when: ansible_system != "Win32NT"
 
 - name: Install Helix runtime files for Linux
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/helix/"
+    dest: "{{ user_home }}/.config/helix"
     force: true
     mode: "770"
     owner: "{{ user_id }}"
