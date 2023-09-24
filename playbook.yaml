@@ -1011,6 +1011,14 @@
         - wasm
         - wsl
 
+    - name: Install Wez's terminal
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.wezterm
+      tags:
+        - desktop
+        - terminal
+        - wezterm
+
     - name: Install desktop window managers
       ansible.builtin.import_role:
         name: scruffaluff.bootware.winman

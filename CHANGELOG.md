@@ -9,10 +9,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- K3sup and Velero roles.
+- K3sup, Wezterm, and Velero roles.
 
 ### Fixed
 
+- Sops installation for new versions.
 - Zellij autostart within a second user session.
 
 ## 0.6.2 - 2023-08-20

@@ -357,6 +357,10 @@
     "tests": ["code --version"]
   },
   { "name": "wasm" },
+  {
+    "name": "wezterm",
+    "tests": ["wezterm --version"]
+  },
   { "name": "winman" },
   {
     "name": "wireshark",
