@@ -12,7 +12,7 @@
   ansible.builtin.get_url:
     dest: /tmp/caffeinepatapon.info.shell-extension.zip
     mode: "600"
-    url: https://extensions.gnome.org/extension-data/caffeinepatapon.info.v41.shell-extension.zip
+    url: https://extensions.gnome.org/extension-data/caffeinepatapon.info.v48.shell-extension.zip
   when: >-
     ansible_system == "Linux" and gnome_desktop and caffeine_shell_check is
     failed

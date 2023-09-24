@@ -123,7 +123,9 @@ prepend_path "${GOPATH}/bin"
 # Python settings.
 
 # Make Poetry create virutal environments inside projects.
-export POETRY_VIRTUALENVS_IN_PROJECT='true'
+export POETRY_VIRTUALENVS_IN_PROJECTOJECT='true'
+# Fix Poetry package install issue on headless systems.
+export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
 #

@@ -165,6 +165,8 @@ fish_add_path "$GOPATH/bin"
 
 # Make Poetry create virutal environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT 'true'
+# Fix Poetry package install issue on headless systems.
+set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
 #
@@ -321,7 +323,11 @@ if test -z "$SHELL_MINIMAL_CONFIG"; and type -q zellij; \
   
   # If within an interactive shell for the login user, create or connect to
   # Zellij session.
-  if status is-interactive; and test (logname) = "$USER"
+  #
+  # Do not use logname command, it sometimes incorrectly returns "root" on
+  # MacOS. For for information, visit
+  # https://github.com/vercel/hyper/issues/3762.
+  if status is-interactive; and test "$LOGNAME" = "$USER"
     eval (zellij setup --generate-auto-start fish | string collect)
   end
 end

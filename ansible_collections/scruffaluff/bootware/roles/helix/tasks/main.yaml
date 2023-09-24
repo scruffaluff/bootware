@@ -89,17 +89,26 @@
 - name: Create Helix configuration directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/helix"
+    path: "{{ user_home }}/{{ item }}/helix"
     state: directory
+  loop:
+    - AppData/Roaming
+    - scoop/persist
   when: ansible_system == "Win32NT"
 
 - name: Copy Helix configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/helix/{{ item }}"
+    dest: "{{ user_home }}/{{ item.subpath }}/helix/{{ item.file }}"
     force: true
     owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: "{{ item.file }}"
   loop:
-    - config.toml
-    - languages.toml
+    - file: config.toml
+      subpath: AppData/Roaming
+    - file: languages.toml
+      subpath: AppData/Roaming
+    - file: config.toml
+      subpath: scoop/persist
+    - file: languages.toml
+      subpath: scoop/persist
   when: ansible_system == "Win32NT"

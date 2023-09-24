@@ -1,35 +1,33 @@
 ---
 _cargo_applications:
   always:
+    - cargo-audit
     - cargo-bloat
     - cargo-cache
+    - cargo-edit
+    - cargo-make
     - cross
+    - cargo-watch
   Darwin:
     amd64: []
-    always:
-      - cargo-audit
+    always: []
     arm64: []
   FreeBSD:
     amd64: []
     always:
-      - cargo-audit
       - cargo-binutils
     arm64: []
   Linux:
     amd64:
-      - cargo-audit
-      - cargo-edit
       - cargo-expand
       - cargo-generate
-      - cargo-make
       - cargo-tarpaulin
     always:
       - cargo-binutils
     arm64: []
   Win32NT:
     amd64: []
-    always:
-      - cargo-audit
+    always: []
     arm64: []
 cargo_applications: >-
   {{ _cargo_applications.always + _cargo_applications[ansible_system].always +

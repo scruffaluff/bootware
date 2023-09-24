@@ -1,4 +1,4 @@
-FROM debian:11.7
+FROM debian:12.1
 
 ARG TARGETARCH
 
@@ -58,9 +58,9 @@ SHELL ["/bin/bash", "-c"]
 # Flags:
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
-        source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v node)" ]]; then \
-            sudo apt-get install --quiet --yes nodejs; \
-        fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+    source "${HOME}/.bashrc"; \
+    if [[ ! -x "$(command -v node)" ]]; then \
+    sudo apt-get install --quiet --yes nodejs; \
+    fi; \
+    node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi
