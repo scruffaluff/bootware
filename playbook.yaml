@@ -665,17 +665,6 @@
         - server
         - wsl
 
-    - name: Install Navi interactive documentation tool
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.navi
-      tags:
-        - container
-        - desktop
-        - navi
-        - server
-        - sysadmin
-        - wsl
-
     - name: Install Node JavaScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.node

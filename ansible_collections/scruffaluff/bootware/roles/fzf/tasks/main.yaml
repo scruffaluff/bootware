@@ -13,8 +13,6 @@
     name: fzf
   when: ansible_system == "FreeBSD"
 
-# Fzf version from most Linux package managers is too outdated for compatibility
-# with Navi and Fzf Fish plugin.
 - name: Install Fzf for Linux
   ansible.builtin.unarchive:
     dest: /tmp/

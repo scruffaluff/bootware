@@ -252,11 +252,6 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
   },
-  {
-    "name": "navi",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": ["navi --version"]
-  },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },

@@ -281,14 +281,6 @@ end
 # Add Kubectl plugins to PATH.
 fish_add_path "$HOME/.krew/bin"
 
-# Add Navi widget if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if test -z "$SHELL_MINIMAL_CONFIG"; and type -q navi
-  navi widget fish | source
-end
-
 # TypeScript settings.
 
 # Add Deno binaries to system path.

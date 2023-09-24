@@ -79,11 +79,11 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && -x "$(command -v fzf)" && \
-  -f "${HOME}/.fzf_key_bindings.bash" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* && -x "$(command -v fzf)" &&
+  -f "${HOME}/.fzf_key_bindings.bash" ]] \
+  ; then
   source "${HOME}/.fzf_key_bindings.bash"
 fi
 
@@ -199,10 +199,10 @@ fi
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && -x "$(command -v starship)" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* && -x "$(command -v starship)" ]] \
+  ; then
   eval "$(starship init bash)"
 fi
 
@@ -211,7 +211,6 @@ fi
 export BAT_THEME='Solarized (light)'
 complete -C '/usr/local/bin/terraform' terraform
 
-
 # Add Visual Studio Code binary to PATH for Linux.
 prepend_path '/usr/share/code/bin'
 
@@ -219,10 +218,10 @@ prepend_path '/usr/share/code/bin'
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && -x "$(command -v doctl)" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* && -x "$(command -v doctl)" ]] \
+  ; then
   source <(doctl completion bash)
 fi
 
@@ -258,29 +257,12 @@ prepend_path "${HOME}/.krew/bin"
 #
 # Flags:
 #   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && \
-  -x "$(command -v kubectl)" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* &&
+  -x "$(command -v kubectl)" ]] \
+  ; then
   source <(kubectl completion bash)
-fi
-
-# Add Navi widget if available and line editing is enabled.
-#
-# The Navi widget requires line editing and will otherwise cause the warning:
-#     bind: warning: line editing not enabled. 
-# One can start a no line editing shell with the command: bash --noediting.
-#
-# Flags:
-#   -x: Check if file exists and execute permission is granted.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && \
-  -x "$(command -v navi)" && \
-  "${SHELLOPTS}" =~ (vi|emacs) \
-]]; then
-  eval "$(navi widget bash)"
 fi
 
 # TypeScript settings.
@@ -293,11 +275,11 @@ prepend_path "${DENO_INSTALL}/bin"
 prepend_path "${HOME}/.npm-global/bin"
 
 # Source TabTab shell completion for PNPM.
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && \
-  -f "${HOME}/.config/tabtab/bash/__tabtab.bash" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* &&
+  -f "${HOME}/.config/tabtab/bash/__tabtab.bash" ]] \
+  ; then
   source "${HOME}/.config/tabtab/bash/__tabtab.bash"
 fi
 
@@ -309,11 +291,11 @@ export NVM_DIR="${HOME}/.nvm"
 if [[ -z "${SHELL_MINIMAL_CONFIG}" && -f "${NVM_DIR}/nvm.sh" ]]; then
   source "${NVM_DIR}/nvm.sh"
 fi
-if [[ \
-  -z "${SHELL_MINIMAL_CONFIG}" && \
-  "$-" == *i* && \
-  -f "${NVM_DIR}/bash_completion" \
-]]; then
+if [[ 
+  -z "${SHELL_MINIMAL_CONFIG}" &&
+  "$-" == *i* &&
+  -f "${NVM_DIR}/bash_completion" ]] \
+  ; then
   source "${NVM_DIR}/bash_completion"
 fi
 

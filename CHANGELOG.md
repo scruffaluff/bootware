@@ -16,6 +16,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Sops installation for new versions.
 - Zellij autostart within a second user session.
 
+### Removed
+
+- Navi role.
+
 ## 0.6.2 - 2023-08-20
 
 ### Added
