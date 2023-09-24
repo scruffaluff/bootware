@@ -9,12 +9,17 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     RenamePane {
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
+    }
+    locked {
+        bind "Ctrl b" { SwitchToMode "normal"; }
     }
     move {
         bind "j" "Left" { MovePane "Left"; }
@@ -25,12 +30,14 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     normal {
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     pane {
         bind "j" "Left" { MoveFocus "Left"; }
@@ -41,6 +48,7 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     resize {
         bind "j" "Left" { Resize "Left"; }
@@ -51,6 +59,7 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     scroll {
         bind "k" "Down" { ScrollDown; }
@@ -59,12 +68,14 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     session {
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     tab {
         bind "j" "Left" { GoToPreviousTab; }
@@ -73,16 +84,7 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
-    }
-    tmux {
-        bind "j" { MoveFocus "Left"; SwitchToMode "normal"; }
-        bind ";" { MoveFocus "Right"; SwitchToMode "normal"; }
-        bind "k" { MoveFocus "Down"; SwitchToMode "normal"; }
-        bind "l" { MoveFocus "Up"; SwitchToMode "normal"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     // Unbind ctrl+g in all modes for Navi compatibility.
     unbind "Ctrl g"

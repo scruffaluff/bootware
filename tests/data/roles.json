@@ -359,7 +359,10 @@
   { "name": "wasm" },
   {
     "name": "wezterm",
-    "tests": ["wezterm --version"]
+    "tests": {
+      "default": ["wezterm --version"],
+      "linux": ["flatpak info org.wezfurlong.wezterm"]
+    }
   },
   { "name": "winman" },
   {
