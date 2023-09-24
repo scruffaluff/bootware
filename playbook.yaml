@@ -494,14 +494,6 @@
         - server
         - wsl
 
-    - name: Install Hyper terminal
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.hyper
-      tags:
-        - desktop
-        - hyper
-        - terminal
-
     - name: Install Hyperfine benchmarking tool
       ansible.builtin.import_role:
         name: scruffaluff.bootware.hyperfine

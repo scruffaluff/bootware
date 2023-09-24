@@ -165,16 +165,6 @@
     "tests": ["htmlq --version"]
   },
   {
-    "name": "hyper",
-    "skip": [
-      { "arch": "arm64", "os": "fedora" },
-      { "os": "alpine" },
-      { "os": "arch" },
-      { "os": "freebsd" }
-    ],
-    "tests": ["hyper --version"]
-  },
-  {
     "name": "hyperfine",
     "skip": [
       { "arch": "arm64", "os": "debian" },

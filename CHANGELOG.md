@@ -18,7 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Navi role.
+- Hyper and Navi roles.
 
 ## 0.6.2 - 2023-08-20
 
