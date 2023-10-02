@@ -325,6 +325,14 @@
         - desktop
         - flatpak
 
+    - name: Install FlyIO development tools
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.flyctl
+      tags:
+        - extras
+        - flyctl
+        - never
+
     - name: Install fonts
       ansible.builtin.import_role:
         name: scruffaluff.bootware.font

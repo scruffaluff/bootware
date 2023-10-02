@@ -1,0 +1,66 @@
+---
+- name: Get latest FlyCtl version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/flyctl.json
+  register: flyctl_formula
+  when: ansible_system == "Linux"
+
+- name: Download FlyCtl for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/superfly/flyctl/releases/download/v{{
+      flyctl_formula.json.versions.stable }}/flyctl_{{
+      flyctl_formula.json.versions.stable }}_Linux_{{
+      flyctl_arch[system_architecture] }}.tar.gz
+  become: true
+  vars:
+    flyctl_arch:
+      amd64: x86_64
+      arm64: arm64
+  when: ansible_system == "Linux"
+
+- name: Install FlyCtl for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/flyctl
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/flyctl
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install FlyCtl for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: flyctl
+  when: ansible_system == "Darwin"
+
+- name: Install FlyCtl for Windows
+  community.windows.win_scoop:
+    name: flyctl
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
+  ansible.builtin.file:
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
+    state: directory
+  become: true
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Install FlyCtl Fish completion for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      flyctl completion fish > {{ user_home
+      }}/.config/fish/completions/flyctl.fish
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  when: ansible_system not in ["FreeBSD", "Win32NT"]

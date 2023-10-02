@@ -109,6 +109,11 @@
     "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
     "tests": ["flatpak --version"]
   },
+  {
+    "name": "flyctl",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["flyctl version"]
+  },
   { "name": "font" },
   { "name": "fzf", "tests": ["fzf --version"] },
   {
