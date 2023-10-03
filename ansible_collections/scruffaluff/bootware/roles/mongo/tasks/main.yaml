@@ -15,6 +15,11 @@
   register: mongo_formula_windows
   when: ansible_system == "Win32NT"
 
+# TODO: Add back support for DNF when Mongosh works with newer OpenSSL versions.
+#
+# As of 10/3/2023, Mongosh is not compatible with Fedora 38's OpenSSL version.
+# For more information, visit
+# https://www.mongodb.com/community/forums/t/openssl-error-when-starting-mongosh/243323.
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
@@ -24,7 +29,7 @@
       https://downloads.mongodb.com/compass/mongosh-{{
       mongo_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch }}.tgz
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
 
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
@@ -36,7 +41,7 @@
       /tmp/mongosh-{{ mongo_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch }}/bin/mongosh
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
 
 - name: Install Mongo Shell for MacOS
   become: true
