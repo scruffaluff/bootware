@@ -9,11 +9,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- K3sup and Velero roles.
+- Flyctl, K3sup, Wezterm, and Velero roles.
+- GlazeWM tiling window manager for Windows.
 
 ### Fixed
 
+- Sops installation for new versions.
 - Zellij autostart within a second user session.
+
+### Removed
+
+- Defterm, Hyper, and Navi roles.
 
 ## 0.6.2 - 2023-08-20
 

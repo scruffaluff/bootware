@@ -26,9 +26,19 @@ function identity<Type>(parameter: Type): Type {
 }
 
 /**
+ * Check if operating system is a Linux distribution.
+ * @param {Object} system - The host operating system.
+ * @return {boolean} Whether the system is a Linux distribution
+ */
+function isLinux(distro: string): boolean {
+  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
+  return distros.includes(distro);
+}
+
+/**
  * Check if system matches any of the skip conditions.
  * @param system - The host architecture and os information.
- * @patam conditions - The skip conditions for the role.
+ * @param conditions - The skip conditions for the role.
  * @return Whether system should be skipped.
  */
 function shouldSkip(system: Dict, conditions?: Array<Dict>): boolean {
@@ -36,13 +46,12 @@ function shouldSkip(system: Dict, conditions?: Array<Dict>): boolean {
     return false;
   }
 
-  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
   for (const condition of conditions) {
     let skipMatch = true;
     for (const key in condition) {
       // Skip if os condition is Linux and system is a Linux distro.
       if (key === "os" && condition[key] === "linux") {
-        if (!distros.includes(system[key])) {
+        if (!isLinux(system[key])) {
           skipMatch = false;
         }
       } else if (condition[key] !== system[key]) {
@@ -61,7 +70,7 @@ function shouldSkip(system: Dict, conditions?: Array<Dict>): boolean {
 /**
  * Execute tests for the successfull installation of a role.
  * @param system - The host architecture and os information.
- * @patam role - Testing information for a role.
+ * @param role - Testing information for a role.
  */
 async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
   let error = false;
@@ -73,6 +82,9 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
   if (role.tests && !shouldSkip(system, role.skip)) {
     if (Array.isArray(role.tests)) {
       tests = role.tests;
+    } else if (isLinux(system.os)) {
+      tests =
+        role.tests[system.os] || role.tests["linux"] || role.tests.default;
     } else {
       tests = role.tests[system.os] || role.tests.default;
     }

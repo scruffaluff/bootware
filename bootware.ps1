@@ -643,7 +643,7 @@ Function SetupSSHKeys {
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
         $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
-        wsl mkdir --parents --mode 700 "`$HOME/.ssh/"
+        wsl mkdir --parents --mode 700 "`$HOME/.ssh"
         wsl mv "$WSLKeyPath" "`$HOME/.ssh/bootware"
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
@@ -887,7 +887,7 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.6.2'
+    Write-Output 'Bootware 0.7.0'
 }
 
 # Convert path to WSL relative path.

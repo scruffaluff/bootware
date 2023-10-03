@@ -72,7 +72,7 @@
   ansible.builtin.file:
     mode: "750"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/Code/User/"
+    path: "{{ user_home }}/.config/Code/User"
     state: directory
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

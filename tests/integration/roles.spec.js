@@ -8,7 +8,17 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-function parse_args(args) {
+/**
+ * Check if operating system is a Linux distribution.
+ * @param {Object} system - The host operating system.
+ * @return {boolean} Whether the system is a Linux distribution
+ */
+function isLinux(distro) {
+  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
+  return distros.includes(distro);
+}
+
+function parseArgs(args) {
   let params = {
     architecture: "amd64",
     os: null,
@@ -66,7 +76,7 @@ function parse_args(args) {
 /**
  * Check if system matches any of the skip conditions.
  * @param {Object} system - The host architecture and os information.
- * @patam {Array<Object>} conditions - The skip conditions for the role.
+ * @param {Array<Object>} conditions - The skip conditions for the role.
  * @return {boolean} Whether system should be skipped.
  */
 function shouldSkip(system, conditions) {
@@ -74,13 +84,12 @@ function shouldSkip(system, conditions) {
     return false;
   }
 
-  const distros = ["alpine", "arch", "fedora", "debian", "suse", "ubuntu"];
   for (const condition of conditions) {
     let skipMatch = true;
     for (const key in condition) {
       // Skip if os condition is Linux and system is a Linux distro.
       if (key === "os" && condition[key] === "linux") {
-        if (!distros.includes(system[key])) {
+        if (!isLinux(system[key])) {
           skipMatch = false;
         }
       } else if (condition[key] !== system[key]) {
@@ -99,7 +108,7 @@ function shouldSkip(system, conditions) {
 /**
  * Execute tests for the successfull installation of a role.
  * @param {Object} system - The host architecture and os information.
- * @patam {Object} role - Testing information for a role.
+ * @param {Object} role - Testing information for a role.
  */
 function testRole(system, role) {
   let error = false;
@@ -109,6 +118,9 @@ function testRole(system, role) {
   if (role.tests && !shouldSkip(system, role.skip)) {
     if (Array.isArray(role.tests)) {
       tests = role.tests;
+    } else if (isLinux(system.os)) {
+      tests =
+        role.tests[system.os] || role.tests["linux"] || role.tests.default;
     } else {
       tests = role.tests[system.os] || role.tests.default;
     }
@@ -134,7 +146,7 @@ function testRole(system, role) {
 }
 
 function main() {
-  const config = parse_args(process.argv.slice(2));
+  const config = parseArgs(process.argv.slice(2));
 
   const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));

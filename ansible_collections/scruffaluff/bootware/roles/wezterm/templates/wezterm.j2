@@ -1,0 +1,39 @@
+-- WezTerm configuration file.
+--
+-- For more information, visit https://wezfurlong.org/wezterm/config/files.html.
+
+local wezterm = require 'wezterm'
+
+local config = wezterm.config_builder()
+config.color_scheme = 'Builtin Solarized Light'
+config.colors = {
+  scrollbar_thumb = '#fdf6e3',
+  tab_bar = {
+    active_tab = { bg_color = '#fdf6e3', fg_color = '#002b36', intensity = 'Bold' },
+    inactive_tab = { bg_color = '#e6e6e6', fg_color = '#1a1a1a' },
+    inactive_tab_edge = '#e6e6e6',
+    inactive_tab_hover = { bg_color = '#c6c6c6', fg_color = '#3a3a3a' },
+    new_tab = { bg_color = '#e6e6e6', fg_color = '#1a1a1a' },
+    new_tab_hover = { bg_color = '#c6c6c6', fg_color = '#3a3a3a' },
+  },
+}
+config.default_cursor_style = 'SteadyBar'
+config.default_prog = { '{{ user_shell }}', '{{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
+config.enable_scroll_bar = true
+config.font = wezterm.font { family = 'Fira Code', weight = 'Regular' }
+config.font_size = {{ font_size }}
+config.keys = {
+  { action = wezterm.action.ActivateTabRelative(-1), mods = '{{ wezterm_ctrl_key }}|SHIFT', key = '{' },
+  { action = wezterm.action.ActivateTabRelative(1), mods = '{{ wezterm_ctrl_key }}|SHIFT', key = '}' },
+}
+config.window_decorations = "RESIZE"
+config.window_frame = {
+  active_titlebar_bg = '#e6e6e6',
+  font_size = {{ font_size }},
+  font = wezterm.font { family = 'Fira Code', weight = 'Bold' },
+  inactive_titlebar_bg = '#e6e6e6',
+}
+config.window_padding = { top = 0 }
+
+return config
+

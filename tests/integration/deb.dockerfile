@@ -1,6 +1,6 @@
 FROM node:20.1.0 AS builder
 
-ARG version=0.6.2
+ARG version=0.7.0
 
 # Copy bootware package build files.
 COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
@@ -14,7 +14,7 @@ RUN node scripts/build_package.js deb "${version}"
 
 FROM debian:12.0
 
-ARG version=0.6.2
+ARG version=0.7.0
 
 # Update Apt package cache.
 RUN apt-get update

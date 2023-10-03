@@ -1,6 +1,6 @@
-# Hyper
+# Wezterm
 
-Hyper is an Ansible role
+Wezterm is an Ansible role
 
 ## Requirements
 

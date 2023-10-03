@@ -1,5 +1,0 @@
----
-dependencies:
-  - role: variable
-  - role: fzf
-    when: fzf_role_executed is not defined

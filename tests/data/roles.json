@@ -57,7 +57,6 @@
     "tests": ["datree version"]
   },
   { "name": "dbeaver" },
-  { "name": "defterm" },
   {
     "name": "deno",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
@@ -109,6 +108,11 @@
     "name": "flatpak",
     "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
     "tests": ["flatpak --version"]
+  },
+  {
+    "name": "flyctl",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["flyctl version"]
   },
   { "name": "font" },
   { "name": "fzf", "tests": ["fzf --version"] },
@@ -163,16 +167,6 @@
     "name": "htmlq",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["htmlq --version"]
-  },
-  {
-    "name": "hyper",
-    "skip": [
-      { "arch": "arm64", "os": "fedora" },
-      { "os": "alpine" },
-      { "os": "arch" },
-      { "os": "freebsd" }
-    ],
-    "tests": ["hyper --version"]
   },
   {
     "name": "hyperfine",
@@ -249,13 +243,8 @@
   },
   {
     "name": "mongo",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [{ "os": "alpine" }, { "os": "fedora" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
-  },
-  {
-    "name": "navi",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": ["navi --version"]
   },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "package" },
@@ -357,6 +346,13 @@
     "tests": ["code --version"]
   },
   { "name": "wasm" },
+  {
+    "name": "wezterm",
+    "tests": {
+      "default": ["wezterm --version"],
+      "linux": ["flatpak info org.wezfurlong.wezterm"]
+    }
+  },
   { "name": "winman" },
   {
     "name": "wireshark",

@@ -1,6 +1,6 @@
-# Navi
+# FlyCtl
 
-Navi is an Ansible role
+FlyCtl is an Ansible role
 
 ## Requirements
 

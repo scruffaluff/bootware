@@ -2,7 +2,7 @@
 _vscode_arch:
   amd64: x64
   arm64: arm64
-ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_arch: "{{ _vscode_arch[system_architecture] }}"
 vscode_remote_extensions:
   - "alefragnani.bookmarks"

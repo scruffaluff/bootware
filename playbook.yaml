@@ -185,14 +185,6 @@
         - dbeaver
         - desktop
 
-    - name: Configure default system terminal
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.defterm
-      tags:
-        - defterm
-        - desktop
-        - terminal
-
     - name: Install Deno JavaScript and TypeScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.deno
@@ -332,6 +324,14 @@
       tags:
         - desktop
         - flatpak
+
+    - name: Install FlyIO development tools
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.flyctl
+      tags:
+        - extras
+        - flyctl
+        - never
 
     - name: Install fonts
       ansible.builtin.import_role:
@@ -492,14 +492,6 @@
         - htmlq
         - server
         - wsl
-
-    - name: Install Hyper terminal
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.hyper
-      tags:
-        - desktop
-        - hyper
-        - terminal
 
     - name: Install Hyperfine benchmarking tool
       ansible.builtin.import_role:
@@ -662,17 +654,6 @@
         - desktop
         - mongo
         - server
-        - wsl
-
-    - name: Install Navi interactive documentation tool
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.navi
-      tags:
-        - container
-        - desktop
-        - navi
-        - server
-        - sysadmin
         - wsl
 
     - name: Install Node JavaScript runtime
@@ -1009,6 +990,14 @@
         - vm
         - wasm
         - wsl
+
+    - name: Install Wez's terminal
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.wezterm
+      tags:
+        - desktop
+        - terminal
+        - wezterm
 
     - name: Install desktop window managers
       ansible.builtin.import_role:

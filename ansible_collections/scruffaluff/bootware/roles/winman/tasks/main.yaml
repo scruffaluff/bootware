@@ -61,3 +61,32 @@
     name: amethyst
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install GlazeWM for Windows
+  community.windows.win_scoop:
+    name: glazewm
+  when: ansible_system == "Win32NT"
+
+- name: Create GlazeWM configuration directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.glaze-wm"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy GlazeWM configuration file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.glaze-wm/config.yaml"
+    force: true
+    owner: "{{ user_id }}"
+    src: glaze_wm.yaml
+  when: ansible_system == "Win32NT"
+
+- name: Add GlazeWM to startup applications for Windows
+  community.windows.win_shortcut:
+    dest: >-
+      {{ user_home }}\\AppData\\Roaming\\Microsoft\\Windows\\Start
+      Menu\\Programs\\Startup\\GlazeWM.lnk
+    icon: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe,0"
+    src: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe"
+  when: ansible_system == "Win32NT"
