@@ -23,10 +23,11 @@ config.enable_scroll_bar = true
 config.font = wezterm.font { family = 'Fira Code', weight = 'Regular' }
 config.font_size = {{ font_size }}
 config.keys = {
-  { action = wezterm.action.ActivateTabRelative(-1), mods = '{{ wezterm_ctrl_key }}|SHIFT', key = '{' },
-  { action = wezterm.action.ActivateTabRelative(1), mods = '{{ wezterm_ctrl_key }}|SHIFT', key = '}' },
+  { action = wezterm.action.ActivateTabRelative(-1), key = '{', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
+  { action = wezterm.action.ActivateTabRelative(1), key = '}', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
+  { action = wezterm.action.SpawnTab 'CurrentPaneDomain', key = 't', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
 }
-config.window_decorations = "RESIZE"
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.window_frame = {
   active_titlebar_bg = '#e6e6e6',
   font_size = {{ font_size }},

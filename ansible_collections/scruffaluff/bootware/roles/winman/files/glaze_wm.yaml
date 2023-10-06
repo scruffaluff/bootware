@@ -6,6 +6,8 @@
 bar:
   enabled: false
 
+binding_modes: []
+
 focus_borders:
   active:
     enabled: false
@@ -20,18 +22,37 @@ general:
   window_animations: false
 
 keybindings:
+  # Minimize focused window.
   - binding: "Alt+M"
     command: "set minimized"
+  # Kill GlazeWM process safely.
   - binding: "Alt+Shift+E"
     command: "exit wm"
+  # Close focused window.
   - binding: "Alt+Shift+Q"
     command: "close"
+  # Re-evaluate configuration file.
   - binding: "Alt+Shift+R"
     command: "reload config"
+  # Change the focused window to be floating or tiling.
+  - binding: "Alt+Shift+Space"
+    command: "toggle floating"
+  # Focus previous workspace defined in `workspaces` config.
+  - binding: "Alt+Shift+T"
+    command: "focus workspace prev"
+  # Focus next workspace defined in `workspaces` config.
+  - binding: "Alt+T"
+    command: "focus workspace next"
+  # Change tiling direction for new windows.
   - binding: "Alt+V"
     command: "tiling direction toggle"
+  # Change focused window to be maximized or unmaximized.
   - binding: "Alt+X"
     command: "toggle maximized"
+    # Focus the workspace that last had focus.
+  - binding: "Alt+Y"
+    command: "focus workspace recent"
+  # Shift focus in a given direction.
   - bindings: ["Alt+J", "Alt+Left"]
     command: "focus left"
   - bindings: ["Alt+OemSemicolon", "Alt+Right"]
@@ -40,6 +61,23 @@ keybindings:
     command: "focus up"
   - bindings: ["Alt+K", "Alt+Down"]
     command: "focus down"
+  # Move focused window in a given direction.
+  - bindings: ["Alt+Shift+J", "Alt+Shift+Left"]
+    command: "move left"
+  - bindings: ["Alt+Shift+OemSemicolon", "Alt+Shift+Right"]
+    command: "move right"
+  - bindings: ["Alt+Shift+L", "Alt+Shift+Up"]
+    command: "move up"
+  - bindings: ["Alt+Shift+K", "Alt+Shift+Down"]
+    command: "move down"
+
+window_rules:
+  # Task Manager requires admin privileges to manage and should be ignored.
+  - command: "ignore"
+    match_process_name: "/Taskmgr|ScreenClippingHost/"
+  # Launches system dialogs as floating windows.
+  - command: "set floating"
+    match_class_name: "#32770"
 
 workspaces:
   - name: "1"
