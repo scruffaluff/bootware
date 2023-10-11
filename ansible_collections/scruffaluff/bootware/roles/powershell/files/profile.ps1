@@ -195,7 +195,6 @@ If (
 $Env:BAT_THEME = 'Solarized (light)'
 Set-Alias -Name cbcopy -Value Set-Clipboard
 Set-Alias -Name cbpaste -Value Get-Clipboard
-Set-Alias -Name exa -Value Get-ChildItem
 Set-Alias -Name touch -Value New-Item
 
 # Load Bootware autocompletion if available.

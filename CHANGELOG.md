@@ -12,6 +12,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Flyctl, K3sup, Wezterm, and Velero roles.
 - GlazeWM tiling window manager for Windows.
 
+### Changed
+
+- Replace Exa role with Lsd.
+
 ### Fixed
 
 - Sops installation for new versions.

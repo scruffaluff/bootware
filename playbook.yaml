@@ -264,18 +264,6 @@
         - desktop
         - etcher
 
-    - name: Install Exa file lister
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.exa
-      tags:
-        - container
-        - desktop
-        - exa
-        - server
-        - shell
-        - sysadmin
-        - wsl
-
     - name: Install FD file searcher
       ansible.builtin.import_role:
         name: scruffaluff.bootware.fd
@@ -600,6 +588,18 @@
         - extras
         - libvirt
         - never
+
+    - name: Install Lsd file lister
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.lsd
+      tags:
+        - container
+        - desktop
+        - lsd
+        - server
+        - shell
+        - sysadmin
+        - wsl
 
     - name: Install Lua language
       ansible.builtin.import_role:

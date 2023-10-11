@@ -1,0 +1,73 @@
+---
+- name: Get latest Lsd version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/lsd.json
+  register: lsd_formula
+  when: ansible_system == "Linux"
+
+- name: Install Lsd for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: lsd
+  when: ansible_system == "FreeBSD"
+
+- name: Download Lsd for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/lsd-rs/lsd/releases/download/v{{
+      lsd_formula.json.versions.stable }}/lsd-v{{
+      lsd_formula.json.versions.stable }}-{{ lsd_arch
+      }}-unknown-linux-musl.tar.gz
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Lsd for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/lsd
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
+      }}-unknown-linux-musl/lsd
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Lsd for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: lsd
+  when: ansible_system == "Darwin"
+
+- name: Install Lsd for Windows
+  community.windows.win_scoop:
+    name: lsd
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Linux
+  ansible.builtin.file:
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
+    state: directory
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Lsd Fish completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/fish/completions/lsd.fish"
+    force: true
+    mode: "664"
+    owner: "{{ user_id }}"
+    remote_src: true
+    src: >-
+      /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
+      }}-unknown-linux-musl/autocomplete/lsd.fish
+  become: true
+  when: ansible_system == "Linux"

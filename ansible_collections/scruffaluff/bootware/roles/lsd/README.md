@@ -1,6 +1,6 @@
-# Exa
+# Lsd
 
-Exa is an Ansible role
+Lsd is an Ansible role
 
 ## Requirements
 

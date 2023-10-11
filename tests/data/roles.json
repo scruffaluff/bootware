@@ -77,11 +77,6 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
   {
-    "name": "exa",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
-    "tests": ["exa --version"]
-  },
-  {
     "name": "fd",
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["fd --version"]
@@ -219,6 +214,7 @@
       ]
     }
   },
+  { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",
     "skip": [{ "os": "alpine" }],
