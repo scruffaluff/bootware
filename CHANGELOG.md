@@ -18,6 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Make Caffeine role version independent.
 - Sops installation for new versions.
 - Zellij autostart within a second user session.
 
