@@ -31,7 +31,7 @@ Options:
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
-      --user-install <USER-NAME>  Remote host user to install software for
+      --install-user <USER-NAME>  Remote host user to install software for
   -i, --inventory <IP-LIST>       Ansible host IP addesses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation

@@ -37,8 +37,6 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
 # Change system keybindings.
-gsettings set org.gnome.mutter overlay-key ''
-gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>Space']"
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left "['<Control><Super>Left']"
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right "['<Control><Super>Right']"
 
