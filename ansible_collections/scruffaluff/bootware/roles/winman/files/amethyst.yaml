@@ -1,0 +1,11 @@
+# Amethyst configuration file for tiling windows.
+#
+# For more information, visit
+# https://github.com/ianyh/Amethyst/blob/development/docs/configuration-files.md.
+
+---
+layouts:
+  - column
+  - fullscreen
+  - tall
+  - wide

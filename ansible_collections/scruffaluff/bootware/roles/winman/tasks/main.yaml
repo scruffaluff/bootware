@@ -67,6 +67,23 @@
     name: glazewm
   when: ansible_system == "Win32NT"
 
+- name: Create Amethyst configuration directory for MacOS
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config/amethyst"
+    mode: "750"
+    owner: "{{ user_id }}"
+    state: directory
+  when: ansible_system == "Darwin"
+
+- name: Copy Amethyst configuration file for MacOS
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/amethyst/amethyst.yml"
+    force: true
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: amethyst.yaml
+  when: ansible_system == "Darwin"
+
 - name: Create GlazeWM configuration directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
