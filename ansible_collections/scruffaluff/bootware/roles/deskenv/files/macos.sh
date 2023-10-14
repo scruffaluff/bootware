@@ -52,7 +52,6 @@ duti -s com.microsoft.VSCode txt all
 duti -s com.microsoft.VSCode vue all
 duti -s com.microsoft.VSCode xml all
 duti -s com.microsoft.VSCode yaml all
-duti -s org.mozilla.firefox html all
 duti -s org.videolan.vlc avi all
 duti -s org.videolan.vlc m4v all
 duti -s org.videolan.vlc mov all
@@ -83,7 +82,7 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 # Keyboard settings.
 
 # Change move workspace left keybinding to Ctrl+Command+Left.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 "
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
     <key>enabled</key><true/>
     <key>value</key><dict>
@@ -96,8 +95,8 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79
       </array>
     </dict>
   </dict>
-"
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 "
+'
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 '
   <dict>
     <key>enabled</key><true/>
     <key>value</key><dict>
@@ -110,9 +109,9 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
       </array>
     </dict>
   </dict>
-"
+'
 # Change move workspace right keybinding to Ctrl+Command+Right.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 "
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
   <dict>
     <key>enabled</key><true/>
     <key>value</key><dict>
@@ -125,8 +124,8 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81
       </array>
     </dict>
   </dict>
-"
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 "
+'
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 '
   <dict>
     <key>enabled</key><true/>
     <key>value</key><dict>
@@ -139,7 +138,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
       </array>
     </dict>
   </dict>
-"
+'
 # Activate keyboard shortcut changes.
 /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 

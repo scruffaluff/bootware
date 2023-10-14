@@ -32,7 +32,7 @@ keybindings:
   - binding: "Shift+LWin+F"
     command: "toggle floating"
   # Change focused window to be maximized or unmaximized.
-  - binding: "Shift+LWin+M"
+  - binding: "Control+LWin+F"
     command: "toggle maximized"
   # Shift focus in a given direction.
   - bindings: ["Shift+LWin+J"]
