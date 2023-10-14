@@ -22,53 +22,35 @@ general:
   window_animations: false
 
 keybindings:
-  # Minimize focused window.
-  - binding: "Alt+M"
-    command: "set minimized"
   # Kill GlazeWM process safely.
-  - binding: "Alt+Shift+E"
+  - binding: "Control+Shift+LWin+E"
     command: "exit wm"
-  # Close focused window.
-  - binding: "Alt+Shift+Q"
-    command: "close"
   # Re-evaluate configuration file.
-  - binding: "Alt+Shift+R"
+  - binding: "Control+Shift+LWin+R"
     command: "reload config"
   # Change the focused window to be floating or tiling.
-  - binding: "Alt+Shift+Space"
+  - binding: "Shift+LWin+F"
     command: "toggle floating"
-  # Focus previous workspace defined in `workspaces` config.
-  - binding: "Alt+Shift+T"
-    command: "focus workspace prev"
-  # Focus next workspace defined in `workspaces` config.
-  - binding: "Alt+T"
-    command: "focus workspace next"
-  # Change tiling direction for new windows.
-  - binding: "Alt+V"
-    command: "tiling direction toggle"
   # Change focused window to be maximized or unmaximized.
-  - binding: "Alt+X"
+  - binding: "Shift+LWin+M"
     command: "toggle maximized"
-    # Focus the workspace that last had focus.
-  - binding: "Alt+Y"
-    command: "focus workspace recent"
   # Shift focus in a given direction.
-  - bindings: ["Alt+J", "Alt+Left"]
+  - bindings: ["Shift+LWin+J"]
     command: "focus left"
-  - bindings: ["Alt+OemSemicolon", "Alt+Right"]
+  - bindings: ["Shift+LWin+OemSemicolon"]
     command: "focus right"
-  - bindings: ["Alt+L", "Alt+Up"]
+  - bindings: ["Shift+LWin+L"]
     command: "focus up"
-  - bindings: ["Alt+K", "Alt+Down"]
+  - bindings: ["Shift+LWin+K"]
     command: "focus down"
   # Move focused window in a given direction.
-  - bindings: ["Alt+Shift+J", "Alt+Shift+Left"]
+  - bindings: ["Control+Shift+LWin+J"]
     command: "move left"
-  - bindings: ["Alt+Shift+OemSemicolon", "Alt+Shift+Right"]
+  - bindings: ["Control+Shift+LWin+OemSemicolon"]
     command: "move right"
-  - bindings: ["Alt+Shift+L", "Alt+Shift+Up"]
+  - bindings: ["Control+Shift+LWin+L"]
     command: "move up"
-  - bindings: ["Alt+Shift+K", "Alt+Shift+Down"]
+  - bindings: ["Control+Shift+LWin+K"]
     command: "move down"
 
 window_rules:
