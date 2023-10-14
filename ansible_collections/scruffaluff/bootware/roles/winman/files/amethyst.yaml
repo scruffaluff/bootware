@@ -24,7 +24,7 @@ layouts:
 # First modifier key combination.
 mod1:
   - command
-  - shift
+  - control
 
 # Second modifier key combination.
 mod2:
@@ -37,9 +37,9 @@ relaunch-amethyst:
   key: r
   mod: mod2
 
-# Toggle the floating state of the currently focused window.
-toggle-float:
-  key: f
+# Select fullscreen layout.
+select-fullscreen-layout:
+  key: m
   mod: mod1
 
 # Swap the position of the currently focused window with the next window in the
@@ -52,6 +52,11 @@ swap-ccw:
 # list going clockwise.
 swap-cw:
   key: ";"
+  mod: mod2
+
+# Toggle the floating state of the currently focused window.
+toggle-float:
+  key: f
   mod: mod2
 
 # Disable keybindings.
@@ -121,11 +126,6 @@ reevaluate-windows:
 # Select column layout.
 select-column-layout:
   key: f
-  mod: mod3
-
-# Select fullscreen layout.
-select-fullscreen-layout:
-  key: d
   mod: mod3
 
 # Select tall layout.

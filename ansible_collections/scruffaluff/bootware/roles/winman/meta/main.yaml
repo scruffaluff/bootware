@@ -3,15 +3,3 @@ dependencies:
   - role: variable
   - role: bash
     when: bash_role_executed is not defined and ansible_system != "Win32NT"
-  - role: build
-    when: >-
-      build_role_executed is not defined and ansible_system == "Linux" and
-      gnome_desktop
-  - role: git
-    when: >-
-      git_role_executed is not defined and ansible_system == "Linux" and
-      gnome_desktop
-  - role: node
-    when: >-
-      node_role_executed is not defined and ansible_system == "Linux" and
-      gnome_desktop

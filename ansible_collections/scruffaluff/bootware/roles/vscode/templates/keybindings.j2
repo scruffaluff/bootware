@@ -1,25 +1,26 @@
 [
-  { "key": "{{ vscode_ctrl_key }}+`", "command": "workbench.action.terminal.toggleTerminal" },
+  { "command": "workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
   {
-    "key": "{{ vscode_ctrl_key }}+`",
     "command": "workbench.action.focusActiveEditorGroup",
+    "key": "{{ vscode_ctrl_key }}+`",
     "when": "terminalFocus"
   },
-  { "key": "alt+shift+p", "command": "workbench.action.showCommands" },
-  { "key": "{{ vscode_ctrl_key }}+shift+p", "command": "workbench.action.showCommands" },
+  { "command": "workbench.action.showCommands", "key": "alt+shift+p" },
+  { "command": "workbench.action.showCommands", "key": "{{ vscode_ctrl_key }}+shift+p" },
   {
-    "key": "{{ vscode_ctrl_key }}+shift+]",
     "command": "workbench.action.terminal.focusNext",
+    "key": "{{ vscode_ctrl_key }}+shift+]",
     "when": "terminalFocus"
   },
   {
-    "key": "{{ vscode_ctrl_key }}+shift+[",
     "command": "workbench.action.terminal.focusPrevious",
+    "key": "{{ vscode_ctrl_key }}+shift+[",
     "when": "terminalFocus"
   },
   {
-    "key": "{{ vscode_ctrl_key }}+shift+t",
     "command": "workbench.action.terminal.new",
+    "key": "{{ vscode_ctrl_key }}+shift+t",
     "when": "terminalFocus"
-  }
+  },
+  { "command": "-workbench.actions.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" }
 ]

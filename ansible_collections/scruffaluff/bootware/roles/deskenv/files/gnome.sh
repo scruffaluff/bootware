@@ -37,14 +37,7 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
 # Change system keybindings.
-gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Control><Super>F"]'
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Control><Super>M"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Control><Super>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Control><Super>Right"]'
-
-# Create custom keybindings.
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings '["/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminal/"]'
-
-# Add open new terminal application keybinding.
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminal/ binding '<Control><Super>T'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminal/ command 'flatpak run org.wezfurlong.wezterm'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminal/ name 'Terminal'
+gsettings set org.gnome.settings-daemon.plugins.media-keys search '["<Super>Space"]'
