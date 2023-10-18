@@ -23,34 +23,34 @@ general:
 
 keybindings:
   # Kill GlazeWM process safely.
-  - binding: "Control+Shift+LWin+E"
+  - binding: "Alt+Control+Shift+E"
     command: "exit wm"
   # Re-evaluate configuration file.
-  - binding: "Control+Shift+LWin+R"
+  - binding: "Alt+Control+Shift+R"
     command: "reload config"
   # Change the focused window to be floating or tiling.
-  - binding: "Control+Shift+LWin+F"
+  - binding: "Alt+Control+Shift+F"
     command: "toggle floating"
   # Change focused window to be maximized or unmaximized.
-  - binding: "Control+LWin+M"
+  - binding: "Alt+Shift+M"
     command: "toggle maximized"
   # Shift focus in a given direction.
-  - bindings: ["Control+LWin+K"]
+  - bindings: ["Alt+Shift+K"]
     command: "focus down"
-  - bindings: ["Control+LWin+J"]
+  - bindings: ["Alt+Shift+J"]
     command: "focus left"
-  - bindings: ["Control+LWin+OemSemicolon"]
+  - bindings: ["Alt+Shift+OemSemicolon"]
     command: "focus right"
-  - bindings: ["Control+LWin+L"]
+  - bindings: ["Alt+Shift+L"]
     command: "focus up"
   # Move focused window in a given direction.
-  - bindings: ["Control+Shift+LWin+K"]
+  - bindings: ["Alt+Control+Shift+K"]
     command: "move down"
-  - bindings: ["Control+Shift+LWin+J"]
+  - bindings: ["Alt+Control+Shift+J"]
     command: "move left"
-  - bindings: ["Control+Shift+LWin+OemSemicolon"]
+  - bindings: ["Alt+Control+Shift+OemSemicolon"]
     command: "move right"
-  - bindings: ["Control+Shift+LWin+L"]
+  - bindings: ["Alt+Control+Shift+L"]
     command: "move up"
 
 window_rules:

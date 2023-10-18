@@ -23,13 +23,13 @@ layouts:
 
 # First modifier key combination.
 mod1:
-  - command
-  - control
+  - option
+  - shift
 
 # Second modifier key combination.
 mod2:
-  - command
   - control
+  - option
   - shift
 
 # Automatically quit and reopen Amethyst.
