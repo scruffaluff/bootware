@@ -1,0 +1,69 @@
+# GlazeWM configuration file for tiling windows.
+#
+# For more information, visit https://github.com/glazerdesktop/GlazeWM#configuration.
+
+---
+bar:
+  enabled: false
+
+binding_modes: []
+
+focus_borders:
+  active:
+    enabled: false
+  inactive:
+    enabled: false
+
+gaps:
+  inner_gap: "2px"
+  outer_gap: "4px"
+
+general:
+  window_animations: false
+
+keybindings:
+  # Kill GlazeWM process safely.
+  - binding: "Alt+Control+Shift+E"
+    command: "exit wm"
+  # Re-evaluate configuration file.
+  - binding: "Alt+Control+Shift+R"
+    command: "reload config"
+  # Change the focused window to be floating or tiling.
+  - binding: "Alt+Control+Shift+F"
+    command: "toggle floating"
+  # Change focused window to be maximized or unmaximized.
+  - binding: "Alt+Shift+M"
+    command: "toggle maximized"
+  # Shift focus in a given direction.
+  - bindings: ["Alt+Shift+K"]
+    command: "focus down"
+  - bindings: ["Alt+Shift+J"]
+    command: "focus left"
+  - bindings: ["Alt+Shift+OemSemicolon"]
+    command: "focus right"
+  - bindings: ["Alt+Shift+L"]
+    command: "focus up"
+  # Move focused window in a given direction.
+  - bindings: ["Alt+Control+Shift+K"]
+    command: "move down"
+  - bindings: ["Alt+Control+Shift+J"]
+    command: "move left"
+  - bindings: ["Alt+Control+Shift+OemSemicolon"]
+    command: "move right"
+  - bindings: ["Alt+Control+Shift+L"]
+    command: "move up"
+
+window_rules:
+  # Task Manager requires admin privileges to manage and should be ignored.
+  - command: "ignore"
+    match_process_name: "/Taskmgr|ScreenClippingHost/"
+  # Launches system dialogs as floating windows.
+  - command: "set floating"
+    match_class_name: "#32770"
+
+workspaces:
+  - name: "1"
+  - name: "2"
+  - name: "3"
+  - name: "4"
+  - name: "5"

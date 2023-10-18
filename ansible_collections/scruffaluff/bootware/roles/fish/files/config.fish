@@ -42,13 +42,16 @@ end
 # Flags:
 #   -n: Check if string is nonempty.
 function delete_commandline_from_history
-  set command_ (commandline)
+  set command (string trim (commandline))
+  if test -n "$command"
+    set results (history search "$command")
 
-  if test -n (string trim "$command_")
-    printf '\nFish History Entry Delete\n\n'
-    history delete "$command_"
-    history save
-    commandline --function kill-whole-line
+    if test -n "$results"
+      printf '\nFish History Entry Delete\n\n'
+      history delete "$command"
+      history save
+      commandline --function kill-whole-line
+    end
   end
 end
 

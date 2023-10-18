@@ -134,7 +134,7 @@
 
 - name: Install multiple Python versions for Windows
   community.windows.win_scoop:
-    name: python{{ item | replace('.', '') | replace('311', '') }}
+    name: python{{ item | replace('.', '') | replace('312', '') }}
   loop: "{{ python_versions }}"
   when: ansible_system == "Win32NT"
 

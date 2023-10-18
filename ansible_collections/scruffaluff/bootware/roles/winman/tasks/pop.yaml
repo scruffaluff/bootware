@@ -1,0 +1,53 @@
+---
+- name: Check if Pop Shell is installed for GNOME desktops
+  ansible.builtin.command: gnome-extensions show pop-shell@system76.com
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: false
+  ignore_errors: true
+  register: winman_pop_shell_check
+
+# Pop Shell requires TypeScript as a build dependency
+- name: Install Typescript for GNOME desktops
+  ansible.builtin.command: npm install --global typescript
+  become: true
+  become_user: "{{ user_id }}"
+  # Command always marks application as changed.
+  changed_when: true
+  environment:
+    PATH: "{{ user_home }}/.npm-global/bin:{{ ansible_env.PATH }}"
+  when: winman_pop_shell_check is failed
+
+- name: Install Pop Shell for GNOME desktops
+  ansible.builtin.shell:
+    cmd: |
+      source {{ user_home }}/.bashrc
+      tmp_dir="${HOME}$(mktemp --dry-run)"
+      git clone --depth 1 https://github.com/pop-os/shell.git "${tmp_dir}"
+      echo y | make --directory "${tmp_dir}" local-install
+      rm --force --recursive "${tmp_dir}"
+    executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  when: winman_pop_shell_check is failed
+
+- name: Enable Pop Shell extension for GNOME desktops
+  ansible.builtin.command: gnome-extensions enable pop-shell@system76.com
+  become: true
+  become_user: "{{ user_id }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
+
+- name: Notify user to reset keyboard shortcuts for GNOME desktops
+  ansible.builtin.debug:
+    msg:
+      - Pop Shell may have overriden the system's keyboard shortcuts. To reset
+      - the shortcuts, go to 'Settings.Keyboard.View and Customize Shortcuts'
+      - and click the 'Reset All' button.
+  when: winman_pop_shell_check is failed
+
+- name: Change Pop Shell settings for GNOME desktops
+  ansible.builtin.script: pop.sh
+  become: true
+  become_user: "{{ user_id }}"

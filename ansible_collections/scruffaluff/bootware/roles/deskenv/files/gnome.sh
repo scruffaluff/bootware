@@ -35,3 +35,9 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 
 # Turn off automatic brightness
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
+
+# Change system keybindings.
+gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Alt><Shift>M"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Control><Super>Left"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Control><Super>Right"]'
+gsettings set org.gnome.settings-daemon.plugins.media-keys search '["<Super>Space"]'

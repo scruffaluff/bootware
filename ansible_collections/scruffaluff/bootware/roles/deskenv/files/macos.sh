@@ -52,7 +52,6 @@ duti -s com.microsoft.VSCode txt all
 duti -s com.microsoft.VSCode vue all
 duti -s com.microsoft.VSCode xml all
 duti -s com.microsoft.VSCode yaml all
-duti -s org.mozilla.firefox html all
 duti -s org.videolan.vlc avi all
 duti -s org.videolan.vlc m4v all
 duti -s org.videolan.vlc mov all
@@ -79,6 +78,69 @@ defaults write com.apple.finder ShowStatusBar -bool true
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Do not autosave files to iCloud.
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+
+# Keyboard settings.
+
+# Change move workspace left keybinding to Ctrl+Command+Left.
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>123</integer>
+        <integer>11796480</integer>
+      </array>
+    </dict>
+  </dict>
+'
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>123</integer>
+        <integer>11927552</integer>
+      </array>
+    </dict>
+  </dict>
+'
+# Change move workspace right keybinding to Ctrl+Command+Right.
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>124</integer>
+        <integer>11796480</integer>
+      </array>
+    </dict>
+  </dict>
+'
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>124</integer>
+        <integer>11927552</integer>
+      </array>
+    </dict>
+  </dict>
+'
+# Activate keyboard shortcut changes.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
 # TextEdit settings.
 
