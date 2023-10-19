@@ -203,7 +203,7 @@ jobs:
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.3.0
+        uses: vmactions/freebsd-vm@v0.3.1
         with:
           prepare: |
             sudo freebsd-update fetch
@@ -311,7 +311,7 @@ jobs:
   ubuntu:
     name: Test bootstrapping software for Ubuntu Linux
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'ubuntu' }}
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
