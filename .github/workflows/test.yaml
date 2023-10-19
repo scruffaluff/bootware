@@ -372,7 +372,7 @@ jobs:
         shell: powershell
       # IdentitiesOnly is required to avoid an infinite wait for user password
       # input if the private key is rejected. Localhost is used since
-      # Vampire/setup-wsl@v1 sets up WSL version 1.
+      # Vampire/setup-wsl@v2 sets up WSL version 1.
       - name: Test SSH connection from WSL to Windows host
         run: >-
           wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o
