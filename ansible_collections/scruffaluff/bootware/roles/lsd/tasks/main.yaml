@@ -50,16 +50,56 @@
     name: lsd
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Linux
+- name: Create Lsd configuration directory for Unix
+  ansible.builtin.file:
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/lsd"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Lsd configuration files for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/lsd/{{ item }}"
+    force: true
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - colors.yaml
+    - config.yaml
+  when: ansible_system != "Win32NT"
+
+- name: Create Lsd configuration directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Roaming/lsd"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Lsd configuration files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/lsd/{{ item }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  loop:
+    - colors.yaml
+    - config.yaml
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Unix
   ansible.builtin.file:
     mode: "750"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
     state: directory
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install Lsd Fish completions for Linux
+- name: Install Lsd Fish completions for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/fish/completions/lsd.fish"
     force: true
@@ -70,4 +110,4 @@
       /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
       }}-unknown-linux-musl/autocomplete/lsd.fish
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system in ["FreeBSD", "Linux"]

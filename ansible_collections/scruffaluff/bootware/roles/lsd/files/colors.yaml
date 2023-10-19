@@ -1,0 +1,32 @@
+# Lsd solarized light theme color configuration file.
+#
+# For more information, visit https://github.com/lsd-rs/lsd#theme.
+
+---
+date:
+  day-old: 136
+  hour-old: 64
+  older: 240
+group: 245
+inode:
+  invalid: 235
+  valid: 61
+links:
+  invalid: 235
+  valid: 61
+permission:
+  acl: 37
+  context: 235
+  exec-sticky: 125
+  exec: 160
+  no-access: 234
+  octal: 37
+  read: 64
+  write: 136
+size:
+  large: 33
+  medium: 37
+  none: 235
+  small: 61
+tree-edge: 235
+user: 136

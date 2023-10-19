@@ -1,0 +1,9 @@
+# Lsd configuration file for listing directory contents.
+#
+# For more information, visit https://github.com/lsd-rs/lsd#configuration.
+
+---
+color:
+  theme: custom
+icons:
+  theme: unicode
