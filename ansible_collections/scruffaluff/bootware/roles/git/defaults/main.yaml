@@ -1,8 +1,8 @@
 ---
-_git_delta_arch:
+git_delta_arch_:
   amd64: x86_64
   arm64: aarch64
-git_delta_arch: "{{ _git_delta_arch[system_architecture] }}"
+git_delta_arch: "{{ git_delta_arch_[system_architecture] }}"
 # Git Delta uses newer Glibc version that is not compatible with older Debian
 # Amd64 systems.
 git_delta_env: >-

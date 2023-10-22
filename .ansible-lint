@@ -5,10 +5,14 @@
 
 ---
 skip_list:
-  # Naming conventions are ignored for the following files for user
-  # friendliness.
-  - package/defaults/main.yaml var-naming[no-role-prefix]
-  - variable/defaults/main.yaml var-naming[no-role-prefix]
+  # Variable names in package/defaults/main.yaml and variable/defaults/main.yaml
+  # are chosen for user convenience. Since disabling an Ansible lint rule for an
+  # entire file still gives a warning as specified at
+  # https://ansible.readthedocs.io/projects/lint/configuring/#ignoring-rules-for-entire-files,
+  # the variable naming rule is disabled. Maintainers should occasionally check
+  # variable naming is consistent for all other files by commenting the next
+  # line.
+  - var-naming[no-role-prefix]
   # Changelog is in root directory of project. It is copied into the collection
   # during publishing.
   - galaxy[no-changelog]

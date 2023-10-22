@@ -1,5 +1,5 @@
 ---
-_lsd_arch:
+lsd_arch_:
   amd64: x86_64
   arm64: aarch64
-lsd_arch: "{{ _lsd_arch[system_architecture] }}"
+lsd_arch: "{{ lsd_arch_[system_architecture] }}"

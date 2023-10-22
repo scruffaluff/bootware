@@ -1,5 +1,5 @@
 ---
-_helm_plugins:
+helm_plugins_:
   always: []
   Darwin:
     - https://github.com/aslafy-z/helm-git
@@ -15,4 +15,4 @@ _helm_plugins:
     - https://github.com/aslafy-z/helm-git
     - https://github.com/jkroepke/helm-secrets
 helm_plugins: >-
-  {{ _helm_plugins.always + _helm_plugins.get(ansible_system, []) }}
+  {{ helm_plugins_.always + helm_plugins_.get(ansible_system, []) }}

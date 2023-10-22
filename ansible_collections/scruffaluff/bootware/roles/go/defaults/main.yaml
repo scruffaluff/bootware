@@ -1,5 +1,5 @@
 ---
-_go_root:
+go_root_:
   Darwin: >-
     {{ '/opt/homebrew/opt/go/libexec' if system_architecture == 'arm64' else
     '/usr/local/opt/go/libexec' }}
@@ -7,7 +7,7 @@ _go_root:
   Linux: /usr/local/go
   Win32NT: ""
 go_path: "{{ user_home }}/.go"
-go_root: "{{ _go_root.get(ansible_system, '/usr/local/go') }}"
+go_root: "{{ go_root_.get(ansible_system, '/usr/local/go') }}"
 go_applications:
   - github.com/go-delve/delve/cmd/dlv@latest
   - github.com/ramya-rao-a/go-outline@latest

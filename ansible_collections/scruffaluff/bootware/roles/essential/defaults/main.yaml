@@ -1,5 +1,5 @@
 ---
-_essential_linux_packages:
+essential_linux_packages_:
   always:
     - acl
     - bzip2
@@ -34,5 +34,5 @@ _essential_linux_packages:
     - which
     - xz
 essential_linux_packages: >-
-  {{ _essential_linux_packages.always +
-  _essential_linux_packages.get(ansible_pkg_mgr, []) }}
+  {{ essential_linux_packages_.always +
+  essential_linux_packages_.get(ansible_pkg_mgr, []) }}
