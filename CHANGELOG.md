@@ -21,8 +21,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Role names aws, deskenv, gcp, github, gitlab, mongo, and winman to awscli,
   desktop_environment, gcloud, github_runner, gitlab_runner, mongosh, and
   window_manager.
-- Variable names cargo_applications, kubectl_plugins, pipx_applications, and passwordless_sudo to
-  rust_applications, krew_plugins, python_applications, and sudo_passwordless respectively.
+- Variable names cargo_applications, kubectl_plugins, pipx_applications, and
+  passwordless_sudo to rust_applications, krew_plugins, python_applications, and
+  sudo_passwordless respectively.
 
 ### Fixed
 

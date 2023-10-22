@@ -5,14 +5,8 @@
 
 ---
 skip_list:
-  # Variable names in package/defaults/main.yaml and variable/defaults/main.yaml
-  # are chosen for user convenience. Since disabling an Ansible lint rule for an
-  # entire file still gives a warning as specified at
-  # https://ansible.readthedocs.io/projects/lint/configuring/#ignoring-rules-for-entire-files,
-  # the variable naming rule is disabled. Maintainers should occasionally check
-  # variable naming is consistent for all other files by commenting the next
-  # line.
-  - var-naming[no-role-prefix]
+  # Main playbook should be one long play.
+  - complexity[play]
   # Changelog is in root directory of project. It is copied into the collection
   # during publishing.
   - galaxy[no-changelog]
@@ -24,3 +18,11 @@ skip_list:
   # default shell. For more information, visit
   # https://github.com/ansible/ansible-lint/issues/497.
   - risky-shell-pipe
+  # Variable names in package/defaults/main.yaml and variable/defaults/main.yaml
+  # are chosen for user convenience. Since disabling an Ansible lint rule for an
+  # entire file still gives a warning as specified at
+  # https://ansible.readthedocs.io/projects/lint/configuring/#ignoring-rules-for-entire-files,
+  # the variable naming rule is disabled. Maintainers should occasionally check
+  # variable naming is consistent for all other files by commenting the next
+  # line.
+  - var-naming[no-role-prefix]

@@ -1,22 +1,22 @@
 ---
-- name: Dowload Google Cloud SDK for Alpine
+- name: Dowload Google Cloud SDK for Alpine and Arch
   ansible.builtin.unarchive:
     dest: /usr/lib/
     mode: "755"
     remote_src: true
     src: https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz
   become: true
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_pkg_mgr in ["apk", "pacman"]
 
-- name: Install Google Cloud SDK binaries for Alpine
+- name: Install Google Cloud SDK binaries for Alpine and Arch
   ansible.builtin.command:
     cmd: /usr/lib/google-cloud-sdk/install.sh --quiet
   become: true
   changed_when: "'Update done' in gcloud_alpine_install"
   register: gcloud_alpine_install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_pkg_mgr in ["apk", "pacman"]
 
-- name: Create links to Google Cloud SDK binaries for Alpine
+- name: Create links to Google Cloud SDK binaries for Alpine and Arch
   ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
@@ -28,15 +28,7 @@
     - bq
     - gcloud
     - gsutil
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Google Cloud SDK for Arch
-  ansible.builtin.command: yay --noconfirm --refresh --sync google-cloud-cli
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'installing google-cloud-cli' in gcloud_arch_install"
-  register: gcloud_arch_install
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_pkg_mgr in ["apk", "pacman"]
 
 - name: Download Google Cloud SDK GPG key for Debian
   ansible.builtin.get_url:
