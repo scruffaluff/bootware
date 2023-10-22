@@ -21,6 +21,7 @@
     mode: "750"
     owner: "{{ user_id }}"
     state: directory
+  become: true
   when: ansible_system == "Darwin"
 
 - name: Copy Amethyst configuration file for MacOS
@@ -30,6 +31,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: amethyst.yaml
+  become: true
   when: ansible_system == "Darwin"
 
 - name: Create GlazeWM configuration directory for Windows

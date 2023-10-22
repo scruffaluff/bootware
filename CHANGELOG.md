@@ -16,6 +16,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Pop tiling window manager for Forge tiling window manager.
+- Rename AWS role to AWSCLI.
+- Rename GCP role to GCloud.
 - Replace Exa role with Lsd.
 
 ### Fixed

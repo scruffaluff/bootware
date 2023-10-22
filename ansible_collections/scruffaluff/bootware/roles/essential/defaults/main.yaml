@@ -13,11 +13,18 @@ _essential_linux_packages:
     - unzip
     - zip
   apk:
+    - openssl-dev
     - which
     - xz
   apt:
+    - apt-file
+    - apt-transport-https
+    - lsb-release
+    - pbuilder
+    - ubuntu-dev-tools
     - xz-utils
   dnf:
+    - dnf-plugins-core
     - which
     - xz
   pacman:

@@ -63,9 +63,9 @@
 
     - name: Install Amazon Web Services development tools
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.aws
+        name: scruffaluff.bootware.awscli
       tags:
-        - aws
+        - awscli
         - cloud
         - container
         - desktop
@@ -341,10 +341,10 @@
 
     - name: Install Google Cloud Platform development tools
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.gcp
+        name: scruffaluff.bootware.gcloud
       tags:
         - extras
-        - gcp
+        - gcloud
         - never
 
     - name: Install GDU disk space analyzer

@@ -19,10 +19,10 @@
     remote_src: true
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{
-      aws_arch[system_architecture] }}.zip
+      awscli_arch[system_architecture] }}.zip
   become: true
   vars:
-    aws_arch:
+    awscli_arch:
       amd64: x86_64
       arm64: aarch64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

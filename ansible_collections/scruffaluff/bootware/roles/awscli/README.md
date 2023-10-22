@@ -1,6 +1,6 @@
-# Aws
+# Awscli
 
-Aws is an Ansible role
+Awscli is an Ansible role
 
 ## Requirements
 

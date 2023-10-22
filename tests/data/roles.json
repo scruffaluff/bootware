@@ -10,7 +10,7 @@
   },
   { "name": "appimage" },
   { "name": "audio" },
-  { "name": "aws", "tests": ["aws --version"] },
+  { "name": "awscli", "tests": ["aws --version"] },
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],
@@ -112,7 +112,7 @@
   { "name": "font" },
   { "name": "fzf", "tests": ["fzf --version"] },
   {
-    "name": "gcp",
+    "name": "gcloud",
     "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
     "tests": ["gcloud --version", "gsutil --version"]
   },

@@ -1,6 +1,6 @@
-# Gcp
+# GCloud
 
-Gcp is an Ansible role
+GCloud is an Ansible role
 
 ## Requirements
 
