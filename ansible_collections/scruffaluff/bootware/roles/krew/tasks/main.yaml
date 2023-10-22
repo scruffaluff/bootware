@@ -51,7 +51,7 @@
   changed_when: "'Installed plugin' in krew_plugin_install"
   environment:
     PATH: "{{ user_home }}/.krew/bin:{{ ansible_env.PATH }}"
-  loop: "{{ kubectl_plugins }}"
+  loop: "{{ krew_plugins }}"
   register: krew_plugin_install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 # - name: Install Kubectl plugins for Windows
@@ -59,6 +59,6 @@
 #   changed_when: "'Installed plugin' in krew_plugin_install"
 #   environment:
 #     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_env.Path }}"
-#   loop: "{{ kubectl_plugins }}"
+#   loop: "{{ krew_plugins }}"
 #   register: krew_plugin_install
 #   when: ansible_system == "Win32NT"

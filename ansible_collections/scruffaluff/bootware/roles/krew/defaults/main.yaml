@@ -1,5 +1,5 @@
 ---
-_kubectl_plugins:
+krew_plugins_:
   always: []
   Darwin:
     - ctx
@@ -11,5 +11,5 @@ _kubectl_plugins:
     - ctx
     - ns
   Win32NT: []
-kubectl_plugins: >-
-  {{ _kubectl_plugins.always + _kubectl_plugins.get(ansible_system, []) }}
+krew_plugins: >-
+  {{ krew_plugins_.always + krew_plugins_.get(ansible_system, []) }}

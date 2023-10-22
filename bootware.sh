@@ -424,7 +424,7 @@ config() {
   #   -z: Check if string has zero length.
   if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
-    printf 'passwordless_sudo: false' > "${dst_file}"
+    printf 'sudo_passwordless: false' > "${dst_file}"
   else
     assert_cmd curl
 

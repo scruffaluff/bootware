@@ -61,7 +61,7 @@
   changed_when: >-
     "installed package" in python_pipx_application_install or "upgraded package"
     in python_pipx_application_install
-  loop: "{{ pipx_applications }}"
+  loop: "{{ python_applications }}"
   register: python_pipx_application_install
   when: ansible_system != "Win32NT"
 
@@ -76,6 +76,6 @@
     in python_pipx_application_install
   environment:
     Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
-  loop: "{{ pipx_applications }}"
+  loop: "{{ python_applications }}"
   register: python_pipx_application_install
   when: ansible_system == "Win32NT"

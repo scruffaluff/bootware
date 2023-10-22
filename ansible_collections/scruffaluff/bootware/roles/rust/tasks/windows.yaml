@@ -77,5 +77,5 @@
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
-  loop: "{{ cargo_applications }}"
+  loop: "{{ rust_applications }}"
   register: rust_binstall_package

@@ -1,5 +1,5 @@
 ---
-pipx_applications:
+python_applications:
   - "jinja2-cli[toml,yaml,xml]"
   - "python-lsp-server[all]"
   - "black[jupyter]"

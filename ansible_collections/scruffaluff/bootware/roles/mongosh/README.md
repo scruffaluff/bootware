@@ -1,6 +1,6 @@
-# Mongo
+# MongoSh
 
-Mongo is an Ansible role
+MongoSh is an Ansible role
 
 ## Requirements
 

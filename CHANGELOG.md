@@ -16,10 +16,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Exa role for Lsd role.
 - Pop tiling window manager for Forge tiling window manager.
-- Rename AWS role to AWSCLI.
-- Rename GCP role to GCloud.
-- Replace Exa role with Lsd.
+- Role names aws, gcp, and mongo to awscli, gcloud, and mongosh.
+- Variable names cargo_applications, kubectl_plugins, pipx_applications, and passwordless_sudo to
+  rust_applications, krew_plugins, python_applications, and sudo_passwordless respectively.
 
 ### Fixed
 

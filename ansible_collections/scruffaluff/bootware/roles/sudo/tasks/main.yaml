@@ -30,10 +30,10 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
-  when: passwordless_sudo and ansible_system != "Win32NT"
+  when: sudo_passwordless and ansible_system != "Win32NT"
 
 - name: Restrict administrator permission popup to once per session for Windows
   ansible.windows.win_command: gsudo config CacheMode Auto
   # Command always marks config as changed.
   changed_when: true
-  when: passwordless_sudo and ansible_system == "Win32NT"
+  when: sudo_passwordless and ansible_system == "Win32NT"

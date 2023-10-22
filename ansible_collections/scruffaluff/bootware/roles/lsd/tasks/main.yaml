@@ -97,7 +97,7 @@
     path: "{{ user_home }}/.config/fish/completions"
     state: directory
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux"
 
 - name: Install Lsd Fish completions for Unix
   ansible.builtin.copy:
@@ -110,4 +110,4 @@
       /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
       }}-unknown-linux-musl/autocomplete/lsd.fish
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux"

@@ -1,10 +1,14 @@
 # Ansible Lint configuration file for settings role and playbook rules.
 #
 # For more information, visit
-# https://ansible-lint.readthedocs.io/en/latest/configuring.html.
+# https://ansible.readthedocs.io/projects/lint/configuring.
 
 ---
 skip_list:
+  # Naming conventions are ignored for the following files for user
+  # friendliness.
+  - package/defaults/main.yaml var-naming[no-role-prefix]
+  - variable/defaults/main.yaml var-naming[no-role-prefix]
   # Changelog is in root directory of project. It is copied into the collection
   # during publishing.
   - galaxy[no-changelog]

@@ -98,6 +98,6 @@
       become: true
       become_user: "{{ user_id }}"
       changed_when: "'This will install' in rust_binstall_package"
-      loop: "{{ cargo_applications }}"
+      loop: "{{ rust_applications }}"
       register: rust_binstall_package
       when: ansible_system in ["Darwin", "Linux"]

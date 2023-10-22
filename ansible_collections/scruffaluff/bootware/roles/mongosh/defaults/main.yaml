@@ -1,0 +1,5 @@
+---
+mongosh_arch_:
+  amd64: x64
+  arm64: arm64
+mongosh_arch: "{{ mongosh_arch_[system_architecture] }}"

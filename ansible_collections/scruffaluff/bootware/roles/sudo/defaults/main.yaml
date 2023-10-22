@@ -1,2 +1,2 @@
 ---
-passwordless_sudo: false
+sudo_passwordless: false
