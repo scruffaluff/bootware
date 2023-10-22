@@ -1,0 +1,28 @@
+---
+- name: Install utilities for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - htop
+      - neofetch
+      - rsync
+  when: ansible_system == "FreeBSD"
+
+- name: Install utilities for Linux
+  ansible.builtin.package:
+    name:
+      - htop
+      - neofetch
+      - rsync
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install utilities for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name:
+      - htop
+      - neofetch
+      - rsync
+  when: ansible_system == "Darwin"

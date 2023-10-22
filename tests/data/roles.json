@@ -330,6 +330,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["usql --version"]
   },
+  { "name": "utility" },
   { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "velero",

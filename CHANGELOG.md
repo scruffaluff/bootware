@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Flyctl, K3sup, Wezterm, and Velero roles.
 - GlazeWM tiling window manager for Windows.
 - Unified keybinging for tiling window managers.
+- Utility role for miscellaneous system tools.
 
 ### Changed
 

@@ -956,6 +956,17 @@
         - usql
         - wsl
 
+    - name: Install general utilties
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.utility
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - utility
+        - wsl
+
     - name: Install Vault secrets manager
       ansible.builtin.import_role:
         name: scruffaluff.bootware.vault
