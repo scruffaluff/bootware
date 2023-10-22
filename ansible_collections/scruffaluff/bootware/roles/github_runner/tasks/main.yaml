@@ -4,7 +4,7 @@
     method: GET
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest
-  register: github_release_unix
+  register: github_runner_release_unix
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Get latest GitHub runner version for Windows
@@ -12,7 +12,7 @@
     method: GET
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest
-  register: github_release_windows
+  register: github_runner_release_windows
   when: ansible_system == "Win32NT"
 
 - name: Get all groups for Unix
@@ -61,7 +61,7 @@
   ansible.builtin.file:
     mode: "750"
     owner: github-runner
-    path: "{{ github_folder }}"
+    path: "{{ github_runner_folder }}"
     state: directory
   become: true
   when: ansible_system in ["Darwin", "Linux"]
@@ -75,24 +75,24 @@
 - name: Create GitHub runner directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ github_folder }}"
+    path: "{{ github_runner_folder }}"
     state: directory
   when: ansible_system == "Win32NT"
 
 - name: Download GitHub runner for Unix
   ansible.builtin.unarchive:
-    dest: "{{ github_folder }}"
+    dest: "{{ github_runner_folder }}"
     mode: "750"
     owner: github-runner
     remote_src: true
     src: >-
       https://github.com/actions/runner/releases/download/{{
-      github_release_unix.json.tag_name }}/actions-runner-{{
-      github_os[ansible_system] }}-{{ github_arch }}-{{
-      github_release_unix.json.tag_name[1:] }}.tar.gz
+      github_runner_release_unix.json.tag_name }}/actions-runner-{{
+      github_runner_os[ansible_system] }}-{{ github_runner_arch }}-{{
+      github_runner_release_unix.json.tag_name[1:] }}.tar.gz
   become: true
   vars:
-    github_os:
+    github_runner_os:
       Darwin: osx
       Linux: linux
   when: ansible_system in ["Darwin", "Linux"]
@@ -102,12 +102,13 @@
     dest: "{{ ansible_env.TEMP }}/github_runner.zip"
     url: >-
       https://github.com/actions/runner/releases/download/{{
-      github_release_windows.json.tag_name }}/actions-runner-win-{{ github_arch
-      }}-{{ github_release_windows.json.tag_name[1:] }}.zip
+      github_runner_release_windows.json.tag_name }}/actions-runner-win-{{
+      github_runner_arch }}-{{ github_runner_release_windows.json.tag_name[1:]
+      }}.zip
   when: ansible_system == "Win32NT"
 
 - name: Decompress GitHub runner archive for Windows
   community.windows.win_unzip:
-    dest: "{{ github_folder }}"
+    dest: "{{ github_runner_folder }}"
     src: "{{ ansible_env.TEMP }}/github_runner.zip"
   when: ansible_system == "Win32NT"

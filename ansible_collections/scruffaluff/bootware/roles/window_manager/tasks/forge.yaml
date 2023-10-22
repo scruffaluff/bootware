@@ -19,7 +19,7 @@
       become: true
       become_user: "{{ user_id }}"
       changed_when: false
-      register: winman_forge_gnome_version
+      register: window_manager_forge_gnome_version
 
     - name: Get latest Forge extension version for GNOME desktops
       ansible.builtin.uri:
@@ -27,16 +27,16 @@
         return_content: true
         url: >-
           https://extensions.gnome.org/extension-info/?uuid=forge@jmmaranan.com&shell_version={{
-          winman_forge_gnome_version.stdout }}
-      register: winman_forge_release
+          window_manager_forge_gnome_version.stdout }}
+      register: window_manager_forge_release
 
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
         dest: /tmp/forge_extension.zip
         mode: "600"
         url:
-          https://extensions.gnome.org{{ winman_forge_release.json.download_url
-          }}
+          https://extensions.gnome.org{{
+          window_manager_forge_release.json.download_url }}
 
     - name: Install Forge extension for GNOME desktops
       ansible.builtin.command: >-

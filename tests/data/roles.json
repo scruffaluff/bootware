@@ -62,7 +62,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["deno --version"]
   },
-  { "name": "deskenv" },
+  { "name": "desktop_environment" },
   {
     "name": "dust",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
@@ -126,12 +126,12 @@
     "tests": ["delta --version", "git --version", "git-lfs --version"]
   },
   {
-    "name": "github",
+    "name": "github_runner",
     "skip": [{ "os": "freebsd" }],
     "tests": []
   },
   {
-    "name": "gitlab",
+    "name": "gitlab_runner",
     "tests": ["gitlab-runner --version"]
   },
   {
@@ -238,7 +238,7 @@
     "tests": ["mkcert --version"]
   },
   {
-    "name": "mongo",
+    "name": "mongosh",
     "skip": [{ "os": "alpine" }, { "os": "fedora" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
   },
@@ -350,7 +350,7 @@
       "linux": ["flatpak info org.wezfurlong.wezterm"]
     }
   },
-  { "name": "winman" },
+  { "name": "window_manager" },
   {
     "name": "wireshark",
     "skip": [{ "os": "macos" }],

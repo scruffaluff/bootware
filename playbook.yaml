@@ -200,9 +200,9 @@
 
     - name: Configure system desktop environment
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.deskenv
+        name: scruffaluff.bootware.desktop_environment
       tags:
-        - deskenv
+        - desktop_environment
         - desktop
 
     - name: Install Docker container platform
@@ -372,18 +372,18 @@
 
     - name: Install GitHub runner
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.github
+        name: scruffaluff.bootware.github_runner
       tags:
         - extras
-        - github
+        - github_runner
         - never
 
     - name: Install GitLab runner
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.gitlab
+        name: scruffaluff.bootware.gitlab_runner
       tags:
         - extras
-        - gitlab
+        - gitlab_runner
         - never
 
     - name: Install GitUI Git manager
@@ -647,12 +647,12 @@
 
     - name: Install MongoDB database client
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.mongo
+        name: scruffaluff.bootware.mongosh
       tags:
         - container
         - database
         - desktop
-        - mongo
+        - mongosh
         - server
         - wsl
 
@@ -1012,11 +1012,11 @@
 
     - name: Install desktop window managers
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.winman
+        name: scruffaluff.bootware.window_manager
       tags:
         - extras
         - never
-        - winman
+        - window_manager
 
     - name: Install Wireshark network analyzer
       ansible.builtin.import_role:
