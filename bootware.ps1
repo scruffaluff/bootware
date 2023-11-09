@@ -515,7 +515,7 @@ Function Roles() {
         }
     }
 
-    Get-ChildItem -Name -Path "$PSScriptRoot/repo/roles"
+    Get-ChildItem -Name -Path "$PSScriptRoot/repo/ansible_collections/scruffaluff/bootware/roles"
 }
 
 # Subcommand to configure boostrapping services and utilities.

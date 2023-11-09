@@ -609,7 +609,7 @@ roles() {
   # MacOS.
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
-  ls -1 "${tmp_dir}/roles"
+  ls -1 "${tmp_dir}/ansible_collections/scruffaluff/bootware/roles"
 }
 
 #######################################

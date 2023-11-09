@@ -284,11 +284,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["scc --version"]
   },
-  {
-    "name": "sd",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["sd --version"]
-  },
+  { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
     "skip": [{ "os": "freebsd" }, { "os": "windows" }],
