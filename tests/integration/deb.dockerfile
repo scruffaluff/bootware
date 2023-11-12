@@ -1,6 +1,8 @@
-FROM node:20.1.0 AS builder
+FROM debian:12.2 AS builder
 
-ARG version=0.7.0
+ARG version=0.7.1
+
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes nodejs npm
 
 # Copy bootware package build files.
 COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
@@ -12,9 +14,9 @@ RUN npm ci
 # Build Debian package.
 RUN node scripts/build_package.js deb "${version}"
 
-FROM debian:12.0
+FROM debian:12.2
 
-ARG version=0.7.0
+ARG version=0.7.1
 
 # Update Apt package cache.
 RUN apt-get update

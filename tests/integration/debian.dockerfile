@@ -1,4 +1,4 @@
-FROM debian:12.1
+FROM debian:12.2
 
 ARG TARGETARCH
 

@@ -1,6 +1,6 @@
-FROM fedora:38 AS builder
+FROM fedora:39 AS builder
 
-ARG version=0.7.0
+ARG version=0.7.1
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
@@ -17,9 +17,9 @@ RUN npm ci
 # Build Fedora package.
 RUN node scripts/build_package.js rpm "${version}"
 
-FROM fedora:38
+FROM fedora:39
 
-ARG version=0.7.0
+ARG version=0.7.1
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }

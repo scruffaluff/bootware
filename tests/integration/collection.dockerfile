@@ -1,7 +1,7 @@
-FROM debian:11.7
+FROM debian:12.2
 
 ARG TARGETARCH
-ARG version=0.7.0
+ARG version=0.7.1
 
 # Create non-priviledged user.
 RUN useradd --create-home --no-log-init --shell /bin/bash collection
@@ -40,9 +40,9 @@ SHELL ["/bin/bash", "-c"]
 # Test Bootware collection with 3 retries on failure.
 ENV retries=3
 RUN until ansible-playbook --connection local --inventory localhost, playbook.yaml; do \
-        status=$?; \
-        ((retries--)) && ((retries == 0)) && exit "${status}"; \
-        printf "\nCollection run failed with exit code %s." "${status}"; \
-        printf "\nRetrying playbook with %s attempts left.\n" "${retries}"; \
-        sleep 4; \
+    status=$?; \
+    ((retries--)) && ((retries == 0)) && exit "${status}"; \
+    printf "\nCollection run failed with exit code %s." "${status}"; \
+    printf "\nRetrying playbook with %s attempts left.\n" "${retries}"; \
+    sleep 4; \
     done
