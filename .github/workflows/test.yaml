@@ -198,18 +198,18 @@ jobs:
     name: Test bootstrapping software for FreeBSD
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
-    runs-on: macos-12
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v0.3.1
+        uses: vmactions/freebsd-vm@v1
         with:
           prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes bash curl
-          release: "13.1"
+          release: "13.2"
           # Termshark is installed at /usr/local/bin/termshark on
           # FreeBSD in the job's VM, which is in the system path. No idea why
           # the test suite cannot find it.

@@ -9,7 +9,7 @@
   ansible.builtin.package:
     name: alacritty
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
+  when: ansible_system == "Linux"
 
 - name: Install Alacritty for MacOS
   community.general.homebrew_cask:
@@ -17,22 +17,6 @@
     name: alacritty
     state: present
   when: ansible_system == "Darwin"
-
-- name: Add Alacritty PPA for Ubuntu
-  ansible.builtin.apt_repository:
-    repo: ppa:aslatter/ppa
-  become: true
-  when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    ansible_distribution != "Pop!_OS" and system_architecture == "amd64"
-
-- name: Install Alacritty for Ubuntu
-  ansible.builtin.apt:
-    name: alacritty
-  become: true
-  when: >-
-    ansible_pkg_mgr == "apt" and deb_distro_base == "ubuntu" and
-    system_architecture == "amd64"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:

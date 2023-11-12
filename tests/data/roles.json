@@ -3,11 +3,7 @@
     "name": "age",
     "tests": ["age --version", "age-keygen --version"]
   },
-  {
-    "name": "alacritty",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "debian" }],
-    "tests": ["alacritty --version"]
-  },
+  { "name": "alacritty", "tests": ["alacritty --version"] },
   { "name": "appimage" },
   { "name": "audio" },
   { "name": "awscli", "tests": ["aws --version"] },
