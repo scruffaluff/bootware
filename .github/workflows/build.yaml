@@ -198,7 +198,7 @@ jobs:
         with:
           context: .
           file: ./tests/integration/${{ matrix.format }}.dockerfile
-          tags: bootware:${{ matrix.format }}
+          tags: docker.io/scruffaluff/bootware:${{ matrix.format }}
           push: false
       - name: Setup Tmate session if debug enabled
         if: >-

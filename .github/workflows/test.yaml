@@ -66,7 +66,7 @@ jobs:
           file: ./tests/integration/alpine.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:alpine
+          tags: docker.io/scruffaluff/bootware:alpine
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -96,7 +96,7 @@ jobs:
           file: ./tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:arch
+          tags: docker.io/scruffaluff/bootware:arch
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -126,7 +126,7 @@ jobs:
           file: ./tests/integration/collection.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:collection
+          tags: docker.io/scruffaluff/bootware:collection
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -156,7 +156,7 @@ jobs:
           file: ./tests/integration/debian.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:debian
+          tags: docker.io/scruffaluff/bootware:debian
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -186,7 +186,7 @@ jobs:
           file: ./tests/integration/fedora.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:fedora
+          tags: docker.io/scruffaluff/bootware:fedora
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -196,8 +196,11 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
+    # Removed from default test suite until
+    # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
+    # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
@@ -300,7 +303,7 @@ jobs:
           file: ./tests/integration/suse.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:suse
+          tags: docker.io/scruffaluff/bootware:suse
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -330,7 +333,7 @@ jobs:
           file: ./tests/integration/ubuntu.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
-          tags: scruffaluff/bootware:ubuntu
+          tags: docker.io/scruffaluff/bootware:ubuntu
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
