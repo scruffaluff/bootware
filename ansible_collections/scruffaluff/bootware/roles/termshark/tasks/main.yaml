@@ -94,7 +94,7 @@
 
 - name: Create Termshark configuration directory for Unix
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/termshark"
@@ -104,7 +104,7 @@
 
 - name: Create Termshark configuration directory for MacOS
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/termshark"
@@ -123,7 +123,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/termshark/termshark.toml"
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: termshark.toml
@@ -135,7 +135,7 @@
     dest: >-
       {{ user_home }}/Library/Application Support/termshark/termshark.toml
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: termshark.toml

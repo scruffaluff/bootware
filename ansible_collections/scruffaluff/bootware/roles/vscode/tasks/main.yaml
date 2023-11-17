@@ -70,7 +70,7 @@
 
 - name: Create VSCode user directory for Linux
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/Code/User"
@@ -82,7 +82,7 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/keybindings.json"
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: keybindings.j2
@@ -93,7 +93,7 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/settings.json"
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: settings.j2
@@ -102,7 +102,7 @@
 
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/Code/User"
@@ -115,7 +115,7 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/keybindings.json
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: keybindings.j2
@@ -127,7 +127,7 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/settings.json
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: settings.j2

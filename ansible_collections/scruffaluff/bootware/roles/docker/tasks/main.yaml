@@ -127,7 +127,7 @@
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
@@ -138,7 +138,7 @@
 - name: Install Docker Fish shell completions for Unix
   ansible.builtin.get_url:
     dest: "{{ user_home }}/.config/fish/completions/docker.fish"
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish

@@ -43,7 +43,7 @@
 
 - name: Create TLDR repository directory for Linux
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.local/share"
@@ -67,7 +67,7 @@
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
@@ -78,7 +78,7 @@
 - name: Install TLDR Fish completion for Unix
   ansible.builtin.get_url:
     dest: "{{ user_home }}/.config/fish/completions/tldr.fish"
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     url: >-

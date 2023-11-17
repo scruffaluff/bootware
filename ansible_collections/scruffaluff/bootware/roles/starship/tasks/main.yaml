@@ -21,7 +21,7 @@
 - name: Create Starship settings directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
@@ -32,7 +32,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/starship.toml"
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: starship.toml

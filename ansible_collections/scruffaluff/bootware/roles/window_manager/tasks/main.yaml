@@ -18,7 +18,7 @@
 - name: Create Amethyst configuration directory for MacOS
   ansible.builtin.file:
     dest: "{{ user_home }}/.config/amethyst"
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
@@ -29,7 +29,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/amethyst/amethyst.yml"
     force: true
-    group: "{{ user_id }}"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: amethyst.yaml
