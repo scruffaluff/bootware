@@ -44,7 +44,6 @@
     dest: "/usr/local/bin/{{ item }}"
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://raw.githubusercontent.com/wimpysworld/quickemu/master/{{ item }}
   become: true

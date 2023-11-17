@@ -37,17 +37,6 @@
   become: true
   when: ansible_system == "Linux"
 
-- name: Make Xh HTTPS link for Linux
-  ansible.builtin.file:
-    src: /usr/local/bin/xh
-    dest: /usr/local/bin/xhs
-    force: true
-    mode: "755"
-    owner: root
-    state: link
-  become: true
-  when: ansible_system == "Linux"
-
 - name: Install Xh for MacOS
   become: true
   become_user: "{{ user_id }}"

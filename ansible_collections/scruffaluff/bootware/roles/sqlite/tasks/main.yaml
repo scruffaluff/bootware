@@ -30,6 +30,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.sqliterc"
     force: true
+    group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
     src: .sqliterc

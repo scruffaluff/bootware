@@ -16,9 +16,7 @@
 - name: Install Vault for Linux
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
-    group: root
     mode: "755"
-    owner: root
     remote_src: true
     src: >-
       https://releases.hashicorp.com/vault/{{ vault_formula.json.versions.stable

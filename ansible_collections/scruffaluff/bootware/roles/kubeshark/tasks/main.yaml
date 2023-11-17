@@ -20,7 +20,6 @@
     dest: /usr/local/bin/kubeshark
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
       kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
@@ -51,7 +50,8 @@
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
     state: directory

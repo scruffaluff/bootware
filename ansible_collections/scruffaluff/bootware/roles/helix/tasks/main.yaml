@@ -53,7 +53,8 @@
 
 - name: Create Helix configuration directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/helix"
     state: directory
@@ -64,7 +65,8 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix"
     force: true
-    mode: "770"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
@@ -77,7 +79,8 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix/{{ item }}"
     force: true
-    mode: "640"
+    group: "{{ group_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: "{{ item }}"
   become: true

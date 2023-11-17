@@ -29,7 +29,7 @@
     - name: Download Caffeine shell extension for GNOME desktops
       ansible.builtin.get_url:
         dest: /tmp/caffeine_extension.zip
-        mode: "600"
+        mode: "644"
         url:
           https://extensions.gnome.org{{ caffeine_release.json.download_url }}
 

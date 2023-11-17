@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:39
 
 ARG TARGETARCH
 
@@ -64,9 +64,9 @@ SHELL ["/bin/bash", "-c"]
 # Flags:
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "$test" ]]; then \
-        source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v node)" ]]; then \
-            sudo dnf install --assumeyes nodejs; \
-        fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
+    source "${HOME}/.bashrc"; \
+    if [[ ! -x "$(command -v node)" ]]; then \
+    sudo dnf install --assumeyes nodejs; \
+    fi; \
+    node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi

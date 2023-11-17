@@ -242,11 +242,6 @@
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   {
-    "name": "pocketbase",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
-    "tests": ["pocketbase --version"]
-  },
-  {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
     "tests": ["pwsh --version"]
@@ -350,10 +345,7 @@
   },
   {
     "name": "xh",
-    "tests": {
-      "default": ["xh --version", "xhs --version"],
-      "freebsd": ["xh --version"]
-    }
+    "tests": ["xh --version"]
   },
   {
     "name": "xsv",

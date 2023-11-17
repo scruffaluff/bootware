@@ -37,7 +37,8 @@
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
     state: directory

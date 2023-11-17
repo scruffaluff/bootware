@@ -25,9 +25,7 @@
 - name: Install Mdbook for Linux
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
-    group: root
     mode: "755"
-    owner: root
     remote_src: true
     src: >-
       https://github.com/rust-lang/mdBook/releases/download/v{{

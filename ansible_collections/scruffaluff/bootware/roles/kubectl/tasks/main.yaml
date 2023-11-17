@@ -27,7 +27,6 @@
     dest: /usr/local/bin/kubectl
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
       system_architecture }}/kubectl

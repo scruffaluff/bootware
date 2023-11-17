@@ -24,7 +24,6 @@
     creates: /usr/local/go
     dest: /usr/local/
     mode: "755"
-    owner: root
     remote_src: true
     src: >-
       https://golang.org/dl/go{{ go_formula.json.versions.stable }}.linux-{{

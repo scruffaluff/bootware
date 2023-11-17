@@ -9,7 +9,6 @@
   ansible.builtin.file:
     mode: "755"
     path: /usr/local/appimages
-    owner: root
     state: directory
   become: true
   when: ansible_system == "Linux"
@@ -17,7 +16,8 @@
 - name: Create AppImageLauncher settings directory for Linux
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     state: directory
   become: true
@@ -27,6 +27,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/appimagelauncher.cfg"
     force: true
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: appimagelauncher.cfg
@@ -38,7 +39,6 @@
     dest: /usr/local/appimages/{{ item.name }}
     force: true
     mode: "755"
-    owner: root
     url: "{{ item.url }}"
   become: true
   loop: "{{ appimage_packages }}"

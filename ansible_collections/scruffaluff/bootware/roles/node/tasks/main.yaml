@@ -153,7 +153,8 @@
 
 - name: Create Fish functions directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/functions"
     state: directory
@@ -163,6 +164,7 @@
 - name: Download Fast NVM Fish for Unix
   ansible.builtin.get_url:
     dest: "{{ user_home }}/.config/fish/functions/nvm.fish"
+    group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish

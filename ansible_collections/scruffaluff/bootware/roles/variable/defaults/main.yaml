@@ -55,6 +55,7 @@ display_manager: "{{ lookup('env', 'XDG_SESSION_TYPE') }}"
 fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
 gnome_desktop: "{{ desktop in gnome_desktops_ }}"
+group_id: "{{ 'staff' if ansible_system == 'Darwin' else user_id }}"
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: "{{ user_home }}\\scoop\\apps"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"

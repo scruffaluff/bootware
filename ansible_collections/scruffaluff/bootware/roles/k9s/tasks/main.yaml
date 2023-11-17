@@ -49,7 +49,8 @@
 
 - name: Create K9s configuration directory for FreeBSD
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.k9s"
     state: directory
@@ -58,7 +59,8 @@
 
 - name: Create K9s configuration directory for Linux
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/k9s"
     state: directory
@@ -67,7 +69,8 @@
 
 - name: Create K9s configuration directory for MacOS
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ group_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/k9s"
     state: directory
@@ -85,7 +88,8 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.k9s/skin.yml"
     force: true
-    mode: "640"
+    group: "{{ group_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
@@ -95,7 +99,8 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/k9s/skin.yml"
     force: true
-    mode: "640"
+    group: "{{ group_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
@@ -105,7 +110,8 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/Library/Application Support/k9s/skin.yml"
     force: true
-    mode: "640"
+    group: "{{ group_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: skin.yml
   become: true

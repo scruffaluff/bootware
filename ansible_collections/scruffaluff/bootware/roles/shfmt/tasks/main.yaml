@@ -18,7 +18,6 @@
     dest: /usr/local/bin/shfmt
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
