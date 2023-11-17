@@ -689,14 +689,6 @@
         - server
         - wsl
 
-    - name: Install Pocketbase web backend
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.pocketbase
-      tags:
-        - extras
-        - never
-        - pocketbase
-
     - name: Install PowerShell shell
       ansible.builtin.import_role:
         name: scruffaluff.bootware.powershell

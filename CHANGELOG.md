@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Group permissions for installed files.
 
+### Removed
+
+- Pocketbase role.
+
 ## 0.7.1 - 2023-11-13
 
 ### Added
