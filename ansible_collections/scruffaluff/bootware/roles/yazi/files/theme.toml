@@ -1,0 +1,168 @@
+# Yazi configuration file for color theme.
+#
+# For more information, visit
+# https://yazi-rs.github.io/docs/configuration/theme.
+
+[completion]
+active = { bg = "darkgray" }
+border = { fg = "blue" }
+icon_command = ""
+icon_file = ""
+icon_folder = ""
+inactive = {}
+
+[filetype]
+rules = [
+    { mime = "application/gzip", fg = "magenta" },
+    { mime = "application/x-7z-compressed", fg = "magenta" },
+    { mime = "application/x-bzip", fg = "magenta" },
+    { mime = "application/x-bzip2", fg = "magenta" },
+    { mime = "application/x-rar", fg = "magenta" },
+    { mime = "application/x-tar", fg = "magenta" },
+    { mime = "application/zip", fg = "magenta" },
+    { mime = "audio/*", fg = "yellow" },
+    { mime = "image/*", fg = "cyan" },
+    { mime = "video/*", fg = "yellow" },
+    { name = "*/", fg = "blue" },
+]
+
+[help]
+desc = { fg = "gray" }
+exec = { fg = "cyan" }
+footer = { fg = "black", bg = "white" }
+hovered = { bg = "darkgray", bold = true }
+on = { fg = "magenta" }
+
+[icons]
+".bashprofile" = ""
+".bashrc" = ""
+".config/" = ""
+".DS_Store" = ""
+".git/" = ""
+".gitattributes" = ""
+".gitignore" = ""
+".gitmodules" = ""
+".vimrc" = ""
+".zprofile" = ""
+".zshenv" = ""
+".zshrc" = ""
+"*.7z" = ""
+"*.avi" = ""
+"*.avif" = ""
+"*.bmp" = ""
+"*.c" = ""
+"*.conf" = ""
+"*.cpp" = ""
+"*.css" = ""
+"*.fish" = ""
+"*.flac" = ""
+"*.gif" = ""
+"*.go" = ""
+"*.gz" = ""
+"*.h" = ""
+"*.hpp" = ""
+"*.html" = ""
+"*.ico" = ""
+"*.ini" = ""
+"*.java" = ""
+"*.jpeg" = ""
+"*.jpg" = ""
+"*.js" = ""
+"*.json" = ""
+"*.jsx" = ""
+"*.lua" = ""
+"*.md" = ""
+"*.mkv" = ""
+"*.mov" = ""
+"*.mp3" = ""
+"*.mp4" = ""
+"*.php" = ""
+"*.png" = ""
+"*.py" = ""
+"*.rb" = ""
+"*.rs" = ""
+"*.scss" = ""
+"*.sh" = ""
+"*.svg" = ""
+"*.swift" = ""
+"*.tar" = ""
+"*.toml" = ""
+"*.ts" = ""
+"*.tsx" = ""
+"*.txt" = ""
+"*.vim" = ""
+"*.wav" = ""
+"*.webp" = ""
+"*.yaml" = ""
+"*.yml" = ""
+"*.zip" = ""
+"*" = ""
+"*/" = ""
+"Desktop/" = ""
+"Development/" = ""
+"Documents/" = ""
+"Downloads/" = ""
+"Library/" = ""
+"Movies/" = ""
+"Music/" = ""
+"Pictures/" = ""
+"Public/" = ""
+"Videos/" = ""
+
+[input]
+border = { fg = "blue" }
+selected = { reversed = true }
+title = {}
+value = {}
+
+[manager]
+border_style = { fg = "gray" }
+border_symbol = "│"
+cwd = { fg = "cyan" }
+find_keyword = { fg = "yellow", italic = true }
+find_position = { fg = "magenta", bg = "reset", italic = true }
+folder_offset = [1, 0, 1, 0]
+hovered = { fg = "black", bg = "lightblue" }
+marker_copied = { fg = "lightyellow", bg = "lightyellow" }
+marker_cut = { fg = "lightred", bg = "lightred" }
+marker_selected = { fg = "lightgreen", bg = "lightgreen" }
+preview_hovered = { underline = true }
+preview_offset = [1, 1, 1, 1]
+syntect_theme = ""
+tab_active = { fg = "black", bg = "lightblue" }
+tab_inactive = { fg = "white", bg = "darkgray" }
+tab_width = 1
+
+[select]
+active = { fg = "magenta" }
+border = { fg = "blue" }
+inactive = {}
+
+[status]
+mode_normal = { fg = "black", bg = "lightblue", bold = true }
+mode_select = { fg = "black", bg = "lightgreen", bold = true }
+mode_unset = { fg = "black", bg = "lightmagenta", bold = true }
+permissions_r = { fg = "lightyellow" }
+permissions_s = { fg = "darkgray" }
+permissions_t = { fg = "lightgreen" }
+permissions_w = { fg = "lightred" }
+permissions_x = { fg = "lightcyan" }
+progress_error = { fg = "red", bg = "black" }
+progress_label = { bold = true }
+progress_normal = { fg = "blue", bg = "black" }
+separator_close = ""
+separator_open = ""
+separator_style = { fg = "darkgray", bg = "darkgray" }
+
+[tasks]
+border = { fg = "blue" }
+hovered = { underline = true }
+title = {}
+
+[which]
+cand = { fg = "lightcyan" }
+desc = { fg = "magenta" }
+mask = { bg = "black" }
+rest = { fg = "darkgray" }
+separator = "  "
+separator_style = { fg = "darkgray" }

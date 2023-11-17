@@ -206,27 +206,32 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
+    # Removed from default test suite until
+    # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
+    # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
-    runs-on: macos-12
+      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Test installation, setup, and bootstrapping
-        uses: cross-platform-actions/action@v0.21.1
+        uses: vmactions/freebsd-vm@v1
         with:
-          operating_system: freebsd
-          run: |
+          prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes bash curl
+          release: "13.2"
+          run: |
+            set -eou pipefail
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
-          version: "13.2"
+          usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
-      # freebsd` and `cd /Users/runner/work/bootware/bootware`.
+      # freebsd` and `cd /root/work/bootware/bootware`.
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
