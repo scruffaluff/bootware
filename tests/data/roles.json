@@ -350,10 +350,7 @@
   },
   {
     "name": "xh",
-    "tests": {
-      "default": ["xh --version", "xhs --version"],
-      "freebsd": ["xh --version"]
-    }
+    "tests": ["xh --version"]
   },
   {
     "name": "xsv",

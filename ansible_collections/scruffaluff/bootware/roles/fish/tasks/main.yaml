@@ -20,7 +20,8 @@
 
 - name: Create Fish configuration directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish"
     state: directory
@@ -29,7 +30,8 @@
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/completions"
     state: directory
@@ -38,7 +40,8 @@
 
 - name: Create Fish functions directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/fish/functions"
     state: directory
@@ -49,6 +52,7 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/fish/config.fish"
     force: true
+    group: "{{ user_id }}"
     mode: "640"
     owner: "{{ user_id }}"
     src: config.fish

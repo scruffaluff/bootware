@@ -17,7 +17,6 @@
   ansible.builtin.get_url:
     dest: /tmp/rust-analyzer.gz
     mode: "755"
-    owner: root
     url: >-
       https://github.com/rust-lang/rust-analyzer/releases/download/2022-08-29/rust-analyzer-x86_64-unknown-linux-musl.gz
   become: true
@@ -27,7 +26,6 @@
   ansible.builtin.get_url:
     dest: /tmp/rust-analyzer.gz
     mode: "755"
-    owner: root
     url: >-
       https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
       rust_analyzer_arch[system_architecture] }}-unknown-linux-gnu.gz

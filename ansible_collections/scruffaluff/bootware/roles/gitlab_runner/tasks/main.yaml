@@ -95,7 +95,10 @@
       # Enable passwordless sudo for gitlab-runner user.
       gitlab-runner ALL=(ALL) NOPASSWD:ALL
     create: true
+    group: root
     marker: "# {mark} ANSIBLE MANAGED passwordless sudo for gitlab-runner BLOCK"
+    # File needs to have 440 permissions as explained at
+    # https://wiki.archlinux.org/title/sudo#Sudoers_default_file_permissions.
     mode: "440"
     owner: root
     path: /etc/sudoers

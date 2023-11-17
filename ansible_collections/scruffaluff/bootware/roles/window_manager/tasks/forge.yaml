@@ -33,7 +33,7 @@
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
         dest: /tmp/forge_extension.zip
-        mode: "600"
+        mode: "644"
         url:
           https://extensions.gnome.org{{
           window_manager_forge_release.json.download_url }}

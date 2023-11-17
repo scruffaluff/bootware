@@ -19,7 +19,6 @@
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "777"
-    owner: root
     remote_src: true
     src: >-
       https://github.com/pocketbase/pocketbase/releases/download/v{{

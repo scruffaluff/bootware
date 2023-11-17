@@ -31,7 +31,7 @@
 - name: Download VSCode for Fedora and Suse
   ansible.builtin.get_url:
     dest: /tmp/vscode.rpm
-    mode: "600"
+    mode: "644"
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
       }}/stable
@@ -70,7 +70,8 @@
 
 - name: Create VSCode user directory for Linux
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/Code/User"
     state: directory
@@ -81,7 +82,8 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/keybindings.json"
     force: true
-    mode: "640"
+    group: "{{ user_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: keybindings.j2
   become: true
@@ -91,7 +93,8 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/settings.json"
     force: true
-    mode: "640"
+    group: "{{ user_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: settings.j2
   become: true
@@ -99,7 +102,8 @@
 
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/Code/User"
     state: directory
@@ -111,7 +115,8 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/keybindings.json
     force: true
-    mode: "640"
+    group: "{{ user_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: keybindings.j2
   become: true
@@ -122,7 +127,8 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/settings.json
     force: true
-    mode: "640"
+    group: "{{ user_id }}"
+    mode: "644"
     owner: "{{ user_id }}"
     src: settings.j2
   become: true

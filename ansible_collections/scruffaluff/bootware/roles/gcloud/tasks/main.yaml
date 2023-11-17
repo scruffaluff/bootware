@@ -20,7 +20,6 @@
   ansible.builtin.file:
     dest: "/usr/local/bin/{{ item }}"
     mode: "755"
-    owner: root
     src: "/usr/lib/google-cloud-sdk/bin/{{ item }}"
     state: link
   become: true
@@ -33,7 +32,7 @@
 - name: Download Google Cloud SDK GPG key for Debian
   ansible.builtin.get_url:
     dest: /tmp/google-cloud-sdk.gpg
-    mode: "644"
+    mode: "640"
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -52,7 +51,6 @@
     dest: /etc/apt/sources.list.d/google-cloud-sdk.list
     force: true
     mode: "644"
-    owner: root
     src: google-cloud-sdk.list
   become: true
   when: ansible_pkg_mgr == "apt"

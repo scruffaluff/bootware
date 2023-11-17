@@ -12,7 +12,6 @@
     dest: /usr/local/bin/k3d
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/k3d-io/k3d/releases/download/v{{
       k3d_formula.json.versions.stable }}/k3d-linux-{{ system_architecture }}

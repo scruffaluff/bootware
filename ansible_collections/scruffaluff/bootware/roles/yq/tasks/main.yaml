@@ -12,7 +12,6 @@
     dest: /usr/local/bin/yq
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/mikefarah/yq/releases/download/v{{
       yq_formula.json.versions.stable }}/yq_{{ ansible_system | lower }}_{{

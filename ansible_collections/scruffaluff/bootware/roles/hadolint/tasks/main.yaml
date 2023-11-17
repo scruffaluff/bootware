@@ -12,7 +12,6 @@
     dest: /usr/local/bin/hadolint
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/hadolint/hadolint/releases/download/v{{
       hadolint_formula.json.versions.stable }}/hadolint-Linux-{{

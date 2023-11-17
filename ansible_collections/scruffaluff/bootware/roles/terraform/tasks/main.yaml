@@ -16,9 +16,7 @@
 - name: Install Terraform for Linux
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
-    group: root
     mode: "755"
-    owner: root
     remote_src: true
     src: >-
       https://releases.hashicorp.com/terraform/{{

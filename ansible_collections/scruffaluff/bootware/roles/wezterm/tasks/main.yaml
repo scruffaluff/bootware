@@ -25,7 +25,8 @@
 
 - name: Create Wez's terminal configuration directory for Unix
   ansible.builtin.file:
-    mode: "750"
+    group: "{{ user_id }}"
+    mode: "755"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/wezterm"
     state: directory
@@ -43,6 +44,7 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
     force: true
+    group: "{{ user_id }}"
     mode: "644"
     owner: "{{ user_id }}"
     src: wezterm.j2

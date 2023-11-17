@@ -77,7 +77,8 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.gitconfig"
     force: true
-    mode: "644"
+    group: "{{ user_id }}"
+    mode: "640"
     owner: "{{ user_id }}"
     src: gitconfig.j2
   become: true

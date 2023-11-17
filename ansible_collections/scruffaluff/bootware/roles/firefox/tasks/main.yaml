@@ -46,6 +46,7 @@
   ansible.builtin.copy:
     dest: "{{ item }}/user.js"
     force: true
+    group: "{{ user_id }}"
     mode: "640"
     owner: "{{ user_id }}"
     src: user.js

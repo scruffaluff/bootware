@@ -18,7 +18,6 @@
     dest: /usr/local/bin/sops
     force: true
     mode: "755"
-    owner: root
     url: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-v{{

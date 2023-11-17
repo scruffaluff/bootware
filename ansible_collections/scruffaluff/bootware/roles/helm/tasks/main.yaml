@@ -29,7 +29,6 @@
     dest: /usr/local/bin/helm
     force: true
     mode: "755"
-    owner: root
     remote_src: true
     src: /tmp/linux-{{ system_architecture }}/helm
   become: true
