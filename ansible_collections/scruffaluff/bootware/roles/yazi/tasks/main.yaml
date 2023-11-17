@@ -1,0 +1,110 @@
+---
+- name: Get latest Yazi version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/yazi.json
+  register: yazi_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Download Yazi for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/sxyazi/yazi/releases/download/v{{
+      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
+      }}-unknown-linux-gnu.zip
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Yazi for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/yazi
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/yazi
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Yazi for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: yazi
+  when: ansible_system == "Darwin"
+
+- name: Install Yazi for Windows
+  community.windows.win_scoop:
+    name: yazi
+  when: ansible_system == "Win32NT"
+
+- name: Create Yazi configuration directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/yazi"
+    state: directory
+  become: true
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+
+- name: Copy Yazi configuration files for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/yazi/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - keymap.toml
+    - theme.toml
+    - yazi.toml
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+
+- name: Create Yazi configuration directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Roaming/yazi/config"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Yazi configuration files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/yazi/config/{{ item }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  loop:
+    - keymap.toml
+    - theme.toml
+    - yazi.toml
+  when: ansible_system == "Win32NT"
+
+- name: Create Fish completions directory for Linux
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/fish/completions"
+    state: directory
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Yazi Fish shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/fish/completions/yazi.fish"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    remote_src: true
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/completions/yazi.fish
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

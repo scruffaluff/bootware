@@ -217,7 +217,6 @@ jobs:
         with:
           operating_system: freebsd
           run: |
-            set -eou pipefail
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes bash curl
@@ -227,7 +226,7 @@ jobs:
             bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
           version: "13.2"
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
-      # freebsd` and `cd /root/work/bootware/bootware`.
+      # freebsd` and `cd /Users/runner/work/bootware/bootware`.
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

@@ -352,6 +352,11 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["xsv --version"]
   },
+  {
+    "name": "yazi",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "tests": ["yazi --version"]
+  },
   { "name": "yq", "tests": ["yq --version"] },
   {
     "name": "zellij",

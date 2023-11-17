@@ -1038,6 +1038,14 @@
         - wsl
         - xsv
 
+    - name: Install Yazi terminal file manager
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.yazi
+      tags:
+        - extras
+        - never
+        - yazi
+
     - name: Install Yq YAML parser
       ansible.builtin.import_role:
         name: scruffaluff.bootware.yq
