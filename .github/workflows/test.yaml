@@ -206,37 +206,26 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
-    # Removed from default test suite until
-    # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
-    # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+    runs-on: macos-12
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v3
       - name: Test installation, setup, and bootstrapping
-        uses: vmactions/freebsd-vm@v1
+        uses: cross-platform-actions/action@v0.21.1
         with:
-          prepare: |
+          operating_system: freebsd
+          run: |
+            set -eou pipefail
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes bash curl
-          release: "13.2"
-          # Termshark is installed at /usr/local/bin/termshark on
-          # FreeBSD in the job's VM, which is in the system path. No idea why
-          # the test suite cannot find it.
-          #
-          # As of 08/22/2023, checks for Libvirt, QEMU, and Wireshark are
-          # failing due to a temporary undefined symbol issue with
-          # /usr/local/lib/libtasn1.so.6.
-          run: |
-            set -eou pipefail
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip libvirt,qemu,termshark,wireshark freebsd'
-          usesh: true
+            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
+          version: "13.2"
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
       - name: Setup Tmate session if debug enabled
