@@ -147,11 +147,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
-  {
-    "name": "helix",
-    "skip": [{ "arch": "arm64", "os": "debian" }, { "os": "alpine" }],
-    "tests": ["hx --version"]
-  },
+  { "name": "helix", "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
