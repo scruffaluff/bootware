@@ -77,6 +77,8 @@ keybinds {
     }
 }
 
+session_serialization false
+
 themes {
     default {
         bg 147 161 161
