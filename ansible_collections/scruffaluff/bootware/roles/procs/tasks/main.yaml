@@ -68,6 +68,8 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "zypper"
     and system_architecture == "amd64"

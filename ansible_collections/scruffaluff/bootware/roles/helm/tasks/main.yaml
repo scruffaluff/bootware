@@ -51,6 +51,8 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install"
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
   failed_when: >-
     helm_plugin_install.rc != 0 and 'plugin already exists' not in
     helm_plugin_install.stderr
