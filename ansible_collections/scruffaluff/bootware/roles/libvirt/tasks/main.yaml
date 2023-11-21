@@ -40,6 +40,7 @@
       - libguestfs
       - libvirt
       - virt-install
+      - virt-top
   become: true
   when: ansible_pkg_mgr == "dnf"
 
