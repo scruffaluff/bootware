@@ -12,11 +12,6 @@
     "skip": [{ "os": "windows" }],
     "tests": ["bash --version"]
   },
-  {
-    "name": "bashdb",
-    "skip": [{ "os": "linux" }, { "os": "windows" }],
-    "tests": ["bashdb --version"]
-  },
   { "name": "bat", "tests": ["bat --version"] },
   {
     "name": "bats",
@@ -68,11 +63,7 @@
     "name": "etcher",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
-  {
-    "name": "fd",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["fd --version"]
-  },
+  { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
@@ -126,16 +117,12 @@
     "name": "gitlab_runner",
     "tests": ["gitlab-runner --version"]
   },
-  {
-    "name": "gitui",
-    "skip": [{ "arch": "arm64", "os": "alpine" }],
-    "tests": ["gitui --version"]
-  },
+  { "name": "gitui", "tests": ["gitui --version"] },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {
@@ -148,17 +135,10 @@
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
     "name": "htmlq",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["htmlq --version"]
   },
-  {
-    "name": "hyperfine",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" }
-    ],
-    "tests": ["hyperfine --version"]
-  },
+  { "name": "hyperfine", "tests": ["hyperfine --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   {
@@ -224,11 +204,7 @@
       "freebsd": ["lua54 -v"]
     }
   },
-  {
-    "name": "mdbook",
-    "skip": [{ "arch": "arm64" }],
-    "tests": ["mdbook --version"]
-  },
+  { "name": "mdbook", "tests": ["mdbook --version"] },
   {
     "name": "miniserve",
     "tests": ["miniserve --version"]
@@ -255,8 +231,7 @@
     "name": "procs",
     "skip": [
       { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" }
+      { "arch": "arm64", "os": "ubuntu" }
     ],
     "tests": ["procs --version"]
   },
@@ -305,11 +280,11 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["tilt version"]
   },
-  { "name": "tldr", "skip": [{ "os": "suse" }], "tests": ["tldr --version"] },
+  { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   {
     "name": "usql",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "os": "alpine" }],
     "tests": ["usql --version"]
   },
   { "name": "utility" },

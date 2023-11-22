@@ -7,6 +7,15 @@
   register: htmlq_formula
   when: ansible_system == "Linux"
 
+- name: Install Htmlq for Alpine
+  become: true
+  community.general.apk:
+    name: htmlq
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Htmlq for FreeBSD
   become: true
   community.general.pkgng:

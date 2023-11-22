@@ -398,14 +398,14 @@ jobs:
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip build,wireshark --tags desktop,extras
+          bootware bootstrap --no-setup --retries 3 --skip build,termshark,wireshark --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 --skip wireshark windows
+          node tests/integration/roles.spec.js --arch amd64 --skip termshark,wireshark windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

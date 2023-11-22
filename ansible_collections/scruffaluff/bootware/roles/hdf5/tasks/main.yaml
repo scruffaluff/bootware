@@ -1,4 +1,10 @@
 ---
+- name: Install HDF5 tools for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: h5utils
+  when: ansible_system == "FreeBSD"
+
 # Alpine HDF5 package does not contain command line tools. It only contains
 # shared object libraries.
 - name: Install HDF5 tools for Linux

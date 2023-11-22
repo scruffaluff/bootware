@@ -12,9 +12,9 @@
     deb: >-
       https://github.com/sharkdp/hyperfine/releases/download/v{{
       hyperfine_formula.json.versions.stable }}/hyperfine_{{
-      hyperfine_formula.json.versions.stable }}_amd64.deb
+      hyperfine_formula.json.versions.stable }}_{{ system_architecture }}.deb
   become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Hyperfine for FreeBSD
   become: true

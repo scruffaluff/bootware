@@ -9,6 +9,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Arm64 and FreeBSD support for several roles.
+- Group install flag.
+- Tools for Libvirt role.
 - Yazi role.
 
 ### Fixed
@@ -17,7 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Pocketbase role.
+- Bashdb and Pocketbase roles.
 
 ## 0.7.1 - 2023-11-13
 

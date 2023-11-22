@@ -7,6 +7,15 @@
   register: gitui_formula
   when: ansible_system == "Linux"
 
+- name: Install GitUI for Alpine
+  become: true
+  community.general.apk:
+    name: gitui
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install GitUI for FreeBSD
   become: true
   community.general.pkgng:
@@ -27,9 +36,7 @@
     gitui_env:
       amd64: musl
       arm64: aarch64
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "alpine" or
-    system_architecture != "arm64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "alpine"
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -39,9 +46,7 @@
     remote_src: true
     src: /tmp/gitui
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "alpine" or
-    system_architecture != "arm64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "alpine"
 
 - name: Install GitUI for MacOS
   become: true

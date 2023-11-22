@@ -27,11 +27,9 @@
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
-      }}-x86_64-unknown-linux-gnu.tar.gz
+      }}-{{ fd_arch }}-unknown-linux-gnu.tar.gz
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install FD for Linux
   ansible.builtin.copy:
@@ -40,11 +38,10 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/fd-v{{ fd_formula.json.versions.stable }}-x86_64-unknown-linux-gnu/fd
+      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
+      }}-unknown-linux-gnu/fd
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install FD for MacOS
   become: true

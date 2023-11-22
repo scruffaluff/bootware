@@ -85,17 +85,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Bashdb Bash debugger
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.bashdb
-      tags:
-        - bashdb
-        - container
-        - desktop
-        - server
-        - shell
-        - wsl
-
     - name: Install Bat file reader
       ansible.builtin.import_role:
         name: scruffaluff.bootware.bat
