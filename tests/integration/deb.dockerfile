@@ -1,6 +1,6 @@
 FROM debian:12.2 AS builder
 
-ARG version=0.7.1
+ARG version=0.7.2
 
 RUN apt-get update --ignore-missing && apt-get install --quiet --yes nodejs npm
 
@@ -16,7 +16,7 @@ RUN node scripts/build_package.js deb "${version}"
 
 FROM debian:12.2
 
-ARG version=0.7.1
+ARG version=0.7.2
 
 # Update Apt package cache.
 RUN apt-get update

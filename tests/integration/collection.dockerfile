@@ -1,7 +1,7 @@
 FROM debian:12.2
 
 ARG TARGETARCH
-ARG version=0.7.1
+ARG version=0.7.2
 
 # Create non-priviledged user.
 RUN useradd --create-home --no-log-init --shell /bin/bash collection
