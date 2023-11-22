@@ -19,6 +19,8 @@ Options:
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
+      --install-group <GROUP>     Remote host group to install software for
+      --install-user <USER>       Remote host user to install software for
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote host user password
@@ -26,9 +28,9 @@ Options:
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
-      --temp-key <FILE-NAME>      Path to SSH private key for one time connection
+      --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
-      --user <USER-NAME>          Remote host user login name
+      --user <USER>               Remote host user login name
 
 Ansible Options:
 '@

@@ -224,13 +224,13 @@ keymap = [
         "<C-f>",
     ], exec = "arrow 100%", desc = "Move cursor down one page" },
     { on = [
-        "h",
+        "j",
     ], exec = [
         "leave",
         "escape --visual --select",
     ], desc = "Go back to the parent directory" },
     { on = [
-        "l",
+        ";",
     ], exec = [
         "enter",
         "escape --visual --select",

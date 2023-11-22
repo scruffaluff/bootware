@@ -16,7 +16,7 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Install Procs for Debian distribution
+- name: Install Procs for Debian
   ansible.builtin.unarchive:
     dest: /usr/local/bin/
     mode: "755"
@@ -28,13 +28,17 @@
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
+- name: Install Procs for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: procs
+  when: ansible_system == "FreeBSD"
+
 - name: Install Procs for Linux
   ansible.builtin.package:
     name: procs
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
-    "zypper"]
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
 
 - name: Install Procs for MacOS
   become: true
@@ -56,7 +60,7 @@
     path: "{{ user_home }}/.config/fish/completions"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and system_architecture == "amd64"
 
 # Procs uses different flags for shell completion across its versions.
 - name: Install Procs Fish completion for Unix
@@ -70,6 +74,4 @@
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "zypper"
-    and system_architecture == "amd64"
+  when: ansible_system != "Win32NT" and system_architecture == "amd64"

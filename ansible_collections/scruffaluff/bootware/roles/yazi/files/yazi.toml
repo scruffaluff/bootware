@@ -2,62 +2,8 @@
 #
 # For more information, visit https://yazi-rs.github.io/docs/configuration/yazi.
 
-[input]
-cd_offset = [0, 2, 50, 3]
-cd_origin = "top-center"
-cd_title = "Change directory:"
-create_title = "Create:"
-create_origin = "top-center"
-create_offset = [0, 2, 50, 3]
-delete_offset = [0, 2, 50, 3]
-delete_origin = "top-center"
-delete_title = "Delete {n} selected file{s} permanently? (y/N)"
-find_offset = [0, 2, 50, 3]
-find_origin = "top-center"
-find_title = ["Find next:", "Find previous:"]
-overwrite_offset = [0, 2, 50, 3]
-overwrite_origin = "top-center"
-overwrite_title = "Overwrite an existing file? (y/N)"
-quit_offset = [0, 2, 50, 3]
-quit_origin = "top-center"
-quit_title = "{n} task{s} running, sure to quit? (y/N)"
-rename_offset = [0, 1, 50, 3]
-rename_origin = "hovered"
-rename_title = "Rename:"
-search_offset = [0, 2, 50, 3]
-search_origin = "top-center"
-search_title = "Search:"
-shell_offset = [0, 2, 50, 3]
-shell_origin = "top-center"
-shell_title = ["Shell:", "Shell (block):"]
-trash_offset = [0, 2, 50, 3]
-trash_origin = "top-center"
-trash_title = "Move {n} selected file{s} to trash? (y/N)"
-
-[log]
-enabled = false
-
-[manager]
-layout = [1, 4, 3]
-linemode = "none"
-show_hidden = false
-show_symlink = true
-sort_by = "modified"
-sort_dir_first = true
-sort_reverse = true
-sort_sensitive = true
-
 [open]
 rules = [
-    { mime = "*", use = [
-        "open",
-        "reveal",
-    ] },
-    { name = "*/", use = [
-        "edit",
-        "open",
-        "reveal",
-    ] },
     { mime = "*/javascript", use = [
         "edit",
         "reveal",
@@ -106,12 +52,21 @@ rules = [
         "edit",
         "reveal",
     ] },
+    { mime = "video/*", use = [
+        "play",
+        "reveal",
+    ] },
     { mime = "text/*", use = [
         "edit",
         "reveal",
     ] },
-    { mime = "video/*", use = [
-        "play",
+    { mime = "*", use = [
+        "open",
+        "reveal",
+    ] },
+    { name = "*/", use = [
+        "edit",
+        "open",
         "reveal",
     ] },
 ]
@@ -119,45 +74,5 @@ rules = [
 [opener]
 edit = [
     { exec = '$EDITOR "$@"', block = true, for = "unix" },
-    { exec = 'code "%*"', orphan = true, for = "windows" },
+    { exec = 'hx "%*"', orphan = true, for = "windows" },
 ]
-extract = [
-    { exec = 'unar "$1"', desc = "Extract here", for = "unix" },
-    { exec = 'unar "%1"', desc = "Extract here", for = "windows" },
-]
-open = [
-    { exec = 'xdg-open "$@"', desc = "Open", for = "linux" },
-    { exec = 'open "$@"', desc = "Open", for = "macos" },
-    { exec = 'start "%1"', orphan = true, desc = "Open", for = "windows" },
-]
-play = [
-    { exec = 'mpv "$@"', orphan = true, for = "unix" },
-    { exec = 'mpv "%1"', orphan = true, for = "windows" },
-    { exec = '''mediainfo "$1"; echo "Press enter to exit"; read''', block = true, desc = "Show media info", for = "unix" },
-]
-reveal = [
-    { exec = 'open -R "$1"', desc = "Reveal", for = "macos" },
-    { exec = 'explorer /select,%1', orphan = true, desc = "Reveal", for = "windows" },
-    { exec = '''exiftool "$1"; echo "Press enter to exit"; read''', block = true, desc = "Show EXIF", for = "unix" },
-]
-
-[plugins]
-preload = []
-
-[preview]
-cache_dir = ""
-max_height = 900
-max_width = 600
-tab_size = 2
-ueberzug_offset = [0, 0, 0, 0]
-ueberzug_scale = 1
-
-[select]
-open_offset = [0, 1, 50, 7]
-open_origin = "hovered"
-open_title = "Open with:"
-
-[tasks]
-bizarre_retry = 5
-macro_workers = 10
-micro_workers = 5

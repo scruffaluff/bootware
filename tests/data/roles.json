@@ -59,11 +59,7 @@
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
-  {
-    "name": "dust",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": ["dust --version"]
-  },
+  { "name": "dust", "tests": ["dust --version"] },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version"] },
   { "name": "docker_compose", "tests": ["docker compose --help"] },
@@ -260,9 +256,7 @@
     "skip": [
       { "arch": "arm64", "os": "debian" },
       { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "freebsd" },
-      { "os": "suse" }
+      { "os": "alpine" }
     ],
     "tests": ["procs --version"]
   },
@@ -279,15 +273,11 @@
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
-  {
-    "name": "scc",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["scc --version"]
-  },
+  { "name": "scc", "tests": ["scc --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {
@@ -297,11 +287,7 @@
   },
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
-  {
-    "name": "starship",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["starship --version"]
-  },
+  { "name": "starship", "tests": ["starship --version"] },
   {
     "name": "sudo",
     "skip": [{ "os": "windows" }],
@@ -369,7 +355,7 @@
   { "name": "yq", "tests": ["yq --version"] },
   {
     "name": "zellij",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["zellij --version"]
   }
 ]

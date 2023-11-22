@@ -31,20 +31,21 @@ Options:
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
-      --install-user <USER-NAME>  Remote host user to install software for
+      --install-group <GROUP>     Remote host group to install software for
+      --install-user <USER>       Remote host user to install software for
   -i, --inventory <IP-LIST>       Ansible host IP addesses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote host user password
-  -p, --playbook <FILE-NAME>      Path to playbook to execute
-      --private-key <FILE-NAME>   Path to SSH private key
+  -p, --playbook <FILE>           Path to playbook to execute
+      --private-key <FILE>        Path to SSH private key
       --retries <INTEGER>         Playbook retry limit during failure
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
-      --temp-key <FILE-NAME>      Path to SSH private key for one time connection
+      --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
-      --user <USER-NAME>          Remote host user login name
+      --user <USER>               Remote host user login name
       --windows                   Connect to a Windows host with SSH
 
 Ansible Options:
@@ -180,6 +181,7 @@ bootstrap() {
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
   local extra_args=()
+  local install_group
   local install_user
   local inventory='127.0.0.1,'
   local no_setup="${BOOTWARE_NOSETUP:-}"
@@ -235,6 +237,10 @@ bootstrap() {
         cmd='playbook'
         connection='ssh'
         inventory="${2}"
+        shift 2
+        ;;
+      --install-group)
+        install_group="${2}"
         shift 2
         ;;
       --install-user)
@@ -358,6 +364,7 @@ bootstrap() {
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
+    ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \

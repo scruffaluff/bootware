@@ -1,0 +1,5 @@
+---
+dust_arch_:
+  amd64: x86_64
+  arm64: aarch64
+dust_arch: "{{ dust_arch_[system_architecture] }}"

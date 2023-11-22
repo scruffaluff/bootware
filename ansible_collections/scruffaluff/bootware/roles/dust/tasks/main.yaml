@@ -13,6 +13,12 @@
     name: dust
   when: ansible_pkg_mgr == "apk"
 
+- name: Install Dust for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: dust
+  when: ansible_system == "FreeBSD"
+
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
@@ -21,7 +27,8 @@
     src: >-
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
-      dust_formula.json.versions.stable }}-x86_64-unknown-linux-gnu.tar.gz
+      dust_formula.json.versions.stable }}-{{ dust_arch
+      }}-unknown-linux-gnu.tar.gz
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
@@ -34,8 +41,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/dust-v{{ dust_formula.json.versions.stable
-      }}-x86_64-unknown-linux-gnu/dust
+      /tmp/dust-v{{ dust_formula.json.versions.stable }}-{{ dust_arch
+      }}-unknown-linux-gnu/dust
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and

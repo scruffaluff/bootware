@@ -8,6 +8,12 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
+- name: Install ShellCheck for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: hs-shellcheck
+  when: ansible_system == "FreeBSD"
+
 - name: Install ShellCheck for Linux
   ansible.builtin.package:
     name: >-
