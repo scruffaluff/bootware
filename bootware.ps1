@@ -954,6 +954,8 @@ Function Main() {
             }
         }
     }
+
+    Usage 'main'
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.

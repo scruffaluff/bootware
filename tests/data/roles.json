@@ -196,14 +196,27 @@
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
     "tests": {
-      "alpine": ["virsh --version"],
-      "freebsd": ["virsh --version"],
-      "macos": ["virsh --version"],
+      "alpine": [
+        "virsh --version",
+        "virt-install --version",
+        "virt-viewer --version"
+      ],
       "default": [
         "guestfish --version",
         "virsh --version",
-        "virt-customize --version"
-      ]
+        "virt-customize --version",
+        "virt-install --version",
+        "virt-rescue --version",
+        "virt-resize --version",
+        "virt-viewer --version"
+      ],
+      "freebsd": [
+        "virsh --version",
+        "virt-install --version",
+        "virt-viewer --version"
+      ],
+      "macos": ["virsh --version", "virt-install --version"],
+      "windows": ["virt-viewer --version"]
     }
   },
   { "name": "lsd", "tests": ["lsd --version"] },
@@ -259,7 +272,7 @@
   },
   {
     "name": "qemu",
-    "skip": [{ "os": "suse" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["qemu-img --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },

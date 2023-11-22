@@ -1223,6 +1223,8 @@ main() {
         ;;
     esac
   done
+
+  usage 'main'
 }
 
 # Only run main if invoked as script. Otherwise import functions as library.

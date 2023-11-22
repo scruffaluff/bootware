@@ -6,6 +6,7 @@
       - libvirt
       - libvirt-client
       - virt-install
+      - virt-viewer
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch
@@ -16,13 +17,19 @@
       - libguestfs
       - libvirt
       - virt-install
+      - virt-viewer
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian
   ansible.builtin.apt:
     name:
+      - guestfs-tools
+      - libguestfs-rescue
+      - libguestfs-rsync
       - libguestfs-tools
       - libvirt-clients
+      - libvirt0
+      - virt-viewer
       - virtinst
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -30,33 +37,37 @@
 - name: Install Libvirt for FreeBSD
   become: true
   community.general.pkgng:
-    name: libvirt
+    name:
+      - libvirt
+      - virt-manager
+      - virt-viewer
   when: ansible_system == "FreeBSD"
 
-- name: Install Libvirt for Fedora
-  ansible.builtin.dnf:
+- name: Install Libvirt for Fedora and Suse
+  ansible.builtin.package:
     name:
       - guestfs-tools
       - libguestfs
+      - libguestfs-rescue
+      - libguestfs-rsync
       - libvirt
+      - libvirt-client
       - virt-install
       - virt-top
+      - virt-viewer
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install Libvirt for MacOS
   become: true
   become_user: "{{ user_id }}"
   community.general.homebrew:
-    name: libvirt
+    name:
+      - libvirt
+      - virt-manager
   when: ansible_system == "Darwin"
 
-- name: Install Libvirt for Suse
-  become: true
-  community.general.zypper:
-    name:
-      - guestfs-tools
-      - libguestfs
-      - libvirt
-      - virt-install
-  when: ansible_pkg_mgr == "zypper"
+- name: Install Libvirt for Windows
+  community.windows.win_scoop:
+    name: virt-viewer
+  when: ansible_system == "Win32NT"
