@@ -52,7 +52,8 @@
         name: scruffaluff.bootware.appimage
       tags:
         - appimage
-        - desktop
+        - extras
+        - never
 
     - name: Install audio tools
       ansible.builtin.import_role:
@@ -85,17 +86,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Bashdb Bash debugger
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.bashdb
-      tags:
-        - bashdb
-        - container
-        - desktop
-        - server
-        - shell
-        - wsl
-
     - name: Install Bat file reader
       ansible.builtin.import_role:
         name: scruffaluff.bootware.bat
@@ -124,6 +114,7 @@
         name: scruffaluff.bootware.beekeeper
       tags:
         - beekeeper
+        - database
         - desktop
 
     - name: Install build tools
@@ -174,14 +165,15 @@
         name: scruffaluff.bootware.datree
       tags:
         - datree
-        - desktop
-        - server
-        - wsl
+        - extras
+        - kubernetes
+        - never
 
     - name: Install DBeaver database client
       ansible.builtin.import_role:
         name: scruffaluff.bootware.dbeaver
       tags:
+        - database
         - dbeaver
         - desktop
 
@@ -195,7 +187,6 @@
         - language
         - server
         - sysadmin
-        - typescript
         - wsl
 
     - name: Configure system desktop environment
@@ -212,7 +203,6 @@
         - desktop
         - docker
         - server
-        - vm
 
     - name: Install Docker Compose container orchestrator
       ansible.builtin.import_role:
@@ -221,7 +211,6 @@
         - desktop
         - docker_compose
         - server
-        - vm
         - wsl
 
     - name: Install Digital Ocean development tools
@@ -272,7 +261,6 @@
         - desktop
         - fd
         - server
-        - shell
         - sysadmin
         - wsl
 
@@ -317,9 +305,12 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.flyctl
       tags:
-        - extras
+        - cloud
+        - container
+        - desktop
         - flyctl
-        - never
+        - server
+        - wsl
 
     - name: Install fonts
       ansible.builtin.import_role:
@@ -343,6 +334,7 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.gcloud
       tags:
+        - cloud
         - extras
         - gcloud
         - never
@@ -413,12 +405,10 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.go
       tags:
-        - container
-        - desktop
+        - extras
         - go
         - language
-        - server
-        - wsl
+        - never
 
     - name: Install Hadolint linter
       ansible.builtin.import_role:
@@ -434,11 +424,9 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.hdf5
       tags:
-        - container
-        - desktop
+        - extras
         - hdf5
-        - server
-        - wsl
+        - never
 
     - name: Install Helix terminal text editor
       ansible.builtin.import_role:
@@ -458,6 +446,7 @@
       tags:
         - desktop
         - helm
+        - kubernetes
         - server
         - wsl
 
@@ -499,7 +488,6 @@
         - desktop
         - jq
         - server
-        - shell
         - sysadmin
         - wsl
 
@@ -519,6 +507,7 @@
       tags:
         - extras
         - k3sup
+        - kubernetes
         - never
 
     - name: Install K9s Kubernetes manager
@@ -588,6 +577,7 @@
         - extras
         - libvirt
         - never
+        - vm
 
     - name: Install Lsd file lister
       ansible.builtin.import_role:
@@ -597,7 +587,6 @@
         - desktop
         - lsd
         - server
-        - shell
         - sysadmin
         - wsl
 
@@ -620,7 +609,6 @@
         - desktop
         - mdbook
         - server
-        - website
         - wsl
 
     - name: Install Miniserve HTTP server
@@ -631,7 +619,6 @@
         - desktop
         - miniserve
         - server
-        - website
         - wsl
 
     - name: Install Mkcert web certificate generator
@@ -665,7 +652,6 @@
         - language
         - node
         - server
-        - typescript
         - wsl
 
     - name: Install optional packages
@@ -724,7 +710,8 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.qemu
       tags:
-        - desktop
+        - extras
+        - never
         - qemu
         - vm
 
@@ -732,11 +719,9 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.rclone
       tags:
-        - container
-        - desktop
+        - extras
+        - never
         - rclone
-        - server
-        - wsl
 
     - name: Install Restic backup tool
       ansible.builtin.import_role:
@@ -757,7 +742,6 @@
         - desktop
         - ripgrep
         - server
-        - shell
         - sysadmin
         - wsl
 
@@ -831,6 +815,7 @@
       tags:
         - container
         - desktop
+        - secrets
         - server
         - sops
         - sysadmin
@@ -854,7 +839,6 @@
         - container
         - desktop
         - server
-        - shell
         - starship
         - sysadmin
         - wsl
@@ -873,12 +857,10 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.termshark
       tags:
-        - container
-        - desktop
-        - server
-        - sysadmin
+        - extras
+        - network
+        - never
         - termshark
-        - wsl
 
     - name: Install Terraform infrastructure as code software
       ansible.builtin.import_role:
@@ -919,7 +901,6 @@
         - container
         - desktop
         - server
-        - shell
         - sysadmin
         - tldr
         - wsl
@@ -962,7 +943,9 @@
         name: scruffaluff.bootware.vault
       tags:
         - extras
+        - hashicorp
         - never
+        - secrets
         - vault
 
     - name: Install Velero backup manager for Kubernetes
@@ -970,6 +953,7 @@
         name: scruffaluff.bootware.velero
       tags:
         - extras
+        - kubernetes
         - never
         - velero
 
@@ -1004,15 +988,16 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.window_manager
       tags:
-        - extras
-        - never
+        - desktop
         - window_manager
 
     - name: Install Wireshark network analyzer
       ansible.builtin.import_role:
         name: scruffaluff.bootware.wireshark
       tags:
-        - desktop
+        - extras
+        - network
+        - never
         - wireshark
 
     - name: Install Xh HTTP client
@@ -1033,10 +1018,20 @@
         - container
         - desktop
         - server
-        - shell
         - sysadmin
         - wsl
         - xsv
+
+    - name: Install Yazi terminal file manager
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.yazi
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+        - yazi
 
     - name: Install Yq YAML parser
       ansible.builtin.import_role:
@@ -1057,6 +1052,6 @@
         - desktop
         - server
         - sysadmin
-        - termianl
+        - terminal
         - wsl
         - zellij

@@ -7,6 +7,12 @@
   register: scc_formula
   when: ansible_system == "Linux"
 
+- name: Install Scc for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: scc
+  when: ansible_system == "FreeBSD"
+
 - name: Download Scc for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
@@ -24,7 +30,7 @@
       arm64: arm64
   when: ansible_system == "Linux"
 
-- name: Install Croc for Linux
+- name: Install Scc for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/scc
     force: true

@@ -223,19 +223,12 @@ jobs:
             sudo freebsd-update install
             pkg install --yes bash curl
           release: "13.2"
-          # Termshark is installed at /usr/local/bin/termshark on
-          # FreeBSD in the job's VM, which is in the system path. No idea why
-          # the test suite cannot find it.
-          #
-          # As of 08/22/2023, checks for Libvirt, QEMU, and Wireshark are
-          # failing due to a temporary undefined symbol issue with
-          # /usr/local/lib/libtasn1.so.6.
           run: |
             set -eou pipefail
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 --skip libvirt,qemu,termshark,wireshark freebsd'
+            bash -c 'source $HOME/.bashrc && ./tests/integration/roles_test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -401,17 +394,18 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
+      # Scoop Wireshark installer is temporarily broken.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip build --tags desktop,extras
+          bootware bootstrap --no-setup --retries 3 --skip build,termshark,wireshark --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.spec.js --arch amd64 windows
+          node tests/integration/roles.spec.js --arch amd64 --skip termshark,wireshark windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

@@ -1,6 +1,6 @@
-# Bashdb
+# Yazi
 
-Bashdb is an Ansible role
+Yazi is an Ansible role
 
 ## Requirements
 

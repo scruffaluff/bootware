@@ -1,5 +1,5 @@
 ---
-- name: Get latest FlyCtl version
+- name: Get latest Flyctl version
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -7,7 +7,7 @@
   register: flyctl_formula
   when: ansible_system == "Linux"
 
-- name: Download FlyCtl for Linux
+- name: Download Flyctl for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "777"
@@ -24,7 +24,7 @@
       arm64: arm64
   when: ansible_system == "Linux"
 
-- name: Install FlyCtl for Linux
+- name: Install Flyctl for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/flyctl
     force: true
@@ -34,14 +34,14 @@
   become: true
   when: ansible_system == "Linux"
 
-- name: Install FlyCtl for MacOS
+- name: Install Flyctl for MacOS
   become: true
   become_user: "{{ user_id }}"
   community.general.homebrew:
     name: flyctl
   when: ansible_system == "Darwin"
 
-- name: Install FlyCtl for Windows
+- name: Install Flyctl for Windows
   community.windows.win_scoop:
     name: flyctl
   when: ansible_system == "Win32NT"
@@ -56,7 +56,7 @@
   become: true
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
-- name: Install FlyCtl Fish completion for Unix
+- name: Install Flyctl Fish completion for Unix
   ansible.builtin.shell:
     cmd: >-
       flyctl completion fish > {{ user_home
@@ -64,4 +64,6 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
   when: ansible_system not in ["FreeBSD", "Win32NT"]

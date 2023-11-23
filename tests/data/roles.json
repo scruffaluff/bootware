@@ -12,11 +12,6 @@
     "skip": [{ "os": "windows" }],
     "tests": ["bash --version"]
   },
-  {
-    "name": "bashdb",
-    "skip": [{ "os": "linux" }, { "os": "windows" }],
-    "tests": ["bashdb --version"]
-  },
   { "name": "bat", "tests": ["bat --version"] },
   {
     "name": "bats",
@@ -28,16 +23,10 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" },
-      { "arch": "arm64", "os": "suse" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "arch" },
-      { "os": "freebsd" }
-    ],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": {
+      "arch": ["chromium --version"],
+      "freebsd": ["chrome --version"],
       "default": ["google-chrome --version"],
       "macos": [
         "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
@@ -59,11 +48,7 @@
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
-  {
-    "name": "dust",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": ["dust --version"]
-  },
+  { "name": "dust", "tests": ["dust --version"] },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version"] },
   { "name": "docker_compose", "tests": ["docker compose --help"] },
@@ -72,11 +57,7 @@
     "name": "etcher",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
-  {
-    "name": "fd",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["fd --version"]
-  },
+  { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
@@ -130,16 +111,12 @@
     "name": "gitlab_runner",
     "tests": ["gitlab-runner --version"]
   },
-  {
-    "name": "gitui",
-    "skip": [{ "arch": "arm64", "os": "alpine" }],
-    "tests": ["gitui --version"]
-  },
+  { "name": "gitui", "tests": ["gitui --version"] },
   { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }, { "os": "windows" }],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {
@@ -147,26 +124,15 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
-  {
-    "name": "helix",
-    "skip": [{ "arch": "arm64", "os": "debian" }, { "os": "alpine" }],
-    "tests": ["hx --version"]
-  },
+  { "name": "helix", "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
     "name": "htmlq",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["htmlq --version"]
   },
-  {
-    "name": "hyperfine",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" }
-    ],
-    "tests": ["hyperfine --version"]
-  },
+  { "name": "hyperfine", "tests": ["hyperfine --version"] },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   {
@@ -200,14 +166,27 @@
     "name": "libvirt",
     "skip": [{ "os": "windows" }],
     "tests": {
-      "alpine": ["virsh --version"],
-      "freebsd": ["virsh --version"],
-      "macos": ["virsh --version"],
+      "alpine": [
+        "virsh --version",
+        "virt-install --version",
+        "virt-viewer --version"
+      ],
       "default": [
         "guestfish --version",
         "virsh --version",
-        "virt-customize --version"
-      ]
+        "virt-customize --version",
+        "virt-install --version",
+        "virt-rescue --version",
+        "virt-resize --version",
+        "virt-viewer --version"
+      ],
+      "freebsd": [
+        "virsh --version",
+        "virt-install --version",
+        "virt-viewer --version"
+      ],
+      "macos": ["virsh --version", "virt-install --version"],
+      "windows": ["virt-viewer --version"]
     }
   },
   { "name": "lsd", "tests": ["lsd --version"] },
@@ -219,11 +198,7 @@
       "freebsd": ["lua54 -v"]
     }
   },
-  {
-    "name": "mdbook",
-    "skip": [{ "arch": "arm64" }],
-    "tests": ["mdbook --version"]
-  },
+  { "name": "mdbook", "tests": ["mdbook --version"] },
   {
     "name": "miniserve",
     "tests": ["miniserve --version"]
@@ -250,10 +225,7 @@
     "name": "procs",
     "skip": [
       { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "freebsd" },
-      { "os": "suse" }
+      { "arch": "arm64", "os": "ubuntu" }
     ],
     "tests": ["procs --version"]
   },
@@ -263,22 +235,18 @@
   },
   {
     "name": "qemu",
-    "skip": [{ "os": "suse" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["qemu-img --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
-  {
-    "name": "scc",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["scc --version"]
-  },
+  { "name": "scc", "tests": ["scc --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {
@@ -288,11 +256,7 @@
   },
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
-  {
-    "name": "starship",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["starship --version"]
-  },
+  { "name": "starship", "tests": ["starship --version"] },
   {
     "name": "sudo",
     "skip": [{ "os": "windows" }],
@@ -310,13 +274,9 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["tilt version"]
   },
-  { "name": "tldr", "skip": [{ "os": "suse" }], "tests": ["tldr --version"] },
+  { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
-  {
-    "name": "usql",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
-    "tests": ["usql --version"]
-  },
+  { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
   { "name": "vault", "tests": ["vault --version"] },
   {
@@ -352,10 +312,15 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["xsv --version"]
   },
+  {
+    "name": "yazi",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "tests": ["yazi --version"]
+  },
   { "name": "yq", "tests": ["yq --version"] },
   {
     "name": "zellij",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "windows" }],
     "tests": ["zellij --version"]
   }
 ]

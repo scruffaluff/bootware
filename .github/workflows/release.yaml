@@ -65,7 +65,7 @@ jobs:
           python --version
           python -m pip --version
           python -m pip install poetry
-          poetry install
+          poetry install --no-root
       - name: Build packages
         run: |
           sudo apt-get install --yes rpm

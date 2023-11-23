@@ -1,0 +1,73 @@
+# Yazi configuration file for color theme.
+#
+# For more information, visit
+# https://yazi-rs.github.io/docs/configuration/theme.
+
+[completion]
+active = { bg = "#586e75" }
+border = { fg = "#268bd2" }
+
+[filetype]
+rules = [
+    { mime = "application/gzip", fg = "#d33682" },
+    { mime = "application/x-7z-compressed", fg = "#d33682" },
+    { mime = "application/x-bzip", fg = "#d33682" },
+    { mime = "application/x-bzip2", fg = "#d33682" },
+    { mime = "application/x-rar", fg = "#d33682" },
+    { mime = "application/x-tar", fg = "#d33682" },
+    { mime = "application/zip", fg = "#d33682" },
+    { mime = "audio/*", fg = "#b58900" },
+    { mime = "image/*", fg = "#2aa198" },
+    { mime = "video/*", fg = "#b58900" },
+    { name = "*/", fg = "#268bd2" },
+]
+
+[help]
+desc = { fg = "#fdf6e3" }
+exec = { fg = "#2aa198" }
+footer = { fg = "#073642", bg = "#eee8d5" }
+hovered = { bg = "#586e75" }
+on = { fg = "#d33682" }
+
+[input]
+border = { fg = "#268bd2" }
+
+[manager]
+border_style = { fg = "#fdf6e3" }
+cwd = { fg = "#2aa198" }
+find_keyword = { fg = "#b58900" }
+find_position = { fg = "#d33682", bg = "reset" }
+hovered = { fg = "#073642", bg = "#839496" }
+marker_copied = { fg = "#657b83", bg = "#657b83" }
+marker_cut = { fg = "#cb4b16", bg = "#cb4b16" }
+marker_selected = { fg = "#586e75", bg = "#586e75" }
+tab_active = { fg = "#073642", bg = "#839496" }
+tab_inactive = { fg = "#eee8d5", bg = "#586e75" }
+
+[select]
+active = { fg = "#d33682" }
+border = { fg = "#268bd2" }
+
+[status]
+mode_normal = { fg = "#073642", bg = "#839496" }
+mode_select = { fg = "#073642", bg = "#586e75" }
+mode_unset = { fg = "#073642", bg = "#6c71c4" }
+permissions_r = { fg = "#657b83" }
+permissions_s = { fg = "#586e75" }
+permissions_t = { fg = "#586e75" }
+permissions_w = { fg = "#cb4b16" }
+permissions_x = { fg = "#93a1a1" }
+progress_error = { fg = "#dc322f", bg = "#073642" }
+progress_label = { bold = true }
+progress_normal = { fg = "#268bd2", bg = "#073642" }
+separator_style = { fg = "#586e75", bg = "#586e75" }
+
+[tasks]
+border = { fg = "#268bd2" }
+
+[which]
+cand = { fg = "#93a1a1" }
+desc = { fg = "#d33682" }
+mask = { bg = "#073642" }
+rest = { fg = "#586e75" }
+separator_style = { fg = "#586e75" }

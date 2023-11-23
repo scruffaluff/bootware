@@ -62,4 +62,6 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
   when: ansible_system in ["Darwin", "Linux"]

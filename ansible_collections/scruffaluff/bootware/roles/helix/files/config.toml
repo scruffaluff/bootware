@@ -1,4 +1,4 @@
-# Helix configuration file.
+# Helix configuration file for text editing.
 #
 # For more information, visit https://docs.helix-editor.com/configuration.html.
 
@@ -27,7 +27,13 @@ enable = true
 [editor.statusline]
 center = []
 left = ["mode", "spinner", "file-name"]
-right = ["version-control", "diagnostics", "selections", "position", "file-line-ending"]
+right = [
+    "version-control",
+    "diagnostics",
+    "selections",
+    "position",
+    "file-line-ending",
+]
 separator = "│"
 
 [keys.normal]

@@ -5,8 +5,34 @@
 [[language]]
 name = "bash"
 auto-format = true
-file-types = ["sh", "bash", "zsh", ".bash_login", ".bash_logout", ".bash_profile", ".bashrc", "env", ".profile", ".secrets", ".zshenv", ".zlogin", ".zlogout", ".zprofile", ".zshrc", "APKBUILD", "PKGBUILD", "eclass", "ebuild", "bazelrc"]
-formatter = { command = "shfmt", args = ["--indent", "2"] }
+file-types = [
+    "sh",
+    "bash",
+    "zsh",
+    ".bash_login",
+    ".bash_logout",
+    ".bash_profile",
+    ".bashrc",
+    "env",
+    ".profile",
+    ".secrets",
+    ".zshenv",
+    ".zlogin",
+    ".zlogout",
+    ".zprofile",
+    ".zshrc",
+    "APKBUILD",
+    "PKGBUILD",
+    "eclass",
+    "ebuild",
+    "bazelrc",
+]
+formatter = { command = "shfmt", args = [
+    "--case-indent",
+    "--space-redirects",
+    "--indent",
+    "2",
+] }
 
 [[language]]
 name = "javascript"

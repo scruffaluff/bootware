@@ -13,7 +13,6 @@
 
 - name: Download AWSCLI for Linux
   ansible.builtin.unarchive:
-    creates: /usr/local/bin/aws
     dest: /tmp/
     mode: "777"
     remote_src: true
@@ -29,9 +28,10 @@
 
 - name: Install AWSCLI for Linux
   ansible.builtin.command:
-    creates: /usr/local/bin/aws
-    cmd: /tmp/aws/install
+    cmd: /tmp/aws/install --update
   become: true
+  changed_when: "'Found same AWS CLI version' not in aws_install"
+  register: aws_install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for MacOS

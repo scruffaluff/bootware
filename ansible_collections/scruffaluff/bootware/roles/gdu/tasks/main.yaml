@@ -7,6 +7,16 @@
   register: gdu_formula
   when: ansible_system == "Linux"
 
+# TODO: Integrate once installation becomes stable.
+# - name: Install GDU for Alpine
+#   become: true
+# community.general.apk:
+#     name: gdu
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
+
 - name: Install GDU for FreeBSD
   become: true
   community.general.pkgng:

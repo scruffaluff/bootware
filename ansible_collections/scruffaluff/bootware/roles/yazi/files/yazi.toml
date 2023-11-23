@@ -1,0 +1,78 @@
+# Yazi configuration file for file management.
+#
+# For more information, visit https://yazi-rs.github.io/docs/configuration/yazi.
+
+[open]
+rules = [
+    { mime = "*/javascript", use = [
+        "edit",
+        "reveal",
+    ] },
+    { mime = "application/gzip", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/x-7z-compressed", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/x-bzip", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/x-bzip2", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/x-rar", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/x-tar", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "application/json", use = [
+        "edit",
+        "reveal",
+    ] },
+    { mime = "application/zip", use = [
+        "extract",
+        "reveal",
+    ] },
+    { mime = "audio/*", use = [
+        "play",
+        "reveal",
+    ] },
+    { mime = "image/*", use = [
+        "open",
+        "reveal",
+    ] },
+    { mime = "inode/x-empty", use = [
+        "edit",
+        "reveal",
+    ] },
+    { mime = "video/*", use = [
+        "play",
+        "reveal",
+    ] },
+    { mime = "text/*", use = [
+        "edit",
+        "reveal",
+    ] },
+    { mime = "*", use = [
+        "open",
+        "reveal",
+    ] },
+    { name = "*/", use = [
+        "edit",
+        "open",
+        "reveal",
+    ] },
+]
+
+[opener]
+edit = [
+    { exec = '$EDITOR "$@"', block = true, for = "unix" },
+    { exec = 'hx "%*"', orphan = true, for = "windows" },
+]

@@ -7,13 +7,14 @@
       - qemu-img
   when: ansible_pkg_mgr == "apk"
 
-- name: Install QEMU dependencies for Debian
+- name: Install QEMU for Debian
   ansible.builtin.apt:
     name:
       - binfmt-support
       - qemu-user-static
+      - qemu-kvm
   become: true
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Qemu for FreeBSD
   become: true
@@ -23,9 +24,11 @@
 
 - name: Install QEMU for Linux
   ansible.builtin.package:
-    name: "{{ 'qemu-kvm' if ansible_pkg_mgr == 'apt' else 'qemu' }}"
+    name: qemu
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
+    "zypper"]
 
 - name: Install QEMU for MacOS
   become: true
@@ -34,21 +37,15 @@
     name: qemu
   when: ansible_system == "Darwin"
 
+- name: Install QEMU for Suse
+  become: true
+  community.general.zypper:
+    name:
+      - qemu
+      - qemu-tools
+  when: ansible_pkg_mgr == "zypper"
+
 - name: Install QEMU for Windows
   community.windows.win_scoop:
     name: qemu
   when: ansible_system == "Win32NT"
-
-- name: Install Quickemu for Linux
-  ansible.builtin.get_url:
-    dest: "/usr/local/bin/{{ item }}"
-    force: true
-    mode: "755"
-    url: >-
-      https://raw.githubusercontent.com/wimpysworld/quickemu/master/{{ item }}
-  become: true
-  loop:
-    - macrecovery
-    - quickemu
-    - quickget
-  when: ansible_system == "Linux"

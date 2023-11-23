@@ -5,7 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
   register: usql_release
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_system == "Linux"
 
 - name: Install Usql for FreeBSD
   become: true
@@ -22,9 +22,10 @@
     remote_src: true
     src: >-
       https://github.com/xo/usql/releases/download/{{ usql_release.json.tag_name
-      }}/usql_static-{{ usql_release.json.tag_name[1:] }}-linux-amd64.tar.bz2
+      }}/usql_static-{{ usql_release.json.tag_name[1:] }}-linux-{{
+      system_architecture }}.tar.bz2
   become: true
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_system == "Linux"
 
 - name: Install Usql for Linux
   ansible.builtin.copy:
@@ -34,7 +35,7 @@
     remote_src: true
     src: /tmp/usql_static
   become: true
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_system == "Linux"
 
 - name: Tap Usql for MacOS
   community.general.homebrew_tap:

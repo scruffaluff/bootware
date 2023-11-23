@@ -7,6 +7,12 @@
   register: zellij_formula
   when: ansible_system == "Linux"
 
+- name: Install Zellij for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: zellij
+  when: ansible_system == "FreeBSD"
+
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
     dest: /usr/local/bin
@@ -38,7 +44,7 @@
     path: "{{ user_home }}/.config/zellij"
     state: directory
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Copy Zellij settings file for Unix
   ansible.builtin.copy:
@@ -49,7 +55,7 @@
     owner: "{{ user_id }}"
     src: config.kdl
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
@@ -59,7 +65,7 @@
     path: "{{ user_home }}/.config/fish/completions"
     state: directory
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system != "Win32NT"
 
 - name: Install Zellij Fish completion for Unix
   ansible.builtin.shell:
@@ -69,4 +75,6 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
-  when: ansible_system in ["Darwin", "Linux"]
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  when: ansible_system != "Win32NT"

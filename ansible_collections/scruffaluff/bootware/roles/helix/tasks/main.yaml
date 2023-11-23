@@ -7,6 +7,15 @@
   register: helix_release
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
+- name: Install Helix for Alpine
+  become: true
+  community.general.apk:
+    name: helix
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Helix for FreeBSD
   become: true
   community.general.pkgng:
@@ -37,7 +46,7 @@
 
 - name: Patch Helix for older Debian
   ansible.builtin.import_tasks: patch.yaml
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: ansible_pkg_mgr == "apt"
 
 - name: Install Helix for MacOS
   become: true
@@ -71,9 +80,7 @@
     remote_src: true
     src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Copy Helix configuration files for Unix
   ansible.builtin.copy:
