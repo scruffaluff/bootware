@@ -291,7 +291,10 @@
   {
     "name": "vscode",
     "skip": [{ "os": "alpine" }],
-    "tests": ["code --version"]
+    "tests": {
+      "default": ["code --version"],
+      "windows": ["scoop which vscode"]
+    }
   },
   { "name": "wasm" },
   {
