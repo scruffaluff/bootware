@@ -31,7 +31,7 @@
       "macos": [
         "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
       ],
-      "windows": ["scoop which chrome"]
+      "windows": ["scoop prefix googlechrome"]
     }
   },
   { "name": "compass" },
@@ -164,7 +164,6 @@
   },
   {
     "name": "libvirt",
-    "skip": [{ "os": "windows" }],
     "tests": {
       "alpine": [
         "virsh --version",
@@ -234,11 +233,7 @@
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
-  {
-    "name": "qemu",
-    "skip": [{ "os": "windows" }],
-    "tests": ["qemu-img --version"]
-  },
+  { "name": "qemu", "tests": ["qemu-img --version"] },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
@@ -258,11 +253,7 @@
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
-  {
-    "name": "sudo",
-    "skip": [{ "os": "windows" }],
-    "tests": ["sudo --version"]
-  },
+  { "name": "sudo", "tests": ["sudo --version"] },
   { "name": "system" },
   {
     "name": "termshark",
@@ -293,7 +284,7 @@
     "skip": [{ "os": "alpine" }],
     "tests": {
       "default": ["code --version"],
-      "windows": ["scoop which vscode"]
+      "windows": ["scoop prefix vscode"]
     }
   },
   { "name": "wasm" },
