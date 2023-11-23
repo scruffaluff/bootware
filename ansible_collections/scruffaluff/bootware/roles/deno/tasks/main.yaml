@@ -53,7 +53,7 @@
   become: true
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_architecture == "amd64")
+    ansible_pkg_mgr != "apk" and system_architecture == "amd64")
 
 - name: Generate Deno Fish completions for Unix
   ansible.builtin.shell: >-
@@ -65,7 +65,7 @@
     PATH: "{{ user_home }}/.deno/bin:{{ ansible_env.PATH }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_architecture == "amd64")
+    ansible_pkg_mgr != "apk" and system_architecture == "amd64")
 
 - name: Create Deno PowerShell completions directory for Windows
   ansible.windows.win_file:
