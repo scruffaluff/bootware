@@ -8,10 +8,11 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
+# Ansible pkgng module is case sensitive to package names, but pkg cli is not.
 - name: Install ShellCheck for FreeBSD
   become: true
   community.general.pkgng:
-    name: hs-shellcheck
+    name: hs-ShellCheck
   when: ansible_system == "FreeBSD"
 
 - name: Install ShellCheck for Linux

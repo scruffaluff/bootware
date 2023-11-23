@@ -5,7 +5,6 @@
     name: lua54
   when: ansible_system == "FreeBSD"
 
-# Lua 5.4 is not available on all LTS Ubuntu releases.
 - name: Install Lua for Linux
   ansible.builtin.package:
     name: "{{ lua_package.get(ansible_pkg_mgr, 'lua') }}"

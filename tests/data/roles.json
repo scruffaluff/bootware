@@ -192,8 +192,8 @@
   { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",
-    "skip": [{ "os": "alpine" }],
     "tests": {
+      "alpine": ["lua5.4 -v"],
       "default": ["lua -v"],
       "freebsd": ["lua54 -v"]
     }
@@ -225,7 +225,8 @@
     "name": "procs",
     "skip": [
       { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" }
+      { "arch": "arm64", "os": "ubuntu" },
+      { "os": "freebsd" }
     ],
     "tests": ["procs --version"]
   },
@@ -265,7 +266,10 @@
   { "name": "system" },
   {
     "name": "termshark",
-    "tests": ["termshark --version", "tshark --version"]
+    "tests": {
+      "freebsd": ["tshark --version"],
+      "default": ["termshark --version", "tshark --version"]
+    }
   },
   { "name": "terraform", "tests": ["terraform --version"] },
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
@@ -286,7 +290,7 @@
   },
   {
     "name": "vscode",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "windows" }],
+    "skip": [{ "os": "alpine" }],
     "tests": ["code --version"]
   },
   { "name": "wasm" },
