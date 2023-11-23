@@ -151,7 +151,7 @@ jobs:
           python -m pip --version
           python -m pip install poetry
           poetry lock --check
-          poetry install --verbose
+          poetry install --no-root
       - name: Check format of configuration files
         run: npm run prettier:test
       - name: Install Shfmt

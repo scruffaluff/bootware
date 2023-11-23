@@ -23,9 +23,8 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": {
-      "alpine": ["chromium --version"],
       "arch": ["chromium --version"],
       "freebsd": ["chrome --version"],
       "default": ["google-chrome --version"],
@@ -45,7 +44,7 @@
   { "name": "dbeaver" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },

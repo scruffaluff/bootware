@@ -1,12 +1,13 @@
 ---
-- name: Install Deno for Alpine
-  become: true
-  community.general.apk:
-    name: deno
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
+# TODO: Integrate once installation becomes stable.
+# - name: Install Deno for Alpine
+#   become: true
+#   community.general.apk:
+#     name: deno
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true

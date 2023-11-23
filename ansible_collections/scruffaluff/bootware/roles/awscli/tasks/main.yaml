@@ -30,6 +30,8 @@
   ansible.builtin.command:
     cmd: /tmp/aws/install --update
   become: true
+  changed_when: "'Found same AWS CLI version' not in aws_install"
+  register: aws_install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for MacOS

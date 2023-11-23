@@ -22,11 +22,7 @@ FROM fedora:39
 ARG version=0.7.2
 
 # Update DNF package lists.
-RUN dnf check-update || {
-rc=$?
-[ "$rc" -eq 100 ] && exit 0
-exit "$rc"
-}
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
 # Pull Fedora package from previous Docker stage.
 COPY --from=builder "/bootware/dist/bootware-${version}-1.fc33.noarch.rpm" /tmp/

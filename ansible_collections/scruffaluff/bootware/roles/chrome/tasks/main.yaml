@@ -1,12 +1,13 @@
 ---
-- name: Install Google Chrome for Alpine
-  become: true
-  community.general.apk:
-    name: chromium
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
+# TODO: Integrate once installation becomes stable.
+# - name: Install Google Chrome for Alpine
+#   become: true
+#   community.general.apk:
+#     name: chromium
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
 
 - name: Install Google Chrome for Arch
   become: true
