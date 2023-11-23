@@ -23,16 +23,11 @@
   { "name": "caffeine" },
   {
     "name": "chrome",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" },
-      { "arch": "arm64", "os": "suse" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "alpine" },
-      { "os": "arch" },
-      { "os": "freebsd" }
-    ],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": {
+      "alpine": ["chromium --version"],
+      "arch": ["chromium --version"],
+      "freebsd": ["chrome --version"],
       "default": ["google-chrome --version"],
       "macos": [
         "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version"
@@ -50,7 +45,7 @@
   { "name": "dbeaver" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
@@ -282,11 +277,7 @@
   },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
-  {
-    "name": "usql",
-    "skip": [{ "os": "alpine" }],
-    "tests": ["usql --version"]
-  },
+  { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
   { "name": "vault", "tests": ["vault --version"] },
   {

@@ -3,11 +3,7 @@ FROM fedora:39 AS builder
 ARG version=0.7.2
 
 # Update DNF package lists.
-RUN dnf check-update || {
-  rc=$?
-  [ "$rc" -eq 100 ] && exit 0
-  exit "$rc"
-}
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 
 RUN dnf install --assumeyes nodejs rpm-build
 
@@ -27,9 +23,9 @@ ARG version=0.7.2
 
 # Update DNF package lists.
 RUN dnf check-update || {
-  rc=$?
-  [ "$rc" -eq 100 ] && exit 0
-  exit "$rc"
+rc=$?
+[ "$rc" -eq 100 ] && exit 0
+exit "$rc"
 }
 
 # Pull Fedora package from previous Docker stage.
