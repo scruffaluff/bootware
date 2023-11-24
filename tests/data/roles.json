@@ -235,7 +235,20 @@
   },
   {
     "name": "qemu",
-    "tests": ["qemu-system-x86_64 --version", "qemu-img --version"]
+    "skip": [{ "arch": "arm64", "os": "suse" }],
+    "tests": {
+      "default": [
+        "qemu-img --version",
+        "qemu-system-aarch64 --version",
+        "qemu-system-riscv64 --version",
+        "qemu-system-x86_64 --version"
+      ],
+      "suse": [
+        "qemu-img --version",
+        "qemu-system-aarch64 --version",
+        "qemu-system-x86_64 --version"
+      ]
+    }
   },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },

@@ -1,34 +1,53 @@
 ---
-- name: Install Qemu for Alpine
+- name: Install QEMU for Alpine
   become: true
   community.general.apk:
     name:
       - qemu
       - qemu-img
+      - qemu-system-aarch64
+      - qemu-system-riscv64
+      - qemu-system-x86_64
+      - qemu-tools
   when: ansible_pkg_mgr == "apk"
+
+- name: Install QEMU packages for Arch
+  become: true
+  community.general.pacman:
+    name:
+      - qemu
+      - qemu-img
+      - qemu-system-aarch64
+      - qemu-system-riscv
+      - qemu-system-x86
+      - qemu-tools
+  when: ansible_pkg_mgr == "pacman"
 
 - name: Install QEMU for Debian
   ansible.builtin.apt:
     name:
-      - binfmt-support
-      - qemu-user-static
-      - qemu-kvm
+      - qemu-system
+      - qemu-utils
   become: true
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Qemu for FreeBSD
+- name: Install QEMU for Fedora
+  ansible.builtin.dnf:
+    name:
+      - qemu
+      - qemu-img
+      - qemu-kvm
+      - qemu-tools
+  become: true
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install QEMU for FreeBSD
   become: true
   community.general.pkgng:
-    name: qemu
+    name:
+      - qemu
+      - qemu-tools
   when: ansible_system == "FreeBSD"
-
-- name: Install QEMU for Linux
-  ansible.builtin.package:
-    name: qemu
-  become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
-    "zypper"]
 
 - name: Install QEMU for MacOS
   become: true
@@ -37,13 +56,18 @@
     name: qemu
   when: ansible_system == "Darwin"
 
+# Packages qemu-img and qemu-kvm are not available on Arm64 Suse.
 - name: Install QEMU for Suse
-  become: true
-  community.general.zypper:
+  ansible.builtin.package:
     name:
       - qemu
+      - qemu-arm
+      - qemu-img
+      - qemu-kvm
       - qemu-tools
-  when: ansible_pkg_mgr == "zypper"
+      - qemu-x86
+  become: true
+  when: ansible_pkg_mgr == "zypper" and system_architecture == "amd64"
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:

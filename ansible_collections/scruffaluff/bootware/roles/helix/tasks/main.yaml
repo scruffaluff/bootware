@@ -78,7 +78,9 @@
     mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/helix-{{ helix_release.json.tag_name }}-x86_64-linux/runtime
+    src: >-
+      /tmp/helix-{{ helix_release.json.tag_name }}-{{ helix_arch
+      }}-linux/runtime
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 

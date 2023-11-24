@@ -5,7 +5,13 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/git-delta.json
   register: git_delta_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Git Delta for Alpine
+  become: true
+  community.general.apk:
+    name: delta
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Git for FreeBSD
   become: true
@@ -24,7 +30,6 @@
   become: true
   when: ansible_system == "Linux"
 
-# Git Delta does not provide binaries for Linux Arm64 MUSL systems.
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
@@ -36,9 +41,7 @@
       git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ git_delta_env }}.tar.gz
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    system_architecture != "arm64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
@@ -50,9 +53,7 @@
       /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ git_delta_env }}/delta
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    system_architecture != "arm64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Git for MacOS
   become: true

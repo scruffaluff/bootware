@@ -5,7 +5,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/gitui.json
   register: gitui_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for Alpine
   become: true
@@ -36,7 +36,7 @@
     gitui_env:
       amd64: musl
       arm64: aarch64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "alpine"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -46,7 +46,7 @@
     remote_src: true
     src: /tmp/gitui
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "alpine"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
   become: true
