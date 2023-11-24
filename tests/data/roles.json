@@ -233,7 +233,10 @@
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
-  { "name": "qemu", "tests": ["qemu-img --version"] },
+  {
+    "name": "qemu",
+    "tests": ["qemu-system-x86_64 --version", "qemu-img --version"]
+  },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
