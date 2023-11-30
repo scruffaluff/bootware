@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Use Pop (Light) color theme.
 gsettings set org.gnome.desktop.interface gtk-theme 'Pop'

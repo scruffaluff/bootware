@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Use Yaru-lightcolor theme.
 gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-light'
