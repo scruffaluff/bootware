@@ -1,6 +1,7 @@
 ---
 - name: Check if Doas is available for Unix
   ansible.builtin.command: command -v doas
+  changed_when: false
   failed_when: false
   register: doas_available
   when: ansible_system != "Win32NT"
@@ -23,6 +24,7 @@
 
 - name: Check if Sudo is available for Unix
   ansible.builtin.command: command -v visudo
+  changed_when: false
   failed_when: false
   register: sudo_available
   when: ansible_system != "Win32NT"

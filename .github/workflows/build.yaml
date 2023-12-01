@@ -68,7 +68,7 @@ jobs:
           npm --version
           npm ci
       - name: Build documentation
-        run: npm run vitepress:build
+        run: npm run docs
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

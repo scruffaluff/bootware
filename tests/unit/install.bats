@@ -15,7 +15,11 @@ setup() {
   #   -f: Use override as a function instead of a variable.
   command() {
     # shellcheck disable=SC2317
-    echo '/bin/bash'
+    if [[ "${2}" == 'doas' ]]; then
+      echo ''
+    else
+      echo '/bin/bash'
+    fi
   }
   export -f command
 
@@ -34,7 +38,7 @@ setup() {
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 --output ${HOME}/.local/bin/bootware"
 
-  actual="$(install.sh --user --version develop)"
+  actual="$(bash install.sh --user --version develop)"
   assert_equal "${actual}" "${expected}"
 }
 
@@ -52,6 +56,6 @@ https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
   export -f sudo
 
   expected='sudo mkdir -p /bin'
-  actual="$(install.sh --dest /bin/bash)"
+  actual="$(bash install.sh --dest /bin/bash)"
   assert_equal "${actual}" "${expected}"
 }
