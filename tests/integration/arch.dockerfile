@@ -1,26 +1,16 @@
-FROM archlinux:base-20231105.0.189722
+FROM archlinux:base-20231112.0.191179
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash arch
-
-# Install Bash, Curl, and Sudo.
+# Install Curl and Sudo.
 RUN pacman --noconfirm --refresh --sync --sysupgrade && \
-    pacman --noconfirm --sync bash curl sudo
+    pacman --noconfirm --sync curl sudo
 
-# Create sudo group.
-RUN groupadd sudo
-
-# Add standard user to sudoers group.
-RUN usermod --append --groups sudo arch
-
-# Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init arch \
+    && groupadd sudo \
+    && usermod --append --groups sudo arch \
+    && printf "arch ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 ENV HOME=/home/arch USER=arch
 USER arch
@@ -54,6 +44,13 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
+# Ensure Bash and Deno are installed.
+RUN command -v bash > /dev/null \
+    || sudo pacman --noconfirm --sync bash \
+    && command -v deno > /dev/null \
+    || sudo pacman --noconfirm --sync unzip \
+    && curl -LSfs https://deno.land/install.sh | sh
+
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
@@ -61,12 +58,8 @@ SHELL ["/bin/bash", "-c"]
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-RUN if [[ -n "$test" ]]; then \
+RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    if [[ ! -x "$(command -v deno)" ]]; then \
-    sudo pacman --noconfirm --sync unzip; \
-    curl -LSfs https://deno.land/install.sh | sh; \
     export PATH="${HOME}/.deno/bin:${PATH}"; \
-    fi; \
     ./tests/integration/roles_test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

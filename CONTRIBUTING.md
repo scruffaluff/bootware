@@ -6,11 +6,11 @@ and learning the coding guidelines.
 
 ## Format
 
-Bootware Bash shell code follows the Google shell style
+Bootware POSIX shell code follows the Google shell style
 [guide](https://google.github.io/styleguide/shellguide.html).
 
 ## Testing
 
-Bootware Bash shell scripts are tested with
+Bootware POSIX shell scripts are tested with
 [Bats Core](https://github.com/bats-core/bats-core) and PowerShell scripts are
 tested with [Pester](https://github.com/pester/Pester).

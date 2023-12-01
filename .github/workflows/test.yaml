@@ -221,7 +221,7 @@ jobs:
           prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
-            pkg install --yes bash curl
+            pkg install --yes curl
           release: "13.2"
           run: |
             set -eou pipefail

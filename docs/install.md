@@ -5,16 +5,16 @@ command will download the shell scripts and add them to the system path.
 
 ::: code-group
 
-```bash [FreeBSD]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
+```sh [FreeBSD]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
 ```
 
-```bash [Linux]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
+```sh [Linux]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
 ```
 
-```bash [MacOS]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash
+```sh [MacOS]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
 ```
 
 ```powershell [Windows]
@@ -28,16 +28,16 @@ to the script by replacing the `--help` argument.
 
 ::: code-group
 
-```bash [FreeBSD]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash -s -- --help
+```sh [FreeBSD]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
 ```
 
-```bash [Linux]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash -s -- --help
+```sh [Linux]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
 ```
 
-```bash [MacOS]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | bash -s -- --help
+```sh [MacOS]
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
 ```
 
 ```powershell [Windows]

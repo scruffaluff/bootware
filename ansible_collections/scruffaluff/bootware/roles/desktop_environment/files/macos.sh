@@ -8,6 +8,12 @@ defaults write com.apple.controlcenter \
 
 # Dock settings.
 
+# Prevent Stage Manager from hiding windows after a left click on desktop.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+defaults write com.apple.WindowManager GloballyEnabled -bool false
+
+# Dock settings.
+
 # Set dock to autohide.
 defaults write com.apple.dock autohide -bool true
 # Set dock autohide delay time to 0 seconds.
