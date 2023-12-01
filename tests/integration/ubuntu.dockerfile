@@ -8,9 +8,8 @@ RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl sudo
 # Avoid APT interactively requesting to configure tzdata.
 RUN DEBIAN_FRONTEND="noninteractive" apt-get --quiet --yes install tzdata
 
-# Create non-priviledged user and grant user passwordless sudo.
-RUN useradd --create-home --no-log-init ubuntu \
-    && usermod --append --groups sudo ubuntu \
+# Grant ubuntu user passwordless sudo.
+RUN usermod --append --groups sudo ubuntu \
     && printf "ubuntu ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 # Ubuntu container comes with a builtin Ubuntu user.
