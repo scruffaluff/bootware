@@ -78,18 +78,47 @@
   become: true
   when: ansible_system == "Darwin"
 
-- name: Configure Gitlab runner user for Unix
+- name: Configure GitLab runner user for Unix
   ansible.builtin.user:
     append: true
     groups: >-
-      {{ ['docker', 'sudo', 'wheel'] |
-      intersect(ansible_facts.getent_group.keys()) }}
+      {{ ['docker', 'wheel'] | intersect(ansible_facts.getent_group.keys()) }}
     name: gitlab-runner
     shell: /bin/bash
   become: true
   when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Enable GitLab runner passwordless sudo for Unix
+- name: Check if Doas is available for Unix
+  # prettier-ignore
+  ansible.builtin.shell: command -v doas  # noqa command-instead-of-shell
+  changed_when: false
+  failed_when: false
+  register: gitlab_runner_doas_available
+  when: ansible_system != "Win32NT"
+
+- name: Enable GitHub passwordless doas for Unix
+  ansible.builtin.blockinfile:
+    block: |
+      # Enable passwordless doas for gitlab-runner user.
+      permit nopass gitlab-runner as root
+    create: true
+    marker: >-
+      # {mark} ANSIBLE MANAGED passwordless doas for gitlab-runner BLOCK
+    mode: "400"
+    path: /etc/doas.d/doas.conf
+    validate: doas -C %s
+  become: true
+  when: ansible_system != "Win32NT" and gitlab_runner_doas_available.rc == 0
+
+- name: Check if Sudo is available for Unix
+  # prettier-ignore
+  ansible.builtin.shell: command -v visudo  # noqa command-instead-of-shell
+  changed_when: false
+  failed_when: false
+  register: gitlab_runner_sudo_available
+  when: ansible_system != "Win32NT"
+
+- name: Enable GitHub runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for gitlab-runner user.
@@ -102,4 +131,4 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and gitlab_runner_sudo_available.rc == 0
