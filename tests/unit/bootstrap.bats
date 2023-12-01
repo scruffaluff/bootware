@@ -36,9 +36,9 @@ setup() {
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  expected="ansible-playbook --extra-vars \
-ansible_python_interpreter=auto_silent --extra-vars \
-@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+  expected="ansible-playbook --extra-vars ansible_become_method=sudo \
+--extra-vars ansible_python_interpreter=auto_silent \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
 --start-at-task Install Deno for FreeBSD --connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
@@ -51,8 +51,9 @@ ansible_python_interpreter=auto_silent --extra-vars \
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  expected="ansible-pull --extra-vars ansible_python_interpreter=auto_silent \
---extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --url \
+  expected="ansible-pull --extra-vars ansible_become_method=sudo --extra-vars \
+ansible_python_interpreter=auto_silent --extra-vars \
+@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --url \
 https://github.com/scruffaluff/bootware.git playbook.yaml"
 
   actual="$(bootware.sh bootstrap)"
@@ -63,8 +64,9 @@ https://github.com/scruffaluff/bootware.git playbook.yaml"
   local actual expected
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
-  
+
   expected="ansible-playbook --ask-become-pass --extra-vars \
+ansible_become_method=sudo --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
 --connection local playbook.yaml"
@@ -77,11 +79,11 @@ ansible_python_interpreter=auto_silent --extra-vars \
   local actual expected
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
-  
+
   expected="ansible-playbook --ask-become-pass --extra-vars \
-ansible_python_interpreter=auto_silent --extra-vars \
-@${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none --check \
---timeout 60 --connection local playbook.yaml"
+ansible_become_method=sudo --extra-vars ansible_python_interpreter=auto_silent \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
+--check --timeout 60 --connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --check --dev --tags none --timeout 60)"
   assert_equal "${actual}" "${expected}"
@@ -90,8 +92,9 @@ ansible_python_interpreter=auto_silent --extra-vars \
 @test 'Bootstrap subcommand passes Windows SSH arguments to Ansible' {
   local actual expected
   export BOOTWARE_TAGS=''
-  
-  expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
+
+  expected="ansible-playbook --extra-vars ansible_become_method=sudo \
+--extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
@@ -134,8 +137,8 @@ main.yaml"
   }
   export -f mktemp
 
-  expected="ansible-playbook --extra-vars \
-ansible_python_interpreter=auto_silent --extra-vars \
+  expected="ansible-playbook --extra-vars ansible_become_method=sudo \
+--extra-vars ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
 --start-at-task Install Deno for FreeBSD --connection local \
 ${tmp_dir}/playbook.yaml"
