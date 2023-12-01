@@ -1,6 +1,6 @@
 ---
 - name: Check if Doas is available for Unix
-  ansible.builtin.command: command -v doas
+  ansible.builtin.shell: command -v doas
   changed_when: false
   failed_when: false
   register: doas_available
@@ -23,7 +23,7 @@
     0
 
 - name: Check if Sudo is available for Unix
-  ansible.builtin.command: command -v visudo
+  ansible.builtin.shell: command -v visudo
   changed_when: false
   failed_when: false
   register: sudo_available

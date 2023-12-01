@@ -2,8 +2,8 @@ FROM alpine:3.18.4
 
 ARG TARGETARCH
 
-# Install Curl and Doas.
-RUN apk update && apk add curl doas bash
+# Install Bash, Curl, and Doas.
+RUN apk update && apk add bash curl doas
 
 # Create non-priviledged user and grant user passwordless doas.
 #

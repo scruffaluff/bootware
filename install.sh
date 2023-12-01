@@ -114,12 +114,46 @@ find_super() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [ -x "$(command -v doas)" ]; then
-    echo 'doas'
-  elif [ -x "$(command -v sudo)" ]; then
+  if [ -x "$(command -v sudo)" ]; then
     echo 'sudo'
+  elif [ -x "$(command -v doas)" ]; then
+    echo 'doas'
   else
     echo ''
+  fi
+}
+
+#######################################
+# Install Bash shell.
+# Arguments:
+#   Super user command for installation.
+#######################################
+install_bash() {
+  # Do not quote the outer super parameter expansion. Shell will error due to be
+  # being unable to find the "" command.
+  if [ -x "$(command -v apk)" ]; then
+    ${1:+"${1}"} apk update
+    ${1:+"${1}"} apk add bash
+  elif [ -x "$(command -v apt-get)" ]; then
+    ${1:+"${1}"} apt-get update
+    ${1:+"${1}"} apt-get install --quiet --yes bash
+  elif [ -x "$(command -v dnf)" ]; then
+    ${1:+"${1}"} dnf check-update || {
+      code="$?"
+      [ "${code}" -ne 100 ] && exit "${code}"
+    }
+    ${1:+"${1}"} dnf install --assumeyes bash
+  elif [ -x "$(command -v pacman)" ]; then
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync bash
+  elif [ -x "$(command -v pkg)" ]; then
+    ${1:+"${1}"} pkg update
+    ${1:+"${1}"} pkg install --yes bash
+  elif [ -x "$(command -v zypper)" ]; then
+    ${1:+"${1}"} zypper update --no-confirm
+    ${1:+"${1}"} zypper install --no-confirm bash
+  else
+    error 'No supported package manager found to install Bash.'
   fi
 }
 
@@ -242,8 +276,16 @@ main() {
       error 'No command found to elevate user.'
     fi
   fi
-  dst_dir="$(dirname "${dst_file}")"
 
+  # Install Bash shell if necessary.
+  #
+  # Flags:
+  #   -v: Only show file path of command.
+  if [ ! -x "$(command -v bash)" ]; then
+    install_bash "${super}"
+  fi
+
+  dst_dir="$(dirname "${dst_file}")"
   log 'Installing Bootware...'
 
   # Do not quote the outer super parameter expansion. Shell will error due to be
