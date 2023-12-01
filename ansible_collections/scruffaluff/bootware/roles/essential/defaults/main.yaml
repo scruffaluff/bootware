@@ -8,7 +8,6 @@ essential_linux_packages_:
     - gnupg
     - gzip
     - openssl
-    - sudo
     - tar
     - unzip
     - zip
