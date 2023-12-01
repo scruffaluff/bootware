@@ -2,23 +2,15 @@ FROM alpine:3.18.4
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
+# Install Bash, Curl, and Doas.
+RUN apk update && apk add bash curl doas
+
+# Create non-priviledged user and grant user passwordless doas.
 #
 # Alpine does contain the useradd command.
-RUN adduser --disabled-password --shell /bin/sh alpine
-
-# Install Bash, Curl, and Sudo.
-RUN apk update && apk add bash curl sudo
-
-# Add standard user to sudoers group.
-RUN addgroup alpine wheel
-
-# Allow sudo commands with no password.
-RUN printf "%%wheel ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+RUN adduser --disabled-password alpine \
+    && addgroup alpine wheel \
+    && printf 'permit nopass alpine as root\n' >> /etc/doas.d/doas.conf
 
 ENV HOME=/home/alpine USER=alpine
 USER alpine
@@ -52,6 +44,12 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
+# Ensure Bash and Node are installed.
+RUN command -v bash > /dev/null \
+    || doas apk add bash \
+    && command -v node > /dev/null \
+    || doas apk add nodejs
+
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
@@ -59,10 +57,7 @@ SHELL ["/bin/bash", "-c"]
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-RUN if [[ -n "$test" ]]; then \
+RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    if [[ ! -x "$(command -v node)" ]]; then \
-    sudo apk add nodejs; \
-    fi; \
     node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
     fi

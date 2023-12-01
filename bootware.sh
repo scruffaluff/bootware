@@ -31,12 +31,12 @@ Options:
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
-      --install-group <GROUP>     Remote host group to install software for
-      --install-user <USER>       Remote host user to install software for
-  -i, --inventory <IP-LIST>       Ansible host IP addesses
+      --install-group <GROUP>     Remote group to install software for
+      --install-user <USER>       Remote user to install software for
+  -i, --inventory <IP-LIST>       Ansible remote hosts IP addesses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
-      --password <PASSWORD>       Remote host user password
+      --password <PASSWORD>       Remote user login password
   -p, --playbook <FILE>           Path to playbook to execute
       --private-key <FILE>        Path to SSH private key
       --retries <INTEGER>         Playbook retry limit during failure
@@ -45,7 +45,7 @@ Options:
   -t, --tags <TAG-LIST>           Ansible playbook tags to select
       --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
-      --user <USER>               Remote host user login name
+      --user <USER>               Remote user login name
       --windows                   Connect to a Windows host with SSH
 
 Ansible Options:
@@ -86,7 +86,7 @@ Subcommands:
 
 Environment Variables:
   BOOTWARE_CONFIG     Set the configuration file path
-  BOOTWARE_NOPASSWD   Assume passwordless sudo
+  BOOTWARE_NOPASSWD   Assume passwordless doas or sudo
   BOOTWARE_NOSETUP    Skip Ansible install and system setup
   BOOTWARE_PLAYBOOK   Set Ansible playbook name
   BOOTWARE_SKIP       Set skip tags for Ansible roles
@@ -357,6 +357,7 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
+  super="$(find_super)"
 
   log "Executing Ansible ${cmd}"
   log 'Enter your user account password if prompted'
@@ -366,6 +367,7 @@ bootstrap() {
     ${checkout:+--checkout "${checkout}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
+    --extra-vars "ansible_become_method=${super}" \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
@@ -431,7 +433,7 @@ config() {
   #   -z: Check if string has zero length.
   if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
-    printf 'sudo_passwordless: false' > "${dst_file}"
+    printf 'super_passwordless: false' > "${dst_file}"
   else
     assert_cmd curl
 
@@ -455,11 +457,11 @@ config() {
 # codes.
 #
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 dnf_check_update() {
   local code
-  ${1:+sudo} dnf check-update || {
+  ${1:+"${1}"} dnf check-update || {
     code="$?"
     [[ "${code}" -eq 100 ]] && return 0
     return "${code}"
@@ -521,6 +523,22 @@ find_config_path() {
 }
 
 #######################################
+# Find command to elevate as super user.
+#######################################
+find_super() {
+  # Flags:
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [[ -x "$(command -v sudo)" ]]; then
+    echo 'sudo'
+  elif [[ -x "$(command -v doas)" ]]; then
+    echo 'doas'
+  else
+    echo ''
+  fi
+}
+
+#######################################
 # Get full normalized path for file.
 # Alternative to realpath command, since it is not built into MacOS.
 #######################################
@@ -537,7 +555,7 @@ fullpath() {
 #######################################
 # Install YQ parser for YAML files.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 install_yq() {
   local arch os_type url version
@@ -567,10 +585,10 @@ install_yq() {
   )"
   url="https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os_type}_${arch}"
 
-  # Do not quote the sudo parameter expansion. Bash will error due to be being
-  # unable to find the "" command.
-  ${1:+sudo} curl -LSfs "${url}" --output /usr/local/bin/yq
-  ${1:+sudo} chmod 755 /usr/local/bin/yq
+  # Do not quote the outer super parameter expansion. Shell will error due to be
+  # being unable to find the "" command.
+  ${1:+"${1}"} curl -LSfs "${url}" --output /usr/local/bin/yq
+  ${1:+"${1}"} chmod 755 /usr/local/bin/yq
 }
 
 #######################################
@@ -623,7 +641,7 @@ roles() {
 # Subcommand to configure boostrapping services and utilities.
 #######################################
 setup() {
-  local collections collection_status os_type tmp_dir use_sudo=''
+  local collections collection_status os_type tmp_dir super=''
 
   # Parse command line arguments.
   while [[ "${#}" -gt 0 ]]; do
@@ -642,7 +660,7 @@ setup() {
 
   # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then
-    use_sudo='true'
+    super="$(find_super)"
   fi
 
   # Do not use long form --kernel-name flag for uname. It is not supported on
@@ -653,10 +671,10 @@ setup() {
       setup_macos
       ;;
     FreeBSD)
-      setup_freebsd "${use_sudo}"
+      setup_freebsd "${super}"
       ;;
     Linux)
-      setup_linux "${use_sudo}"
+      setup_linux "${super}"
       ;;
     *)
       error "Operating system ${os_type} is not supported"
@@ -675,7 +693,7 @@ setup() {
 #######################################
 # Configure boostrapping services and utilities for Alpine.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_alpine() {
   # Install dependencies for Bootware.
@@ -685,26 +703,26 @@ setup_alpine() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    ${1:+sudo} apk update
-    ${1:+sudo} apk add ansible
+    ${1:+"${1}"} apk update
+    ${1:+"${1}"} apk add ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} apk update
-    ${1:+sudo} apk add curl
+    ${1:+"${1}"} apk update
+    ${1:+"${1}"} apk add curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} apk update
-    ${1:+sudo} apk add git
+    ${1:+"${1}"} apk update
+    ${1:+"${1}"} apk add git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} apk update
-    ${1:+sudo} apk add jq
+    ${1:+"${1}"} apk update
+    ${1:+"${1}"} apk add jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -716,7 +734,7 @@ setup_alpine() {
 #######################################
 # Configure boostrapping services and utilities for Arch.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_arch() {
   local tmp_dir
@@ -729,32 +747,32 @@ setup_arch() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
-    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --sync ansible
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --sync curl
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --sync git
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --sync jq
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync jq
   fi
 
   if [[ ! -x "$(command -v yay)" ]]; then
     log 'Installing Yay package manager'
-    ${1:+sudo} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+sudo} pacman --noconfirm --sync base-devel
+    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${1:+"${1}"} pacman --noconfirm --sync base-devel
 
     tmp_dir="$(mktemp --dry-run)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
@@ -771,7 +789,7 @@ setup_arch() {
 #######################################
 # Configure boostrapping services and utilities for Debian.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_debian() {
   # Avoid APT interactively requesting to configure tzdata.
@@ -786,26 +804,26 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible'
-    ${1:+sudo} apt-get --quiet update
-    ${1:+sudo} apt-get --quiet install --yes ansible
+    ${1:+"${1}"} apt-get --quiet update
+    ${1:+"${1}"} apt-get --quiet install --yes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} apt-get --quiet update
-    ${1:+sudo} apt-get --quiet install --yes curl
+    ${1:+"${1}"} apt-get --quiet update
+    ${1:+"${1}"} apt-get --quiet install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} apt-get --quiet update
-    ${1:+sudo} apt-get --quiet install --yes git
+    ${1:+"${1}"} apt-get --quiet update
+    ${1:+"${1}"} apt-get --quiet install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} apt-get --quiet update
-    ${1:+sudo} apt-get --quiet install --yes jq
+    ${1:+"${1}"} apt-get --quiet update
+    ${1:+"${1}"} apt-get --quiet install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -817,7 +835,7 @@ setup_debian() {
 #######################################
 # Configure boostrapping services and utilities for Fedora.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_fedora() {
   # Install dependencies for Bootware.
@@ -830,25 +848,25 @@ setup_fedora() {
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "${1}"
-    ${1:+sudo} dnf install --assumeyes ansible
+    ${1:+"${1}"} dnf install --assumeyes ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
     dnf_check_update "${1}"
-    ${1:+sudo} dnf install --assumeyes curl
+    ${1:+"${1}"} dnf install --assumeyes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
     dnf_check_update "${1}"
-    ${1:+sudo} dnf install --assumeyes git
+    ${1:+"${1}"} dnf install --assumeyes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
     dnf_check_update "${1}"
-    ${1:+sudo} dnf install --assumeyes jq
+    ${1:+"${1}"} dnf install --assumeyes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -860,7 +878,7 @@ setup_fedora() {
 #######################################
 # Configure boostrapping services and utilities for FreeBSD.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_freebsd() {
   assert_cmd pkg python_version
@@ -869,35 +887,35 @@ setup_freebsd() {
     log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
-    ${1:+sudo} pkg update
+    ${1:+"${1}"} pkg update
     # Python's cryptography package requires a Rust compiler on FreeBSD.
-    ${1:+sudo} pkg install --yes python3 rust
+    ${1:+"${1}"} pkg install --yes python3 rust
 
     python_version="$(
       python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))'
     )"
-    ${1:+sudo} pkg install --yes "py${python_version}-pip"
+    ${1:+"${1}"} pkg install --yes "py${python_version}-pip"
 
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+"${1}"} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+"${1}"} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} pkg update
-    ${1:+sudo} pkg install --yes curl
+    ${1:+"${1}"} pkg update
+    ${1:+"${1}"} pkg install --yes curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} pkg update
-    ${1:+sudo} pkg install --yes git
+    ${1:+"${1}"} pkg update
+    ${1:+"${1}"} pkg install --yes git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} pkg update
-    ${1:+sudo} pkg install --yes jq
+    ${1:+"${1}"} pkg update
+    ${1:+"${1}"} pkg install --yes jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -909,7 +927,7 @@ setup_freebsd() {
 #######################################
 # Configure boostrapping services and utilities for Linux.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_linux() {
   # Install dependencies for Bootware base on available package manager.
@@ -999,7 +1017,7 @@ setup_macos() {
 #######################################
 # Configure boostrapping services and utilities for OpenSuse.
 # Arguments:
-#   Whether to use sudo command.
+#   Super user elevation command.
 #######################################
 setup_suse() {
   # Install dependencies for Bootware.
@@ -1009,29 +1027,29 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    ${1:+sudo} zypper update --no-confirm
-    ${1:+sudo} zypper install --no-confirm python3 python3-pip
+    ${1:+"${1}"} zypper update --no-confirm
+    ${1:+"${1}"} zypper install --no-confirm python3 python3-pip
 
-    ${1:+sudo} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+sudo} python3 -m pip install ansible
+    ${1:+"${1}"} python3 -m pip install --upgrade pip setuptools wheel
+    ${1:+"${1}"} python3 -m pip install ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
     log 'Installing Curl'
-    ${1:+sudo} zypper update --no-confirm
-    ${1:+sudo} zypper install --no-confirm curl
+    ${1:+"${1}"} zypper update --no-confirm
+    ${1:+"${1}"} zypper install --no-confirm curl
   fi
 
   if [[ ! -x "$(command -v git)" ]]; then
     log 'Installing Git'
-    ${1:+sudo} zypper update --no-confirm
-    ${1:+sudo} zypper install --no-confirm git
+    ${1:+"${1}"} zypper update --no-confirm
+    ${1:+"${1}"} zypper install --no-confirm git
   fi
 
   if [[ ! -x "$(command -v jq)" ]]; then
     log 'Installing JQ'
-    ${1:+sudo} zypper update --no-confirm
-    ${1:+sudo} zypper install --no-confirm jq
+    ${1:+"${1}"} zypper update --no-confirm
+    ${1:+"${1}"} zypper install --no-confirm jq
   fi
 
   if [[ ! -x "$(command -v yq)" ]]; then
@@ -1046,7 +1064,7 @@ setup_suse() {
 #   Writes status information about removed files.
 #######################################
 uninstall() {
-  local dst_file use_sudo=''
+  local dst_file super=''
 
   # Parse command line arguments.
   while [[ "${#}" -gt 0 ]]; do
@@ -1065,18 +1083,17 @@ uninstall() {
 
   dst_file="$(fullpath "$0")"
 
-  # Use sudo for system installation if user is not root.
+  # Use doas or sudo for system installation if user is not root.
   #
   # Flags:
   #   -w: Check if file exists and it writable.
   if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
-    assert_cmd sudo
-    use_sudo='true'
+    super="$(find_super)"
   fi
 
-  # Do not quote the sudo parameter expansion. Bash will error due to be being
-  # unable to find the "" command.
-  ${use_sudo:+sudo} rm "${dst_file}"
+  # Do not quote the outer super parameter expansion. Shell will error due to be
+  # being unable to find the "" command.
+  ${super:+"${super}"} rm "${dst_file}"
 
   log 'Uninstalled Bootware'
 }
@@ -1089,7 +1106,7 @@ uninstall() {
 #   Writes status information and updated Bootware version to stdout.
 #######################################
 update() {
-  local dst_file src_url use_sudo='' user_install version='main'
+  local dst_file src_url super='' user_install version='main'
 
   # Parse command line arguments.
   while [[ "${#}" -gt 0 ]]; do
@@ -1114,32 +1131,31 @@ update() {
   dst_file="$(fullpath "$0")"
   src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
 
-  # Use sudo for system installation if user is not root.
+  # Use doas or sudo for system installation if user is not root.
   #
   # Flags:
   #   -w: Check if file exists and it writable.
   if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
-    assert_cmd sudo
-    use_sudo='true'
+    super="$(find_super)"
   elif [[ -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
     user_install='true'
   fi
 
   log 'Updating Bootware'
 
-  # Do not quote the sudo parameter expansion. Bash will error due to be being
-  # unable to find the "" command.
-  ${use_sudo:+sudo} curl -LSfs "${src_url}" --output "${dst_file}"
-  ${use_sudo:+sudo} chmod 755 "${dst_file}"
+  # Do not quote the outer super parameter expansion. Shell will error due to be
+  # being unable to find the "" command.
+  ${super:+"${super}"} curl -LSfs "${src_url}" --output "${dst_file}"
+  ${super:+"${super}"} chmod 755 "${dst_file}"
 
-  update_completions "${use_sudo}" "${user_install:-}" "${version}"
+  update_completions "${super}" "${user_install:-}" "${version}"
   log "Updated to version $(bootware --version)"
 }
 
 #######################################
 # Update completion scripts for Bootware.
 # Arguments:
-#   Whether to use sudo for installation.
+#   Super user elevation command.
 #   Whether to install for entire system.
 #   GitHub version reference.
 #######################################
@@ -1153,13 +1169,13 @@ update_completions() {
   if [[ -z "${2:-}" ]]; then
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+sudo} mkdir -p '/etc/bash_completion.d'
-    ${1:+sudo} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
-    ${1:+sudo} chmod 664 '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
+    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
 
-    ${1:+sudo} mkdir -p '/etc/fish/completions'
-    ${1:+sudo} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
-    ${1:+sudo} chmod 664 '/etc/fish/completions/bootware.fish'
+    ${1:+"${1}"} mkdir -p '/etc/fish/completions'
+    ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+    ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
   else
     mkdir -p "${HOME}/.config/fish/completions"
     curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"

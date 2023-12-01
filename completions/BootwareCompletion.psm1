@@ -39,20 +39,26 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
                 Break
             }
             'bootware;bootstrap' {
+                [CompletionResult]::new('--check', '--check', [CompletionResultType]::ParameterName, 'Perform dry run and show possible changes')
                 [CompletionResult]::new('--config', '--config', [CompletionResultType]::ParameterName, 'Path to bootware user configuation file')
                 [CompletionResult]::new('--debug', '--debug', [CompletionResultType]::ParameterName, 'Enable Ansible task debugger')
                 [CompletionResult]::new('--dev', '--dev', [CompletionResultType]::ParameterName, 'Run bootstrapping in development mode')
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
+                [CompletionResult]::new('--install-group', '--install-group', [CompletionResultType]::ParameterName, 'Remote group to install software for')
+                [CompletionResult]::new('--install-user', '--install-user', [CompletionResultType]::ParameterName, 'Remote user to install software for')
+                [CompletionResult]::new('--inventory', '--inventory', [CompletionResultType]::ParameterName, 'Ansible remote hosts IP addesses')
                 [CompletionResult]::new('--no-passwd', '--no-passwd', [CompletionResultType]::ParameterName, 'Do not ask for user password')
                 [CompletionResult]::new('--no-setup', '--no-setup', [CompletionResultType]::ParameterName, 'Skip Bootware dependency installation')
-                [CompletionResult]::new('--playbook', '--playbook', [CompletionResultType]::ParameterName, 'Name of play to execute')
-                [CompletionResult]::new('--password', '--password', [CompletionResultType]::ParameterName, 'Remote host user password')
+                [CompletionResult]::new('--password', '--password', [CompletionResultType]::ParameterName, 'Remote user login password')
+                [CompletionResult]::new('--playbook', '--playbook', [CompletionResultType]::ParameterName, 'Path to playbook to execute')
+                [CompletionResult]::new('--private-key', '--private-key', [CompletionResultType]::ParameterName, 'Path to SSH private key')
                 [CompletionResult]::new('--retries', '--retries', [CompletionResultType]::ParameterName, 'Playbook retry limit during failure')
                 [CompletionResult]::new('--skip', '--skip', [CompletionResultType]::ParameterName, 'Ansible playbook tags to skip in quotes')
                 [CompletionResult]::new('--start-at-role', '--start-at-role', [CompletionResultType]::ParameterName, 'Begin execution with role')
                 [CompletionResult]::new('--tags', '--tags', [CompletionResultType]::ParameterName, 'Ansible playbook tags to select in quotes')
+                [CompletionResult]::new('--temp-key', '--temp-key', [CompletionResultType]::ParameterName, 'Path to SSH private key for one time connection')
                 [CompletionResult]::new('--url', '--url', [CompletionResultType]::ParameterName, 'URL of playbook repository')
-                [CompletionResult]::new('--user', '--user', [CompletionResultType]::ParameterName, 'Remote host user login name')
+                [CompletionResult]::new('--user', '--user', [CompletionResultType]::ParameterName, 'Remote user login name')
                 Break
             }
             'bootware;config' {

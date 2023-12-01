@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 #
 # Extend ShellCheck to check files in directories.
 
@@ -6,16 +6,13 @@
 #
 # Flags:
 #   -e: Exit immediately when a command pipeline fails.
-#   -o: Persist nonzero exit codes through a Bash pipe.
 #   -u: Throw an error when an unset variable is encountered.
-set -eou pipefail
+set -eu
 
 #######################################
 # Script entrypoint.
 #######################################
 main() {
-  local bats_files sh_files
-
   bats_files="$(
     find . -type f -name '*.bats' -not -path '*/.venv/*' \
       -not -path '*/node_modules/*'

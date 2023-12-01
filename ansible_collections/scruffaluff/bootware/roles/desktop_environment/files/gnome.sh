@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Show weekday in top bar date.
 gsettings set org.gnome.desktop.interface clock-show-weekday true

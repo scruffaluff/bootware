@@ -10,9 +10,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Arm64 and FreeBSD support for several roles.
+- Doas super command support.
 - Group install flag.
 - Tools for Libvirt role.
 - Yazi role.
+
+### Changed
+
+- Renamed Sudo role to Super.
+- Most unix shell scripts to be POSIX compatible.
 
 ### Fixed
 

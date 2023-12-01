@@ -3,21 +3,14 @@ FROM debian:12.2
 ARG TARGETARCH
 ARG version=0.7.2
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash collection
+# Install Ansible Curl and Sudo.
+RUN apt-get update --ignore-missing \
+    && apt-get install --quiet --yes ansible curl sudo
 
-# Install Bash, Curl and Sudo.
-RUN apt-get update --ignore-missing && apt-get install --quiet --yes ansible bash curl sudo
-
-# Add standard user to sudoers group.
-RUN usermod --append --groups sudo collection
-
-# Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init collection \
+    && usermod --append --groups sudo collection \
+    && printf "collection ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 ENV HOME=/home/collection USER=collection
 USER collection
@@ -29,10 +22,10 @@ ENV DONT_PROMPT_WSL_INSTALL='true'
 
 COPY --chown="${USER}" . $HOME/repo
 
-RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/bootware && \
-    ansible-galaxy collection install "scruffaluff-bootware-${version}.tar.gz" && \
-    cp $HOME/repo/playbook.yaml . && \
-    rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
+RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/bootware \
+    && ansible-galaxy collection install "scruffaluff-bootware-${version}.tar.gz" \
+    && cp $HOME/repo/playbook.yaml . \
+    && rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]

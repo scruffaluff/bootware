@@ -1,6 +1,6 @@
-# Sudo
+# Super
 
-Sudo is an Ansible role
+Super is an Ansible role
 
 ## Requirements
 

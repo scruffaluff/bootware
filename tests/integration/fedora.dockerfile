@@ -2,27 +2,15 @@ FROM fedora:39
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash fedora
-
-# Update DNF package lists.
+# Install Curl and Sudo.  
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+RUN dnf install --assumeyes curl sudo
 
-# Install Bash, Curl, and Sudo.  
-RUN dnf install --assumeyes bash curl sudo
-
-# Create sudo group.
-RUN groupadd sudo
-
-# Add standard user to sudoers group.
-RUN usermod --append --groups sudo fedora
-
-# Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init fedora \
+    && groupadd sudo \
+    && usermod --append --groups sudo fedora \
+    && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 ENV HOME=/home/fedora USER=fedora
 USER fedora
@@ -56,6 +44,12 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
+# Ensure Bash and Node are installed.
+RUN command -v bash > /dev/null \
+    || sudo dnf install --assumeyes bash \
+    && command -v node > /dev/null \
+    || sudo dnf install --assumeyes nodejs
+
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
@@ -63,10 +57,7 @@ SHELL ["/bin/bash", "-c"]
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-RUN if [[ -n "$test" ]]; then \
+RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    if [[ ! -x "$(command -v node)" ]]; then \
-    sudo dnf install --assumeyes nodejs; \
-    fi; \
     node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi

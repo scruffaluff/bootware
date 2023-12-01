@@ -2,9 +2,8 @@ FROM fedora:39 AS builder
 
 ARG version=0.7.2
 
-# Update DNF package lists.
+# Install Node and RPM Build.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-
 RUN dnf install --assumeyes nodejs rpm-build
 
 # # Copy bootware package build files.

@@ -1,10 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Control Center settings.
 
 # Show do not disturb option in control center.
 defaults write com.apple.controlcenter \
   'NSStatusItem Visible DoNotDisturb' -bool true
+
+# Dock settings.
+
+# Prevent Stage Manager from hiding windows after a left click on desktop.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+defaults write com.apple.WindowManager GloballyEnabled -bool false
 
 # Dock settings.
 

@@ -2,27 +2,14 @@ FROM opensuse/leap:15.5
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash suse
+# Install Curl and Sudo.  
+RUN zypper update --no-confirm && zypper install --no-confirm curl sudo
 
-# Update DNF package lists.
-RUN zypper update --no-confirm
-
-# Install Bash, Curl, and Sudo.  
-RUN zypper install --no-confirm bash curl sudo
-
-# Create sudo group.
-RUN groupadd sudo
-
-# Add standard user to sudoers group.
-RUN usermod --append --groups sudo suse
-
-# Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init suse \
+    && groupadd sudo \
+    && usermod --append --groups sudo suse \
+    && printf "suse ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 ENV HOME=/home/suse USER=suse
 USER suse
@@ -56,6 +43,12 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
+# Ensure Bash and Node are installed.
+RUN command -v bash > /dev/null \
+    || sudo zypper install --no-confirm --yes bash \
+    && command -v node > /dev/null \
+    || sudo zypper install --no-confirm nodejs-default
+
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
@@ -63,10 +56,7 @@ SHELL ["/bin/bash", "-c"]
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-RUN if [[ -n "$test" ]]; then \
-        source "${HOME}/.bashrc"; \
-        if [[ ! -x "$(command -v node)" ]]; then \
-            sudo zypper install --no-confirm nodejs-default; \
-        fi; \
-        node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
+RUN if [[ -n "${test}" ]]; then \
+    source "${HOME}/.bashrc"; \
+    node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
     fi

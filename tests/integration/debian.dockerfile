@@ -2,21 +2,13 @@ FROM debian:12.2
 
 ARG TARGETARCH
 
-# Create non-priviledged user.
-RUN useradd --create-home --no-log-init --shell /bin/bash debian
+# Install Curl and Sudo.
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl sudo
 
-# Install Bash, Curl and Sudo.
-RUN apt-get update --ignore-missing && apt-get install --quiet --yes bash curl sudo
-
-# Add standard user to sudoers group.
-RUN usermod --append --groups sudo debian
-
-# Allow sudo commands with no password.
-RUN printf "%%sudo ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
-
-# Fix current sudo bug for containers.
-# https://github.com/sudo-project/sudo/issues/42
-RUN echo "Set disable_coredump false" >> /etc/sudo.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init debian \
+    && usermod --append --groups sudo debian \
+    && printf "debian ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 ENV HOME=/home/debian USER=debian
 USER debian
@@ -50,6 +42,12 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
+# Ensure Bash and Node are installed.
+RUN command -v bash > /dev/null \
+    || sudo apt-get install --quiet --yes bash \
+    && command -v node > /dev/null \
+    || sudo apt-get install --quiet --yes nodejs
+
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
 
@@ -57,10 +55,7 @@ SHELL ["/bin/bash", "-c"]
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-RUN if [[ -n "$test" ]]; then \
+RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    if [[ ! -x "$(command -v node)" ]]; then \
-    sudo apt-get install --quiet --yes nodejs; \
-    fi; \
     node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi
