@@ -843,14 +843,14 @@
         - sysadmin
         - wsl
 
-    - name: Configure sudo settings
+    - name: Configure super user settings
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.sudo
+        name: scruffaluff.bootware.super
       tags:
         - container
         - desktop
         - server
-        - sudo
+        - super
         - wsl
 
     - name: Install Termshark network analyzer

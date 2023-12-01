@@ -269,7 +269,7 @@
   { "name": "sops", "tests": ["sops --version"] },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
-  { "name": "sudo", "tests": ["sudo --version"] },
+  { "name": "super" },
   { "name": "system" },
   {
     "name": "termshark",

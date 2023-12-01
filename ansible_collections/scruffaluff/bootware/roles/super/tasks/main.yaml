@@ -1,4 +1,32 @@
 ---
+- name: Check if Doas is available for Unix
+  ansible.builtin.command: command -v doas
+  failed_when: false
+  register: doas_available
+  when: ansible_system != "Win32NT"
+
+- name: Enable passwordless doas for Unix
+  ansible.builtin.blockinfile:
+    block: |
+      # Enable passwordless doas for {{ user_id }} user.
+      permit nopass {{ user_id }} as root
+    create: true
+    marker: >-
+      # {mark} ANSIBLE MANAGED passwordless doas for {{ user_id }} BLOCK
+    mode: "400"
+    path: /etc/doas.d/doas.conf
+    validate: doas -C %s
+  become: true
+  when: >-
+    super_passwordless and ansible_system != "Win32NT" and doas_available.rc ==
+    0
+
+- name: Check if Sudo is available for Unix
+  ansible.builtin.command: command -v visudo
+  failed_when: false
+  register: sudo_available
+  when: ansible_system != "Win32NT"
+
 - name: Disable annoying and unhelpful sudoedit error
   ansible.builtin.blockinfile:
     block: |
@@ -16,7 +44,7 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and sudo_available.rc == 0
 
 - name: Enable passwordless sudo for Unix
   ansible.builtin.blockinfile:
@@ -32,10 +60,12 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
-  when: sudo_passwordless and ansible_system != "Win32NT"
+  when: >-
+    super_passwordless and ansible_system != "Win32NT" and sudo_available.rc ==
+    0
 
 - name: Restrict administrator permission popup to once per session for Windows
   ansible.windows.win_command: gsudo config CacheMode Auto
   # Command always marks config as changed.
   changed_when: true
-  when: sudo_passwordless and ansible_system == "Win32NT"
+  when: super_passwordless and ansible_system == "Win32NT"

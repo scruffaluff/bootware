@@ -115,18 +115,18 @@ jobs:
           poetry lock --check
           poetry install --no-root
       - name: Check format of configuration files
-        run: npm run prettier:test
+        run: npm run prettier
       - name: Install Shfmt
         run: |
           shfmt_version="$(curl -LSfs https://formulae.brew.sh/api/formula/shfmt.json | jq --raw-output .versions.stable)"
           sudo curl -LSfs "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_linux_amd64" --output "/usr/local/bin/shfmt"
           sudo chmod 755 "/usr/local/bin/shfmt"
       - name: Check format of shell scripts
-        run: npm run shfmt:test
+        run: npm run shfmt
       - name: Install ShellCheck
         run: sudo apt install --yes shellcheck
       - name: Run ShellCheck on shell scripts
-        run: npm run shellcheck:test
+        run: npm run shellcheck
       - name: Lint Ansible playbook and roles
         run: |
           poetry run ansible-lint --version
@@ -199,7 +199,7 @@ jobs:
           npm --version
           npm ci
       - name: Run POSIX unit tests with Bats
-        run: npm run bats:test
+        run: npm run bats
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

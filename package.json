@@ -15,13 +15,10 @@
   },
   "private": true,
   "scripts": {
-    "bats:test": "bats --recursive tests/unit",
-    "prettier:format": "prettier --write .",
-    "prettier:test": "prettier --check .",
-    "shellcheck:test": "sh scripts/shellcheck.sh",
-    "shfmt:format": "ts-node scripts/shfmt.ts format",
-    "shfmt:test": "ts-node scripts/shfmt.ts test",
-    "vitepress:build": "ts-node scripts/build_docs.ts",
-    "vitepress:dev": "vitepress dev ."
+    "bats": "bats --recursive tests/unit",
+    "docs": "ts-node scripts/build_docs.ts",
+    "prettier": "prettier --check .",
+    "shellcheck": "sh scripts/shellcheck.sh",
+    "shfmt": "ts-node scripts/shfmt.ts test"
   }
 }

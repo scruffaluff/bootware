@@ -3,8 +3,8 @@ FROM fedora:39
 ARG TARGETARCH
 
 # Install Curl and Sudo.  
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; } \
-    && dnf install --assumeyes curl sudo
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+RUN dnf install --assumeyes curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
 RUN useradd --create-home --no-log-init fedora \

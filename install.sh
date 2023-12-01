@@ -114,10 +114,10 @@ find_super() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [ -x "$(command -v sudo)" ]; then
-    echo 'sudo'
-  elif [ -x "$(command -v doas)" ]; then
+  if [ -x "$(command -v doas)" ]; then
     echo 'doas'
+  elif [ -x "$(command -v sudo)" ]; then
+    echo 'sudo'
   else
     echo ''
   fi
@@ -126,7 +126,7 @@ find_super() {
 #######################################
 # Install completion scripts for Bootware.
 # Arguments:
-#   Super user command for installation.
+#   Super user elevation command.
 #   Whether to install for entire system.
 #   GitHub version reference.
 #######################################
@@ -246,7 +246,7 @@ main() {
 
   log 'Installing Bootware...'
 
-  # Do not quote the outer super parameter expansion. Bash will error due to be
+  # Do not quote the outer super parameter expansion. Shell will error due to be
   # being unable to find the "" command. Do not use long form --parents flag for
   # mkdir. It is not supported on MacOS.
   ${super:+"${super}"} mkdir -p "${dst_dir}"

@@ -14,6 +14,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Tools for Libvirt role.
 - Yazi role.
 
+### Changed
+
+- Renamed Sudo role to Super.
+- Unix shell scripts to be POSIX compatible.
+
 ### Fixed
 
 - Group permissions for installed files.

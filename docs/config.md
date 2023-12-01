@@ -18,7 +18,7 @@ by executing `bootware config`.
 Several Bootware options can also be specified with environment variables.
 
 - `BOOTWARE_CONFIG`: Set the configuration file path
-- `BOOTWARE_NOPASSWD`: Assume passwordless sudo
+- `BOOTWARE_NOPASSWD`: Assume passwordless doas or sudo
 - `BOOTWARE_NOSETUP`: Skip Ansible install and system setup
 - `BOOTWARE_PLAYBOOK`: Set Ansible playbook name
 - `BOOTWARE_SKIP`: Set skip tags for Ansible roles

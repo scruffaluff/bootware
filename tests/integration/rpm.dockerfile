@@ -3,8 +3,8 @@ FROM fedora:39 AS builder
 ARG version=0.7.2
 
 # Install Node and RPM Build.
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; } \
-    && dnf install --assumeyes nodejs rpm-build
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+RUN dnf install --assumeyes nodejs rpm-build
 
 # # Copy bootware package build files.
 COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
