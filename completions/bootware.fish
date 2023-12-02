@@ -58,6 +58,7 @@ complete -c bootware -n '__fish_seen_subcommand_from config' -s h -l help -d 'Pr
 complete -c bootware -n '__fish_seen_subcommand_from config' -x -s s -l source -d 'URL to configuration file'
 
 complete -c bootware -n '__fish_seen_subcommand_from roles' -s h -l help -d 'Print help information'
+complete -c bootware -n '__fish_seen_subcommand_from roles' -x -s t -l tags -d 'Ansible playbook tags to select'
 complete -c bootware -n '__fish_seen_subcommand_from roles' -x -s u -l url -d 'URL of playbook repository'
 
 complete -c bootware -n '__fish_seen_subcommand_from setup' -s h -l help -d 'Print help information'

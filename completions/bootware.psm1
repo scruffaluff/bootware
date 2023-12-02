@@ -70,6 +70,7 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
             }
             'bootware;roles' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
+                [CompletionResult]::new('--tags', '--tags', [CompletionResultType]::ParameterName, 'Ansible playbook tags to select in quotes')
                 Break
             }
             'bootware;setup' {

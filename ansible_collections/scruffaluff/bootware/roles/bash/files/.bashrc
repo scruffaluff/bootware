@@ -326,3 +326,4 @@ prepend_path "${WASMTIME_HOME}/bin"
 
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries.
 prepend_path '/opt/homebrew/bin'
+prepend_path '/opt/homebrew/sbin'

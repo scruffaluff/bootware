@@ -359,6 +359,7 @@ fish_add_path "$WASMTIME_HOME/bin"
 # Ensure Homebrew Arm64 binaries are found before x86_64 binaries on Apple
 # silicon computers.
 fish_add_path '/opt/homebrew/bin'
+fish_add_path '/opt/homebrew/sbin'
 
 # Fish user key bindings. 
 #
