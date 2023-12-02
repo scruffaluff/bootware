@@ -28,7 +28,7 @@ function copyFiles(repoPath, buildDirs) {
   const bootwareScript = path.join(repoPath, "bootware.sh");
   fs.copyFileSync(bootwareScript, path.join(buildDirs.bin, "bootware"));
 
-  const manPage = path.join(repoPath, "bootware.1");
+  const manPage = path.join(repoPath, "completions/bootware.man");
   fs.copyFileSync(manPage, path.join(buildDirs.man, "bootware.1"));
 }
 

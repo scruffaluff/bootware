@@ -90,7 +90,8 @@ List all Bootware roles
 Usage: bootware roles [OPTIONS]
 
 Options:
-  -h, --help    Print help information
+  -h, --help              Print help information
+  -t, --tags <TAG-LIST>   Ansible playbook tags to select
 '@
         }
         'setup' {
@@ -507,6 +508,7 @@ Function RemoteScript($URL) {
 # Subcommand to list all Bootware roles.
 Function Roles() {
     $ArgIdx = 0
+    $Tags = ''
 
     While ($ArgIdx -LT $Args[0].Count) {
         Switch ($Args[0][$ArgIdx]) {
@@ -514,13 +516,21 @@ Function Roles() {
                 Usage 'roles'
                 Exit 0
             }
+            { $_ -In '-t', '--tags' } {
+                $Tags = $Args[0][$ArgIdx + 1] -Join ','
+                $ArgIdx += 2
+                Break
+            }
             Default {
                 ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
             }
         }
     }
 
-    Get-ChildItem -Name -Path "$PSScriptRoot/repo/ansible_collections/scruffaluff/bootware/roles"
+    $TagList = "[`"$($Tags.Replace(',', '`", `"'))`"]"
+    $Filter = ".[0].tasks[] | select(.tags | contains($TagList))"
+    $Format = '."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
+    yq "$Filter | $Format" "$PSScriptRoot/repo/playbook.yaml"
 }
 
 # Subcommand to configure boostrapping services and utilities.

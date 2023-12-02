@@ -12,6 +12,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Arm64 and FreeBSD support for several roles.
 - Doas super command support.
 - Group install flag.
+- Tags flag for roles subcommand.
 - Tools for Libvirt role.
 - Yazi role.
 

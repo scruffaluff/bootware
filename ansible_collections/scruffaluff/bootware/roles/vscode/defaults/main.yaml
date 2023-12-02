@@ -33,6 +33,7 @@ vscode_extensions:
   - "firefox-devtools.vscode-firefox-debug"
   - "foxundermoon.shell-format"
   - "golang.Go"
+  - "grapecity.gc-excelviewer"
   - "hashicorp.terraform"
   - "james-yu.latex-workshop"
   - "jroesch.lean"

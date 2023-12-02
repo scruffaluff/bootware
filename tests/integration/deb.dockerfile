@@ -5,7 +5,8 @@ ARG version=0.7.2
 RUN apt-get update --ignore-missing && apt-get install --quiet --yes nodejs npm
 
 # Copy bootware package build files.
-COPY bootware.1 bootware.sh package-lock.json package.json /bootware/
+COPY bootware.sh package-lock.json package.json /bootware/
+COPY completions/ /bootware/completions/
 COPY scripts/ /bootware/scripts/
 
 WORKDIR /bootware

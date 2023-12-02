@@ -195,7 +195,7 @@ install_completions() {
 #   GitHub version reference.
 #######################################
 install_man() {
-  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/bootware.1"
+  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/completions/bootware.man"
 
   # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${1:+"${1}"} mkdir -p '/usr/local/share/man/man1'

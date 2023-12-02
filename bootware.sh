@@ -103,8 +103,9 @@ List all Bootware roles
 Usage: bootware roles [OPTIONS]
 
 Options:
-  -h, --help        Print help information
-  -u, --url <URL>   URL of playbook repository
+  -h, --help              Print help information
+  -t, --tags <TAG-LIST>   Ansible playbook tags to select
+  -u, --url <URL>         URL of playbook repository
 EOF
       ;;
     setup)
@@ -610,6 +611,7 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local tags=''
   local tmp_dir
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
@@ -619,6 +621,10 @@ roles() {
       -h | --help)
         usage 'roles'
         exit 0
+        ;;
+      -t | --tags)
+        tags="${2}"
+        shift 2
         ;;
       -u | --url)
         url="${2}"
@@ -634,7 +640,10 @@ roles() {
   # MacOS.
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
-  ls -1 "${tmp_dir}/ansible_collections/scruffaluff/bootware/roles"
+
+  filter=".[0].tasks[] | select(.tags | contains("[\"${tags//,/\", \"}\"]"))"
+  format='."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
+  yq "${filter} | ${format}" "${tmp_dir}/playbook.yaml"
 }
 
 #######################################

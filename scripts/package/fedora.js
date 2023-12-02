@@ -24,7 +24,7 @@ function archiveFiles(repoPath, buildDirs, version) {
   const bootwareScript = path.join(repoPath, "bootware.sh");
   fs.copyFileSync(bootwareScript, path.join(copyDir, "bootware"));
 
-  const manPage = path.join(repoPath, "bootware.1");
+  const manPage = path.join(repoPath, "completions/bootware.man");
   fs.copyFileSync(manPage, path.join(copyDir, "bootware.1"));
 
   const copyDirName = path.basename(copyDir);

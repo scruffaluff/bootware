@@ -14,7 +14,6 @@ build_ignore:
   - .github
   - .shellcheckrc
   - .venv
-  - bootware.1
   - completions
   - docs
   - node_modules
