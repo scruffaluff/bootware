@@ -17,7 +17,7 @@ set -eu
 #######################################
 deb() {
   export version="${1}"
-  build="build/bootware_${version}_all"
+  build="$(mktemp --directory)"
 
   mkdir -p "${build}/DEBIAN" "${build}/etc/bash_completion.d" \
     "${build}/etc/fish/completions" "${build}/usr/local/bin" \
@@ -41,15 +41,15 @@ deb() {
 rpm() {
   export version="${1}"
   build="${HOME}/rpmbuild"
-
-  rpmdev-setuptree
   tmp_dir="$(mktemp --directory)"
-  copy_dir="${tmp_dir}/bootware-${version}"
-  mkdir -p "${copy_dir}" dist
 
-  cp completions/bootware.bash completions/bootware.fish "${copy_dir}/"
-  cp completions/bootware.man "${copy_dir}/bootware.1"
-  cp bootware.sh "${copy_dir}/bootware"
+  archive_dir="${tmp_dir}/bootware-${version}"
+  mkdir --parents "${archive_dir}" dist
+  rpmdev-setuptree
+
+  cp completions/bootware.bash completions/bootware.fish "${archive_dir}/"
+  cp completions/bootware.man "${archive_dir}/bootware.1"
+  cp bootware.sh "${archive_dir}/bootware"
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 
