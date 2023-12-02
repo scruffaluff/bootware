@@ -60,5 +60,5 @@ SHELL ["/bin/bash", "-c"]
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/integration/roles.spec.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
+    node tests/integration/roles.test.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "ubuntu"; \
     fi

@@ -1,7 +1,7 @@
 FROM debian:12.2
 
 ARG TARGETARCH
-ARG version=0.7.2
+ARG version=0.7.3
 
 # Install Ansible Curl and Sudo.
 RUN apt-get update --ignore-missing \

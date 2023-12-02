@@ -5,20 +5,26 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.7.2 - 2023-11-23
+## Unreleased
 
 ### Added
 
-- Arm64 and FreeBSD support for several roles.
 - Doas super command support.
-- Group install flag.
-- Tools for Libvirt role.
-- Yazi role.
+- Tags flag for roles subcommand.
 
 ### Changed
 
 - Renamed Sudo role to Super.
 - Most unix shell scripts to be POSIX compatible.
+
+## 0.7.2 - 2023-11-23
+
+### Added
+
+- Arm64 and FreeBSD support for several roles.
+- Group install flag.
+- Tools for Libvirt role.
+- Yazi role.
 
 ### Fixed
 

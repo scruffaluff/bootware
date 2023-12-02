@@ -70,7 +70,7 @@ Function ErrorUsage($Message) {
 
 # Install completion script for Bootware.
 Function InstallCompletion($Version) {
-    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/BootwareCompletion.psm1"
+    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/bootware.psm1"
 
     $Paths = @(
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"

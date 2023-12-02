@@ -14,7 +14,6 @@ build_ignore:
   - .github
   - .shellcheckrc
   - .venv
-  - bootware.1
   - completions
   - docs
   - node_modules
@@ -45,4 +44,4 @@ tags:
   - linux
   - tools
   - windows
-version: "0.7.2"
+version: "0.7.3"

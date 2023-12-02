@@ -26,6 +26,9 @@ setup [OPTIONS]
 .PP
 .B bootware
 update [OPTIONS]
+.PP
+.B bootware
+uninstall [OPTIONS]
 
 .SH DESCRIPTION
 .B Bootware

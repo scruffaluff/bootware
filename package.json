@@ -17,6 +17,7 @@
   "scripts": {
     "bats": "bats --recursive tests/unit",
     "docs": "ts-node scripts/build_docs.ts",
+    "package": "sh scripts/build_package.sh",
     "prettier": "prettier --check .",
     "shellcheck": "sh scripts/shellcheck.sh",
     "shfmt": "ts-node scripts/shfmt.ts test"
