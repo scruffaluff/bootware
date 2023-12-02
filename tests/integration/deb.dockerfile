@@ -2,18 +2,17 @@ FROM debian:12.2 AS builder
 
 ARG version=0.7.2
 
-RUN apt-get update --ignore-missing && apt-get install --quiet --yes nodejs npm
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes gettext-base
 
 # Copy bootware package build files.
-COPY bootware.sh package-lock.json package.json /bootware/
+COPY bootware.sh /bootware/
 COPY completions/ /bootware/completions/
 COPY scripts/ /bootware/scripts/
 
 WORKDIR /bootware
-RUN npm ci
 
 # Build Debian package.
-RUN node scripts/build_package.js deb "${version}"
+RUN ./scripts/build_package.sh deb "${version}"
 
 FROM debian:12.2
 

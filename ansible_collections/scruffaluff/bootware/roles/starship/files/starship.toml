@@ -2,6 +2,9 @@
 #
 # For more information, visit https://starship.rs/config.
 
+[battery]
+disabled = true
+
 # Disabled since it takes orders of magnitude longer than other commands.
 [git_status]
 disabled = true

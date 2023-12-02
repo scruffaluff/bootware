@@ -1,0 +1,32 @@
+BuildArch: noarch
+License: MIT
+Name: bootware
+Packager: Macklan Weinstein <macklan.weinstein@gmail.com>
+Release: 1.fc33
+Requires: ansible, bash
+Source: bootware-${version}.tar.gz
+Summary: Bootstrap software installations with Ansible
+URL: https://github.com/scruffaluff/bootware
+Vendor: Macklan Weinstein <macklan.weinstein@gmail.com>
+Version: ${version}
+
+%description
+Bootstrap software installations with Ansible
+
+%files
+/etc/bash_completion.d/bootware.bash
+/etc/fish/completions/bootware.fish
+/usr/local/bin/bootware
+/usr/local/share/man/man1/bootware.1
+
+%install
+mkdir --parents %{buildroot}/etc/bash_completion.d \
+    %{buildroot}/etc/fish/completions %{buildroot}/usr/local/share/man/man1 \
+    %{buildroot}/usr/local/bin 
+mv bootware.bash %{buildroot}/etc/bash_completion.d/bootware.bash
+mv bootware.fish %{buildroot}/etc/fish/completions/bootware.fish
+mv bootware.1 %{buildroot}/usr/local/share/man/man1/bootware.1
+install --mode 755 bootware %{buildroot}/usr/local/bin/bootware
+
+%prep
+%setup

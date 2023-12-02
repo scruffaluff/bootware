@@ -4,18 +4,17 @@ ARG version=0.7.2
 
 # Install Node and RPM Build.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes nodejs rpm-build
+RUN dnf install --assumeyes gettext rpm-build rpmdevtools
 
 # # Copy bootware package build files.
-COPY bootware.sh package-lock.json package.json /bootware/
+COPY bootware.sh /bootware/
 COPY completions/ /bootware/completions/
 COPY scripts/ /bootware/scripts/
 
 WORKDIR /bootware
-RUN npm ci
 
 # Build Fedora package.
-RUN node scripts/build_package.js rpm "${version}"
+RUN ./scripts/build_package.sh rpm "${version}"
 
 FROM fedora:39
 
