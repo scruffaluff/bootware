@@ -47,6 +47,8 @@ jobs:
             node-20_python-3.11_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
+      - name: Install system packages
+        run: sudo apt-get install --yes rpm
       - name: Install Node interpreter
         uses: actions/setup-node@v3
         with:
@@ -67,15 +69,15 @@ jobs:
           python -m pip install poetry
           poetry install --no-root
       - name: Build packages with checksums
-        run: |
-
-          ./scripts/build_package.sh all ${{ github.ref_name }}
+        run: ./scripts/build_package.sh all ${{ github.ref_name }}
       - name: Build and publish collection
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
-        run: >-
-          poetry run ansible-galaxy collection publish --token
-          "${ANSIBLE_GALAXY_TOKEN}" dist/bootware-${{ github.ref_name }}.tar.gz
+        run: |
+          cp dist/bootware-${{ github.ref_name }}.tar.gz \
+            scruffaluff-bootware-${{ github.ref_name }}.tar.gz
+          poetry run ansible-galaxy collection publish --token \
+            "${ANSIBLE_GALAXY_TOKEN}" scruffaluff-bootware-${{ github.ref_name }}.tar.gz
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:
