@@ -1,6 +1,6 @@
 FROM debian:12.2 AS builder
 
-ARG version=0.7.2
+ARG version=0.7.3
 
 RUN apt-get update --ignore-missing && apt-get install --quiet --yes gettext-base
 
@@ -16,7 +16,7 @@ RUN ./scripts/build_package.sh deb "${version}"
 
 FROM debian:12.2
 
-ARG version=0.7.2
+ARG version=0.7.3
 
 # Update Apt package cache.
 RUN apt-get update

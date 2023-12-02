@@ -1,10 +1,10 @@
 FROM fedora:39 AS builder
 
-ARG version=0.7.2
+ARG version=0.7.3
 
 # Install Node and RPM Build.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes gettext rpm-build rpmdevtools
+RUN dnf install --assumeyes gettext rpm-build
 
 # # Copy bootware package build files.
 COPY bootware.sh /bootware/
@@ -18,7 +18,7 @@ RUN ./scripts/build_package.sh rpm "${version}"
 
 FROM fedora:39
 
-ARG version=0.7.2
+ARG version=0.7.3
 
 # Update DNF package lists.
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }

@@ -10,6 +10,32 @@
 set -eu
 
 #######################################
+# Build all packages with checksums.
+#######################################
+all() {
+  cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
+  poetry run ansible-galaxy collection build --force \
+    ansible_collections/scruffaluff/bootware
+
+  mkdir -p dist
+  mv "scruffaluff-bootware-${version}.tar.gz" "dist/bootware-${version}.tar.gz"
+  deb "${version}"
+  rpm "${version}"
+
+  cd dist
+  checksum "bootware_${version}_all.deb"
+  checksum "bootware-${version}-1.fc33.noarch.rpm"
+  checksum "bootware-${version}.tar.gz"
+}
+
+#######################################
+# Compute checksum for file.
+#######################################
+checksum() {
+  shasum --algorithm 512 "${1}" > "${1}.sha512"
+}
+
+#######################################
 # Build a Debian package.
 #
 # For a tutorial on building an DEB package, visit
@@ -42,10 +68,9 @@ rpm() {
   export version="${1}"
   build="${HOME}/rpmbuild"
   tmp_dir="$(mktemp --directory)"
-
   archive_dir="${tmp_dir}/bootware-${version}"
-  mkdir --parents "${archive_dir}" dist
-  rpmdev-setuptree
+
+  mkdir -p "${archive_dir}" "${build}/SOURCES" "${build}/SPECS" dist
 
   cp completions/bootware.bash completions/bootware.fish "${archive_dir}/"
   cp completions/bootware.man "${archive_dir}/bootware.1"
@@ -56,7 +81,7 @@ rpm() {
   envsubst < scripts/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
   mv "${build}/RPMS/noarch/bootware-${version}-1.fc33.noarch.rpm" dist/
-  rm --force --recursive "${build}" "${tmp_dir}"
+  rm -fr "${build}" "${tmp_dir}"
 }
 
 #######################################
@@ -67,6 +92,10 @@ main() {
   version="${2?Package version required}"
 
   case "${package}" in
+    all)
+      all "${version}"
+      exit 0
+      ;;
     deb)
       deb "${version}"
       exit 0

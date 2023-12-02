@@ -902,7 +902,7 @@ Function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 Function Version() {
-    Write-Output 'Bootware 0.7.2'
+    Write-Output 'Bootware 0.7.3'
 }
 
 # Convert path to WSL relative path.
