@@ -29,6 +29,26 @@ all() {
 }
 
 #######################################
+# Build an Alpine package.
+#######################################
+apk() {
+  export version="${1}"
+  build="$(mktemp --directory)"
+
+  abuild-keygen -n --append --install
+
+  cp completions/bootware.bash completions/bootware.fish "${build}/"
+  cp completions/bootware.man "${build}/bootware.1"
+  cp bootware.sh "${build}/bootware"
+  # shellcheck disable=SC2016
+  envsubst '${version}' < scripts/templates/APKBUILD.tmpl > "${build}/APKBUILD"
+
+  cd "${build}"
+  abuild checksum
+  abuild -r
+}
+
+#######################################
 # Compute checksum for file.
 #######################################
 checksum() {
@@ -94,6 +114,10 @@ main() {
   case "${package}" in
     all)
       all "${version}"
+      exit 0
+      ;;
+    apk)
+      apk "${version}"
       exit 0
       ;;
     deb)

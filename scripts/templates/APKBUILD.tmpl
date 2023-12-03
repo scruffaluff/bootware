@@ -1,0 +1,24 @@
+# Maintainer: Macklan Weinstein <macklan.weinstein@gmail.com>
+
+arch="all"
+builddir="${srcdir}"
+depends="ansible bash"
+license="MIT"
+pkgdesc="Bootstrap software installations with Ansible"
+pkgname=bootware
+pkgrel=0
+pkgver="${version}"
+source="bootware"
+url="https://github.com/scruffaluff/bootware"
+
+check() {
+  ./bootware --version
+}
+
+package() {
+  install -Dm 755 bootware "${pkgdir}/usr/bin/bootware"
+}
+
+prepare() {
+  default_prepare
+}
