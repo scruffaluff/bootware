@@ -20,6 +20,7 @@
     "package": "sh scripts/package.sh",
     "prettier": "prettier --check .",
     "shellcheck": "sh scripts/shellcheck.sh",
-    "shfmt": "ts-node scripts/shfmt.ts test"
+    "shfmt": "ts-node scripts/shfmt.ts test",
+    "test": "ts-node scripts/run_tests.ts"
   }
 }

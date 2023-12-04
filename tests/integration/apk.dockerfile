@@ -24,4 +24,4 @@ COPY scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Alpine package.
-RUN ./scripts/package.sh build "${version}" apk
+RUN ./scripts/package.sh --version "${version?}" build apk

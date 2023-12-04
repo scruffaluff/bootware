@@ -71,18 +71,15 @@ jobs:
           python -m pip install poetry
           poetry install --no-root
       - name: Build packages with checksums
-        run: ./scripts/package.sh dist ${{ github.ref_name }} deb rpm
+        run: ./scripts/package.sh --version ${{ github.ref_name }} dist deb rpm
       - name: Build and publish collection
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         run: |
-          cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
-          poetry run ansible-galaxy collection build --force \
-            ansible_collections/scruffaluff/bootware
-          mv scruffaluff-bootware-${{ github.ref_name }}.tar.gz dist/
+          filename="scruffaluff-bootware-${{ github.ref_name }}.tar.gz"
+          ./scripts/package.sh --version ${{ github.ref_name }} ansible
           poetry run ansible-galaxy collection publish --token \
-            "${ANSIBLE_GALAXY_TOKEN}" \
-            dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
+            "${ANSIBLE_GALAXY_TOKEN}" "dist/${filename}"
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         with:

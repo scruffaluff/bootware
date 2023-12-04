@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #
-# Extend ShellCheck to check files in directories.
+# Distribute Bootware in package formats.
 
 # Exit immediately if a command exits or pipes a non-zero return code.
 #
@@ -8,6 +8,19 @@
 #   -e: Exit immediately when a command pipeline fails.
 #   -u: Throw an error when an unset variable is encountered.
 set -eu
+
+#######################################
+# Build Ansible Galaxy collection.
+#######################################
+ansible_() {
+  filename="scruffaluff-bootware-${1}.tar.gz"
+  mkdir -p dist
+
+  cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
+  poetry run ansible-galaxy collection build --force --output-path dist \
+    ansible_collections/scruffaluff/bootware
+  checksum "dist/${filename}"
+}
 
 #######################################
 # Build an Alpine package.
@@ -147,27 +160,45 @@ test() {
 # Script entrypoint.
 #######################################
 main() {
-  case "${1?Subcommand is required}" in
-    build)
-      shift 1
-      build "$@"
-      exit 0
-      ;;
-    dist)
-      shift 1
-      dist "$@"
-      exit 0
-      ;;
-    test)
-      shift 1
-      test "$@"
-      exit 0
-      ;;
-    *)
-      echo "error: No such subcommand or option '${1}'"
-      exit 2
-      ;;
-  esac
+  version='0.7.3'
+
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      --debug)
+        set -o xtrace
+        shift 1
+        ;;
+      -v | --version)
+        version="${2}"
+        shift 2
+        ;;
+      ansible)
+        shift 1
+        ansible_ "${version}" "$@"
+        exit 0
+        ;;
+      build)
+        shift 1
+        build "${version}" "$@"
+        exit 0
+        ;;
+      dist)
+        shift 1
+        dist "${version}" "$@"
+        exit 0
+        ;;
+      test)
+        shift 1
+        test "${version}" "$@"
+        exit 0
+        ;;
+      *)
+        echo "error: No such subcommand or option '${1}'"
+        exit 2
+        ;;
+    esac
+  done
 }
 
 main "$@"
