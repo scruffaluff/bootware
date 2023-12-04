@@ -142,11 +142,11 @@ jobs:
   package:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
-    name: Test building a ${{ matrix.format }} package
+    name: Test building a ${{ matrix.package }} package
     strategy:
       fail-fast: false
       matrix:
-        format:
+        package:
           - deb
           - rpm
     runs-on: ubuntu-latest
@@ -155,13 +155,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./tests/integration/${{ matrix.format }}.dockerfile
-          tags: docker.io/scruffaluff/bootware:${{ matrix.format }}
-          push: false
+      - name: Test building package
+        run: ./scripts/package.sh test 0.7.3 ${{ matrix.package }}
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
