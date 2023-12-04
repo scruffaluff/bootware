@@ -3,8 +3,8 @@ FROM archlinux:base-20231112.0.191179
 ARG TARGETARCH
 
 # Install Curl and Sudo.
-RUN pacman --noconfirm --refresh --sync --sysupgrade && \
-    pacman --noconfirm --sync curl sudo
+RUN pacman --noconfirm --refresh --sync --sysupgrade \
+    && pacman --noconfirm --sync curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
 RUN useradd --create-home --no-log-init arch \

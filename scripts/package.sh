@@ -48,7 +48,38 @@ ansible_() {
 }
 
 #######################################
+# Build an Arch package.
+#
+# For a tutorial on building an ALPM package, visit
+# https://wiki.archlinux.org/title/creating_packages.
+#######################################
+alpm() {
+  file="bootware-${version}-0-$(uname -m).pkg.tar.zst"
+  export version="${1}"
+  build="$(mktemp --directory)"
+
+  mkdir -p dist
+  cp completions/bootware.bash completions/bootware.fish "${build}/"
+  cp completions/bootware.man "${build}/bootware.1"
+  cp bootware.sh "${build}/bootware"
+
+  # Single quotes around variable is intentional to inform envsubst which
+  # patterns to replace in the template.
+  # shellcheck disable=SC2016
+  envsubst '${version}' < scripts/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
+
+  (cd "${build}" && updpkgsums)
+  (cd "${build}" && makepkg)
+
+  mv "${build}/${file}" dist/
+  (cd dist && sha512sum "${file}" > "${file}.sha512")
+}
+
+#######################################
 # Build an Alpine package.
+#
+# For a tutorial on building an APK package, visit
+# https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package.
 #######################################
 apk() {
   export version="${1}"
@@ -66,9 +97,8 @@ apk() {
   # shellcheck disable=SC2016
   envsubst '${version}' < scripts/templates/APKBUILD.tmpl > "${build}/APKBUILD"
 
-  cd "${build}"
-  abuild checksum
-  abuild -r
+  (cd "${build}" && abuild checksum)
+  (cd "${build}" && abuild -r)
 
   mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" dist/
   checksum "dist/bootware-${version}-r0.apk"
@@ -83,6 +113,9 @@ build() {
 
   for package in "$@"; do
     case "${package}" in
+      alpm)
+        alpm "${version}"
+        ;;
       apk)
         apk "${version}"
         ;;

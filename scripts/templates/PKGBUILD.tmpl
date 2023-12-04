@@ -1,19 +1,15 @@
 # Maintainer: Macklan Weinstein <macklan.weinstein@gmail.com>
 
-arch="all"
-builddir="${srcdir}"
-depends="ansible bash"
-license="MIT"
-pkgdesc="Bootstrap software installations with Ansible"
+arch=('x86_64' 'aarch64' 'riscv64')
+depends=('bash')
+license=('MIT')
+optdepends=('doas: privilege elevation' 'sudo: privilege elevation')
+pkgdesc='Bootstrap software installations with Ansible'
 pkgname=bootware
 pkgrel=0
-pkgver="${version}"
-source="bootware bootware.1 bootware.bash bootware.fish"
-url="https://github.com/scruffaluff/bootware"
-
-check() {
-  ./bootware --version
-}
+pkgver=${version}
+source=('bootware' 'bootware.1' 'bootware.bash' 'bootware.fish')
+url='https://github.com/scruffaluff/bootware'
 
 package() {
   mkdir --parents "${pkgdir}/etc/bash_completion.d" \
@@ -23,8 +19,4 @@ package() {
   mv bootware.fish "${pkgdir}/etc/fish/completions/bootware.fish"
   mv bootware.1 "${pkgdir}/usr/local/share/man/man1/bootware.1"
   install -Dm 755 bootware "${pkgdir}/usr/bin/bootware"
-}
-
-prepare() {
-  default_prepare
 }

@@ -147,6 +147,8 @@ jobs:
       fail-fast: false
       matrix:
         package:
+          - alpm
+          - apk
           - deb
           - rpm
     runs-on: ubuntu-latest

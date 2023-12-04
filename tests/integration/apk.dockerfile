@@ -21,9 +21,9 @@ ENV HOME=/home/alpine USER=alpine
 USER alpine
 
 # Copy bootware package build files.
-COPY --chown=alpine:alpine bootware.sh /bootware/
-COPY --chown=alpine:alpine completions/ /bootware/completions/
-COPY --chown=alpine:alpine scripts/ /bootware/scripts/
+COPY --chown="${USER}" bootware.sh /bootware/
+COPY --chown="${USER}" completions/ /bootware/completions/
+COPY --chown="${USER}" scripts/ /bootware/scripts/
 
 WORKDIR /bootware
 
