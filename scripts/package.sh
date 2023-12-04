@@ -10,25 +10,6 @@
 set -eu
 
 #######################################
-# Build all packages with checksums.
-#######################################
-all() {
-  cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
-  poetry run ansible-galaxy collection build --force \
-    ansible_collections/scruffaluff/bootware
-
-  mkdir -p dist
-  mv "scruffaluff-bootware-${version}.tar.gz" "dist/bootware-${version}.tar.gz"
-  deb "${version}"
-  rpm "${version}"
-
-  cd dist
-  checksum "bootware_${version}_all.deb"
-  checksum "bootware-${version}-1.fc33.noarch.rpm"
-  checksum "bootware-${version}.tar.gz"
-}
-
-#######################################
 # Build an Alpine package.
 #######################################
 apk() {
@@ -49,10 +30,38 @@ apk() {
 }
 
 #######################################
+# Build subcommand.
+#######################################
+build() {
+  version="${1}"
+  shift 1
+
+  for package in "$@"; do
+    case "${package}" in
+      apk)
+        apk "${version}"
+        ;;
+      deb)
+        deb "${version}"
+        ;;
+      rpm)
+        rpm "${version}"
+        ;;
+      *)
+        echo "error: Unsupported package type '${package}'."
+        exit 2
+        ;;
+    esac
+  done
+}
+
+#######################################
 # Compute checksum for file.
 #######################################
 checksum() {
-  shasum --algorithm 512 "${1}" > "${1}.sha512"
+  folder="$(dirname "${1}")"
+  file="$(basename "${1}")"
+  (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
 }
 
 #######################################
@@ -76,6 +85,21 @@ deb() {
 
   envsubst < scripts/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "dist/bootware_${version}_all.deb"
+  checksum "dist/bootware_${version}_all.deb"
+}
+
+#######################################
+# Dist subcommand.
+#######################################
+dist() {
+  version="${1}"
+  shift 1
+
+  for package in "$@"; do
+    docker build --build-arg "version=${version}" \
+      --file "tests/integration/${package}.dockerfile" \
+      --output dist --target dist .
+  done
 }
 
 #######################################
@@ -101,35 +125,46 @@ rpm() {
   envsubst < scripts/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
   mv "${build}/RPMS/noarch/bootware-${version}-1.fc33.noarch.rpm" dist/
+  checksum "dist/bootware-${version}-1.fc33.noarch.rpm"
   rm -fr "${build}" "${tmp_dir}"
+}
+
+#######################################
+# Test subcommand.
+#######################################
+test() {
+  version="${1}"
+  shift 1
+
+  for package in "$@"; do
+    docker build --build-arg "version=${version}" \
+      --file "tests/integration/${package}.dockerfile" \
+      --tag "scruffaluff/bootware:${package}" .
+  done
 }
 
 #######################################
 # Script entrypoint.
 #######################################
 main() {
-  package="${1?Package type required}"
-  version="${2?Package version required}"
-
-  case "${package}" in
-    all)
-      all "${version}"
+  case "${1?Subcommand is required}" in
+    build)
+      shift 1
+      build "$@"
       exit 0
       ;;
-    apk)
-      apk "${version}"
+    dist)
+      shift 1
+      dist "$@"
       exit 0
       ;;
-    deb)
-      deb "${version}"
-      exit 0
-      ;;
-    rpm)
-      rpm "${version}"
+    test)
+      shift 1
+      test "$@"
       exit 0
       ;;
     *)
-      error_usage "error: Unsupported package type '${package}'."
+      echo "error: No such subcommand or option '${1}'"
       exit 2
       ;;
   esac

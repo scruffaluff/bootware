@@ -1,6 +1,6 @@
-FROM alpine:3.18.4 AS builder
+FROM alpine:3.18.4 AS build
 
-ARG version=0.7.3
+ARG version
 
 RUN apk update && apk add alpine-sdk atools doas gettext
 RUN printf 'PACKAGER="Macklan Weinstein <macklan.weinstein@gmail.com>"\nMAINTAINER="$PACKAGER"\n' >> /etc/abuild.conf
@@ -24,4 +24,4 @@ COPY scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Alpine package.
-RUN ./scripts/build_package.sh apk "${version}"
+RUN ./scripts/package.sh build "${version}" apk
