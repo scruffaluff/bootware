@@ -1,8 +1,8 @@
 # Maintainer: Macklan Weinstein <macklan.weinstein@gmail.com>
 
-arch="all"
+arch="noarch"
 builddir="${srcdir}"
-depends="ansible bash"
+depends="ansible bash curl git"
 license="MIT"
 pkgdesc="Bootstrap software installations with Ansible"
 pkgname=bootware
@@ -16,12 +16,12 @@ check() {
 }
 
 package() {
-  mkdir --parents "${pkgdir}/etc/bash_completion.d" \
-    "${pkgdir}/etc/fish/completions" "${pkgdir}/usr/local/share/man/man1" \
-    "${pkgdir}/usr/local/bin"
+  mkdir -p "${pkgdir}/etc/bash_completion.d" \
+    "${pkgdir}/etc/fish/completions" "${pkgdir}/usr/share/man/man1" \
+    "${pkgdir}/usr/bin"
   mv bootware.bash "${pkgdir}/etc/bash_completion.d/bootware.bash"
   mv bootware.fish "${pkgdir}/etc/fish/completions/bootware.fish"
-  mv bootware.1 "${pkgdir}/usr/local/share/man/man1/bootware.1"
+  mv bootware.1 "${pkgdir}/usr/share/man/man1/bootware.1"
   install -Dm 755 bootware "${pkgdir}/usr/bin/bootware"
 }
 

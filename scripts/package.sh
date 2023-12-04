@@ -54,7 +54,7 @@ ansible_() {
 # https://wiki.archlinux.org/title/creating_packages.
 #######################################
 alpm() {
-  file="bootware-${version}-0-$(uname -m).pkg.tar.zst"
+  file="bootware-${version}-0-any.pkg.tar.zst"
   export version="${1}"
   build="$(mktemp --directory)"
 
@@ -69,7 +69,7 @@ alpm() {
   envsubst '${version}' < scripts/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
 
   (cd "${build}" && updpkgsums)
-  (cd "${build}" && makepkg)
+  (cd "${build}" && makepkg --install --noconfirm --syncdeps)
 
   mv "${build}/${file}" dist/
   (cd dist && sha512sum "${file}" > "${file}.sha512")
@@ -153,13 +153,13 @@ deb() {
   build="$(mktemp --directory)"
 
   mkdir -p "${build}/DEBIAN" "${build}/etc/bash_completion.d" \
-    "${build}/etc/fish/completions" "${build}/usr/local/bin" \
-    "${build}/usr/local/share/man/man1" dist
+    "${build}/etc/fish/completions" "${build}/usr/bin" \
+    "${build}/usr/share/man/man1" dist
 
   cp completions/bootware.bash "${build}/etc/bash_completion.d/"
   cp completions/bootware.fish "${build}/etc/fish/completions/"
-  cp completions/bootware.man "${build}/usr/local/share/man/man1/bootware.1"
-  cp bootware.sh "${build}/usr/local/bin/bootware"
+  cp completions/bootware.man "${build}/usr/share/man/man1/bootware.1"
+  cp bootware.sh "${build}/usr/bin/bootware"
 
   envsubst < scripts/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "dist/bootware_${version}_all.deb"
