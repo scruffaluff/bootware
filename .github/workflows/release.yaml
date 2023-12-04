@@ -71,7 +71,7 @@ jobs:
           python -m pip install poetry
           poetry install --no-root
       - name: Build packages with checksums
-        run: ./scripts/package.sh --version ${{ github.ref_name }} dist deb rpm
+        run: ./scripts/package.sh --version ${{ github.ref_name }} dist apk deb rpm
       - name: Build and publish collection
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
@@ -91,6 +91,8 @@ jobs:
             dist/bootware_${{ github.ref_name }}_all.deb.sha512
             dist/bootware-${{ github.ref_name }}-1.fc33.noarch.rpm
             dist/bootware-${{ github.ref_name }}-1.fc33.noarch.rpm.sha512
+            dist/bootware-${{ github.ref_name }}-r0.apk
+            dist/bootware-${{ github.ref_name }}-r0.apk.sha512
             dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
             dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha512
           name: Bootware ${{ github.ref_name }}

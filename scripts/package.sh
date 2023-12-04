@@ -10,6 +10,31 @@
 set -eu
 
 #######################################
+# Show CLI help information.
+# Cannot use function name help, since help is a pre-existing command.
+# Outputs:
+#   Writes help information to stdout.
+#######################################
+usage() {
+  cat 1>&2 << EOF
+Distribute Bootware in package formats.
+
+Usage: package [OPTIONS] [SUBCOMMAND] PACKAGES
+
+Options:
+      --debug               Enable shell debug traces
+  -h, --help                Print help information
+  -v, --version <VERSION>   Version of Bootware package
+
+Subcommands:
+  ansible   Build Bootware Ansible collection
+  build     Build Bootware packages
+  dist      Build Bootware packages for distribution
+  test      Run Bootware package tests in Docker
+EOF
+}
+
+#######################################
 # Build Ansible Galaxy collection.
 #######################################
 ansible_() {
@@ -29,17 +54,24 @@ apk() {
   export version="${1}"
   build="$(mktemp --directory)"
 
+  mkdir -p dist
   abuild-keygen -n --append --install
 
   cp completions/bootware.bash completions/bootware.fish "${build}/"
   cp completions/bootware.man "${build}/bootware.1"
   cp bootware.sh "${build}/bootware"
+
+  # Single quotes around variable is intentional to inform envsubst which
+  # patterns to replace in the template.
   # shellcheck disable=SC2016
   envsubst '${version}' < scripts/templates/APKBUILD.tmpl > "${build}/APKBUILD"
 
   cd "${build}"
   abuild checksum
   abuild -r
+
+  mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" dist/
+  checksum "dist/bootware-${version}-r0.apk"
 }
 
 #######################################
@@ -169,6 +201,10 @@ main() {
         set -o xtrace
         shift 1
         ;;
+      -h | --help)
+        usage
+        exit 0
+        ;;
       -v | --version)
         version="${2}"
         shift 2
@@ -199,6 +235,8 @@ main() {
         ;;
     esac
   done
+
+  usage
 }
 
 main "$@"
