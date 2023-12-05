@@ -32,10 +32,10 @@ RUN dnf install --assumeyes perl-Digest-SHA
 COPY --from=build "/bootware/dist/" .
 
 # Verify checksum for Fedora package.
-RUN shasum --check --algorithm 512 "bootware-${version?}-1.fc33.noarch.rpm.sha512"
+RUN shasum --check --algorithm 512 "bootware-${version?}-0.fc33.noarch.rpm.sha512"
 
 # Install Fedora package.
-RUN dnf install --assumeyes "./bootware-${version?}-1.fc33.noarch.rpm"
+RUN dnf install --assumeyes "./bootware-${version?}-0.fc33.noarch.rpm"
 
 # Test package was installed successfully.
 RUN bootware --help

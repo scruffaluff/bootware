@@ -2,7 +2,7 @@ BuildArch: noarch
 License: MIT
 Name: bootware
 Packager: Macklan Weinstein <macklan.weinstein@gmail.com>
-Release: 1.fc33
+Release: 0.fc33
 Requires: ansible >= 2.13.0, bash >= 4.0.0, curl >= 7.0.0, git >= 2.0.0
 Source: bootware-${version}.tar.gz
 Summary: Bootstrap software installations with Ansible
@@ -20,7 +20,7 @@ Bootstrap software installations with Ansible
 /etc/bash_completion.d/bootware.bash
 /etc/fish/completions/bootware.fish
 /usr/bin/bootware
-/usr/share/man/man1/bootware.1
+/usr/share/man/man1/bootware.1.gz
 
 %install
 mkdir -p %{buildroot}/etc/bash_completion.d \

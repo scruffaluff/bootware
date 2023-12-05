@@ -202,8 +202,8 @@ rpm() {
 
   envsubst < scripts/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
-  mv "${build}/RPMS/noarch/bootware-${version}-1.fc33.noarch.rpm" dist/
-  checksum "dist/bootware-${version}-1.fc33.noarch.rpm"
+  mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" dist/
+  checksum "dist/bootware-${version}-0.fc33.noarch.rpm"
   rm -fr "${build}" "${tmp_dir}"
 }
 

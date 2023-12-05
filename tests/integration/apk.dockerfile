@@ -47,7 +47,7 @@ COPY --from=build "/bootware/dist/" .
 RUN shasum --check --algorithm 512 "bootware-${version?}-r0.apk.sha512"
 
 # Install Alpine package.
-RUN apk add "./bootware-${version?}-r0.apk"
+RUN apk add --allow-untrusted "./bootware-${version?}-r0.apk"
 
 # Test package was installed successfully.
 RUN bootware --help

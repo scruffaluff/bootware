@@ -93,8 +93,8 @@ jobs:
             dist/bootware_${{ github.ref_name }}_all.deb.sha512
             dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst
             dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha512
-            dist/bootware-${{ github.ref_name }}-1.fc33.noarch.rpm
-            dist/bootware-${{ github.ref_name }}-1.fc33.noarch.rpm.sha512
+            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm
+            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha512
             dist/bootware-${{ github.ref_name }}-r0.apk
             dist/bootware-${{ github.ref_name }}-r0.apk.sha512
             dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
