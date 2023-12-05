@@ -146,23 +146,6 @@ EOF
 }
 
 #######################################
-# Assert that command can be found in system path.
-# Will exit script with an error code if command is not in system path.
-# Arguments:
-#   Command to check availabilty.
-# Outputs:
-#   Writes error message to stderr if command is not in system path.
-#######################################
-assert_cmd() {
-  # Flags:
-  #   -v: Only show file path of command.
-  #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v "${1}")" ]]; then
-    error "Cannot find required ${1} command on computer"
-  fi
-}
-
-#######################################
 # Subcommand to bootstrap software installations.
 # Globals:
 #   BOOTWARE_CONFIG
@@ -420,7 +403,7 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "config"
+        error_usage "No such option '${1}'" 'config'
         ;;
     esac
   done
@@ -535,7 +518,7 @@ find_super() {
   elif [[ -x "$(command -v doas)" ]]; then
     echo 'doas'
   else
-    echo ''
+    error 'Unable to find a command for super user elevation'
   fi
 }
 
@@ -631,7 +614,7 @@ roles() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "roles"
+        error_usage "No such option '${1}'" 'roles'
         ;;
     esac
   done
@@ -660,7 +643,7 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" "setup"
+        error_usage "No such option '${1}'" 'setup'
         ;;
     esac
   done
@@ -890,8 +873,6 @@ setup_fedora() {
 #   Super user elevation command.
 #######################################
 setup_freebsd() {
-  assert_cmd pkg python_version
-
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
@@ -963,8 +944,6 @@ setup_linux() {
 # Configure boostrapping services and utilities for MacOS.
 #######################################
 setup_macos() {
-  assert_cmd curl
-
   # On Apple silicon, brew is not in the system path after installation.
   export PATH="/opt/homebrew/bin:${PATH}"
 
@@ -1083,12 +1062,10 @@ uninstall() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" "update"
+        error_usage "No such option '${1}'" 'uninstall'
         ;;
     esac
   done
-
-  assert_cmd chmod
 
   dst_file="$(fullpath "$0")"
 
@@ -1129,13 +1106,10 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "update"
+        error_usage "No such option '${1}'" 'update'
         ;;
     esac
   done
-
-  assert_cmd chmod
-  assert_cmd curl
 
   dst_file="$(fullpath "$0")"
   src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
