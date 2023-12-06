@@ -1,26 +1,27 @@
 {
   "devDependencies": {
-    "@types/mustache": "^4.2.2",
-    "@types/node": "^20.4.0",
+    "@types/mustache": "^4.2.0",
+    "@types/node": "^20.10.0",
     "bats": "^1.10.0",
-    "bats-assert": "https://github.com/ztombol/bats-assert",
-    "bats-support": "https://github.com/ztombol/bats-support",
+    "bats-assert": "https://github.com/bats-core/bats-assert#v2.1.0",
+    "bats-file": "https://github.com/bats-core/bats-file#v0.4.0",
+    "bats-support": "https://github.com/bats-core/bats-support#v0.3.0",
     "commander": "^11.0.0",
     "mustache": "^4.2.0",
     "prettier": "^3.0.0",
-    "ts-node": "^10.9.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.1.0",
-    "vitepress": "1.0.0-beta.5",
+    "vitepress": "1.0.0-beta.7",
     "vue": "^3.3.0"
   },
   "private": true,
   "scripts": {
     "bats": "bats --recursive tests/unit",
     "docs": "ts-node scripts/build_docs.ts",
-    "package": "sh scripts/package.sh",
+    "package": "./scripts/package.sh",
     "prettier": "prettier --check .",
-    "shellcheck": "sh scripts/shellcheck.sh",
-    "shfmt": "ts-node scripts/shfmt.ts test",
+    "shellcheck": "./scripts/shellcheck.sh",
+    "shfmt": "shfmt --diff bootware.sh install.sh completions ansible_collections/scruffaluff",
     "test": "ts-node scripts/run_tests.ts"
   }
 }

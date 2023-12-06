@@ -21,7 +21,7 @@ interface System {
 /**
  * Check if system matches any of the skip conditions.
  * @param system - The host architecture and os information.
- * @patam conditions - The skip conditions for the role.
+ * @param conditions - The skip conditions for the role.
  * @return Whether system should be skipped.
  */
 function shouldSkip(system: System, conditions: Array<Condition>): boolean {
