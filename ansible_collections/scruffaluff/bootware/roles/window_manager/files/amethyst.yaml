@@ -81,6 +81,9 @@ toggle-float:
   key: f
   mod: mod2
 
+window-margin-size: 4
+window-margins: true
+
 # Disable keybindings.
 #
 # Amethyst keybindings cannot be disabled directly. Instead they can only be

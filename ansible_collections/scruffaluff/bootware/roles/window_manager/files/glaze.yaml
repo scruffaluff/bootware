@@ -1,6 +1,7 @@
 # GlazeWM configuration file for tiling windows.
 #
-# For more information, visit https://github.com/glazerdesktop/GlazeWM#configuration.
+# For more information, visit
+# https://github.com/glazerdesktop/GlazeWM#configuration.
 
 ---
 bar:
@@ -15,7 +16,7 @@ focus_borders:
     enabled: false
 
 gaps:
-  inner_gap: 2px
+  inner_gap: 0px
   outer_gap: 4px
 
 general:

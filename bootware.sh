@@ -315,10 +315,9 @@ bootstrap() {
   # Flags:
   #   -n: Check if the string has nonzero length.
   if [[ -n "${start_role:-}" ]]; then
-    assert_cmd yq
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
-      yq '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
+      yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
     )"
     extra_args+=('--start-at-task' "${start_task}")
   fi
@@ -419,8 +418,6 @@ config() {
     log "Writing empty configuration file to ${dst_file}"
     printf 'super_passwordless: false' > "${dst_file}"
   else
-    assert_cmd curl
-
     log "Downloading configuration file to ${dst_file}"
 
     # Download configuration file.
@@ -543,8 +540,6 @@ fullpath() {
 #######################################
 install_yq() {
   local arch os_type url version
-  assert_cmd curl
-  assert_cmd jq
 
   # Do not use long form --kernel-name or --machine flags for uname. They are
   # not supported on MacOS.
@@ -647,8 +642,6 @@ setup() {
         ;;
     esac
   done
-
-  assert_cmd uname
 
   # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then

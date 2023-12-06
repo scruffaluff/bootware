@@ -31,28 +31,6 @@ EOF
 }
 
 #######################################
-# Assert that command can be found in system path.
-# Will exit script with an error code if command is not in system path.
-# Arguments:
-#   Command to check availabilty.
-# Outputs:
-#   Writes error message to stderr if command is not in system path.
-#######################################
-assert_cmd() {
-  # Flags:
-  #   -v: Only show file path of command.
-  #   -x: Check if file exists and execute permission is granted.
-  if [ ! -x "$(command -v "${1}")" ]; then
-    error "$(
-      cat << EOF
-Cannot find required '${1}' command on computer.
-Please install '${1}' and retry installation.
-EOF
-    )"
-  fi
-}
-
-#######################################
 # Add Bootware to system path in user's shell profile.
 # Globals:
 #   HOME
@@ -87,6 +65,27 @@ configure_shell() {
 
   printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" \
     >> "${profile}"
+}
+
+#######################################
+# Download file to local path.
+# Arguments:
+#   Super user command for installation.
+#   Remote source URL.
+#   Local destination path.
+#######################################
+download() {
+  # Flags:
+  #   -O path: Save download to path.
+  #   -q: Hide log output.
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [ -x "$(command -v curl)" ]; then
+    ${1:+"${1}"} curl --fail --location --show-error --silent --output "${3}" \
+      "${2}"
+  else
+    ${1:+"${1}"} wget -q -O "${3}" "${2}"
+  fi
 }
 
 #######################################
@@ -180,15 +179,15 @@ install_completions() {
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
     ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
-    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
+    download "${1}" "${bash_url}" '/etc/bash_completion.d/bootware.bash'
     ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-    ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+    download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
     ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
   else
     mkdir -p "${HOME}/.config/fish/completions"
-    curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
+    download "" "${fish_url}" "${HOME}/.config/fish/completions/bootware.fish"
     chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }
@@ -204,7 +203,7 @@ install_man() {
 
   # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${1:+"${1}"} mkdir -p '/usr/local/share/man/man1'
-  ${1:+"${1}"} curl -LSfs "${man_url}" -o '/usr/local/share/man/man1/bootware.1'
+  download "${1}" "${man_url}" '/usr/local/share/man/man1/bootware.1'
   ${1:+"${1}"} chmod 664 '/usr/local/share/man/man1/bootware.1'
 }
 
@@ -263,7 +262,6 @@ main() {
     esac
   done
 
-  assert_cmd curl
   src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
 
   # Use super user command for system installation if user did not give the
@@ -297,7 +295,7 @@ main() {
   # being unable to find the "" command. Do not use long form --parents flag for
   # mkdir. It is not supported on MacOS.
   ${super:+"${super}"} mkdir -p "${dst_dir}"
-  ${super:+"${super}"} curl -LSfs "${src_url}" --output "${dst_file}"
+  download "${super}" "${src_url}" "${dst_file}"
   ${super:+"${super}"} chmod 755 "${dst_file}"
 
   # Add Bootware to shell profile if not in system path.
