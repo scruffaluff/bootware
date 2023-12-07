@@ -59,24 +59,19 @@ function edit-history
   end
 end
 
-# Function fish_add_path was not added until Fish version 3.2.0.
+# Prepend existing directories that are not in the system path.
 #
-# Do not quote PATH variable. It will convert it from a list to a string.
+# Builtin fish_add_path function changes system path permanently. This
+# implementation only changes the system path for the shell session. Do not
+# quote the PATH variable. It will convert it from a list to a string.
 #
 # Flags:
 #   -d: Check if path is a directory.
-#   -q: Only check for exit status by supressing output.
-if not type -q fish_add_path
-  function fish_add_path
-    if test -d "$argv[1]"; and not contains "$argv[1]" $PATH
-      set --export PATH "$argv[1]" $PATH
-    end
-  end
-end
-
 function fish_add_paths
   for inode in $argv
-    fish_add_path "$inode"
+    if test -d "$inode"; and not contains "$inode" $PATH
+      set --export PATH "$inode" $PATH
+    end
   end
 end
 
@@ -271,7 +266,7 @@ end
 
 # Add Pyenv binaries to system path.
 set --export PYENV_ROOT "$HOME/.pyenv"
-fish_add_paths "$PYENV_ROOT/bin"
+fish_add_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 
 # Initialize Pyenv if available.
 #

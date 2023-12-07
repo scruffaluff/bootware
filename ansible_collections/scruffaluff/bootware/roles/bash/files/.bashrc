@@ -24,8 +24,10 @@ _tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 #   -d: Check if path is a directory.
 prepend_paths() {
   local inode
-  for inode in ${#}; do
-    if [[ -d "${inode}" && "${PATH}" =~ :${inode}: ]]; then
+  for inode in "$@"; do
+    # Variable in regex is quoted to perform an exact substring match.
+    # shellcheck disable=SC2076
+    if [[ -d "${inode}" && ! "${PATH}" =~ ":${inode}:" ]]; then
       export PATH="${inode}:${PATH}"
     fi
   done
@@ -37,7 +39,7 @@ prepend_paths() {
 #   -f: Check if file exists and is a regular file.
 source_files() {
   local inode
-  for inode in ${#}; do
+  for inode in "$@"; do
     if [[ -f "${inode}" ]]; then
       source "${inode}"
     fi
@@ -199,7 +201,7 @@ fi
 
 # Add Pyenv binaries to system path.
 export PYENV_ROOT="${HOME}/.pyenv"
-prepend_paths "${PYENV_ROOT}/bin"
+prepend_paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
 
 # Initialize Pyenv if available.
 #
