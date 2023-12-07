@@ -5,8 +5,9 @@ ARG version
 RUN apk update && apk add alpine-sdk atools doas gettext perl-utils
 
 RUN cat <<EOF >> /etc/abuild.conf
-PACKAGER="Macklan Weinstein <macklan.weinstein@gmail.com>"
 MAINTAINER="$PACKAGER"
+PACKAGER_PRIVKEY=/bootware/alpine.rsa
+PACKAGER="Alpine <alpine>"
 EOF
 
 # Create non-priviledged user and grant user passwordless doas.
@@ -27,6 +28,10 @@ COPY --chown="${USER}" scripts/ /bootware/scripts/
 
 WORKDIR /bootware
 
+# Generate Alpine package signing keys.
+RUN openssl genrsa --out alpine.rsa  \
+    && doas openssl rsa --pubout --in alpine.rsa --out alpine.rsa.pub
+
 # Build Alpine package.
 RUN ./scripts/package.sh --version "${version?}" build apk
 
@@ -40,6 +45,9 @@ ARG version
 
 RUN apk update && apk add perl-utils
 
+# Install Alpine package signing keys.
+COPY --from=build /bootware/alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
+
 # Pull Alpine package from previous Docker stage.
 COPY --from=build "/bootware/dist/" .
 
@@ -47,7 +55,7 @@ COPY --from=build "/bootware/dist/" .
 RUN shasum --check --algorithm 512 "bootware-${version?}-r0.apk.sha512"
 
 # Install Alpine package.
-RUN apk add --allow-untrusted "./bootware-${version?}-r0.apk"
+RUN apk add "./bootware-${version?}-r0.apk"
 
 # Test package was installed successfully.
 RUN bootware --help

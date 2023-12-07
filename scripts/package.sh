@@ -85,9 +85,7 @@ apk() {
   export version="${1}"
   build="$(mktemp --directory)"
 
-  mkdir -p dist
-  abuild-keygen -n --append --install
-
+  mkdir -p dist "${HOME}/.abuild"
   cp completions/bootware.bash completions/bootware.fish "${build}/"
   cp completions/bootware.man "${build}/bootware.1"
   cp bootware.sh "${build}/bootware"
@@ -97,9 +95,7 @@ apk() {
   # shellcheck disable=SC2016
   envsubst '${version}' < scripts/templates/APKBUILD.tmpl > "${build}/APKBUILD"
 
-  (cd "${build}" && abuild checksum)
-  (cd "${build}" && abuild -r)
-
+  (cd "${build}" && abuild checksum && abuild -r)
   mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" dist/
   checksum "dist/bootware-${version}-r0.apk"
 }

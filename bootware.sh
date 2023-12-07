@@ -1226,7 +1226,7 @@ main() {
   usage 'main'
 }
 
-# Only run main if invoked as script. Otherwise import functions as library.
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+# Add ability to selectively skip main function during test suite.
+if [[ -z "${BATS_SOURCE_ONLY:-}" ]]; then
   main "$@"
 fi
