@@ -79,10 +79,14 @@ fi
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ "${_os}" == 'Darwin' ]]; then
-  alias cbcopy='pbcopy'
+  cbcopy() {
+    echo -n "$(cat)" | pbcopy
+  }
   alias cbpaste='pbpaste'
 elif [[ -x "$(command -v wl-copy)" ]]; then
-  alias cbcopy='wl-copy'
+  cbcopy() {
+    echo -n "$(cat)" | wl-copy
+  }
   alias cbpaste='wl-paste'
 fi
 

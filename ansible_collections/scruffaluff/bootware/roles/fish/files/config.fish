@@ -130,10 +130,30 @@ set fish_greeting
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if test "$_os" = 'Darwin'
-  alias cbcopy pbcopy
+  function cbcopy
+    set --local text
+    while read -z line
+      if test -n "$text"
+        set
+      else
+        set text "$line"
+      end
+    end
+    echo -n "$(printf "%s" "$text")" | pbcopy
+  end
   alias cbpaste pbpaste
 else if type -q wl-copy
-  alias cbcopy wl-copy
+  function cbcopy
+    set --local text
+    while read -z line
+      if test -n "$text"
+        set
+      else
+        set text "$line"
+      end
+    end
+    echo -n "$(printf "%s" "$text")" | wl-copy
+  end
   alias cbpaste wl-paste
 end
 

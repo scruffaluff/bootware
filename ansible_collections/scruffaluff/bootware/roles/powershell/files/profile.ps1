@@ -7,16 +7,6 @@
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
-# Check if only minimally functional shell settings should be loaded.
-#
-# If file ~/.shell_minimal_config exists, then most shell completion will not be
-# configured. These are useful to disable if on a slow system where shell
-# startup takes too long.
-If (Test-Path "$HOME/.shell_minimal_config") {
-    $Env:SHELL_MINIMAL_CONFIG = 'true'
-}
-
-# Convenience functions.
 Function Edit-History() {
     If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {
         & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
@@ -39,46 +29,10 @@ Function Which($Name) {
     Get-Command $Name | Select-Object -ExpandProperty Definition
 }
 
-# Docker settings.
+# Shell settings.
 
-$Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
-$Env:DOCKER_BUILDKIT = 'true'
-
-# Load Docker autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name DockerCompletion)
-) {
-    Import-Module DockerCompletion
-}
-
-# Fzf settings.
-
-# Set Fzf solarized light theme.
-$FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-$FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-$Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
-
-# Add inode preview to Fzf file finder.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Command bat -ErrorAction SilentlyContinue)
-) {
-    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
-}
-
-# Git settings.
-
-# Load Git autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name posh-git)
-) {
-    Import-Module posh-git
-}
+# Add Unix compatibility aliases.
+Set-Alias -Name touch -Value New-Item
 
 # Configure PSReadLine settings if available.
 #
@@ -145,10 +99,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     # Setup Fzf PowerShell integration if available.
     #
     # Fzf PowerShell integration depends on PSReadLine being activated first.
-    If (
-        (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-        (Get-Module -ListAvailable -Name PsFzf)
-    ) {
+    If (Get-Module -ListAvailable -Name PsFzf) {
         Import-Module PsFzf
 
         # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
@@ -158,91 +109,109 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
     }
 }
 
+# Add unified clipboard aliases.
+Set-Alias -Name cbcopy -Value Set-Clipboard
+Set-Alias -Name cbpaste -Value Get-Clipboard
+
+# Bootware settings.
+
+# Load Bootware autocompletion if available.
+If (Get-Module -ListAvailable -Name BootwareCompletion) {
+    Import-Module BootwareCompletion
+}
+
+# Chocolatey settings.
+
+# Load Chocolatey autocompletion if available.
+If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
+    Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+}
+
+# Docker settings.
+
+# Ensure newer Docker features are enabled.
+$Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
+$Env:DOCKER_BUILDKIT = 'true'
+
+# Load Docker autocompletion if available.
+If (Get-Module -ListAvailable -Name DockerCompletion) {
+    Import-Module DockerCompletion
+}
+
+# Fzf settings.
+
+# Set Fzf solarized light theme.
+$FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+$FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+$Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
+
+# Add inode preview to Fzf file finder.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+If (Get-Command bat -ErrorAction SilentlyContinue) {
+    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
+}
+
+# Git settings.
+
+# Load Git autocompletion if available.
+If (Get-Module -ListAvailable -Name posh-git) {
+    Import-Module posh-git
+}
+
+# Helix settings.
+
+# Set full color support for terminal and default editor to Helix.
+If (Get-Command hx -ErrorAction SilentlyContinue) {
+    $Env:COLORTERM = 'truecolor'
+    $Env:EDITOR = 'hx'
+}
+
 # Python settings.
 
+# Fix Poetry package install issue on headless systems.
+$Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
-
-# Shell settings.
-
-# Load aliases if file exists.
-If (Test-Path "$HOME/.aliases.ps1") {
-    . "$HOME/.aliases.ps1"
-}
-
-# Load environment variables if file exists.
-If (Test-Path "$HOME/.env.ps1") {
-    . "$HOME/.env.ps1"
-}
-
-# Load secrets if file exists.
-If (Test-Path "$HOME/.secrets.ps1") {
-    . "$HOME/.secrets.ps1"
-}
 
 # Starship settings.
 
 # Initialize Starship if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Command starship -ErrorAction SilentlyContinue)
-) {
+If (Get-Command starship -ErrorAction SilentlyContinue) {
     Invoke-Expression (&starship init powershell)
 }
 
-# Tool settings.
-
-$Env:BAT_THEME = 'Solarized (light)'
-Set-Alias -Name cbcopy -Value Set-Clipboard
-Set-Alias -Name cbpaste -Value Get-Clipboard
-Set-Alias -Name touch -Value New-Item
-
-# Load Bootware autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name BootwareCompletion)
-) {
-    Import-Module BootwareCompletion
-}
-
-# Load Chocolatey autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1")
-) {
-    Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-}
-
-# Load Scoop autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name scoop-completion)
-) {
-    Import-Module scoop-completion
-}
+# Secure Shell settings.
 
 # Load SSH autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name SSHCompletion)
-) {
+If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
+}
+
+# Scoop settings.
+
+# Load Scoop autocompletion if available.
+If (Get-Module -ListAvailable -Name scoop-completion) {
+    Import-Module scoop-completion
 }
 
 # TypeScript settings.
 
 # Load Deno autocompletion if available.
-If (
-    (-Not $Env:SHELL_MINIMAL_CONFIG) -And
-    (Get-Module -ListAvailable -Name DenoCompletion)
-) {
+If (Get-Module -ListAvailable -Name DenoCompletion) {
     Import-Module DenoCompletion
 }
 
 # User settings.
 
-# Set default editor if Helix is installed.
-If (Get-Command hx -ErrorAction SilentlyContinue) {
-    $Env:COLORTERM = 'truecolor'
-    $Env:EDITOR = 'hx'
+# Load user aliases, secrets, and variables.
+If (Test-Path "$HOME/.aliases.ps1") {
+    . "$HOME/.aliases.ps1"
+}
+If (Test-Path "$HOME/.env.ps1") {
+    . "$HOME/.env.ps1"
+}
+If (Test-Path "$HOME/.secrets.ps1") {
+    . "$HOME/.secrets.ps1"
 }
