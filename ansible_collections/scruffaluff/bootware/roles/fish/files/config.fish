@@ -251,6 +251,11 @@ end
 # Add Kubectl plugins to system path.
 fish_add_paths "$HOME/.krew/bin"
 
+# Procs settings.
+
+# Set Procs theeme explicity since its automatic theme detection is incorrect.
+alias procs 'procs --theme light'
+
 # Python settings.
 
 # Fix Poetry package install issue on headless systems.

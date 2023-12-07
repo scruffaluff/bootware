@@ -179,6 +179,11 @@ if [[ -n "${_tty}" && -x "$(command -v kubectl)" ]]; then
   source <(kubectl completion bash)
 fi
 
+# Procs settings.
+
+# Set Procs theeme explicity since its automatic theme detection is incorrect.
+alias procs='procs --theme light'
+
 # Python settings.
 
 # Fix Poetry package install issue on headless systems.
