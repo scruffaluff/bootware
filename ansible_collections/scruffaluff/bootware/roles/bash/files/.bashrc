@@ -11,10 +11,13 @@
 # and running under an Rosetta 2 emulated terminal.
 #
 # Flags:
-#   -m: Show hardware architecture name.
+#   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
-_arch="$(uname -m)"
-_brew_prefix="$([[ "${_arch}" =~ 'arm' ]] && echo '/opt/homebrew' || echo '/usr/local')"
+if [[ -d '/opt/homebrew' ]]; then
+  _brew_prefix='/opt/homebrew'
+else
+  _brew_prefix='/usr/local'
+fi
 _os="$(uname -s)"
 _tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
@@ -77,6 +80,9 @@ fi
 
 # Add unified clipboard aliases.
 #
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
 # Flags:
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
@@ -128,9 +134,6 @@ fi
 # Go settings.
 
 # Find and export Go root directory.
-#
-# Flags:
-#   -d: Check if inode is a directory.
 if [[ "${_os}" == 'Darwin' ]]; then
   export GOROOT="${_brew_prefix}/opt/go/libexec"
 else
@@ -144,9 +147,6 @@ prepend_paths "${GOROOT}/bin" "${GOPATH}/bin"
 # Google Cloud Platform settings.
 
 # Initialize GCloud if available.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
 if [[ "${_os}" == 'Darwin' ]]; then
   _gcloud_path="${_brew_prefix}/Caskroom/google-cloud-sdk/latest"
   source_files "${_gcloud_path}/google-cloud-sdk/path.bash.inc" \

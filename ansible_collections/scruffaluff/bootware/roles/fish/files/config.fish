@@ -16,10 +16,9 @@
 # and running under an Rosetta 2 emulated terminal.
 #
 # Flags:
-#   -m: Show hardware architecture name.
+#   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
-set _arch (uname -m)
-if string match --quiet 'arm' "*$_arch* "
+if test -d '/opt/homebrew'
   set _brew_prefix '/opt/homebrew'
 else
   set _brew_prefix '/usr/local'
@@ -67,7 +66,7 @@ end
 #
 # Flags:
 #   -d: Check if path is a directory.
-function fish_add_paths
+function prepend_paths
   for inode in $argv
     if test -d "$inode"; and not contains "$inode" $PATH
       set --export PATH "$inode" $PATH
@@ -105,7 +104,7 @@ end
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-fish_add_paths '/usr/local/bin' '/opt/homebrew/bin' '/opt/homebrew/sbin' \
+prepend_paths '/usr/local/bin' '/opt/homebrew/bin' '/opt/homebrew/sbin' \
   "$HOME/.local/bin"
 
 # Add custom Fish key bindings. 
@@ -122,8 +121,13 @@ set fish_greeting
 
 # Add unified clipboard aliases.
 #
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
 # Flags:
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
+#   -z: Read input until null terminated instead of newline.
 if test "$_os" = 'Darwin'
   function cbcopy
     set --local text
@@ -178,15 +182,13 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 # Add inode preview to Fzf file finder.
 #
 # Flags:
+#   -C: Turn on color.
+#   -L 1: Descend only 1 directory level deep.
 #   -q: Only check for exit status by supressing output.
 if type -q bat; and type -q tree
   function fzf_inode_preview
     bat --color always --style numbers $argv 2> /dev/null
-
     if test $status != 0
-      # Flags:
-      #   -C: Turn on color.
-      #   -L 1: Descend only 1 directory level deep.
       tree -C -L 1 $argv 2> /dev/null
     end
   end
@@ -215,17 +217,13 @@ end
 
 # Add Go local binaries to system path.
 set --export GOPATH "$HOME/.go"
-fish_add_paths "$GOROOT/bin" "$GOPATH/bin"
+prepend_paths "$GOROOT/bin" "$GOPATH/bin"
 
 # Google Cloud Platform settings.
 
 # Initialize GCloud if on MacOS and available.
 #
-# GCloud completion is provided on Linux via a Fish package. Do not use long
-# form --kernel-name flag for uname. It is not supported on MacOS.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
+# GCloud completion is provided on Linux via a Fish package.
 if test "$_os" = 'Darwin'
   source_files "$_brew_prefix/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc"
 end
@@ -244,7 +242,7 @@ end
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
-fish_add_paths "$HOME/.krew/bin"
+prepend_paths "$HOME/.krew/bin"
 
 # Procs settings.
 
@@ -261,12 +259,12 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT 'true'
 # Make numerical compute libraries findable on MacOS.
 if test "$_os" = 'Darwin'
   set --export OPENBLAS "$_brew_prefix/opt/openblas"
-  fish_add_paths "$OPENBLAS"
+  prepend_paths "$OPENBLAS"
 end
 
 # Add Pyenv binaries to system path.
 set --export PYENV_ROOT "$HOME/.pyenv"
-fish_add_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
+prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 
 # Initialize Pyenv if available.
 #
@@ -280,7 +278,7 @@ end
 # Rust settings.
 
 # Add Rust binaries to system path.
-fish_add_paths "$HOME/.cargo/bin"
+prepend_paths "$HOME/.cargo/bin"
 
 # Starship settings.
 
@@ -296,10 +294,10 @@ end
 
 # Add Deno binaries to system path.
 set --export DENO_INSTALL "$HOME/.deno"
-fish_add_paths "$DENO_INSTALL/bin"
+prepend_paths "$DENO_INSTALL/bin"
 
 # Add NPM global binaries to system path.
-fish_add_paths "$HOME/.npm-global/bin"
+prepend_paths "$HOME/.npm-global/bin"
 
 # Initialize NVM default version of Node if available.
 #
@@ -312,13 +310,13 @@ end
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
-fish_add_paths '/usr/share/code/bin'
+prepend_paths '/usr/share/code/bin'
 
 # Wasmtime settings.
 
 # Add Wasmtime binaries to system path.
 set --export WASMTIME_HOME "$HOME/.wasmtime"
-fish_add_paths "$WASMTIME_HOME/bin"
+prepend_paths "$WASMTIME_HOME/bin"
 
 # Zellij settings.
 
