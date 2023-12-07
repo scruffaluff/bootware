@@ -39,3 +39,39 @@
   community.windows.win_scoop:
     name: bat
   when: ansible_system == "Win32NT"
+
+- name: Create Bat settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config/bat"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Bat settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/bat/config"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: config
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Bat settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/bat"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Create Bat settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.config/config"
+    force: true
+    owner: "{{ user_id }}"
+    src: config
+  when: ansible_system == "Win32NT"
