@@ -51,8 +51,8 @@ source_files() {
 
 # Shell settings.
 
-# Disable MacOS default shell is now Zsh message.
-export BASH_SILENCE_DEPRECATION_WARNING='true'
+# Disable MacOS default shell is now Zsh message. Value must be 1.
+export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Add directories to system path that are not always included.
 #
@@ -133,16 +133,21 @@ fi
 
 # Go settings.
 
-# Find and export Go root directory.
-if [[ "${_os}" == 'Darwin' ]]; then
+# Export Go root directory to system path if available.
+#
+# Flags:
+#   -d: Check if path is a directory.
+if [[ -d "${_brew_prefix}/opt/go/libexec" ]]; then
   export GOROOT="${_brew_prefix}/opt/go/libexec"
-else
+  prepend_paths "${GOROOT}/bin"
+elif [[ -d '/usr/local/go' ]]; then
   export GOROOT='/usr/local/go'
+  prepend_paths "${GOROOT}/bin"
 fi
 
-# Add Go local binaries to system path.
+# Set path for Go local binaries.
 export GOPATH="${HOME}/.go"
-prepend_paths "${GOROOT}/bin" "${GOPATH}/bin"
+prepend_paths "${GOPATH}/bin"
 
 # Google Cloud Platform settings.
 

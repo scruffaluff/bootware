@@ -208,16 +208,21 @@ end
 
 # Go settings.
 
-# Find and export Go root directory.
-if test "$_os" = 'Darwin'
+# Export Go root directory to system path if available.
+#
+# Flags:
+#   -d: Check if path is a directory.
+if test -d "$_brew_prefix/opt/go/libexec"
   set --export GOROOT "$_brew_prefix/opt/go/libexec"
-else
+  prepend_paths "$GOROOT/bin"
+else if test -d '/usr/local/go'
   set --export GOROOT '/usr/local/go'
+  prepend_paths "$GOROOT/bin"
 end
 
-# Add Go local binaries to system path.
+# Set path for Go local binaries.
 set --export GOPATH "$HOME/.go"
-prepend_paths "$GOROOT/bin" "$GOPATH/bin"
+prepend_paths "$GOPATH/bin"
 
 # Google Cloud Platform settings.
 
