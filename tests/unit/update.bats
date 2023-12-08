@@ -40,7 +40,7 @@ setup() {
 
 @test 'Update subcommand passes Bootware executable path to Curl' {
   local actual expected
-  
+
   expected="curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 --output $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
@@ -57,7 +57,7 @@ curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/comple
 https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
 --output /bin/bash"
 
-  source bootware.sh
+  BATS_SOURCE_ONLY='true' source bootware.sh
 
   # Mock functions for child processes by printing received arguments.
   #

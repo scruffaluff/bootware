@@ -1,0 +1,5 @@
+# Bat configuration file.
+#
+# For more information, visit https://github.com/sharkdp/bat#configuration-file.
+
+--theme="Solarized (light)"

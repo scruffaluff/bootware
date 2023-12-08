@@ -1,0 +1,25 @@
+# Maintainer: Macklan Weinstein <macklan.weinstein@gmail.com>
+
+arch=('any')
+depends=('ansible>=2.13.0' 'bash>=4.0.0' 'curl>=7.0.0' 'git>=2.0.0')
+license=('MIT')
+pkgdesc='Bootstrap software installations with Ansible'
+pkgname=bootware
+pkgrel=0
+pkgver=${version}
+source=('bootware' 'bootware.1' 'bootware.bash' 'bootware.fish')
+url='https://github.com/scruffaluff/bootware'
+
+check() {
+  ./bootware --version
+}
+
+package() {
+  mkdir -p "${pkgdir}/etc/bash_completion.d" \
+    "${pkgdir}/etc/fish/completions" "${pkgdir}/usr/share/man/man1" \
+    "${pkgdir}/usr/local/bin"
+  mv bootware.bash "${pkgdir}/etc/bash_completion.d/bootware.bash"
+  mv bootware.fish "${pkgdir}/etc/fish/completions/bootware.fish"
+  mv bootware.1 "${pkgdir}/usr/share/man/man1/bootware.1"
+  install -Dm 755 bootware "${pkgdir}/usr/bin/bootware"
+}

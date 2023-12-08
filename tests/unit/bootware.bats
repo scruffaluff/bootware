@@ -5,7 +5,7 @@ setup() {
   export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
   load '../../node_modules/bats-support/load'
   load '../../node_modules/bats-assert/load'
-  source bootware.sh
+  BATS_SOURCE_ONLY='true' source bootware.sh
 
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'

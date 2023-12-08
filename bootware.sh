@@ -146,23 +146,6 @@ EOF
 }
 
 #######################################
-# Assert that command can be found in system path.
-# Will exit script with an error code if command is not in system path.
-# Arguments:
-#   Command to check availabilty.
-# Outputs:
-#   Writes error message to stderr if command is not in system path.
-#######################################
-assert_cmd() {
-  # Flags:
-  #   -v: Only show file path of command.
-  #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v "${1}")" ]]; then
-    error "Cannot find required ${1} command on computer"
-  fi
-}
-
-#######################################
 # Subcommand to bootstrap software installations.
 # Globals:
 #   BOOTWARE_CONFIG
@@ -332,10 +315,9 @@ bootstrap() {
   # Flags:
   #   -n: Check if the string has nonzero length.
   if [[ -n "${start_role:-}" ]]; then
-    assert_cmd yq
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
-      yq '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
+      yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
     )"
     extra_args+=('--start-at-task' "${start_task}")
   fi
@@ -420,7 +402,7 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "config"
+        error_usage "No such option '${1}'" 'config'
         ;;
     esac
   done
@@ -436,8 +418,6 @@ config() {
     log "Writing empty configuration file to ${dst_file}"
     printf 'super_passwordless: false' > "${dst_file}"
   else
-    assert_cmd curl
-
     log "Downloading configuration file to ${dst_file}"
 
     # Download configuration file.
@@ -535,7 +515,7 @@ find_super() {
   elif [[ -x "$(command -v doas)" ]]; then
     echo 'doas'
   else
-    echo ''
+    error 'Unable to find a command for super user elevation'
   fi
 }
 
@@ -560,8 +540,6 @@ fullpath() {
 #######################################
 install_yq() {
   local arch os_type url version
-  assert_cmd curl
-  assert_cmd jq
 
   # Do not use long form --kernel-name or --machine flags for uname. They are
   # not supported on MacOS.
@@ -631,7 +609,7 @@ roles() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "roles"
+        error_usage "No such option '${1}'" 'roles'
         ;;
     esac
   done
@@ -660,12 +638,10 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" "setup"
+        error_usage "No such option '${1}'" 'setup'
         ;;
     esac
   done
-
-  assert_cmd uname
 
   # Check if user is not root.
   if [[ "${EUID}" -ne 0 ]]; then
@@ -890,8 +866,6 @@ setup_fedora() {
 #   Super user elevation command.
 #######################################
 setup_freebsd() {
-  assert_cmd pkg python_version
-
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     # Install Ansible with Python3 since most package managers provide an old
@@ -963,8 +937,6 @@ setup_linux() {
 # Configure boostrapping services and utilities for MacOS.
 #######################################
 setup_macos() {
-  assert_cmd curl
-
   # On Apple silicon, brew is not in the system path after installation.
   export PATH="/opt/homebrew/bin:${PATH}"
 
@@ -1083,12 +1055,10 @@ uninstall() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" "update"
+        error_usage "No such option '${1}'" 'uninstall'
         ;;
     esac
   done
-
-  assert_cmd chmod
 
   dst_file="$(fullpath "$0")"
 
@@ -1129,13 +1099,10 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" "update"
+        error_usage "No such option '${1}'" 'update'
         ;;
     esac
   done
-
-  assert_cmd chmod
-  assert_cmd curl
 
   dst_file="$(fullpath "$0")"
   src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
@@ -1259,7 +1226,7 @@ main() {
   usage 'main'
 }
 
-# Only run main if invoked as script. Otherwise import functions as library.
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+# Add ability to selectively skip main function during test suite.
+if [[ -z "${BATS_SOURCE_ONLY:-}" ]]; then
   main "$@"
 fi
