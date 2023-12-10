@@ -973,6 +973,17 @@
         - editor
         - vscode
 
+    - name: Install Watchexec file watcher
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.watchexec
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - watchexec
+        - wsl
+
     - name: Install Web Assembly runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.wasm

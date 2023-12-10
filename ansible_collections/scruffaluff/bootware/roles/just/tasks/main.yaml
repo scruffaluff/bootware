@@ -18,7 +18,48 @@
   ansible.builtin.package:
     name: just
   become: true
+  ignore_errors: true
+  register: just_linux
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Just version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/just.json
+  register: just_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Download Just for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/casey/just/releases/download/{{
+      just_formula.json.versions.stable }}/just-{{
+      just_formula.json.versions.stable }}-{{ just_arch
+      }}-unknown-linux-musl.tar.gz
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Install Just for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/just
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/just-{{ just_formula.json.versions.stable }}-{{ just_arch
+      }}-unknown-linux-musl/just
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
 
 - name: Install Just for MacOS
   become: true
@@ -31,3 +72,34 @@
   community.windows.win_scoop:
     name: just
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Install Just shell completions for Linux
+  ansible.builtin.get_url:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    url: >-
+      https://raw.githubusercontent.com/casey/just/master/completions/just.{{
+      item.source }}
+  become: true
+  loop:
+    - dest: /etc/bash_completion.d/just.bash
+      source: bash
+    - dest: /etc/fish/completions/just.fish
+      source: fish
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed

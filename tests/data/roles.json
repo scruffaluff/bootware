@@ -312,6 +312,7 @@
     }
   },
   { "name": "wasm" },
+  { "name": "watchexec", "tests": ["watchexec --version"] },
   {
     "name": "wezterm",
     "tests": {

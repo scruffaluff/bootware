@@ -180,15 +180,15 @@ install_completions() {
     # MacOS.
     ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
     download "${1}" "${bash_url}" '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} chmod 644 '/etc/bash_completion.d/bootware.bash'
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
+    ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
   else
     mkdir -p "${HOME}/.config/fish/completions"
     download "" "${fish_url}" "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }
 
