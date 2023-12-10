@@ -686,11 +686,9 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.procs
       tags:
-        - container
-        - desktop
+        - extras
+        - never
         - procs
-        - server
-        - wsl
 
     - name: Install Python language
       ansible.builtin.import_role:

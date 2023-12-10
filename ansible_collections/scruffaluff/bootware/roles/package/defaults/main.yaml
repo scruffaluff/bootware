@@ -2,8 +2,25 @@
 apt_packages: []
 chocolatey_packages: []
 dnf_packages: []
-homebrew_casks: []
+homebrew_casks:
+  - audacity
+  - kdenlive
+  - kicad
+  - obs
+  - sonic-pi
+  - vlc
 homebrew_packages: []
 pacman_packages: []
-pkg_packages: []
-scoop_packages: []
+pkg_packages:
+  - audacity
+  - kdenlive
+  - kicad
+  - obs-studio
+  - vlc
+scoop_packages:
+  - audacity
+  - kdenlive
+  - kicad
+  - obs-studio
+  - sonic-pi
+  - vlc

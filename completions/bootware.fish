@@ -13,6 +13,7 @@ complete --no-files --command bootware
 #   -a <options>: Add arguments to completions list.
 #   -c <command>: Provide completions for command.
 #   -d <description>: Add description to completion prompt.
+#   -f: Prevent completion from being followed by a filename.
 #   -l <word>: Add word as a long switch flag.
 #   -n <condition>: Only use this configuration if condition is true.
 #   -r: Completion must have an argument before another option.
@@ -35,19 +36,20 @@ complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l conf
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l debug -d 'Enable Ansible task debugger'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s d -l dev -d 'Run bootstrapping in development mode'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s h -l help -d 'Print help information'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l 'install-group' -d 'Remote group to install software for'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l 'install-user' -d 'Remote user to install software for'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l 'install-group' -d 'Remote group to install software for'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l 'install-user' -d 'Remote user to install software for'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s i -l inventory -d 'Ansible remote hosts IP addesses'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l 'no-passwd' -d 'Do not ask for user password'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l 'no-setup' -d 'Skip Bootware dependency installation'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l password -d 'Remote user login password'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s p -l playbook -d 'Path to playbook to execute'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -l 'private-key' -d 'Path to SSH private key'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l port -d 'Port for SSH connection'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l retries -d 'Playbook retry limit during failure'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s s -l skip -d 'Ansible playbook tags to skip'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l 'start-at-role' -d 'Begin execution with role'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s t -l tags -d 'Ansible playbook tags to select'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l 'temp-key' -d 'Path to SSH private key for one time connection'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -l 'temp-key' -d 'Path to SSH private key for one time connection'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s u -l url -d 'URL of playbook repository'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l user -d 'Remote user login name'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l windows -d 'Connect to a Windows host with SSH'

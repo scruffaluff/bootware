@@ -27,6 +27,7 @@ Options:
       --password <PASSWORD>       Remote user login password
   -p, --playbook <FILE>           Path to playbook to execute
       --private-key <FILE>        Path to SSH private key
+      --port <INTEGER>            Port for SSH connection
       --retries <INTEGER>         Playbook retry limit during failure
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
       --start-at-role <ROLE>      Begin execution with role

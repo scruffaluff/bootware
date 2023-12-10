@@ -38,6 +38,7 @@ Options:
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote user login password
   -p, --playbook <FILE>           Path to playbook to execute
+      --port <INTEGER>            Port for SSH connection
       --private-key <FILE>        Path to SSH private key
       --retries <INTEGER>         Playbook retry limit during failure
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
@@ -161,6 +162,7 @@ bootstrap() {
   # /dev/null is never a normal file.
   local ansible_config_path
   local ask_passwd
+  local become_method
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
@@ -171,14 +173,16 @@ bootstrap() {
   local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
   local playbook
+  local port
   local retries=1
   local skip="${BOOTWARE_SKIP:-}"
   local start_role
   local status
   local tags="${BOOTWARE_TAGS:-}"
   local temp_ssh_args=(
-    "-o IdentitiesOnly=no"
+    "-o IdentitiesOnly=yes"
     "-o LogLevel=ERROR"
+    "-o PreferredAuthentications=publickey,password"
     "-o StrictHostKeyChecking=no"
     "-o UserKnownHostsFile=/dev/null"
   )
@@ -198,6 +202,10 @@ bootstrap() {
     case "${1}" in
       --ansible-config)
         export ANSIBLE_CONFIG="${2}"
+        shift 2
+        ;;
+      --become-method)
+        become_method="${2}"
         shift 2
         ;;
       -c | --config)
@@ -245,6 +253,10 @@ bootstrap() {
         ;;
       --password)
         passwd="${2}"
+        shift 2
+        ;;
+      --port)
+        port="${2}"
         shift 2
         ;;
       --retries)
@@ -340,7 +352,9 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  super="$(find_super)"
+  if [[ -z "${become_method:-}" ]]; then
+    become_method="$(find_super)"
+  fi
 
   log "Executing Ansible ${cmd}"
   log 'Enter your user account password if prompted'
@@ -350,8 +364,9 @@ bootstrap() {
     ${checkout:+--checkout "${checkout}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
-    --extra-vars "ansible_become_method=${super}" \
+    --extra-vars "ansible_become_method=${become_method}" \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
+    ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
