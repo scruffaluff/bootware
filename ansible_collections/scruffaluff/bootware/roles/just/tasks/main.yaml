@@ -1,0 +1,33 @@
+---
+- name: Install Just for Alpine
+  become: true
+  community.general.apk:
+    name: just
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Just for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: just
+  when: ansible_system == "FreeBSD"
+
+- name: Install Just for Linux
+  ansible.builtin.package:
+    name: just
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Just for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: just
+  when: ansible_system == "Darwin"
+
+- name: Install Just for Windows
+  community.windows.win_scoop:
+    name: just
+  when: ansible_system == "Win32NT"

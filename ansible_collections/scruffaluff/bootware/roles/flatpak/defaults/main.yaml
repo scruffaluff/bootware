@@ -6,4 +6,3 @@ flatpak_packages:
   - org.audacityteam.Audacity
   - org.kde.kdenlive
   - org.kicad.KiCad
-  - org.videolan.VLC

@@ -492,6 +492,17 @@
         - sysadmin
         - wsl
 
+    - name: Install Just command runner
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.just
+      tags:
+        - container
+        - desktop
+        - just
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install K3d Kubernetes development cluster manager
       ansible.builtin.import_role:
         name: scruffaluff.bootware.k3d
@@ -946,6 +957,13 @@
         - kubernetes
         - never
         - velero
+
+    - name: Install VLC video player
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.vlc
+      tags:
+        - desktop
+        - vlc
 
     - name: Install VSCode text exitor
       ansible.builtin.import_role:

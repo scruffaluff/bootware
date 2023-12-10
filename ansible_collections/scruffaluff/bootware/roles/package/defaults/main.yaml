@@ -8,7 +8,6 @@ homebrew_casks:
   - kicad
   - obs
   - sonic-pi
-  - vlc
 homebrew_packages: []
 pacman_packages: []
 pkg_packages:
@@ -16,11 +15,9 @@ pkg_packages:
   - kdenlive
   - kicad
   - obs-studio
-  - vlc
 scoop_packages:
   - audacity
   - kdenlive
   - kicad
   - obs-studio
   - sonic-pi
-  - vlc

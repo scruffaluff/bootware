@@ -134,6 +134,7 @@
   },
   { "name": "hyperfine", "tests": ["hyperfine --version"] },
   { "name": "jq", "tests": ["jq --version"] },
+  { "name": "just", "tests": ["just --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   {
     "name": "k3sup",
@@ -294,6 +295,13 @@
     "name": "velero",
     "skip": [{ "os": "freebsd" }],
     "tests": ["velero help"]
+  },
+  {
+    "name": "vlc",
+    "tests": {
+      "default": ["vlc --version"],
+      "linux": ["flatpak info org.videolan.VLC"]
+    }
   },
   {
     "name": "vscode",
