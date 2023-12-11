@@ -11,8 +11,8 @@
   ansible.builtin.apt:
     deb: >-
       https://github.com/balena-io/etcher/releases/download/v{{
-      etcher_cask.json.version }}/balena-etcher_{{
-      etcher_cask.json.version}}_amd64.deb
+      etcher_cask.json.version }}/balena-etcher_{{ etcher_cask.json.version
+      }}_amd64.deb
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
