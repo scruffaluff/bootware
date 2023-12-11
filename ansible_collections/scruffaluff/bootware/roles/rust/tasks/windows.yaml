@@ -3,8 +3,8 @@
   ansible.windows.win_uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/ryankurte/cargo-binstall/releases/latest
-  register: rust_binstall_release
+    url: https://formulae.brew.sh/api/formula/cargo-binstall.json
+  register: rust_binstall_formula
 
 - name: Install Rust for Windows
   community.windows.win_scoop:
@@ -47,8 +47,8 @@
   ansible.windows.win_get_url:
     dest: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
     url: >-
-      https://github.com/ryankurte/cargo-binstall/releases/download/{{
-      rust_binstall_release.json.tag_name
+      https://github.com/ryankurte/cargo-binstall/releases/download/v{{
+      rust_binstall_formula.json.versions.stable
       }}/cargo-binstall-x86_64-pc-windows-msvc.zip
 
 - name: Decompress Cargo Binstall archive for Windows

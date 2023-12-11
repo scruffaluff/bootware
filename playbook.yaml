@@ -47,14 +47,6 @@
         - desktop
         - terminal
 
-    - name: Install AppImage packages
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.appimage
-      tags:
-        - appimage
-        - extras
-        - never
-
     - name: Install audio tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.audio
@@ -692,14 +684,6 @@
         - powershell
         - server
         - shell
-
-    - name: Install Procs process viewer
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.procs
-      tags:
-        - extras
-        - never
-        - procs
 
     - name: Install Python language
       ansible.builtin.import_role:

@@ -1,17 +1,25 @@
 ---
-- name: Get latest Age version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/age.json
-  register: age_formula
-  when: ansible_system == "Linux"
-
 - name: Install Age for FreeBSD
   become: true
   community.general.pkgng:
     name: age
   when: ansible_system == "FreeBSD"
+
+- name: Install Age for Linux
+  ansible.builtin.package:
+    name: age
+  become: true
+  ignore_errors: true
+  register: age_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Age version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/age.json
+  register: age_formula
+  when: ansible_system == "Linux" and age_linux is failed
 
 - name: Download Age for Linux
   ansible.builtin.unarchive:
@@ -23,7 +31,7 @@
       age_formula.json.versions.stable }}//age-v{{
       age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and age_linux is failed
 
 - name: Install Age for Linux
   ansible.builtin.copy:
@@ -36,7 +44,7 @@
   loop:
     - age
     - age-keygen
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and age_linux is failed
 
 - name: Install Age for MacOS
   become: true

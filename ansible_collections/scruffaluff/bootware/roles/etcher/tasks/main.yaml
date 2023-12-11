@@ -1,5 +1,5 @@
 ---
-# Homebrew Balena Etcher cask is unmaintained.
+# GitHub API is required since Homebrew Balena Etcher cask is unmaintained.
 - name: Get latest Balena Etcher version for Debian and Fedora
   ansible.builtin.uri:
     method: GET

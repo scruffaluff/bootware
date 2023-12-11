@@ -22,6 +22,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Extra newlines in unified clipboard aliases.
 
+### Removed
+
+- Appimage and Procs roles.
+
 ## 0.7.3 - 2023-12-02
 
 ### Added
