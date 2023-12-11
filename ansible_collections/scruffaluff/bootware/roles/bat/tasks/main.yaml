@@ -1,21 +1,4 @@
 ---
-- name: Get latest Bat version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/bat.json
-  register: bat_formula
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Bat for Debian
-  ansible.builtin.apt:
-    deb: >-
-      https://github.com/sharkdp/bat/releases/download/v{{
-      bat_formula.json.versions.stable }}/bat_{{
-      bat_formula.json.versions.stable }}_{{ system_architecture }}.deb
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install Bat for FreeBSD
   become: true
   community.general.pkgng:
@@ -26,7 +9,7 @@
   ansible.builtin.package:
     name: bat
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
+  when: ansible_system == "Linux"
 
 - name: Install Bat for MacOS
   become: true

@@ -1,2 +1,3 @@
 ---
-flatpak_packages: []
+flatpak_packages:
+  - com.github.tchx84.Flatseal

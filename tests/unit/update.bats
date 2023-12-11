@@ -44,6 +44,8 @@ setup() {
   expected="curl -LSfs \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
 --output $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.bash \
+-o ${HOME}/.local/share/bash-completion/completions/bootware
 curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.fish \
 -o ${HOME}/.config/fish/completions/bootware.fish"
 

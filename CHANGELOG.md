@@ -5,6 +5,28 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Arch and Alpine Linux packages.
+- Just, VLC, and Watchexec roles.
+- SSH port flag for scripts.
+- Wget support in install scripts.
+
+### Changed
+
+- Move shell completions to system folders.
+- Simplified shell profiles.
+
+### Fixed
+
+- Extra newlines in unified clipboard aliases.
+
+### Removed
+
+- Appimage, Docker Compose, and Procs roles.
+
 ## 0.7.3 - 2023-12-02
 
 ### Added

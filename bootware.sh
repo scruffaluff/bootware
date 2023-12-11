@@ -38,6 +38,7 @@ Options:
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote user login password
   -p, --playbook <FILE>           Path to playbook to execute
+      --port <INTEGER>            Port for SSH connection
       --private-key <FILE>        Path to SSH private key
       --retries <INTEGER>         Playbook retry limit during failure
   -s, --skip <TAG-LIST>           Ansible playbook tags to skip
@@ -50,7 +51,9 @@ Options:
 
 Ansible Options:
 EOF
-      ansible --help
+      if [[ ! -x "$(command -v ansible)" ]]; then
+        ansible --help
+      fi
       ;;
     config)
       cat 1>&2 << EOF
@@ -161,6 +164,7 @@ bootstrap() {
   # /dev/null is never a normal file.
   local ansible_config_path
   local ask_passwd
+  local become_method
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
@@ -171,14 +175,16 @@ bootstrap() {
   local no_setup="${BOOTWARE_NOSETUP:-}"
   local passwd
   local playbook
+  local port
   local retries=1
   local skip="${BOOTWARE_SKIP:-}"
   local start_role
   local status
   local tags="${BOOTWARE_TAGS:-}"
   local temp_ssh_args=(
-    "-o IdentitiesOnly=no"
+    "-o IdentitiesOnly=yes"
     "-o LogLevel=ERROR"
+    "-o PreferredAuthentications=publickey,password"
     "-o StrictHostKeyChecking=no"
     "-o UserKnownHostsFile=/dev/null"
   )
@@ -198,6 +204,10 @@ bootstrap() {
     case "${1}" in
       --ansible-config)
         export ANSIBLE_CONFIG="${2}"
+        shift 2
+        ;;
+      --become-method)
+        become_method="${2}"
         shift 2
         ;;
       -c | --config)
@@ -245,6 +255,10 @@ bootstrap() {
         ;;
       --password)
         passwd="${2}"
+        shift 2
+        ;;
+      --port)
+        port="${2}"
         shift 2
         ;;
       --retries)
@@ -340,7 +354,9 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  super="$(find_super)"
+  if [[ -z "${become_method:-}" ]]; then
+    become_method="$(find_super)"
+  fi
 
   log "Executing Ansible ${cmd}"
   log 'Enter your user account password if prompted'
@@ -350,8 +366,9 @@ bootstrap() {
     ${checkout:+--checkout "${checkout}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
-    --extra-vars "ansible_become_method=${super}" \
+    --extra-vars "ansible_become_method=${become_method}" \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
+    ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
@@ -957,7 +974,7 @@ setup_macos() {
   #
   # Flags:
   #   -d: Check if path exists and is a directory.
-  if [[ "$(uname -p)" == 'arm' && ! -d '/opt/homebrew' ]]; then
+  if [[ "$(uname -m)" == 'arm64' && ! -d '/opt/homebrew' ]]; then
     softwareupdate --agree-to-license --install-rosetta
   fi
 
@@ -1136,6 +1153,7 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
+  local brew_prefix os_type
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
   local bash_url="${repo_url}/completions/bootware.bash"
   local fish_url="${repo_url}/completions/bootware.fish"
@@ -1143,19 +1161,48 @@ update_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${2:-}" ]]; then
+    if [[ "$(uname -m)" == 'arm64' ]]; then
+      brew_prefix='/opt/homebrew'
+    else
+      brew_prefix='/usr/local'
+    fi
+    os_type="$(uname -s)"
+
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
-    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
+    if [[ "${os_type}" == 'Darwin' ]]; then
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o "${brew_prefix}/share/bash-completion/completions/bootware"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
 
-    ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-    ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o "${brew_prefix}/etc/fish/completions/bootware.fish"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
+    elif [[ "${os_type}" == 'FreeBSD' ]]; then
+      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/local/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/usr/local/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
+    else
+      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+    fi
   else
+    mkdir -p "${HOME}/.local/share/bash-completion/completions"
+    curl -LSfs "${bash_url}" -o "${HOME}/.local/share/bash-completion/completions/bootware"
+    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
+
     mkdir -p "${HOME}/.config/fish/completions"
     curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }
 

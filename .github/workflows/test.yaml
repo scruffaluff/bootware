@@ -210,7 +210,7 @@ jobs:
     # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
     # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
@@ -271,12 +271,11 @@ jobs:
           --tags desktop,extras
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
-      # exectuable is installed. Since Docker is not installable, the Docker
-      # Compose check will fail.
+      # exectuable is installed.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.js --arch amd64 --skip bats,docker,docker_compose,tilt macos
+          node tests/integration/roles.test.js --arch amd64 --skip bats,docker,tilt macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

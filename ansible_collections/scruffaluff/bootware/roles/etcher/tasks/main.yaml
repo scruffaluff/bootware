@@ -1,19 +1,18 @@
 ---
-# Homebrew Balena Etcher cask is unmaintained.
 - name: Get latest Balena Etcher version for Debian and Fedora
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/balena-io/etcher/releases/latest
-  register: etcher_release
+    url: https://formulae.brew.sh/api/cask/balenaetcher.json
+  register: etcher_cask
   when: ansible_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install Balena Etcher for Debian
   ansible.builtin.apt:
     deb: >-
-      https://github.com/balena-io/etcher/releases/download/{{
-      etcher_release.json.tag_name }}/balena-etcher_{{
-      etcher_release.json.tag_name[1:] }}_amd64.deb
+      https://github.com/balena-io/etcher/releases/download/v{{
+      etcher_cask.json.version }}/balena-etcher_{{ etcher_cask.json.version
+      }}_amd64.deb
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
@@ -21,9 +20,9 @@
   ansible.builtin.dnf:
     disable_gpg_check: true
     name: >-
-      https://github.com/balena-io/etcher/releases/download/{{
-      etcher_release.json.tag_name }}/balena-etcher-{{
-      etcher_release.json.tag_name[1:] }}.x86_64.rpm
+      https://github.com/balena-io/etcher/releases/download/v{{
+      etcher_cask.json.version }}/balena-etcher-{{ etcher_cask.json.version
+      }}.x86_64.rpm
   become: true
   when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
 

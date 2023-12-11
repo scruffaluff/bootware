@@ -5,15 +5,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
   register: compass_cask_linux
-  when: ansible_system == "Linux"
-
-- name: Get latest MongoDB Compass version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
-  register: compass_cask_windows
-  when: ansible_system == "Win32NT"
+  when: ansible_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Debian
   ansible.builtin.apt:
@@ -38,6 +30,14 @@
     name: mongodb-compass
     state: present
   when: ansible_system == "Darwin"
+
+- name: Get latest MongoDB Compass version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/mongodb-compass.json
+  register: compass_cask_windows
+  when: ansible_system == "Win32NT"
 
 - name: Install MongoDB Compass for Windows
   ansible.windows.win_package:

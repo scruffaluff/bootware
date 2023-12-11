@@ -1,17 +1,25 @@
 ---
+- name: Install Croc for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: croc
+  when: ansible_system == "FreeBSD"
+
+- name: Install Croc for Linux
+  ansible.builtin.package:
+    name: croc
+  become: true
+  ignore_errors: true
+  register: croc_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest Croc version
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/croc.json
   register: croc_formula
-  when: ansible_system == "Linux"
-
-- name: Install Croc for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: croc
-  when: ansible_system == "FreeBSD"
+  when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Download Croc for Linux
   ansible.builtin.unarchive:
@@ -28,7 +36,7 @@
     croc_arch:
       amd64: 64bit
       arm64: ARM64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Install Croc for Linux
   ansible.builtin.copy:
@@ -38,7 +46,7 @@
     remote_src: true
     src: /tmp/croc
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Install Croc for MacOS
   become: true

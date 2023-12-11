@@ -1,20 +1,4 @@
 ---
-- name: Get latest GitHub runner version for Unix
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/actions/runner/releases/latest
-  register: github_runner_release_unix
-  when: ansible_system in ["Darwin", "Linux"]
-
-- name: Get latest GitHub runner version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/actions/runner/releases/latest
-  register: github_runner_release_windows
-  when: ansible_system == "Win32NT"
-
 - name: Get all groups for Unix
   ansible.builtin.getent:
     database: group
@@ -113,6 +97,14 @@
     state: directory
   when: ansible_system == "Win32NT"
 
+- name: Get latest GitHub runner version for Unix
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/actions/runner/releases/latest
+  register: github_runner_release_unix
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Download GitHub runner for Unix
   ansible.builtin.unarchive:
     dest: "{{ github_runner_folder }}"
@@ -130,6 +122,14 @@
       Darwin: osx
       Linux: linux
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Get latest GitHub runner version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/actions/runner/releases/latest
+  register: github_runner_release_windows
+  when: ansible_system == "Win32NT"
 
 - name: Download GitHub runner archive for Windows
   ansible.windows.win_get_url:

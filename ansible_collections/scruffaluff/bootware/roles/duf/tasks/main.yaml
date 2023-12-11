@@ -17,7 +17,7 @@
   when: ansible_pkg_mgr == "apk"
 
 # On some Debian systems, Duf is available as an APT package.
-- name: Install Duf via APT for Debian
+- name: Install Duf for Debian
   ansible.builtin.apt:
     name: duf
   become: true
@@ -25,7 +25,7 @@
   register: duf_apt
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Duf via GitHub for Debian
+- name: Install Duf for Debian
   ansible.builtin.apt:
     deb: >-
       https://github.com/muesli/duf/releases/download/v{{

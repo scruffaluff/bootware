@@ -176,19 +176,48 @@ install_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [ -z "${2:-}" ]; then
+    if [ "$(uname -m)" = 'arm64' ]; then
+      brew_prefix='/opt/homebrew'
+    else
+      brew_prefix='/usr/local'
+    fi
+    os_type="$(uname -s)"
+
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
-    download "${1}" "${bash_url}" '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
+    if [ "${os_type}" = 'Darwin' ]; then
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
+      download "${1}" "${bash_url}" "${brew_prefix}/share/bash-completion/completions/bootware"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
 
-    ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-    download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
+      download "${1}" "${fish_url}" "${brew_prefix}/etc/fish/completions/bootware.fish"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
+    elif [ "${os_type}" = 'FreeBSD' ]; then
+      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
+      download "${1}" "${bash_url}" '/usr/local/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
+      download "${1}" "${fish_url}" '/usr/local/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
+    else
+      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+      download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
+      download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+    fi
   else
+    mkdir -p "${HOME}/.local/share/bash-completion/completions"
+    download "" "${bash_url}" "${HOME}/.local/share/bash-completion/completions/bootware"
+    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
+
     mkdir -p "${HOME}/.config/fish/completions"
     download "" "${fish_url}" "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }
 

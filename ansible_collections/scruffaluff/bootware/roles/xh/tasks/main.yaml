@@ -1,11 +1,10 @@
 ---
-# As of 10/19/2023, Xh GitHub releases are the versions on Homebrew.
 - name: Get latest Xh version
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://api.github.com/repos/ducaale/xh/releases/latest
-  register: xh_release
+    url: https://formulae.brew.sh/api/formula/xh.json
+  register: xh_formula
   when: ansible_system == "Linux"
 
 - name: Install Xh for FreeBSD
@@ -20,9 +19,9 @@
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/ducaale/xh/releases/download/{{
-      xh_release.json.tag_name }}/xh-{{ xh_release.json.tag_name }}-{{ xh_arch
-      }}-unknown-linux-musl.tar.gz
+      https://github.com/ducaale/xh/releases/download/v{{
+      xh_formula.json.versions.stable }}/xh-v{{ xh_formula.json.versions.stable
+      }}-{{ xh_arch }}-unknown-linux-musl.tar.gz
   become: true
   when: ansible_system == "Linux"
 
@@ -33,7 +32,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/xh-{{ xh_release.json.tag_name }}-{{ xh_arch }}-unknown-linux-musl/xh
+      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
+      }}-unknown-linux-musl/xh
   become: true
   when: ansible_system == "Linux"
 

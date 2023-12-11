@@ -73,9 +73,14 @@ if [[ -n "${_tty}" ]]; then
   # Configure tab key to cycle through all possible completions.
   bind 'TAB:menu-complete'
 
-  # Load Bash completion files.
-  source_files '/etc/bash_completion' '/etc/profile.d/bash_completion.sh' \
-    '/opt/homebrew/etc/bash_completion'
+  # Load Bash completion.
+  if [[ "${_os}" == 'Darwin' ]]; then
+    source_files "${_brew_prefix}/etc/profile.d/bash_completion.sh"
+  elif [[ "${_os}" == 'FreeBSD' ]]; then
+    source_files '/usr/local/share/bash-completion/bash_completion'
+  else
+    source_files '/usr/share/bash-completion/bash_completion'
+  fi
 fi
 
 # Add unified clipboard aliases.
@@ -96,17 +101,6 @@ elif [[ -x "$(command -v wl-copy)" ]]; then
     echo -n "$(cat)" | wl-copy
   }
   alias cbpaste='wl-paste'
-fi
-
-# Digital Ocean settings.
-
-# Initialize Digital Ocean CLI if available.
-#
-# Flags:
-#   -v: Only show file path of command.
-#   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" && -x "$(command -v doctl)" ]]; then
-  source <(doctl completion bash)
 fi
 
 # Docker settings.
@@ -149,17 +143,6 @@ fi
 export GOPATH="${HOME}/.go"
 prepend_paths "${GOPATH}/bin"
 
-# Google Cloud Platform settings.
-
-# Initialize GCloud if available.
-if [[ "${_os}" == 'Darwin' ]]; then
-  _gcloud_path="${_brew_prefix}/Caskroom/google-cloud-sdk/latest"
-  source_files "${_gcloud_path}/google-cloud-sdk/path.bash.inc" \
-    "${_gcloud_path}/google-cloud-sdk/completion.bash.inc"
-elif [[ "${_os}" == 'Linux' ]]; then
-  source_files '/usr/lib/google-cloud-sdk/completion.bash.inc'
-fi
-
 # Helix settings.
 
 # Set full color support for terminal and default editor to Helix.
@@ -175,21 +158,6 @@ fi
 
 # Add Kubectl plugins to system path.
 prepend_paths "${HOME}/.krew/bin"
-
-# Initialize Kubernetes CLI if available.
-#
-# Flags:
-#   -n: Check if the string has nonzero length.
-#   -v: Only show file path of command.
-#   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" && -x "$(command -v kubectl)" ]]; then
-  source <(kubectl completion bash)
-fi
-
-# Procs settings.
-
-# Set Procs theeme explicity since its automatic theme detection is incorrect.
-alias procs='procs --theme light'
 
 # Python settings.
 

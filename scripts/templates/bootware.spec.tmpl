@@ -17,16 +17,16 @@ Version: ${version}
 Bootstrap software installations with Ansible
 
 %files
-/etc/bash_completion.d/bootware.bash
+/usr/share/bash-completion/completions/bootware
 /etc/fish/completions/bootware.fish
 /usr/bin/bootware
 /usr/share/man/man1/bootware.1.gz
 
 %install
-mkdir -p %{buildroot}/etc/bash_completion.d \
+mkdir -p %{buildroot}/usr/share/bash-completion/completions \
     %{buildroot}/etc/fish/completions %{buildroot}/usr/share/man/man1 \
     %{buildroot}/usr/bin 
-mv bootware.bash %{buildroot}/etc/bash_completion.d/bootware.bash
+mv bootware.bash %{buildroot}/usr/share/bash-completion/completions/bootware
 mv bootware.fish %{buildroot}/etc/fish/completions/bootware.fish
 mv bootware.1 %{buildroot}/usr/share/man/man1/bootware.1
 install --mode 755 bootware %{buildroot}/usr/bin/bootware

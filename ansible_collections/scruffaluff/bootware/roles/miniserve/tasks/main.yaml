@@ -1,5 +1,11 @@
 ---
-- name: Get latest Miniserve version
+- name: Install Miniserve for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: miniserve
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Miniserve version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -24,12 +30,6 @@
       arm64: aarch64
   when: ansible_system == "Linux"
 
-- name: Install Miniserve for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: miniserve
-  when: ansible_system == "FreeBSD"
-
 - name: Install Miniserve for MacOS
   become: true
   become_user: "{{ user_id }}"
@@ -42,24 +42,40 @@
     name: miniserve
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
-- name: Install Miniserve Fish completion for Unix
+- name: Create Miniserve shell completions for Unix
   ansible.builtin.shell:
-    cmd: >-
-      miniserve --print-completions fish > {{ user_home
-      }}/.config/fish/completions/miniserve.fish
+    cmd: miniserve --print-completions {{ item }} > /tmp/miniserve.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: ansible_system != "Win32NT"
+
+- name: Install Miniserve shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/miniserve.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/miniserve"
+      shell: bash
+    - dest: "{{ fish_completion }}/miniserve.fish"
+      shell: fish
   when: ansible_system != "Win32NT"

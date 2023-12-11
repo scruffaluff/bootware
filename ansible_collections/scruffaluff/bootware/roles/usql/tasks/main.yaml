@@ -1,17 +1,18 @@
 ---
-- name: Get latest Usql version
+- name: Install Usql for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: usql
+  when: ansible_system == "FreeBSD"
+
+# As of 12/10/2023, Usql is not in the main Homebrew package list.
+- name: Get latest Usql version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
   register: usql_release
   when: ansible_system == "Linux"
-
-- name: Install Usql for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: usql
-  when: ansible_system == "FreeBSD"
 
 # Use only static binaries of Usql. Dynamic binaries often depend on libicu
 # versions that are not supported on Linux distributions.

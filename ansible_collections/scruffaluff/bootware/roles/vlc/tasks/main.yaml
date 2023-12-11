@@ -1,0 +1,24 @@
+---
+- name: Install VLC for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: vlc
+  when: ansible_system == "FreeBSD"
+
+- name: Install VLC for Linux
+  become: true
+  community.general.flatpak:
+    name: org.videolan.VLC
+  when: ansible_system == "Linux"
+
+- name: Install VLC for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: vlc
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install VLC for Windows
+  community.windows.win_scoop:
+    name: vlc
+  when: ansible_system == "Win32NT"

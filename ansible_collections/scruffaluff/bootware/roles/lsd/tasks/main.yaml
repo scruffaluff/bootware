@@ -1,11 +1,11 @@
 ---
-- name: Get latest Lsd version
+- name: Get latest Lsd version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/lsd.json
   register: lsd_formula
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Install Lsd for FreeBSD
   become: true
@@ -13,7 +13,7 @@
     name: lsd
   when: ansible_system == "FreeBSD"
 
-- name: Download Lsd for Linux
+- name: Download Lsd for Unix
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "777"
@@ -24,7 +24,7 @@
       lsd_formula.json.versions.stable }}-{{ lsd_arch
       }}-unknown-linux-musl.tar.gz
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Install Lsd for Linux
   ansible.builtin.copy:
@@ -92,26 +92,30 @@
     - config.yaml
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system == "Linux"
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system != "Win32NT"
 
-- name: Install Lsd Fish completions for Unix
+- name: Install Lsd shell completions for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/fish/completions/lsd.fish"
+    dest: "{{ item.dest }}"
     force: true
-    group: "{{ group_id }}"
     mode: "644"
-    owner: "{{ user_id }}"
     remote_src: true
     src: >-
       /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-musl/autocomplete/lsd.fish
+      }}-unknown-linux-musl/autocomplete/lsd.{{ item.extension }}
   become: true
-  when: ansible_system == "Linux"
+  loop:
+    - dest: "{{ bash_completion }}/lsd"
+      extension: bash-completion
+    - dest: "{{ fish_completion }}/lsd.fish"
+      extension: fish
+  when: ansible_system != "Win32NT"

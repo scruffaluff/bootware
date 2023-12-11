@@ -1,12 +1,4 @@
 ---
-- name: Get latest Helix version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/helix-editor/helix/releases/latest
-  register: helix_release
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install Helix for Alpine
   become: true
   community.general.apk:
@@ -22,6 +14,34 @@
     name: helix
   when: ansible_system == "FreeBSD"
 
+- name: Install Helix for Linux
+  ansible.builtin.package:
+    name: helix
+  become: true
+  ignore_errors: true
+  register: helix_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Make Helix command symlink for Arch
+  ansible.builtin.file:
+    src: /usr/sbin/helix
+    dest: /usr/sbin/hx
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_pkg_mgr == "pacman" and helix_linux is success
+
+- name: Get latest Helix version
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/helix.json
+  register: helix_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
+    failed
+
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
     dest: /tmp/
@@ -29,10 +49,12 @@
     remote_src: true
     src: >-
       https://github.com/helix-editor/helix/releases/download/{{
-      helix_release.json.tag_name }}/helix-{{ helix_release.json.tag_name }}-{{
-      helix_arch }}-linux.tar.xz
+      helix_formula.json.versions.stable }}/helix-{{
+      helix_formula.json.versions.stable }}-{{ helix_arch }}-linux.tar.xz
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
+    failed
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
@@ -40,13 +62,19 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/helix-{{ helix_release.json.tag_name }}-{{ helix_arch }}-linux/hx
+    src: >-
+      /tmp/helix-{{ helix_formula.json.versions.stable }}-{{ helix_arch
+      }}-linux/hx
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
+    failed
 
 - name: Patch Helix for older Debian
   ansible.builtin.import_tasks: patch.yaml
-  when: ansible_pkg_mgr == "apt"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
+    failed
 
 - name: Install Helix for MacOS
   become: true
@@ -79,10 +107,12 @@
     owner: "{{ user_id }}"
     remote_src: true
     src: >-
-      /tmp/helix-{{ helix_release.json.tag_name }}-{{ helix_arch
+      /tmp/helix-{{ helix_formula.json.versions.stable }}-{{ helix_arch
       }}-linux/runtime
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
+    failed
 
 - name: Copy Helix configuration files for Unix
   ansible.builtin.copy:

@@ -1,5 +1,5 @@
 ---
-- name: Get latest Kind version
+- name: Get latest Kind version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -30,22 +30,39 @@
     name: kind
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Generate Kind Fish completions for Unix
-  ansible.builtin.shell: >-
-    kind completion fish > {{ user_home }}/.config/fish/completions/kind.fish
+- name: Generate Kind shell completions for Unix
+  ansible.builtin.shell: kind completion {{ item }} > /tmp/kind.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Kind shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/kind.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/kind"
+      shell: bash
+    - dest: "{{ fish_completion }}/kind.fish"
+      shell: fish
   when: ansible_system in ["Darwin", "Linux"]

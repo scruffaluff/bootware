@@ -1,0 +1,88 @@
+---
+- name: Get latest Watchexec version for Unix
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/watchexec.json
+  register: watchexec_formula
+  when: ansible_system != "Win32NT"
+
+- name: Install Watchexec for Alpine
+  become: true
+  community.general.apk:
+    name: watchexec
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Watchexec for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: watchexec
+  when: ansible_system == "FreeBSD"
+
+- name: Download Watchexec for Unix
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/watchexec/watchexec/releases/download/v{{
+      watchexec_formula.json.versions.stable }}/watchexec-{{
+      watchexec_formula.json.versions.stable }}-{{ watchexec_arch
+      }}-unknown-linux-gnu.tar.xz
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Install Watchexec for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/watchexec
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
+      watchexec_arch }}-unknown-linux-gnu/watchexec
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Install Watchexec for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: watchexec
+  when: ansible_system == "Darwin"
+
+- name: Install Watchexec for Windows
+  community.windows.win_scoop:
+    name: watchexec
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system != "Win32NT"
+
+- name: Install Watchexec shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
+      watchexec_arch }}-unknown-linux-gnu/completions/{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/watchexec"
+      shell: bash
+    - dest: "{{ fish_completion }}/watchexec.fish"
+      shell: fish
+  when: ansible_system != "Win32NT"

@@ -25,6 +25,7 @@
   community.general.homebrew:
     name:
       - bzip2
+      - gnu-tar
       - gnupg
       - unzip
       - xz

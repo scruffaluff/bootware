@@ -1,0 +1,99 @@
+---
+- name: Install Just for Alpine
+  become: true
+  community.general.apk:
+    name: just
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Just for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: just
+  when: ansible_system == "FreeBSD"
+
+- name: Install Just for Linux
+  ansible.builtin.package:
+    name: just
+  become: true
+  ignore_errors: true
+  register: just_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Just version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/just.json
+  register: just_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Download Just for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp/
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/casey/just/releases/download/{{
+      just_formula.json.versions.stable }}/just-{{
+      just_formula.json.versions.stable }}-{{ just_arch
+      }}-unknown-linux-musl.tar.gz
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Install Just for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/just
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/just
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
+    failed
+
+- name: Install Just for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: just
+  when: ansible_system == "Darwin"
+
+- name: Install Just for Windows
+  community.windows.win_scoop:
+    name: just
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system != "Win32NT"
+
+- name: Install Just shell completions for Unix
+  ansible.builtin.get_url:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    url: >-
+      https://raw.githubusercontent.com/casey/just/master/completions/just.{{
+      item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/just"
+      shell: bash
+    - dest: "{{ fish_completion }}/just.fish"
+      shell: fish
+  when: ansible_system != "Win32NT"

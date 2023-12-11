@@ -47,14 +47,6 @@
         - desktop
         - terminal
 
-    - name: Install AppImage packages
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.appimage
-      tags:
-        - appimage
-        - extras
-        - never
-
     - name: Install audio tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.audio
@@ -204,15 +196,6 @@
         - desktop
         - docker
         - server
-
-    - name: Install Docker Compose container orchestrator
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.docker_compose
-      tags:
-        - desktop
-        - docker_compose
-        - server
-        - wsl
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -492,6 +475,17 @@
         - sysadmin
         - wsl
 
+    - name: Install Just command runner
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.just
+      tags:
+        - container
+        - desktop
+        - just
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install K3d Kubernetes development cluster manager
       ansible.builtin.import_role:
         name: scruffaluff.bootware.k3d
@@ -681,16 +675,6 @@
         - powershell
         - server
         - shell
-
-    - name: Install Procs process viewer
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.procs
-      tags:
-        - container
-        - desktop
-        - procs
-        - server
-        - wsl
 
     - name: Install Python language
       ansible.builtin.import_role:
@@ -949,6 +933,13 @@
         - never
         - velero
 
+    - name: Install VLC video player
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.vlc
+      tags:
+        - desktop
+        - vlc
+
     - name: Install VSCode text exitor
       ansible.builtin.import_role:
         name: scruffaluff.bootware.vscode
@@ -956,6 +947,17 @@
         - desktop
         - editor
         - vscode
+
+    - name: Install Watchexec file watcher
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.watchexec
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - watchexec
+        - wsl
 
     - name: Install Web Assembly runtime
       ansible.builtin.import_role:
