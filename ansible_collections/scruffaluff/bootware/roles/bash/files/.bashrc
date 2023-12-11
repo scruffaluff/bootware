@@ -74,8 +74,10 @@ if [[ -n "${_tty}" ]]; then
   bind 'TAB:menu-complete'
 
   # Load Bash completion files.
-  source_files '/etc/bash_completion' '/etc/profile.d/bash_completion.sh' \
-    '/opt/homebrew/etc/bash_completion'
+  source_files '/etc/bash_completion' \
+    '/etc/profile.d/bash_completion.sh' \
+    '/opt/homebrew/etc/bash_completion' \
+    '/opt/homebrew/etc/profile.d/bash_completion.sh'
 fi
 
 # Add unified clipboard aliases.

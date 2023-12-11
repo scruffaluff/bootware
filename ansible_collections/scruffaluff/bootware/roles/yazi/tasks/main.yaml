@@ -87,24 +87,30 @@
     - yazi.toml
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Linux
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Install Yazi Fish shell completions for Linux
+- name: Install Yazi shell completions for Linux
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/fish/completions/yazi.fish"
+    dest: "{{ item.dest }}"
     force: true
-    group: "{{ group_id }}"
     mode: "644"
-    owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/completions/yazi.fish
+    src: >-
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/completions/yazi.{{ item.shell
+      }}
   become: true
+  loop:
+    - dest: /etc/bash_completion.d/yazi.bash
+      shell: bash
+    - dest: /etc/fish/completions/yazi.fish
+      shell: fish
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

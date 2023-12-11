@@ -1,5 +1,5 @@
 ---
-- name: Get latest Yq version
+- name: Get latest Yq version for FreeBSD and Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

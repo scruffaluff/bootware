@@ -95,7 +95,7 @@
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
-- name: Create Datree shell completion for Linux
+- name: Create Datree shell completions for Linux
   ansible.builtin.shell:
     cmd: datree completion {{ item }} > /tmp/datree.{{ item }}
   become: true
@@ -107,7 +107,7 @@
     - fish
   when: ansible_system == "Linux"
 
-- name: Install Datree shell completion for Linux
+- name: Install Datree shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true

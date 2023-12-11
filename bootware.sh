@@ -1162,15 +1162,15 @@ update_completions() {
     # MacOS.
     ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
     ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 664 '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} chmod 644 '/etc/bash_completion.d/bootware.bash'
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 664 '/etc/fish/completions/bootware.fish'
+    ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
   else
     mkdir -p "${HOME}/.config/fish/completions"
     curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 664 "${HOME}/.config/fish/completions/bootware.fish"
+    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }
 
