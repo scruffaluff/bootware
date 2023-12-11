@@ -974,7 +974,7 @@ setup_macos() {
   #
   # Flags:
   #   -d: Check if path exists and is a directory.
-  if [[ "$(uname -p)" == 'arm' && ! -d '/opt/homebrew' ]]; then
+  if [[ "$(uname -m)" == 'arm64' && ! -d '/opt/homebrew' ]]; then
     softwareupdate --agree-to-license --install-rosetta
   fi
 
@@ -1153,6 +1153,7 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
+  local brew_prefix os_type
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
   local bash_url="${repo_url}/completions/bootware.bash"
   local fish_url="${repo_url}/completions/bootware.fish"
@@ -1160,11 +1161,24 @@ update_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [[ -z "${2:-}" ]]; then
+    if [[ "$(uname -m)" == 'arm64' ]]; then
+      brew_prefix='/opt/homebrew'
+    else
+      brew_prefix='/usr/local'
+    fi
+    os_type="$(uname -s)"
+
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
-    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
-    ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+    if [[ "${os_type}" == 'Darwin' ]]; then
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o "${brew_prefix}/share/bash-completion/completions/bootware"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
+    else
+      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+    fi
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'

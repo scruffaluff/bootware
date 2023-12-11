@@ -55,7 +55,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system != "Win32NT"
 
@@ -80,7 +80,7 @@
     src: /tmp/helmfile.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/helmfile
+    - dest: "{{ bash_completion }}/helmfile"
       shell: bash
     - dest: /etc/fish/completions/helmfile.fish
       shell: fish

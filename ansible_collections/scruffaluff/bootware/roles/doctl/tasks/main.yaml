@@ -45,7 +45,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system != "Win32NT"
 
@@ -70,7 +70,7 @@
     src: /tmp/doctl.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/doctl
+    - dest: "{{ bash_completion }}/doctl"
       shell: bash
     - dest: /etc/fish/completions/doctl.fish
       shell: fish

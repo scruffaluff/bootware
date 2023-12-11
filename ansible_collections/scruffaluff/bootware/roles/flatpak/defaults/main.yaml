@@ -1,8 +1,3 @@
 ---
 flatpak_packages:
   - com.github.tchx84.Flatseal
-  - com.obsproject.Studio
-  - net.sonic_pi.SonicPi
-  - org.audacityteam.Audacity
-  - org.kde.kdenlive
-  - org.kicad.KiCad

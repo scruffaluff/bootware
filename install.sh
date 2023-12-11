@@ -176,11 +176,24 @@ install_completions() {
   # Flags:
   #   -z: Check if the string has zero length or is null.
   if [ -z "${2:-}" ]; then
+    if [ "$(uname -m)" = 'arm64' ]; then
+      brew_prefix='/opt/homebrew'
+    else
+      brew_prefix='/usr/local'
+    fi
+    os_type="$(uname -s)"
+
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
-    download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
-    ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+    if [ "${os_type}" = 'Darwin' ]; then
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
+      download "${1}" "${bash_url}" "${brew_prefix}/share/bash-completion/completions/bootware"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
+    else
+      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+      download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
+    fi
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'

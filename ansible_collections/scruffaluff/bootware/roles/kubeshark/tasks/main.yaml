@@ -55,7 +55,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -80,7 +80,7 @@
     src: /tmp/kubeshark.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/kubeshark
+    - dest: "{{ bash_completion }}/kubeshark"
       shell: bash
     - dest: /etc/fish/completions/kubeshark.fish
       shell: fish

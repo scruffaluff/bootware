@@ -132,7 +132,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system != "Win32NT"
 
@@ -145,7 +145,7 @@
       item.path }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/docker
+    - dest: "{{ bash_completion }}/docker"
       path: bash/docker
     - dest: /etc/fish/completions/docker.fish
       path: fish/docker.fish

@@ -49,7 +49,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system != "Win32NT"
 
@@ -74,7 +74,7 @@
     src: /tmp/miniserve.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/miniserve
+    - dest: "{{ bash_completion }}/miniserve"
       shell: bash
     - dest: /etc/fish/completions/miniserve.fish
       shell: fish

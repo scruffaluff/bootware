@@ -37,7 +37,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -61,7 +61,7 @@
     src: /tmp/kind.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/kind
+    - dest: "{{ bash_completion }}/kind"
       shell: bash
     - dest: /etc/fish/completions/kind.fish
       shell: fish

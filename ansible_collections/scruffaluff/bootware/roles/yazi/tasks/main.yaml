@@ -5,9 +5,9 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
-- name: Download Yazi for Linux
+- name: Download Yazi for Unix
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "777"
@@ -17,7 +17,7 @@
       yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
       }}-unknown-linux-gnu.zip
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install Yazi for Linux
   ansible.builtin.copy:
@@ -92,7 +92,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
@@ -107,7 +107,7 @@
       }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/yazi
+    - dest: "{{ bash_completion }}/yazi"
       shell: bash
     - dest: /etc/fish/completions/yazi.fish
       shell: fish

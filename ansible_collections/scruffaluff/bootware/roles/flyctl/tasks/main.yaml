@@ -53,7 +53,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -78,7 +78,7 @@
     src: /tmp/flyctl.{{ item.shell }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/flyctl
+    - dest: "{{ bash_completion }}/flyctl"
       shell: bash
     - dest: /etc/fish/completions/flyctl.fish
       shell: fish

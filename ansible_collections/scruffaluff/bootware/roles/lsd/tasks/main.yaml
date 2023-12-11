@@ -1,11 +1,11 @@
 ---
-- name: Get latest Lsd version
+- name: Get latest Lsd version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/lsd.json
   register: lsd_formula
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Install Lsd for FreeBSD
   become: true
@@ -13,7 +13,7 @@
     name: lsd
   when: ansible_system == "FreeBSD"
 
-- name: Download Lsd for Linux
+- name: Download Lsd for Unix
   ansible.builtin.unarchive:
     dest: /tmp/
     mode: "777"
@@ -24,7 +24,7 @@
       lsd_formula.json.versions.stable }}-{{ lsd_arch
       }}-unknown-linux-musl.tar.gz
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Install Lsd for Linux
   ansible.builtin.copy:
@@ -99,7 +99,7 @@
     state: directory
   become: true
   loop:
-    - /usr/share/bash-completion/completions
+    - "{{ bash_completion }}"
     - /etc/fish/completions
   when: ansible_system != "Win32NT"
 
@@ -114,7 +114,7 @@
       }}-unknown-linux-musl/autocomplete/lsd.{{ item.extension }}
   become: true
   loop:
-    - dest: /usr/share/bash-completion/completions/lsd
+    - dest: "{{ bash_completion }}/lsd"
       extension: bash-completion
     - dest: /etc/fish/completions/lsd.fish
       extension: fish
