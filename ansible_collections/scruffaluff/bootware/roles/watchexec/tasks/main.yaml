@@ -78,11 +78,11 @@
     remote_src: true
     src: >-
       /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-unknown-linux-gnu/completions/{{ item.source }}
+      watchexec_arch }}-unknown-linux-gnu/completions/{{ item.shell }}
   become: true
   loop:
     - dest: /etc/bash_completion.d/watchexec.bash
-      source: bash
+      shell: bash
     - dest: /etc/fish/completions/watchexec.fish
-      source: fish
+      shell: fish
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

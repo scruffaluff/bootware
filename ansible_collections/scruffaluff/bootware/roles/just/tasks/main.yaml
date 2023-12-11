@@ -93,13 +93,13 @@
     mode: "644"
     url: >-
       https://raw.githubusercontent.com/casey/just/master/completions/just.{{
-      item.source }}
+      item.shell }}
   become: true
   loop:
     - dest: /etc/bash_completion.d/just.bash
-      source: bash
+      shell: bash
     - dest: /etc/fish/completions/just.fish
-      source: fish
+      shell: fish
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
     failed

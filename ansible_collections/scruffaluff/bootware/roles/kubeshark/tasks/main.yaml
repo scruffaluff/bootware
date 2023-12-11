@@ -7,14 +7,6 @@
   register: kubeshark_release_unix
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
-- name: Get latest Kubeshark version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
-  register: kubeshark_release_windows
-  when: ansible_system == "Win32NT"
-
 - name: Install Kubeshark for Unix
   ansible.builtin.get_url:
     dest: /usr/local/bin/kubeshark
@@ -26,6 +18,14 @@
       lower }}_{{ system_architecture }}
   become: true
   when: ansible_system not in ["FreeBSD", "Win32NT"]
+
+- name: Get latest Kubeshark version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
+  register: kubeshark_release_windows
+  when: ansible_system == "Win32NT"
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
