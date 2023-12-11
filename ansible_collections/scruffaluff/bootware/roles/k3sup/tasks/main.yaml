@@ -35,24 +35,40 @@
     name: k3sup
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system in ["Darwin", "Linux"]
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
+  when: ansible_system == "Linux"
 
-- name: Install K3sup Fish completion for Unix
+- name: Create K3sup shell completions for Linux
   ansible.builtin.shell:
-    cmd: >-
-      k3sup completion fish > {{ user_home
-      }}/.config/fish/completions/k3sup.fish
+    cmd: k3sup completion {{ item }} > /tmp/k3sup.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
-  when: ansible_system in ["Darwin", "Linux"]
+  loop:
+    - bash
+    - fish
+  when: ansible_system == "Linux"
+
+- name: Install K3sup shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/k3sup.{{ item.shell }}
+  become: true
+  loop:
+    - dest: /etc/bash_completion.d/k3sup.bash
+      shell: bash
+    - dest: /etc/fish/completions/k3sup.fish
+      shell: fish
+  when: ansible_system == "Linux"

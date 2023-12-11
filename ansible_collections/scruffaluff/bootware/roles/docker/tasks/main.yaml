@@ -125,25 +125,31 @@
   become: true
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
+  when: ansible_system == "Linux"
 
-- name: Install Docker Fish shell completions for Unix
+- name: Install Docker shell completions for Linux
   ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/fish/completions/docker.fish"
-    group: "{{ group_id }}"
+    dest: "{{ item.dest }}"
     mode: "644"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/docker/cli/master/contrib/completion/fish/docker.fish
+    url: >-
+      https://raw.githubusercontent.com/docker/cli/master/contrib/completion/{{
+      item.path }}
   become: true
-  when: ansible_system != "Win32NT"
+  loop:
+    - dest: /etc/bash_completion.d/docker.bash
+      path: bash/docker
+    - dest: /etc/fish/completions/docker.fish
+      path: fish/docker.fish
+  when: ansible_system == "Linux"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
