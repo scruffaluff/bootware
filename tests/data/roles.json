@@ -220,15 +220,6 @@
     "tests": ["pwsh --version"]
   },
   {
-    "name": "procs",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "ubuntu" },
-      { "os": "freebsd" }
-    ],
-    "tests": ["procs --version"]
-  },
-  {
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
@@ -298,7 +289,8 @@
     "name": "vlc",
     "tests": {
       "default": ["vlc --version"],
-      "linux": ["flatpak info org.videolan.VLC"]
+      "linux": ["flatpak info org.videolan.VLC"],
+      "windows": ["scoop prefix vlc"]
     }
   },
   {

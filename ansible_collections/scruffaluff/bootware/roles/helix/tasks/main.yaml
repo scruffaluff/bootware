@@ -26,7 +26,7 @@
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://formulae.brew.sh/api/formula/croc.json
+    url: https://formulae.brew.sh/api/formula/helix.json
   register: helix_formula
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
