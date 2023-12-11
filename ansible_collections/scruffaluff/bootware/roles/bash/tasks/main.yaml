@@ -2,7 +2,9 @@
 - name: Install Bash for FreeBSD
   become: true
   community.general.pkgng:
-    name: bash
+    name:
+      - bash
+      - bash-completion
   when: ansible_system == "FreeBSD"
 
 - name: Install Bash for Linux
@@ -19,7 +21,7 @@
   community.general.homebrew:
     name:
       - bash
-      - bash-completion
+      - bash-completion@2
   when: ansible_system == "Darwin"
 
 - name: Copy Bash non-login settings file for Unix

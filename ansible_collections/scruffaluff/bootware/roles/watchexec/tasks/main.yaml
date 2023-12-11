@@ -66,7 +66,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -81,7 +81,7 @@
       watchexec_arch }}-unknown-linux-gnu/completions/{{ item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/watchexec.bash
+    - dest: /usr/share/bash-completion/completions/watchexec
       shell: bash
     - dest: /etc/fish/completions/watchexec.fish
       shell: fish

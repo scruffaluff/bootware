@@ -30,7 +30,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -53,7 +53,7 @@
     src: /tmp/restic.{{ item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/restic.bash
+    - dest: /usr/share/bash-completion/completions/restic
       shell: bash
     - dest: /etc/fish/completions/restic.fish
       shell: fish

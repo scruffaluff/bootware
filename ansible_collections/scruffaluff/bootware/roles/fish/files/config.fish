@@ -156,16 +156,6 @@ else if type -q wl-copy
   alias cbpaste wl-paste
 end
 
-# Digital Ocean settings.
-
-# Initialize Digital Ocean CLI if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q doctl
-  source (doctl completion fish | psub)
-end
-
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
@@ -224,15 +214,6 @@ end
 set --export GOPATH "$HOME/.go"
 prepend_paths "$GOPATH/bin"
 
-# Google Cloud Platform settings.
-
-# Initialize GCloud if on MacOS and available.
-#
-# GCloud completion is provided on Linux via a Fish package.
-if test "$_os" = 'Darwin'
-  source_files "$_brew_prefix/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc"
-end
-
 # Helix settings.
 
 # Set full color support for terminal and default editor to Helix.
@@ -248,11 +229,6 @@ end
 
 # Add Kubectl plugins to system path.
 prepend_paths "$HOME/.krew/bin"
-
-# Procs settings.
-
-# Set Procs theeme explicity since its automatic theme detection is incorrect.
-alias procs 'procs --theme light'
 
 # Python settings.
 

@@ -178,9 +178,9 @@ install_completions() {
   if [ -z "${2:-}" ]; then
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
-    download "${1}" "${bash_url}" '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 644 '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+    download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
+    ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'

@@ -132,7 +132,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -145,7 +145,7 @@
       item.path }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/docker.bash
+    - dest: /usr/share/bash-completion/completions/docker
       path: bash/docker
     - dest: /etc/fish/completions/docker.fish
       path: fish/docker.fish

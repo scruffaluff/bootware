@@ -15,10 +15,10 @@ check() {
 }
 
 package() {
-  mkdir -p "${pkgdir}/etc/bash_completion.d" \
+  mkdir -p "${pkgdir}/usr/share/bash-completion/completions" \
     "${pkgdir}/etc/fish/completions" "${pkgdir}/usr/share/man/man1" \
     "${pkgdir}/usr/local/bin"
-  mv bootware.bash "${pkgdir}/etc/bash_completion.d/bootware.bash"
+  mv bootware.bash "${pkgdir}/usr/share/bash-completion/completions/bootware"
   mv bootware.fish "${pkgdir}/etc/fish/completions/bootware.fish"
   mv bootware.1 "${pkgdir}/usr/share/man/man1/bootware.1"
   install -Dm 755 bootware "${pkgdir}/usr/bin/bootware"

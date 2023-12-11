@@ -42,7 +42,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -67,7 +67,7 @@
     src: /tmp/k3sup.{{ item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/k3sup.bash
+    - dest: /usr/share/bash-completion/completions/k3sup
       shell: bash
     - dest: /etc/fish/completions/k3sup.fish
       shell: fish

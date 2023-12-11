@@ -197,15 +197,6 @@
         - docker
         - server
 
-    - name: Install Docker Compose container orchestrator
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.docker_compose
-      tags:
-        - desktop
-        - docker_compose
-        - server
-        - wsl
-
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.doctl

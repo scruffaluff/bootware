@@ -16,6 +16,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Move shell completions to system folders.
 - Simplified shell profiles.
 
 ### Fixed
@@ -24,7 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Appimage and Procs roles.
+- Appimage, Docker Compose, and Procs roles.
 
 ## 0.7.3 - 2023-12-02
 

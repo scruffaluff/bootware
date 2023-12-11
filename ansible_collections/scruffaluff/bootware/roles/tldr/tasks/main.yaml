@@ -74,7 +74,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -87,7 +87,7 @@
       tldr_formula.json.versions.stable }}/completions_{{ item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/tldr.bash
+    - dest: /usr/share/bash-completion/completions/tldr
       shell: bash
     - dest: /etc/fish/completions/tldr.fish
       shell: fish

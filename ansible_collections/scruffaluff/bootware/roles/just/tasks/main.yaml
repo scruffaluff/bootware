@@ -53,9 +53,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: >-
-      /tmp/just-{{ just_formula.json.versions.stable }}-{{ just_arch
-      }}-unknown-linux-musl/just
+    src: /tmp/just
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
@@ -80,7 +78,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
@@ -96,7 +94,7 @@
       item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/just.bash
+    - dest: /usr/share/bash-completion/completions/just
       shell: bash
     - dest: /etc/fish/completions/just.fish
       shell: fish

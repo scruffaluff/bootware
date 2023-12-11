@@ -94,7 +94,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -109,7 +109,7 @@
       }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/yazi.bash
+    - dest: /usr/share/bash-completion/completions/yazi
       shell: bash
     - dest: /etc/fish/completions/yazi.fish
       shell: fish

@@ -58,7 +58,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -83,7 +83,7 @@
     src: /tmp/kubectl.{{ item.shell }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/kubectl.bash
+    - dest: /usr/share/bash-completion/completions/kubectl
       shell: bash
     - dest: /etc/fish/completions/kubectl.fish
       shell: fish

@@ -99,7 +99,7 @@
     state: directory
   become: true
   loop:
-    - /etc/bash_completion.d
+    - /usr/share/bash-completion/completions
     - /etc/fish/completions
   when: ansible_system == "Linux"
 
@@ -114,7 +114,7 @@
       }}-unknown-linux-musl/autocomplete/lsd.{{ item.extension }}
   become: true
   loop:
-    - dest: /etc/bash_completion.d/lsd.bash
+    - dest: /usr/share/bash-completion/completions/lsd
       extension: bash-completion
     - dest: /etc/fish/completions/lsd.fish
       extension: fish

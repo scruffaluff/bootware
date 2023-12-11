@@ -88,23 +88,6 @@
     name: google-cloud-sdk
   when: ansible_system == "FreeBSD"
 
-- name: Check if Fish executable is available
-  ansible.builtin.stat:
-    path: "{{ fish_executable }}"
-  register: gcloud_fish
-  when: ansible_system == "Linux"
-
-- name: Install Google Cloud SDK Fish completion for Linux
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.config/fish/config.fish
-      fisher install aliz-ai/google-cloud-sdk-fish-completion
-    executable: "{{ fish_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: true
-  when: ansible_system == "Linux" and gcloud_fish.stat.exists
-
 - name: Install Google Cloud SDK for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true

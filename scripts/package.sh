@@ -148,11 +148,11 @@ deb() {
   export version="${1}"
   build="$(mktemp --directory)"
 
-  mkdir -p "${build}/DEBIAN" "${build}/etc/bash_completion.d" \
+  mkdir -p "${build}/DEBIAN" "${build}/usr/share/bash-completion/completions" \
     "${build}/etc/fish/completions" "${build}/usr/bin" \
     "${build}/usr/share/man/man1" dist
 
-  cp completions/bootware.bash "${build}/etc/bash_completion.d/"
+  cp completions/bootware.bash "${build}/usr/share/bash-completion/completions/"
   cp completions/bootware.fish "${build}/etc/fish/completions/"
   cp completions/bootware.man "${build}/usr/share/man/man1/bootware.1"
   cp bootware.sh "${build}/usr/bin/bootware"

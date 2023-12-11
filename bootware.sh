@@ -1160,9 +1160,9 @@ update_completions() {
   if [[ -z "${2:-}" ]]; then
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    ${1:+"${1}"} mkdir -p '/etc/bash_completion.d'
-    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/etc/bash_completion.d/bootware.bash'
-    ${1:+"${1}"} chmod 644 '/etc/bash_completion.d/bootware.bash'
+    ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
+    ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
+    ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
 
     ${1:+"${1}"} mkdir -p '/etc/fish/completions'
     ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'

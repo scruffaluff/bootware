@@ -49,8 +49,7 @@
   { "name": "desktop_environment" },
   { "name": "dust", "tests": ["dust --version"] },
   { "name": "doctl", "tests": ["doctl version"] },
-  { "name": "docker", "tests": ["docker --version"] },
-  { "name": "docker_compose", "tests": ["docker compose --help"] },
+  { "name": "docker", "tests": ["docker --version", "docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "etcher",
