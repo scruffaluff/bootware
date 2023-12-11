@@ -56,7 +56,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
 - name: Create Helmfile shell completions for Unix
@@ -82,6 +82,6 @@
   loop:
     - dest: "{{ bash_completion }}/helmfile"
       shell: bash
-    - dest: /etc/fish/completions/helmfile.fish
+    - dest: "{{ fish_completion }}/helmfile.fish"
       shell: fish
   when: ansible_system != "Win32NT"

@@ -76,6 +76,8 @@ if [[ -n "${_tty}" ]]; then
   # Load Bash completion.
   if [[ "${_os}" == 'Darwin' ]]; then
     source_files "${_brew_prefix}/etc/profile.d/bash_completion.sh"
+  elif [[ "${_os}" == 'FreeBSD' ]]; then
+    source_files '/usr/local/share/bash-completion/bash_completion'
   else
     source_files '/usr/share/bash-completion/bash_completion'
   fi

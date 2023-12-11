@@ -75,7 +75,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
 - name: Install TLDR shell completions for Unix
@@ -89,6 +89,6 @@
   loop:
     - dest: "{{ bash_completion }}/tldr"
       shell: bash
-    - dest: /etc/fish/completions/tldr.fish
+    - dest: "{{ fish_completion }}/tldr.fish"
       shell: fish
   when: ansible_system != "Win32NT"

@@ -79,7 +79,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
 - name: Install Just shell completions for Unix
@@ -94,6 +94,6 @@
   loop:
     - dest: "{{ bash_completion }}/just"
       shell: bash
-    - dest: /etc/fish/completions/just.fish
+    - dest: "{{ fish_completion }}/just.fish"
       shell: fish
   when: ansible_system != "Win32NT"

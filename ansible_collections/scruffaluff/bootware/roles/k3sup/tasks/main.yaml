@@ -43,7 +43,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create K3sup shell completions for Unix
@@ -69,6 +69,6 @@
   loop:
     - dest: "{{ bash_completion }}/k3sup"
       shell: bash
-    - dest: /etc/fish/completions/k3sup.fish
+    - dest: "{{ fish_completion }}/k3sup.fish"
       shell: fish
   when: ansible_system in ["Darwin", "Linux"]

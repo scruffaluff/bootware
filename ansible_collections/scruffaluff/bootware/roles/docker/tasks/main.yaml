@@ -133,7 +133,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
 - name: Install Docker shell completions for Unix
@@ -147,7 +147,7 @@
   loop:
     - dest: "{{ bash_completion }}/docker"
       path: bash/docker
-    - dest: /etc/fish/completions/docker.fish
+    - dest: "{{ fish_completion }}/docker.fish"
       path: fish/docker.fish
   when: ansible_system != "Win32NT"
 

@@ -100,7 +100,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
 - name: Install Lsd shell completions for Unix
@@ -116,6 +116,6 @@
   loop:
     - dest: "{{ bash_completion }}/lsd"
       extension: bash-completion
-    - dest: /etc/fish/completions/lsd.fish
+    - dest: "{{ fish_completion }}/lsd.fish"
       extension: fish
   when: ansible_system != "Win32NT"

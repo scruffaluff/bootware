@@ -189,15 +189,27 @@ install_completions() {
       ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
       download "${1}" "${bash_url}" "${brew_prefix}/share/bash-completion/completions/bootware"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
+
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
+      download "${1}" "${fish_url}" "${brew_prefix}/etc/fish/completions/bootware.fish"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
+    elif [ "${os_type}" = 'FreeBSD' ]; then
+      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
+      download "${1}" "${bash_url}" '/usr/local/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
+      download "${1}" "${fish_url}" '/usr/local/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
     else
       ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
       download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
       ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
-    fi
 
-    ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-    download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
+      download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+    fi
   else
     mkdir -p "${HOME}/.local/share/bash-completion/completions"
     download "" "${bash_url}" "${HOME}/.local/share/bash-completion/completions/bootware"

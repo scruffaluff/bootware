@@ -22,6 +22,16 @@
   register: helix_linux
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
+- name: Make Helix command symlink for Arch
+  ansible.builtin.file:
+    src: /usr/sbin/helix
+    dest: /usr/sbin/hx
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_pkg_mgr == "pacman" and helix_linux is success
+
 - name: Get latest Helix version
   ansible.builtin.uri:
     method: GET

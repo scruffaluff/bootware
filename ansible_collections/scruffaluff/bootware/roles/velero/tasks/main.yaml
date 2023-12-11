@@ -52,7 +52,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Velero shell completions for Unix
@@ -78,6 +78,6 @@
   loop:
     - dest: "{{ bash_completion }}/velero"
       shell: bash
-    - dest: /etc/fish/completions/velero.fish
+    - dest: "{{ fish_completion }}/velero.fish"
       shell: fish
   when: ansible_system in ["Darwin", "Linux"]

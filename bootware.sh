@@ -1174,15 +1174,27 @@ update_completions() {
       ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
       ${1:+"${1}"} curl -LSfs "${bash_url}" -o "${brew_prefix}/share/bash-completion/completions/bootware"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
+
+      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o "${brew_prefix}/etc/fish/completions/bootware.fish"
+      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
+    elif [[ "${os_type}" == 'FreeBSD' ]]; then
+      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/local/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
+
+      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/usr/local/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
     else
       ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
       ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
       ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
-    fi
 
-    ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-    ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
-    ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+    fi
   else
     mkdir -p "${HOME}/.local/share/bash-completion/completions"
     curl -LSfs "${bash_url}" -o "${HOME}/.local/share/bash-completion/completions/bootware"

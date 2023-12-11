@@ -10,20 +10,27 @@ user_home: "{{ user_home_.get(ansible_system, '/home/' + user_id) }}"
 
 bash_completion_:
   Darwin: >-
-    {{ '/opt/homebrew/share/bash-completion/completions' if ansible_processor ==
-    'Apple M1' else '/usr/local/share/bash-completion/completions' }}
-  FreeBSD: /usr/share/bash-completion/completions
+    {{ '/opt/homebrew/share/bash-completion/completions' if ansible_architecture
+    in ['aarch64', 'arm64'] else '/usr/local/share/bash-completion/completions'
+    }}
+  FreeBSD: /usr/local/share/bash-completion/completions
   Linux: /usr/share/bash-completion/completions
 bash_executable_:
   Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local'
-    }}/bin/bash
+    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+    '/usr/local' }}/bin/bash
   FreeBSD: /usr/local/bin/bash
   Linux: /bin/bash
+fish_completion_:
+  Darwin: >-
+    {{ '/opt/homebrew/etc/fish/completions' if ansible_architecture in
+    ['aarch64', 'arm64'] else '/usr/local/etc/fish/completions' }}
+  FreeBSD: /usr/local/etc/fish/completions
+  Linux: /etc/fish/completions
 fish_executable_:
   Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local'
-    }}/bin/fish
+    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+    '/usr/local' }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
 gnome_desktops_:
@@ -51,8 +58,8 @@ ubuntu_distros_:
   - Zorin OS
 user_shell_:
   Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture == 'arm64' else '/usr/local'
-    }}/bin/fish
+    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+    '/usr/local' }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
   Win32NT: "C:/Program Files/PowerShell/7/pwsh.exe"
@@ -64,6 +71,8 @@ deb_distro_base:
   "{{ 'ubuntu' if ansible_distribution in ubuntu_distros_ else 'debian' }}"
 desktop: "{{ lookup('env', 'DESKTOP_SESSION') }}"
 display_manager: "{{ lookup('env', 'XDG_SESSION_TYPE') }}"
+fish_completion: >-
+  {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
 fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
 gnome_desktop: "{{ desktop in gnome_desktops_ }}"

@@ -38,7 +38,7 @@
   become: true
   loop:
     - "{{ bash_completion }}"
-    - /etc/fish/completions
+    - "{{ fish_completion }}"
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Generate Kind shell completions for Unix
@@ -63,6 +63,6 @@
   loop:
     - dest: "{{ bash_completion }}/kind"
       shell: bash
-    - dest: /etc/fish/completions/kind.fish
+    - dest: "{{ fish_completion }}/kind.fish"
       shell: fish
   when: ansible_system in ["Darwin", "Linux"]
