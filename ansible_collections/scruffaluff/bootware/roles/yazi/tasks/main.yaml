@@ -1,5 +1,5 @@
 ---
-- name: Get latest Yazi version
+- name: Get latest Yazi version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -49,8 +49,7 @@
     path: "{{ user_home }}/.config/yazi"
     state: directory
   become: true
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Copy Yazi configuration files for Unix
   ansible.builtin.copy:
@@ -65,8 +64,7 @@
     - keymap.toml
     - theme.toml
     - yazi.toml
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Create Yazi configuration directory for Windows
   ansible.windows.win_file:
@@ -87,7 +85,7 @@
     - yazi.toml
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -96,9 +94,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
-- name: Install Yazi shell completions for Linux
+- name: Install Yazi shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -113,4 +111,4 @@
       shell: bash
     - dest: /etc/fish/completions/yazi.fish
       shell: fish
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"

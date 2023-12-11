@@ -1,5 +1,5 @@
 ---
-- name: Get latest K3sup version
+- name: Get latest K3sup version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -35,7 +35,7 @@
     name: k3sup
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -44,9 +44,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create K3sup shell completions for Linux
+- name: Create K3sup shell completions for Unix
   ansible.builtin.shell:
     cmd: k3sup completion {{ item }} > /tmp/k3sup.{{ item }}
   become: true
@@ -56,9 +56,9 @@
   loop:
     - bash
     - fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install K3sup shell completions for Linux
+- name: Install K3sup shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -71,4 +71,4 @@
       shell: bash
     - dest: /etc/fish/completions/k3sup.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]

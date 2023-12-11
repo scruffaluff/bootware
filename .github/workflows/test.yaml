@@ -210,7 +210,7 @@ jobs:
     # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
     # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository

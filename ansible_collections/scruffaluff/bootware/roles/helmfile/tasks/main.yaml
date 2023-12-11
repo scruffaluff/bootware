@@ -1,17 +1,17 @@
 ---
-- name: Get latest Helmfile version
+- name: Install Helmfile for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: helmfile
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Helmfile version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/helmfile.json
   register: helmfile_formula
   when: ansible_system == "Linux"
-
-- name: Install Helmfile for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: helmfile
-  when: ansible_system == "FreeBSD"
 
 - name: Download Helmfile for Linux
   ansible.builtin.unarchive:
@@ -48,7 +48,7 @@
     name: helmfile
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -57,7 +57,7 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Create Helmfile shell completions for Unix
   ansible.builtin.shell:
@@ -69,9 +69,9 @@
   loop:
     - bash
     - fish
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
-- name: Install Helmfile shell completions for Linux
+- name: Install Helmfile shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -84,4 +84,4 @@
       shell: bash
     - dest: /etc/fish/completions/helmfile.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"

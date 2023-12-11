@@ -84,7 +84,7 @@
     src: "{{ ansible_env.TEMP }}/datree/datree.exe"
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -93,9 +93,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Datree shell completions for Linux
+- name: Create Datree shell completions for Unix
   ansible.builtin.shell:
     cmd: datree completion {{ item }} > /tmp/datree.{{ item }}
   become: true
@@ -105,9 +105,9 @@
   loop:
     - bash
     - fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Datree shell completions for Linux
+- name: Install Datree shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -120,4 +120,4 @@
       shell: bash
     - dest: /etc/fish/completions/datree.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]

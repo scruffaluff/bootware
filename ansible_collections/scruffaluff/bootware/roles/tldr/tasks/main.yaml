@@ -1,5 +1,5 @@
 ---
-- name: Get latest TLDR version
+- name: Get latest TLDR version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -67,7 +67,7 @@
   register: tldr_update
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -76,9 +76,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
-- name: Install TLDR shell completions for Linux
+- name: Install TLDR shell completions for Unix
   ansible.builtin.get_url:
     dest: "{{ item.dest }}"
     mode: "644"
@@ -91,4 +91,4 @@
       shell: bash
     - dest: /etc/fish/completions/tldr.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"

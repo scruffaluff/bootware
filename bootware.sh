@@ -51,7 +51,9 @@ Options:
 
 Ansible Options:
 EOF
-      ansible --help
+      if [[ ! -x "$(command -v ansible)" ]]; then
+        ansible --help
+      fi
       ;;
     config)
       cat 1>&2 << EOF
@@ -1168,6 +1170,10 @@ update_completions() {
     ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
     ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
   else
+    mkdir -p "${HOME}/.local/share/bash-completion/completions"
+    curl -LSfs "${bash_url}" -o "${HOME}/.local/share/bash-completion/completions/bootware"
+    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
+
     mkdir -p "${HOME}/.config/fish/completions"
     curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
     chmod 644 "${HOME}/.config/fish/completions/bootware.fish"

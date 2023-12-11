@@ -1,12 +1,4 @@
 ---
-- name: Get latest Watchexec version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/watchexec.json
-  register: watchexec_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install Watchexec for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,14 @@
   community.general.pkgng:
     name: watchexec
   when: ansible_system == "FreeBSD"
+
+- name: Get latest Watchexec version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/watchexec.json
+  register: watchexec_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download Watchexec for Linux
   ansible.builtin.unarchive:
@@ -59,7 +59,7 @@
     name: watchexec
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -68,9 +68,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT"
 
-- name: Install Watchexec shell completions for Linux
+- name: Install Watchexec shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -85,4 +85,4 @@
       shell: bash
     - dest: /etc/fish/completions/watchexec.fish
       shell: fish
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT"

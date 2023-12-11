@@ -52,7 +52,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src:
+    src: >-
       /tmp/helix-{{ helix_formula.json.versions.stable }}-{{ helix_arch
       }}-linux/hx
   become: true

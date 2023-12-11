@@ -71,7 +71,7 @@
     name: just
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -80,11 +80,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
-    failed
+  when: ansible_system != "Win32NT"
 
-- name: Install Just shell completions for Linux
+- name: Install Just shell completions for Unix
   ansible.builtin.get_url:
     dest: "{{ item.dest }}"
     force: true
@@ -98,6 +96,4 @@
       shell: bash
     - dest: /etc/fish/completions/just.fish
       shell: fish
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
-    failed
+  when: ansible_system != "Win32NT"

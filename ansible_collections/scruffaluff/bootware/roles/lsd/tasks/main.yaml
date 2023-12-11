@@ -92,7 +92,7 @@
     - config.yaml
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -101,7 +101,7 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"
 
 - name: Install Lsd shell completions for Unix
   ansible.builtin.copy:
@@ -118,4 +118,4 @@
       extension: bash-completion
     - dest: /etc/fish/completions/lsd.fish
       extension: fish
-  when: ansible_system == "Linux"
+  when: ansible_system != "Win32NT"

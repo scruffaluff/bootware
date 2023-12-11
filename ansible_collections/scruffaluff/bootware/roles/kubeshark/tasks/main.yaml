@@ -5,7 +5,7 @@
     return_content: true
     url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
   register: kubeshark_release_unix
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Kubeshark for Unix
   ansible.builtin.get_url:
@@ -17,7 +17,7 @@
       kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
       lower }}_{{ system_architecture }}
   become: true
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Get latest Kubeshark version for Windows
   ansible.windows.win_uri:
@@ -48,7 +48,7 @@
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -57,7 +57,7 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Kubeshark shell completions for Unix
   ansible.builtin.shell:
@@ -69,9 +69,9 @@
   loop:
     - bash
     - fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Kubeshark shell completions for Linux
+- name: Install Kubeshark shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -84,4 +84,4 @@
       shell: bash
     - dest: /etc/fish/completions/kubeshark.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]

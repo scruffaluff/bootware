@@ -186,6 +186,10 @@ install_completions() {
     download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
     ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
   else
+    mkdir -p "${HOME}/.local/share/bash-completion/completions"
+    download "" "${bash_url}" "${HOME}/.local/share/bash-completion/completions/bootware"
+    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
+
     mkdir -p "${HOME}/.config/fish/completions"
     download "" "${fish_url}" "${HOME}/.config/fish/completions/bootware.fish"
     chmod 644 "${HOME}/.config/fish/completions/bootware.fish"

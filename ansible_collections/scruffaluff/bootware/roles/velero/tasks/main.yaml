@@ -1,5 +1,5 @@
 ---
-- name: Get latest Velero version
+- name: Get latest Velero version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -44,7 +44,7 @@
     name: velero
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -53,9 +53,9 @@
   loop:
     - /usr/share/bash-completion/completions
     - /etc/fish/completions
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Velero shell completions for Linux
+- name: Create Velero shell completions for Unix
   ansible.builtin.shell:
     cmd: velero completion {{ item }} > /tmp/velero.{{ item }}
   become: true
@@ -65,9 +65,9 @@
   loop:
     - bash
     - fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Velero shell completions for Linux
+- name: Install Velero shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -80,4 +80,4 @@
       shell: bash
     - dest: /etc/fish/completions/velero.fish
       shell: fish
-  when: ansible_system == "Linux"
+  when: ansible_system in ["Darwin", "Linux"]
