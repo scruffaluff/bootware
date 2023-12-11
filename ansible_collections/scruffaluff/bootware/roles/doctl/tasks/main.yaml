@@ -38,24 +38,40 @@
     name: doctl
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
+  when: ansible_system == "Linux"
 
-- name: Install Digital Ocean CLI Fish completion for Unix
+- name: Create Digital Ocean CLI shell completions for Linux
   ansible.builtin.shell:
-    cmd: >-
-      doctl completion fish > {{ user_home
-      }}/.config/fish/completions/doctl.fish
+    cmd: doctl completion {{ item }} > /tmp/doctl.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
-  when: ansible_system != "Win32NT"
+  loop:
+    - bash
+    - fish
+  when: ansible_system == "Linux"
+
+- name: Install Digital Ocean CLI shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/doctl.{{ item.shell }}
+  become: true
+  loop:
+    - dest: /etc/bash_completion.d/doctl.bash
+      shell: bash
+    - dest: /etc/fish/completions/doctl.fish
+      shell: fish
+  when: ansible_system == "Linux"

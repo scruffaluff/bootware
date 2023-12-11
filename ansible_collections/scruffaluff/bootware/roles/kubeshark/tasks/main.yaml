@@ -48,24 +48,40 @@
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
   when: ansible_system == "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ item }}"
     state: directory
   become: true
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  loop:
+    - /etc/bash_completion.d
+    - /etc/fish/completions
+  when: ansible_system == "Linux"
 
-- name: Install Kubeshark Fish completion for Unix
+- name: Create Kubeshark shell completions for Unix
   ansible.builtin.shell:
-    cmd: >-
-      kubeshark completion fish > {{ user_home
-      }}/.config/fish/completions/kubeshark.fish
+    cmd: kubeshark completion {{ item }} > /tmp/kubeshark.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
     PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  loop:
+    - bash
+    - fish
+  when: ansible_system == "Linux"
+
+- name: Install Kubeshark shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/kubeshark.{{ item.shell }}
+  become: true
+  loop:
+    - dest: /etc/bash_completion.d/kubeshark.bash
+      shell: bash
+    - dest: /etc/fish/completions/kubeshark.fish
+      shell: fish
+  when: ansible_system == "Linux"
