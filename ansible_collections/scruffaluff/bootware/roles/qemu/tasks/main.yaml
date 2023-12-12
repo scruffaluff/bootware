@@ -41,12 +41,11 @@
   become: true
   when: ansible_pkg_mgr == "dnf"
 
+# FreeBSD "qemu" package is incompatible with "qemu-tools" package.
 - name: Install QEMU for FreeBSD
   become: true
   community.general.pkgng:
-    name:
-      - qemu
-      - qemu-tools
+    name: qemu
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for MacOS

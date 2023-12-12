@@ -11,6 +11,18 @@
   become: true
   when: ansible_system == "Linux"
 
+# Debian Bat package installs Bat as command "batcat" since another package
+# installs the command "bat".
+- name: Make Bat command symlink for Debian
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: /usr/bin/bat
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install Bat for MacOS
   become: true
   become_user: "{{ user_id }}"

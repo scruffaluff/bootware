@@ -302,7 +302,11 @@
     }
   },
   { "name": "wasm" },
-  { "name": "watchexec", "tests": ["watchexec --version"] },
+  {
+    "name": "watchexec",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["watchexec --version"]
+  },
   {
     "name": "wezterm",
     "tests": {

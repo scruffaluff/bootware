@@ -120,13 +120,6 @@ If (Get-Module -ListAvailable -Name BootwareCompletion) {
     Import-Module BootwareCompletion
 }
 
-# Chocolatey settings.
-
-# Load Chocolatey autocompletion if available.
-If (Test-Path "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1") {
-    Import-Module "$Env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-}
-
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
@@ -189,26 +182,9 @@ If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
 }
 
-# Scoop settings.
-
-# Load Scoop autocompletion if available.
-If (Get-Module -ListAvailable -Name scoop-completion) {
-    Import-Module scoop-completion
-}
-
-# TypeScript settings.
-
-# Load Deno autocompletion if available.
-If (Get-Module -ListAvailable -Name DenoCompletion) {
-    Import-Module DenoCompletion
-}
-
 # User settings.
 
 # Load user aliases, secrets, and variables.
-If (Test-Path "$HOME/.aliases.ps1") {
-    . "$HOME/.aliases.ps1"
-}
 If (Test-Path "$HOME/.env.ps1") {
     . "$HOME/.env.ps1"
 }

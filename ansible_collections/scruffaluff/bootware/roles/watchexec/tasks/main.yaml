@@ -5,7 +5,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/watchexec.json
   register: watchexec_formula
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Watchexec for Alpine
   become: true
@@ -15,12 +15,6 @@
     state: latest
     update_cache: true
   when: ansible_pkg_mgr == "apk"
-
-- name: Install Watchexec for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: watchexec
-  when: ansible_system == "FreeBSD"
 
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
@@ -33,7 +27,7 @@
       watchexec_formula.json.versions.stable }}-{{ watchexec_arch
       }}-unknown-linux-gnu.tar.xz
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Watchexec for Linux
   ansible.builtin.copy:
@@ -68,7 +62,7 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Watchexec shell completions for Unix
   ansible.builtin.copy:
@@ -85,4 +79,4 @@
       shell: bash
     - dest: "{{ fish_completion }}/watchexec.fish"
       shell: fish
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
