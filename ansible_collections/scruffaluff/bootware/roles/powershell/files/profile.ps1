@@ -161,6 +161,11 @@ If (Get-Command hx -ErrorAction SilentlyContinue) {
     $Env:EDITOR = 'hx'
 }
 
+# Just settings.
+
+# Add alias for account wide Just recipes.
+Set-Alias -Name jt -Value New-Item
+
 # Python settings.
 
 # Fix Poetry package install issue on headless systems.
@@ -169,6 +174,9 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
 
 # Starship settings.
+
+# Disable Starship warnings about command timeouts.
+$Env:STARSHIP_LOG = 'error'
 
 # Initialize Starship if available.
 If (Get-Command starship -ErrorAction SilentlyContinue) {

@@ -51,6 +51,7 @@ vscode_extensions:
   - redhat.vscode-yaml
   - ritwickdey.liveserver
   - rust-lang.rust-analyzer
+  - skellock.just
   - skyapps.fish-vscode
   - stkb.rewrap
   - sumneko.lua

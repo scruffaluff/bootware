@@ -56,6 +56,7 @@ duti -s com.microsoft.VSCode ts all
 duti -s com.microsoft.VSCode tsv all
 duti -s com.microsoft.VSCode txt all
 duti -s com.microsoft.VSCode vue all
+duti -s com.microsoft.VSCode xlsx all
 duti -s com.microsoft.VSCode xml all
 duti -s com.microsoft.VSCode yaml all
 duti -s org.videolan.vlc avi all
