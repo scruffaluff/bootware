@@ -98,6 +98,18 @@ function source_files
   end
 end
 
+# Source Bash files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+function source_bash_files
+  for inode in $argv
+    if test -f "$inode"
+      bass source "$inode"
+    end
+  end
+end
+
 # Shell settings.
 
 # Add directories to system path that are not always included.
@@ -225,6 +237,11 @@ if type -q hx
   set --export EDITOR 'hx'
 end
 
+# Just settings.
+
+# Add alias for account wide Just recipes.
+alias jt "just --justfile $HOME/.justfile --working-directory ."
+
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
@@ -262,6 +279,9 @@ end
 prepend_paths "$HOME/.cargo/bin"
 
 # Starship settings.
+
+# Disable Starship warnings about command timeouts.
+set --export STARSHIP_LOG 'error'
 
 # Initialize Starship if available.
 #
@@ -330,13 +350,8 @@ end
 # Load user aliases, secrets, and variables.
 #
 # Flags:
-#   -f: Check if file exists and is a regular file.
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-  if test -f "$HOME/.env"
-    bass source "$HOME/.env"
-  end
-  if test -f "$HOME/.secrets"
-    bass source "$HOME/.secrets"
-  end
+  source_bash_files "$HOME/.env" "$HOME/.secrets"
 end
+source_files "$HOME/.env.fish" "$HOME/.secrets.fish"

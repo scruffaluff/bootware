@@ -42,6 +42,8 @@ mod2:
   - option
   - shift
 
+mouse-follows-focus: true
+
 # Automatically quit and reopen Amethyst.
 relaunch-amethyst:
   key: r
@@ -64,21 +66,24 @@ swap-cw:
   key: ";"
   mod: mod2
 
-# Move the currently focused window onto the next screen in the list going
-# counter-clockwise.
-swap-screen-ccw:
+# Move the currently focused window to the space to the left.
+throw-space-left:
   key: left
   mod: mod2
 
-# Move the currently focused window onto the next screen in the list going
-# clockwise.
-swap-screen-cw:
+# Move currently the focused window to the space to the right.
+throw-space-right:
   key: right
   mod: mod2
 
 # Toggle the floating state of the currently focused window.
 toggle-float:
   key: f
+  mod: mod2
+
+# Turn on or off tiling entirely.
+toggle-tiling:
+  key: t
   mod: mod2
 
 window-margin-size: 4
@@ -165,22 +170,19 @@ swap-main:
   key: enter
   mod: mod3
 
-# Move the currently focused window to the space to the left.
-throw-space-left:
-  mod: mod3
-  key: j
+# Move the currently focused window onto the next screen in the list going
+# counter-clockwise.
+swap-screen-ccw:
+  key: left
+  mod: mod2
 
-# Move currently the focused window to the space to the right.
-throw-space-right:
-  key: ";"
-  mod: mod3
+# Move the currently focused window onto the next screen in the list going
+# clockwise.
+swap-screen-cw:
+  key: right
+  mod: mod2
 
 # Turn on or off focus-follows-mouse.
 toggle-focus-follows-mouse:
   key: x
-  mod: mod3
-
-# Turn on or off tiling entirely.
-toggle-tiling:
-  key: t
   mod: mod3

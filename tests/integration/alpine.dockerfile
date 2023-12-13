@@ -10,7 +10,7 @@ RUN apk update && apk add bash curl doas
 # Alpine does contain the useradd command.
 RUN adduser --disabled-password alpine \
     && addgroup alpine wheel \
-    && printf 'permit nopass alpine as root\n' >> /etc/doas.d/doas.conf
+    && printf 'permit nopass alpine\n' >> /etc/doas.d/doas.conf
 
 ENV HOME=/home/alpine USER=alpine
 USER alpine

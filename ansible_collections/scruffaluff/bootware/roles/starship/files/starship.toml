@@ -2,9 +2,22 @@
 #
 # For more information, visit https://starship.rs/config.
 
+command_timeout = 100
+
+[aws]
+disabled = true
+
+[azure]
+disabled = true
+
 [battery]
 disabled = true
 
-# Disabled since it takes orders of magnitude longer than other commands.
-[git_status]
+[docker_context]
 disabled = true
+
+[gcloud]
+disabled = true
+
+[hostname]
+ssh_only = false

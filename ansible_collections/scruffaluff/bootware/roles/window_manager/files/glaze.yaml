@@ -20,6 +20,7 @@ gaps:
   outer_gap: 4px
 
 general:
+  cursor_follow_focus: true
   window_animations: false
 
 keybindings:

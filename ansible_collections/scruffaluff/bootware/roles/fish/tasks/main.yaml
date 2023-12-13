@@ -90,6 +90,8 @@
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
+# TODO: Solve issue where user's shell is not updated on Alpine Linux. For more
+# information, visit https://github.com/ansible/ansible/issues/61911.
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
     name: "{{ user_id }}"

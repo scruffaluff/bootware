@@ -154,6 +154,12 @@ if [[ -x "$(command -v hx)" ]]; then
   export COLORTERM='truecolor' EDITOR='hx'
 fi
 
+# Just settings.
+
+# Add alias for account wide Just recipes.
+# shellcheck disable=SC2139
+alias jt="just --justfile ${HOME}/.justfile --working-directory ."
+
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
@@ -195,6 +201,9 @@ fi
 prepend_paths "${HOME}/.cargo/bin"
 
 # Starship settings.
+
+# Disable Starship warnings about command timeouts.
+export STARSHIP_LOG='error'
 
 # Initialize Starship if available.
 #
@@ -239,4 +248,5 @@ prepend_paths "${WASMTIME_HOME}/bin"
 # User settings.
 
 # Load user aliases, secrets, and variables.
-source_files "${HOME}/.env" "${HOME}/.secrets"
+source_files "${HOME}/.env" "${HOME}/.secrets" "${HOME}/.env.bash" \
+  "${HOME}/.secrets.bash"
