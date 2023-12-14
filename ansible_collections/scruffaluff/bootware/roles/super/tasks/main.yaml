@@ -11,7 +11,7 @@
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless doas for {{ user_id }} user.
-      permit nopass {{ user_id }} as root
+      permit nopass {{ user_id }}
     create: true
     marker: >-
       # {mark} ANSIBLE MANAGED passwordless doas for {{ user_id }} BLOCK

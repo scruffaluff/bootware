@@ -98,7 +98,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79
       <array>
         <integer>65535</integer>
         <integer>123</integer>
-        <integer>11796480</integer>
+        <integer>11272192</integer>
       </array>
     </dict>
   </dict>
@@ -112,7 +112,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
       <array>
         <integer>65535</integer>
         <integer>123</integer>
-        <integer>11927552</integer>
+        <integer>11403264</integer>
       </array>
     </dict>
   </dict>
@@ -127,7 +127,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81
       <array>
         <integer>65535</integer>
         <integer>124</integer>
-        <integer>11796480</integer>
+        <integer>11272192</integer>
       </array>
     </dict>
   </dict>
@@ -141,7 +141,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
       <array>
         <integer>65535</integer>
         <integer>124</integer>
-        <integer>11927552</integer>
+        <integer>11403264</integer>
       </array>
     </dict>
   </dict>

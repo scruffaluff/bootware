@@ -38,7 +38,7 @@
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless doas for github-runner user.
-      permit nopass github-runner as root
+      permit nopass github-runner
     create: true
     marker: >-
       # {mark} ANSIBLE MANAGED passwordless doas for github-runner BLOCK

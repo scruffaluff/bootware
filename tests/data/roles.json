@@ -93,8 +93,11 @@
   },
   {
     "name": "gdu",
-    "skip": [{ "os": "alpine" }, { "os": "macos" }],
-    "tests": ["gdu --version"]
+    "skip": [{ "os": "alpine" }],
+    "tests": {
+      "default": ["gdu --version"],
+      "macos": ["gdu-go --version"]
+    }
   },
   {
     "name": "git",

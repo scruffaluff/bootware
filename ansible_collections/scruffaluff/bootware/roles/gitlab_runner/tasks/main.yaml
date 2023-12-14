@@ -100,7 +100,7 @@
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless doas for gitlab-runner user.
-      permit nopass gitlab-runner as root
+      permit nopass gitlab-runner
     create: true
     marker: >-
       # {mark} ANSIBLE MANAGED passwordless doas for gitlab-runner BLOCK

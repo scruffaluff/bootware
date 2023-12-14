@@ -174,13 +174,13 @@ swap-main:
 # counter-clockwise.
 swap-screen-ccw:
   key: left
-  mod: mod2
+  mod: mod3
 
 # Move the currently focused window onto the next screen in the list going
 # clockwise.
 swap-screen-cw:
   key: right
-  mod: mod2
+  mod: mod3
 
 # Turn on or off focus-follows-mouse.
 toggle-focus-follows-mouse:
