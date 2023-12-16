@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Arch and Alpine Linux packages.
-- Just, VLC, and Watchexec roles.
+- Audacity, Just, VLC, and Watchexec roles.
 - SSH port flag for scripts.
 - Wget support in install scripts.
 

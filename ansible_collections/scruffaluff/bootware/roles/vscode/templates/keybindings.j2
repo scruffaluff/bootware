@@ -22,5 +22,11 @@
     "key": "{{ vscode_ctrl_key }}+shift+t",
     "when": "terminalFocus"
   },
-  { "command": "-workbench.actions.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" }
+  { "command": "-workbench.action.quickOpen",
+    "key": "ctrl+e",
+  },
+  { 
+    "command": "-workbench.actions.view.problems",
+    "key": "{{ vscode_ctrl_key }}+shift+m" }
+  }
 ]

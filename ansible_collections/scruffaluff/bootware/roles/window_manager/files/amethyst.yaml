@@ -7,22 +7,22 @@
 # Focus the next window in the list going counter-clockwise.
 focus-ccw:
   key: j
-  mod: mod1
+  mod: mod2
 
 # Focus the next window in the list going clockwise.
 focus-cw:
   key: ";"
-  mod: mod1
+  mod: mod2
 
 # Focus the next screen in the list going counter-clockwise.
 focus-screen-ccw:
   key: left
-  mod: mod1
+  mod: mod2
 
 # Focus the next screen in the list going clockwise.
 focus-screen-cw:
   key: right
-  mod: mod1
+  mod: mod2
 
 # Ordered list of layouts to use by layout key.
 layouts:
@@ -33,11 +33,16 @@ layouts:
 
 # First modifier key combination.
 mod1:
-  - option
+  - control
   - shift
 
 # Second modifier key combination.
 mod2:
+  - option
+  - shift
+
+# Third modifier key combination.
+mod3:
   - control
   - option
   - shift
@@ -47,127 +52,23 @@ mouse-follows-focus: true
 # Automatically quit and reopen Amethyst.
 relaunch-amethyst:
   key: r
-  mod: mod2
+  mod: mod3
 
 # Select fullscreen layout.
 select-fullscreen-layout:
   key: m
-  mod: mod1
+  mod: mod2
 
 # Swap the position of the currently focused window with the next window in the
 # list going counter-clockwise.
 swap-ccw:
   key: j
-  mod: mod2
+  mod: mod3
 
 # Swap the position of the currently focused window with the next window in the
 # list going clockwise.
 swap-cw:
   key: ";"
-  mod: mod2
-
-# Move the currently focused window to the space to the left.
-throw-space-left:
-  key: left
-  mod: mod2
-
-# Move currently the focused window to the space to the right.
-throw-space-right:
-  key: right
-  mod: mod2
-
-# Toggle the floating state of the currently focused window.
-toggle-float:
-  key: f
-  mod: mod2
-
-# Turn on or off tiling entirely.
-toggle-tiling:
-  key: t
-  mod: mod2
-
-window-margin-size: 4
-window-margins: true
-
-# Disable keybindings.
-#
-# Amethyst keybindings cannot be disabled directly. Instead they can only be
-# reset to an unused keybinding. For more information, visit
-# https://github.com/ianyh/Amethyst/issues/1329#issuecomment-1469898303.
-
-# Move to the next layout in the list.
-cycle-layout:
-  key: space
-  mod: mod3
-
-# Move to the previous layout in the list.
-cycle-layout-backward:
-  key: space
-  mod: mod3
-
-# Decrease the number of windows in the main pane.
-decrease-main:
-  key: "."
-  mod: mod3
-
-# Display the layout HUD with the current layout on each screen.
-display-current-layout:
-  key: i
-  mod: mod3
-
-# Expand the main pane by a percentage of the screen dimension as defined by
-# window-resize-step.
-expand-main:
-  key: l
-  mod: mod3
-
-# Increase the number of windows in the main pane.
-increase-main:
-  key: ","
-  mod: mod3
-
-# Focus the main window in the list.
-focus-main:
-  key: m
-  mod: mod3
-
-# Unused modifier key combination.
-mod3:
-  - command
-  - control
-  - option
-  - shift
-
-# Rerun the current layout's algorithm.
-reevaluate-windows:
-  key: z
-  mod: mod3
-
-# Select column layout.
-select-column-layout:
-  key: f
-  mod: mod3
-
-# Select tall layout.
-select-tall-layout:
-  key: a
-  mod: mod3
-
-# Select wide layout.
-select-wide-layout:
-  key: s
-  mod: mod3
-
-# Shrink the main pane by a percentage of the screen dimension as defined by
-# window-resize-step.
-shrink-main:
-  key: h
-  mod: mod3
-
-# Swap the position of the currently focused window with the main window in the
-# list.
-swap-main:
-  key: enter
   mod: mod3
 
 # Move the currently focused window onto the next screen in the list going
@@ -182,7 +83,111 @@ swap-screen-cw:
   key: right
   mod: mod3
 
+# Move the currently focused window to the space to the left.
+throw-space-left:
+  key: j
+  mod: mod1
+
+# Move currently the focused window to the space to the right.
+throw-space-right:
+  key: ;
+  mod: mod1
+
+# Toggle the floating state of the currently focused window.
+toggle-float:
+  key: f
+  mod: mod3
+
+# Turn on or off tiling entirely.
+toggle-tiling:
+  key: t
+  mod: mod3
+
+window-margin-size: 4
+window-margins: true
+
+# Disable keybindings.
+#
+# Amethyst keybindings cannot be disabled directly. Instead they can only be
+# reset to an unused keybinding. For more information, visit
+# https://github.com/ianyh/Amethyst/issues/1329#issuecomment-1469898303.
+
+# Move to the next layout in the list.
+cycle-layout:
+  key: space
+  mod: mod4
+
+# Move to the previous layout in the list.
+cycle-layout-backward:
+  key: space
+  mod: mod4
+
+# Decrease the number of windows in the main pane.
+decrease-main:
+  key: "."
+  mod: mod4
+
+# Display the layout HUD with the current layout on each screen.
+display-current-layout:
+  key: i
+  mod: mod4
+
+# Expand the main pane by a percentage of the screen dimension as defined by
+# window-resize-step.
+expand-main:
+  key: l
+  mod: mod4
+
+# Increase the number of windows in the main pane.
+increase-main:
+  key: ","
+  mod: mod4
+
+# Focus the main window in the list.
+focus-main:
+  key: m
+  mod: mod4
+
+# Unused modifier key combination.
+mod4:
+  - command
+  - control
+  - option
+  - shift
+
+# Rerun the current layout's algorithm.
+reevaluate-windows:
+  key: z
+  mod: mod4
+
+# Select column layout.
+select-column-layout:
+  key: f
+  mod: mod4
+
+# Select tall layout.
+select-tall-layout:
+  key: a
+  mod: mod4
+
+# Select wide layout.
+select-wide-layout:
+  key: s
+  mod: mod4
+
+# Shrink the main pane by a percentage of the screen dimension as defined by
+# window-resize-step.
+shrink-main:
+  key: h
+  mod: mod4
+
+# Swap the position of the currently focused window with the main window in the
+# list.
+swap-main:
+  key: enter
+  mod: mod4
+
 # Turn on or off focus-follows-mouse.
 toggle-focus-follows-mouse:
   key: x
-  mod: mod3
+  mod: mod4

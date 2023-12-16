@@ -54,6 +54,18 @@ source_files() {
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+if [[ -f "${HOME}/.ls_colors" ]]; then
+  # shellcheck disable=SC2155
+  export LS_COLORS="$(cat "${HOME}/.ls_colors")"
+fi
+
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories

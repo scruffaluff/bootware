@@ -36,10 +36,26 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 # Turn off automatic brightness
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
+# Replace Super with Super+Space as the application search keybinding.
+gsettings set org.gnome.mutter overlay-key ''
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Super>Space"]'
+
 # Change system keybindings.
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control><Shift>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control><Shift>Right"]'
 gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Alt><Shift>M"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Right"]'
-gsettings set org.gnome.settings-daemon.plugins.media-keys search '["<Super>Space"]'
+
+# File extension settings.
+xdg-mime default code.desktop application/json
+xdg-mime default code.desktop application/vnd.ms-excel
+xdg-mime default code.desktop application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+xdg-mime default code.desktop application/x-sh
+xdg-mime default code.desktop application/xml
+xdg-mime default code.desktop text/css
+xdg-mime default code.desktop text/csv
+xdg-mime default code.desktop text/plain
+xdg-mime default firefox.desktop application/pdf
+xdg-mime default org.videolan.VLC.desktop video/mp4
+xdg-mime default org.videolan.VLC.desktop video/x-msvideo

@@ -47,6 +47,13 @@
         - desktop
         - terminal
 
+    - name: Install Audacity audio editor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.audacity
+      tags:
+        - audacity
+        - desktop
+
     - name: Install audio tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.audio

@@ -636,7 +636,8 @@ roles() {
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
 
-  filter=".[0].tasks[] | select(.tags | contains("[\"${tags//,/\", \"}\"]"))"
+  contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
+  filter=".[0].tasks[] | select(.tags | (${contains}))"
   format='."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
   yq "${filter} | ${format}" "${tmp_dir}/playbook.yaml"
 }
@@ -989,6 +990,7 @@ setup_macos() {
   if [[ ! -x "$(command -v brew)" ]]; then
     log 'Installing Homebrew'
     curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
+    brew analytics off
   fi
 
   if [[ ! -x "$(command -v ansible)" ]]; then

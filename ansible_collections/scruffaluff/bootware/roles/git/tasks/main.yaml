@@ -69,8 +69,8 @@
   community.windows.win_scoop:
     name:
       - delta
-      - git
       - git-lfs
+      - mingit
       - posh-git
   when: ansible_system == "Win32NT"
 

@@ -1,0 +1,17 @@
+{
+  "autofill": {
+    "credit_card_enabled": false,
+    "profile_enabled": false
+  },
+  "bookmark_bar": {
+    "show_on_all_tabs": true
+  },
+  "browser": {
+    "show_home_button": false
+  },
+  "credentials_enable_autosignin": false,
+  "credentials_enable_service": false,
+  "payments": {
+    "can_make_payment_enabled": false
+  }
+}

@@ -4,6 +4,15 @@
     "tests": ["age --version", "age-keygen --version"]
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
+  {
+    "name": "audacity",
+    "tests": {
+      "default": ["audacity --version"],
+      "linux": ["flatpak info org.audacityteam.Audacity"],
+      "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
+      "windows": ["scoop prefix audacity"]
+    }
+  },
   { "name": "audio" },
   { "name": "awscli", "tests": ["aws --version"] },
   {
