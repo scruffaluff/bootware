@@ -101,6 +101,28 @@ apk() {
 }
 
 #######################################
+# Build a Homebrew package.
+#
+# For a tutorial on building an Homebrew package, visit
+# https://docs.brew.sh/Formula-Cookbook.
+#######################################
+brew() {
+  version="${1}"
+  url="https://github.com/scruffaluff/bootware/archive/refs/tags/${version}.tar.gz"
+  curl -LSfs --output /tmp/bootware.tar.gz "${url}"
+  shasum="$(sha256sum /tmp/bootware.tar.gz | cut -d ' ' -f 1)"
+
+  mkdir -p dist
+  export shasum="${shasum}" version="${version}" url="${url}"
+  # Single quotes around variable is intentional to inform envsubst which
+  # patterns to replace in the template.
+  # shellcheck disable=SC2016
+  envsubst '${shasum} ${url} ${version}' < scripts/templates/bootware.rb.tmpl \
+    > dist/bootware.rb
+  checksum "dist/bootware.rb"
+}
+
+#######################################
 # Build subcommand.
 #######################################
 build() {
@@ -114,6 +136,9 @@ build() {
         ;;
       apk)
         apk "${version}"
+        ;;
+      brew)
+        brew "${version}"
         ;;
       deb)
         deb "${version}"

@@ -149,6 +149,7 @@ jobs:
         package:
           - alpm
           - apk
+          - brew
           - deb
           - rpm
     runs-on: ubuntu-latest

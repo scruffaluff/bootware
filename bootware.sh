@@ -636,8 +636,15 @@ roles() {
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
 
-  contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
-  filter=".[0].tasks[] | select(.tags | (${contains}))"
+  # Flags:
+  #   -n: Check if the string has nonzero length.
+  if [[ -n "${tags:-}" ]]; then
+    contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
+    filter=".[0].tasks[] | select(.tags | (${contains}))"
+  else
+    filter='.[0].tasks[]'
+  fi
+
   format='."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
   yq "${filter} | ${format}" "${tmp_dir}/playbook.yaml"
 }

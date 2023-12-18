@@ -1,0 +1,20 @@
+class Bootware < Formula
+  depends_on ["ansible", "bash", "git"]
+  desc "Bootstrap software installations with Ansible"
+  head "https://github.com/scruffaluff/bootware.git", branch: "main"
+  homepage "https://github.com/scruffaluff/bootware"
+  license "MIT"
+  sha256 "${shasum}"
+  url "${url}"
+
+  def install
+    bin.install "bootware.sh" => "bootware"
+    bash_completion.install "completions/bootware.bash"
+    fish_completion.install "completions/bootware.fish"
+    man.install "completions/bootware.man"
+  end
+  
+  test do
+    assert_equal "Bootware ${version}", shell_output("#{bin}/bootware --version").chomp
+  end
+end
