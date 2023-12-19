@@ -683,6 +683,17 @@
         - server
         - shell
 
+    - name: Install Procs process viewer
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.procs
+      tags:
+        - container
+        - desktop
+        - procs
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Python language
       ansible.builtin.import_role:
         name: scruffaluff.bootware.python

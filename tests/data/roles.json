@@ -232,6 +232,11 @@
     "tests": ["pwsh --version"]
   },
   {
+    "name": "procs",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
+    "tests": ["procs --version"]
+  },
+  {
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
