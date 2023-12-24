@@ -12,7 +12,7 @@
     name: duti
   when: ansible_system == "Darwin"
 
-- name: Install Power Toys for Windows
+- name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
     name: powertoys
   when: ansible_system == "Win32NT"
@@ -22,26 +22,6 @@
   become: true
   become_user: "{{ user_id }}"
   when: ansible_system == "Linux" and gnome_desktop
-
-# Linux distributions with GNOME desktops should be configured after general
-# GNOME settings in order to use overrides.
-- name: Change desktop settings for Fedora
-  ansible.builtin.script: fedora.sh
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_pkg_mgr == "dnf" and gnome_desktop
-
-- name: Change desktop settings for PopOS
-  ansible.builtin.script: popos.sh
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and desktop == "pop"
-
-- name: Change desktop settings for Ubuntu
-  ansible.builtin.script: ubuntu.sh
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and desktop == "ubuntu"
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
@@ -64,3 +44,23 @@
     name: wl-clipboard
   become: true
   when: ansible_system == "Linux" and display_manager == "wayland"
+
+##### Provide distribution specific desktop setting overrides. #####
+
+- name: Change desktop settings for Fedora
+  ansible.builtin.script: fedora.sh
+  become: true
+  become_user: "{{ user_id }}"
+  when: ansible_pkg_mgr == "dnf" and gnome_desktop
+
+- name: Change desktop settings for PopOS
+  ansible.builtin.script: popos.sh
+  become: true
+  become_user: "{{ user_id }}"
+  when: ansible_system == "Linux" and desktop == "pop"
+
+- name: Change desktop settings for Ubuntu
+  ansible.builtin.script: ubuntu.sh
+  become: true
+  become_user: "{{ user_id }}"
+  when: ansible_system == "Linux" and desktop == "ubuntu"
