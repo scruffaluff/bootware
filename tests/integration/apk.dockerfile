@@ -1,4 +1,4 @@
-FROM alpine:3.18.4 AS build
+FROM alpine:3.19.0 AS build
 
 ARG version
 

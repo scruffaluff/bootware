@@ -1,7 +1,9 @@
 ---
 - name: Install desktop management dependencies for GNOME
   ansible.builtin.package:
-    name: dconf-editor
+    name:
+      - dconf-editor
+      - xdg-utils
   become: true
   when: ansible_system == "Linux" and gnome_desktop
 
@@ -32,12 +34,6 @@
 - name: Change desktop settings for Windows
   ansible.builtin.script: windows.ps1
   when: ansible_system == "Win32NT"
-
-- name: Change desktop settings for XFCE
-  ansible.builtin.script: xfce.sh
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and desktop == "xfce"
 
 - name: Add clipboard commands for Linux with Wayland display
   ansible.builtin.package:

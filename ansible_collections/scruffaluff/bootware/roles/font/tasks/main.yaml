@@ -1,8 +1,12 @@
 ---
-- name: Tap Homebrew fonts for MacOS
-  community.general.homebrew_tap:
-    name: homebrew/cask-fonts
-  when: ansible_system == "Darwin"
+- name: Install Fira Code for Alpine
+  become: true
+  community.general.apk:
+    name: font-fira-code
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Fira Code for Arch
   become: true
@@ -27,6 +31,11 @@
     name: fira-code-fonts
   become: true
   when: ansible_pkg_mgr == "dnf"
+
+- name: Tap Homebrew fonts for MacOS
+  community.general.homebrew_tap:
+    name: homebrew/cask-fonts
+  when: ansible_system == "Darwin"
 
 - name: Install Fira Code font for MacOS
   community.general.homebrew_cask:

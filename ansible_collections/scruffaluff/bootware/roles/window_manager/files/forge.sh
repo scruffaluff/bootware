@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
+#
+# Configure Forge window manager settings.
+
+# Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -u: Throw an error when an unset variable is encountered.
+set -eu
 
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge focus-border-toggle false
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge move-pointer-focus-enabled true

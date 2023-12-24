@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
+#
+# Configure desktop settings for GNOME.
+
+# Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -u: Throw an error when an unset variable is encountered.
+set -eu
 
 # Show weekday in top bar date.
 gsettings set org.gnome.desktop.interface clock-show-weekday true
