@@ -1,11 +1,17 @@
 ---
-- name: Install desktop management dependencies for GNOME
+- name: Check if GNOME desktop is installed
+  ansible.builtin.stat:
+    path: /usr/bin/gnome-shell
+  register: desktop_environment_gnome_shell
+
+- name: Install desktop management dependencies for GNOME desktops
   ansible.builtin.package:
     name:
       - dconf-editor
       - xdg-utils
   become: true
-  when: ansible_system == "Linux" and gnome_desktop
+  when: >-
+    ansible_system == "Linux" and desktop_environment_gnome_shell.stat.exists
 
 - name: Install desktop management dependencies for MacOS
   become: true
@@ -19,11 +25,12 @@
     name: powertoys
   when: ansible_system == "Win32NT"
 
-- name: Change desktop settings for GNOME
+- name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and gnome_desktop
+  when: >-
+    ansible_system == "Linux" and desktop_environment_gnome_shell.stat.exists
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
@@ -35,11 +42,12 @@
   ansible.builtin.script: windows.ps1
   when: ansible_system == "Win32NT"
 
-- name: Add clipboard commands for Linux with Wayland display
+- name: Add clipboard commands for Linux
   ansible.builtin.package:
     name: wl-clipboard
   become: true
-  when: ansible_system == "Linux" and display_manager == "wayland"
+  ignore_errors: true
+  when: ansible_system == "Linux"
 
 ##### Provide distribution specific desktop setting overrides. #####
 
@@ -47,16 +55,16 @@
   ansible.builtin.script: fedora.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_pkg_mgr == "dnf" and gnome_desktop
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
 
 - name: Change desktop settings for PopOS
   ansible.builtin.script: popos.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and desktop == "pop"
+  when: ansible_system == "Linux" and ansible_distribution == "Pop!_OS"
 
 - name: Change desktop settings for Ubuntu
   ansible.builtin.script: ubuntu.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and desktop == "ubuntu"
+  when: ansible_system == "Linux" and ansible_distribution == "Ubuntu"
