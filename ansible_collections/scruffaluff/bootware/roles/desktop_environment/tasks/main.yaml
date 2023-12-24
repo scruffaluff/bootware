@@ -1,4 +1,10 @@
 ---
+- name: Install desktop management dependencies for GNOME
+  ansible.builtin.package:
+    name: dconf-editor
+  become: true
+  when: ansible_system == "Linux" and gnome_desktop
+
 - name: Install desktop management dependencies for MacOS
   become: true
   become_user: "{{ user_id }}"

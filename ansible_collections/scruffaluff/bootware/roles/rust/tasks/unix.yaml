@@ -51,6 +51,26 @@
       loop: "{{ rust_targets }}"
       register: rust_target_add
 
+    - name: Create Cargo home directory for Unix
+      ansible.builtin.file:
+        group: "{{ group_id }}"
+        mode: "755"
+        owner: "{{ user_id }}"
+        path: "{{ user_home }}/.cargo"
+        state: directory
+      become: true
+
+    # TODO: Enable after testing Mold.
+    # - name: Copy Cargo configuration file for Unix
+    #   ansible.builtin.copy:
+    #     dest: "{{ user_home }}/.cargo/config.toml"
+    #     force: true
+    #     group: "{{ group_id }}"
+    #     mode: "644"
+    #     owner: "{{ user_id }}"
+    #     src: config.toml
+    #   become: true
+
     - name: Create Cargo Binstall applications directory for Unix
       ansible.builtin.file:
         group: "{{ group_id }}"
