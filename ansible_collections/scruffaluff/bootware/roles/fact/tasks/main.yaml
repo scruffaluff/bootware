@@ -1,0 +1,21 @@
+---
+- name: Check if GNOME shell is installed
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - /usr/bin/gnome-shell
+    - /usr/local/bin/gnome-shell
+  register: gnome_desktop_
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Mark if GNOME desktop is installed
+  ansible.builtin.set_fact:
+    cacheable: true
+    gnome_desktop: >-
+      (gnome_desktop_.results | map(attribute='stat.exists')) is any
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    fact_role_executed: true

@@ -1,9 +1,4 @@
 ---
-- name: Check if GNOME desktop is installed
-  ansible.builtin.stat:
-    path: /usr/bin/gnome-shell
-  register: caffeine_gnome_shell
-
 - name: Enable Caffeine shell extension for GNOME desktops
   block:
     - name: Enable Caffeine shell extension for GNOME desktops
@@ -12,7 +7,7 @@
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.
       changed_when: true
-      when: ansible_system == "Linux" and caffeine_gnome_shell.stat.exists
+      when: ansible_system == "Linux" and gnome_desktop
   rescue:
     - name: Find GNOME version for GNOME desktops
       ansible.builtin.shell:

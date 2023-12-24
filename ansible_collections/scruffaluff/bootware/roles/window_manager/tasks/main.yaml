@@ -1,12 +1,7 @@
 ---
-- name: Check if GNOME desktop is installed
-  ansible.builtin.stat:
-    path: /usr/bin/gnome-shell
-  register: window_manager_gnome_shell
-
 - name: Install Forge extension for GNOME desktops
   ansible.builtin.import_tasks: forge.yaml
-  when: ansible_system == "Linux" and window_manager_gnome_shell.stat.exists
+  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Install Amethyst for MacOS
   community.general.homebrew_cask:
