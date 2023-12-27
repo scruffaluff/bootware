@@ -68,10 +68,22 @@ duti -s com.microsoft.VSCode vue all
 duti -s com.microsoft.VSCode xlsx all
 duti -s com.microsoft.VSCode xml all
 duti -s com.microsoft.VSCode yaml all
+duti -s org.videolan.vlc aac all
+duti -s org.videolan.vlc alac all
+duti -s org.videolan.vlc aiff all
 duti -s org.videolan.vlc avi all
+duti -s org.videolan.vlc flac all
+duti -s org.videolan.vlc flv all
+duti -s org.videolan.vlc m4a all
 duti -s org.videolan.vlc m4v all
+duti -s org.videolan.vlc mkv all
 duti -s org.videolan.vlc mov all
+duti -s org.videolan.vlc mp3 all
 duti -s org.videolan.vlc mp4 all
+duti -s org.videolan.vlc ogg all
+duti -s org.videolan.vlc wav all
+duti -s org.videolan.vlc webm all
+duti -s org.videolan.vlc wma all
 duti -s org.videolan.vlc wmv all
 
 # Finder settings.

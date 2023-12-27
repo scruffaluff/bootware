@@ -1,6 +1,6 @@
-# Xsv
+# Qsv
 
-Xsv is an Ansible role
+Qsv is an Ansible role
 
 ## Requirements
 

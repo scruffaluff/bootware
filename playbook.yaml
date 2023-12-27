@@ -714,6 +714,17 @@
         - qemu
         - vm
 
+    - name: Install Qsv CSV parser
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.qsv
+      tags:
+        - container
+        - desktop
+        - qsv
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install RClone cloud storage utility
       ansible.builtin.import_role:
         name: scruffaluff.bootware.rclone
@@ -1022,17 +1033,6 @@
         - sysadmin
         - wsl
         - xh
-
-    - name: Install Xsv CSV parser
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.xsv
-      tags:
-        - container
-        - desktop
-        - server
-        - sysadmin
-        - wsl
-        - xsv
 
     - name: Install Yazi terminal file manager
       ansible.builtin.import_role:

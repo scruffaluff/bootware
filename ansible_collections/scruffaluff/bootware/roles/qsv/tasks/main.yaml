@@ -1,0 +1,42 @@
+---
+- name: Get latest Qsv version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/qsv.json
+  register: qsv_formula
+  when: ansible_system == "Linux"
+
+- name: Download Qsv for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/jqnatividad/qsv/releases/download/{{
+      qsv_formula.json.versions.stable }}/qsv-{{
+      qsv_formula.json.versions.stable }}-x86_64-unknown-linux-musl.zip
+  become: true
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
+- name: Install Qsv for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/qsv
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/qsv
+  become: true
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
+- name: Install Qsv for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: qsv
+  when: ansible_system == "Darwin"
+
+- name: Install Qsv for Windows
+  community.windows.win_scoop:
+    name: qsv
+  when: ansible_system == "Win32NT"

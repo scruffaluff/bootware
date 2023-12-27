@@ -257,6 +257,11 @@
       ]
     }
   },
+  {
+    "name": "qsv",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": ["qsv --version"]
+  },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
@@ -340,11 +345,6 @@
   {
     "name": "xh",
     "tests": ["xh --version"]
-  },
-  {
-    "name": "xsv",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["xsv --version"]
   },
   {
     "name": "yazi",
