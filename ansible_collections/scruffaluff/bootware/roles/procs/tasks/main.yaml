@@ -16,15 +16,25 @@
   register: procs_formula
   when: ansible_pkg_mgr == "apt"
 
-- name: Install Procs for Debian
+- name: Download Procs for Debian
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/dalance/procs/releases/download/v{{
       procs_formula.json.versions.stable }}/procs-v{{
       procs_formula.json.versions.stable }}-x86_64-linux.zip
+  become: true
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+
+- name: Install Procs for Debian
+  ansible.builtin.copy:
+    dest: /usr/local/bin/procs
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/procs
   become: true
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 

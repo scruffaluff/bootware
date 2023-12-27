@@ -13,15 +13,25 @@
     name: vault
   when: ansible_system == "FreeBSD"
 
-- name: Install Vault for Linux
+- name: Download Vault for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://releases.hashicorp.com/vault/{{ vault_formula.json.versions.stable
       }}/vault_{{ vault_formula.json.versions.stable }}_linux_{{
       system_architecture }}.zip
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Vault for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/vault
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/vault
   become: true
   when: ansible_system == "Linux"
 

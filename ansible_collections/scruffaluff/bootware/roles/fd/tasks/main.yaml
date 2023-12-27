@@ -21,7 +21,7 @@
 
 - name: Download FD for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-

@@ -13,16 +13,26 @@
     name: terraform
   when: ansible_system == "FreeBSD"
 
-- name: Install Terraform for Linux
+- name: Download Terraform for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://releases.hashicorp.com/terraform/{{
       terraform_formula.json.versions.stable }}/terraform_{{
       terraform_formula.json.versions.stable }}_linux_{{ system_architecture
       }}.zip
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Terraform for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/terraform
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/terraform
   become: true
   when: ansible_system == "Linux"
 

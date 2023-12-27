@@ -22,7 +22,7 @@
 # https://www.mongodb.com/community/forums/t/openssl-error-when-starting-mongosh/243323.
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-

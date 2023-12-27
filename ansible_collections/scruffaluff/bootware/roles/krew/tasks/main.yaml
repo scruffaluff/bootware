@@ -12,7 +12,7 @@
   # permissions of the /tmp folder to be user uneditable as of 06/14/2022. As
   # result, Krew will fail installation.
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     remote_src: true
     src: >-
       https://github.com/kubernetes-sigs/krew/releases/download/v{{

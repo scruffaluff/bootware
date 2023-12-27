@@ -13,16 +13,26 @@
   register: doctl_formula
   when: ansible_system == "Linux"
 
-- name: Install Digital Ocean CLI for Linux
+- name: Download Digital Ocean CLI for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/digitalocean/doctl/releases/download/v{{
       doctl_formula.json.versions.stable }}/doctl-{{
       doctl_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Digital Ocean CLI for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/doctl
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/doctl
   become: true
   when: ansible_system == "Linux"
 

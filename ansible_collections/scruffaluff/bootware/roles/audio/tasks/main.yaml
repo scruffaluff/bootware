@@ -1,10 +1,22 @@
 ---
+- name: Install audio packages for Alpine
+  become: true
+  community.general.apk:
+    name:
+      - alsa-lib
+      - alsa-utils
+      - ffmpeg
+      - mediainfo
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install audio packages for Arch
   become: true
   community.general.pacman:
     name:
       - alsa-lib
       - alsa-utils
+      - ffmpeg
+      - mediainfo
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
@@ -12,13 +24,43 @@
     name:
       - alsa-utils
       - libasound2-dev
+      - ffmpeg
+      - mediainfo
   become: true
   when: ansible_pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora
   ansible.builtin.dnf:
     name:
-      - alsa-lib-devel
+      - alsa-lib
       - alsa-utils
+      - ffmpeg
+      - mediainfo
   become: true
   when: ansible_pkg_mgr == "dnf"
+
+- name: Install audio packages for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - alsa-lib
+      - alsa-utils
+      - ffmpeg
+      - mediainfo
+  when: ansible_system == "FreeBSD"
+
+- name: Install audio packages for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name:
+      - ffmpeg
+      - media-info
+  when: ansible_system == "Darwin"
+
+- name: Install audio packages for Windows
+  community.windows.win_scoop:
+    name:
+      - mediainfo
+      - ffmpeg
+  when: ansible_system == "Win32NT"

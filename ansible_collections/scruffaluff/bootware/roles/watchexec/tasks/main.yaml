@@ -18,7 +18,7 @@
 
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-

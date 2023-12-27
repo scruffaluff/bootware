@@ -25,7 +25,7 @@
 
 - name: Download Glow for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "755"
     remote_src: true
     src: >-

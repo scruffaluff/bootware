@@ -18,7 +18,7 @@
 # versions that are not supported on Linux distributions.
 - name: Download Usql for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "755"
     remote_src: true
     src: >-

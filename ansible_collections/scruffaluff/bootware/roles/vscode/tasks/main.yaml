@@ -155,7 +155,7 @@
     state: directory
   loop:
     - AppData/Roaming/Code/User
-    - scoop/apps/vscode/current/data/user-data/User/
+    - scoop/apps/vscode/current/data/user-data/User
   when: ansible_system == "Win32NT"
 
 # Keybindings file can be in multiple locations depending on package installer
