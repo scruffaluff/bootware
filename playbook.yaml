@@ -522,6 +522,13 @@
         - server
         - wsl
 
+    - name: Install Kdenlive video editor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.kdenlive
+      tags:
+        - desktop
+        - kdenlive
+
     - name: Install Kind Kubernetes development cluster manager
       ansible.builtin.import_role:
         name: scruffaluff.bootware.kind
@@ -818,6 +825,13 @@
         - shfmt
         - sysadmin
         - wsl
+
+    - name: Install Sonic Pi music coding environment
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.sonic_pi
+      tags:
+        - desktop
+        - sonic_pi
 
     - name: Install Sops secrets editor
       ansible.builtin.import_role:
