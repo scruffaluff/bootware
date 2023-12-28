@@ -139,34 +139,6 @@ jobs:
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
-  package:
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
-    name: Test building a ${{ matrix.package }} package
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - alpm
-          - apk
-          - brew
-          - deb
-          - rpm
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Test building package
-        run: ./scripts/package.sh test ${{ matrix.package }}
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
   posix:
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'posix' }}

@@ -1,53 +1,72 @@
 ---
-- name: Install Fira Code for Alpine
-  become: true
-  community.general.apk:
-    name: font-fira-code
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Fira Code for Arch
-  become: true
-  community.general.pacman:
-    name: ttf-fira-code
-  when: ansible_pkg_mgr == "pacman"
-
-- name: Install Fira Code font for Debian
-  ansible.builtin.apt:
-    name: fonts-firacode
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Fira Code for FreeBSD
+- name: Install fonts for FreeBSD
   become: true
   community.general.pkgng:
-    name: firacode
+    name:
+      - fira
+      - firacode
   when: ansible_system == "FreeBSD"
 
-- name: Install Fira Code for Fedora
-  ansible.builtin.dnf:
-    name: fira-code-fonts
+- name: Create font directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: /usr/share/fonts/{{ item.name }}
+    state: directory
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  loop: "{{ font_families }}"
+  when: ansible_system == "Linux"
 
-- name: Tap Homebrew fonts for MacOS
-  community.general.homebrew_tap:
-    name: homebrew/cask-fonts
+- name: Download fonts for Linux
+  ansible.builtin.unarchive:
+    dest: /usr/share/fonts/{{ item.name }}
+    mode: "644"
+    remote_src: true
+    src: "{{ item.url }}"
+  become: true
+  loop: "{{ font_families }}"
+  when: ansible_system == "Linux"
+
+- name: Install fonts for Linux
+  ansible.builtin.command:
+    cmd: fc-cache --verbose
+  become: true
+  changed_when: "'new cache contents' in font_cache_linux"
+  register: font_cache_linux
+  when: ansible_system == "Linux"
+
+- name: Install fonts for MacOS
+  ansible.builtin.unarchive:
+    dest: /Library/Fonts
+    mode: "644"
+    remote_src: true
+    src: "{{ item.url }}"
+  become: true
+  loop: "{{ font_families }}"
   when: ansible_system == "Darwin"
 
-- name: Install Fira Code font for MacOS
-  community.general.homebrew_cask:
-    # Force option is required to solve "It seems there is already a Font"
-    # error.
-    install_options: force
-    name: font-fira-code
-    state: present
-  when: ansible_system == "Darwin"
+- name: Download font archives for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
+    url: "{{ item.url }}"
+  loop: "{{ font_families }}"
+  when: ansible_system == "Win32NT"
 
-- name: Install Fira Code font for Windows
-  community.windows.win_scoop:
-    global: true
-    name: firacode
+- name: Decompress font archives for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}/{{ item.name }}"
+    src: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
+  loop: "{{ font_families }}"
+  when: ansible_system == "Win32NT"
+
+# Based on logic from https://blog.simontimms.com/2021/06/11/installing-fonts.
+- name: Install fonts for Windows
+  ansible.windows.win_shell: |
+    $Folder = '{{ ansible_env.TEMP }}/{{ item.name }}';
+    $Installer = (New-Object -ComObject Shell.Application).Namespace(0x14);
+    ForEach ($File in Get-ChildItem -Include '*.ttf','*.otf' -Path "$Folder") {
+      If (-Not (Test-Path -Path "C:\Windows\Fonts\$File.Name")) {
+        $Installer.CopyHere($File.FullName);
+      }
+    }
+  changed_when: true
   when: ansible_system == "Win32NT"

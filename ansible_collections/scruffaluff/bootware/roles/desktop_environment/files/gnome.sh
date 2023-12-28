@@ -50,11 +50,11 @@ gsettings set org.gnome.mutter overlay-key ''
 gsettings set org.gnome.shell.keybindings toggle-overview '["<Super>Space"]'
 
 # Change system keybindings.
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control><Shift>Left"]'
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control><Shift>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control>Left"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control>Right"]'
 gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Alt><Shift>M"]'
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>Left"]'
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 
 # File extension settings.
 xdg-mime default code.desktop application/json

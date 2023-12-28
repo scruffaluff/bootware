@@ -46,22 +46,22 @@ keybindings:
   - binding: Alt+Shift+L
     command: focus up
   # Move focused window in a given direction.
-  - binding: Alt+Control+Shift+K
+  - binding: Alt+Shift+Down
     command: move down
-  - binding: Alt+Control+Shift+J
+  - binding: Alt+Shift+Left
     command: move left
-  - binding: Alt+Control+Shift+OemSemicolon
+  - binding: Alt+Shift+Right
     command: move right
-  - binding: Alt+Control+Shift+L
+  - binding: Alt+Shift+Up
     command: move up
   # Move focused workspace to a monitor in a given direction.
-  - binding: Alt+Shift+Down
+  - binding: Alt+Control+Down
     command: move workspace down
-  - binding: Alt+Shift+Left
+  - binding: Alt+Control+Left
     command: move workspace left
-  - binding: Alt+Shift+Right
+  - binding: Alt+Control+Right
     command: move workspace right
-  - binding: Alt+Shift+Up
+  - binding: Alt+Control+Up
     command: move workspace up
 
 window_rules:

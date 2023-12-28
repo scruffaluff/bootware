@@ -11,8 +11,10 @@
 - name: Mark if GNOME desktop is installed
   ansible.builtin.set_fact:
     cacheable: true
+    # Double braces are needed to evaluate variable as an expression rather than
+    # a string.
     gnome_desktop: >-
-      (gnome_desktop_.results | map(attribute='stat.exists')) is any
+      {{ (gnome_desktop_.results | map(attribute='stat.exists')) is any }}
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Mark role as executed to prevent reruns
