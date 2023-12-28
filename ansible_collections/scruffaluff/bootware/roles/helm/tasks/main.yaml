@@ -15,13 +15,12 @@
 
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
       system_architecture }}.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Helm for Linux

@@ -1,0 +1,24 @@
+---
+- name: Install Kdenlive for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: kdenlive
+  when: ansible_system == "FreeBSD"
+
+- name: Install Kdenlive for Linux
+  become: true
+  community.general.flatpak:
+    name: org.kde.kdenlive
+  when: ansible_system == "Linux"
+
+- name: Install Kdenlive for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: kdenlive
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Kdenlive for Windows
+  community.windows.win_scoop:
+    name: kdenlive
+  when: ansible_system == "Win32NT"

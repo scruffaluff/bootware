@@ -10,7 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Arch and Alpine Linux packages.
-- Audacity, Just, VLC, and Watchexec roles.
+- Audacity, Just, Kdenlive, Sonic Pi, VLC, and Watchexec roles.
 - SSH port flag for scripts.
 - Wget support in install scripts.
 
@@ -25,7 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Appimage, Docker Compose, and Procs roles.
+- Appimage and Docker Compose roles.
 
 ## 0.7.3 - 2023-12-02
 

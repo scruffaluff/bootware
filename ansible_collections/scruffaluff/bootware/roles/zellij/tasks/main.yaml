@@ -15,18 +15,27 @@
 
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/zellij-org/zellij/releases/download/v{{
       zellij_formula.json.versions.stable }}/zellij-{{
       zellij_arch[system_architecture] }}-unknown-linux-musl.tar.gz
-  become: true
   vars:
     zellij_arch:
       amd64: x86_64
       arm64: aarch64
+  when: ansible_system == "Linux"
+
+- name: Install Zellij for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/zellij
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/zellij
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Zellij for MacOS

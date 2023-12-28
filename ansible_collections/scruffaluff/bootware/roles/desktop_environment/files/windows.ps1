@@ -4,6 +4,9 @@
 # https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1 and
 # https://github.com/Sycnex/Windows10Debloater/blob/master/Windows10Debloater.ps1.
 
+# Exit immediately if a PowerShell Cmdlet encounters an error.
+$ErrorActionPreference = 'Stop'
+
 # Remove applications.
 $Applications = @(
     'Microsoft.BingFinance'

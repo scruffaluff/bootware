@@ -16,6 +16,7 @@
       - guestfs-tools
       - libguestfs
       - libvirt
+      - spice-gtk
       - virt-install
       - virt-viewer
   when: ansible_pkg_mgr == "pacman"
@@ -29,6 +30,7 @@
       - libguestfs-tools
       - libvirt-clients
       - libvirt0
+      - spice-client-gtk
       - virt-viewer
       - virtinst
   become: true
@@ -39,6 +41,7 @@
   community.general.pkgng:
     name:
       - libvirt
+      - spice-gtk
       - virt-manager
       - virt-viewer
   when: ansible_system == "FreeBSD"
@@ -52,6 +55,7 @@
       - libguestfs-rsync
       - libvirt
       - libvirt-client
+      - spice-gtk-tools
       - virt-install
       - virt-top
       - virt-viewer
@@ -64,6 +68,7 @@
   community.general.homebrew:
     name:
       - libvirt
+      - spice-gtk
       - virt-manager
   when: ansible_system == "Darwin"
 
@@ -71,3 +76,18 @@
   community.windows.win_scoop:
     name: virt-viewer
   when: ansible_system == "Win32NT"
+
+- name: Install Quickemu for Linux
+  ansible.builtin.get_url:
+    dest: "/usr/local/bin/{{ item }}"
+    mode: "755"
+    url: >-
+      https://raw.githubusercontent.com/quickemu-project/quickemu/master/{{ item
+      }}
+  become: true
+  loop:
+    - macrecovery
+    - quickemu
+    - quickget
+    - windowskey
+  when: ansible_system == "Linux"

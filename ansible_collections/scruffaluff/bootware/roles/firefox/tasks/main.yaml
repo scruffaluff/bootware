@@ -1,9 +1,17 @@
 ---
 - name: Install Firefox for Debian
   ansible.builtin.apt:
+    name: firefox
+  become: true
+  ignore_errors: true
+  register: firefox_debian
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Firefox for Debian
+  ansible.builtin.apt:
     name: firefox-esr
   become: true
-  when: ansible_pkg_mgr == "apt" and deb_distro_base == "debian"
+  when: ansible_pkg_mgr == "apt" and firefox_debian is failed
 
 - name: Install Firefox for FreeBSD
   become: true
@@ -15,9 +23,7 @@
   ansible.builtin.package:
     name: firefox
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apt" or deb_distro_base
-    != "debian")
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Firefox for MacOS
   community.general.homebrew_cask:

@@ -13,21 +13,30 @@
     name: mdbook
   when: ansible_system == "FreeBSD"
 
-- name: Install Mdbook for Linux
+- name: Download Mdbook for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://github.com/rust-lang/mdBook/releases/download/v{{
       mdbook_formula.json.versions.stable }}/mdbook-v{{
       mdbook_formula.json.versions.stable }}-{{ mdbook_arch[system_architecture]
       }}-unknown-linux-musl.tar.gz
-  become: true
   vars:
     mdbook_arch:
       amd64: x86_64
       arm64: aarch64
+  when: ansible_system == "Linux"
+
+- name: Install Mdbook for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/mdbook
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/mdbook
+  become: true
   when: ansible_system == "Linux"
 
 - name: Install Mdbook for MacOS

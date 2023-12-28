@@ -13,13 +13,12 @@
 
 - name: Download AWSCLI for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{
       awscli_arch[system_architecture] }}.zip
-  become: true
   vars:
     awscli_arch:
       amd64: x86_64

@@ -21,7 +21,7 @@
 
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
@@ -29,7 +29,6 @@
       dust_formula.json.versions.stable }}/dust-v{{
       dust_formula.json.versions.stable }}-{{ dust_arch
       }}-unknown-linux-gnu.tar.gz
-  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64"

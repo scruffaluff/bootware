@@ -7,7 +7,7 @@
 
 - name: Install Bats for Linux
   ansible.builtin.package:
-    name: "{{ 'bash-bats' if ansible_pkg_mgr == 'pacman' else 'bats' }}"
+    name: bats
   become: true
   when: ansible_system == "Linux"
 

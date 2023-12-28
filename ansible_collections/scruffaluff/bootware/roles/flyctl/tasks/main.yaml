@@ -9,7 +9,7 @@
 
 - name: Download Flyctl for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
@@ -17,7 +17,6 @@
       flyctl_formula.json.versions.stable }}/flyctl_{{
       flyctl_formula.json.versions.stable }}_Linux_{{
       flyctl_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     flyctl_arch:
       amd64: x86_64

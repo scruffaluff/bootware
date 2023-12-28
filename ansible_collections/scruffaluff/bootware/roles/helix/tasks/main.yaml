@@ -44,14 +44,13 @@
 
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://github.com/helix-editor/helix/releases/download/{{
       helix_formula.json.versions.stable }}/helix-{{
       helix_formula.json.versions.stable }}-{{ helix_arch }}-linux.tar.xz
-  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
     failed

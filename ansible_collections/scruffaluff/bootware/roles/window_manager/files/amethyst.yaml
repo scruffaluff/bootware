@@ -16,13 +16,13 @@ focus-cw:
 
 # Focus the next screen in the list going counter-clockwise.
 focus-screen-ccw:
-  key: left
-  mod: mod2
+  key: j
+  mod: mod3
 
 # Focus the next screen in the list going clockwise.
 focus-screen-cw:
-  key: right
-  mod: mod2
+  key: ";"
+  mod: mod3
 
 # Ordered list of layouts to use by layout key.
 layouts:
@@ -62,14 +62,14 @@ select-fullscreen-layout:
 # Swap the position of the currently focused window with the next window in the
 # list going counter-clockwise.
 swap-ccw:
-  key: j
-  mod: mod3
+  key: left
+  mod: mod2
 
 # Swap the position of the currently focused window with the next window in the
 # list going clockwise.
 swap-cw:
-  key: ";"
-  mod: mod3
+  key: right
+  mod: mod2
 
 # Move the currently focused window onto the next screen in the list going
 # counter-clockwise.
@@ -85,12 +85,12 @@ swap-screen-cw:
 
 # Move the currently focused window to the space to the left.
 throw-space-left:
-  key: j
+  key: left
   mod: mod1
 
 # Move currently the focused window to the space to the right.
 throw-space-right:
-  key: ;
+  key: right
   mod: mod1
 
 # Toggle the floating state of the currently focused window.

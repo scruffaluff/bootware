@@ -13,15 +13,24 @@
     name: packer
   when: ansible_system == "FreeBSD"
 
-- name: Install Packer for Linux
+- name: Download Packer for Linux
   ansible.builtin.unarchive:
-    dest: /usr/local/bin/
-    mode: "755"
+    dest: /tmp
+    mode: "777"
     remote_src: true
     src: >-
       https://releases.hashicorp.com/packer/{{
       packer_formula.json.versions.stable }}/packer_{{
       packer_formula.json.versions.stable }}_linux_{{ system_architecture }}.zip
+  when: ansible_system == "Linux"
+
+- name: Install Packer for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/packer
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/packer
   become: true
   when: ansible_system == "Linux"
 

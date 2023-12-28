@@ -1,0 +1,14 @@
+---
+font_families:
+  - name: fira-code
+    url: https://www.fontsquirrel.com/fonts/download/fira-code
+  - name: fira-mono
+    url: https://www.fontsquirrel.com/fonts/download/fira-mono
+  - name: fira-sans
+    url: https://www.fontsquirrel.com/fonts/download/fira-sans
+  - name: pt-mono
+    url: https://www.fontsquirrel.com/fonts/download/pt-mono
+  - name: pt-sans
+    url: https://www.fontsquirrel.com/fonts/download/pt-sans
+  - name: pt-serif
+    url: https://www.fontsquirrel.com/fonts/download/pt-serif

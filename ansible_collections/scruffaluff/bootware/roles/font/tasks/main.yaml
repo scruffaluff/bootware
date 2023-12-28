@@ -1,44 +1,25 @@
 ---
-- name: Tap Homebrew fonts for MacOS
-  community.general.homebrew_tap:
-    name: homebrew/cask-fonts
-  when: ansible_system == "Darwin"
+- name: Install fonts for Unix
+  ansible.builtin.include_tasks: unix.yaml
+  loop: "{{ font_families }}"
+  loop_control:
+    loop_var: font_family
+  vars:
+    font_folder:
+      FreeBSD: /usr/local/share/fonts/{{ font_family.name }}
+      Darwin: /Library/Fonts
+      Linux: /usr/share/fonts/{{ font_family.name }}
+  when: ansible_system != "Win32NT"
 
-- name: Install Fira Code for Arch
+- name: Update font cache for Unix
+  ansible.builtin.command:
+    cmd: fc-cache --verbose
   become: true
-  community.general.pacman:
-    name: ttf-fira-code
-  when: ansible_pkg_mgr == "pacman"
+  changed_when: "'new cache contents' in font_cache_unix"
+  register: font_cache_unix
+  when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install Fira Code font for Debian
-  ansible.builtin.apt:
-    name: fonts-firacode
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Fira Code for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: firacode
-  when: ansible_system == "FreeBSD"
-
-- name: Install Fira Code for Fedora
-  ansible.builtin.dnf:
-    name: fira-code-fonts
-  become: true
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Install Fira Code font for MacOS
-  community.general.homebrew_cask:
-    # Force option is required to solve "It seems there is already a Font"
-    # error.
-    install_options: force
-    name: font-fira-code
-    state: present
-  when: ansible_system == "Darwin"
-
-- name: Install Fira Code font for Windows
-  community.windows.win_scoop:
-    global: true
-    name: firacode
+- name: Install fonts for Windows
+  ansible.builtin.include_tasks: windows.yaml
+  loop: "{{ font_families }}"
   when: ansible_system == "Win32NT"

@@ -25,7 +25,7 @@
   ansible.builtin.get_url:
     dest: /tmp/docker-archive-keyring.gpg
     mode: "640"
-    url: https://download.docker.com/linux/{{ deb_distro_base }}/gpg
+    url: https://download.docker.com/linux/debian/gpg
   become: true
   when: ansible_pkg_mgr == "apt"
 
@@ -44,12 +44,26 @@
     repo: >-
       deb [arch={{ system_architecture }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
-      https://download.docker.com/linux/{{ deb_distro_base }} {{
-      ansible_distribution_release | lower }} stable
+      https://download.docker.com/linux/debian {{ ansible_distribution_release |
+      lower }} stable
     state: present
     filename: docker
   become: true
+  ignore_errors: true
+  register: docker_debian
   when: ansible_pkg_mgr == "apt"
+
+- name: Add Docker repository for Ubuntu
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ system_architecture }}
+      signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+      https://download.docker.com/linux/ubuntu {{ ansible_distribution_release |
+      lower }} stable
+    state: present
+    filename: docker
+  become: true
+  when: ansible_pkg_mgr == "apt" and docker_debian is failed
 
 - name: Install Docker for Debian
   ansible.builtin.apt:

@@ -1,0 +1,37 @@
+---
+- name: Create temporary font directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: /tmp/{{ font_family.name }}
+    state: directory
+
+- name: Download fonts for Unix
+  ansible.builtin.unarchive:
+    dest: /tmp/{{ font_family.name }}
+    mode: "644"
+    remote_src: true
+    src: "{{ font_family.url }}"
+
+- name: Find font files for Unix
+  ansible.builtin.find:
+    paths: /tmp/{{ font_family.name }}
+    patterns:
+      - "*.otf"
+      - "*.tff"
+  register: font_paths
+
+- name: Create font directory for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ font_folder[ansible_system] }}"
+    state: directory
+  become: true
+
+- name: Install font files for Unix
+  ansible.builtin.copy:
+    dest: "{{ font_folder[ansible_system] }}"
+    mode: "644"
+    remote_src: true
+    src: "{{ item.path }}"
+  become: true
+  loop: "{{ font_paths.files }}"

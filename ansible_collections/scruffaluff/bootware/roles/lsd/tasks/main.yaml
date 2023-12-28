@@ -15,7 +15,7 @@
 
 - name: Download Lsd for Unix
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
@@ -23,7 +23,6 @@
       lsd_formula.json.versions.stable }}/lsd-v{{
       lsd_formula.json.versions.stable }}-{{ lsd_arch
       }}-unknown-linux-musl.tar.gz
-  become: true
   when: ansible_system != "Win32NT"
 
 - name: Install Lsd for Linux

@@ -28,7 +28,7 @@
 
 - name: Download Termshark for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
@@ -36,7 +36,6 @@
       termshark_formula.json.versions.stable }}/termshark_{{
       termshark_formula.json.versions.stable }}_linux_{{ termshark_arch
       }}.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Termshark for Linux

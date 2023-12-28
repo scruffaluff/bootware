@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
+#
+# Configure desktop settings for MacOS.
+
+# Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -u: Throw an error when an unset variable is encountered.
+set -eu
 
 # Control Center settings.
 
@@ -59,10 +68,22 @@ duti -s com.microsoft.VSCode vue all
 duti -s com.microsoft.VSCode xlsx all
 duti -s com.microsoft.VSCode xml all
 duti -s com.microsoft.VSCode yaml all
+duti -s org.videolan.vlc aac all
+duti -s org.videolan.vlc alac all
+duti -s org.videolan.vlc aiff all
 duti -s org.videolan.vlc avi all
+duti -s org.videolan.vlc flac all
+duti -s org.videolan.vlc flv all
+duti -s org.videolan.vlc m4a all
 duti -s org.videolan.vlc m4v all
+duti -s org.videolan.vlc mkv all
 duti -s org.videolan.vlc mov all
+duti -s org.videolan.vlc mp3 all
 duti -s org.videolan.vlc mp4 all
+duti -s org.videolan.vlc ogg all
+duti -s org.videolan.vlc wav all
+duti -s org.videolan.vlc webm all
+duti -s org.videolan.vlc wma all
 duti -s org.videolan.vlc wmv all
 
 # Finder settings.
@@ -88,7 +109,7 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Keyboard settings.
 
-# Change move workspace left keybinding to Ctrl+Command+Left.
+# Change move workspace left keybinding to Ctrl+Option+J.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
     <key>enabled</key><true/>
@@ -96,9 +117,9 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79
       <key>type</key><string>standard</string>
       <key>parameters</key>
       <array>
-        <integer>65535</integer>
-        <integer>123</integer>
-        <integer>11272192</integer>
+        <integer>106</integer>
+        <integer>38</integer>
+        <integer>786432</integer>
       </array>
     </dict>
   </dict>
@@ -110,14 +131,14 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
       <key>type</key><string>standard</string>
       <key>parameters</key>
       <array>
-        <integer>65535</integer>
-        <integer>123</integer>
-        <integer>11403264</integer>
+        <integer>106</integer>
+        <integer>38</integer>
+        <integer>917504</integer>
       </array>
     </dict>
   </dict>
 '
-# Change move workspace right keybinding to Ctrl+Command+Right.
+# Change move workspace right keybinding to Ctrl+Option+Semicolon.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
   <dict>
     <key>enabled</key><true/>
@@ -125,9 +146,9 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81
       <key>type</key><string>standard</string>
       <key>parameters</key>
       <array>
-        <integer>65535</integer>
-        <integer>124</integer>
-        <integer>11272192</integer>
+        <integer>59</integer>
+        <integer>41</integer>
+        <integer>786432</integer>
       </array>
     </dict>
   </dict>
@@ -139,9 +160,9 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
       <key>type</key><string>standard</string>
       <key>parameters</key>
       <array>
-        <integer>65535</integer>
-        <integer>124</integer>
-        <integer>11403264</integer>
+        <integer>59</integer>
+        <integer>41</integer>
+        <integer>917504</integer>
       </array>
     </dict>
   </dict>

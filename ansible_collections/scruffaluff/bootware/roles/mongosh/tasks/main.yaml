@@ -22,13 +22,12 @@
 # https://www.mongodb.com/community/forums/t/openssl-error-when-starting-mongosh/243323.
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch }}.tgz
-  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
 
 - name: Install Mongo Shell for Linux

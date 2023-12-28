@@ -153,6 +153,15 @@
   },
   { "name": "k9s", "tests": ["k9s version"] },
   {
+    "name": "kdenlive",
+    "tests": {
+      "freebsd": [],
+      "linux": ["flatpak info org.kde.kdenlive"],
+      "macos": ["/Applications/kdenlive.app/Contents/MacOS/kdenlive --version"],
+      "windows": ["scoop prefix kdenlive"]
+    }
+  },
+  {
     "name": "kind",
     "skip": [{ "os": "freebsd" }],
     "tests": ["kind --version"]
@@ -232,6 +241,11 @@
     "tests": ["pwsh --version"]
   },
   {
+    "name": "procs",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
+    "tests": ["procs --version"]
+  },
+  {
     "name": "python",
     "tests": ["pipx --version", "python --version"]
   },
@@ -252,6 +266,11 @@
       ]
     }
   },
+  {
+    "name": "qsv",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
+    "tests": ["qsv --version"]
+  },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
@@ -269,6 +288,15 @@
     "tests": ["shfmt --version"]
   },
   { "name": "sops", "tests": ["sops --version"] },
+  {
+    "name": "sonic_pi",
+    "skip": [{ "os": "freebsd" }],
+    "tests": {
+      "linux": ["flatpak info net.sonic_pi.SonicPi"],
+      "macos": [],
+      "windows": ["scoop prefix sonic-pi"]
+    }
+  },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   { "name": "starship", "tests": ["starship --version"] },
   { "name": "super" },
@@ -335,11 +363,6 @@
   {
     "name": "xh",
     "tests": ["xh --version"]
-  },
-  {
-    "name": "xsv",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["xsv --version"]
   },
   {
     "name": "yazi",

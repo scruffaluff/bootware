@@ -32,7 +32,7 @@
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: /tmp
     mode: "755"
     remote_src: true
     src: >-
@@ -40,7 +40,6 @@
       git_delta_formula.json.versions.stable }}/delta-{{
       git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ git_delta_env }}.tar.gz
-  become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Git Delta for Linux

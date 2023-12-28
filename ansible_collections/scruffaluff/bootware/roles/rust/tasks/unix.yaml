@@ -51,6 +51,31 @@
       loop: "{{ rust_targets }}"
       register: rust_target_add
 
+    - name: Create Cargo home directory for Unix
+      ansible.builtin.file:
+        group: "{{ group_id }}"
+        mode: "755"
+        owner: "{{ user_id }}"
+        path: "{{ user_home }}/.cargo"
+        state: directory
+      become: true
+
+    - name: Enable Mold linker for Unix
+      ansible.builtin.blockinfile:
+        block: |
+          # Enable mold linker for FreeBSD and Linux targets.
+          [target.'cfg(any(target_os = "freebsd", target_os = "linux"))']
+          linker = "clang"
+          rustflags = ["--codegen", "link-arg=-fuse-ld=mold"]
+        create: true
+        group: "{{ group_id }}"
+        marker: >-
+          # {mark} ANSIBLE MANAGED mold linker configuration BLOCK
+        mode: "644"
+        owner: "{{ user_id }}"
+        path: "{{ user_home }}/.cargo/config.toml"
+      become: true
+
     - name: Create Cargo Binstall applications directory for Unix
       ansible.builtin.file:
         group: "{{ group_id }}"
@@ -63,7 +88,7 @@
 
     - name: Download Cargo Binstall for Unix
       ansible.builtin.unarchive:
-        dest: /tmp/
+        dest: /tmp
         mode: "755"
         remote_src: true
         src: >-
@@ -71,7 +96,6 @@
           rust_binstall_formula.json.versions.stable }}/cargo-binstall-{{
           rust_binstall_arch[system_architecture] }}-{{
           rust_binstall_suffix[ansible_system] }}
-      become: true
       vars:
         rust_binstall_arch:
           amd64: x86_64

@@ -22,16 +22,22 @@
     name: gitui
   when: ansible_system == "FreeBSD"
 
+# GitUI cannot download to /tmp after several other roles have been executed.
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: gitui_temp
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
-    dest: /tmp/
+    dest: "{{ gitui_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
       gitui_env[system_architecture] }}.tar.gz
-  become: true
   vars:
     gitui_env:
       amd64: musl
@@ -44,7 +50,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/gitui
+    src: "{{ gitui_temp.path }}/gitui"
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 

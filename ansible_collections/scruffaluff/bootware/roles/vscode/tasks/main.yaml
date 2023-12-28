@@ -35,7 +35,6 @@
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
       }}/stable
-  become: true
   when: ansible_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install VSCode for Fedora
@@ -155,7 +154,7 @@
     state: directory
   loop:
     - AppData/Roaming/Code/User
-    - scoop/apps/vscode/current/data/user-data/User/
+    - scoop/apps/vscode/current/data/user-data/User
   when: ansible_system == "Win32NT"
 
 # Keybindings file can be in multiple locations depending on package installer

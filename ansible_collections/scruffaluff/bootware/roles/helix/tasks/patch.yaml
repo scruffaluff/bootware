@@ -31,7 +31,6 @@
         dest: /tmp/libc6.deb
         mode: "644"
         url: https://snapshot.debian.org/archive/debian/20230411T024318Z/pool/main/g/glibc/libc6-amd64_2.36-8_i386.deb
-      become: true
 
     - name: Extract newer Glibc
       ansible.builtin.command:

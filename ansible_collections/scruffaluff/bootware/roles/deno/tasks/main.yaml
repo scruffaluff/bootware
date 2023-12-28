@@ -22,8 +22,6 @@
     dest: /tmp/deno_install.sh
     mode: "755"
     url: https://deno.land/x/install/install.sh
-  become: true
-  become_user: "{{ user_id }}"
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
     != "apk" and system_architecture == "amd64")

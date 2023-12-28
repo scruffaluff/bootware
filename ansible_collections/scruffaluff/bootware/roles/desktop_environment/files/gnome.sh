@@ -1,4 +1,13 @@
 #!/usr/bin/env sh
+#
+# Configure desktop settings for GNOME.
+
+# Exit immediately if a command exits or pipes a non-zero return code.
+#
+# Flags:
+#   -e: Exit immediately when a command pipeline fails.
+#   -u: Throw an error when an unset variable is encountered.
+set -eu
 
 # Show weekday in top bar date.
 gsettings set org.gnome.desktop.interface clock-show-weekday true
@@ -36,16 +45,12 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 # Turn off automatic brightness
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
-# Replace Super with Super+Space as the application search keybinding.
-gsettings set org.gnome.mutter overlay-key ''
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Super>Space"]'
-
 # Change system keybindings.
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control><Shift>Left"]'
-gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control><Shift>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control>Left"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control>Right"]'
 gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Alt><Shift>M"]'
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>Left"]'
-gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 
 # File extension settings.
 xdg-mime default code.desktop application/json
@@ -57,5 +62,21 @@ xdg-mime default code.desktop text/css
 xdg-mime default code.desktop text/csv
 xdg-mime default code.desktop text/plain
 xdg-mime default firefox.desktop application/pdf
+xdg-mime default org.videolan.VLC.desktop audio/aac
+xdg-mime default org.videolan.VLC.desktop audio/aiff
+xdg-mime default org.videolan.VLC.desktop audio/flac
+xdg-mime default org.videolan.VLC.desktop audio/mp4
+xdg-mime default org.videolan.VLC.desktop audio/mpeg
+xdg-mime default org.videolan.VLC.desktop audio/ogg
+xdg-mime default org.videolan.VLC.desktop audio/wav
+xdg-mime default org.videolan.VLC.desktop audio/webm
+xdg-mime default org.videolan.VLC.desktop audio/x-ms-wma
 xdg-mime default org.videolan.VLC.desktop video/mp4
+xdg-mime default org.videolan.VLC.desktop video/mpeg
+xdg-mime default org.videolan.VLC.desktop video/ogg
+xdg-mime default org.videolan.VLC.desktop video/quicktime
+xdg-mime default org.videolan.VLC.desktop video/webm
+xdg-mime default org.videolan.VLC.desktop video/x-m4v
+xdg-mime default org.videolan.VLC.desktop video/x-ms-wmv
 xdg-mime default org.videolan.VLC.desktop video/x-msvideo
+xdg-mime default org.videolan.VLC.desktop x-matroska

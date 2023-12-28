@@ -14,6 +14,7 @@
       - gdb
       - gmake
       - llvm
+      - mold
       - openocd
   when: ansible_system == "FreeBSD"
 
@@ -28,6 +29,7 @@
       - lldb
       - llvm
       - make
+      - mold
       - openocd
       - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
@@ -35,7 +37,7 @@
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
-# status.
+# status. Mold is Brew installable on MacOS, but does not work on MacOS.
 - name: Install build tools for MacOS
   community.general.homebrew:
     name:

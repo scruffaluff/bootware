@@ -1,0 +1,111 @@
+---
+- name: Install Procs for Alpine
+  become: true
+  community.general.apk:
+    name: procs
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Get latest Procs version for Debian
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/procs.json
+  register: procs_formula
+  when: ansible_pkg_mgr == "apt"
+
+- name: Download Procs for Debian
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/dalance/procs/releases/download/v{{
+      procs_formula.json.versions.stable }}/procs-v{{
+      procs_formula.json.versions.stable }}-x86_64-linux.zip
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+
+- name: Install Procs for Debian
+  ansible.builtin.copy:
+    dest: /usr/local/bin/procs
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/procs
+  become: true
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+
+# Procs is listed as available on https://freebsd.org/ports, but is not yet
+# available for FreeBSD 13.2 as of 11/22/2023.
+# - name: Install Procs for FreeBSD
+#   become: true
+#   community.general.pkgng:
+#     name: procs
+#   when: ansible_system == "FreeBSD"
+
+- name: Install Procs for Linux
+  ansible.builtin.package:
+    name: procs
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
+
+- name: Install Procs for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: procs
+  when: ansible_system == "Darwin"
+
+- name: Install Procs for Windows
+  community.windows.win_scoop:
+    name: procs
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
+    "amd64"
+
+# Procs uses different flags for shell completion across its versions.
+- name: Create Procs shell completions for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      (procs --gen-completion-out {{ item }} > /tmp/procs.{{ item }}) || (procs
+      --completion-out {{ item }} > /tmp/procs.{{ item }})
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
+    "amd64"
+
+- name: Install Procs shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/procs.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/procs"
+      shell: bash
+    - dest: "{{ fish_completion }}/procs.fish"
+      shell: fish
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
+    "amd64"
