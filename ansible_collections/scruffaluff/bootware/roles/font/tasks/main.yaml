@@ -1,72 +1,25 @@
 ---
-- name: Install fonts for FreeBSD
-  become: true
-  community.general.pkgng:
-    name:
-      - fira
-      - firacode
-  when: ansible_system == "FreeBSD"
-
-- name: Create font directories for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: /usr/share/fonts/{{ item.name }}
-    state: directory
-  become: true
+- name: Install fonts for Unix
+  ansible.builtin.include_tasks: unix.yaml
   loop: "{{ font_families }}"
-  when: ansible_system == "Linux"
+  loop_control:
+    loop_var: font_family
+  vars:
+    font_folder:
+      FreeBSD: /usr/local/share/fonts/{{ font_family.name }}
+      Darwin: /Library/Fonts
+      Linux: /usr/share/fonts/{{ font_family.name }}
+  when: ansible_system != "Win32NT"
 
-- name: Download fonts for Linux
-  ansible.builtin.unarchive:
-    dest: /usr/share/fonts/{{ item.name }}
-    mode: "644"
-    remote_src: true
-    src: "{{ item.url }}"
-  become: true
-  loop: "{{ font_families }}"
-  when: ansible_system == "Linux"
-
-- name: Install fonts for Linux
+- name: Update font cache for Unix
   ansible.builtin.command:
     cmd: fc-cache --verbose
   become: true
-  changed_when: "'new cache contents' in font_cache_linux"
-  register: font_cache_linux
-  when: ansible_system == "Linux"
+  changed_when: "'new cache contents' in font_cache_unix"
+  register: font_cache_unix
+  when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install fonts for MacOS
-  ansible.builtin.unarchive:
-    dest: /Library/Fonts
-    mode: "644"
-    remote_src: true
-    src: "{{ item.url }}"
-  become: true
-  loop: "{{ font_families }}"
-  when: ansible_system == "Darwin"
-
-- name: Download font archives for Windows
-  ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
-    url: "{{ item.url }}"
-  loop: "{{ font_families }}"
-  when: ansible_system == "Win32NT"
-
-- name: Decompress font archives for Windows
-  community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}/{{ item.name }}"
-    src: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
-  loop: "{{ font_families }}"
-  when: ansible_system == "Win32NT"
-
-# Based on logic from https://blog.simontimms.com/2021/06/11/installing-fonts.
 - name: Install fonts for Windows
-  ansible.windows.win_shell: |
-    $Folder = '{{ ansible_env.TEMP }}/{{ item.name }}';
-    $Installer = (New-Object -ComObject Shell.Application).Namespace(0x14);
-    ForEach ($File in Get-ChildItem -Include '*.ttf','*.otf' -Path "$Folder") {
-      If (-Not (Test-Path -Path "C:\Windows\Fonts\$File.Name")) {
-        $Installer.CopyHere($File.FullName);
-      }
-    }
-  changed_when: true
+  ansible.builtin.include_tasks: windows.yaml
+  loop: "{{ font_families }}"
   when: ansible_system == "Win32NT"

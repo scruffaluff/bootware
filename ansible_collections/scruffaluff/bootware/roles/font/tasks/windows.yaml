@@ -1,0 +1,21 @@
+- name: Download font archives for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
+    url: "{{ item.url }}"
+
+- name: Decompress font archives for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}/{{ item.name }}"
+    src: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
+
+# Based on logic from https://blog.simontimms.com/2021/06/11/installing-fonts.
+- name: Install fonts for Windows
+  ansible.windows.win_shell: |
+    $Folder = '{{ ansible_env.TEMP }}/{{ item.name }}';
+    $Installer = (New-Object -ComObject Shell.Application).Namespace(0x14);
+    ForEach ($File in Get-ChildItem -Include '*.ttf','*.otf' -Path "$Folder") {
+      If (-Not (Test-Path -Path "C:\Windows\Fonts\$File.Name")) {
+        $Installer.CopyHere($File.FullName);
+      }
+    }
+  changed_when: true

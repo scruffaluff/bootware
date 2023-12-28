@@ -1,7 +1,0 @@
-# Cargo configutation file for project.
-#
-# For a reference, see https://doc.rust-lang.org/cargo/reference/config.html.
-
-[target.'cfg(any(target_os = "freebsd", target_os = "linux"))']
-linker = "clang"
-rustflags = ["--codegen", "link-arg=-fuse-ld=mold"]
