@@ -109,7 +109,7 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Keyboard settings.
 
-# Change move workspace left keybinding to Ctrl+Command+Left.
+# Change move workspace left keybinding to Ctrl+Option+J.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
     <key>enabled</key><true/>
@@ -138,7 +138,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
     </dict>
   </dict>
 '
-# Change move workspace right keybinding to Ctrl+Command+Right.
+# Change move workspace right keybinding to Ctrl+Option+Semicolon.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
   <dict>
     <key>enabled</key><true/>

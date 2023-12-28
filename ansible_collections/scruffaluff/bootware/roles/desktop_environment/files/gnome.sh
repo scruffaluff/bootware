@@ -45,10 +45,6 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 # Turn off automatic brightness
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
-# Replace Super with Super+Space as the application search keybinding.
-gsettings set org.gnome.mutter overlay-key ''
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Super>Space"]'
-
 # Change system keybindings.
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control>Right"]'
