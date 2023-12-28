@@ -23,7 +23,6 @@
       doctl_formula.json.versions.stable }}/doctl-{{
       doctl_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Digital Ocean CLI for Linux

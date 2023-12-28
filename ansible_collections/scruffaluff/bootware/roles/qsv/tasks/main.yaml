@@ -16,7 +16,6 @@
       https://github.com/jqnatividad/qsv/releases/download/{{
       qsv_formula.json.versions.stable }}/qsv-{{
       qsv_formula.json.versions.stable }}-x86_64-unknown-linux-musl.zip
-  become: true
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Qsv for Linux

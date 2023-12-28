@@ -96,7 +96,6 @@
           rust_binstall_formula.json.versions.stable }}/cargo-binstall-{{
           rust_binstall_arch[system_architecture] }}-{{
           rust_binstall_suffix[ansible_system] }}
-      become: true
       vars:
         rust_binstall_arch:
           amd64: x86_64

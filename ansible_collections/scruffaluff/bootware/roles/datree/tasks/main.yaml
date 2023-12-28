@@ -17,7 +17,6 @@
       datree_formula_linux.json.versions.stable }}/datree-cli_{{
       datree_formula_linux.json.versions.stable }}_Linux_{{
       datree_arch[system_architecture] }}.zip
-  become: true
   vars:
     datree_arch:
       amd64: x86_64

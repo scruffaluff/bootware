@@ -22,7 +22,6 @@
       https://releases.hashicorp.com/packer/{{
       packer_formula.json.versions.stable }}/packer_{{
       packer_formula.json.versions.stable }}_linux_{{ system_architecture }}.zip
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Packer for Linux

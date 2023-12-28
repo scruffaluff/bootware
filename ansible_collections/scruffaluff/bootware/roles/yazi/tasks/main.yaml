@@ -16,7 +16,6 @@
       https://github.com/sxyazi/yazi/releases/download/v{{
       yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
       }}-unknown-linux-gnu.zip
-  become: true
   when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Install Yazi for Linux

@@ -22,7 +22,6 @@
       https://github.com/ducaale/xh/releases/download/v{{
       xh_formula.json.versions.stable }}/xh-v{{ xh_formula.json.versions.stable
       }}-{{ xh_arch }}-unknown-linux-musl.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Xh for Linux

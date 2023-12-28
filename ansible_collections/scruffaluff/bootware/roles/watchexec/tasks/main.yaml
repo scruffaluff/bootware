@@ -26,7 +26,6 @@
       watchexec_formula.json.versions.stable }}/watchexec-{{
       watchexec_formula.json.versions.stable }}-{{ watchexec_arch
       }}-unknown-linux-gnu.tar.xz
-  become: true
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Watchexec for Linux

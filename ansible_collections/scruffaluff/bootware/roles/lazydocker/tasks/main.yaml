@@ -17,7 +17,6 @@
       lazydocker_formula.json.versions.stable }}/lazydocker_{{
       lazydocker_formula.json.versions.stable }}_Linux_{{
       lazydocker_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     lazydocker_arch:
       amd64: x86_64

@@ -34,9 +34,41 @@
     name:
       - alsa-lib
       - alsa-utils
-      - ffmpeg
       - mediainfo
   become: true
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Get latest FFmpeg version for Fedora
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ffmpeg.json
+  register: ffmpeg_formula
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Download FFmpeg for Fedora
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-{{
+      system_architecture }}-static.tar.xz
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install FFmpeg for Fedora
+  ansible.builtin.copy:
+    dest: "/usr/local/bin/{{ item }}"
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/ffmpeg-{{ ffmpeg_formula.json.versions.stable }}-{{
+      system_architecture }}-static/{{ item }}
+  become: true
+  loop:
+    - ffmpeg
+    - ffprobe
   when: ansible_pkg_mgr == "dnf"
 
 - name: Install audio packages for FreeBSD

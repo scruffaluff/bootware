@@ -23,7 +23,6 @@
       helmfile_formula.json.versions.stable }}/helmfile_{{
       helmfile_formula.json.versions.stable }}_linux_{{ system_architecture
       }}.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Helmfile for Linux

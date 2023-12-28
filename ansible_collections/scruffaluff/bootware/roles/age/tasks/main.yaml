@@ -30,7 +30,6 @@
       https://github.com/FiloSottile/age/releases/download/v{{
       age_formula.json.versions.stable }}//age-v{{
       age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
-  become: true
   when: ansible_system == "Linux" and age_linux is failed
 
 - name: Install Age for Linux

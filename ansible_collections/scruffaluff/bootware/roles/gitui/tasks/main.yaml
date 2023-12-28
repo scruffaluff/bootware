@@ -31,7 +31,6 @@
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
       gitui_env[system_architecture] }}.tar.gz
-  become: true
   vars:
     gitui_env:
       amd64: musl

@@ -22,7 +22,6 @@
       https://github.com/boyter/scc/releases/download/v{{
       scc_formula.json.versions.stable }}/scc_Linux_{{
       scc_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     scc_arch:
       amd64: x86_64

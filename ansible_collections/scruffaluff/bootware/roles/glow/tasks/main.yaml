@@ -32,7 +32,6 @@
       https://github.com/charmbracelet/glow/releases/download/v{{
       glow_formula.json.versions.stable }}/glow_Linux_{{
       glow_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     glow_arch:
       amd64: x86_64

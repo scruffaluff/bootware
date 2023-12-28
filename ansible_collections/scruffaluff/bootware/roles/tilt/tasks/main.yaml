@@ -17,7 +17,6 @@
       tilt_formula.json.versions.stable }}/tilt.{{
       tilt_formula.json.versions.stable }}.linux.{{
       tilt_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     tilt_arch:
       amd64: x86_64

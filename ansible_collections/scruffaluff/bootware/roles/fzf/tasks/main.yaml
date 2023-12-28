@@ -22,7 +22,6 @@
       https://github.com/junegunn/fzf/releases/download/{{
       fzf_formula.json.versions.stable }}/fzf-{{
       fzf_formula.json.versions.stable }}-linux_{{ system_architecture }}.tar.gz
-  become: true
   when: ansible_system == "Linux"
 
 - name: Install Fzf for Linux

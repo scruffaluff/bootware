@@ -1,3 +1,4 @@
+---
 - name: Download font archives for Windows
   ansible.windows.win_get_url:
     dest: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"

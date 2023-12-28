@@ -1,3 +1,4 @@
+---
 - name: Create temporary font directory for Unix
   ansible.builtin.file:
     mode: "755"
@@ -28,7 +29,9 @@
 
 - name: Install font files for Unix
   ansible.builtin.copy:
-    src: "{{ item.path }}"
     dest: "{{ font_folder[ansible_system] }}"
+    mode: "644"
+    remote_src: true
+    src: "{{ item.path }}"
   become: true
   loop: "{{ font_paths.files }}"

@@ -51,7 +51,6 @@
       https://github.com/helix-editor/helix/releases/download/{{
       helix_formula.json.versions.stable }}/helix-{{
       helix_formula.json.versions.stable }}-{{ helix_arch }}-linux.tar.xz
-  become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
     failed

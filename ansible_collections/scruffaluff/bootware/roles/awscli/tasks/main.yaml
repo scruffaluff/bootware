@@ -19,7 +19,6 @@
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{
       awscli_arch[system_architecture] }}.zip
-  become: true
   vars:
     awscli_arch:
       amd64: x86_64

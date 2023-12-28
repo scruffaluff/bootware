@@ -35,7 +35,6 @@
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
       }}/stable
-  become: true
   when: ansible_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install VSCode for Fedora

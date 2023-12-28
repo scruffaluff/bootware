@@ -31,7 +31,6 @@
       croc_formula.json.versions.stable }}/croc_{{
       croc_formula.json.versions.stable }}_Linux-{{
       croc_arch[system_architecture] }}.tar.gz
-  become: true
   vars:
     croc_arch:
       amd64: 64bit
