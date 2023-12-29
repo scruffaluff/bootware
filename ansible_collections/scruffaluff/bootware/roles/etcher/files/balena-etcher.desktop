@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=Utility;
+Comment=Flash OS images to SD cards and USB drives, safely and easily.
+Exec=/usr/local/bin/balena-etcher %U
+Icon=/usr/share/pixmaps/balena-etcher.png
+MimeType=x-scheme-handler/etcher;
+Name=Balena Etcher
+Terminal=false
+Type=Application

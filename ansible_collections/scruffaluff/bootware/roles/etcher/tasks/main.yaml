@@ -1,30 +1,47 @@
 ---
-- name: Get latest Balena Etcher version for Debian and Fedora
+- name: Get latest Balena Etcher version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/cask/balenaetcher.json
   register: etcher_cask
-  when: ansible_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
-- name: Install Balena Etcher for Debian
-  ansible.builtin.apt:
-    deb: >-
+- name: Install Balena Etcher for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/balena-etcher
+    mode: "755"
+    url: >-
       https://github.com/balena-io/etcher/releases/download/v{{
-      etcher_cask.json.version }}/balena-etcher_{{ etcher_cask.json.version
-      }}_amd64.deb
+      etcher_cask.json.version }}/balenaEtcher-{{ etcher_cask.json.version
+      }}-x64.AppImage
   become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
-- name: Install Balena Etcher for Fedora
-  ansible.builtin.dnf:
-    disable_gpg_check: true
-    name: >-
-      https://github.com/balena-io/etcher/releases/download/v{{
-      etcher_cask.json.version }}/balena-etcher-{{ etcher_cask.json.version
-      }}.x86_64.rpm
+- name: Install Balena Etcher for Linux
+  ansible.builtin.get_url:
+    dest: /usr/share/pixmaps/balena-etcher.png
+    mode: "644"
+    url: https://upload.wikimedia.org/wikipedia/commons/2/2d/Etcher-icon.png
   become: true
-  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
+
+- name: Copy Balena Etcher desktop file for Linux
+  ansible.builtin.copy:
+    dest: /usr/share/applications/balena-etcher.desktop
+    force: true
+    mode: "644"
+    src: balena-etcher.desktop
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Install Balena Etcher for MacOS
   community.general.homebrew_cask:

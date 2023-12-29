@@ -69,7 +69,11 @@
   { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "etcher",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
+    "skip": [
+      { "os": "alpine" },
+      { "arch": "arm64", "os": "linux" },
+      { "os": "freebsd" }
+    ]
   },
   { "name": "fd", "tests": ["fd --version"] },
   {
@@ -80,7 +84,6 @@
   {
     "name": "firefox",
     "tests": {
-      "debian": [],
       "default": ["firefox --version"],
       "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"]
     }

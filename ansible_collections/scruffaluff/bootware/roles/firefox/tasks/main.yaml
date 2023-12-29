@@ -5,13 +5,15 @@
   become: true
   ignore_errors: true
   register: firefox_debian
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and ansible_distribution != "Ubuntu"
 
 - name: Install Firefox for Debian
   ansible.builtin.apt:
     name: firefox-esr
   become: true
-  when: ansible_pkg_mgr == "apt" and firefox_debian is failed
+  when: >-
+    ansible_pkg_mgr == "apt" and ansible_distribution != "Ubuntu" and
+    firefox_debian is failed
 
 - name: Install Firefox for FreeBSD
   become: true
@@ -31,6 +33,10 @@
     name: firefox
     state: present
   when: ansible_system == "Darwin"
+
+- name: Install Firefox for Ubuntu
+  ansible.builtin.import_tasks: ubuntu.yaml
+  when: ansible_distribution == "Ubuntu"
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:

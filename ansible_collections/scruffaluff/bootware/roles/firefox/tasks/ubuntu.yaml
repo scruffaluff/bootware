@@ -1,0 +1,41 @@
+- name: Check if Firefox is a Snap package for Ubuntu
+  ansible.builtin.command:
+    cmd: snap list firefox
+  become: true
+  changed_when: false
+  failed_when: false
+  register: firefox_snap
+
+- name: Uninstall Firefox Snap package for Ubuntu
+  ansible.builtin.command:
+    cmd: snap remove --purge firefox
+  become: true
+  when: "'mozilla' in firefox_snap.stdout"
+
+- name: Add Mozilla repository for Ubuntu
+  ansible.builtin.apt_repository:
+    repo: ppa:mozillateam/ppa
+    state: present
+    filename: mozilla
+  become: true
+
+- name: Prioritize Mozilla repository for Ubuntu
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/mozilla-firefox
+    force: true
+    mode: "644"
+    src: preferences
+  become: true
+
+- name: Enable Mozilla repository upgrades for Ubuntu
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+    force: true
+    mode: "644"
+    src: upgrades
+  become: true
+
+- name: Install Firefox for Ubuntu
+  ansible.builtin.apt:
+    name: firefox
+  become: true
