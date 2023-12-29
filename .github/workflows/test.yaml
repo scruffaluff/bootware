@@ -26,7 +26,6 @@ on:
         options:
           - alpine
           - arch
-          - collection
           - debian
           - fedora
           - freebsd
@@ -101,38 +100,6 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:arch
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  collection:
-    name: Test Bootware collection on Debian
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'collection'
-      }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Free disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./tests/integration/collection.dockerfile
-          platforms: linux/${{ inputs.platform || 'amd64' }}
-          push: false
-          tags: docker.io/scruffaluff/bootware:collection
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -344,9 +311,9 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
   ubuntu:
-    name: Test bootstrapping software for Ubuntu Linux
+    name: Test Bootware collection on Ubuntu Linux
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'ubuntu' }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space

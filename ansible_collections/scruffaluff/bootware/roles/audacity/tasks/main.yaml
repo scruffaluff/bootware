@@ -1,9 +1,11 @@
 ---
-- name: Install Audacity for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: audacity
-  when: ansible_system == "FreeBSD"
+# Audacity is listed as available on https://freebsd.org/ports, but is not yet
+# available for FreeBSD 13.2 as of 12/28/2023.
+# - name: Install Audacity for FreeBSD
+#   become: true
+#   community.general.pkgng:
+#     name: audacity
+#   when: ansible_system == "FreeBSD"
 
 - name: Install Audacity for Linux
   become: true

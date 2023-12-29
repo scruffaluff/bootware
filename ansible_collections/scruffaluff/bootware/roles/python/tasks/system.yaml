@@ -35,11 +35,13 @@
   become: true
   when: ansible_pkg_mgr == "dnf"
 
+# Rust is required for installing some Python packages on FreeBSD.
 - name: Install Python packages for FreeBSD
   become: true
   community.general.pkgng:
     name:
       - python3
+      - rust
   when: ansible_system == "FreeBSD"
 
 - name: Install ONNX dependencies for Arch

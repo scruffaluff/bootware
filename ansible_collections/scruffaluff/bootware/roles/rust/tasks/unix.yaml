@@ -60,21 +60,22 @@
         state: directory
       become: true
 
-    - name: Enable Mold linker for Unix
-      ansible.builtin.blockinfile:
-        block: |
-          # Enable mold linker for FreeBSD and Linux targets.
-          [target.'cfg(any(target_os = "freebsd", target_os = "linux"))']
-          linker = "clang"
-          rustflags = ["--codegen", "link-arg=-fuse-ld=mold"]
-        create: true
-        group: "{{ group_id }}"
-        marker: >-
-          # {mark} ANSIBLE MANAGED mold linker configuration BLOCK
-        mode: "644"
-        owner: "{{ user_id }}"
-        path: "{{ user_home }}/.cargo/config.toml"
-      become: true
+    # TODO: Enable when Mold is installable on FreeBSD and Suse.
+    # - name: Enable Mold linker for Unix
+    #   ansible.builtin.blockinfile:
+    #     block: |
+    #       # Enable mold linker for FreeBSD and Linux targets.
+    #       [target.'cfg(any(target_os = "freebsd", target_os = "linux"))']
+    #       linker = "clang"
+    #       rustflags = ["--codegen", "link-arg=-fuse-ld=mold"]
+    #     create: true
+    #     group: "{{ group_id }}"
+    #     marker: >-
+    #       # {mark} ANSIBLE MANAGED mold linker configuration BLOCK
+    #     mode: "644"
+    #     owner: "{{ user_id }}"
+    #     path: "{{ user_home }}/.cargo/config.toml"
+    #   become: true
 
     - name: Create Cargo Binstall applications directory for Unix
       ansible.builtin.file:

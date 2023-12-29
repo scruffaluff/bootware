@@ -96,7 +96,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: keybindings.j2
+    src: keybindings.json.j2
   become: true
   when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
 
@@ -107,7 +107,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: settings.j2
+    src: settings.json.j2
   become: true
   when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
 
@@ -129,7 +129,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: keybindings.j2
+    src: keybindings.json.j2
   become: true
   when: ansible_system == "Darwin"
 
@@ -141,7 +141,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: settings.j2
+    src: settings.json.j2
   become: true
   when: ansible_system == "Darwin"
 
@@ -163,7 +163,7 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}/{{ item }}"
     force: true
-    src: keybindings.j2
+    src: keybindings.json.j2
   loop:
     - AppData/Roaming/Code/User/keybindings.json
     - scoop/apps/vscode/current/data/user-data/User/keybindings.json
@@ -176,7 +176,7 @@
     dest: "{{ user_home }}/{{ item }}"
     force: true
     owner: "{{ user_id }}"
-    src: settings.j2
+    src: settings.json.j2
   loop:
     - AppData/Roaming/Code/User/settings.json
     - scoop/apps/vscode/current/data/user-data/User/settings.json

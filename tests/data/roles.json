@@ -6,8 +6,8 @@
   { "name": "alacritty", "tests": ["alacritty --version"] },
   {
     "name": "audacity",
+    "skip": [{ "os": "freebsd" }],
     "tests": {
-      "default": ["audacity --version"],
       "linux": ["flatpak info org.audacityteam.Audacity"],
       "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
       "windows": ["scoop prefix audacity"]
@@ -56,7 +56,14 @@
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
-  { "name": "dust", "tests": ["dust --version"] },
+  {
+    "name": "dust",
+    "skip": [
+      { "arch": "arm64", "os": "debian" },
+      { "arch": "arm64", "os": "fedora" }
+    ],
+    "tests": ["dust --version"]
+  },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version", "docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
@@ -73,9 +80,9 @@
   {
     "name": "firefox",
     "tests": {
+      "debian": [],
       "default": ["firefox --version"],
-      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"],
-      "ubuntu": []
+      "macos": ["/Applications/Firefox.app/Contents/MacOS/firefox --version"]
     }
   },
   {

@@ -40,21 +40,33 @@
     state: directory
   when: ansible_system == "Win32NT"
 
+# Alacritty switched configuration file formats from YAML to TOML in version
+# 0.13.0. Both formats are copied to support all versions.
 - name: Copy Alacritty configuration file for Unix
   ansible.builtin.template:
-    dest: "{{ user_home }}/.config/alacritty/alacritty.yml"
+    dest: "{{ user_home }}/.config/alacritty/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: alacritty.j2
+    src: "{{ item.src }}"
   become: true
+  loop:
+    - dest: alacritty.toml
+      src: alacritty.toml.j2
+    - dest: alacritty.yml
+      src: alacritty.yaml.j2
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/AppData/Roaming/alacritty/alacritty.yml"
+    dest: "{{ user_home }}/AppData/Roaming/alacritty/{{ item.dest }}"
     force: true
     owner: "{{ user_id }}"
-    src: alacritty.j2
+    src: "{{ item.src }}"
+  loop:
+    - dest: alacritty.toml
+      src: alacritty.toml.j2
+    - dest: alacritty.yml
+      src: alacritty.yaml.j2
   when: ansible_system == "Win32NT"

@@ -28,13 +28,12 @@ WORKDIR $HOME/bootware
 COPY --chown="${USER}" ansible_collections/ ./ansible_collections/
 COPY --chown="${USER}" ansible.cfg playbook.yaml ./
 
-ARG skip
-ARG tags
-ARG test
-
 # VSCode, when run inside of a container, will falsely warn the user about the
 # issues of running inside of the WSL and force a yes or no prompt.
 ENV DONT_PROMPT_WSL_INSTALL='true'
+
+ARG skip
+ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd \
@@ -51,6 +50,8 @@ RUN command -v bash > /dev/null \
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
+
+ARG test
 
 # Test installed binaries for roles.
 #

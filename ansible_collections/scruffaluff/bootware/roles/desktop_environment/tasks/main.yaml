@@ -50,22 +50,22 @@
   failed_when: false
   when: ansible_system == "Linux"
 
-##### Provide distribution specific desktop setting overrides. #####
+##### Distribution specific desktop setting overrides. #####
 
 - name: Change desktop settings for Fedora
   ansible.builtin.script: fedora.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_distribution =="Fedora" and gnome_desktop
 
 - name: Change desktop settings for PopOS
   ansible.builtin.script: popos.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and ansible_distribution == "Pop!_OS"
+  when: ansible_distribution == "Pop!_OS" and gnome_desktop
 
 - name: Change desktop settings for Ubuntu
   ansible.builtin.script: ubuntu.sh
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system == "Linux" and ansible_distribution == "Ubuntu"
+  when: ansible_distribution == "Ubuntu" and gnome_desktop

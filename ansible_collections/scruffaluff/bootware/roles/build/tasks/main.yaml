@@ -14,7 +14,6 @@
       - gdb
       - gmake
       - llvm
-      - mold
       - openocd
   when: ansible_system == "FreeBSD"
 
@@ -29,7 +28,6 @@
       - lldb
       - llvm
       - make
-      - mold
       - openocd
       - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true

@@ -47,7 +47,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: wezterm.j2
+    src: wezterm.lua.j2
   become: true
   when: ansible_system != "Win32NT"
 
@@ -56,5 +56,5 @@
     dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
     force: true
     owner: "{{ user_id }}"
-    src: wezterm.j2
+    src: wezterm.lua.j2
   when: ansible_system == "Win32NT"
