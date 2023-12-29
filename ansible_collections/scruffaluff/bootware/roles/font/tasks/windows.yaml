@@ -1,22 +1,32 @@
 ---
-- name: Download font archives for Windows
-  ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
-    url: "{{ item.url }}"
+- name: Check if font is installed for Windows
+  ansible.windows.win_stat:
+    path: "{{ font_folder }}/{{ font_family.check }}"
+  register: font_check_windows
 
-- name: Decompress font archives for Windows
-  community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}/{{ item.name }}"
-    src: "{{ ansible_env.TEMP }}/{{ item.name }}.zip"
-
-# Based on logic from https://blog.simontimms.com/2021/06/11/installing-fonts.
 - name: Install fonts for Windows
-  ansible.windows.win_shell: |
-    $Folder = '{{ ansible_env.TEMP }}/{{ item.name }}';
-    $Installer = (New-Object -ComObject Shell.Application).Namespace(0x14);
-    ForEach ($File in Get-ChildItem -Include '*.ttf','*.otf' -Path "$Folder") {
-      If (-Not (Test-Path -Path "C:\Windows\Fonts\$File.Name")) {
-        $Installer.CopyHere($File.FullName);
-      }
-    }
-  changed_when: true
+  block:
+    - name: Download font archives for Windows
+      ansible.windows.win_get_url:
+        dest: "{{ ansible_env.TEMP }}/{{ font_family.name }}.zip"
+        url: "{{ font_family.url }}"
+
+    - name: Decompress font archives for Windows
+      community.windows.win_unzip:
+        dest: "{{ ansible_env.TEMP }}/{{ font_family.name }}"
+        src: "{{ ansible_env.TEMP }}/{{ font_family.name }}.zip"
+
+    # Based on logic from
+    # https://blog.simontimms.com/2021/06/11/installing-fonts. Do not quote
+    # $Patterns variable, otherwise it will be interpreted as a string instead
+    # of a list.
+    - name: Install fonts for Windows
+      ansible.windows.win_shell: |
+        $Folder = '{{ ansible_env.TEMP }}/{{ font_family.name }}';
+        $Installer = (New-Object -ComObject Shell.Application).Namespace(0x14);
+        $Patterns = {{ font_family.patterns | map('quote') | join(',') }}
+        ForEach ($Font in Get-ChildItem -Recurse -Include $Patterns -Path "$Folder") {
+          $Installer.CopyHere($File);
+        }
+      changed_when: true
+  when: not font_check_windows.stat.exists

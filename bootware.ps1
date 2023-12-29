@@ -711,12 +711,18 @@ Function SetupSSHServer() {
         # OpenSSH default shell needs to match the shell used by Ansible. For
         # more information, visit
         # https://groups.google.com/g/ansible-project/c/quRiK_2WKtE/m/NcXnDsp_CQAJ.
+        If (Test-Path -Path 'C:\Program Files\PowerShell\7\pwsh.exe' -PathType Leaf) {
+            $RemoteShell = 'C:\Program Files\PowerShell\7\pwsh.exe';
+        }
+        Else {
+            $RemoteShell = 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe';
+        }
         New-ItemProperty `
             -Force `
             -Name DefaultShell `
             -Path 'HKLM:\SOFTWARE\OpenSSH' `
             -PropertyType String `
-            -Value 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
+            -Value "$RemoteShell"
 
         # Administrative Windows users must have their accepted public keys
         # stored in C:/ProgramData/ssh/administrators_authorized_keys with

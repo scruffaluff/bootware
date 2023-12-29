@@ -48,6 +48,8 @@
 
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: "scoop bucket add {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
   changed_when: "'bucket was added successfully' in essential_bucket_add"
   environment:
     Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
@@ -62,6 +64,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
+  become: true
+  become_user: "{{ user_id }}"
   community.windows.win_scoop:
     name:
       - 7zip

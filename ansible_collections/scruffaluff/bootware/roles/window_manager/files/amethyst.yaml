@@ -34,7 +34,7 @@ layouts:
 # First modifier key combination.
 mod1:
   - control
-  - shift
+  - option
 
 # Second modifier key combination.
 mod2:

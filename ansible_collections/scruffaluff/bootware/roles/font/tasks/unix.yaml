@@ -1,37 +1,47 @@
 ---
-- name: Create temporary font directory for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: /tmp/{{ font_family.name }}
-    state: directory
+- name: Check if font is installed for Unix
+  ansible.builtin.stat:
+    path: "{{ font_folder[ansible_system] }}/{{ font_family.check }}"
+  register: font_check_unix
 
-- name: Download fonts for Unix
-  ansible.builtin.unarchive:
-    dest: /tmp/{{ font_family.name }}
-    mode: "644"
-    remote_src: true
-    src: "{{ font_family.url }}"
+- name: Install fonts for Unix
+  block:
+    - name: Create temporary font directory for Unix
+      ansible.builtin.file:
+        mode: "777"
+        path: /tmp/{{ font_family.name }}
+        state: directory
 
-- name: Find font files for Unix
-  ansible.builtin.find:
-    paths: /tmp/{{ font_family.name }}
-    patterns:
-      - "*.otf"
-      - "*.tff"
-  register: font_paths
+    # TODO: Figure out way to avoid "failed to retrieve selinux context" error
+    # on Fedora without becoming root.
+    - name: Download fonts for Unix
+      ansible.builtin.unarchive:
+        dest: /tmp/{{ font_family.name }}
+        mode: "777"
+        remote_src: true
+        src: "{{ font_family.url }}"
+      become: true
 
-- name: Create font directory for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ font_folder[ansible_system] }}"
-    state: directory
-  become: true
+    - name: Find font files for Unix
+      ansible.builtin.find:
+        paths: /tmp/{{ font_family.name }}
+        patterns: "{{ font_family.patterns }}"
+        recurse: true
+      register: font_paths
 
-- name: Install font files for Unix
-  ansible.builtin.copy:
-    dest: "{{ font_folder[ansible_system] }}"
-    mode: "644"
-    remote_src: true
-    src: "{{ item.path }}"
-  become: true
-  loop: "{{ font_paths.files }}"
+    - name: Create font directory for Unix
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ font_folder[ansible_system] }}"
+        state: directory
+      become: true
+
+    - name: Install font files for Unix
+      ansible.builtin.copy:
+        dest: "{{ font_folder[ansible_system] }}"
+        mode: "644"
+        remote_src: true
+        src: "{{ item.path }}"
+      become: true
+      loop: "{{ font_paths.files }}"
+  when: not font_check_unix.stat.exists

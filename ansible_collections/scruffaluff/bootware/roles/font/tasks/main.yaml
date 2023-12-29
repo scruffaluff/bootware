@@ -22,4 +22,8 @@
 - name: Install fonts for Windows
   ansible.builtin.include_tasks: windows.yaml
   loop: "{{ font_families }}"
+  loop_control:
+    loop_var: font_family
+  vars:
+    font_folder: "C:\\Windows\\Fonts"
   when: ansible_system == "Win32NT"

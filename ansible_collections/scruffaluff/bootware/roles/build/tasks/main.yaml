@@ -53,6 +53,7 @@
   when: ansible_pkg_mgr == "zypper"
 
 - name: Install build tools with Chocolatey for Windows
+  become: true
   chocolatey.chocolatey.win_chocolatey:
     name:
       - dotnetcore-sdk
@@ -61,6 +62,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
+  become: true
+  become_user: "{{ user_id }}"
   community.windows.win_scoop:
     name:
       - cmake
