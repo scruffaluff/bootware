@@ -258,6 +258,11 @@ alias jt "just --justfile $HOME/.justfile --working-directory ."
 # Add Kubectl plugins to system path.
 prepend_paths "$HOME/.krew/bin"
 
+# Procs settings.
+
+# Set light theme since Procs automatic theming fails on some systems.
+alias procs 'procs --theme light'
+
 # Python settings.
 
 # Fix Poetry package install issue on headless systems.

@@ -362,7 +362,7 @@ jobs:
       - name: Install Bootware
         run: |
           ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}
-          Copy-Item "./bootware.ps1" -Destination "C:/Program Files/Bootware/bootware.ps1"
+          Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path "./bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
@@ -388,18 +388,19 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Scoop Wireshark installer is temporarily broken.
+      # Scoop FFSend installer is broken as of 12/19/2023 due to hash checksum
+      # issues.
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip build,termshark,wireshark --tags desktop,extras
+          bootware bootstrap --no-setup --retries 3 --skip ffsend --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.test.js --arch amd64 --skip termshark,wireshark windows
+          node tests/integration/roles.test.js --arch amd64 --skip ffsend windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

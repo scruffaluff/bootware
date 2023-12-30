@@ -39,7 +39,10 @@
   ansible.windows.win_command: python -m pip install --upgrade pipx
   changed_when: "'Successfully installed' in python_pipx_install"
   environment:
-    Path: "{{ scoop_apps }}\\python\\current;{{ ansible_env.Path }}"
+    Path: >-
+      {{ scoop_apps }}\\python\\current;{{ scoop_apps }}\\python312\\current;{{
+      scoop_apps }}\\python311\\current;{{ scoop_apps }}\\python310\\current;{{
+      ansible_env.Path }}
   register: python_pipx_install
   when: ansible_system == "Win32NT"
 

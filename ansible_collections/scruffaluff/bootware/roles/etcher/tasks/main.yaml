@@ -7,6 +7,17 @@
   register: etcher_cask
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
+- name: Create application directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - /usr/share/applications
+    - /usr/share/pixmaps
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
 - name: Install Balena Etcher for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/balena-etcher
@@ -22,7 +33,7 @@
   ansible.builtin.get_url:
     dest: /usr/share/pixmaps/balena-etcher.png
     mode: "644"
-    url: https://upload.wikimedia.org/wikipedia/commons/2/2d/Etcher-icon.png
+    url: https://raw.githubusercontent.com/balena-io/etcher/master/assets/icon.png
   become: true
   when: ansible_system == "Linux" and system_architecture == "amd64"
 

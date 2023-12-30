@@ -48,7 +48,7 @@ If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
         -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' `
         -Type DWord `
         -Value 0
-    Stop-Process -Force -ProcessName Explorer
+    Stop-Process -Force -ProcessName Explorer -ErrorAction SilentlyContinue
 }
 
 # Change Windows error beep sound to nothing.
