@@ -365,11 +365,20 @@ jobs:
           Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path "./bootware.ps1"
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
-      # Appears to work on other Windows servers.
+      # Appears to work on other Windows servers. Default shell must be older
+      # version of PowerShell only GitHub hosted Windows runner to prevent
+      # "xml.etree.ElementTree.ParseError" errors during Bootware PowerShell
+      # role.
       - name: Install dependencies for Bootware
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware setup --checkout ${{ steps.branch.outputs.current_branch }}
+          New-ItemProperty `
+            -Force `
+            -Name DefaultShell `
+            -Path 'HKLM:\SOFTWARE\OpenSSH' `
+            -PropertyType String `
+            -Value 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
         shell: powershell
       - name: Log all firewall rules on Windows host
         run: Get-NetFirewallRule -All

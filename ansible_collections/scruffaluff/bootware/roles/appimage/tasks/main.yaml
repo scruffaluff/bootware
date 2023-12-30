@@ -27,9 +27,7 @@
 
 - name: Install FUSE for Ubuntu
   ansible.builtin.apt:
-    name:
-      - libfuse2
-      - libfuse3
+    name: libfuse2
   become: true
   when: ansible_distribution == "Ubuntu"
 
