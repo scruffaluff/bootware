@@ -69,11 +69,7 @@
   { "name": "duf", "tests": ["duf --version"] },
   {
     "name": "etcher",
-    "skip": [
-      { "os": "alpine" },
-      { "arch": "arm64", "os": "linux" },
-      { "os": "freebsd" }
-    ]
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
   { "name": "fd", "tests": ["fd --version"] },
   {

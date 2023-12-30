@@ -1,22 +1,25 @@
+---
 - name: Check if Firefox is a Snap package for Ubuntu
   ansible.builtin.command:
     cmd: snap list firefox
   become: true
   changed_when: false
   failed_when: false
-  register: firefox_snap
+  register: firefox_snap_list
 
 - name: Uninstall Firefox Snap package for Ubuntu
   ansible.builtin.command:
     cmd: snap remove --purge firefox
   become: true
-  when: "'mozilla' in firefox_snap.stdout"
+  changed_when: "'firefox removed in firefox_snap_purge.stdout"
+  register: firefox_snap_purge
+  when: "'mozilla' in firefox_snap_list.stdout"
 
 - name: Add Mozilla repository for Ubuntu
   ansible.builtin.apt_repository:
+    filename: mozilla
     repo: ppa:mozillateam/ppa
     state: present
-    filename: mozilla
   become: true
 
 - name: Prioritize Mozilla repository for Ubuntu

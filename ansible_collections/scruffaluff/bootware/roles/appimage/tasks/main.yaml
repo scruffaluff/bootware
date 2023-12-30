@@ -1,0 +1,39 @@
+---
+- name: Install AWSCLI for Alpine
+  become: true
+  community.general.apk:
+    name: fuse
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install FUSE for Arch
+  become: true
+  community.general.pacman:
+    name: fuse3
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Install FUSE for Debian
+  ansible.builtin.apt:
+    name: fuse
+  become: true
+  when: ansible_pkg_mgr == "apt" and ansible_distribution != "Ubuntu"
+
+- name: Install FUSE for Fedora
+  ansible.builtin.dnf:
+    name:
+      - fuse
+      - fuse-libs
+  become: true
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Install FUSE for Ubuntu
+  ansible.builtin.dnf:
+    name:
+      - libfuse2
+      - libfuse3
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    appimage_role_executed: true

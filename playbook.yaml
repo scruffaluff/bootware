@@ -47,6 +47,13 @@
         - desktop
         - terminal
 
+    - name: Install AppImage dependencies
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.appimage
+      tags:
+        - appimage
+        - desktop
+
     - name: Install Audacity audio editor
       ansible.builtin.import_role:
         name: scruffaluff.bootware.audacity

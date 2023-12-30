@@ -5,6 +5,7 @@
   register: font_check_windows
 
 - name: Install fonts for Windows
+  when: not font_check_windows.stat.exists
   block:
     - name: Download font archives for Windows
       ansible.windows.win_get_url:
@@ -29,4 +30,3 @@
           $Installer.CopyHere($File);
         }
       changed_when: true
-  when: not font_check_windows.stat.exists

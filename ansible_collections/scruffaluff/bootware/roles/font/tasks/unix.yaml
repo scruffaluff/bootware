@@ -5,6 +5,7 @@
   register: font_check_unix
 
 - name: Install fonts for Unix
+  when: not font_check_unix.stat.exists
   block:
     - name: Create temporary font directory for Unix
       ansible.builtin.file:
@@ -44,4 +45,3 @@
         src: "{{ item.path }}"
       become: true
       loop: "{{ font_paths.files }}"
-  when: not font_check_unix.stat.exists

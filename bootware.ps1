@@ -594,7 +594,7 @@ Function Setup() {
     # Git is required for addding Scoop buckets.
     If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
         Log 'Installing Git'
-        scoop install git
+        scoop install mingit
     }
 
     If (-Not (Get-Command yq -ErrorAction SilentlyContinue)) {
