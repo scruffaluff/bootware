@@ -74,7 +74,7 @@
   { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["ffsend --version"]
   },
   {
@@ -108,7 +108,6 @@
   },
   {
     "name": "gdu",
-    "skip": [{ "os": "alpine" }],
     "tests": {
       "default": ["gdu --version"],
       "macos": ["gdu-go --version"]
@@ -128,7 +127,7 @@
     "tests": ["gitlab-runner --version"]
   },
   { "name": "gitui", "tests": ["gitui --version"] },
-  { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
+  { "name": "glow", "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
@@ -318,7 +317,7 @@
   { "name": "terragrunt", "tests": ["terragrunt --version"] },
   {
     "name": "tilt",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }],
     "tests": ["tilt version"]
   },
   { "name": "tldr", "tests": ["tldr --version"] },

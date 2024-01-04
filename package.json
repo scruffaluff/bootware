@@ -16,7 +16,7 @@
   },
   "private": true,
   "scripts": {
-    "bats": "bats --recursive tests/unit",
+    "bats": "bats --recursive tests",
     "docs": "ts-node scripts/build_docs.ts",
     "lint": "poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml",
     "package": "./scripts/package.sh",

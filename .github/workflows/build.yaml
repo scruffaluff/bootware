@@ -198,7 +198,7 @@ jobs:
         run: Install-Module -Force -Name Pester
         shell: pwsh
       - name: Run PowerShell unit tests with Pester
-        run: Invoke-Pester -Output Detailed tests/unit
+        run: Invoke-Pester -Output Detailed tests
         shell: pwsh
       - name: Setup Tmate session if debug enabled
         if: >-

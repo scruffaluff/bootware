@@ -107,8 +107,8 @@ setup-shell:
 
 [unix]
 test-unit:
-  bats --recursive tests/unit
+  bats --recursive tests
 
 [windows]
 test-unit:
-  Invoke-Pester -Output Detailed tests/unit
+  Invoke-Pester -Output Detailed tests
