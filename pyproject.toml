@@ -24,7 +24,7 @@ version = "0.7.3"
 python = "^3.10.0"
 
 [tool.poetry.dev-dependencies]
-ansible = "^9.0.0"
+ansible = "^9.1.0"
 ansible-compat = "^4.1.0"
 ansible-lint = { markers = "platform_system != 'Windows'", version = "^6.22.0" }
 yamllint = "^1.33.0"
