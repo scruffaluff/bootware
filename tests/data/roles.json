@@ -239,6 +239,7 @@
     "tests": ["mongosh --version"]
   },
   { "name": "node", "tests": ["node --version", "npm --version"] },
+  { "name": "nushell", "tests": ["nu --version"] },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   {
