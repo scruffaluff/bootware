@@ -46,15 +46,18 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Copy LS colors file for Unix
+- name: Copy dot files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.ls_colors"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .ls_colors
+    src: "{{ item }}"
   become: true
+  loop:
+    - .lesskey
+    - .ls_colors
   when: ansible_system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns

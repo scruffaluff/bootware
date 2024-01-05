@@ -2,17 +2,17 @@
 #
 # For more information, visit https://just.systems.
 
-set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
-
-servers := 'cicd,dev,dns,media,sneakieboop'
+set windows-shell := ['pwsh.exe', '-NoLogo', '-Command']
 
 # List all commands available in justfile.
 list:
   just --list
 
+# Build documentation.
 docs:
   npx ts-node scripts/build_docs.ts
 
+# Check code formatting.
 [unix]
 format:
   npx prettier --check .
@@ -23,21 +23,19 @@ format:
   npx prettier --check .
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
 
+# Run code analyses.
 lint:
   ./scripts/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
-# Install package dependencies.
-setup: setup-node setup-python setup-shell
-
-setup-node:
+# Install development dependencies.
+setup: setup-node _setup-python _setup-shell
   node --version
   npm --version
   npm ci
 
-# Crate a Python virtual environment with Poetry.
 [unix]
-setup-python:
+_setup-python:
   python3 --version
   python3 -m venv .venv
   ./.venv/bin/pip install --upgrade pip setuptools wheel
@@ -46,7 +44,7 @@ setup-python:
   poetry install --no-root
 
 [windows]
-setup-python:
+_setup-python:
   python3 --version
   python3 -m venv .venv
   ./.venv/Scripts/pip.exe install --upgrade pip setuptools wheel
@@ -55,7 +53,7 @@ setup-python:
   poetry install --no-root
 
 [unix]
-setup-shell:
+_setup-shell:
   #!/usr/bin/env sh
   set -eu
   if [ "$(id -u)" -eq 0 ]; then
@@ -70,7 +68,7 @@ setup-shell:
   if [ ! -x "$(command -v shfmt)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install shfmt
-    elif [ -x "$(command -v brew)" ]; then
+    elif [ -x "$(command -v pkg)" ]; then
       ${super:+"${super}"} pkg update
       ${super:+"${super}"} pkg install --yes shfmt
     else
@@ -101,10 +99,11 @@ setup-shell:
   yq --version
 
 [windows]
-setup-shell:
+_setup-shell:
   Install-Module -Force -Name PSScriptAnalyzer
   Install-Module -Force -Name Pester
 
+# Run unit test suites.
 [unix]
 test-unit:
   bats --recursive tests
