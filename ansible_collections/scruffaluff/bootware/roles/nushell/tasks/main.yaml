@@ -35,7 +35,7 @@
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
-    dest: "/usr/local/bin/{{ item }}"
+    dest: "/usr/bin/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
@@ -45,12 +45,6 @@
   become: true
   loop:
     - nu
-    - nu_plugin_custom_values
-    - nu_plugin_example
-    - nu_plugin_formats
-    - nu_plugin_gstat
-    - nu_plugin_inc
-    - nu_plugin_query
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for MacOS
@@ -65,6 +59,13 @@
     name: nu
   when: ansible_system == "Win32NT"
 
+- name: Register Nushell as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ nushell_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
 - name: Create Nushell configuration directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -75,7 +76,7 @@
   become: true
   when: ansible_system == "Darwin"
 
-- name: Copy Nushell settings file for Unix
+- name: Copy Nushell settings file for MacOS
   ansible.builtin.copy:
     dest: "{{ user_home }}/Library/Application Support/nushell/{{ item }}"
     force: true

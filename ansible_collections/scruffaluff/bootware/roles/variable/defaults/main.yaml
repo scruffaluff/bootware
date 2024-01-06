@@ -36,6 +36,12 @@ fish_executable_:
 group_id_:
   Darwin: staff
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
+nushell_executable_:
+  Darwin: >-
+    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+    '/usr/local' }}/bin/nu
+  FreeBSD: /usr/local/bin/nu
+  Linux: /usr/bin/nu
 system_architecture_:
   64-bit: amd64
   64bit: amd64
@@ -61,6 +67,8 @@ fish_completion: >-
 fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
+nushell_executable: >-
+  {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: "{{ user_home }}\\scoop\\apps"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
