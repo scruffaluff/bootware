@@ -8,6 +8,9 @@ set windows-shell := ['pwsh.exe', '-NoLogo', '-Command']
 list:
   just --list
 
+# Execute all commands.
+all: setup format lint docs test-unit
+
 # Build documentation.
 docs:
   npx ts-node scripts/build_docs.ts
@@ -29,7 +32,7 @@ lint:
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
 # Install development dependencies.
-setup: setup-node _setup-python _setup-shell
+setup: _setup-python _setup-shell
   node --version
   npm --version
   npm ci

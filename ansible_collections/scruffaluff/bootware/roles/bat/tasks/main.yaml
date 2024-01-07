@@ -45,7 +45,7 @@
       - less
   when: ansible_system == "Win32NT"
 
-- name: Copy Less configuration for Unix
+- name: Copy Less settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.lesskey"
     force: true
@@ -54,6 +54,15 @@
     owner: "{{ user_id }}"
     src: .lesskey
   become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Less settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.lesskey"
+    force: true
+    owner: "{{ user_id }}"
+    src: .lesskey
+  when: ansible_system == "Win32NT"
 
 - name: Create Bat settings directory for Unix
   ansible.builtin.file:
