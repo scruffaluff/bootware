@@ -18,7 +18,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/nushell.json
-  register: nushell_formula
+  register: nushell_formula_linux
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Download Nushell for Linux
@@ -28,8 +28,8 @@
     remote_src: true
     src: >-
       https://github.com/nushell/nushell/releases/download/{{
-      nushell_formula.json.versions.stable }}/nu-{{
-      nushell_formula.json.versions.stable }}-{{ nushell_arch
+      nushell_formula_linux.json.versions.stable }}/nu-{{
+      nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
       }}-linux-gnu-full.tar.gz
   when: ansible_system == "Linux" and nushell_linux is failed
 
@@ -40,11 +40,17 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/nu-{{ nushell_formula.json.versions.stable }}-{{ nushell_arch
+      /tmp/nu-{{ nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
       }}-linux-gnu-full/{{ item }}
   become: true
   loop:
     - nu
+    - nu_plugin_custom_values
+    - nu_plugin_example
+    - nu_plugin_formats
+    - nu_plugin_gstat
+    - nu_plugin_inc
+    - nu_plugin_query
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for MacOS
@@ -54,12 +60,34 @@
     name: nushell
   when: ansible_system == "Darwin"
 
-- name: Install Nushell for Windows
-  community.windows.win_scoop:
-    name: nu
+- name: Get latest Nushell version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/nushell.json
+  register: nushell_formula_windows
   when: ansible_system == "Win32NT"
 
-- name: Register Nushell as a valid login shell
+- name: Install Nushell for Windows
+  ansible.windows.win_package:
+    path: >-
+      https://github.com/nushell/nushell/releases/download/{{
+      nushell_formula_windows.json.versions.stable }}/nu-{{
+      nushell_formula_windows.json.versions.stable }}-{{
+      nushell_arch[system_architecture] }}-windows-msvc-full.msi
+  vars:
+    nushell_arch:
+      amd64: x86_64
+      arm64: aarch64
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include Nushell binaries for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\nu\\bin"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Register Nushell as a valid login shell for Unix
   ansible.builtin.lineinfile:
     path: /etc/shells
     line: "{{ nushell_executable }}"
