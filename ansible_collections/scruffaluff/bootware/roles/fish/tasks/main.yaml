@@ -18,6 +18,13 @@
     name: fish
   when: ansible_system == "Darwin"
 
+- name: Register Fish as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ fish_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"

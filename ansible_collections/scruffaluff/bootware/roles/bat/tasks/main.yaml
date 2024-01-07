@@ -2,12 +2,16 @@
 - name: Install Bat for FreeBSD
   become: true
   community.general.pkgng:
-    name: bat
+    name:
+      - bat
+      - less
   when: ansible_system == "FreeBSD"
 
 - name: Install Bat for Linux
   ansible.builtin.package:
-    name: bat
+    name:
+      - bat
+      - less
   become: true
   when: ansible_system == "Linux"
 
@@ -23,16 +27,41 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
+# Bat uses Less configuration for keybindings. MacOS default version of Less is
+# too old to support keybindings.
 - name: Install Bat for MacOS
   become: true
   become_user: "{{ user_id }}"
   community.general.homebrew:
-    name: bat
+    name:
+      - bat
+      - less
   when: ansible_system == "Darwin"
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    name: bat
+    name:
+      - bat
+      - less
+  when: ansible_system == "Win32NT"
+
+- name: Copy Less settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.lesskey"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: .lesskey
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Less settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.lesskey"
+    force: true
+    owner: "{{ user_id }}"
+    src: .lesskey
   when: ansible_system == "Win32NT"
 
 - name: Create Bat settings directory for Unix
@@ -45,7 +74,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Create Bat settings file for Unix
+- name: Copy Bat settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/bat/config"
     force: true
@@ -63,7 +92,7 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Create Bat settings file for Windows
+- name: Copy Bat settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/AppData/Roaming/bat/config"
     force: true

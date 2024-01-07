@@ -15,13 +15,13 @@
     src: >-
       https://github.com/tilt-dev/tilt/releases/download/v{{
       tilt_formula.json.versions.stable }}/tilt.{{
-      tilt_formula.json.versions.stable }}.linux.{{
-      tilt_arch[system_architecture] }}.tar.gz
+      tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if ansible_pkg_mgr
+      == 'apk' else 'linux' }}.{{ tilt_arch[system_architecture] }}.tar.gz
   vars:
     tilt_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
 - name: Install Tilt for Linux
   ansible.builtin.copy:
@@ -31,7 +31,7 @@
     remote_src: true
     src: /tmp/tilt
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
 - name: Install Tilt for MacOS
   become: true

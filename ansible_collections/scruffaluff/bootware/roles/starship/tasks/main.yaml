@@ -34,7 +34,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Create Starship settings file for Unix
+- name: Copy Starship settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/starship.toml"
     force: true
@@ -52,7 +52,7 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Create Starship settings file for Windows
+- name: Copy Starship settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/.config/starship.toml"
     force: true

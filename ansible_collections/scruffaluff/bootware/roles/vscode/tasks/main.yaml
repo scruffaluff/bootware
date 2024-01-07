@@ -1,4 +1,14 @@
 ---
+# TODO: Integrate once installation becomes stable.
+# - name: Install VSCode for Alpine
+#   become: true
+#   community.general.apk:
+#     name: code-oss
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
+
 # Arch package repository provides the open source version of Visual Studio
 # Code, which cannot install proprietary Microsoft extensions. For more
 # information, see

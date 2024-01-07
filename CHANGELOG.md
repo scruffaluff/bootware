@@ -11,17 +11,22 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Arch and Alpine Linux packages.
 - Audacity, Just, Kdenlive, Sonic Pi, VLC, and Watchexec roles.
+- Balena Etcher support for all Linux distributions.
+- Fira and PT fonts.
+- Less keybindings customization.
 - SSH port flag for scripts.
 - Wget support in install scripts.
 
 ### Changed
 
 - Move shell completions to system folders.
+- Simplified FFmpeg installation for Fedora.
 - Simplified shell profiles.
 
 ### Fixed
 
 - Extra newlines in unified clipboard aliases.
+- Login shell registration for Bash and Fish.
 
 ### Removed
 

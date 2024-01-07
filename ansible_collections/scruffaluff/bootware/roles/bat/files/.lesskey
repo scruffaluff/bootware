@@ -1,0 +1,8 @@
+# Less pager configuration file.
+#
+# For more information, visit https://linux.die.net/man/1/lesskey.
+
+k forw-line
+K forw-line-force
+l back-line
+L back-line-force

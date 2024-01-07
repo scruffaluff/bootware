@@ -7,15 +7,14 @@
   register: glow_formula
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-# TODO: Integrate once installation becomes stable.
-# - name: Install Glow for Alpine
-#   become: true
-# community.general.apk:
-#     name: glow
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
+- name: Install Glow for Alpine
+  become: true
+  community.general.apk:
+    name: glow
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Glow for FreeBSD
   become: true

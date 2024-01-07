@@ -56,15 +56,24 @@
       system_architecture }}-static.tar.xz
   when: ansible_pkg_mgr == "dnf"
 
+# FFmpeg archive contents sometimes do no match archive name.
+- name: Find FFMmpeg download folder for Fedora
+  ansible.builtin.find:
+    file_type: directory
+    paths: /tmp
+    patterns:
+      - ffmpeg-*-static
+    recurse: false
+  register: audio_ffmpeg_folder
+  when: ansible_pkg_mgr == "dnf"
+
 - name: Install FFmpeg for Fedora
   ansible.builtin.copy:
     dest: "/usr/local/bin/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
-    src: >-
-      /tmp/ffmpeg-{{ ffmpeg_formula.json.versions.stable }}-{{
-      system_architecture }}-static/{{ item }}
+    src: "{{ audio_ffmpeg_folder.files[0].path }}/{{ item }}"
   become: true
   loop:
     - ffmpeg

@@ -24,6 +24,13 @@
       - bash-completion@2
   when: ansible_system == "Darwin"
 
+- name: Register Bash as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ bash_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
 - name: Copy Bash non-login settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.bashrc"
@@ -46,7 +53,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Copy LS colors file for Unix
+- name: Copy Ls colors file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.ls_colors"
     force: true
