@@ -1,5 +1,6 @@
 [
-  { "command": "workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
+  { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
+  { "command": "-workbench.actions.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
     "key": "{{ vscode_ctrl_key }}+`",
@@ -22,11 +23,10 @@
     "key": "{{ vscode_ctrl_key }}+shift+t",
     "when": "terminalFocus"
   },
-  { "command": "-workbench.action.quickOpen",
-    "key": "ctrl+e",
-  },
-  { 
-    "command": "-workbench.actions.view.problems",
-    "key": "{{ vscode_ctrl_key }}+shift+m" }
+  { "command": "workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
+  {
+    "command": "workbench.action.toggleMaximizedPanel",
+    "key": "{{ vscode_ctrl_key }}+shift+m",
+    "when": "terminalFocus"
   }
 ]
