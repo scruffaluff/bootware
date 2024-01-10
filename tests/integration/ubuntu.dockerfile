@@ -1,7 +1,7 @@
 FROM ubuntu:23.10
 
 ARG TARGETARCH
-ARG version=0.7.3
+ARG version=0.8.0
 
 # Install Ansible Curl and Sudo.
 RUN apt-get update --ignore-missing \

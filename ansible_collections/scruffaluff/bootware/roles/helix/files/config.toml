@@ -6,6 +6,7 @@ theme = "solarized_light"
 
 [editor]
 auto-pairs = false
+bufferline = "multiple"
 color-modes = true
 cursorline = true
 
@@ -15,7 +16,6 @@ normal = "bar"
 select = "bar"
 
 [editor.file-picker]
-git-ignore = true
 hidden = false
 
 [editor.indent-guides]
@@ -37,7 +37,51 @@ right = [
 separator = "│"
 
 [keys.normal]
+";" = "move_char_right"
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
-";" = "move_char_right"
+
+[keys.normal.C-w]
+";" = "jump_view_right"
+":" = "swap_view_right"
+"C-;" = "no_op"
+"C-:" = "no_op"
+C-h = "no_op"
+C-H = "no_op"
+C-j = "no_op"
+C-J = "no_op"
+C-k = "no_op"
+C-K = "no_op"
+C-l = "no_op"
+C-L = "no_op"
+h = "no_op"
+H = "no_op"
+j = "jump_view_left"
+J = "swap_view_left"
+k = "jump_view_down"
+K = "swap_view_down"
+l = "jump_view_up"
+L = "swap_view_up"
+
+[keys.normal.space.w]
+";" = "jump_view_right"
+":" = "swap_view_right"
+"C-;" = "no_op"
+"C-:" = "no_op"
+C-h = "no_op"
+C-H = "no_op"
+C-j = "no_op"
+C-J = "no_op"
+C-k = "no_op"
+C-K = "no_op"
+C-l = "no_op"
+C-L = "no_op"
+h = "no_op"
+H = "no_op"
+j = "jump_view_left"
+J = "swap_view_left"
+k = "jump_view_down"
+K = "swap_view_down"
+l = "jump_view_up"
+L = "swap_view_up"

@@ -55,6 +55,7 @@ formatter = { command = "prettier", args = ["--parser", "markdown"] }
 [[language]]
 name = "python"
 auto-format = true
+formatter = { command = "black", args = ["-"] }
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
 
 [[language]]
