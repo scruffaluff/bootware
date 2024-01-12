@@ -109,7 +109,7 @@ _setup-shell:
 # Run unit test suites.
 [unix]
 test-unit:
-  bats --recursive tests
+  npx bats --recursive tests
 
 [windows]
 test-unit:

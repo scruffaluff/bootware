@@ -131,10 +131,15 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
+#   -n: Remove keybinding.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
   source_files "${HOME}/.fzf_key_bindings.bash"
+  # Change Fzf file search keybinding to Ctrl+F.
+  bind -r "\C-t"
+  bind -r "\ec"
+  bind -x '"\C-f": fzf-file-widget'
 fi
 
 # Go settings.

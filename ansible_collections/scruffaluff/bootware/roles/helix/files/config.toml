@@ -37,10 +37,13 @@ right = [
 separator = "│"
 
 [keys.normal]
-";" = "move_char_right"
+D = "delete_char_backward"
+esc = ["collapse_selection", "keep_primary_selection"]
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
+";" = "move_char_right"
+X = "extend_line_above"
 
 [keys.normal.C-w]
 ";" = "jump_view_right"

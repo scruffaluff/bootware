@@ -18,16 +18,16 @@
 # Flags:
 #   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
-if test -d '/opt/homebrew'
-  set _brew_prefix '/opt/homebrew'
+if test -d /opt/homebrew
+    set _brew_prefix /opt/homebrew
 else
-  set _brew_prefix '/usr/local'
+    set _brew_prefix /usr/local
 end
 set _os (uname -s)
 if status is-interactive
-  set _tty 'true'
+    set _tty true
 else
-  set _tty ''
+    set _tty ''
 end
 
 # Prompt user to remove current command from Fish history.
@@ -35,17 +35,17 @@ end
 # Flags:
 #   -n: Check if string is nonempty.
 function delete_commandline_from_history
-  set command (string trim (commandline))
-  if test -n "$command"
-    set results (history search "$command")
+    set command (string trim (commandline))
+    if test -n "$command"
+        set results (history search "$command")
 
-    if test -n "$results"
-      printf '\nFish History Entry Delete\n\n'
-      history delete "$command"
-      history save
-      commandline --function kill-whole-line
+        if test -n "$results"
+            printf '\nFish History Entry Delete\n\n'
+            history delete "$command"
+            history save
+            commandline --function kill-whole-line
+        end
     end
-  end
 end
 
 # Open Fish history file with default editor.
@@ -53,9 +53,9 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 function edit-history
-  if type -q "$EDITOR"
-    $EDITOR "$HOME/.local/share/fish/fish_history"
-  end
+    if type -q "$EDITOR"
+        $EDITOR "$HOME/.local/share/fish/fish_history"
+    end
 end
 
 # Prepend existing directories that are not in the system path.
@@ -67,11 +67,11 @@ end
 # Flags:
 #   -d: Check if path is a directory.
 function prepend_paths
-  for inode in $argv
-    if test -d "$inode"; and not contains "$inode" $PATH
-      set --export PATH "$inode" $PATH
+    for inode in $argv
+        if test -d "$inode"; and not contains "$inode" $PATH
+            set --export PATH "$inode" $PATH
+        end
     end
-  end
 end
 
 # Check if current shell is within a remote SSH session.
@@ -79,11 +79,11 @@ end
 # Flags:
 #   -n: Check if string is nonempty.
 function ssh_session
-  if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
-    return 0
-  else
-    return 1
-  end
+    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
+        return 0
+    else
+        return 1
+    end
 end
 
 # Source shell files if they exist.
@@ -91,11 +91,11 @@ end
 # Flags:
 #   -f: Check if file exists and is a regular file.
 function source_files
-  for inode in $argv
-    if test -f "$inode"
-      source "$inode"
+    for inode in $argv
+        if test -f "$inode"
+            source "$inode"
+        end
     end
-  end
 end
 
 # Source Bash files if they exist.
@@ -103,11 +103,11 @@ end
 # Flags:
 #   -f: Check if file exists and is a regular file.
 function source_bash_files
-  for inode in $argv
-    if test -f "$inode"
-      bass source "$inode"
+    for inode in $argv
+        if test -f "$inode"
+            bass source "$inode"
+        end
     end
-  end
 end
 
 # Shell settings.
@@ -123,15 +123,15 @@ set fish_greeting
 # Flags:
 #   -f: Check if file exists and is a regular file.
 if test -f "$HOME/.ls_colors"
-  set --export LS_COLORS (cat "$HOME/.ls_colors")
+    set --export LS_COLORS (cat "$HOME/.ls_colors")
 end
 
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-prepend_paths '/usr/local/bin' '/opt/homebrew/bin' '/opt/homebrew/sbin' \
-  "$HOME/.local/bin"
+prepend_paths /usr/local/bin /opt/homebrew/bin /opt/homebrew/sbin \
+    "$HOME/.local/bin"
 
 # Add custom Fish key bindings. 
 #
@@ -139,7 +139,7 @@ prepend_paths '/usr/local/bin' '/opt/homebrew/bin' '/opt/homebrew/sbin' \
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
-  bind \cD delete_commandline_from_history
+    bind \cD delete_commandline_from_history
 end
 
 # Add unified clipboard aliases.
@@ -151,39 +151,39 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Read input until null terminated instead of newline.
-if test "$_os" = 'Darwin'
-  function cbcopy
-    set --local text
-    while read -z line
-      if test -n "$text"
-        set
-      else
-        set text "$line"
-      end
+if test "$_os" = Darwin
+    function cbcopy
+        set --local text
+        while read -z line
+            if test -n "$text"
+                set
+            else
+                set text "$line"
+            end
+        end
+        echo -n "$(printf "%s" "$text")" | pbcopy
     end
-    echo -n "$(printf "%s" "$text")" | pbcopy
-  end
-  alias cbpaste pbpaste
+    alias cbpaste pbpaste
 else if type -q wl-copy
-  function cbcopy
-    set --local text
-    while read -z line
-      if test -n "$text"
-        set
-      else
-        set text "$line"
-      end
+    function cbcopy
+        set --local text
+        while read -z line
+            if test -n "$text"
+                set
+            else
+                set text "$line"
+            end
+        end
+        echo -n "$(printf "%s" "$text")" | wl-copy
     end
-    echo -n "$(printf "%s" "$text")" | wl-copy
-  end
-  alias cbpaste wl-paste
+    alias cbpaste wl-paste
 end
 
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
-set --export COMPOSE_DOCKER_CLI_BUILD 'true'
-set --export DOCKER_BUILDKIT 'true'
+set --export COMPOSE_DOCKER_CLI_BUILD true
+set --export DOCKER_BUILDKIT true
 
 # Fzf settings.
 
@@ -199,14 +199,14 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 #   -L 1: Descend only 1 directory level deep.
 #   -q: Only check for exit status by supressing output.
 if type -q bat; and type -q tree
-  function fzf_inode_preview
-    bat --color always --style numbers $argv 2> /dev/null
-    if test $status != 0
-      tree -C -L 1 $argv 2> /dev/null
+    function fzf_inode_preview
+        bat --color always --style numbers $argv 2>/dev/null
+        if test $status != 0
+            tree -C -L 1 $argv 2>/dev/null
+        end
     end
-  end
 
-  set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
+    set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
 end
 
 # Load Fzf keybindings if available.
@@ -214,9 +214,12 @@ end
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"; and \
-  test -n "$_tty"
-  fzf_key_bindings
+if test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"; and test -n "$_tty"
+    fzf_key_bindings
+    # Change Fzf file search keybinding to Ctrl+F.
+    bind --erase \ec
+    bind --erase \ct
+    bind \cf fzf-file-widget
 end
 
 # Go settings.
@@ -226,11 +229,11 @@ end
 # Flags:
 #   -d: Check if path is a directory.
 if test -d "$_brew_prefix/opt/go/libexec"
-  set --export GOROOT "$_brew_prefix/opt/go/libexec"
-  prepend_paths "$GOROOT/bin"
-else if test -d '/usr/local/go'
-  set --export GOROOT '/usr/local/go'
-  prepend_paths "$GOROOT/bin"
+    set --export GOROOT "$_brew_prefix/opt/go/libexec"
+    prepend_paths "$GOROOT/bin"
+else if test -d /usr/local/go
+    set --export GOROOT /usr/local/go
+    prepend_paths "$GOROOT/bin"
 end
 
 # Set path for Go local binaries.
@@ -244,8 +247,8 @@ prepend_paths "$GOPATH/bin"
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q hx
-  set --export COLORTERM 'truecolor'
-  set --export EDITOR 'hx'
+    set --export COLORTERM truecolor
+    set --export EDITOR hx
 end
 
 # Just settings.
@@ -268,12 +271,12 @@ alias procs 'procs --theme light'
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
-set --export POETRY_VIRTUALENVS_IN_PROJECT 'true'
+set --export POETRY_VIRTUALENVS_IN_PROJECT true
 
 # Make numerical compute libraries findable on MacOS.
-if test "$_os" = 'Darwin'
-  set --export OPENBLAS "$_brew_prefix/opt/openblas"
-  prepend_paths "$OPENBLAS"
+if test "$_os" = Darwin
+    set --export OPENBLAS "$_brew_prefix/opt/openblas"
+    prepend_paths "$OPENBLAS"
 end
 
 # Add Pyenv binaries to system path.
@@ -286,7 +289,7 @@ prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 if type -q pyenv; and test -n "$_tty"
-  pyenv init - | source
+    pyenv init - | source
 end
 
 # Rust settings.
@@ -297,14 +300,14 @@ prepend_paths "$HOME/.cargo/bin"
 # Starship settings.
 
 # Disable Starship warnings about command timeouts.
-set --export STARSHIP_LOG 'error'
+set --export STARSHIP_LOG error
 
 # Initialize Starship if available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q starship
-  starship init fish | source
+    starship init fish | source
 end
 
 # TypeScript settings.
@@ -321,13 +324,13 @@ prepend_paths "$HOME/.npm-global/bin"
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q nvm
-  nvm use default
+    nvm use default
 end
 
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
-prepend_paths '/usr/share/code/bin'
+prepend_paths /usr/share/code/bin
 
 # Wasmtime settings.
 
@@ -344,21 +347,21 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q zellij; and not ssh_session; and test "$TERM" = 'alacritty'
-  # Attach to a default session if it exists.
-  set --export ZELLIJ_AUTO_ATTACH 'true'
-  # Exit the shell when Zellij exits.
-  set --export ZELLIJ_AUTO_EXIT 'true'
-  
-  # If within an interactive shell for the login user, create or connect to
-  # Zellij session.
-  #
-  # Do not use logname command, it sometimes incorrectly returns "root" on
-  # MacOS. For for information, visit
-  # https://github.com/vercel/hyper/issues/3762.
-  if test -n "$_tty"; and test "$LOGNAME" = "$USER"
-    eval (zellij setup --generate-auto-start fish | string collect)
-  end
+if type -q zellij; and not ssh_session; and test "$TERM" = alacritty
+    # Attach to a default session if it exists.
+    set --export ZELLIJ_AUTO_ATTACH true
+    # Exit the shell when Zellij exits.
+    set --export ZELLIJ_AUTO_EXIT true
+
+    # If within an interactive shell for the login user, create or connect to
+    # Zellij session.
+    #
+    # Do not use logname command, it sometimes incorrectly returns "root" on
+    # MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
+    if test -n "$_tty"; and test "$LOGNAME" = "$USER"
+        eval (zellij setup --generate-auto-start fish | string collect)
+    end
 end
 
 # User settings.
@@ -368,6 +371,6 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-  source_bash_files "$HOME/.env" "$HOME/.secrets"
+    source_bash_files "$HOME/.env" "$HOME/.secrets"
 end
 source_files "$HOME/.env.fish" "$HOME/.secrets.fish"
