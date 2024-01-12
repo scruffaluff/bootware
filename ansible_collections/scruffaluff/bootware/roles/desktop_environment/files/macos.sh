@@ -15,11 +15,13 @@ set -eu
 defaults write com.apple.controlcenter \
   'NSStatusItem Visible DoNotDisturb' -bool true
 
-# Dock settings.
+# Desktop settings.
 
 # Prevent Stage Manager from hiding windows after a left click on desktop.
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 defaults write com.apple.WindowManager GloballyEnabled -bool false
+# Prevent accent character popup when holding down a key.
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Dock settings.
 

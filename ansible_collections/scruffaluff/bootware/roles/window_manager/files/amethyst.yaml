@@ -96,7 +96,7 @@ throw-space-right:
 # Toggle the floating state of the currently focused window.
 toggle-float:
   key: f
-  mod: mod3
+  mod: mod2
 
 # Turn on or off tiling entirely.
 toggle-tiling:

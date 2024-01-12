@@ -31,7 +31,7 @@ keybindings:
   - binding: Alt+Control+Shift+R
     command: reload config
   # Change the focused window to be floating or tiling.
-  - binding: Alt+Control+Shift+F
+  - binding: Alt+Shift+F
     command: toggle floating
   # Change focused window to be maximized or unmaximized.
   - binding: Alt+Shift+M

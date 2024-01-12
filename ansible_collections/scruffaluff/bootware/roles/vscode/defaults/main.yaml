@@ -7,13 +7,13 @@ vscode_arch: "{{ vscode_arch_[system_architecture] }}"
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
+  - bmalehorn.vscode-fish
   - coolbear.systemd-unit-file
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mhutchie.git-graph
   - redhat.vscode-yaml
   - skellock.just
-  - skyapps.fish-vscode
   - stkb.rewrap
   - tamasfe.even-better-toml
   - timonwong.shellcheck
@@ -24,6 +24,7 @@ vscode_extensions:
   - alefragnani.bookmarks
   - antfu.vite
   - bierner.markdown-mermaid
+  - bmalehorn.vscode-fish
   - bradlc.vscode-tailwindcss
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
@@ -52,7 +53,6 @@ vscode_extensions:
   - ritwickdey.liveserver
   - rust-lang.rust-analyzer
   - skellock.just
-  - skyapps.fish-vscode
   - stkb.rewrap
   - sumneko.lua
   - svelte.svelte-vscode

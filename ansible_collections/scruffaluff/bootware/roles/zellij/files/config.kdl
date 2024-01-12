@@ -4,6 +4,9 @@
 // https://zellij.dev/documentation/configuration.html.
 
 keybinds {
+    unbind "Alt h"
+    unbind "Ctrl b"
+    unbind "Ctrl f"
     RenameTab {
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
@@ -31,7 +34,6 @@ keybinds {
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
-        bind "Ctrl b" { SwitchToMode "locked"; }
     }
     pane {
         bind "j" "Left" { MoveFocus "Left"; }
@@ -78,6 +80,8 @@ keybinds {
 }
 
 session_serialization false
+serialize_pane_viewport false
+styled_underlines true
 
 themes {
     default {
