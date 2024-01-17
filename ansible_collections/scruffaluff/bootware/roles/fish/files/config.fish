@@ -130,8 +130,8 @@ end
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-prepend_paths /usr/local/bin /opt/homebrew/bin /opt/homebrew/sbin \
-    "$HOME/.local/bin"
+prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
+    /opt/homebrew/bin "$HOME/.local/bin"
 
 # Add custom Fish key bindings. 
 #

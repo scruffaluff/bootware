@@ -1,14 +1,21 @@
 [
   { "command": "-list.find", "key": "{{ vscode_ctrl_key }}+f" },
   { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
-  { "command": "-workbench.actions.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" },
   { "command": "-workbench.action.terminal.focusFind", "key": "{{ vscode_ctrl_key }}+f" },
+  { "command": "-workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
+  { "command": "-workbench.action.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
     "key": "{{ vscode_ctrl_key }}+`",
     "when": "terminalFocus"
   },
-  { "command": "workbench.action.showCommands", "key": "{{ vscode_ctrl_key }}+shift+p" },
+  { "command": "workbench.action.positionPanelBottom", "key": "{{ vscode_ctrl_key }}+shift+b" },
+  { "command": "workbench.action.positionPanelRight", "key": "{{ vscode_ctrl_key }}+shift+r" },
+  {
+    "command": "workbench.action.terminal.focus",
+    "key": "ctrl+`",
+    "when": "!terminalFocus"
+  },
   {
     "command": "workbench.action.terminal.focusNext",
     "key": "{{ vscode_ctrl_key }}+shift+]",
@@ -24,7 +31,6 @@
     "key": "{{ vscode_ctrl_key }}+shift+t",
     "when": "terminalFocus"
   },
-  { "command": "workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
   {
     "command": "workbench.action.toggleMaximizedPanel",
     "key": "{{ vscode_ctrl_key }}+shift+m",
