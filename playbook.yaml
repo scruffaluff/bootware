@@ -47,6 +47,14 @@
         - desktop
         - terminal
 
+    - name: Install Android platform tools client
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.android
+      tags:
+        - android
+        - extras
+        - never
+
     - name: Install AppImage dependencies
       ansible.builtin.import_role:
         name: scruffaluff.bootware.appimage

@@ -1,5 +1,5 @@
 ---
-- name: Install Starship for FreeBSD
+- name: Install Starship shell prompt for FreeBSD
   become: true
   community.general.pkgng:
     name: starship
