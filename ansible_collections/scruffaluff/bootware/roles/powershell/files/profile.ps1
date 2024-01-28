@@ -164,7 +164,9 @@ If (Get-Command hx -ErrorAction SilentlyContinue) {
 # Just settings.
 
 # Add alias for account wide Just recipes.
-Set-Alias -Name jt -Value New-Item
+Function jt() {
+    just --justfile "$HOME/.justfile" --working-directory . $Args
+}
 
 # Python settings.
 

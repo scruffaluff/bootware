@@ -48,12 +48,6 @@ _setup-python:
 
 [windows]
 _setup-python:
-  python3 --version
-  python3 -m venv .venv
-  ./.venv/Scripts/pip.exe install --upgrade pip setuptools wheel
-  python3 -m pip --version
-  poetry check --lock
-  poetry install --no-root
 
 [unix]
 _setup-shell:

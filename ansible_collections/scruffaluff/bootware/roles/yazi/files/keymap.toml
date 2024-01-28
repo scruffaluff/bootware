@@ -67,6 +67,7 @@ keymap = [
 
 [input]
 keymap = [
+    { on = [ "<Backspace>" ], exec = "backspace" },
     { on = [
         "<C-q>",
     ], exec = "close", desc = "Cancel input" },

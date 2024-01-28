@@ -4,11 +4,14 @@
   community.general.apk:
     name:
       - qemu
+      - qemu-aarch64
       - qemu-img
+      - qemu-riscv64
       - qemu-system-aarch64
       - qemu-system-riscv64
       - qemu-system-x86_64
       - qemu-tools
+      - qemu-x86_64
   when: ansible_pkg_mgr == "apk"
 
 - name: Install QEMU packages for Arch
@@ -21,12 +24,14 @@
       - qemu-system-riscv
       - qemu-system-x86
       - qemu-tools
+      - qemu-user
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install QEMU for Debian
   ansible.builtin.apt:
     name:
       - qemu-system
+      - qemu-user
       - qemu-utils
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -37,6 +42,7 @@
       - qemu
       - qemu-img
       - qemu-kvm
+      - qemu-user
       - qemu-tools
   become: true
   when: ansible_pkg_mgr == "dnf"
@@ -45,7 +51,9 @@
 - name: Install QEMU for FreeBSD
   become: true
   community.general.pkgng:
-    name: qemu
+    name:
+      - qemu
+      - qemu-user-static
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for MacOS

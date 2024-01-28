@@ -260,14 +260,19 @@
     "tests": {
       "default": [
         "qemu-img --version",
+        "qemu-aarch64 --version",
+        "qemu-riscv64 --version",
         "qemu-system-aarch64 --version",
         "qemu-system-riscv64 --version",
-        "qemu-system-x86_64 --version"
+        "qemu-system-x86_64 --version",
+        "qemu-x86_64 --version"
       ],
       "suse": [
         "qemu-img --version",
+        "qemu-aarch64 --version",
         "qemu-system-aarch64 --version",
-        "qemu-system-x86_64 --version"
+        "qemu-system-x86_64 --version",
+        "qemu-x86_64 --version"
       ]
     }
   },

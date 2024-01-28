@@ -34,7 +34,6 @@ vscode_extensions:
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
-  - golang.Go
   - grapecity.gc-excelviewer
   - hashicorp.terraform
   - james-yu.latex-workshop
@@ -54,7 +53,6 @@ vscode_extensions:
   - rust-lang.rust-analyzer
   - skellock.just
   - stkb.rewrap
-  - sumneko.lua
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
   - tilt-dev.tiltfile
@@ -63,4 +61,5 @@ vscode_extensions:
   - vscode-icons-team.vscode-icons
   - vue.volar
   - yzhang.markdown-all-in-one
+  - zhwu95.riscv
   - zxh404.vscode-proto3
