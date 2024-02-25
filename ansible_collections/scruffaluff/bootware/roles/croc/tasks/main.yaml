@@ -28,7 +28,7 @@
     remote_src: true
     src: >-
       https://github.com/schollz/croc/releases/download/v{{
-      croc_formula.json.versions.stable }}/croc_{{
+      croc_formula.json.versions.stable }}/croc_v{{
       croc_formula.json.versions.stable }}_Linux-{{
       croc_arch[system_architecture] }}.tar.gz
   vars:

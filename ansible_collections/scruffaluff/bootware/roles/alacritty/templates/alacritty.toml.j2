@@ -36,27 +36,29 @@ shape = "Beam"
 size = {{ font_size }}
 
 [font.bold]
-family = "Fira Code"
+family = "FiraCode Nerd Font"
 style = "Bold"
 
 [font.bold_italic]
-family = "Fira Code"
+family = "FiraCode Nerd Font"
 style = "Bold Italic"
 
 [font.italic]
-family = "Fira Code"
+family = "FiraCode Nerd Font"
 style = "Italic"
 
 [font.normal]
-family = "Fira Code"
+family = "FiraCode Nerd Font"
 style = "Regular"
 
 [shell]
 args = ["{{ '/NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
 program = "{{ user_shell }}"
+{% if ansible_system == "Darwin" %}
 
 [window]
 option_as_alt = "Both"
+{% endif %}
 
 [window.padding]
 x = 16

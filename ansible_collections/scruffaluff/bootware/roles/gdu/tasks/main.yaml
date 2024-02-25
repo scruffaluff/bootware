@@ -11,7 +11,7 @@
   become: true
   community.general.apk:
     name: gdu
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
   when: ansible_pkg_mgr == "apk"

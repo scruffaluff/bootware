@@ -20,7 +20,7 @@ config.colors = {
 config.default_cursor_style = 'SteadyBar'
 config.default_prog = { '{{ user_shell }}', '{{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
 config.enable_scroll_bar = true
-config.font = wezterm.font { family = 'Fira Code', weight = 'Regular' }
+config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ font_size }}
 config.keys = {
   { action = wezterm.action.ActivateTabRelative(-1), key = '{', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
@@ -32,7 +32,7 @@ config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
 config.window_frame = {
   active_titlebar_bg = '#e6e6e6',
   font_size = {{ font_size }},
-  font = wezterm.font { family = 'Fira Code', weight = 'Bold' },
+  font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Bold' },
   inactive_titlebar_bg = '#e6e6e6',
 }
 config.window_padding = { top = 0 }
