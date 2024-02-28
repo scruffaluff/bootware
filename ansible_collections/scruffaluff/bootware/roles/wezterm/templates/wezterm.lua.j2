@@ -23,9 +23,9 @@ config.enable_scroll_bar = true
 config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ font_size }}
 config.keys = {
-  { action = wezterm.action.ActivateTabRelative(-1), key = '{', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
-  { action = wezterm.action.ActivateTabRelative(1), key = '}', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
-  { action = wezterm.action.SpawnTab 'CurrentPaneDomain', key = 't', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
+  { action = wezterm.action.ActivateTabRelative(-1), key = 'j', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.ActivateTabRelative(1), key = ':', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SpawnTab 'CurrentPaneDomain', key = 't', mods = 'CTRL|SHIFT' },
 }
 config.window_close_confirmation = 'NeverPrompt'
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
