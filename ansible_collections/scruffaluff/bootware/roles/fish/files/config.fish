@@ -179,6 +179,16 @@ else if type -q wl-copy
     alias cbpaste wl-paste
 end
 
+# Bat settings.
+
+# Set default pager to Bat.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q bat
+    set --export PAGER bat
+end
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
@@ -338,30 +348,42 @@ prepend_paths /usr/share/code/bin
 set --export WASMTIME_HOME "$HOME/.wasmtime"
 prepend_paths "$WASMTIME_HOME/bin"
 
-# Zellij settings.
+# Alacritty settings.
 
-# Autostart Zellij or connect to existing session if within Alacritty terminal.
-#
-# For more information, visit https://zellij.dev/documentation/integration.html.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -q: Only check for exit status by supressing output.
-if type -q zellij; and not ssh_session; and test "$TERM" = alacritty
-    # Attach to a default session if it exists.
-    set --export ZELLIJ_AUTO_ATTACH true
-    # Exit the shell when Zellij exits.
-    set --export ZELLIJ_AUTO_EXIT true
-
-    # If within an interactive shell for the login user, create or connect to
-    # Zellij session.
+# Placed near end of config to ensure Zellij reads the correct window size.
+if test "$TERM" = alacritty
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal.
     #
-    # Do not use logname command, it sometimes incorrectly returns "root" on
-    # MacOS. For for information, visit
-    # https://github.com/vercel/hyper/issues/3762.
-    if test -n "$_tty"; and test "$LOGNAME" = "$USER"
-        eval (zellij setup --generate-auto-start fish | string collect)
+    # For more information, visit
+    # https://zellij.dev/documentation/integration.html.
+    #
+    # Flags:
+    #   -n: Check if string is nonempty.
+    #   -q: Only check for exit status by supressing output.
+    if type -q zellij; and not ssh_session
+        # Attach to a default session if it exists.
+        set --export ZELLIJ_AUTO_ATTACH true
+        # Exit the shell when Zellij exits.
+        set --export ZELLIJ_AUTO_EXIT true
+
+        # If within an interactive shell for the login user, create or connect to
+        # Zellij session.
+        #
+        # Do not use logname command, it sometimes incorrectly returns "root" on
+        # MacOS. For for information, visit
+        # https://github.com/vercel/hyper/issues/3762.
+        if test -n "$_tty"; and test "$LOGNAME" = "$USER"
+            eval (zellij setup --generate-auto-start fish | string collect)
+        end
     end
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    set --export TERM xterm-256color
 end
 
 # User settings.

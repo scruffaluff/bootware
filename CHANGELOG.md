@@ -14,8 +14,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Balena Etcher support for all Linux distributions.
 - Fira and PT fonts.
 - Less keybindings customization.
+- QEMU user emulation support for Linux.
 - SSH port flag for scripts.
 - Wget support in install scripts.
+- VSCode panel keybindings.
 
 ### Changed
 
@@ -26,6 +28,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Extra newlines in unified clipboard aliases.
+- Fira Code font integration in Lsd and Yazi.
 - Login shell registration for Bash and Fish.
 
 ### Removed

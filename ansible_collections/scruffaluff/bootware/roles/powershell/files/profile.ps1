@@ -113,6 +113,13 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 Set-Alias -Name cbcopy -Value Set-Clipboard
 Set-Alias -Name cbpaste -Value Get-Clipboard
 
+# Bat settings.
+
+# Set default pager to Bat.
+If (Get-Command bat -ErrorAction SilentlyContinue) {
+    $Env:PAGER = 'bat'
+}
+
 # Bootware settings.
 
 # Load Bootware autocompletion if available.

@@ -115,6 +115,17 @@ elif [[ -x "$(command -v wl-copy)" ]]; then
   alias cbpaste='wl-paste'
 fi
 
+# Bat settings.
+
+# Set default pager to Bat.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v bat)" ]]; then
+  export PAGER='bat'
+fi
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
