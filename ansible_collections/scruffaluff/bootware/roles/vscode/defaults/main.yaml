@@ -3,11 +3,13 @@ vscode_arch_:
   amd64: x64
   arm64: arm64
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
+vscode_install_extensions: true
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
   - bmalehorn.vscode-fish
   - coolbear.systemd-unit-file
+  - dendron.so
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mhutchie.git-graph
@@ -28,6 +30,7 @@ vscode_extensions:
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
   - dbaeumer.vscode-eslint
+  - dendron.so
   - denoland.vscode-deno
   - dorzey.vscode-sqlfluff
   - esbenp.prettier-vscode

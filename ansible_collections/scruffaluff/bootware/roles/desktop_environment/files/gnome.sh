@@ -48,7 +48,6 @@ gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 # Change system keybindings.
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control>Right"]'
-gsettings set org.gnome.desktop.wm.keybindings toggle-maximized '["<Alt><Shift>M"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 

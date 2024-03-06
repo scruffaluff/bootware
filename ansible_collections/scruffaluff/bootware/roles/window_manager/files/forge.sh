@@ -11,6 +11,7 @@ set -eu
 
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge focus-border-toggle false
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge move-pointer-focus-enabled true
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge showtab-decoration-enabled false
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge window-gap-size 2
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge workspace-skip-tile ''
 
@@ -24,4 +25,5 @@ gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaran
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge.keybindings window-swap-right '["<Alt><Shift>Right"]'
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge.keybindings window-swap-up '["<Alt><Shift>Up"]'
 
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge.keybindings con-tabbed-layout-toggle '["<Alt><Shift>M"]'
 gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas" set org.gnome.shell.extensions.forge.keybindings window-toggle-float '["<Alt><Shift>F"]'

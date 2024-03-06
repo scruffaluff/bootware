@@ -56,9 +56,11 @@
   become: true
   when: ansible_system != "Win32NT"
 
+# On Windows Less configuration files start with "_" instead of ".". For more
+# information, visit https://linux.die.net/man/1/less.
 - name: Copy Less settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.lesskey"
+    dest: "{{ user_home }}/_lesskey"
     force: true
     owner: "{{ user_id }}"
     src: .lesskey
