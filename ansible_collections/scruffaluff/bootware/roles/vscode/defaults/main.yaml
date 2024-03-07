@@ -9,7 +9,7 @@ vscode_remote_extensions:
   - bierner.markdown-mermaid
   - bmalehorn.vscode-fish
   - coolbear.systemd-unit-file
-  - dendron.so
+  - dendron.dendron
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mhutchie.git-graph
@@ -30,7 +30,7 @@ vscode_extensions:
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
   - dbaeumer.vscode-eslint
-  - dendron.so
+  - dendron.dendron
   - denoland.vscode-deno
   - dorzey.vscode-sqlfluff
   - esbenp.prettier-vscode
