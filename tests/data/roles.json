@@ -342,6 +342,10 @@
     "tests": ["velero help"]
   },
   {
+    "name": "vim",
+    "tests": ["vim --version"]
+  },
+  {
     "name": "vlc",
     "tests": {
       "default": ["vlc --version"],
