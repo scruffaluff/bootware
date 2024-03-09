@@ -14,13 +14,23 @@
     name: kubectl
   when: ansible_system == "FreeBSD"
 
+- name: Install Kubectl for Linux
+  ansible.builtin.package:
+    name: kubectl
+  become: true
+  ignore_errors: true
+  register: kubectl_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Get latest Kubectl version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://dl.k8s.io/release/stable.txt
   register: kubectl_version
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and kubectl_linux is
+    failed
 
 - name: Install Kubectl for Linux
   ansible.builtin.get_url:
@@ -31,7 +41,9 @@
       https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
       system_architecture }}/kubectl
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and kubectl_linux is
+    failed
 
 - name: Install Kubectl for MacOS
   become: true

@@ -14,13 +14,21 @@
       zypper: mozilla-nss
   when: ansible_system == "Linux"
 
+- name: Install Mkcert for Linux
+  ansible.builtin.package:
+    name: mkcert
+  become: true
+  ignore_errors: true
+  register: mkcert_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest Mkcert version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/mkcert.json
   register: mkcert_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for Linux
   ansible.builtin.get_url:
@@ -32,7 +40,7 @@
       mkcert_formula.json.versions.stable }}/mkcert-v{{
       mkcert_formula.json.versions.stable }}-linux-{{ system_architecture }}
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for MacOS
   become: true

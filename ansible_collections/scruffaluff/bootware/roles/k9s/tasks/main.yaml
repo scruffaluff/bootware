@@ -5,13 +5,21 @@
     name: k9s
   when: ansible_system == "FreeBSD"
 
+- name: Install K9s for Linux
+  ansible.builtin.package:
+    name: k9s
+  become: true
+  ignore_errors: true
+  register: k9s_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest K9s version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/k9s.json
   register: k9s_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
@@ -22,7 +30,7 @@
       https://github.com/derailed/k9s/releases/download/v{{
       k9s_formula.json.versions.stable }}/k9s_Linux_{{ system_architecture
       }}.tar.gz
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for Linux
   ansible.builtin.copy:
@@ -32,7 +40,7 @@
     remote_src: true
     src: /tmp/k9s
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for MacOS
   become: true

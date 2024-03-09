@@ -5,13 +5,21 @@
     name: zellij
   when: ansible_system == "FreeBSD"
 
+- name: Install Zellij for Linux
+  ansible.builtin.package:
+    name: zellij
+  become: true
+  ignore_errors: true
+  register: zellij_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest Zellij version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/zellij.json
   register: zellij_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and zellij_linux is failed
 
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
@@ -26,7 +34,7 @@
     zellij_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and zellij_linux is failed
 
 - name: Install Zellij for Linux
   ansible.builtin.copy:
@@ -36,7 +44,7 @@
     remote_src: true
     src: /tmp/zellij
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and zellij_linux is failed
 
 - name: Install Zellij for MacOS
   become: true

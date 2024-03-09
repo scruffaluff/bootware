@@ -360,7 +360,7 @@
         - vcs
         - wsl
 
-    - name: Install GitHub runner
+    - name: Install GitHub Runner
       ansible.builtin.import_role:
         name: scruffaluff.bootware.github_runner
       tags:

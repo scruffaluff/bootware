@@ -14,6 +14,14 @@
     name: htmlq
   when: ansible_system == "FreeBSD"
 
+- name: Install Htmlq for Linux
+  ansible.builtin.package:
+    name: htmlq
+  become: true
+  ignore_errors: true
+  register: htmlq_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Get latest Htmlq version for Linux
   ansible.builtin.uri:
     method: GET
@@ -22,7 +30,7 @@
   register: htmlq_formula
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+    system_architecture == "amd64" and htmlq_linux is failed
 
 - name: Download Htmlq for Linux
   ansible.builtin.unarchive:
@@ -34,7 +42,7 @@
       htmlq_formula.json.versions.stable }}/htmlq-x86_64-linux.tar.gz
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+    system_architecture == "amd64" and htmlq_linux is failed
 
 - name: Install Htmlq for Linux
   ansible.builtin.copy:
@@ -46,7 +54,7 @@
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+    system_architecture == "amd64" and htmlq_linux is failed
 
 - name: Install Htmlq for MacOS
   become: true

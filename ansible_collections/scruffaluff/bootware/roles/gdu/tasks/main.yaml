@@ -14,13 +14,23 @@
     name: gdu
   when: ansible_system == "FreeBSD"
 
+- name: Install GDU for Linux
+  ansible.builtin.package:
+    name: gdu
+  become: true
+  ignore_errors: true
+  register: gdu_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Get latest GDU version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/gdu.json
   register: gdu_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
+    failed
 
 - name: Download GDU for Linux
   ansible.builtin.unarchive:
@@ -31,7 +41,9 @@
       https://github.com/dundee/gdu/releases/download/v{{
       gdu_formula.json.versions.stable }}/gdu_linux_{{ system_architecture
       }}.tgz
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
+    failed
 
 - name: Install GDU for Linux
   ansible.builtin.copy:
@@ -41,7 +53,9 @@
     remote_src: true
     src: /tmp/gdu_linux_{{ system_architecture }}
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
+    failed
 
 - name: Install GDU for MacOS
   become: true
