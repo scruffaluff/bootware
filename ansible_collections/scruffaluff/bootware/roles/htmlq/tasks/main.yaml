@@ -1,12 +1,4 @@
 ---
-- name: Get latest Htmlq version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/htmlq.json
-  register: htmlq_formula
-  when: ansible_system == "Linux"
-
 - name: Install Htmlq for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,16 @@
   community.general.pkgng:
     name: htmlq
   when: ansible_system == "FreeBSD"
+
+- name: Get latest Htmlq version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/htmlq.json
+  register: htmlq_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 - name: Download Htmlq for Linux
   ansible.builtin.unarchive:

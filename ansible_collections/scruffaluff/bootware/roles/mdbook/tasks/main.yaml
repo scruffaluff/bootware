@@ -1,17 +1,17 @@
 ---
-- name: Get latest Mdbook version
+- name: Install Mdbook for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: mdbook
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Mdbook version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/mdbook.json
   register: mdbook_formula
   when: ansible_system == "Linux"
-
-- name: Install Mdbook for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: mdbook
-  when: ansible_system == "FreeBSD"
 
 - name: Download Mdbook for Linux
   ansible.builtin.unarchive:

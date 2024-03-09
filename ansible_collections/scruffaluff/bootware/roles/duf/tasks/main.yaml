@@ -1,5 +1,5 @@
 ---
-- name: Get latest Duf version
+- name: Get latest Duf version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

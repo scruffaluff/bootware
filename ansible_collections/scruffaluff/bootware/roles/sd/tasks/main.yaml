@@ -1,17 +1,17 @@
 ---
-- name: Get latest SD version
+- name: Install SD for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: sd
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest SD version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/sd.json
   register: sd_formula
   when: ansible_system == "Linux"
-
-- name: Install SD for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: sd
-  when: ansible_system == "FreeBSD"
 
 - name: Download SD for Linux
   ansible.builtin.unarchive:

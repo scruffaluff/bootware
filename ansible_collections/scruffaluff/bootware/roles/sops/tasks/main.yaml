@@ -1,17 +1,17 @@
 ---
-- name: Get latest Sops version
+- name: Install Sops for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: sops
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Sops version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/sops.json
   register: sops_formula
   when: ansible_system == "Linux"
-
-- name: Install Sops for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: sops
-  when: ansible_system == "FreeBSD"
 
 - name: Install Sops for Linux
   ansible.builtin.get_url:

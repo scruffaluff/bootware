@@ -1,5 +1,5 @@
 ---
-- name: Get latest Hyperfine version
+- name: Get latest Hyperfine version for Debian
   ansible.builtin.uri:
     method: GET
     return_content: true

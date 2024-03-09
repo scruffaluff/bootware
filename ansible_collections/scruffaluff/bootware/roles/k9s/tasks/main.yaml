@@ -1,17 +1,17 @@
 ---
-- name: Get latest K9s version
+- name: Install K9s for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: k9s
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest K9s version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/k9s.json
   register: k9s_formula
   when: ansible_system == "Linux"
-
-- name: Install K9s for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: k9s
-  when: ansible_system == "FreeBSD"
 
 - name: Download K9s for Linux
   ansible.builtin.unarchive:

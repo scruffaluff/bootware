@@ -1,12 +1,4 @@
 ---
-- name: Get latest GDU version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/gdu.json
-  register: gdu_formula
-  when: ansible_system == "Linux"
-
 - name: Install GDU for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,14 @@
   community.general.pkgng:
     name: gdu
   when: ansible_system == "FreeBSD"
+
+- name: Get latest GDU version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/gdu.json
+  register: gdu_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download GDU for Linux
   ansible.builtin.unarchive:

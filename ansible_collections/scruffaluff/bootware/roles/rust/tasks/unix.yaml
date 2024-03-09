@@ -1,5 +1,5 @@
 ---
-- name: Get latest Cargo Binstall version
+- name: Get latest Cargo Binstall version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true

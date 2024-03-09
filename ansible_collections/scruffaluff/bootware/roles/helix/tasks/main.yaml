@@ -32,7 +32,7 @@
   become: true
   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
-- name: Get latest Helix version
+- name: Get latest Helix version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

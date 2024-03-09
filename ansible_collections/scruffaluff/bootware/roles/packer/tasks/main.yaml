@@ -1,17 +1,17 @@
 ---
-- name: Get latest Packer version
+- name: Install Packer for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: packer
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Packer version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/packer.json
   register: packer_formula
   when: ansible_system == "Linux"
-
-- name: Install Packer for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: packer
-  when: ansible_system == "FreeBSD"
 
 - name: Download Packer for Linux
   ansible.builtin.unarchive:

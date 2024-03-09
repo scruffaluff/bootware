@@ -1,12 +1,4 @@
 ---
-- name: Get latest Glow version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/glow.json
-  register: glow_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install Glow for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,14 @@
   community.general.pkgng:
     name: glow
   when: ansible_system == "FreeBSD"
+
+- name: Get latest Glow version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/glow.json
+  register: glow_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download Glow for Linux
   ansible.builtin.unarchive:

@@ -1,12 +1,4 @@
 ---
-- name: Get latest Git Delta version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/git-delta.json
-  register: git_delta_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install Git Delta for Alpine
   become: true
   community.general.apk:
@@ -29,6 +21,14 @@
       - git-lfs
   become: true
   when: ansible_system == "Linux"
+
+- name: Get latest Git Delta version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/git-delta.json
+  register: git_delta_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:

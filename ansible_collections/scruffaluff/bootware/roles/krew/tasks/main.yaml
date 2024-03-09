@@ -1,5 +1,5 @@
 ---
-- name: Get latest Krew version
+- name: Get latest Krew version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

@@ -1,17 +1,17 @@
 ---
-- name: Get latest Terraform version
+- name: Install Terraform for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: terraform
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Terraform version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/terraform.json
   register: terraform_formula
   when: ansible_system == "Linux"
-
-- name: Install Terraform for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: terraform
-  when: ansible_system == "FreeBSD"
 
 - name: Download Terraform for Linux
   ansible.builtin.unarchive:

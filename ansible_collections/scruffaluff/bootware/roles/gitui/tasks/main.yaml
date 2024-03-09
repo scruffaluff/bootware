@@ -1,12 +1,4 @@
 ---
-- name: Get latest GitUI version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/gitui.json
-  register: gitui_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install GitUI for Alpine
   become: true
   community.general.apk:
@@ -22,12 +14,32 @@
     name: gitui
   when: ansible_system == "FreeBSD"
 
+- name: Install GitUI for Linux
+  ansible.builtin.package:
+    name: gitui
+  become: true
+  ignore_errors: true
+  register: gitui_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest GitUI version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/gitui.json
+  register: gitui_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
+    failed
+
 # GitUI cannot download to /tmp after several other roles have been executed.
 - name: Create temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: gitui_temp
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
+    failed
 
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
@@ -42,7 +54,9 @@
     gitui_env:
       amd64: musl
       arm64: aarch64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
+    failed
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -52,7 +66,9 @@
     remote_src: true
     src: "{{ gitui_temp.path }}/gitui"
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
+    failed
 
 - name: Install GitUI for MacOS
   become: true

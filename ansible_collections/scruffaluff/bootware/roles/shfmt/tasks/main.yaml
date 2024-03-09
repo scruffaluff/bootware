@@ -1,17 +1,17 @@
 ---
-- name: Get latest Shfmt version
+- name: Install Shfmt for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: shfmt
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Shfmt version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/shfmt.json
   register: shfmt_formula
   when: ansible_system == "Linux"
-
-- name: Install Shfmt for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: shfmt
-  when: ansible_system == "FreeBSD"
 
 - name: Install Shfmt for Linux
   ansible.builtin.get_url:

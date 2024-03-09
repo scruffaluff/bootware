@@ -58,10 +58,6 @@
   { "name": "desktop_environment" },
   {
     "name": "dust",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" }
-    ],
     "tests": ["dust --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },

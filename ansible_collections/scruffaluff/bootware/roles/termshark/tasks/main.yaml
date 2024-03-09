@@ -1,12 +1,4 @@
 ---
-- name: Get latest Termshark version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/termshark.json
-  register: termshark_formula
-  when: ansible_system == "Linux"
-
 - name: Install Termshark for FreeBSD
   become: true
   community.general.pkgng:
@@ -24,6 +16,14 @@
       dnf: wireshark-cli
       pacman: wireshark-cli
       zypper: wireshark
+  when: ansible_system == "Linux"
+
+- name: Get latest Termshark version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/termshark.json
+  register: termshark_formula
   when: ansible_system == "Linux"
 
 - name: Download Termshark for Linux

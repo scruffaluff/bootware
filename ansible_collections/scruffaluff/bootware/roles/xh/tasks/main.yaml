@@ -1,17 +1,17 @@
 ---
-- name: Get latest Xh version
+- name: Install Xh for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: xh
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Xh version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/xh.json
   register: xh_formula
   when: ansible_system == "Linux"
-
-- name: Install Xh for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: xh
-  when: ansible_system == "FreeBSD"
 
 - name: Download Xh for Linux
   ansible.builtin.unarchive:

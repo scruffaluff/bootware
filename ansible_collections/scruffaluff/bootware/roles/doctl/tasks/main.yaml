@@ -5,13 +5,21 @@
     name: doctl
   when: ansible_system == "FreeBSD"
 
+- name: Install Digital Ocean CLI for Linux
+  ansible.builtin.package:
+    name: doctl
+  become: true
+  ignore_errors: true
+  register: doctl_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest Digital Ocean CLI version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/doctl.json
   register: doctl_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Download Digital Ocean CLI for Linux
   ansible.builtin.unarchive:
@@ -23,7 +31,7 @@
       doctl_formula.json.versions.stable }}/doctl-{{
       doctl_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Install Digital Ocean CLI for Linux
   ansible.builtin.copy:
@@ -33,7 +41,7 @@
     remote_src: true
     src: /tmp/doctl
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Install Digital Ocean CLI for MacOS
   become: true

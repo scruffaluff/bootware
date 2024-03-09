@@ -1,12 +1,4 @@
 ---
-- name: Get latest Dust version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/dust.json
-  register: dust_formula
-  when: ansible_system == "Linux"
-
 - name: Install Dust for Alpine
   become: true
   community.general.apk:
@@ -19,6 +11,14 @@
     name: dust
   when: ansible_system == "FreeBSD"
 
+- name: Get latest Dust version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/dust.json
+  register: dust_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
     dest: /tmp
@@ -29,9 +29,7 @@
       dust_formula.json.versions.stable }}/dust-v{{
       dust_formula.json.versions.stable }}-{{ dust_arch
       }}-unknown-linux-gnu.tar.gz
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Dust for Linux
   ansible.builtin.copy:
@@ -43,9 +41,7 @@
       /tmp/dust-v{{ dust_formula.json.versions.stable }}-{{ dust_arch
       }}-unknown-linux-gnu/dust
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Dust for MacOS
   community.general.homebrew:

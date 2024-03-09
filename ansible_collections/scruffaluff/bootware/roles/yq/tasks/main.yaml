@@ -1,5 +1,12 @@
 ---
-- name: Get latest Yq version for FreeBSD and Linux
+- name: Install Yq for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: yq
+  when: ansible_system == "Darwin"
+
+- name: Get latest Yq version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -7,7 +14,7 @@
   register: yq_formula
   when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install Yq for FreeBSD and Linux
+- name: Install Yq for Unix
   ansible.builtin.get_url:
     dest: /usr/local/bin/yq
     force: true
@@ -18,13 +25,6 @@
       system_architecture }}
   become: true
   when: ansible_system in ["FreeBSD", "Linux"]
-
-- name: Install Yq for MacOS
-  become: true
-  become_user: "{{ user_id }}"
-  community.general.homebrew:
-    name: yq
-  when: ansible_system == "Darwin"
 
 - name: Install Yq for Windows
   community.windows.win_scoop:

@@ -1,5 +1,5 @@
 ---
-- name: Get latest Tilt version
+- name: Get latest Tilt version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
