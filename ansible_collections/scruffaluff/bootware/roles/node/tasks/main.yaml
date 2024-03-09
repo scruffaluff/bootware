@@ -1,5 +1,5 @@
 ---
-- name: Get latest NVM version
+- name: Get latest NVM version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true

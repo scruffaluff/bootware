@@ -118,7 +118,7 @@
   register: gitlab_runner_sudo_available
   when: ansible_system != "Win32NT"
 
-- name: Enable GitHub runner passwordless sudo for Unix
+- name: Enable GitHub Runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for gitlab-runner user.

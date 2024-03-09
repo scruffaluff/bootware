@@ -1,12 +1,4 @@
 ---
-- name: Get latest FFSend version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/ffsend.json
-  register: ffsend_formula
-  when: ansible_system == "Linux"
-
 - name: Install FFSend for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,16 @@
   community.general.pkgng:
     name: ffsend
   when: ansible_system == "FreeBSD"
+
+- name: Get latest FFSend version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ffsend.json
+  register: ffsend_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 # Static FFSend installation avoids OpenSSL compatibility issues on newer
 # versions of Fedora and Ubuntu.

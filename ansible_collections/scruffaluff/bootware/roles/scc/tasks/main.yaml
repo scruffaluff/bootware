@@ -1,17 +1,17 @@
 ---
-- name: Get latest Scc version
+- name: Install Scc for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: scc
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Scc version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/scc.json
   register: scc_formula
   when: ansible_system == "Linux"
-
-- name: Install Scc for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: scc
-  when: ansible_system == "FreeBSD"
 
 - name: Download Scc for Linux
   ansible.builtin.unarchive:

@@ -1,17 +1,25 @@
 ---
-- name: Get latest Sops version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/sops.json
-  register: sops_formula
-  when: ansible_system == "Linux"
-
 - name: Install Sops for FreeBSD
   become: true
   community.general.pkgng:
     name: sops
   when: ansible_system == "FreeBSD"
+
+- name: Install Sops for Linux
+  ansible.builtin.package:
+    name: sops
+  become: true
+  ignore_errors: true
+  register: sops_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Sops version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/sops.json
+  register: sops_formula
+  when: ansible_system == "Linux" and sops_linux is failed
 
 - name: Install Sops for Linux
   ansible.builtin.get_url:
@@ -23,7 +31,7 @@
       sops_formula.json.versions.stable }}/sops-v{{
       sops_formula.json.versions.stable }}.linux.{{ system_architecture }}
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and sops_linux is failed
 
 - name: Install Sops for MacOS
   become: true

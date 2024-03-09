@@ -1,17 +1,17 @@
 ---
-- name: Get latest Terragrunt version
+- name: Install Terragrunt for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: terragrunt
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Terragrunt version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/terragrunt.json
   register: terragrunt_formula
   when: ansible_system == "Linux"
-
-- name: Install Terragrunt for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: terragrunt
-  when: ansible_system == "FreeBSD"
 
 - name: Install Terragrunt for Linux
   ansible.builtin.get_url:

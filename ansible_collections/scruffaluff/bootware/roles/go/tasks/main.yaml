@@ -1,12 +1,4 @@
 ---
-- name: Get latest Go version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/go.json
-  register: go_formula
-  when: ansible_system == "Linux"
-
 - name: Install Go for Alpine
   become: true
   community.general.apk:
@@ -18,6 +10,14 @@
   community.general.pkgng:
     name: go
   when: ansible_system == "FreeBSD"
+
+- name: Get latest Go version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/go.json
+  register: go_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Go for Linux
   ansible.builtin.unarchive:

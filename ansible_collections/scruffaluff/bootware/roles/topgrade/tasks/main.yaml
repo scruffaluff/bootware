@@ -1,0 +1,60 @@
+---
+- name: Install Topgrade for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: topgrade
+  when: ansible_system == "FreeBSD"
+
+- name: Install Topgrade for Linux
+  ansible.builtin.package:
+    name: topgrade
+  become: true
+  ignore_errors: true
+  register: topgrade_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Topgrade version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/topgrade.json
+  register: topgrade_formula
+  when: ansible_system == "Linux" and topgrade_linux is failed
+
+- name: Download Topgrade for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/topgrade-rs/topgrade/releases/download/v{{
+      topgrade_formula.json.versions.stable }}/topgrade-v{{
+      topgrade_formula.json.versions.stable }}-{{
+      topgrade_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+  vars:
+    topgrade_arch:
+      amd64: x86_64
+      arm64: aarch64
+  when: ansible_system == "Linux" and topgrade_linux is failed
+
+- name: Install Topgrade for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/topgrade
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/topgrade
+  become: true
+  when: ansible_system == "Linux" and topgrade_linux is failed
+
+- name: Install Topgrade for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: topgrade
+  when: ansible_system == "Darwin"
+
+- name: Install Topgrade for Windows
+  community.windows.win_scoop:
+    name: topgrade
+  when: ansible_system == "Win32NT"

@@ -13,7 +13,7 @@
   register: croc_linux
   when: ansible_system == "Linux"
 
-- name: Get latest Croc version
+- name: Get latest Croc version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

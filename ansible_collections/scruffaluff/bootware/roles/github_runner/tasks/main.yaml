@@ -6,7 +6,7 @@
   become: true
   when: ansible_system == "Linux"
 
-- name: Create GitHub runner user for MacOS
+- name: Create GitHub Runner user for MacOS
   ansible.builtin.user:
     append: true
     groups:
@@ -16,7 +16,7 @@
   become: true
   when: ansible_system == "Darwin"
 
-- name: Create GitHub runner user for Linux
+- name: Create GitHub Runner user for Linux
   ansible.builtin.user:
     append: true
     groups: >-
@@ -58,7 +58,7 @@
   register: github_runner_sudo_available
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Enable GitHub runner passwordless sudo for Unix
+- name: Enable GitHub Runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for github-runner user.
@@ -75,7 +75,7 @@
     ansible_system in ["Darwin", "Linux"] and github_runner_sudo_available.rc ==
     0
 
-- name: Create GitHub runner directory for Unix
+- name: Create GitHub Runner directory for Unix
   ansible.builtin.file:
     mode: "750"
     owner: github-runner
@@ -84,20 +84,20 @@
   become: true
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create GitHub runner user for Windows
+- name: Create GitHub Runner user for Windows
   ansible.windows.win_user:
     name: github-runner
     state: present
   when: ansible_system == "Win32NT"
 
-- name: Create GitHub runner directory for Windows
+- name: Create GitHub Runner directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
     path: "{{ github_runner_folder }}"
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Get latest GitHub runner version for Unix
+- name: Get latest GitHub Runner version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -105,7 +105,7 @@
   register: github_runner_release_unix
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Download GitHub runner for Unix
+- name: Download GitHub Runner for Unix
   ansible.builtin.unarchive:
     dest: "{{ github_runner_folder }}"
     mode: "750"
@@ -123,7 +123,7 @@
       Linux: linux
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Get latest GitHub runner version for Windows
+- name: Get latest GitHub Runner version for Windows
   ansible.windows.win_uri:
     method: GET
     return_content: true
@@ -131,7 +131,7 @@
   register: github_runner_release_windows
   when: ansible_system == "Win32NT"
 
-- name: Download GitHub runner archive for Windows
+- name: Download GitHub Runner archive for Windows
   ansible.windows.win_get_url:
     dest: "{{ ansible_env.TEMP }}/github_runner.zip"
     url: >-
@@ -141,7 +141,7 @@
       }}.zip
   when: ansible_system == "Win32NT"
 
-- name: Decompress GitHub runner archive for Windows
+- name: Decompress GitHub Runner archive for Windows
   community.windows.win_unzip:
     dest: "{{ github_runner_folder }}"
     src: "{{ ansible_env.TEMP }}/github_runner.zip"

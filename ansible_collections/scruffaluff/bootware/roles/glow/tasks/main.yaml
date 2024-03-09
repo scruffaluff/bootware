@@ -1,12 +1,4 @@
 ---
-- name: Get latest Glow version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/glow.json
-  register: glow_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install Glow for Alpine
   become: true
   community.general.apk:
@@ -22,6 +14,24 @@
     name: glow
   when: ansible_system == "FreeBSD"
 
+- name: Install Glow for Linux
+  ansible.builtin.package:
+    name: glow
+  become: true
+  ignore_errors: true
+  register: glow_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Glow version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/glow.json
+  register: glow_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
+    failed
+
 - name: Download Glow for Linux
   ansible.builtin.unarchive:
     dest: /tmp
@@ -35,7 +45,9 @@
     glow_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
+    failed
 
 - name: Install Glow for Linux
   ansible.builtin.copy:
@@ -45,7 +57,9 @@
     remote_src: true
     src: /tmp/glow
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
+    failed
 
 - name: Install Glow for MacOS
   become: true

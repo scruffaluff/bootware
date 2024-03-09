@@ -1,5 +1,5 @@
 ---
-- name: Get latest Lazydocker version
+- name: Get latest Lazydocker version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true

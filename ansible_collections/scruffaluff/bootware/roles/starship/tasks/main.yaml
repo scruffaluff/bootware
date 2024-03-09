@@ -5,21 +5,36 @@
     name: starship
   when: ansible_system == "FreeBSD"
 
-- name: Download Starship shell prompt installer for Unix
+- name: Install Starship for Linux
+  ansible.builtin.package:
+    name: starship
+  become: true
+  ignore_errors: true
+  register: starship_linux
+  when: ansible_system == "Linux"
+
+- name: Download Starship installer for Linux
   ansible.builtin.get_url:
     dest: /tmp/starship_install.sh
     mode: "755"
     url: https://starship.rs/install.sh
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: ansible_system == "Linux" and starship_linux is failed
 
-- name: Install Starship shell prompt for Unix
+- name: Install Starship for Linux
   ansible.builtin.command: /tmp/starship_install.sh --yes
   become: true
   changed_when: "'Starship installed' in starship_install"
   register: starship_install
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: ansible_system == "Linux" and starship_linux is failed
 
-- name: Install Starship shell prompt for Windows
+- name: Install Starship for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: starship
+  when: ansible_system == "Darwin"
+
+- name: Install Starship for Windows
   community.windows.win_scoop:
     name: starship
   when: ansible_system == "Win32NT"

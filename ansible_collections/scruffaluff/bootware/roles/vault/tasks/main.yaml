@@ -1,17 +1,26 @@
 ---
-- name: Get latest Vault version
+- name: Install Vault for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: vault
+  when: ansible_system == "FreeBSD"
+
+# Do not use yet. Vault has permission issues on Arch Linux.
+# - name: Install Vault for Linux
+#   ansible.builtin.package:
+#     name: vault
+#   become: true
+#   ignore_errors: true
+#   register: vault_linux
+#   when: ansible_system == "Linux"
+
+- name: Get latest Vault version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/vault.json
   register: vault_formula
   when: ansible_system == "Linux"
-
-- name: Install Vault for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: vault
-  when: ansible_system == "FreeBSD"
 
 - name: Download Vault for Linux
   ansible.builtin.unarchive:

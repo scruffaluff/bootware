@@ -222,6 +222,17 @@
         - server
         - wsl
 
+    - name: Install Dive container image explorer
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.dive
+      tags:
+        - container
+        - desktop
+        - dive
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Duf device usage analyzer
       ansible.builtin.import_role:
         name: scruffaluff.bootware.duf
@@ -360,7 +371,7 @@
         - vcs
         - wsl
 
-    - name: Install GitHub runner
+    - name: Install GitHub Runner
       ansible.builtin.import_role:
         name: scruffaluff.bootware.github_runner
       tags:
@@ -942,6 +953,17 @@
         - never
         - tmux
 
+    - name: Install Topgrade package updater
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.topgrade
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - topgrade
+        - wsl
+
     - name: Install USQL
       ansible.builtin.import_role:
         name: scruffaluff.bootware.usql
@@ -1088,3 +1110,14 @@
         - terminal
         - wsl
         - zellij
+
+    - name: Install Zoxide directory jumper
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.zoxide
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+        - zoxide

@@ -1,12 +1,4 @@
 ---
-- name: Get latest FD version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/fd.json
-  register: fd_formula
-  when: ansible_system == "Linux"
-
 - name: Install FD for Alpine
   become: true
   community.general.apk:
@@ -18,6 +10,14 @@
   community.general.pkgng:
     name: fd-find
   when: ansible_system == "FreeBSD"
+
+- name: Get latest FD version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/fd.json
+  register: fd_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download FD for Linux
   ansible.builtin.unarchive:

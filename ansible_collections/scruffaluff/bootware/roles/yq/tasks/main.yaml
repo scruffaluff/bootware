@@ -1,23 +1,36 @@
 ---
-- name: Get latest Yq version for FreeBSD and Linux
+- name: Install Yq for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: go-yq
+  when: ansible_system == "FreeBSD"
+
+- name: Install Yq for Linux
+  ansible.builtin.package:
+    name: yq
+  become: true
+  ignore_errors: true
+  register: yq_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Yq version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/yq.json
   register: yq_formula
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux" and yq_linux is failed
 
-- name: Install Yq for FreeBSD and Linux
+- name: Install Yq for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/yq
     force: true
     mode: "755"
     url: >-
       https://github.com/mikefarah/yq/releases/download/v{{
-      yq_formula.json.versions.stable }}/yq_{{ ansible_system | lower }}_{{
-      system_architecture }}
+      yq_formula.json.versions.stable }}/yq_linux_{{ system_architecture }}
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux" and yq_linux is failed
 
 - name: Install Yq for MacOS
   become: true
