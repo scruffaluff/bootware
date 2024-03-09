@@ -199,6 +199,13 @@ If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
 }
 
+# Zoxide settings.
+
+# Initialize Zoxide if available.
+If (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& zoxide init --cmd cd powershell)
+}
+
 # User settings.
 
 # Load user aliases, secrets, and variables.

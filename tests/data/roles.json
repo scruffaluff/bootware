@@ -56,6 +56,7 @@
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
+  { "name": "dive", "tests": ["dive --version"] },
   {
     "name": "dust",
     "tests": ["dust --version"]
@@ -118,10 +119,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": []
   },
-  {
-    "name": "gitlab_runner",
-    "tests": ["gitlab-runner --version"]
-  },
+  { "name": "gitlab_runner", "tests": ["gitlab-runner --version"] },
   { "name": "gitui", "tests": ["gitui --version"] },
   { "name": "glow", "tests": ["glow --version"] },
   { "name": "go", "tests": ["go version"] },
@@ -219,10 +217,7 @@
     }
   },
   { "name": "mdbook", "tests": ["mdbook --version"] },
-  {
-    "name": "miniserve",
-    "tests": ["miniserve --version"]
-  },
+  { "name": "miniserve", "tests": ["miniserve --version"] },
   {
     "name": "mkcert",
     "skip": [{ "os": "freebsd" }],
@@ -246,10 +241,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["procs --version"]
   },
-  {
-    "name": "python",
-    "tests": ["pipx --version", "python --version"]
-  },
+  { "name": "python", "tests": ["pipx --version", "python --version"] },
   {
     "name": "qemu",
     "skip": [{ "arch": "arm64", "os": "suse" }],
@@ -329,6 +321,7 @@
   },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
+  { "name": "topgrade", "tests": ["topgrade --version"] },
   { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
   { "name": "vault", "tests": ["vault --version"] },
@@ -372,10 +365,7 @@
     "skip": [{ "os": "macos" }],
     "tests": ["wireshark --version"]
   },
-  {
-    "name": "xh",
-    "tests": ["xh --version"]
-  },
+  { "name": "xh", "tests": ["xh --version"] },
   {
     "name": "yazi",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
@@ -386,5 +376,6 @@
     "name": "zellij",
     "skip": [{ "os": "windows" }],
     "tests": ["zellij --version"]
-  }
+  },
+  { "name": "zoxide", "tests": ["zoxide --version"] }
 ]

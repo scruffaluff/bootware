@@ -5,13 +5,14 @@
     name: vault
   when: ansible_system == "FreeBSD"
 
-- name: Install Vault for Linux
-  ansible.builtin.package:
-    name: vault
-  become: true
-  ignore_errors: true
-  register: vault_linux
-  when: ansible_system == "Linux"
+# Do not use yet. Vault has permission issues on Arch Linux.
+# - name: Install Vault for Linux
+#   ansible.builtin.package:
+#     name: vault
+#   become: true
+#   ignore_errors: true
+#   register: vault_linux
+#   when: ansible_system == "Linux"
 
 - name: Get latest Vault version for Linux
   ansible.builtin.uri:
@@ -19,7 +20,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/vault.json
   register: vault_formula
-  when: ansible_system == "Linux" and vault_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Download Vault for Linux
   ansible.builtin.unarchive:
@@ -30,7 +31,7 @@
       https://releases.hashicorp.com/vault/{{ vault_formula.json.versions.stable
       }}/vault_{{ vault_formula.json.versions.stable }}_linux_{{
       system_architecture }}.zip
-  when: ansible_system == "Linux" and vault_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Install Vault for Linux
   ansible.builtin.copy:
@@ -40,7 +41,7 @@
     remote_src: true
     src: /tmp/vault
   become: true
-  when: ansible_system == "Linux" and vault_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Install Vault for MacOS
   become: true

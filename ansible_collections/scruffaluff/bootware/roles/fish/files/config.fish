@@ -348,6 +348,16 @@ prepend_paths /usr/share/code/bin
 set --export WASMTIME_HOME "$HOME/.wasmtime"
 prepend_paths "$WASMTIME_HOME/bin"
 
+# Zoxide settings.
+
+# Initialize Zoxide if available.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q zoxide
+    zoxide init --cmd cd fish | source
+end
+
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
