@@ -54,13 +54,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -86,13 +86,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -118,13 +118,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -150,13 +150,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -181,7 +181,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Test installation, setup, and bootstrapping
         uses: vmactions/freebsd-vm@v1
         with:
@@ -213,7 +213,7 @@ jobs:
     runs-on: macos-12
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Bootware
         run: |
           ./install.sh
@@ -267,9 +267,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Test building package
         run: ./scripts/package.sh test ${{ matrix.package }}
       - name: Setup Tmate session if debug enabled
@@ -290,13 +290,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -322,13 +322,13 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
@@ -350,8 +350,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
-      - uses: Vampire/setup-wsl@v2
+        uses: actions/checkout@v4
+      - uses: Vampire/setup-wsl@v3
         with:
           distribution: Debian
           set-as-default: "true"
@@ -359,7 +359,7 @@ jobs:
       # ref_name will be name of the pull request instead of the branch.
       - name: Get current branch
         id: branch
-        uses: tj-actions/branch-names@v7
+        uses: tj-actions/branch-names@v8
       - name: Install Bootware
         run: |
           ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}

@@ -1005,6 +1005,14 @@
         - never
         - velero
 
+    - name: Install Vim text editor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.vim
+      tags:
+        - extras
+        - never
+        - vim
+
     - name: Install VLC video player
       ansible.builtin.import_role:
         name: scruffaluff.bootware.vlc
