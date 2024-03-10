@@ -35,24 +35,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .cache
             .venv
             node_modules
           key: >-
-            node-20_python-3.11_${{ runner.os }}_npm-${{
+            node-20_python-3.12_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Install Node packages
@@ -61,9 +61,9 @@ jobs:
           npm --version
           npm ci
       - name: Install Python interpreter
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Install Python packages
         run: |
           python --version

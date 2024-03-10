@@ -49,9 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache Node packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .cache
@@ -59,7 +59,7 @@ jobs:
           key: >-
             node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Install Node packages
@@ -82,20 +82,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .cache
             .venv
             node_modules
           key: >-
-            node-20_python-3.11_${{ runner.os }}_npm-${{
+            node-20_python-3.12_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Install Node packages
@@ -104,9 +104,9 @@ jobs:
           npm --version
           npm ci
       - name: Install Python interpreter
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Install Python packages
         run: |
           python --version
@@ -146,9 +146,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache Node packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .cache
@@ -160,7 +160,7 @@ jobs:
           sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.35.2/yq_linux_amd64 --output /usr/local/bin/yq
           sudo chmod 755 /usr/local/bin/yq
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Install Node packages
@@ -185,7 +185,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install YQ YAML parser
         run: choco install --yes yq
       - name: Install PSScriptAnalyzer
