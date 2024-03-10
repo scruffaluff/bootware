@@ -10,7 +10,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Arch and Alpine Linux packages.
-- Audacity, Just, Kdenlive, Sonic Pi, VLC, and Watchexec roles.
+- Audacity, Dive, Just, Kdenlive, Sonic Pi, Topgrade, VLC, Watchexec, and Zoxide
+  roles.
 - Balena Etcher support for all Linux distributions.
 - Fira and PT fonts.
 - Less keybindings customization.

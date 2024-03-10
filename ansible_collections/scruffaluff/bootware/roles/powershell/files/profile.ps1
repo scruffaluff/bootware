@@ -104,7 +104,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
         # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
         Set-PsFzfOption `
-            -PSReadlineChordProvider 'Ctrl+t' `
+            -PSReadlineChordProvider 'Ctrl+f' `
             -PSReadlineChordReverseHistory 'Ctrl+r'
     }
 }
@@ -146,9 +146,6 @@ $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136
 $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 
 # Add inode preview to Fzf file finder.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
 If (Get-Command bat -ErrorAction SilentlyContinue) {
     $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
 }
@@ -202,8 +199,8 @@ If (Get-Module -ListAvailable -Name SSHCompletion) {
 # Zoxide settings.
 
 # Initialize Zoxide if available.
-If (Get-Command starship -ErrorAction SilentlyContinue) {
-    Invoke-Expression (& zoxide init --cmd cd powershell)
+If (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (&{ (zoxide init --cmd cd powershell | Out-String) })
 }
 
 # User settings.
