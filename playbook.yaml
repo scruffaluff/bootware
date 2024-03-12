@@ -230,7 +230,6 @@
         - desktop
         - dive
         - server
-        - sysadmin
         - wsl
 
     - name: Install Duf device usage analyzer
