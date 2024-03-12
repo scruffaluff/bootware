@@ -1,15 +1,52 @@
 ---
+- name: Get latest Zoxide version for Debian
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/zoxide.json
+  register: zoxide_formula
+  when: ansible_pkg_mgr == "apt"
+
+- name: Download Zoxide for Debian
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/ajeetdsouza/zoxide/releases/download/v{{
+      zoxide_formula.json.versions.stable }}/zoxide-{{
+      zoxide_formula.json.versions.stable }}-{{ zoxide_arch[system_architecture]
+      }}-unknown-linux-musl.tar.gz
+  vars:
+    zoxide_arch:
+      amd64: x86_64
+      arm64: aarch64
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Zoxide for Debian
+  ansible.builtin.copy:
+    dest: /usr/local/bin/zoxide
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/zoxide
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
 - name: Install Zoxide for FreeBSD
   become: true
   community.general.pkgng:
     name: zoxide
   when: ansible_system == "FreeBSD"
 
+# Debian provides an older version of Zoxide, which can experience infinite loop
+# crashes. For more information, visit
+# https://github.com/ajeetdsouza/zoxide/issues/674.
 - name: Install Zoxide for Linux
   ansible.builtin.package:
     name: zoxide
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
 
 - name: Install Zoxide for MacOS
   become: true
