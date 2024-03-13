@@ -13,6 +13,7 @@ __pycache__/
 .vitepress/dist/
 .vscode/
 *.bak
+*.log
 *.tar.gz
 /build/
 /docs/software.md

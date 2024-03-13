@@ -90,3 +90,12 @@ k = "jump_view_down"
 K = "swap_view_down"
 l = "jump_view_up"
 L = "swap_view_up"
+
+[keys.select]
+c = "change_selection_noyank"
+d = "delete_selection_noyank"
+j = "move_char_left"
+k = "move_line_down"
+l = "move_line_up"
+";" = "move_char_right"
+X = "extend_line_above"
