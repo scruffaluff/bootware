@@ -58,3 +58,21 @@
   community.windows.win_scoop:
     name: topgrade
   when: ansible_system == "Win32NT"
+
+- name: Disable Topgrade notifications for Unix
+  ansible.builtin.lineinfile:
+    create: true
+    group: "{{ group_id }}"
+    line: "skip_notify = true"
+    mode: "644"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/topgrade.toml"
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Disable Topgrade notifications for Windows
+  community.windows.win_lineinfile:
+    create: true
+    line: "skip_notify = true"
+    path: "{{ user_home }}/AppData/Roaming/topgrade.toml"
+  when: ansible_system == "Win32NT"

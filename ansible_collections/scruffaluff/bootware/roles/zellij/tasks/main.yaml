@@ -53,25 +53,35 @@
     name: zellij
   when: ansible_system == "Darwin"
 
-- name: Create Zellij settings directory for Unix
+- name: Create Zellij settings directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/zellij"
+    path: "{{ user_home }}/.config/{{ item }}"
     state: directory
   become: true
+  loop:
+    - zellij
+    - zellij/layouts
   when: ansible_system != "Win32NT"
 
-- name: Copy Zellij settings file for Unix
+- name: Copy Zellij settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/zellij/config.kdl"
+    dest: "{{ user_home }}/.config/zellij/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: config.kdl
+    src: "{{ item.src }}"
   become: true
+  loop:
+    - dest: config.kdl
+      src: config.kdl
+    - dest: layouts/layout.kdl
+      src: layout.kdl
+    - dest: layouts/layout.swap.kdl
+      src: layout.swap.kdl
   when: ansible_system != "Win32NT"
 
 - name: Create shell completion directories for Unix

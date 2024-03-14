@@ -1,7 +1,9 @@
 // Configuraion file for Zellij.
 //
 // For more information, visit
-// https://zellij.dev/documentation/configuration.html.
+// https://zellij.dev/documentation/configuration.
+
+default_layout "layout"
 
 keybinds {
     unbind "Alt h"
