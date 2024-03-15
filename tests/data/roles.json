@@ -4,6 +4,7 @@
     "tests": ["age --version", "age-keygen --version"]
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
+  { "name": "android", "tests": ["adb --version"] },
   {
     "name": "audacity",
     "skip": [{ "os": "freebsd" }],

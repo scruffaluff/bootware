@@ -45,6 +45,7 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
     # Add Unix shell key bindings.
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
+    Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+w -Function BackwardDeleteWord
     Set-PSReadLineKeyHandler -Chord Shift+LeftArrow -Function ShellBackwardWord
 
