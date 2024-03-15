@@ -259,6 +259,7 @@ prepend_paths "$GOPATH/bin"
 if type -q hx
     set --export COLORTERM truecolor
     set --export EDITOR hx
+    set --export SUDO_EDITOR hx
 end
 
 # Just settings.

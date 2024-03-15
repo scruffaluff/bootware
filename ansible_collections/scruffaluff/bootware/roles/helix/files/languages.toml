@@ -41,10 +41,12 @@ formatter = { command = "prettier", args = ["--parser", "typescript"] }
 
 [[language]]
 name = "json"
+auto-format = true
 formatter = { command = "prettier", args = ["--parser", "json"] }
 
 [[language]]
 name = "html"
+auto-format = true
 formatter = { command = "prettier", args = ["--parser", "html"] }
 
 [[language]]

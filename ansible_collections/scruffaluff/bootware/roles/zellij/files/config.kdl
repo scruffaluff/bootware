@@ -1,7 +1,9 @@
 // Configuraion file for Zellij.
 //
 // For more information, visit
-// https://zellij.dev/documentation/configuration.html.
+// https://zellij.dev/documentation/configuration.
+
+default_layout "layout"
 
 keybinds {
     unbind "Alt h"
@@ -30,10 +32,12 @@ keybinds {
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     normal {
+        bind "Alt f" "Alt Up" { ToggleFocusFullscreen; }
         bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {
         bind "j" "Left" { MoveFocus "Left"; }

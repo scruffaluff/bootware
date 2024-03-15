@@ -25,27 +25,28 @@ render = true
 enable = true
 
 [editor.statusline]
-center = []
-left = ["mode", "spinner", "file-name"]
 right = [
     "version-control",
     "diagnostics",
     "selections",
+    "register",
     "position",
     "file-line-ending",
+    "file-encoding",
 ]
-separator = "│"
 
 [keys.normal]
+";" = "move_char_right"
 c = "change_selection_noyank"
-d = "delete_selection_noyank"
+C-left = "jump_backward"
+C-right = "jump_forward"
 D = "delete_char_backward"
+d = "delete_selection_noyank"
 esc = ["collapse_selection", "keep_primary_selection"]
+h = "no_op"
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
-";" = "move_char_right"
-X = "extend_line_above"
 
 [keys.normal.C-w]
 ";" = "jump_view_right"
@@ -90,3 +91,12 @@ k = "jump_view_down"
 K = "swap_view_down"
 l = "jump_view_up"
 L = "swap_view_up"
+
+[keys.select]
+";" = "move_char_right"
+c = "change_selection_noyank"
+d = "delete_selection_noyank"
+h = "no_op"
+j = "move_char_left"
+k = "move_line_down"
+l = "move_line_up"

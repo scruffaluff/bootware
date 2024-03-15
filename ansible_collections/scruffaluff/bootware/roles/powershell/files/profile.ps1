@@ -65,8 +65,15 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
         }
     }
 
-    # Use Bash style tab completion.
+    # Add Fish style keybindings.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Chord Ctrl+u -Function RevertLine
+    Set-PSReadLineKeyHandler -Chord Ctrl+x -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        Set-Clipboard "$Line"
+    }
 
     # Add history based autocompletion to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
