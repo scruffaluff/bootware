@@ -141,6 +141,17 @@
         - server
         - wsl
 
+    - name: Install Bottom process monitor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bottom
+      tags:
+        - bottom
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Caffeine
       ansible.builtin.import_role:
         name: scruffaluff.bootware.caffeine

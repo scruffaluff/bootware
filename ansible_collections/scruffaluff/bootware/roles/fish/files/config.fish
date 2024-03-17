@@ -194,6 +194,7 @@ end
 # Ensure newer Docker features are enabled.
 set --export COMPOSE_DOCKER_CLI_BUILD true
 set --export DOCKER_BUILDKIT true
+set --export DOCKER_CLI_HINTS false
 
 # Fzf settings.
 

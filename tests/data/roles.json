@@ -29,6 +29,7 @@
   },
   { "name": "beekeeper" },
   { "name": "build" },
+  { "name": "bottom", "tests": ["btm --version"] },
   { "name": "caffeine" },
   {
     "name": "chrome",

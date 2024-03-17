@@ -32,6 +32,7 @@ Function Which($Name) {
 # Shell settings.
 
 # Add Unix compatibility aliases.
+Set-Alias -Name open -Value Invoke-Item
 Set-Alias -Name touch -Value New-Item
 
 # Configure PSReadLine settings if available.
@@ -140,6 +141,7 @@ If (Get-Module -ListAvailable -Name BootwareCompletion) {
 # Ensure newer Docker features are enabled.
 $Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
 $Env:DOCKER_BUILDKIT = 'true'
+$Env:DOCKER_CLI_HINTS = 'false'
 
 # Load Docker autocompletion if available.
 If (Get-Module -ListAvailable -Name DockerCompletion) {

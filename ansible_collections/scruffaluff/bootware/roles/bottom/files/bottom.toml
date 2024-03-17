@@ -1,0 +1,8 @@
+# Bottom configuration file.
+#
+# For more information, visit
+# https://clementtsang.github.io/bottom/stable/configuration/config-file/default-config.
+
+[flags]
+basic = true
+color = "default-light"

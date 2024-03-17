@@ -129,7 +129,8 @@ fi
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
-export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true'
+export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
+  DOCKER_CLI_HINTS='false'
 
 # Fzf settings.
 
