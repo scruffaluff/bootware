@@ -46,8 +46,20 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
 # Change system keybindings.
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down '["<Shift><Control><Alt>Down"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '["<Shift><Control><Alt>Left"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right '["<Shift><Control><Alt>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-up '["<Shift><Control><Alt>Up"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left '["<Alt><Control>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right '["<Alt><Control>Right"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 '["<Alt><Control>1"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-2 '["<Alt><Control>2"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-3 '["<Alt><Control>3"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-4 '["<Alt><Control>4"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 '["<Alt><Control>5"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 '["<Alt><Control>6"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 '["<Alt><Control>7"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 '["<Alt><Control>8"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 
