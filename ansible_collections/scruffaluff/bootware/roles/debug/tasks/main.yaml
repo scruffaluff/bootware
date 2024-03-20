@@ -1,0 +1,52 @@
+---
+- name: Install debuggers for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - gdb
+      - lldb
+  when: ansible_system == "FreeBSD"
+
+- name: Install debuggers for Linux
+  ansible.builtin.package:
+    name:
+      - gdb
+      - lldb
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install debuggers for Windows
+  community.windows.win_scoop:
+    name: gdb
+  when: ansible_system == "Win32NT"
+
+- name: Get latest GEF version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/hugsy/gef/releases/latest
+  register: debug_gef_release
+  when: ansible_system == "Linux"
+
+- name: Download GEF installer for Unix
+  ansible.builtin.get_url:
+    dest: "{{ user_home }}/.gef.py"
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    url: >-
+      https://raw.githubusercontent.com/hugsy/gef/{{
+      debug_gef_release.json.tag_name }}/gef.py
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy GDB settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.gdbinit"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: .gdbinit
+  become: true
+  when: ansible_system != "Win32NT"

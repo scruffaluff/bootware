@@ -258,7 +258,6 @@ prepend_paths "$GOPATH/bin"
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q hx
-    set --export COLORTERM truecolor
     set --export EDITOR hx
     set --export SUDO_EDITOR hx
 end

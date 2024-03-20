@@ -171,7 +171,6 @@ If (Get-Module -ListAvailable -Name posh-git) {
 
 # Set full color support for terminal and default editor to Helix.
 If (Get-Command hx -ErrorAction SilentlyContinue) {
-    $Env:COLORTERM = 'truecolor'
     $Env:EDITOR = 'hx'
 }
 

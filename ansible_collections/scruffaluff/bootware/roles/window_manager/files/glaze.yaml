@@ -14,7 +14,7 @@ bar:
     - focused_workspace_background: "#d3d3d3"
       type: workspaces
   components_right:
-    - padding: 8px 16px
+    - padding: 6px 8px
       type: system tray
     - label_charging: "⚡{battery_level}%"
       label_draining: "🔋{battery_level}%"

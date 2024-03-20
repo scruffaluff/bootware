@@ -180,7 +180,7 @@ prepend_paths "${GOPATH}/bin"
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v hx)" ]]; then
-  export COLORTERM='truecolor' EDITOR='hx'
+  export EDITOR='hx'
 fi
 
 # Just settings.
