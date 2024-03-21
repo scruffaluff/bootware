@@ -61,7 +61,8 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [[ -f "${HOME}/.ls_colors" ]]; then
+#   -n: Check if the string has nonzero length.
+if [[ -n "${_tty}" && -f "${HOME}/.ls_colors" ]]; then
   # shellcheck disable=SC2155
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
 fi
@@ -101,18 +102,21 @@ fi
 # removing the final newline from text during clipboard copies.
 #
 # Flags:
+#   -n: Check if the string has nonzero length.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ "${_os}" == 'Darwin' ]]; then
-  cbcopy() {
-    echo -n "$(cat)" | pbcopy
-  }
-  alias cbpaste='pbpaste'
-elif [[ -x "$(command -v wl-copy)" ]]; then
-  cbcopy() {
-    echo -n "$(cat)" | wl-copy
-  }
-  alias cbpaste='wl-paste'
+if [[ -n "${_tty}" ]]; then
+  if [[ "${_os}" == 'Darwin' ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | pbcopy
+    }
+    alias cbpaste='pbpaste'
+  elif [[ -x "$(command -v wl-copy)" ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | wl-copy
+    }
+    alias cbpaste='wl-paste'
+  fi
 fi
 
 # Bat settings.

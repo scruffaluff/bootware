@@ -122,7 +122,8 @@ set fish_greeting
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if test -f "$HOME/.ls_colors"
+#   -n: Check if string is nonempty.
+if test -n "$_tty"; and test -f "$HOME/.ls_colors"
     set --export LS_COLORS (cat "$HOME/.ls_colors")
 end
 
@@ -151,32 +152,34 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Read input until null terminated instead of newline.
-if test "$_os" = Darwin
-    function cbcopy
-        set --local text
-        while read -z line
-            if test -n "$text"
-                set
-            else
-                set text "$line"
+if test -n "$_tty"
+    if test "$_os" = Darwin
+        function cbcopy
+            set --local text
+            while read -z line
+                if test -n "$text"
+                    set
+                else
+                    set text "$line"
+                end
             end
+            echo -n "$(printf "%s" "$text")" | pbcopy
         end
-        echo -n "$(printf "%s" "$text")" | pbcopy
-    end
-    alias cbpaste pbpaste
-else if type -q wl-copy
-    function cbcopy
-        set --local text
-        while read -z line
-            if test -n "$text"
-                set
-            else
-                set text "$line"
+        alias cbpaste pbpaste
+    else if type -q wl-copy
+        function cbcopy
+            set --local text
+            while read -z line
+                if test -n "$text"
+                    set
+                else
+                    set text "$line"
+                end
             end
+            echo -n "$(printf "%s" "$text")" | wl-copy
         end
-        echo -n "$(printf "%s" "$text")" | wl-copy
+        alias cbpaste wl-paste
     end
-    alias cbpaste wl-paste
 end
 
 # Bat settings.
@@ -208,8 +211,9 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 # Flags:
 #   -C: Turn on color.
 #   -L 1: Descend only 1 directory level deep.
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q bat; and type -q tree
+if test -n "$_tty"; and type -q bat; and type -q tree
     function fzf_inode_preview
         bat --color always --style numbers $argv 2>/dev/null
         if test $status != 0
@@ -225,7 +229,7 @@ end
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"; and test -n "$_tty"
+if test -n "$_tty"; and test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
     fzf_key_bindings
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
@@ -297,9 +301,8 @@ prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q pyenv; and test -n "$_tty"
+if type -q pyenv
     pyenv init - | source
 end
 
@@ -316,8 +319,9 @@ set --export STARSHIP_LOG error
 # Initialize Starship if available.
 #
 # Flags:
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q starship
+if test -n "$_tty"; and type -q starship
     starship init fish | source
 end
 
@@ -354,15 +358,16 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Initialize Zoxide if available.
 #
 # Flags:
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q zoxide
+if test -n "$_tty"; and type -q zoxide
     zoxide init --cmd cd fish | source
 end
 
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if test "$TERM" = alacritty
+if test -n "$_tty"; and test "$TERM" = alacritty
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal.
     #
@@ -384,7 +389,7 @@ if test "$TERM" = alacritty
         # Do not use logname command, it sometimes incorrectly returns "root" on
         # MacOS. For for information, visit
         # https://github.com/vercel/hyper/issues/3762.
-        if test -n "$_tty"; and test "$LOGNAME" = "$USER"
+        if test "$LOGNAME" = "$USER"
             eval (zellij setup --generate-auto-start fish | string collect)
         end
     end
