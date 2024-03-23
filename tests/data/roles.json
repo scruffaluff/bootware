@@ -54,8 +54,10 @@
   { "name": "dbeaver" },
   {
     "name": "debug",
-    "skip": [{ "os": "macos" }],
-    "tests": ["gdb --version", "lldb --version"]
+    "tests": {
+      "default": ["gdb --version", "lldb --version"],
+      "macos": ["lldb --version"]
+    }
   },
   {
     "name": "deno",

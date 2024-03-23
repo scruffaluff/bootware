@@ -15,18 +15,55 @@
   become: true
   when: ansible_system == "Linux"
 
+# LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows
   community.windows.win_scoop:
-    name: gdb
+    name:
+      - gdb
+      - llvm
   when: ansible_system == "Win32NT"
 
-- name: Get latest GEF version for Linux
+- name: Check if embedded Python 3.10 is installed for Windows
+  ansible.windows.win_stat:
+    path: "{{ scoop_apps }}/llvm/current/bin/python.exe"
+  register: debug_embed_python_check
+  when: ansible_system == "Win32NT"
+
+# On Windows LLDB crashes during startup if Python310 is not found in its
+# folder. This issue happens whether LLVM is installed via Chocolatey or Scoop
+# and even if Python310 is available elsewhere on the system. The soluation
+# comes from
+# https://github.com/llvm/llvm-project/issues/61878#issuecomment-1492960093.
+- name: Install embedded Python 3.10 for Windows
+  when: ansible_system == "Win32NT" and not debug_embed_python_check.stat.exists
+  block:
+    - name: Get latest Python 3.10 version for Windows
+      ansible.windows.win_uri:
+        method: GET
+        return_content: true
+        url: https://raw.githubusercontent.com/ScoopInstaller/Versions/master/bucket/python310.json
+      register: debug_embed_python_bucket
+
+    - name: Download embedded Python 3.10 for Windows
+      ansible.windows.win_get_url:
+        dest: "{{ ansible_env.TEMP }}/python_embed.zip"
+        url: >-
+          https://www.python.org/ftp/python/{{
+          debug_embed_python_bucket.json.version }}/python-{{
+          debug_embed_python_bucket.json.version }}-embed-amd64.zip
+
+    - name: Decompress embedded Python 3.10 for Windows
+      community.windows.win_unzip:
+        dest: "{{ scoop_apps }}/llvm/current/bin"
+        src: "{{ ansible_env.TEMP }}/python_embed.zip"
+
+- name: Get latest GEF version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://api.github.com/repos/hugsy/gef/releases/latest
-  register: debug_gef_release
-  when: ansible_system == "Linux"
+  register: debug_gef_release_unix
+  when: ansible_system != "Win32NT"
 
 - name: Download GEF installer for Unix
   ansible.builtin.get_url:
@@ -36,7 +73,7 @@
     owner: "{{ user_id }}"
     url: >-
       https://raw.githubusercontent.com/hugsy/gef/{{
-      debug_gef_release.json.tag_name }}/gef.py
+      debug_gef_release_unix.json.tag_name }}/gef.py
   become: true
   when: ansible_system != "Win32NT"
 
@@ -50,3 +87,27 @@
     src: .gdbinit
   become: true
   when: ansible_system != "Win32NT"
+
+- name: Get latest GEF version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/hugsy/gef/releases/latest
+  register: debug_gef_release_windows
+  when: ansible_system == "Win32NT"
+
+- name: Download GEF installer for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ user_home }}/.gef.py"
+    url: >-
+      https://raw.githubusercontent.com/hugsy/gef/{{
+      debug_gef_release_windows.json.tag_name }}/gef.py
+  when: ansible_system == "Win32NT"
+
+- name: Copy GDB settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.gdbinit"
+    force: true
+    owner: "{{ user_id }}"
+    src: .gdbinit
+  when: ansible_system == "Win32NT"

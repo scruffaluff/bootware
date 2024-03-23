@@ -187,6 +187,11 @@ if [[ -x "$(command -v hx)" ]]; then
   export EDITOR='hx'
 fi
 
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+export HOMEBREW_NO_ENV_HINTS='true'
+
 # Just settings.
 
 # Add alias for account wide Just recipes.

@@ -266,6 +266,11 @@ if type -q hx
     set --export SUDO_EDITOR hx
 end
 
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+set --export HOMEBREW_NO_ENV_HINTS true
+
 # Just settings.
 
 # Add alias for account wide Just recipes.
