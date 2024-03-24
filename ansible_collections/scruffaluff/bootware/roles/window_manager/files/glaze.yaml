@@ -16,7 +16,7 @@ bar:
   components_right:
     - padding: 6px 8px
       type: system tray
-    - label_charging: "⚡{battery_level}%"
+    - label_charging: "🔌{battery_level}%"
       label_draining: "🔋{battery_level}%"
       label_power_saver: "🔋{battery_level}%"
       type: battery
@@ -65,8 +65,11 @@ keybindings:
     command: focus workspace 7
   - binding: Alt+Control+8
     command: focus workspace 8
+  # Close focused window.
+  - binding: Alt+Shift+Q
+    command: close
   # Kill GlazeWM process safely.
-  - binding: Alt+Control+Shift+E
+  - binding: Alt+Control+Shift+Q
     command: exit wm
   # Re-evaluate configuration file.
   - binding: Alt+Control+Shift+R

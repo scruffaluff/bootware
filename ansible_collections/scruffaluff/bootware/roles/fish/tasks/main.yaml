@@ -1,4 +1,10 @@
 ---
+- name: Install Shadow for Alpine
+  become: true
+  community.general.apk:
+    name: shadow
+  when: ansible_pkg_mgr == "apk"
+
 - name: Install Fish for FreeBSD
   become: true
   community.general.pkgng:
@@ -97,14 +103,21 @@
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
-# TODO: Solve issue where user's shell is not updated on Alpine Linux. For more
-# information, visit https://github.com/ansible/ansible/issues/61911.
+# User shell is not updated on Alpine Linux when using Ansible user module.
+# Workaround comes from https://github.com/ansible/ansible/issues/61911.
+- name: Change user default shell to Fish for Alpine
+  ansible.builtin.command:
+    cmd: chsh -s {{ fish_executable }} {{ user_id }}
+  become: true
+  changed_when: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
     name: "{{ user_id }}"
     shell: "{{ fish_executable }}"
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
