@@ -4,7 +4,7 @@
   community.general.pkgng:
     name:
       - gdb
-      - lldb
+      - llvm
   when: ansible_system == "FreeBSD"
 
 - name: Install debuggers for Linux
