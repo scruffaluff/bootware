@@ -69,6 +69,13 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
     # Add Fish style keybindings.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Chord Alt+s -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
+    }
     Set-PSReadLineKeyHandler -Chord Ctrl+u -Function RevertLine
     Set-PSReadLineKeyHandler -Chord Ctrl+x -ScriptBlock {
         $Line = $Null
@@ -183,6 +190,10 @@ Function jt() {
 
 # Python settings.
 
+# Add Python debugger alias.
+Function pdb() {
+    python3 -m pdb $Args
+}
 # Fix Poetry package install issue on headless systems.
 $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
@@ -204,6 +215,11 @@ If (Get-Command starship -ErrorAction SilentlyContinue) {
 If (Get-Module -ListAvailable -Name SSHCompletion) {
     Import-Module SSHCompletion
 }
+
+# Rust settings.
+
+# Add Rust debugger alias.
+Set-Alias -Name rdb -Value rust-lldb
 
 # Zoxide settings.
 

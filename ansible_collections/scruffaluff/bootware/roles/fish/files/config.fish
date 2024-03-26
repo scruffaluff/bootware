@@ -288,6 +288,8 @@ alias procs 'procs --theme light'
 
 # Python settings.
 
+# Add Python debugger alias.
+alias pdb 'python3 -m pdb'
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
@@ -313,6 +315,8 @@ end
 
 # Rust settings.
 
+# Add Rust debugger alias.
+alias rdb 'rust-lldb'
 # Add Rust binaries to system path.
 prepend_paths "$HOME/.cargo/bin"
 

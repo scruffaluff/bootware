@@ -77,15 +77,18 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Copy GDB settings file for Unix
+- name: Copy debugger settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.gdbinit"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .gdbinit
+    src: "{{ item }}"
   become: true
+  loop:
+    - .gdbinit
+    - .lldbinit
   when: ansible_system != "Win32NT"
 
 - name: Get latest GEF version for Windows
@@ -104,10 +107,13 @@
       debug_gef_release_windows.json.tag_name }}/gef.py
   when: ansible_system == "Win32NT"
 
-- name: Copy GDB settings file for Windows
+- name: Copy debugger settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.gdbinit"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     owner: "{{ user_id }}"
-    src: .gdbinit
+    src: "{{ item }}"
+  loop:
+    - .gdbinit
+    - .lldbinit
   when: ansible_system == "Win32NT"

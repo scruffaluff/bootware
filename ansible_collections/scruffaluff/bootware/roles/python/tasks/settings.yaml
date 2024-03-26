@@ -34,3 +34,22 @@
     owner: "{{ user_id }}"
     src: jupyter_notebook_config.py
   when: ansible_system == "Win32NT"
+
+- name: Copy PDB settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.pdbrc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: .pdbrc
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy PDB settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.pdbrc"
+    force: true
+    owner: "{{ user_id }}"
+    src: .pdbrc
+  when: ansible_system == "Win32NT"
