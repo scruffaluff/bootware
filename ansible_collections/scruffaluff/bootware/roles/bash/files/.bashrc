@@ -51,6 +51,8 @@ source_files() {
 
 # Shell settings.
 
+# Add alias for remove by force.
+alias rmf='rm -fr'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 

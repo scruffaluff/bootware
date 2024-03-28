@@ -27,9 +27,14 @@ format:
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
 
 # Run code analyses.
+[unix]
 lint:
   ./scripts/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
+
+[windows]
+lint:
+  Invoke-Pester -Output Detailed tests
 
 # Install development dependencies.
 setup: _setup-python _setup-shell

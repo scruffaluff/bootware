@@ -1,4 +1,5 @@
 [
+  { "command": "-editor.action.toggleTabFocusMode": "key": "ctrl+shift+m" },
   { "command": "-list.find", "key": "ctrl+f" },
   { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
   { "command": "-workbench.action.terminal.focusFind", "key": "ctrl+f" },
@@ -11,7 +12,7 @@
   {
     "command": "workbench.action.focusActiveEditorGroup",
     "key": "ctrl+`",
-    "when": "terminalFocus"
+    "when": "panelFocus"
   },
   { "command": "workbench.action.navigateBack", "key": "ctrl+left" },
   { "command": "workbench.action.navigateForward", "key": "ctrl+right" },
@@ -30,6 +31,11 @@
   {
     "command": "workbench.action.terminal.focus",
     "key": "ctrl+`",
+    "when": "!panelFocus && activePanel != 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.action.terminal.focus",
+    "key": "ctrl+shift+t",
     "when": "!terminalFocus"
   },
   {
@@ -51,5 +57,14 @@
     "command": "workbench.action.toggleMaximizedPanel",
     "key": "ctrl+shift+m",
     "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.panel.repl.view.focus",
+    "key": "ctrl+`",
+    "when": "!panelFocus && activePanel == 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.panel.repl.view.focus",
+    "key": "ctrl+shift+d"
   }
 ]
