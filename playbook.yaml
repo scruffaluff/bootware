@@ -366,6 +366,16 @@
         - gcloud
         - never
 
+    - name: Install debuggers
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.debug
+      tags:
+        - container
+        - debug
+        - desktop
+        - server
+        - wsl
+
     - name: Install GDU disk space analyzer
       ansible.builtin.import_role:
         name: scruffaluff.bootware.gdu

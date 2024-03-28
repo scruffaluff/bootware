@@ -11,7 +11,6 @@
     name:
       - cmake
       - gcc
-      - gdb
       - gmake
       - llvm
       - openocd
@@ -23,9 +22,7 @@
       - clang
       - cmake
       - gcc
-      - gdb
       - lld
-      - lldb
       - llvm
       - make
       - openocd
@@ -65,27 +62,11 @@
     name:
       - cmake
       - dotnet-sdk
-      - gdb
       - llvm
       - make
       - openocd
       - vcredist2022
   when: ansible_system == "Win32NT"
-
-- name: Download GEF installer for Unix
-  ansible.builtin.get_url:
-    dest: /tmp/gef_install.sh
-    mode: "755"
-    url: https://gef.blah.cat/sh
-  when: ansible_system != "Win32NT"
-
-- name: Install GEF for Unix
-  ansible.builtin.command:
-    cmd: /tmp/gef_install.sh
-    creates: "{{ user_home }}/.gdbinit"
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

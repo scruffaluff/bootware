@@ -51,6 +51,8 @@ source_files() {
 
 # Shell settings.
 
+# Add alias for remove by force.
+alias rmf='rm -fr'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
@@ -61,7 +63,8 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if [[ -f "${HOME}/.ls_colors" ]]; then
+#   -n: Check if the string has nonzero length.
+if [[ -n "${_tty}" && -f "${HOME}/.ls_colors" ]]; then
   # shellcheck disable=SC2155
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
 fi
@@ -101,18 +104,21 @@ fi
 # removing the final newline from text during clipboard copies.
 #
 # Flags:
+#   -n: Check if the string has nonzero length.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ "${_os}" == 'Darwin' ]]; then
-  cbcopy() {
-    echo -n "$(cat)" | pbcopy
-  }
-  alias cbpaste='pbpaste'
-elif [[ -x "$(command -v wl-copy)" ]]; then
-  cbcopy() {
-    echo -n "$(cat)" | wl-copy
-  }
-  alias cbpaste='wl-paste'
+if [[ -n "${_tty}" ]]; then
+  if [[ "${_os}" == 'Darwin' ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | pbcopy
+    }
+    alias cbpaste='pbpaste'
+  elif [[ -x "$(command -v wl-copy)" ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | wl-copy
+    }
+    alias cbpaste='wl-paste'
+  fi
 fi
 
 # Bat settings.
@@ -180,8 +186,13 @@ prepend_paths "${GOPATH}/bin"
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v hx)" ]]; then
-  export COLORTERM='truecolor' EDITOR='hx'
+  export EDITOR='hx'
 fi
+
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+export HOMEBREW_NO_ENV_HINTS='true'
 
 # Just settings.
 
@@ -201,6 +212,8 @@ alias procs='procs --theme light'
 
 # Python settings.
 
+# Add Python debugger alias.
+alias pdb='python3 -m pdb'
 # Fix Poetry package install issue on headless systems.
 export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
@@ -231,6 +244,8 @@ fi
 
 # Rust settings.
 
+# Add Rust debugger alias.
+alias rdb='rust-lldb'
 # Add Rust binaries to system path.
 prepend_paths "${HOME}/.cargo/bin"
 

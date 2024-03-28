@@ -9,6 +9,8 @@ auto-pairs = false
 bufferline = "multiple"
 color-modes = true
 cursorline = true
+true-color = true
+undercurl = true
 
 [editor.cursor-shape]
 insert = "bar"
