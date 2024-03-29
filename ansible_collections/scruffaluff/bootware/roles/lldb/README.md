@@ -1,6 +1,6 @@
-# Debug
+# LLDB
 
-Debug is an Ansible role
+LLDB is an Ansible role
 
 ## Requirements
 

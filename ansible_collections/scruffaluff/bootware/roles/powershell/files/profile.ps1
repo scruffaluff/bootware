@@ -108,7 +108,7 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        
+
         $StripLine = $Line -Replace '^sudo ',''
         If ($StripLine.Length -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$StripLine")
@@ -266,6 +266,18 @@ Set-Alias -Name rdb -Value rust-lldb
 # Initialize Zoxide if available.
 If ($_Tty -And (Get-Command zoxide -ErrorAction SilentlyContinue)) {
     Invoke-Expression (&{ (zoxide init --cmd cd powershell | Out-String) })
+}
+
+# Alacritty settings.
+
+# Placed near end of config to ensure Zellij reads the correct window size.
+If ($_Tty -And ("$Env:TERM" -Eq 'alacritty')) {
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $Env:TERM = 'xterm-256color'
 }
 
 # User settings.

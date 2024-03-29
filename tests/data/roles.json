@@ -53,13 +53,6 @@
   },
   { "name": "dbeaver" },
   {
-    "name": "debug",
-    "tests": {
-      "default": ["gdb --version", "lldb --version"],
-      "macos": ["lldb --version"]
-    }
-  },
-  {
     "name": "deno",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
     "tests": ["deno --version"]
@@ -111,6 +104,11 @@
     "name": "gcloud",
     "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
     "tests": ["gcloud --version", "gsutil --version"]
+  },
+  {
+    "name": "gdb",
+    "skip": [{ "os": "macos" }],
+    "tests": ["gdb --version"]
   },
   {
     "name": "gdu",
@@ -216,6 +214,7 @@
       "windows": ["virt-viewer --version"]
     }
   },
+  { "name": "lldb", "tests": ["lldb --version"] },
   { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",

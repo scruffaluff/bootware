@@ -1,4 +1,4 @@
-"""Custom LLDB script."""
+"""LLDB settings script."""
 
 import re
 from typing import Dict

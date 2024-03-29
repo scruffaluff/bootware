@@ -366,13 +366,14 @@
         - gcloud
         - never
 
-    - name: Install debuggers
+    - name: Install GDB debugger
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.debug
+        name: scruffaluff.bootware.gdb
       tags:
         - container
         - debug
         - desktop
+        - gdb
         - server
         - wsl
 
@@ -631,6 +632,17 @@
         - libvirt
         - never
         - vm
+
+    - name: Install LLDB debugger
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.lldb
+      tags:
+        - container
+        - debug
+        - desktop
+        - lldb
+        - server
+        - wsl
 
     - name: Install Lsd file lister
       ansible.builtin.import_role:

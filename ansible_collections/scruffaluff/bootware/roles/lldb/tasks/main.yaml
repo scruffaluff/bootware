@@ -1,20 +1,32 @@
 ---
-- name: Install debuggers for FreeBSD
+- name: Install LLDB for Alpine
+  become: true
+  community.general.apk:
+    name:
+      - lldb
+      - py3-lldb
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install LLDB for FreeBSD
   become: true
   community.general.pkgng:
-    name:
-      - gdb
-      - llvm
+    name: llvm
   when: ansible_system == "FreeBSD"
 
-# TODO: Fix LLDB Python interpreter installation.
-- name: Install debuggers for Linux
+# TODO: Fix LLDB Python for Debian. LLDB Python works on Ubunut.
+- name: Install LLDB for Debian
   ansible.builtin.package:
     name:
-      - gdb
       - lldb
+      - python3-lldb
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install LLDB for Linux
+  ansible.builtin.package:
+    name: lldb
+  become: true
+  when: ansible_pkg_mgr == ["dnf", "pacman"]
 
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows
@@ -24,10 +36,10 @@
       - llvm
   when: ansible_system == "Win32NT"
 
-- name: Check if embedded Python 3.10 is installed for Windows
+- name: Check if LLDB Python is installed for Windows
   ansible.windows.win_stat:
     path: "{{ scoop_apps }}/llvm/current/bin/python.exe"
-  register: debug_embed_python_check
+  register: lldb_python_check
   when: ansible_system == "Win32NT"
 
 # On Windows LLDB crashes during startup if Python310 is not found in its
@@ -36,7 +48,7 @@
 # comes from
 # https://github.com/llvm/llvm-project/issues/61878#issuecomment-1492960093.
 - name: Install embedded Python 3.10 for Windows
-  when: ansible_system == "Win32NT" and not debug_embed_python_check.stat.exists
+  when: ansible_system == "Win32NT" and not lldb_python_check.stat.exists
   block:
     - name: Get latest Python 3.10 version for Windows
       ansible.windows.win_uri:
@@ -58,7 +70,7 @@
         dest: "{{ scoop_apps }}/llvm/current/bin"
         src: "{{ ansible_env.TEMP }}/python_embed.zip"
 
-- name: Create debugger settings directory for Unix
+- name: Create LLDB settings directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
     group: "{{ group_id }}"
@@ -68,49 +80,30 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Get latest GEF version for Unix
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/hugsy/gef/releases/latest
-  register: debug_gef_release_unix
-  when: ansible_system != "Win32NT"
-
-- name: Install GEF for Unix
+- name: Install LLEF for Unix
   ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/gdbinit.py"
+    dest: "{{ user_home }}/.config/llef.py"
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    url: >-
-      https://raw.githubusercontent.com/hugsy/gef/{{
-      debug_gef_release_unix.json.tag_name }}/gef.py
+    url: https://raw.githubusercontent.com/foundryzero/llef/main/llef.py
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Copy LLDBInit for Unix
+- name: Copy LLDB settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/lldbinit.py"
+    dest: "{{ user_home }}/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: lldbinit.py
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Copy debugger settings files for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/{{ item }}"
-    force: true
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: "{{ item.src }}"
   become: true
   loop:
-    - .gdbinit
-    - .lldbinit
+    - dest: .lldbinit
+      src: .lldbinit
+    - dest: .config/lldbinit.py
+      src: lldbinit.py
   when: ansible_system != "Win32NT"
 
 - name: Create debugger settings directory for Windows
@@ -120,37 +113,21 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Get latest GEF version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://api.github.com/repos/hugsy/gef/releases/latest
-  register: debug_gef_release_windows
-  when: ansible_system == "Win32NT"
-
-- name: Install GEF for Windows
+- name: Install LLEF for Windows
   ansible.windows.win_get_url:
-    dest: "{{ user_home }}/.config/gdbinit.py"
-    url: >-
-      https://raw.githubusercontent.com/hugsy/gef/{{
-      debug_gef_release_windows.json.tag_name }}/gef.py
+    dest: "{{ user_home }}/.config/llef.py"
+    url: https://raw.githubusercontent.com/foundryzero/llef/main/llef.py
   when: ansible_system == "Win32NT"
 
-- name: Copy LLDBInit for Windows
+- name: Copy LLDB settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.config/lldbinit.py"
+    dest: "{{ user_home }}/{{ item.dest }}"
     force: true
     owner: "{{ user_id }}"
-    src: lldbinit.py
-  when: ansible_system == "Win32NT"
-
-- name: Copy debugger settings files for Windows
-  ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item }}"
-    force: true
-    owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: "{{ item.src }}"
   loop:
-    - .gdbinit
-    - .lldbinit
+    - dest: .lldbinit
+      src: .lldbinit
+    - dest: .config/lldbinit.py
+      src: lldbinit.py
   when: ansible_system == "Win32NT"
