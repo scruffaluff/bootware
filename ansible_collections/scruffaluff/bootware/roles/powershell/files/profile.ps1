@@ -108,7 +108,13 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
+        
+        $StripLine = $Line -Replace '^sudo ',''
+        If ($StripLine.Length -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$StripLine")
+        } Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
+        }
     }
     Set-PSReadLineKeyHandler -Chord Ctrl+u -Function RevertLine
     Set-PSReadLineKeyHandler -Chord Ctrl+x -ScriptBlock {

@@ -7,6 +7,7 @@
       - llvm
   when: ansible_system == "FreeBSD"
 
+# TODO: Fix LLDB Python interpreter installation.
 - name: Install debuggers for Linux
   ansible.builtin.package:
     name:
@@ -57,6 +58,16 @@
         dest: "{{ scoop_apps }}/llvm/current/bin"
         src: "{{ ansible_env.TEMP }}/python_embed.zip"
 
+- name: Create debugger settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
 - name: Get latest GEF version for Unix
   ansible.builtin.uri:
     method: GET
@@ -65,15 +76,26 @@
   register: debug_gef_release_unix
   when: ansible_system != "Win32NT"
 
-- name: Download GEF installer for Unix
+- name: Install GEF for Unix
   ansible.builtin.get_url:
-    dest: "{{ user_home }}/.gef.py"
+    dest: "{{ user_home }}/.config/gdbinit.py"
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
     url: >-
       https://raw.githubusercontent.com/hugsy/gef/{{
       debug_gef_release_unix.json.tag_name }}/gef.py
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy LLDBInit for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/lldbinit.py"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: lldbinit.py
   become: true
   when: ansible_system != "Win32NT"
 
@@ -91,6 +113,13 @@
     - .lldbinit
   when: ansible_system != "Win32NT"
 
+- name: Create debugger settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config"
+    state: directory
+  when: ansible_system == "Win32NT"
+
 - name: Get latest GEF version for Windows
   ansible.windows.win_uri:
     method: GET
@@ -99,12 +128,20 @@
   register: debug_gef_release_windows
   when: ansible_system == "Win32NT"
 
-- name: Download GEF installer for Windows
+- name: Install GEF for Windows
   ansible.windows.win_get_url:
-    dest: "{{ user_home }}/.gef.py"
+    dest: "{{ user_home }}/.config/gdbinit.py"
     url: >-
       https://raw.githubusercontent.com/hugsy/gef/{{
       debug_gef_release_windows.json.tag_name }}/gef.py
+  when: ansible_system == "Win32NT"
+
+- name: Copy LLDBInit for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.config/lldbinit.py"
+    force: true
+    owner: "{{ user_id }}"
+    src: lldbinit.py
   when: ansible_system == "Win32NT"
 
 - name: Copy debugger settings files for Windows
