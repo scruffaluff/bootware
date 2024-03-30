@@ -26,14 +26,12 @@
   ansible.builtin.package:
     name: lldb
   become: true
-  when: ansible_pkg_mgr == ["dnf", "pacman"]
+  when: ansible_pkg_mgr in ["dnf", "pacman"]
 
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows
   community.windows.win_scoop:
-    name:
-      - gdb
-      - llvm
+    name: llvm
   when: ansible_system == "Win32NT"
 
 - name: Check if LLDB Python is installed for Windows
