@@ -47,7 +47,9 @@
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    name: yazi
+    name:
+      - file
+      - yazi
   when: ansible_system == "Win32NT"
 
 - name: Create Yazi configuration directory for Unix

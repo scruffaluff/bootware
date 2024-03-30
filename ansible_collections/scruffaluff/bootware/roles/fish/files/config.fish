@@ -9,7 +9,93 @@
 # '--query' in Fish version 3.2.0, but short flag '-q' is compatible across all
 # versions.
 
-# Convenience variables.
+# Private convenience functions.
+
+# Prompt user to remove current command from Fish history.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function _delete_commandline_from_history
+    set command (string trim (commandline))
+    if test -n "$command"
+        set results (history search "$command")
+
+        if test -n "$results"
+            printf '\nFish History Entry Delete\n\n'
+            history delete "$command"
+            history save
+            commandline --function kill-whole-line
+        end
+    end
+end
+
+# Check if current shell is within a remote SSH session.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function _ssh_session
+    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
+        return 0
+    else
+        return 1
+    end
+end
+
+# Source shell files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+function _source_files
+    for inode in $argv
+        if test -f "$inode"
+            source "$inode"
+        end
+    end
+end
+
+# Source Bash files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+function _source_bash_files
+    for inode in $argv
+        if test -f "$inode"
+            bass source "$inode"
+        end
+    end
+end
+
+# Public convenience interactive functions
+
+# Open Fish history file with default editor.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+function edit-history
+    if type -q "$EDITOR"
+        $EDITOR "$HOME/.local/share/fish/fish_history"
+    end
+end
+
+# Public convenience script functions
+
+# Prepend existing directories that are not in the system path.
+#
+# Builtin fish_add_path function changes system path permanently. This
+# implementation only changes the system path for the shell session. Do not
+# quote the PATH variable. It will convert it from a list to a string.
+#
+# Flags:
+#   -d: Check if path is a directory.
+function prepend_paths
+    for inode in $argv
+        if test -d "$inode"; and not contains "$inode" $PATH
+            set --export PATH "$inode" $PATH
+        end
+    end
+end
+
+# Private convenience variables.
 #
 # Do not use long form flags for uname. They are not supported on MacOS. Command
 # "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
@@ -30,88 +116,10 @@ else
     set _tty ''
 end
 
-# Prompt user to remove current command from Fish history.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-function delete_commandline_from_history
-    set command (string trim (commandline))
-    if test -n "$command"
-        set results (history search "$command")
-
-        if test -n "$results"
-            printf '\nFish History Entry Delete\n\n'
-            history delete "$command"
-            history save
-            commandline --function kill-whole-line
-        end
-    end
-end
-
-# Open Fish history file with default editor.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-function edit-history
-    if type -q "$EDITOR"
-        $EDITOR "$HOME/.local/share/fish/fish_history"
-    end
-end
-
-# Prepend existing directories that are not in the system path.
-#
-# Builtin fish_add_path function changes system path permanently. This
-# implementation only changes the system path for the shell session. Do not
-# quote the PATH variable. It will convert it from a list to a string.
-#
-# Flags:
-#   -d: Check if path is a directory.
-function prepend_paths
-    for inode in $argv
-        if test -d "$inode"; and not contains "$inode" $PATH
-            set --export PATH "$inode" $PATH
-        end
-    end
-end
-
-# Check if current shell is within a remote SSH session.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-function ssh_session
-    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
-        return 0
-    else
-        return 1
-    end
-end
-
-# Source shell files if they exist.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-function source_files
-    for inode in $argv
-        if test -f "$inode"
-            source "$inode"
-        end
-    end
-end
-
-# Source Bash files if they exist.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-function source_bash_files
-    for inode in $argv
-        if test -f "$inode"
-            bass source "$inode"
-        end
-    end
-end
-
 # Shell settings.
 
+# Add alias for remove by force.
+alias rmf 'rm -fr'
 # Disable welcome message.
 set fish_greeting
 
@@ -122,7 +130,8 @@ set fish_greeting
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-if test -f "$HOME/.ls_colors"
+#   -n: Check if string is nonempty.
+if test -n "$_tty"; and test -f "$HOME/.ls_colors"
     set --export LS_COLORS (cat "$HOME/.ls_colors")
 end
 
@@ -139,7 +148,7 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
-    bind \cD delete_commandline_from_history
+    bind \cD _delete_commandline_from_history
 end
 
 # Add unified clipboard aliases.
@@ -151,32 +160,34 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Read input until null terminated instead of newline.
-if test "$_os" = Darwin
-    function cbcopy
-        set --local text
-        while read -z line
-            if test -n "$text"
-                set
-            else
-                set text "$line"
+if test -n "$_tty"
+    if test "$_os" = Darwin
+        function cbcopy
+            set --local text
+            while read -z line
+                if test -n "$text"
+                    set
+                else
+                    set text "$line"
+                end
             end
+            echo -n "$(printf "%s" "$text")" | pbcopy
         end
-        echo -n "$(printf "%s" "$text")" | pbcopy
-    end
-    alias cbpaste pbpaste
-else if type -q wl-copy
-    function cbcopy
-        set --local text
-        while read -z line
-            if test -n "$text"
-                set
-            else
-                set text "$line"
+        alias cbpaste pbpaste
+    else if type -q wl-copy
+        function cbcopy
+            set --local text
+            while read -z line
+                if test -n "$text"
+                    set
+                else
+                    set text "$line"
+                end
             end
+            echo -n "$(printf "%s" "$text")" | wl-copy
         end
-        echo -n "$(printf "%s" "$text")" | wl-copy
+        alias cbpaste wl-paste
     end
-    alias cbpaste wl-paste
 end
 
 # Bat settings.
@@ -208,16 +219,16 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 # Flags:
 #   -C: Turn on color.
 #   -L 1: Descend only 1 directory level deep.
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q bat; and type -q tree
-    function fzf_inode_preview
-        bat --color always --style numbers $argv 2>/dev/null
-        if test $status != 0
-            tree -C -L 1 $argv 2>/dev/null
-        end
+function _fzf_inode_preview
+    bat --color always --style numbers $argv 2>/dev/null
+    if test $status != 0
+        lsd --tree --depth 1 $argv 2>/dev/null
     end
-
-    set --export FZF_CTRL_T_OPTS "--preview 'fzf_inode_preview {}'"
+end
+if test -n "$_tty"; and type -q bat; and type -q lsd
+    set --export FZF_CTRL_T_OPTS "--preview '_fzf_inode_preview {}'"
 end
 
 # Load Fzf keybindings if available.
@@ -225,7 +236,7 @@ end
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"; and test -n "$_tty"
+if test -n "$_tty"; and test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
     fzf_key_bindings
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
@@ -258,10 +269,14 @@ prepend_paths "$GOPATH/bin"
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q hx
-    set --export COLORTERM truecolor
     set --export EDITOR hx
     set --export SUDO_EDITOR hx
 end
+
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+set --export HOMEBREW_NO_ENV_HINTS true
 
 # Just settings.
 
@@ -280,6 +295,8 @@ alias procs 'procs --theme light'
 
 # Python settings.
 
+# Add Python debugger alias.
+alias pdb 'python3 -m pdb'
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
@@ -298,14 +315,15 @@ prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q pyenv; and test -n "$_tty"
+if type -q pyenv
     pyenv init - | source
 end
 
 # Rust settings.
 
+# Add Rust debugger alias.
+alias rdb 'rust-lldb'
 # Add Rust binaries to system path.
 prepend_paths "$HOME/.cargo/bin"
 
@@ -317,8 +335,9 @@ set --export STARSHIP_LOG error
 # Initialize Starship if available.
 #
 # Flags:
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q starship
+if test -n "$_tty"; and type -q starship
     starship init fish | source
 end
 
@@ -355,15 +374,16 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Initialize Zoxide if available.
 #
 # Flags:
+#   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if type -q zoxide
+if test -n "$_tty"; and type -q zoxide
     zoxide init --cmd cd fish | source
 end
 
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if test "$TERM" = alacritty
+if test -n "$_tty"; and test "$TERM" = alacritty
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal.
     #
@@ -373,7 +393,7 @@ if test "$TERM" = alacritty
     # Flags:
     #   -n: Check if string is nonempty.
     #   -q: Only check for exit status by supressing output.
-    if type -q zellij; and not ssh_session
+    if type -q zellij; and not _ssh_session
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
@@ -385,7 +405,7 @@ if test "$TERM" = alacritty
         # Do not use logname command, it sometimes incorrectly returns "root" on
         # MacOS. For for information, visit
         # https://github.com/vercel/hyper/issues/3762.
-        if test -n "$_tty"; and test "$LOGNAME" = "$USER"
+        if test "$LOGNAME" = "$USER"
             eval (zellij setup --generate-auto-start fish | string collect)
         end
     end
@@ -405,6 +425,6 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-    source_bash_files "$HOME/.env" "$HOME/.secrets"
+    _source_bash_files "$HOME/.env" "$HOME/.secrets"
 end
-source_files "$HOME/.env.fish" "$HOME/.secrets.fish"
+_source_files "$HOME/.env.fish" "$HOME/.secrets.fish"

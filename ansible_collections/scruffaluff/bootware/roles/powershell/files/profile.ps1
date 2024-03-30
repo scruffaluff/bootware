@@ -7,27 +7,61 @@
 # profile file, visit
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles.
 
-Function Edit-History() {
+# Private convenience functions.
+
+Function _GetParameters($Params, $Index) {
+    If ($Params.Length -GT $Index) {
+        Return $Params[$Index..($Params.Length - 1)]
+    }
+    Else {
+        Return @()
+    }
+}
+
+# Public convenience interactive functions.
+
+Function edit-history() {
     If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {
         & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
     }
 }
 
-Function Export($Name, $Value) {
-    Set-Content Env:$Name $Value
+Function export($Key, $Value) {
+    Set-Content Env:$Key $Value
 }
 
-Function PKill($Name) {
-    Stop-Process -Force -Name "$Name"
+Function pkill() {
+    While ($ArgIdx -LT $Args[0].Count) {
+        Stop-Process -Force -Name $(_GetParameters $Args $ArgIdx)
+        $ArgIdx += 1
+    }
 }
 
-Function PGrep($Name) {
-    Get-Process $Name
+Function pgrep() {
+    While ($ArgIdx -LT $Args[0].Count) {
+        Get-Process $(_GetParameters $Args $ArgIdx)
+        $ArgIdx += 1
+    }
 }
 
-Function Which($Name) {
-    Get-Command $Name | Select-Object -ExpandProperty Definition
+Function rmf() {
+    While ($ArgIdx -LT $Args[0].Count) {
+        Remove-Item -Force -Recurse $(_GetParameters $Args $ArgIdx)
+        $ArgIdx += 1
+    }
 }
+
+Function which() {
+    While ($ArgIdx -LT $Args[0].Count) {
+        Get-Command $(_GetParameters $Args $ArgIdx) `
+            | Select-Object -ExpandProperty Definition
+        $ArgIdx += 1
+    }
+}
+
+# Private convenience variables.
+
+$_Tty = -Not [System.Console]::IsOutputRedirected
 
 # Shell settings.
 
@@ -38,7 +72,7 @@ Set-Alias -Name touch -Value New-Item
 # Configure PSReadLine settings if available.
 #
 # Do not enable Vi mode command line edits. Will disable functionality.
-If (Get-Module -ListAvailable -Name PSReadLine) {
+If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Import-Module PSReadLine
 
     # Use only spaces as word boundaries.
@@ -69,6 +103,19 @@ If (Get-Module -ListAvailable -Name PSReadLine) {
 
     # Add Fish style keybindings.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Chord Alt+s -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+
+        $StripLine = $Line -Replace '^sudo ',''
+        If ($StripLine.Length -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$StripLine")
+        } Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Ctrl+u -Function RevertLine
     Set-PSReadLineKeyHandler -Chord Ctrl+x -ScriptBlock {
         $Line = $Null
@@ -132,8 +179,8 @@ If (Get-Command bat -ErrorAction SilentlyContinue) {
 # Bootware settings.
 
 # Load Bootware autocompletion if available.
-If (Get-Module -ListAvailable -Name BootwareCompletion) {
-    Import-Module BootwareCompletion
+If ($_Tty) {
+    Import-Module BootwareCompletion -ErrorAction SilentlyContinue
 }
 
 # Docker settings.
@@ -144,8 +191,8 @@ $Env:DOCKER_BUILDKIT = 'true'
 $Env:DOCKER_CLI_HINTS = 'false'
 
 # Load Docker autocompletion if available.
-If (Get-Module -ListAvailable -Name DockerCompletion) {
-    Import-Module DockerCompletion
+If ($_Tty) {
+    Import-Module DockerCompletion -ErrorAction SilentlyContinue
 }
 
 # Fzf settings.
@@ -156,22 +203,21 @@ $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136
 $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 
 # Add inode preview to Fzf file finder.
-If (Get-Command bat -ErrorAction SilentlyContinue) {
-    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || tree {} | more +3'"
+If ((Get-Command bat -ErrorAction SilentlyContinue) -And (Get-Command lsd -ErrorAction SilentlyContinue)) {
+    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || lsd --tree --depth 1 {} | bat'"
 }
 
 # Git settings.
 
 # Load Git autocompletion if available.
-If (Get-Module -ListAvailable -Name posh-git) {
-    Import-Module posh-git
+If ($_Tty) {
+    Import-Module posh-git -ErrorAction SilentlyContinue
 }
 
 # Helix settings.
 
 # Set full color support for terminal and default editor to Helix.
 If (Get-Command hx -ErrorAction SilentlyContinue) {
-    $Env:COLORTERM = 'truecolor'
     $Env:EDITOR = 'hx'
 }
 
@@ -184,6 +230,10 @@ Function jt() {
 
 # Python settings.
 
+# Add Python debugger alias.
+Function pdb() {
+    python3 -m pdb $Args
+}
 # Fix Poetry package install issue on headless systems.
 $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Make Poetry create virutal environments inside projects.
@@ -195,22 +245,39 @@ $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
 $Env:STARSHIP_LOG = 'error'
 
 # Initialize Starship if available.
-If (Get-Command starship -ErrorAction SilentlyContinue) {
+If ($_Tty -And (Get-Command starship -ErrorAction SilentlyContinue)) {
     Invoke-Expression (&starship init powershell)
 }
 
 # Secure Shell settings.
 
 # Load SSH autocompletion if available.
-If (Get-Module -ListAvailable -Name SSHCompletion) {
-    Import-Module SSHCompletion
+If ($_Tty) {
+    Import-Module SSHCompletion -ErrorAction SilentlyContinue
 }
+
+# Rust settings.
+
+# Add Rust debugger alias.
+Set-Alias -Name rdb -Value rust-lldb
 
 # Zoxide settings.
 
 # Initialize Zoxide if available.
-If (Get-Command zoxide -ErrorAction SilentlyContinue) {
+If ($_Tty -And (Get-Command zoxide -ErrorAction SilentlyContinue)) {
     Invoke-Expression (&{ (zoxide init --cmd cd powershell | Out-String) })
+}
+
+# Alacritty settings.
+
+# Placed near end of config to ensure Zellij reads the correct window size.
+If ($_Tty -And ("$Env:TERM" -Eq 'alacritty')) {
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $Env:TERM = 'xterm-256color'
 }
 
 # User settings.

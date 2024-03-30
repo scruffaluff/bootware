@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Android role.
+- Android, and Debug roles.
 - Tmux keybindings.
 
 ### Fixed
