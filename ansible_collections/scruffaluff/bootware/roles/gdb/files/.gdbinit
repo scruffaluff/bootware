@@ -5,3 +5,6 @@
 
 source ~/.config/gef.py
 source ~/.config/gdbinit.py
+
+gef config context.layout "legend source threads trace"
+set print pretty on

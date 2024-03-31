@@ -244,8 +244,10 @@ fi
 
 # Rust settings.
 
-# Add Rust debugger alias.
-alias rdb='rust-lldb'
+# Add Rust debugger aliases.
+alias rgd='rust-gdb'
+alias rld='rust-lldb'
+
 # Add Rust binaries to system path.
 prepend_paths "${HOME}/.cargo/bin"
 

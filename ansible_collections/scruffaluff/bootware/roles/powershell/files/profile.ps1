@@ -53,14 +53,15 @@ Function rmf() {
 
 Function which() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Get-Command $(_GetParameters $Args $ArgIdx) `
-            | Select-Object -ExpandProperty Definition
+        Get-Command $(_GetParameters $Args $ArgIdx) |
+            Select-Object -ExpandProperty Definition
         $ArgIdx += 1
     }
 }
 
 # Private convenience variables.
 
+$_SshSession = "$Env:SSH_CLIENT$Env:SSH_CONNECTION$Env:SSH_TTY"
 $_Tty = -Not [System.Console]::IsOutputRedirected
 
 # Shell settings.
@@ -109,10 +110,11 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
 
-        $StripLine = $Line -Replace '^sudo ',''
+        $StripLine = $Line -Replace '^sudo ', ''
         If ($StripLine.Length -LT $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$StripLine")
-        } Else {
+        }
+        Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
         }
     }
@@ -203,7 +205,10 @@ $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136
 $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 
 # Add inode preview to Fzf file finder.
-If ((Get-Command bat -ErrorAction SilentlyContinue) -And (Get-Command lsd -ErrorAction SilentlyContinue)) {
+If (
+    (Get-Command bat -ErrorAction SilentlyContinue) -And `
+    (Get-Command lsd -ErrorAction SilentlyContinue)
+) {
     $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || lsd --tree --depth 1 {} | bat'"
 }
 
@@ -258,20 +263,39 @@ If ($_Tty) {
 
 # Rust settings.
 
-# Add Rust debugger alias.
-Set-Alias -Name rdb -Value rust-lldb
+# Add Rust debugger aliases.
+Set-Alias -Name rgd -Value rust-gdb
+Set-Alias -Name rld -Value rust-lldb
 
 # Zoxide settings.
 
 # Initialize Zoxide if available.
 If ($_Tty -And (Get-Command zoxide -ErrorAction SilentlyContinue)) {
-    Invoke-Expression (&{ (zoxide init --cmd cd powershell | Out-String) })
+    Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
 }
 
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
 If ($_Tty -And ("$Env:TERM" -Eq 'alacritty')) {
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal.
+    #
+    # For more information, visit
+    # https://zellij.dev/documentation/integration.html.
+    If (
+        (Get-Command zellij -ErrorAction SilentlyContinue) -And
+        (-Not $_SshSession)
+    ) {
+        # Attach to a default session if it exists.
+        $Env:ZELLIJ_AUTO_ATTACH = 'true'
+        # Exit the shell when Zellij exits.
+        $Env:ZELLIJ_AUTO_EXIT = 'true'
+
+        # TODO: Uncomment when Zellij gains Windows support.
+        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
+    }
+
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
     # during remote connections.
     #

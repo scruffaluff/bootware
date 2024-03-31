@@ -65,6 +65,7 @@
       - llvm
       - make
       - openocd
+      - pkg-config
       - vcredist2022
   when: ansible_system == "Win32NT"
 

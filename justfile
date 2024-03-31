@@ -24,7 +24,7 @@ format:
 [windows]
 format:
   npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting CodeFormatting
 
 # Run code analyses.
 [unix]
@@ -34,7 +34,7 @@ lint:
 
 [windows]
 lint:
-  Invoke-Pester -Output Detailed tests
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
 
 # Install development dependencies.
 setup: _setup-python _setup-shell

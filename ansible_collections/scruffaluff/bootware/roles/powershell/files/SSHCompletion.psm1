@@ -25,11 +25,8 @@ Function CompleteHosts($Partial) {
 Function GetHosts($ConfigPath) {
     $Text = $(Get-Content -Path $ConfigPath)
     $Lines = $($Text | Select-String -Pattern '^Host ')
-    $Hosts = $(
-        $Lines |
-        ForEach-Object { $_ -Replace 'Host ', '' } |
-        ForEach-Object { $_ -Split ' ' } |
-        Sort-Object -Unique
+    $Hosts = $($Lines | ForEach-Object { $_ -Replace 'Host ', '' } |
+            ForEach-Object { $_ -Split ' ' } | Sort-Object -Unique
     )
 
     Return $Hosts | Select-String -Pattern '^.*[*!?].*$' -NotMatch

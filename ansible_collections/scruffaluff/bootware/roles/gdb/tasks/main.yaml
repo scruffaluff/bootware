@@ -28,7 +28,7 @@
 
 - name: Install GEF for Unix
   ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/gdbinit.py"
+    dest: "{{ user_home }}/.config/gef.py"
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"

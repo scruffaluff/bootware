@@ -322,8 +322,10 @@ end
 
 # Rust settings.
 
-# Add Rust debugger alias.
-alias rdb 'rust-lldb'
+# Add Rust debugger aliases.
+alias rgd 'rust-gdb'
+alias rld 'rust-lldb'
+
 # Add Rust binaries to system path.
 prepend_paths "$HOME/.cargo/bin"
 
@@ -399,8 +401,8 @@ if test -n "$_tty"; and test "$TERM" = alacritty
         # Exit the shell when Zellij exits.
         set --export ZELLIJ_AUTO_EXIT true
 
-        # If within an interactive shell for the login user, create or connect to
-        # Zellij session.
+        # If within an interactive shell for the login user, create or connect
+        # to Zellij session.
         #
         # Do not use logname command, it sometimes incorrectly returns "root" on
         # MacOS. For for information, visit

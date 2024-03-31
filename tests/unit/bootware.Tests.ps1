@@ -16,7 +16,7 @@ Describe 'FindConfigPath' {
 
         $Expected = 'C:\Windows\regedit.exe'
         $Actual = $(FindConfigPath "$Expected")
-        $Actual| Should -Be $Expected
+        $Actual | Should -Be $Expected
     }
 
     It 'Return environment variable' {
