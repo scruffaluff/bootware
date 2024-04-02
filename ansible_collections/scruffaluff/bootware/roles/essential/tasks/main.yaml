@@ -66,6 +66,7 @@
     name:
       - 7zip
       - bzip2
+      - file
       - gsudo
       - scoop-completion
       - unzip

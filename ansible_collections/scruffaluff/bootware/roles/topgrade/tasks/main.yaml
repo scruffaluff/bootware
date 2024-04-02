@@ -59,7 +59,7 @@
     name: topgrade
   when: ansible_system == "Win32NT"
 
-- name: Disable Topgrade notifications for Unix
+- name: Disable Topgrade interactivity for Unix
   ansible.builtin.lineinfile:
     create: true
     group: "{{ group_id }}"
@@ -71,10 +71,11 @@
   become: true
   loop:
     - "assume_yes = true"
+    - "no_retry = true"
     - "skip_notify = true"
   when: ansible_system != "Win32NT"
 
-- name: Disable Topgrade notifications for Windows
+- name: Disable Topgrade interactivity for Windows
   community.windows.win_lineinfile:
     create: true
     line: "{{ item }}"
@@ -82,5 +83,6 @@
     regex: "^#?\\s*{{ item }}"
   loop:
     - "assume_yes = true"
+    - "no_retry = true"
     - "skip_notify = true"
   when: ansible_system == "Win32NT"

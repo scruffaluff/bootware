@@ -239,10 +239,11 @@ Function jt() {
 Function pdb() {
     python3 -m pdb $Args
 }
-# Fix Poetry package install issue on headless systems.
-$Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
+
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
+# Fix Poetry package install issue on headless systems.
+$Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 
 # Starship settings.
 

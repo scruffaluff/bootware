@@ -297,10 +297,11 @@ alias procs 'procs --theme light'
 
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
-# Fix Poetry package install issue on headless systems.
-set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
+
 # Make Poetry create virutal environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT true
+# Fix Poetry package install issue on headless systems.
+set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
 if test "$_os" = Darwin
@@ -387,29 +388,22 @@ end
 # Placed near end of config to ensure Zellij reads the correct window size.
 if test -n "$_tty"; and test "$TERM" = alacritty
     # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal.
+    # terminal and within an interactive shell for the login user. For more
+    # information, visit https://zellij.dev/documentation/integration.html.
     #
-    # For more information, visit
-    # https://zellij.dev/documentation/integration.html.
+    # Do not use logname command, since it sometimes incorrectly returns "root"
+    # on MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
     #
     # Flags:
     #   -n: Check if string is nonempty.
     #   -q: Only check for exit status by supressing output.
-    if type -q zellij; and not _ssh_session
+    if type -q zellij; and not _ssh_session; and test "$LOGNAME" = "$USER"
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
         set --export ZELLIJ_AUTO_EXIT true
-
-        # If within an interactive shell for the login user, create or connect
-        # to Zellij session.
-        #
-        # Do not use logname command, it sometimes incorrectly returns "root" on
-        # MacOS. For for information, visit
-        # https://github.com/vercel/hyper/issues/3762.
-        if test "$LOGNAME" = "$USER"
-            eval (zellij setup --generate-auto-start fish | string collect)
-        end
+        eval (zellij setup --generate-auto-start fish | string collect)
     end
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors

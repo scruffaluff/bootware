@@ -286,7 +286,10 @@
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
-  { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
+  {
+    "name": "rust",
+    "tests": ["cargo --version", "rustc --version", "rust-analyzer --version"]
+  },
   { "name": "scc", "tests": ["scc --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   {

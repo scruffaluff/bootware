@@ -214,10 +214,11 @@ alias procs='procs --theme light'
 
 # Add Python debugger alias.
 alias pdb='python3 -m pdb'
-# Fix Poetry package install issue on headless systems.
-export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
+
 # Make Poetry create virutal environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT='true'
+# Fix Poetry package install issue on headless systems.
+export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable for MacOS.
 if [[ "${_os}" == 'Darwin' ]]; then
