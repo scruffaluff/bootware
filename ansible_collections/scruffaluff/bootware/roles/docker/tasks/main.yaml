@@ -159,7 +159,7 @@
       - docker
     name: "{{ user_id }}"
   become: true
-  when: ansible_system == "Linux" and docker_service.stat.exists
+  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:

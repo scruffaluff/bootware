@@ -91,7 +91,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Remove default Rust Analyzer for Windows
-  ansible.builtin.win_file:
+  ansible.windows.win_file:
     path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/rust-analyzer.exe"
     state: absent
   when: ansible_system == "Win32NT"

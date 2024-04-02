@@ -214,6 +214,7 @@ alias procs='procs --theme light'
 
 # Add Python debugger alias.
 alias pdb='python3 -m pdb'
+alias pudb='python3 -m pip install --quiet pudb && python3 -m pudb'
 
 # Make Poetry create virutal environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT='true'

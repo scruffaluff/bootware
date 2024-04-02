@@ -53,3 +53,39 @@
     owner: "{{ user_id }}"
     src: .pdbrc
   when: ansible_system == "Win32NT"
+
+- name: Create PuDB settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/pudb"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create PuDB settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/pudb"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy PuDB settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/pudb/pudb.cfg"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: pudb.cfg
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy PuDB settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.config/pudb/pudb.cfg"
+    force: true
+    owner: "{{ user_id }}"
+    src: pudb.cfg
+  when: ansible_system == "Win32NT"
