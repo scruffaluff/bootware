@@ -57,8 +57,11 @@
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
     cmd: >-
-      pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force
-      {{ item }}
+      (pipx install {{ item.name if item.name is defined else item }} || pipx
+      upgrade {{ item.name if item.name is defined else item }} || pipx install
+      --force {{ item.name if item.name is defined else item }}) && {{
+      'pipx inject ' + item.name + ' ' + (item.injections | join(' ')) if
+      item.injections is defined else ':' }}
     executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
@@ -73,8 +76,11 @@
   # Pipx installation can break if associated Python interpreter is updated.
   # If so a new installation should overwrite the current.
   ansible.windows.win_shell: >-
-    (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install
-    --force {{ item }})
+    ((pipx install {{ item.name if item.name is defined else item }}) -Or (pipx
+    upgrade {{ item.name if item.name is defined else item }}) -Or (pipx install
+    --force {{ item.name if item.name is defined else item }})) -And ({{ 'pipx
+    inject ' + item.name + ' ' + (item.injections | join(' ')) if
+    item.injections is defined else '? .' }})
   changed_when: >-
     "installed package" in python_pipx_application_install or "upgraded package"
     in python_pipx_application_install
