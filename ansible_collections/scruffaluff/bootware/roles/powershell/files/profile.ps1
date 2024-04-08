@@ -68,6 +68,7 @@ $_Tty = -Not [System.Console]::IsOutputRedirected
 
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
+Set-Alias -Name rsync -Value scp
 Set-Alias -Name touch -Value New-Item
 
 # Configure PSReadLine settings if available.

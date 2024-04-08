@@ -1,4 +1,34 @@
 [
+  {
+    "command": "-workbench.action.debug.continue",
+    "key": "f5",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "-workbench.action.debug.stepInto",
+    "key": "f11",
+    "when": "debugState != 'inactive'"
+  },
+  {
+    "command": "-workbench.action.debug.stepOver",
+    "key": "f10",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "-workbench.action.debug.stepOut",
+    "key": "shift+f11",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "-workbench.action.debug.stop",
+    "key": "shift+f5",
+    "when": "inDebugMode && !focusedSessionIsAttach"
+  },
+  {
+    "command": "-workbench.action.debug.restart",
+    "key": "ctrl+shift+f5",
+    "when": "inDebugMode"
+  },
   { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
   { "command": "-list.find", "key": "ctrl+f" },
   { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
@@ -9,6 +39,36 @@
   },
   { "command": "-workbench.action.terminal.toggleTerminal", "key": "ctrl+`" },
   { "command": "-workbench.action.view.problems", "key": "ctrl+shift+m" },
+  {
+    "command": "workbench.action.debug.continue",
+    "key": "alt+c",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.restart",
+    "key": "alt+r",
+    "when": "inDebugMode"
+  },
+  {
+    "command": "workbench.action.debug.stepInto",
+    "key": "alt+s",
+    "when": "debugState != 'inactive'"
+  },
+  {
+    "command": "workbench.action.debug.stepOut",
+    "key": "alt+u",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.stepOver",
+    "key": "alt+n",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.stop",
+    "key": "alt+q",
+    "when": "inDebugMode && !focusedSessionIsAttach"
+  },
   {
     "command": "workbench.action.focusActiveEditorGroup",
     "key": "ctrl+`",

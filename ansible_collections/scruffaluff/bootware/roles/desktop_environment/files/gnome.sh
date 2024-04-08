@@ -46,6 +46,7 @@ gsettings set org.gtk.Settings.FileChooser show-hidden true
 gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
 # Change system keybindings.
+gsettings set org.gnome.desktop.wm.keybindings activate-window-menu []
 gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down '["<Shift><Control><Alt>Down"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '["<Shift><Control><Alt>Left"]'

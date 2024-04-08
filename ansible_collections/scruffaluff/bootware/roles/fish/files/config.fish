@@ -120,6 +120,8 @@ end
 
 # Add alias for remove by force.
 alias rmf 'rm -fr'
+# Make rsync use human friendly output.
+alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting
 
@@ -325,8 +327,8 @@ end
 # Rust settings.
 
 # Add Rust debugger aliases.
-alias rgd 'rust-gdb'
-alias rld 'rust-lldb'
+alias rgd 'rust-gdb --quiet'
+alias rld 'rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
 prepend_paths "$HOME/.cargo/bin"

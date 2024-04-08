@@ -53,6 +53,8 @@ source_files() {
 
 # Add alias for remove by force.
 alias rmf='rm -fr'
+# Make rsync use human friendly output.
+alias rsync='rsync --partial --progress --filter ":- .gitignore"'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
@@ -247,8 +249,8 @@ fi
 # Rust settings.
 
 # Add Rust debugger aliases.
-alias rgd='rust-gdb'
-alias rld='rust-lldb'
+alias rgd='rust-gdb --quiet'
+alias rld='rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
 prepend_paths "${HOME}/.cargo/bin"
