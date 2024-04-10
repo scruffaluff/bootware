@@ -59,6 +59,21 @@ Function which() {
     }
 }
 
+# Public convenience script functions.
+
+Function PrependPaths() {
+    While ($ArgIdx -LT $Args[0].Count) {
+        $Folder = $(_GetParameters $Args $ArgIdx)
+        If (
+            (Test-Path -Path "$Folder" -PathType Container) -And `
+            (-Not ($Env:Path -Like "*$Folder*"))
+        ) {
+            Set-Content Env:Path "$Folder;$Env:Path"
+        }
+        $ArgIdx += 1
+    }
+}
+
 # Private convenience variables.
 
 $_SshSession = "$Env:SSH_CLIENT$Env:SSH_CONNECTION$Env:SSH_TTY"
@@ -120,18 +135,14 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         }
     }
     Set-PSReadLineKeyHandler -Chord Ctrl+k -ScriptBlock {
-        Param($Key, $Arg)
-
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
-        
+
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert($Line.Substring(0, $Cursor))
     }
     Set-PSReadLineKeyHandler -Chord Ctrl+u -ScriptBlock {
-        Param($Key, $Arg)
-
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)

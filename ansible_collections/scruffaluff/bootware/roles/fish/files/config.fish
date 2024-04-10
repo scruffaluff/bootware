@@ -65,7 +65,7 @@ function _source_bash_files
     end
 end
 
-# Public convenience interactive functions
+# Public convenience interactive functions.
 
 # Open Fish history file with default editor.
 #
@@ -77,7 +77,7 @@ function edit-history
     end
 end
 
-# Public convenience script functions
+# Public convenience script functions.
 
 # Prepend existing directories that are not in the system path.
 #

@@ -64,6 +64,8 @@
 - name: Update TLDR documentation for Windows
   ansible.windows.win_command: tldr --update
   changed_when: "'Successfully updated' in tldr_update"
+  environment:
+    Path: "{{ scoop_apps }}\\tealdeer\\current;{{ ansible_env.Path }}"
   register: tldr_update
   when: ansible_system == "Win32NT"
 

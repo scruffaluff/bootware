@@ -744,6 +744,7 @@
         - powershell
         - server
         - shell
+        - sysadmin
 
     - name: Install Procs process viewer
       ansible.builtin.import_role:
