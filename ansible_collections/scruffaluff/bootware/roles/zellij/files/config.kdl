@@ -81,6 +81,10 @@ keybinds {
         bind "Alt k" "Alt Down" { MoveFocus "Down"; }
         bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
+    tmux clear-defaults=true {}
+    shared_except "tmux" "locked" {
+        unbind "Ctrl b"
+    }
 }
 
 session_serialization false

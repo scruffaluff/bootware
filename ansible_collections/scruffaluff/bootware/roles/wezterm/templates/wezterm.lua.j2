@@ -18,7 +18,7 @@ config.colors = {
   },
 }
 config.default_cursor_style = 'SteadyBar'
-config.default_prog = { '{{ user_shell }}', '{{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
+config.default_prog = { '{{ user_shell }}', '{{ "-NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
 config.enable_scroll_bar = true
 config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ font_size }}

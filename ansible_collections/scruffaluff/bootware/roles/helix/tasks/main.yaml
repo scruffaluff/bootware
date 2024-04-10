@@ -84,7 +84,9 @@
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
-    name: helix
+    name:
+      - helix
+      - vcredist2022
   when: ansible_system == "Win32NT"
 
 - name: Create Helix configuration directory for Unix

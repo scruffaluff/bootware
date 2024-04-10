@@ -25,6 +25,12 @@
       arm64: arm64
   when: ansible_system == "Win32NT"
 
+- name: Update system path to include PowerShell Core for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\PowerShell\\7"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
 - name: Create PowerShell settings directories for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"

@@ -50,7 +50,7 @@ font:
 shell:
   program: {{ user_shell }}
   args:
-    - {{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}
+    - {{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}
 
 window:
 {% if ansible_system == "Darwin" %}

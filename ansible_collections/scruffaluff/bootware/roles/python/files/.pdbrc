@@ -12,12 +12,12 @@ pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
 
 # Print dictionary sorted by keys.
 alias pd for key in sorted(%1.keys()): print(f"%2.{key} = {pformat(%1[key])}")
-# Print all local variables as members of a dictionary called local.
-alias pl pd locals() local
+# Print all local variables as members of a dictionary called locals.
+alias pl pd locals() locals
 # Print all object attributes.
 alias po pd %1.__dict__ %1
 # Print attributes for current object.
-alias ps pd self self
+alias ps pd self.__dict__ self
 
 # Set breakpoint and continue.
 alias cb tbreak %1;; continue

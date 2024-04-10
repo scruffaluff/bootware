@@ -119,7 +119,27 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
         }
     }
-    Set-PSReadLineKeyHandler -Chord Ctrl+u -Function RevertLine
+    Set-PSReadLineKeyHandler -Chord Ctrl+k -ScriptBlock {
+        Param($Key, $Arg)
+
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($Line.Substring(0, $Cursor))
+    }
+    Set-PSReadLineKeyHandler -Chord Ctrl+u -ScriptBlock {
+        Param($Key, $Arg)
+
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($Line.Substring($Cursor, $Line.Length - $Cursor))
+        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition(0)
+    }
     Set-PSReadLineKeyHandler -Chord Ctrl+x -ScriptBlock {
         $Line = $Null
         $Cursor = $Null

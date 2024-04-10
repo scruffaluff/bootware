@@ -7,6 +7,7 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - sox
   when: ansible_pkg_mgr == "apk"
 
 - name: Install audio packages for Arch
@@ -17,6 +18,7 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - sox
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
@@ -26,6 +28,7 @@
       - libasound2-dev
       - ffmpeg
       - mediainfo
+      - sox
   become: true
   when: ansible_pkg_mgr == "apt"
 
@@ -35,6 +38,7 @@
       - alsa-lib
       - alsa-utils
       - mediainfo
+      - sox
   become: true
   when: ansible_pkg_mgr == "dnf"
 
@@ -46,6 +50,7 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - sox
   when: ansible_system == "FreeBSD"
 
 - name: Install audio packages for MacOS
@@ -55,6 +60,7 @@
     name:
       - ffmpeg
       - media-info
+      - sox
   when: ansible_system == "Darwin"
 
 - name: Install audio packages for Windows
@@ -62,4 +68,5 @@
     name:
       - mediainfo
       - ffmpeg
+      - sox
   when: ansible_system == "Win32NT"

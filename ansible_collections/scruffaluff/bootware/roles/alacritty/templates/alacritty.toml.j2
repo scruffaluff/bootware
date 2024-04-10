@@ -52,7 +52,7 @@ family = "FiraCode Nerd Font"
 style = "Regular"
 
 [shell]
-args = ["{{ '/NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
+args = ["{{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
 program = "{{ user_shell }}"
 {% if ansible_system == "Darwin" %}
 

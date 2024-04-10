@@ -14,7 +14,7 @@
       "windows": ["scoop prefix audacity"]
     }
   },
-  { "name": "audio" },
+  { "name": "audio", "tests": ["play --version"] },
   { "name": "awscli", "tests": ["aws --version"] },
   {
     "name": "bash",

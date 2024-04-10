@@ -23,6 +23,9 @@ hidden = false
 [editor.indent-guides]
 render = true
 
+[editor.smart-tab]
+enable = false
+
 [editor.soft-wrap]
 enable = true
 
