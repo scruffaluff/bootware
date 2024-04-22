@@ -2,26 +2,25 @@
 #
 # For more information, visit https://docs.python.org/3/library/pdb.html.
 
-
-import pdb
-from pprint import pformat, pprint
-import rlcompleter
+import pathlib as __pdbrc_pathlib
 
 
-pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
-
-# Print dictionary sorted by keys.
-alias pd for key in sorted(%1.keys()): print(f"%2.{key} = {pformat(%1[key])}")
-# Print all local variables as members of a dictionary called locals.
-alias pl pd locals() locals
-# Print all object attributes.
-alias po pd %1.__dict__ %1
-# Print attributes for current object.
-alias ps pd self.__dict__ self
+# Load custom PDB functions.
+exec((__pdbrc_pathlib.Path.home() / ".pdbrc.py").read_text())
 
 # Set breakpoint and continue.
 alias cb tbreak %1;; continue
+# Print documentation for object.
+alias doc __pdbrc_pager(__pdbrc_doc(%1))
+# Open object source code in editor.
+alias edit __pdbrc_edit(%*)
 # Next and list code.
 alias nl next;; list
+# Print local variables.
+alias pl __pdbrc_pager(__pdbrc_format(locals()))
+# Print object state with pager.
+alias po __pdbrc_pager(__pdbrc_format(%1))
+# Load custom PDB functions.
+alias rcload import pathlib as __pdbrc_pathlib; exec((__pdbrc_pathlib.Path.home() / ".pdbrc.py").read_text())
 # Step and list code.
 alias sl step;; list

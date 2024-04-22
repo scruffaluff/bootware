@@ -35,23 +35,29 @@
     src: jupyter_notebook_config.py
   when: ansible_system == "Win32NT"
 
-- name: Copy PDB settings file for Unix
+- name: Copy PDB settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.pdbrc"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .pdbrc
+    src: "{{ item }}"
   become: true
+  loop:
+    - .pdbrc
+    - .pdbrc.py
   when: ansible_system != "Win32NT"
 
-- name: Copy PDB settings file for Windows
+- name: Copy PDB settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.pdbrc"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     owner: "{{ user_id }}"
-    src: .pdbrc
+    src: "{{ item }}"
+  loop:
+    - .pdbrc
+    - .pdbrc.py
   when: ansible_system == "Win32NT"
 
 - name: Create PuDB settings directory for Unix
