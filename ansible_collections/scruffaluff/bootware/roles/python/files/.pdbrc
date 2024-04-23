@@ -2,25 +2,30 @@
 #
 # For more information, visit https://docs.python.org/3/library/pdb.html.
 
-import pathlib as __pdbrc_pathlib
-
-
-# Load custom PDB functions.
-exec((__pdbrc_pathlib.Path.home() / ".pdbrc.py").read_text())
+import importlib
+import os
+import sys
+spec = importlib.util.spec_from_file_location("pdbrc", os.path.expanduser("~/.pdbrc.py"))
+pdbrc = importlib.util.module_from_spec(spec)
+sys.modules["pdbrc"] = pdbrc
+spec.loader.exec_module(pdbrc)
+del importlib, os, spec, sys
 
 # Set breakpoint and continue.
 alias cb tbreak %1;; continue
 # Print documentation for object.
-alias doc __pdbrc_pager(__pdbrc_doc(%1))
+alias doc pdbrc.pager(pdbrc.doc(%1))
 # Open object source code in editor.
-alias edit __pdbrc_edit(%*)
+alias edit pdbrc.edit([%*], __file__)
 # Next and list code.
 alias nl next;; list
+# Print global variables.
+alias pg __globals = lambda: None; __globals.__dict__ = globals(); pdbrc.pager(pdbrc.format(__globals, name="globals", private="%1" == "all")); del __globals
 # Print local variables.
-alias pl __pdbrc_pager(__pdbrc_format(locals()))
+alias pl __locals = lambda: None; __locals.__dict__ = locals(); __locals.__dict__ = {key: value for key, value in __locals.__dict__.items() if key != "__locals"}; pdbrc.pager(pdbrc.format(__locals, name="locals", private="%1" == "all")); del __locals
 # Print object state with pager.
-alias po __pdbrc_pager(__pdbrc_format(%1))
-# Load custom PDB functions.
-alias rcload import pathlib as __pdbrc_pathlib; exec((__pdbrc_pathlib.Path.home() / ".pdbrc.py").read_text())
+alias po pdbrc.pager(pdbrc.format(%1, name="%1", private="%2" == "all"))
 # Step and list code.
 alias sl step;; list
+# Step and list code.
+alias sh pdbrc.shell([%*], __file__)

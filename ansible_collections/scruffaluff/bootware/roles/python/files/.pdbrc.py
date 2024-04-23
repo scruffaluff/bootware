@@ -1,73 +1,70 @@
-"""Python debugger settings file.
+"""Python debugger settings file."""
 
-Imports are renamed with a "__pdbrc_" prefix to reduce namespace pollution.
-"""
-
-import inspect as __pdbrc_inspect
-import os as __pdbrc_os
-import pprint as __pdbrc_pprint
-import subprocess as __pdbrc_subprocess
-import tempfile as __pdbrc_tempfile
-import typing as __pdbrc_typing
+import inspect
+import os
+from pathlib import Path
+import pprint
+import subprocess
+import tempfile
+from typing import Any, Dict, List, Iterator
 
 
-def __pdbrc_doc(object: __pdbrc_typing.Any) -> str:
+def doc(object: Any) -> str:
     try:
-        signature = f"{object.__name__}{__pdbrc_inspect.signature(object)}\n"
+        signature = f"{object.__name__}{inspect.signature(object)}\n"
     except TypeError:
         signature = ""
-    return f"{signature}{__pdbrc_inspect.getdoc(object)}"
+    return f"{signature}{inspect.getdoc(object)}"
 
 
-def __pdbrc_edit(*args: __pdbrc_typing.Any) -> None:
-    editor = __pdbrc_os.environ.get("EDITOR", "vim")
-    if args:
+def edit(args: List, file: str) -> None:
+    editor = os.environ.get("EDITOR", "vim")
+    try:
         object = args[0]
-        if __pdbrc_inspect.ismodule(object):
-            command = [editor, __pdbrc_inspect.getsourcefile(object)]
+    except IndexError:
+        command = [editor, file]
+    else:
+        if inspect.ismodule(object):
+            command = [editor, inspect.getsourcefile(object)]
         elif isinstance(object, str):
             command = [editor, object]
         else:
             raise ValueError("")
-    else:
-        line = __pdb_convenience_variables["_frame"].f_lineno
-        file = __pdb_convenience_variables["_frame"].f_code.co_filename
-        command = [editor, f"+{line}", file]
-    __pdbrc_subprocess.run(command, check=True)
+    subprocess.run(command, check=True)
 
 
-def __pdbrc_format(object: __pdbrc_typing.Any) -> str:
+def format(object: Any, name: str, private: bool = False) -> str:
     if hasattr(object, "__dict__"):
         values = []
-        for key in __pdbrc_public_keys(object.__dict__):
-            try:
-                value = __pdbrc_pprint.pformat(object)
-                values.append(f"{object.__name__}.{key} = {value}")
-            except AttributeError:
-                pass
+        for key in sorted(object.__dict__.keys()):
+            if private or not isinstance(key, str) or not key.startswith("_"):
+                value = pprint.pformat(object.__dict__[key])
+                values.append(f"{name}.{key} = {value}")
         return "\n".join(values)
     elif isinstance(object, dict):
-        return __pdbrc_pprint.pformat(
-            {key: object[key] for key in __pdbrc_public_keys(object)}
+        return pprint.pformat(
+            {key: object[key] for key in sorted(object.keys())}
         )
     else:
-        return __pdbrc_pprint.pformat(object)
+        return pprint.pformat(object)
 
 
-def __pdbrc_pager(text: str) -> None:
-    pager = __pdbrc_os.environ.get("PAGER", "less")
-    basename = __pdbrc_os.path.basename(pager)
+def pager(text: str) -> None:
+    pager = os.environ.get("PAGER", "less")
+    basename = os.path.basename(pager)
     if basename == "bat":
         command = [pager, "--language", "python"]
     else:
         command = [pager]
-    with __pdbrc_tempfile.NamedTemporaryFile("w") as file:
+    with tempfile.NamedTemporaryFile("w") as file:
         file.write(text)
         file.flush()
-        __pdbrc_subprocess.run(command + [file.name], check=True)
+        subprocess.run(command + [file.name], check=True)
 
 
-def __pdbrc_public_keys(dict: __pdbrc_typing.Dict) -> __pdbrc_typing.Iterator:
-    for key in sorted(dict.keys()):
-        if not isinstance(key, str) or not key.startswith("_"):
-            yield key
+def shell(args: List, file: str) -> None:
+    if args:
+        command = args
+    else:
+        command = [os.environ.get("SHELL", "/bin/sh")]
+    subprocess.run(command, check=True, cwd=Path(file).parent)

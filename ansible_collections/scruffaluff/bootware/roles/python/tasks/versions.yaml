@@ -142,7 +142,7 @@
   ansible.builtin.shell:
     cmd: |
       source {{ user_home }}/.bashrc
-      pyenv global system {{ python_releases | reverse | join(' ') }}
+      pyenv global {{ python_releases | reverse | join(' ') }}
     executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
