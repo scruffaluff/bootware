@@ -21,20 +21,26 @@ spec.loader.exec_module(pyrc)
 del importlib, os, pdb, rlcompleter, spec, sys
 
 # Print object catalog with pager.
-alias cat pyrc.cat(%1, name="%1", regex=pyrc.get("%*".split(), index=1, default="^[^_].*"))
-# Set breakpoint and continue.
-alias cb tbreak %1;; continue
+alias cat pyrc.cat(%1, name="%1", regex=pyrc.get("%*".split(), index=1))
+# Print dictionary as object catalog with default pager.
+alias dictclass pyrc.cat(pyrc.dictclass(%1), name="%1", regex=pyrc.get("%*".split(), index=1))
+alias dc dictclass %*
 # Print documentation for object.
 alias docs pyrc.docs(%1)
 # Open object source code in editor.
 alias edit pyrc.edit(pyrc.get([%*]), frame=$_frame)
-# Next and list code.
-alias nl next;; list
 # Print global variables.
-alias pg __globals = lambda: None; __globals.__dict__ = globals(); pyrc.cat(__globals, name="globals", regex=pyrc.get("%*".split(), default="^[^_].*")); del __globals
+alias global pyrc.cat(pyrc.dictclass(globals()), name="global", regex=pyrc.get("%*".split()))
+alias gl global %*
 # Print local variables.
-alias pl __locals = lambda: None; __locals.__dict__ = locals(); __locals.__dict__ = {key: value for key, value in __locals.__dict__.items() if key != "__locals"}; pyrc.cat(__locals, name="locals", regex=pyrc.get("%*".split(), default="^[^_].*")); del __locals
+alias local pyrc.cat(pyrc.dictclass(locals()), name="local", regex=pyrc.get("%*".split()))
+alias lo local %*
+# Next and list code.
+alias nextlist next;; list
+alias nl nextlist %*
 # Step and list code.
-alias sl step;; list
+alias shell pyrc.shell(*"%*".split(), frame=$_frame)
+alias sh shell %*
 # Step and list code.
-alias sh pyrc.shell(pyrc.get([%*]), frame=$_frame)
+alias steplist step;; list
+alias sl steplist %*

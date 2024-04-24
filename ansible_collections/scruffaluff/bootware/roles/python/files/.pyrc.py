@@ -7,21 +7,28 @@ import pprint
 import re
 import subprocess
 import tempfile
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 def get(list: List, index: int = 0, default: Any = None) -> Any:
     """Get nth item from list or default."""
     try:
-        return list[index]
+        item = list[index]
     except IndexError:
         return default
 
+    # Split surrounding quotes for PDB parameters.
+    if isinstance(item, str):
+        return item.strip("'\"")
+    else:
+        return item
+
 
 def cat(
-    object: Any, regex: str = "^[^_].*", name: Optional[str] = None
+    object: Any, regex: Optional[str] = None, name: Optional[str] = None
 ) -> None:
     """Print object catalog with default pager."""
+    regex = "^[^_].*" if regex is None else regex
     page(catalog(object, name=name, regex=regex))
 
 
@@ -33,11 +40,14 @@ def catalog(
     """Convert object to string representation with all attributes."""
     if hasattr(object, "__dict__"):
         name = name or object.__name__
-        match = re.compile(regex, re.IGNORECASE)
+        regex = re.compile(regex, re.IGNORECASE)
 
         values = []
         for key in sorted(object.__dict__.keys()):
-            if not isinstance(key, str) or match.match(key):
+            # Avoid key __builtins__ since formatting it can cause a crash.
+            if not isinstance(key, str) or (
+                key != "__builtins__" and regex.match(key)
+            ):
                 value = pprint.pformat(object.__dict__[key])
                 values.append(f"{name}.{key} = {value}")
         return "\n".join(values)
@@ -47,6 +57,13 @@ def catalog(
         )
     else:
         return pprint.pformat(object)
+
+
+def dictclass(dictionary: Dict) -> Any:
+    """Convert dictionary to class."""
+    object = lambda: None  # noqa: E731
+    object.__dict__ = dictionary
+    return object
 
 
 def docs(object: Any) -> None:
