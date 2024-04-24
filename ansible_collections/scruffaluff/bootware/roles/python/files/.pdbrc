@@ -4,12 +4,21 @@
 
 import importlib
 import os
+import pdb
+import rlcompleter
 import sys
+
+# Add local variables to command line completion.
+pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
+
+# Load interactive functions from pdbrc module.
 spec = importlib.util.spec_from_file_location("pdbrc", os.path.expanduser("~/.pdbrc.py"))
 pdbrc = importlib.util.module_from_spec(spec)
 sys.modules["pdbrc"] = pdbrc
 spec.loader.exec_module(pdbrc)
-del importlib, os, spec, sys
+
+# Remove setup imports and variables from namespace.
+del importlib, os, pdb, rlcompleter, spec, sys
 
 # Set breakpoint and continue.
 alias cb tbreak %1;; continue

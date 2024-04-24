@@ -83,13 +83,6 @@ prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
 # Flags:
 #   -n: Check if the string has nonzero length.
 if [[ -n "${_tty}" ]]; then
-  # Configure up and down arrow key history search to match commands starting
-  # with text before the cursor.
-  bind '"\e[A": history-search-backward'
-  bind '"\e[B": history-search-forward'
-  # Configure tab key to cycle through all possible completions.
-  bind 'TAB:menu-complete'
-
   # Load Bash completion.
   if [[ "${_os}" == 'Darwin' ]]; then
     source_files "${_brew_prefix}/etc/profile.d/bash_completion.sh"
@@ -217,6 +210,7 @@ alias procs='procs --theme light'
 # Add Python debugger alias.
 alias pdb='python3 -m pdb'
 alias pudb='python3 -m pip install --quiet pudb && python3 -m pudb'
+alias pyi="python3 -i ${HOME}/.pdbrc.py"
 
 # Make Poetry create virutal environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT='true'
