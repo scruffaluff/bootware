@@ -30,7 +30,14 @@ set tabstop=4
 
 " Keybinding settings.
 
+noremap d x " Change delete character to 'd'.
+noremap x V " Change select line to 'x'.
+noremap <C-Left> <C-o> " Change goto previous location.
+noremap <C-Right> <C-i> " Change goto next location.
+
+" Change navigation.
 noremap ; l
 noremap l k
 noremap k j
 noremap j h
+

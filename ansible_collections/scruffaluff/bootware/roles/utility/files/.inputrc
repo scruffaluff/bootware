@@ -1,0 +1,33 @@
+# Readline configuration file.
+#
+# For more information, visit
+# https://tiswww.case.edu/php/chet/readline/readline.html#Readline-Init-File.
+
+# Disable bell sound.
+set bell-style none
+# Use colors to distinguish completion options.
+set colored-stats on
+# Ignore case during completions.
+set completion-ignore-case on
+# Show all options if there are multiple options.
+set show-all-if-ambiguous on
+# Show all options if a partial completion cannot be made.
+set show-all-if-unmodified on
+# Use symbols to distinguish completion options.
+set visible-stats on
+
+# Use tab to cycle through completions.
+tab: menu-complete
+
+# Use Up and Down to search history for commands matching text before cursor.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Use Shift+Left and Shift+right to jump backwards and forwards.
+"\e[1;2D": backward-word
+"\e[1;2C": forward-word
+
+# Use Control+Left and Control+right to jump backwards and forwards.
+"\e[1;5D": backward-word
+"\e[1;5C": forward-word
+

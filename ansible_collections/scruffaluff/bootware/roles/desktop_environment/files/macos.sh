@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 #
-# Configure desktop settings for MacOS.
+# Configure desktop settings for MacOS. To get nested settings in XML format use
+# command `defaults export <domain> -`.
 
 # Exit immediately if a command exits or pipes a non-zero return code.
 #
@@ -111,6 +112,24 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Keyboard settings.
 
+# Switch to keyboard layout without alt character keys.
+input_sources="$(
+  defaults read com.apple.inputsources.plist AppleEnabledThirdPartyInputSources ||
+    echo 'Missing Domain'
+)"
+if ! expr "${input_sources}" : '.*no_alt_characters.*' > /dev/null; then
+  defaults write com.apple.inputsources.plist AppleEnabledThirdPartyInputSources -array-add '
+    <dict>
+      <key>InputSourceKind</key>
+      <string>Keyboard Layout</string>
+      <key>KeyboardLayout ID</key>
+      <integer>5000</integer>
+      <key>KeyboardLayout Name</key>
+      <string>no_alt_characters</string>
+    </dict>
+  '
+fi
+
 # Change move workspace left keybinding to Ctrl+Option+J.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
@@ -169,10 +188,11 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
     </dict>
   </dict>
 '
-# Activate keyboard shortcut changes.
-/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
 # TextEdit settings.
 
 # Save files to plain text by default.
 defaults write com.apple.textedit RichText -bool false
+
+# Activate keyboard shortcut changes.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u

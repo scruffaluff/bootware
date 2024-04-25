@@ -14,13 +14,14 @@
     name: gitui
   when: ansible_system == "FreeBSD"
 
-- name: Install GitUI for Linux
-  ansible.builtin.package:
-    name: gitui
-  become: true
-  ignore_errors: true
-  register: gitui_linux
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+# TODO: Renable when Fzf package in most distributions reaches version 0.25.0.
+# - name: Install GitUI for Linux
+#   ansible.builtin.package:
+#     name: gitui
+#   become: true
+#   ignore_errors: true
+#   register: gitui_linux
+#   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest GitUI version for Linux
   ansible.builtin.uri:
@@ -28,18 +29,14 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/gitui.json
   register: gitui_formula
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 # GitUI cannot download to /tmp after several other roles have been executed.
 - name: Create temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: gitui_temp
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
@@ -49,14 +46,12 @@
     src: >-
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
-      gitui_env[system_architecture] }}.tar.gz
+      gitui_arch[system_architecture] }}.tar.gz
   vars:
-    gitui_env:
-      amd64: musl
+    gitui_arch:
+      amd64: x86_64
       arm64: aarch64
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -66,9 +61,7 @@
     remote_src: true
     src: "{{ gitui_temp.path }}/gitui"
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gitui_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
   become: true

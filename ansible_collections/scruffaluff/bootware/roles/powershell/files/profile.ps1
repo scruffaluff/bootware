@@ -298,6 +298,11 @@ If ($_Tty) {
     Import-Module SSHCompletion -ErrorAction SilentlyContinue
 }
 
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+$Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
+
 # Rust settings.
 
 # Add Rust debugger aliases.

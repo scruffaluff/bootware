@@ -300,6 +300,7 @@ alias procs 'procs --theme light'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 alias pudb 'python3 -m pip install --quiet pudb && python3 -m pudb'
+alias pyi "python3 -i $HOME/.pyrc.py"
 
 # Make Poetry create virutal environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT true
@@ -323,6 +324,11 @@ prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 if type -q pyenv
     pyenv init - | source
 end
+
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+set --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # Rust settings.
 
