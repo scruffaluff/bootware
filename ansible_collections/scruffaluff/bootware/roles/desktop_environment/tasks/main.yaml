@@ -15,6 +15,13 @@
   become: true
   when: ansible_system == "Linux" and gnome_desktop
 
+- name: Add clipboard commands for Linux
+  ansible.builtin.package:
+    name: wl-clipboard
+  become: true
+  failed_when: false
+  when: ansible_system == "Linux"
+
 - name: Install desktop management dependencies for MacOS
   become: true
   become_user: "{{ user_id }}"
@@ -26,6 +33,20 @@
   community.windows.win_scoop:
     name: powertoys
   when: ansible_system == "Win32NT"
+
+# Custom keyboard layout disable special "alt" characters that interfere with
+# "alt" keybindings. Soluation was taken from
+# https://stackoverflow.com/a/16019737.
+- name: Copy keyboard layout for MacOS
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/Library/Keyboard Layouts/no_alt_characters.keylayout"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: no_alt_characters.keylayout
+  become: true
+  when: ansible_system == "Darwin"
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
@@ -42,13 +63,6 @@
 - name: Change desktop settings for Windows
   ansible.builtin.script: windows.ps1
   when: ansible_system == "Win32NT"
-
-- name: Add clipboard commands for Linux
-  ansible.builtin.package:
-    name: wl-clipboard
-  become: true
-  failed_when: false
-  when: ansible_system == "Linux"
 
 ##### Distribution specific desktop setting overrides. #####
 

@@ -51,12 +51,16 @@ user_pref("extensions.formautofill.creditCards.enabled", false);
 user_pref("media.autoplay.blocking_policy", 2);
 // Allow DRM protected content to be played.
 user_pref("media.eme.enabled", true);
+// Prevent "add application for mailto links" popup.
+user_pref("network.protocol-handler.external.mailto", false);
 // Prevent sites from asking to send notifications.
 user_pref("permissions.default.desktop-notification", 2);
 // Prevent sites from asking for location.
 user_pref("permissions.default.geo", 2);
 // Prevent sites from asking to connect to virtual reality devices.
 user_pref("permissions.default.xr", 2);
+// Clear downloads list on browser close.
+user_pref("privacy.clearOnShutdown.downloads", true);
 // Send sites do not track header in HTTP requests.
 user_pref("privacy.donottrackheader.enabled", true);
 // Send sites no consent message to selling personal information.

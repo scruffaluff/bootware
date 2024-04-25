@@ -240,6 +240,11 @@ if [[ -x "$(command -v pyenv)" ]]; then
   fi
 fi
 
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+export RIPGREP_CONFIG_PATH="${HOME}/.ripgreprc"
+
 # Rust settings.
 
 # Add Rust debugger aliases.

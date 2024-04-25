@@ -325,6 +325,11 @@ if type -q pyenv
     pyenv init - | source
 end
 
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+set --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
+
 # Rust settings.
 
 # Add Rust debugger aliases.

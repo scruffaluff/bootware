@@ -23,3 +23,22 @@
   community.windows.win_scoop:
     name: ripgrep
   when: ansible_system == "Win32NT"
+
+- name: Copy Ripgrep settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: .ripgreprc
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Ripgrep settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    owner: "{{ user_id }}"
+    src: .ripgreprc
+  when: ansible_system == "Win32NT"
