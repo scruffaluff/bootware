@@ -284,6 +284,7 @@
     "tests": ["qsv --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
+  { "name": "readline" },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   {

@@ -49,6 +49,25 @@
     name: lsd
   when: ansible_system == "Win32NT"
 
+- name: Copy Ls colors file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ls_colors"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: .ls_colors
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Ls colors file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.ls_colors"
+    force: true
+    owner: "{{ user_id }}"
+    src: .ls_colors
+  when: ansible_system == "Win32NT"
+
 - name: Create Lsd configuration directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"

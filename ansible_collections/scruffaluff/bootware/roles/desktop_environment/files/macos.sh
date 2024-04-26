@@ -24,7 +24,7 @@ defaults write com.apple.WindowManager GloballyEnabled -bool false
 # Prevent accent character popup when holding down a key.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-# Dock settings.
+# Dock and menu bar settings.
 
 # Set dock to autohide.
 defaults write com.apple.dock autohide -bool true
@@ -32,6 +32,8 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 0
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
+# Remove keyboard settings from menu bar.
+defaults write com.apple.TextInputMenu visible -bool false
 
 # File extension settings.
 

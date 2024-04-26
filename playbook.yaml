@@ -796,6 +796,17 @@
         - never
         - rclone
 
+    - name: Install Readline configuration
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.readline
+      tags:
+        - container
+        - desktop
+        - readline
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Restic backup tool
       ansible.builtin.import_role:
         name: scruffaluff.bootware.restic

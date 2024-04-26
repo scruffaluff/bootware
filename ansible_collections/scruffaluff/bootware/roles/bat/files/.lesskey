@@ -6,3 +6,6 @@ k forw-line
 K forw-line-force
 l back-line
 L back-line-force
+
+#env
+LESS = --ignore-case
