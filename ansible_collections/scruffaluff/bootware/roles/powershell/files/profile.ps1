@@ -32,28 +32,28 @@ Function export($Key, $Value) {
 
 Function pkill() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Stop-Process -Force -Name $(_GetParameters $Args $ArgIdx)
+        Stop-Process -Force -Name "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function pgrep() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Get-Process $(_GetParameters $Args $ArgIdx)
+        Get-Process "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function rmf() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Remove-Item -Force -Recurse $(_GetParameters $Args $ArgIdx)
+        Remove-Item -Force -Recurse "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function which() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Get-Command $(_GetParameters $Args $ArgIdx) |
+        Get-Command "$(_GetParameters $Args $ArgIdx)" |
             Select-Object -ExpandProperty Definition
         $ArgIdx += 1
     }
@@ -63,7 +63,7 @@ Function which() {
 
 Function PrependPaths() {
     While ($ArgIdx -LT $Args[0].Count) {
-        $Folder = $(_GetParameters $Args $ArgIdx)
+        $Folder = "$(_GetParameters $Args $ArgIdx)"
         If (
             (Test-Path -Path $Folder -PathType Container) -And `
             (-Not ($Env:Path -Like "*$Folder*"))
@@ -317,16 +317,9 @@ If ($_Tty) {
         Invoke-Expression (&starship init powershell)
     }
     Else {
-        # Only PowerShell 7 and above support unicode characters.
-        If ($PSVersionTable.PSVersion.Major -GE 7) {
-            Function Prompt {
-                "`r`n$Env:USER at $Env:COMPUTERNAME in $(Get-Location)`r`n❯ "
-            }
-        }
-        Else {
-            Function Prompt {
-                "`r`n$Env:USER at $Env:COMPUTERNAME in $(Get-Location)`r`n> "
-            }
+        # Warning: PowerShell 5 does not support writing unicode characters.
+        Function Prompt {
+            "`r`n$Env:USER at $Env:COMPUTERNAME in $(Get-Location)`r`n> "
         }
     }
 }

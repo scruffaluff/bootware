@@ -1,6 +1,6 @@
 BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
-    . "$Bootware"
+    . $Bootware
 
     Mock FindConfigPath {
         Return 'C:\Users\Administrator\.bootware\config.yaml'
@@ -31,7 +31,7 @@ Describe 'Bootstrap' {
             + "--tags desktop --user $Env:UserName " `
             + '--start-at-task Install Deno for FreeBSD'
 
-        $Actual = "$(& "$Bootware" bootstrap --start-at-role deno --playbook "$Playbook")"
+        $Actual = "$(& $Bootware bootstrap --start-at-role deno --playbook $Playbook)"
         $Actual | Should -Be $Expected
     }
 
@@ -44,7 +44,7 @@ Describe 'Bootstrap' {
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
             + "--user $Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/playbook.yaml)"
+        $Actual = "$(& $Bootware bootstrap --playbook C:/Fake\path/repo/playbook.yaml)"
         $Actual | Should -Be $Expected
     }
 
@@ -57,7 +57,7 @@ Describe 'Bootstrap' {
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --debug"
 
-        $Actual = "$(& "$Bootware" bootstrap --debug --playbook `
+        $Actual = "$(& $Bootware bootstrap --debug --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
         $Actual | Should -Be $Expected
     }
@@ -71,7 +71,7 @@ Describe 'Bootstrap' {
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook `
+        $Actual = "$(& $Bootware bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
         $Actual | Should -Be $Expected
     }
@@ -85,7 +85,7 @@ Describe 'Bootstrap' {
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags fd,go --user $Env:UserName --timeout 60"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook `
+        $Actual = "$(& $Bootware bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python,rust --timeout 60 `
             --tags fd,go)"
         $Actual | Should -Be $Expected

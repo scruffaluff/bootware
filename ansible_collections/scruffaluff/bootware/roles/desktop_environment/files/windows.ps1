@@ -121,7 +121,7 @@ $ContextKeys = @(
 )
 
 ForEach ($ContextKey In $ContextKeys) {
-    If (Test-Path "$ContextKey") {
-        Remove-Item -Force -Recurse -Path "$ContextKey"
+    If (Test-Path $ContextKey) {
+        Remove-Item -Force -Recurse -Path $ContextKey
     }
 }
