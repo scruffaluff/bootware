@@ -59,7 +59,7 @@ Run this script from an administrator console or execute with the '--user' flag.
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -UseBasicParsing -Uri "$SrcURL" -OutFile "$DstFile"
+    Invoke-WebRequest -UseBasicParsing -Uri $SrcURL -OutFile $DstFile
 }
 
 # Print error message and exit script with usage error code.
@@ -77,8 +77,8 @@ Function InstallCompletion($Version) {
         "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
     )
     ForEach ($Path In $Paths) {
-        New-Item -Force -ItemType Directory -Path "$Path" | Out-Null
-        DownloadFile "$PowerShellURL" "$Path/BootwareCompletion.psm1"
+        New-Item -Force -ItemType Directory -Path $Path | Out-Null
+        DownloadFile $PowerShellURL "$Path/BootwareCompletion.psm1"
     }
 }
 
@@ -93,7 +93,7 @@ Function IsAdministrator {
 # Print log message to stdout if logging is enabled.
 Function Log($Message) {
     If (-Not "$Env:BOOTWARE_NOLOG") {
-        Write-Output "$Message"
+        Write-Output $Message
     }
 }
 
@@ -125,7 +125,7 @@ Function Main() {
         }
     }
 
-    CheckEnvironment "$Target"
+    CheckEnvironment $Target
     $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
     If ($Target -Eq 'User') {
         $Dest = "$Env:AppData/Bootware/bootware.ps1"
@@ -134,23 +134,23 @@ Function Main() {
         $Dest = 'C:/Program Files/Bootware/bootware.ps1'
     }
 
-    $DestDir = Split-Path -Path "$Dest" -Parent
+    $DestDir = Split-Path -Path $Dest -Parent
     # Explicit path update needed, since SetEnvironmentVariable does not seem to
     # instantly take effect.
-    $Env:Path = "$DestDir" + ";$Env:Path"
+    $Env:Path = $DestDir + ";$Env:Path"
 
-    $Path = [Environment]::GetEnvironmentVariable('Path', "$Target")
+    $Path = [Environment]::GetEnvironmentVariable('Path', $Target)
     If (-Not ($Path -Like "*$DestDir*")) {
         [System.Environment]::SetEnvironmentVariable(
-            'Path', "$DestDir" + ";$Path", "$Target"
+            'Path', $DestDir + ";$Path", $Target
         )
     }
 
     Log 'Installing Bootware...'
 
-    New-Item -Force -ItemType Directory -Path "$DestDir" | Out-Null
-    DownloadFile "$Source" "$Dest"
-    InstallCompletion "$Version"
+    New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
+    DownloadFile $Source $Dest
+    InstallCompletion $Version
     Log "Installed $(bootware --version)."
 }
 

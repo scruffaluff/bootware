@@ -32,28 +32,28 @@ Function export($Key, $Value) {
 
 Function pkill() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Stop-Process -Force -Name $(_GetParameters $Args $ArgIdx)
+        Stop-Process -Force -Name "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function pgrep() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Get-Process $(_GetParameters $Args $ArgIdx)
+        Get-Process "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function rmf() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Remove-Item -Force -Recurse $(_GetParameters $Args $ArgIdx)
+        Remove-Item -Force -Recurse "$(_GetParameters $Args $ArgIdx)"
         $ArgIdx += 1
     }
 }
 
 Function which() {
     While ($ArgIdx -LT $Args[0].Count) {
-        Get-Command $(_GetParameters $Args $ArgIdx) |
+        Get-Command "$(_GetParameters $Args $ArgIdx)" |
             Select-Object -ExpandProperty Definition
         $ArgIdx += 1
     }
@@ -63,9 +63,9 @@ Function which() {
 
 Function PrependPaths() {
     While ($ArgIdx -LT $Args[0].Count) {
-        $Folder = $(_GetParameters $Args $ArgIdx)
+        $Folder = "$(_GetParameters $Args $ArgIdx)"
         If (
-            (Test-Path -Path "$Folder" -PathType Container) -And `
+            (Test-Path -Path $Folder -PathType Container) -And `
             (-Not ($Env:Path -Like "*$Folder*"))
         ) {
             Set-Content Env:Path "$Folder;$Env:Path"
@@ -91,6 +91,9 @@ Set-Alias -Name touch -Value New-Item
 # Do not enable Vi mode command line edits. Will disable functionality.
 If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Import-Module PSReadLine
+
+    # Disable sounds for errors.
+    Set-PSReadLineOption -BellStyle None
 
     # Use only spaces as word boundaries.
     Set-PSReadLineOption -WordDelimiters ' /\'
@@ -120,6 +123,27 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
     # Add Fish style keybindings.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
+        If ($Env:PAGER) {
+            $Pager = $Env:PAGER
+        }
+        Else {
+            $PAGER = 'less'
+        }
+
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+
+        $StripLine = $Line -Replace " 2>&1 `\| $Pager`$", ''
+        If ($StripLine.Length -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
+        }
+        Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line 2>&1 | $Pager")
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Alt+s -ScriptBlock {
         $Line = $Null
         $Cursor = $Null
@@ -128,7 +152,7 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
         $StripLine = $Line -Replace '^sudo ', ''
         If ($StripLine.Length -LT $Line.Length) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$StripLine")
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
         }
         Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
@@ -155,7 +179,7 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
-        Set-Clipboard "$Line"
+        Set-Clipboard $Line
     }
 
     # Add history based autocompletion to arrow keys.
@@ -181,21 +205,6 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
         # PSStyle requires ANSI color codes and double quotes.
         $PSStyle.FileInfo.Directory = "`e[34;1m"
-    }
-
-    # Disable sounds for errors.
-    Set-PSReadLineOption -BellStyle None
-
-    # Setup Fzf PowerShell integration if available.
-    #
-    # Fzf PowerShell integration depends on PSReadLine being activated first.
-    If (Get-Module -ListAvailable -Name PsFzf) {
-        Import-Module PsFzf
-
-        # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
-        Set-PsFzfOption `
-            -PSReadlineChordProvider 'Ctrl+f' `
-            -PSReadlineChordReverseHistory 'Ctrl+r'
     }
 }
 
@@ -236,12 +245,28 @@ $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
 $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 
-# Add inode preview to Fzf file finder.
-If (
-    (Get-Command bat -ErrorAction SilentlyContinue) -And `
-    (Get-Command lsd -ErrorAction SilentlyContinue)
-) {
-    $Env:FZF_CTRL_T_OPTS = "--preview 'bat --color always --style numbers {} 2> Nul || lsd --tree --depth 1 {} | bat'"
+# Setup Fzf PowerShell integration if available.
+If (($_Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
+    Import-Module PsFzf
+
+    If (Get-Command fd -ErrorAction SilentlyContinue) {
+        $Env:FZF_CTRL_T_COMMAND = 'fd --strip-cwd-prefix'
+    }
+    If (
+        (Get-Command bat -ErrorAction SilentlyContinue) -And `
+        (Get-Command lsd -ErrorAction SilentlyContinue)
+    ) {
+        # PSFzf requires inline code since it cannot lookup profile defined
+        # functions at runtime.
+        $FzfFilePreview = 'bat --color always --line-range :100 --style numbers'
+        $FzfDirPreview = 'lsd --tree --depth 1'
+        $Env:FZF_CTRL_T_OPTS = "--preview 'If (Test-Path -Path {} -PathType Container) { $FzfDirPreview {} } Else { $FzfFilePreview {} }'"
+    }
+
+    # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
+    Set-PsFzfOption `
+        -PSReadlineChordProvider 'Ctrl+f' `
+        -PSReadlineChordReverseHistory 'Ctrl+r'
 }
 
 # Git settings.
@@ -287,8 +312,16 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 $Env:STARSHIP_LOG = 'error'
 
 # Initialize Starship if available.
-If ($_Tty -And (Get-Command starship -ErrorAction SilentlyContinue)) {
-    Invoke-Expression (&starship init powershell)
+If ($_Tty) {
+    If (Get-Command starship -ErrorAction SilentlyContinue) {
+        Invoke-Expression (&starship init powershell)
+    }
+    Else {
+        # Warning: PowerShell 5 does not support writing unicode characters.
+        Function Prompt {
+            "`r`n$Env:USER at $Env:COMPUTERNAME in $(Get-Location)`r`n> "
+        }
+    }
 }
 
 # Secure Shell settings.
@@ -319,7 +352,7 @@ If ($_Tty -And (Get-Command zoxide -ErrorAction SilentlyContinue)) {
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-If ($_Tty -And ("$Env:TERM" -Eq 'alacritty')) {
+If ($_Tty -And ($Env:TERM -Eq 'alacritty')) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal.
     #

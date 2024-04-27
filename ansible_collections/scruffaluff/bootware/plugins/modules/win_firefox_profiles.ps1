@@ -12,11 +12,11 @@ Function ReadIni($File) {
     $Data[$Section] = @{}
 
     Switch -Regex -File $File {
-        "^\[(.+)\]$" {
+        '^\[(.+)\]$' {
             $Section = $Matches[1].Trim()
             $Data[$Section] = @{}
         }
-        "^\s*([^#].+?)\s*=\s*(.*)" {
+        '^\s*([^#].+?)\s*=\s*(.*)' {
             $Name, $Value = $Matches[1..2]
 
             # Skip comments that start with semicolon.
@@ -72,6 +72,6 @@ If ($MyInvocation.InvocationName -NE '.') {
     }
 
     $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
-    $Module = $(DefaultProfile $Module)
+    $Module = "$(DefaultProfile $Module)"
     Write-Output $Module
 }

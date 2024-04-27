@@ -1,7 +1,7 @@
 BeforeAll {
     # Path normalization required for Assert-MockCalled parameter filters.
     $Bootware = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../bootware.ps1")
-    . "$Bootware"
+    . $Bootware
 
     Mock DownloadFile { }
     # Mocking Git appears to not work on Windows.
@@ -16,12 +16,12 @@ BeforeAll {
 
 Describe 'Update' {
     It 'Subcommand help prints message' {
-        $Actual = "$(& "$Bootware" update --help)"
+        $Actual = "$(& $Bootware update --help)"
         $Actual | Should -Match 'Update Bootware to latest version'
     }
 
     It 'Throw error for nonexistant option at end of call' {
-        { & "$Bootware" update -v develop notanoption } |
+        { & $Bootware update -v develop notanoption } |
             Should -Throw "Error: No such option 'notanoption'"
     }
 
@@ -37,7 +37,7 @@ Describe 'Update' {
         $BootwareDir = "$(Split-Path -Parent $Bootware)"
         $Expected = "git -C $BootwareDir/repo pull"
 
-        $Actual = "$(& "$Bootware" update --version main)"
+        $Actual = "$(& $Bootware update --version main)"
         Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
             $DstFile -Eq "$BootwareDir/bootware.ps1" -And
             $SrcURL -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.ps1'

@@ -59,36 +59,6 @@
       - psfzf
   when: ansible_system == "Win32NT"
 
-- name: Download Fzf Bash key bindings file for Unix
-  ansible.builtin.get_url:
-    dest: "{{ user_home }}/.fzf_key_bindings.bash"
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.bash
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Create Fish functions directory for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/functions"
-    state: directory
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Download Fzf Fish key bindings file for Unix
-  ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/fish/functions/fzf_key_bindings.fish"
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.fish
-  become: true
-  when: ansible_system != "Win32NT"
-
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
