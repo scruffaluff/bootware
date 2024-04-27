@@ -135,6 +135,18 @@ export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
 
 # Fzf settings.
 
+# Add path preview to Fzf file finder.
+#
+# Flags:
+#   -d: Check if path is a directory.
+_fzf_path_preview() {
+  if [[ -d "${1}" ]]; then
+    lsd --tree --depth 1 "${1}"
+  else
+    bat --color always --line-range :100 --style numbers "${1}"
+  fi
+}
+
 # Set Fzf solarized light theme.
 _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
@@ -144,11 +156,19 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
-#   -n: Remove keybinding.
+#   -r: Remove keybinding.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
-  source_files "${HOME}/.fzf_key_bindings.bash"
+  eval "$(fzf --bash)"
+
+  if [[ -x "$(command -v fd)" ]]; then
+    export FZF_CTRL_T_COMMAND='fd --strip-cwd-prefix'
+  fi
+  if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
+    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
+  fi
+
   # Change Fzf file search keybinding to Ctrl+F.
   bind -r "\C-t"
   bind -r "\ec"
@@ -265,8 +285,12 @@ export STARSHIP_LOG='error'
 #   -n: Check if the string has nonzero length.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" && -x "$(command -v starship)" ]]; then
-  eval "$(starship init bash)"
+if [[ -n "${_tty}" ]]; then
+  if [[ -x "$(command -v starship)" ]]; then
+    eval "$(starship init bash)"
+  else
+    PS1="\n\u at \h in \w\n❯ "
+  fi
 fi
 
 # TypeScript settings.

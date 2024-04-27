@@ -17,12 +17,12 @@
 #   -n: Check if string is nonempty.
 function _delete_commandline_from_history
     set command (string trim (commandline))
-    if test -n "$command"
-        set results (history search "$command")
+    if test -n $command
+        set results (history search $command)
 
-        if test -n "$results"
+        if test -n $results
             printf '\nFish History Entry Delete\n\n'
-            history delete "$command"
+            history delete $command
             history save
             commandline --function kill-whole-line
         end
@@ -47,8 +47,8 @@ end
 #   -f: Check if file exists and is a regular file.
 function _source_files
     for inode in $argv
-        if test -f "$inode"
-            source "$inode"
+        if test -f $inode
+            source $inode
         end
     end
 end
@@ -59,8 +59,8 @@ end
 #   -f: Check if file exists and is a regular file.
 function _source_bash_files
     for inode in $argv
-        if test -f "$inode"
-            bass source "$inode"
+        if test -f $inode
+            bass source $inode
         end
     end
 end
@@ -72,7 +72,7 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 function edit-history
-    if type -q "$EDITOR"
+    if type -q $EDITOR
         $EDITOR "$HOME/.local/share/fish/fish_history"
     end
 end
@@ -89,8 +89,8 @@ end
 #   -d: Check if path is a directory.
 function prepend_paths
     for inode in $argv
-        if test -d "$inode"; and not contains "$inode" $PATH
-            set --export PATH "$inode" $PATH
+        if test -d $inode; and not contains $inode $PATH
+            set --export PATH $inode $PATH
         end
     end
 end
@@ -133,7 +133,7 @@ set fish_greeting
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -n "$_tty"; and test -f "$HOME/.ls_colors"
+if test -n $_tty; and test -f "$HOME/.ls_colors"
     set --export LS_COLORS (cat "$HOME/.ls_colors")
 end
 
@@ -162,31 +162,31 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Read input until null terminated instead of newline.
-if test -n "$_tty"
-    if test "$_os" = Darwin
+if test -n $_tty
+    if test $_os = Darwin
         function cbcopy
             set --local text
             while read -z line
-                if test -n "$text"
+                if test -n $text
                     set
                 else
-                    set text "$line"
+                    set text $line
                 end
             end
-            echo -n "$(printf "%s" "$text")" | pbcopy
+            echo -n (printf '%s' $text) | pbcopy
         end
         alias cbpaste pbpaste
     else if type -q wl-copy
         function cbcopy
             set --local text
             while read -z line
-                if test -n "$text"
+                if test -n $text
                     set
                 else
-                    set text "$line"
+                    set text $line
                 end
             end
-            echo -n "$(printf "%s" "$text")" | wl-copy
+            echo -n (printf '%s' $text) | wl-copy
         end
         alias cbpaste wl-paste
     end
@@ -211,35 +211,39 @@ set --export DOCKER_CLI_HINTS false
 
 # Fzf settings.
 
+# Add path preview to Fzf file finder.
+#
+# Flags:
+#   -d: Check if path is a directory.
+#   -q: Only check for exit status by supressing output.
+function _fzf_path_preview
+    if test -d $argv[1]
+        lsd --tree --depth 1 $argv[1]
+    else
+        bat --color always --line-range :100 --style numbers $argv[1]
+    end
+end
+
 # Set Fzf solarized light theme.
 set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
 set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 
-# Add inode preview to Fzf file finder.
-#
-# Flags:
-#   -C: Turn on color.
-#   -L 1: Descend only 1 directory level deep.
-#   -n: Check if string is nonempty.
-#   -q: Only check for exit status by supressing output.
-function _fzf_inode_preview
-    bat --color always --style numbers $argv 2>/dev/null
-    if test $status != 0
-        lsd --tree --depth 1 $argv 2>/dev/null
-    end
-end
-if test -n "$_tty"; and type -q bat; and type -q lsd
-    set --export FZF_CTRL_T_OPTS "--preview '_fzf_inode_preview {}'"
-end
-
 # Load Fzf keybindings if available.
 #
 # Flags:
-#   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -n "$_tty"; and test -f "$HOME/.config/fish/functions/fzf_key_bindings.fish"
-    fzf_key_bindings
+#   -q: Only check for exit status by supressing output.
+if test -n $_tty; and type -q fzf
+    fzf --fish | source
+
+    if type -q fd
+        set --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix'
+    end
+    if type -q bat; and type -q lsd
+        set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
+    end
+
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
     bind --erase \ct
@@ -308,9 +312,9 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT true
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
-if test "$_os" = Darwin
+if test $_os = Darwin
     set --export OPENBLAS "$_brew_prefix/opt/openblas"
-    prepend_paths "$OPENBLAS"
+    prepend_paths $OPENBLAS
 end
 
 # Add Pyenv binaries to system path.
@@ -349,8 +353,14 @@ set --export STARSHIP_LOG error
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n "$_tty"; and type -q starship
-    starship init fish | source
+if test -n $_tty
+    if type -q starship
+        starship init fish | source
+    else
+        function fish_prompt
+            printf '\n%s at %s in %s\n❯ ' $USER (prompt_hostname) (prompt_pwd)
+        end
+    end
 end
 
 # TypeScript settings.
@@ -388,14 +398,14 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n "$_tty"; and type -q zoxide
+if test -n $_tty; and type -q zoxide
     zoxide init --cmd cd fish | source
 end
 
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if test -n "$_tty"; and test "$TERM" = alacritty
+if test -n $_tty; and test $TERM = alacritty
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -407,7 +417,7 @@ if test -n "$_tty"; and test "$TERM" = alacritty
     # Flags:
     #   -n: Check if string is nonempty.
     #   -q: Only check for exit status by supressing output.
-    if type -q zellij; and not _ssh_session; and test "$LOGNAME" = "$USER"
+    if type -q zellij; and not _ssh_session; and test $LOGNAME = $USER
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
