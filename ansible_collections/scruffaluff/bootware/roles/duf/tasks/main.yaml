@@ -1,12 +1,4 @@
 ---
-- name: Get latest Duf version for Linux
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/duf.json
-  register: duf_formula
-  when: ansible_pkg_mgr in ["apt", "zypper"]
-
 - name: Install Duf for Alpine
   become: true
   community.general.apk:
@@ -15,24 +7,6 @@
     state: latest
     update_cache: true
   when: ansible_pkg_mgr == "apk"
-
-# On some Debian systems, Duf is available as an APT package.
-- name: Install Duf for Debian
-  ansible.builtin.apt:
-    name: duf
-  become: true
-  ignore_errors: true
-  register: duf_apt
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Duf for Debian
-  ansible.builtin.apt:
-    deb: >-
-      https://github.com/muesli/duf/releases/download/v{{
-      duf_formula.json.versions.stable }}/duf_{{
-      duf_formula.json.versions.stable }}_linux_{{ system_architecture }}.deb
-  become: true
-  when: ansible_pkg_mgr == "apt" and duf_apt is failed
 
 - name: Install Duf for FreeBSD
   become: true
@@ -44,9 +18,49 @@
   ansible.builtin.package:
     name: duf
   become: true
+  ignore_errors: true
+  register: duf_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Duf version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/duf.json
+  register: duf_formula
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt",
-    "zypper"]
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    failed
+
+- name: Download Duf for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/muesli/duf/releases/download/v{{
+      duf_formula.json.versions.stable }}/duf_{{
+      duf_formula.json.versions.stable }}_linux_{{ duf_arch[system_architecture]
+      }}.tar.gz
+  vars:
+    duf_arch:
+      amd64: x86_64
+      arm64: arm64
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    failed
+
+- name: Install Duf for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/duf
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/duf
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    failed
 
 - name: Install Duf for MacOS
   become: true
@@ -54,16 +68,6 @@
   community.general.homebrew:
     name: duf
   when: ansible_system == "Darwin"
-
-- name: Install Duf for Suse
-  become: true
-  community.general.zypper:
-    disable_gpg_check: true
-    name: >-
-      https://github.com/muesli/duf/releases/download/v{{
-      duf_formula.json.versions.stable }}/duf_{{
-      duf_formula.json.versions.stable }}_linux_{{ system_architecture }}.rpm
-  when: ansible_pkg_mgr == "zypper"
 
 - name: Install Duf for Windows
   community.windows.win_scoop:

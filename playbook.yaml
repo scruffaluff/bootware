@@ -225,7 +225,6 @@
       tags:
         - desktop
         - docker
-        - server
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -393,7 +392,6 @@
         - desktop
         - git
         - server
-        - sysadmin
         - vcs
         - wsl
 
@@ -421,7 +419,6 @@
         - desktop
         - gitui
         - server
-        - sysadmin
         - vcs
         - wsl
 
@@ -848,7 +845,6 @@
         - desktop
         - scc
         - server
-        - sysadmin
         - wsl
 
     - name: Install SD find and replace tool
@@ -878,7 +874,6 @@
         - server
         - shell
         - shellcheck
-        - sysadmin
         - wsl
 
     - name: Install Shfmt shell formatter
@@ -890,7 +885,6 @@
         - server
         - shell
         - shfmt
-        - sysadmin
         - wsl
 
     - name: Install Sonic Pi music coding environment

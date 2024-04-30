@@ -83,6 +83,8 @@ $_Tty = -Not [System.Console]::IsOutputRedirected
 
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
+Set-Alias -Name poweroff -Value Stop-Computer
+Set-Alias -Name reboot -Value Restart-Computer
 Set-Alias -Name rsync -Value scp
 Set-Alias -Name touch -Value New-Item
 

@@ -1,4 +1,20 @@
 ---
+- name: Check if Less is installed for Linux
+  ansible.builtin.shell:
+    cmd: command -v less
+    executable: "{{ bash_executable }}"
+  become: true
+  changed_when: false
+  ignore_errors: true
+  register: bat_less_linux
+  when: ansible_system == "Linux"
+
+- name: Install Less for Linux
+  ansible.builtin.package:
+    name: less
+  become: true
+  when: ansible_system == "Linux" and bat_less_linux is failed
+
 - name: Install Bat for FreeBSD
   become: true
   community.general.pkgng:
@@ -9,11 +25,71 @@
 
 - name: Install Bat for Linux
   ansible.builtin.package:
-    name:
-      - bat
-      - less
+    name: bat
   become: true
+  ignore_errors: true
+  register: bat_linux
   when: ansible_system == "Linux"
+
+- name: Get latest Bat version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/bat.json
+  register: bat_formula
+  when: ansible_system == "Linux" and bat_linux is failed
+
+- name: Download Bat for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/sharkdp/bat/releases/download/v{{
+      bat_formula.json.versions.stable }}/bat-v{{
+      bat_formula.json.versions.stable }}-{{ bat_arch
+      }}-unknown-linux-musl.tar.gz
+  when: ansible_system == "Linux" and bat_linux is failed
+
+- name: Install Bat for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/bat
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
+      }}-unknown-linux-musl/bat
+  become: true
+  when: ansible_system == "Linux" and bat_linux is failed
+
+- name: Create shell completion directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and bat_linux is failed
+
+- name: Install Bat shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
+      }}-unknown-linux-musl/autocomplete/bat.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/bat"
+      shell: bash
+    - dest: "{{ fish_completion }}/bat.fish"
+      shell: fish
+  when: ansible_system == "Linux" and bat_linux is failed
 
 # Debian Bat package installs Bat as command "batcat" since another package
 # installs the command "bat".
