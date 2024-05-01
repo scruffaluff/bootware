@@ -45,7 +45,7 @@
     remote_src: true
     src: /tmp/zoxide
   become: true
-  when: ansible_system == "Linux" and zoxide_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Create shell completion directories for Linux
   ansible.builtin.file:

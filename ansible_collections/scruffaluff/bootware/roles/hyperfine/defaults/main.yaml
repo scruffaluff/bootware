@@ -1,0 +1,5 @@
+---
+hyperfine_arch_:
+  amd64: x86_64
+  arm64: aarch64
+hyperfine_arch: "{{ hyperfine_arch_[system_architecture] }}"

@@ -1,0 +1,5 @@
+---
+ripgrep_arch_:
+  amd64: x86_64
+  arm64: aarch64
+ripgrep_arch: "{{ ripgrep_arch_[system_architecture] }}"

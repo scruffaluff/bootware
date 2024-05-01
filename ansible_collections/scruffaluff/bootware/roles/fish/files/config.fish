@@ -18,7 +18,8 @@
 function _delete_commandline_from_history
     set command (string trim (commandline))
     if test -n $command
-        set results (history search $command)
+        # Quote history search to make results one line.
+        set results "(history search $command)"
 
         if test -n $results
             printf '\nFish History Entry Delete\n\n'
@@ -134,7 +135,7 @@ set fish_greeting
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
 if test -n $_tty; and test -f "$HOME/.ls_colors"
-    set --export LS_COLORS (cat "$HOME/.ls_colors")
+    set --export LS_COLORS "(cat "$HOME/.ls_colors")"
 end
 
 # Add directories to system path that are not always included.
@@ -150,7 +151,9 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
-    bind \cD _delete_commandline_from_history
+    bind \cd _delete_commandline_from_history
+    bind \eZ redo
+    bind \ez undo
 end
 
 # Add unified clipboard aliases.

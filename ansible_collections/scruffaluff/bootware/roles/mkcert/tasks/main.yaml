@@ -10,6 +10,7 @@
       apk: nss-tools
       apt: libnss3-tools
       dnf: nss-tools
+      opkg: nss-utils
       pacman: nss
       zypper: mozilla-nss
   when: ansible_system == "Linux"

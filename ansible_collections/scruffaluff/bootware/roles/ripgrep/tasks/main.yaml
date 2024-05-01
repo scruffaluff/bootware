@@ -8,9 +8,42 @@
 - name: Install Ripgrep for Linux
   ansible.builtin.package:
     name: ripgrep
-    state: present
   become: true
+  ignore_errors: true
+  register: ripgrep_linux
   when: ansible_system == "Linux"
+
+- name: Get latest Ripgrep version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ripgrep.json
+  register: ripgrep_formula
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Download Ripgrep for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/BurntSushi/ripgrep/releases/download/{{
+      ripgrep_formula.json.versions.stable }}/ripgrep-{{
+      ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl.tar.gz
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Install Ripgrep for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/ripgrep
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl/rg
+  become: true
+  when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for MacOS
   become: true
@@ -42,3 +75,31 @@
     owner: "{{ user_id }}"
     src: .ripgreprc
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Install Ripgrep shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl/complete/rg.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/rg"
+      shell: bash
+    - dest: "{{ fish_completion }}/rg.fish"
+      shell: fish
+  when: ansible_system == "Linux" and ripgrep_linux is failed

@@ -5,7 +5,7 @@
     name: vault
   when: ansible_system == "FreeBSD"
 
-# Do not use yet. Vault has permission issues on Arch Linux.
+# TODO: Enable when Vault fixes permission issues on Arch Linux.
 # - name: Install Vault for Linux
 #   ansible.builtin.package:
 #     name: vault

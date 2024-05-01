@@ -55,3 +55,31 @@
   community.windows.win_scoop:
     name: xh
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and xh_linux is failed
+
+- name: Install Xh shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
+      }}-unknown-linux-musl/completions/xh.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/xh"
+      shell: bash
+    - dest: "{{ fish_completion }}/xh.fish"
+      shell: fish
+  when: ansible_system == "Linux" and xh_linux is failed

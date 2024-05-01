@@ -1,8 +1,11 @@
 ---
-- name: Install Git Delta for Alpine
+- name: Install Git for Alpine
   become: true
   community.general.apk:
-    name: delta
+    name:
+      - delta
+      - git
+      - git-lfs
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Git for FreeBSD
@@ -20,7 +23,7 @@
       - git
       - git-lfs
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Get latest Git Delta version for Linux
   ansible.builtin.uri:
@@ -28,7 +31,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/git-delta.json
   register: git_delta_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
@@ -40,7 +43,7 @@
       git_delta_formula.json.versions.stable }}/delta-{{
       git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ git_delta_env }}.tar.gz
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
@@ -52,7 +55,7 @@
       /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ git_delta_env }}/delta
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install Git for MacOS
   become: true
@@ -63,6 +66,15 @@
       - git-delta
       - git-lfs
   when: ansible_system == "Darwin"
+
+- name: Install Git for OpenWrt
+  community.general.opkg:
+    name:
+      - git
+      - git-http
+      - git-lfs
+  become: true
+  when: ansible_pkg_mgr == "opkg"
 
 - name: Install Git for Windows
   community.windows.win_scoop:

@@ -48,19 +48,20 @@
           Please log out of your current user session and log back in. Then
           execute this role again.
 
-    - name: Configure Caffeine shell extension for GNOME desktops
-      ansible.builtin.shell:
-        cmd: >-
-          gnome-extensions --schemadir
-          "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas"
-          set org.gnome.shell.extensions.caffeine show-notifications false
-        executable: "{{ bash_executable }}"
-      become: true
-      become_user: "{{ user_id }}"
-      # Command does not provide stdout information to determine a change.
-      changed_when: true
-
 - name: Install Caffeine for Windows
   community.windows.win_scoop:
     name: caffeine
   when: ansible_system == "Win32NT"
+
+- name: Configure Caffeine shell extension for GNOME desktops
+  ansible.builtin.shell:
+    cmd: >-
+      gsettings --schemadir
+      "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas"
+      set org.gnome.shell.extensions.caffeine show-notifications false
+    executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
+  when: ansible_system == "Linux" and gnome_desktop
