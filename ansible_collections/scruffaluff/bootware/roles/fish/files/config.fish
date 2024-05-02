@@ -18,10 +18,9 @@
 function _delete_commandline_from_history
     set command (string trim (commandline))
     if test -n $command
-        set results (history search $command)
+        set results "$(history search $command)"
 
-        # Quoting 'results' makes it a one line string for test.
-        if test -n "$results"
+        if test -n $results
             printf '\nFish History Entry Delete\n\n'
             history delete $command
             history save
@@ -135,7 +134,7 @@ set fish_greeting
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
 if test -n $_tty; and test -f "$HOME/.ls_colors"
-    set --export LS_COLORS (string trim (cat "$HOME/.ls_colors"))
+    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
 end
 
 # Add directories to system path that are not always included.
@@ -170,26 +169,28 @@ if test -n $_tty
         function cbcopy
             set --local text
             while read -z line
-                if test -n $text
+                # Variable 'text' needs quotes to send test a one line string.
+                if test -n "$text"
                     set
                 else
                     set text $line
                 end
             end
-            echo -n (printf '%s' $text) | pbcopy
+            echo -n "$(printf '%s' $text)" | pbcopy
         end
         alias cbpaste pbpaste
     else if type -q wl-copy
         function cbcopy
             set --local text
             while read -z line
-                if test -n $text
+                # Variable 'text' needs quotes to send test a one line string.
+                if test -n "$text"
                     set
                 else
                     set text $line
                 end
             end
-            echo -n (printf '%s' $text) | wl-copy
+            echo -n "$(printf '%s' $text)" | wl-copy
         end
         alias cbpaste wl-paste
     end
