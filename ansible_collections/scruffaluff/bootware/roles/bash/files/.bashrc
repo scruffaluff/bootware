@@ -295,6 +295,10 @@ fi
 
 # TypeScript settings.
 
+# Add Bun binaries to system path.
+export BUN_INSTALL="${HOME}/.bun"
+prepend_paths "${BUN_INSTALL}/bin"
+
 # Add Deno binaries to system path.
 export DENO_INSTALL="${HOME}/.deno"
 prepend_paths "${DENO_INSTALL}/bin"
@@ -322,6 +326,24 @@ prepend_paths '/usr/share/code/bin'
 # Add Wasmtime binaries to system path.
 export WASMTIME_HOME="${HOME}/.wasmtime"
 prepend_paths "${WASMTIME_HOME}/bin"
+
+# Yazi settings.
+
+# Yazi wrapper to change directory on program exit.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+yz() {
+  local cwd='' tmp=''
+  tmp="$(mktemp)"
+  yazi --cwd-file "${tmp}" "$@"
+  cwd="$(cat "${tmp}")"
+  if [[ -n "${cwd}" && "${cwd}" != "${PWD}" ]]; then
+    # shellcheck disable=SC2164
+    cd "${cwd}"
+  fi
+  rm "${tmp}"
+}
 
 # User settings.
 

@@ -18,8 +18,7 @@
 function _delete_commandline_from_history
     set command (string trim (commandline))
     if test -n $command
-        # Quote history search to make results one line.
-        set results "(history search $command)"
+        set results (string join (history search $command))
 
         if test -n $results
             printf '\nFish History Entry Delete\n\n'
@@ -99,8 +98,8 @@ end
 # Private convenience variables.
 #
 # Do not use long form flags for uname. They are not supported on MacOS. Command
-# "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
-# and running under an Rosetta 2 emulated terminal.
+# (brew --prefix) will give the incorrect path when sourced on Apple silicon and
+# running under an Rosetta 2 emulated terminal.
 #
 # Flags:
 #   -d: Check if path is a directory.
@@ -135,7 +134,7 @@ set fish_greeting
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
 if test -n $_tty; and test -f "$HOME/.ls_colors"
-    set --export LS_COLORS "(cat "$HOME/.ls_colors")"
+    set --export LS_COLORS (string trim (cat "$HOME/.ls_colors"))
 end
 
 # Add directories to system path that are not always included.
@@ -368,6 +367,10 @@ end
 
 # TypeScript settings.
 
+# Add Bun binaries to system path.
+set --export BUN_INSTALL "$HOME/.bun"
+prepend_paths "$BUN_INSTALL/bin"
+
 # Add Deno binaries to system path.
 set --export DENO_INSTALL "$HOME/.deno"
 prepend_paths "$DENO_INSTALL/bin"
@@ -393,6 +396,22 @@ prepend_paths /usr/share/code/bin
 # Add Wasmtime binaries to system path.
 set --export WASMTIME_HOME "$HOME/.wasmtime"
 prepend_paths "$WASMTIME_HOME/bin"
+
+# Yazi settings.
+
+# Yazi wrapper to change directory on program exit.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function yz
+    set tmp (mktemp)
+    yazi --cwd-file $tmp $argv
+    set cwd (cat $tmp)
+    if test -n $cwd; and test $cwd != $PWD
+        cd $cwd
+    end
+    rm $tmp
+end
 
 # Zoxide settings.
 
