@@ -18,9 +18,10 @@
 function _delete_commandline_from_history
     set command (string trim (commandline))
     if test -n $command
-        set results (string join (history search $command))
+        set results (history search $command)
 
-        if test -n $results
+        # Quoting 'results' makes it a one line string for test.
+        if test -n "$results"
             printf '\nFish History Entry Delete\n\n'
             history delete $command
             history save
