@@ -372,7 +372,7 @@
     "name": "wezterm",
     "tests": {
       "default": ["wezterm --version"],
-      "linux": ["flatpak info org.wezfurlong.wezterm"]
+      "linux": ["weztern --version || flatpak info org.wezfurlong.wezterm"]
     }
   },
   { "name": "window_manager" },

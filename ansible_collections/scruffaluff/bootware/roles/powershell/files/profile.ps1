@@ -351,7 +351,7 @@ Set-Alias -Name rld -Value rust-lldb
 # Yazi wrapper to change directory on program exit.
 Function yz() {
     $Tmp = [System.IO.Path]::GetTempFileName()
-    yazi --cwd-file $Tmp $Args 
+    yazi --cwd-file $Tmp $Args
     $Cwd = "$(Get-Content -Path $Tmp)"
     If (($Cwd) -And ($Cwd -NE $PWD.Path)) {
         Set-Location $Cwd
