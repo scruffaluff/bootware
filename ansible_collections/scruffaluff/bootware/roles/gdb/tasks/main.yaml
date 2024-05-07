@@ -26,16 +26,6 @@
   become: true
   when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install GEF for Unix
-  ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/gef.py"
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/hugsy/gef/main/gef.py
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"]
-
 - name: Copy GDB settings files for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/{{ item.dest }}"
@@ -57,12 +47,6 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config"
     state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Install GEF for Windows
-  ansible.windows.win_get_url:
-    dest: "{{ user_home }}/.config/gef.py"
-    url: https://raw.githubusercontent.com/hugsy/gef/main/gef.py
   when: ansible_system == "Win32NT"
 
 - name: Copy GDB settings files for Windows

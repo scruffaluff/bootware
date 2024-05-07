@@ -52,3 +52,16 @@
   community.windows.win_scoop:
     name: caffeine
   when: ansible_system == "Win32NT"
+
+- name: Configure Caffeine shell extension for GNOME desktops
+  ansible.builtin.shell:
+    cmd: >-
+      gsettings --schemadir
+      "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas"
+      set org.gnome.shell.extensions.caffeine show-notifications false
+    executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
+  when: ansible_system == "Linux" and gnome_desktop

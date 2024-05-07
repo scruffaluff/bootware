@@ -1,21 +1,11 @@
 ---
-# TODO: Integrate once installation becomes stable.
-# - name: Install Yazi for Alpine
-#   become: true
-#   community.general.apk:
-#     name: yazi
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
-
-- name: Get latest Yazi version for Linux
+- name: Get latest Yazi version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Download Yazi for Unix
   ansible.builtin.unarchive:
@@ -25,8 +15,16 @@
     src: >-
       https://github.com/sxyazi/yazi/releases/download/v{{
       yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
-      }}-unknown-linux-gnu.zip
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+      }}-unknown-linux-musl.zip
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Yazi for Linux
+  ansible.builtin.package:
+    name: yazi
+  become: true
+  ignore_errors: true
+  register: yazi_linux
+  when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
   ansible.builtin.copy:
@@ -34,9 +32,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/yazi
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/yazi
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and yazi_linux is failed
 
 - name: Install Yazi for MacOS
   become: true
@@ -60,7 +58,7 @@
     path: "{{ user_home }}/.config/yazi"
     state: directory
   become: true
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
   ansible.builtin.copy:
@@ -75,7 +73,7 @@
     - keymap.toml
     - theme.toml
     - yazi.toml
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directory for Windows
   ansible.windows.win_file:
@@ -105,7 +103,7 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Yazi shell completions for Unix
   ansible.builtin.copy:
@@ -114,12 +112,12 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/completions/yazi.{{ item.shell
-      }}
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/completions/yazi.{{
+      item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
     - dest: "{{ fish_completion }}/yazi.fish"
       shell: fish
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system in ["Darwin", "Linux"]

@@ -83,6 +83,8 @@ $_Tty = -Not [System.Console]::IsOutputRedirected
 
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
+Set-Alias -Name poweroff -Value Stop-Computer
+Set-Alias -Name reboot -Value Restart-Computer
 Set-Alias -Name rsync -Value scp
 Set-Alias -Name touch -Value New-Item
 
@@ -99,6 +101,8 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
+    Set-PSReadLineKeyHandler -Chord Alt+Z -Function Redo
+    Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+w -Function BackwardDeleteWord
@@ -341,6 +345,19 @@ $Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
 # Add Rust debugger aliases.
 Set-Alias -Name rgd -Value rust-gdb
 Set-Alias -Name rld -Value rust-lldb
+
+# Yazi settings.
+
+# Yazi wrapper to change directory on program exit.
+Function yz() {
+    $Tmp = [System.IO.Path]::GetTempFileName()
+    yazi --cwd-file $Tmp $Args
+    $Cwd = "$(Get-Content -Path $Tmp)"
+    If (($Cwd) -And ($Cwd -NE $PWD.Path)) {
+        Set-Location $Cwd
+    }
+    Remove-Item $Tmp
+}
 
 # Zoxide settings.
 

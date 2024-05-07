@@ -23,11 +23,13 @@ tab: menu-complete
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
-# Use Shift+Left and Shift+right to jump backwards and forwards.
+# Use Shift+Left and Shift+Right to jump backwards and forwards.
 "\e[1;2D": backward-word
 "\e[1;2C": forward-word
 
-# Use Control+Left and Control+right to jump backwards and forwards.
+# Use Control+Left and Control+Right to jump backwards and forwards.
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
 
+# Use Alt+Z to undo command line edits.
+"\ez": undo

@@ -5,6 +5,12 @@
     name: shadow
   when: ansible_pkg_mgr == "apk"
 
+- name: Install Shadow for OpenWrt
+  become: true
+  community.general.opkg:
+    name: shadow-usermod
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Install Fish for FreeBSD
   become: true
   community.general.pkgng:
@@ -62,7 +68,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Get installed Fish version
+- name: Get installed Fish version for Unix
   ansible.builtin.command: fish --version
   changed_when: false
   register: fish_version_text

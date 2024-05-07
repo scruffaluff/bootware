@@ -1,4 +1,4 @@
-FROM ubuntu:23.10
+FROM ubuntu:24.04
 
 ARG TARGETARCH
 ARG version=0.8.0

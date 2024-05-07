@@ -72,8 +72,8 @@
 - name: Patch Helix for older Debian
   ansible.builtin.import_tasks: patch.yaml
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
-    failed
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"] and
+    helix_linux is failed
 
 - name: Install Helix for MacOS
   become: true

@@ -78,16 +78,6 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Install LLEF for Unix
-  ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/llef.py"
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/foundryzero/llef/main/llef.py
-  become: true
-  when: ansible_system != "Win32NT"
-
 - name: Copy LLDB settings files for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/{{ item.dest }}"
@@ -109,12 +99,6 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config"
     state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Install LLEF for Windows
-  ansible.windows.win_get_url:
-    dest: "{{ user_home }}/.config/llef.py"
-    url: https://raw.githubusercontent.com/foundryzero/llef/main/llef.py
   when: ansible_system == "Win32NT"
 
 - name: Copy LLDB settings files for Windows

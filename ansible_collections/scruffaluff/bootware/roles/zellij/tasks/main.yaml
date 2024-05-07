@@ -95,7 +95,7 @@
     - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
-- name: Install Zellij shell completions for Unix
+- name: Create Zellij shell completions for Unix
   ansible.builtin.shell:
     cmd: zellij setup --generate-completion {{ item }} > /tmp/zellij.{{ item }}
   become: true

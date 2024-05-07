@@ -1,0 +1,6 @@
+# Dust configuration file.
+#
+# For more information, visit
+# https://github.com/bootandy/dust?tab=readme-ov-file#config-file.
+
+reverse = true

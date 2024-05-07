@@ -15,7 +15,7 @@
       - neofetch
       - rsync
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install utilities for MacOS
   become: true
@@ -26,3 +26,11 @@
       - neofetch
       - rsync
   when: ansible_system == "Darwin"
+
+- name: Install utilities for OpenWrt
+  ansible.builtin.package:
+    name:
+      - htop
+      - rsync
+  become: true
+  when: ansible_pkg_mgr == "opkg"

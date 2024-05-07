@@ -2,6 +2,4 @@
 #
 # For more information, visit https://lldb.llvm.org/index.html.
 
-# command script import ~/.config/llef.py
-
 command script import ~/.config/lldbinit.py

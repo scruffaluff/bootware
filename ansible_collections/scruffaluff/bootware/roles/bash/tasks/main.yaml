@@ -13,7 +13,7 @@
       - bash
       - bash-completion
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
   become: true
@@ -23,6 +23,12 @@
       - bash
       - bash-completion@2
   when: ansible_system == "Darwin"
+
+- name: Install Bash for OpenWrt
+  ansible.builtin.package:
+    name: bash
+  become: true
+  when: ansible_pkg_mgr == "opkg"
 
 - name: Register Bash as a valid login shell
   ansible.builtin.lineinfile:
