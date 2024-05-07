@@ -152,6 +152,15 @@
         - sysadmin
         - wsl
 
+    - name: Install Bun JavaScript and TypeScript runtime
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bun
+      tags:
+        - bun
+        - extras
+        - language
+        - never
+
     - name: Install Caffeine
       ansible.builtin.import_role:
         name: scruffaluff.bootware.caffeine
@@ -957,15 +966,6 @@
         - server
         - terraform
         - wsl
-
-    - name: Install Terragrunt Terraform manager
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.terragrunt
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - terragrunt
 
     - name: Install Tilt Kubernetes development suite
       ansible.builtin.import_role:

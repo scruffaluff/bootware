@@ -30,6 +30,11 @@
   { "name": "beekeeper" },
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
+  {
+    "name": "bun",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }],
+    "tests": ["bun --version"]
+  },
   { "name": "caffeine" },
   {
     "name": "chrome",
@@ -325,7 +330,6 @@
     }
   },
   { "name": "terraform", "tests": ["terraform --version"] },
-  { "name": "terragrunt", "tests": ["terragrunt --version"] },
   {
     "name": "tilt",
     "skip": [{ "os": "freebsd" }],
