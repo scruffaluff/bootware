@@ -1,4 +1,4 @@
-FROM homebrew/brew:4.1.25 AS build
+FROM homebrew/brew:4.2.21 AS build
 
 ARG version
 

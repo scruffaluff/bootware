@@ -78,3 +78,11 @@
       - xz
       - zip
   when: ansible_system == "Win32NT"
+
+- name: Create system binaries directory for Unix
+  ansible.builtin.file:
+    dest: /usr/local/bin
+    mode: "755"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"

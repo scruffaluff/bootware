@@ -1,4 +1,4 @@
-FROM debian:12.4 AS build
+FROM debian:12.5 AS build
 
 ARG version
 
