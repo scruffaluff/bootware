@@ -4,7 +4,11 @@
     "tests": ["age --version", "age-keygen --version"]
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
-  { "name": "android", "tests": ["adb --version"] },
+  {
+    "name": "android",
+    "skip": [{ "os": "openwrt" }, { "os": "suse" }],
+    "tests": ["adb --version"]
+  },
   {
     "name": "audacity",
     "skip": [{ "os": "freebsd" }],
@@ -24,7 +28,7 @@
   { "name": "bat", "tests": ["bat --version"] },
   {
     "name": "bats",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["bats --version"]
   },
   { "name": "beekeeper" },
@@ -300,7 +304,7 @@
   { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {

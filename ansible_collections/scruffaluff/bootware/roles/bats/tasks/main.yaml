@@ -9,7 +9,7 @@
   ansible.builtin.package:
     name: bats
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install Bats for MacOS
   become: true

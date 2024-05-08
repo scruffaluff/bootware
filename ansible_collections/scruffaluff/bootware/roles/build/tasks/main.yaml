@@ -28,7 +28,7 @@
       - openocd
       - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
@@ -42,6 +42,16 @@
       - make
       - openocd
   when: ansible_system == "Darwin"
+
+- name: Install build tools for OpenWrt
+  ansible.builtin.package:
+    name:
+      - gcc
+      - make
+      - openocd
+      - pkg-config
+  become: true
+  when: ansible_pkg_mgr == "opkg"
 
 - name: Install OpenSSL development files for Suse
   become: true

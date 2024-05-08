@@ -5,6 +5,3 @@ dependencies:
     when: >-
       bash_role_executed is not defined and ansible_system in ["Darwin",
       "Linux"]
-  - role: docker
-    when: >-
-      docker_role_executed is not defined and ansible_system == "Linux"
