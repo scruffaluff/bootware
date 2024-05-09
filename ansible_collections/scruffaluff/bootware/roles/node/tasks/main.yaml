@@ -26,6 +26,14 @@
       - npm-node20
   when: ansible_system == "FreeBSD"
 
+- name: Install Node for OpenWrt
+  become: true
+  community.general.opkg:
+    name:
+      - node
+      - node-npm
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Download Node version manager installer for Unix
   ansible.builtin.get_url:
     dest: /tmp/nvm_install.sh
@@ -34,7 +42,8 @@
       https://raw.githubusercontent.com/nvm-sh/nvm/v{{
       node_nvm_formula.json.versions.stable }}/install.sh
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "opkg"]
 
 - name: Install Node version manager for Unix
   ansible.builtin.command: /tmp/nvm_install.sh
@@ -43,7 +52,8 @@
   changed_when: "'start using nvm' in node_nvm_install"
   register: node_nvm_install
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "opkg"]
 
 - name: Install multiple Node versions for Unix
   ansible.builtin.shell:
@@ -57,7 +67,8 @@
   loop: "{{ node_versions }}"
   register: node_version_install
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "opkg"]
 
 # NVM is not used for Windows due to its frustrating launch checks that require
 # administrator permissions.
@@ -92,7 +103,8 @@
   become_user: "{{ user_id }}"
   changed_when: true
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "opkg"]
 
 # NVM cannot find compatible versions of NPM for Alpine.
 - name: Update NPM for Unix
@@ -107,7 +119,7 @@
   register: node_npm_update
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and user_id != "root" and
-    ansible_pkg_mgr != "apk"
+    ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: >-
     Install or update Node CLI applications for Alpine and FreeBSD
@@ -139,7 +151,7 @@
   loop: "{{ node_applications }}"
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and user_id != "root" and
-    ansible_pkg_mgr != "apk"
+    ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install or update Node CLI applications for Windows
   ansible.windows.win_shell: |
@@ -170,7 +182,8 @@
     url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
   become: true
   when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr != "apk"
+    ansible_system not in ["FreeBSD", "Win32NT"] and ansible_pkg_mgr not in
+    ["apk", "opkg"]
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

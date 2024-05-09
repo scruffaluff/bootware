@@ -44,6 +44,7 @@ essential_linux_packages_:
     - zip
   zypper:
     - gnupg
+    - libopenssl-devel
     - openssl
     - which
     - xz

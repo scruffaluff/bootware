@@ -53,12 +53,6 @@
   become: true
   when: ansible_pkg_mgr == "opkg"
 
-- name: Install OpenSSL development files for Suse
-  become: true
-  community.general.zypper:
-    name: libopenssl-devel
-  when: ansible_pkg_mgr == "zypper"
-
 - name: Install build tools with Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
     name:

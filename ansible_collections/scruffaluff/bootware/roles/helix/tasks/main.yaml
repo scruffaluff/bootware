@@ -39,8 +39,8 @@
     url: https://formulae.brew.sh/api/formula/helix.json
   register: helix_formula
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
-    failed
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"] and
+    helix_linux is failed
 
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
@@ -52,8 +52,8 @@
       helix_formula.json.versions.stable }}/helix-{{
       helix_formula.json.versions.stable }}-{{ helix_arch }}-linux.tar.xz
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
-    failed
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"] and
+    helix_linux is failed
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
@@ -66,8 +66,8 @@
       }}-linux/hx
   become: true
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
-    failed
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"] and
+    helix_linux is failed
 
 - name: Patch Helix for older Debian
   ansible.builtin.import_tasks: patch.yaml
@@ -97,7 +97,7 @@
     path: "{{ user_home }}/.config/helix"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
 
 - name: Install Helix runtime files for Linux
   ansible.builtin.copy:
@@ -112,8 +112,8 @@
       }}-linux/runtime
   become: true
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and helix_linux is
-    failed
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"] and
+    helix_linux is failed
 
 - name: Copy Helix configuration files for Unix
   ansible.builtin.copy:
@@ -127,7 +127,7 @@
   loop:
     - config.toml
     - languages.toml
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
 
 - name: Create Helix configuration directory for Windows
   ansible.windows.win_file:
