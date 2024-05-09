@@ -3,5 +3,3 @@ bat_arch_:
   amd64: x86_64
   arm64: aarch64
 bat_arch: "{{ bat_arch_[system_architecture] }}"
-# As of 05/08/2024, Bat does not provide MUSL support for Arm64.
-bat_env: "{{ 'musl' if system_architecture == 'amd64' else 'gnu' }}"

@@ -7,9 +7,7 @@
     src: >-
       https://github.com/oven-sh/bun/releases/latest/download/bun-{{
       ansible_system | lower }}-{{ bun_arch }}.zip
-  when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr not in ["apk",
-    "opkg"]
+  when: ansible_system in ["Darwin", "Linux"] and system_libc != "musl"
 
 - name: Create Bun binaries directory for Unix
   ansible.builtin.file:
@@ -19,9 +17,7 @@
     path: "{{ user_home }}/.bun/bin"
     state: directory
   become: true
-  when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr not in ["apk",
-    "opkg"]
+  when: ansible_system in ["Darwin", "Linux"] and system_libc != "musl"
 
 - name: Install Bun for Unix
   ansible.builtin.copy:
@@ -33,9 +29,7 @@
     remote_src: true
     src: /tmp/bun-{{ ansible_system | lower }}-{{ bun_arch }}/bun
   become: true
-  when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr not in ["apk",
-    "opkg"]
+  when: ansible_system in ["Darwin", "Linux"] and system_libc != "musl"
 
 - name: Install Bun for Windows
   community.windows.win_scoop:
@@ -53,9 +47,7 @@
   loop:
     - .local/share/bash-completion/completions
     - .config/fish/completions
-  when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr not in ["apk",
-    "opkg"]
+  when: ansible_system in ["Darwin", "Linux"] and system_libc != "musl"
 
 - name: Generate user Bun shell completions for Unix
   ansible.builtin.shell: bun completions > {{ user_home }}/{{ item.path }}
@@ -70,6 +62,4 @@
       shell: bash
     - path: .config/fish/completions/bun.fish
       shell: fish
-  when: >-
-    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr not in ["apk",
-    "opkg"]
+  when: ansible_system in ["Darwin", "Linux"] and system_libc == "gnu"

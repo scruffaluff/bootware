@@ -38,8 +38,8 @@
     url: https://formulae.brew.sh/api/formula/bat.json
   register: bat_formula
   when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr not in ["apk", "opkg"] or
-    system_architecture == 'amd64') and bat_linux is failed
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 - name: Download Bat for Linux
   ansible.builtin.unarchive:
@@ -50,10 +50,10 @@
       https://github.com/sharkdp/bat/releases/download/v{{
       bat_formula.json.versions.stable }}/bat-v{{
       bat_formula.json.versions.stable }}-{{ bat_arch }}-unknown-linux-{{
-      bat_env }}.tar.gz
+      system_libc }}.tar.gz
   when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr not in ["apk", "opkg"] or
-    system_architecture == 'amd64') and bat_linux is failed
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 - name: Install Bat for Linux
   ansible.builtin.copy:
@@ -63,11 +63,11 @@
     remote_src: true
     src: >-
       /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
-      }}-unknown-linux-{{ bat_env }}/bat
+      }}-unknown-linux-{{ system_libc }}/bat
   become: true
   when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr not in ["apk", "opkg"] or
-    system_architecture == 'amd64') and bat_linux is failed
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 - name: Create shell completion directories for Linux
   ansible.builtin.file:
@@ -79,8 +79,8 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr not in ["apk", "opkg"] or
-    system_architecture == 'amd64') and bat_linux is failed
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 - name: Install Bat shell completions for Linux
   ansible.builtin.copy:
@@ -90,7 +90,7 @@
     remote_src: true
     src: >-
       /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
-      }}-unknown-linux-{{ bat_env }}/autocomplete/bat.{{ item.shell }}
+      }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/bat"
@@ -98,8 +98,8 @@
     - dest: "{{ fish_completion }}/bat.fish"
       shell: fish
   when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr not in ["apk", "opkg"] or
-    system_architecture == 'amd64') and bat_linux is failed
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 # Debian Bat package installs Bat as command "batcat" since another package
 # installs the command "bat".
