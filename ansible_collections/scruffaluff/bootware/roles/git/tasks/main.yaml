@@ -21,7 +21,7 @@
     name: git-delta
   become: true
   ignore_errors: true
-  register: git_linux_delta
+  register: git_delta_linux
   when: ansible_system == "Linux"
 
 - name: Get latest Git Delta version for Linux
