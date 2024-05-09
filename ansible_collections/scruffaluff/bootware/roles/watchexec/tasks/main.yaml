@@ -35,7 +35,7 @@
     remote_src: true
     src: >-
       /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-unknown-linux-musl/watchexec
+      watchexec_arch }}-{{ watchexec_env }}/watchexec
   become: true
   when: ansible_system == "Linux" and watchexec_linux is failed
 
