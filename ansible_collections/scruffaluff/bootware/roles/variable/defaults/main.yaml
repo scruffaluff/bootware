@@ -36,6 +36,8 @@ fish_executable_:
 group_id_:
   Darwin: staff
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
+system_libc_:
+  Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
   64-bit: amd64
   64bit: amd64
@@ -64,4 +66,5 @@ group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: "{{ user_home }}\\scoop\\apps"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
+system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_shell: "{{ user_shell_.get(ansible_system, '/usr/bin/fish') }}"

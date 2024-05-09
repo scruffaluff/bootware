@@ -86,7 +86,7 @@
     creates: "{{ user_home }}/.pyenv/bin/pyenv"
   become: true
   become_user: "{{ user_id }}"
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"
 
 - name: Update Pyenv for Unix
   ansible.builtin.shell:
@@ -98,7 +98,7 @@
   become_user: "{{ user_id }}"
   changed_when: "'file changed' in python_pyenv_update"
   register: python_pyenv_update
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"
 
 - name: Get latest patch release for each Python minor version for Unix
   ansible.builtin.shell:
@@ -111,13 +111,13 @@
   changed_when: false
   loop: "{{ python_versions }}"
   register: python_pyenv_releases
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"
 
 - name: Extract Python versions from Pyenv outputs for Unix
   ansible.builtin.set_fact:
     python_releases:
       "{{ python_pyenv_releases.results | map(attribute='stdout') | list }}"
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"
 
 - name: Install multiple Python versions for Unix
   ansible.builtin.shell:
@@ -130,7 +130,7 @@
   changed_when: "'Installed Python' in python_version_install"
   loop: "{{ python_releases }}"
   register: python_version_install
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"
 
 - name: Install multiple Python versions for Windows
   community.windows.win_scoop:
@@ -148,4 +148,4 @@
   become_user: "{{ user_id }}"
   # Command does not provide stdout information to determine a change.
   changed_when: true
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: ansible_system != "Win32NT" and system_libc != "musl"

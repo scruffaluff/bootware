@@ -86,9 +86,7 @@
           arm64: aarch64
         rust_binstall_suffix:
           Darwin: apple-darwin.zip
-          Linux: >-
-            unknown-linux-{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu'
-            }}.tgz
+          Linux: unknown-linux-{{ system_libc }}.tgz
       when: ansible_system in ["Darwin", "Linux"]
 
     - name: Install Cargo Binstall for Unix

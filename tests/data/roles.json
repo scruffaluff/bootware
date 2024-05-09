@@ -4,7 +4,11 @@
     "tests": ["age --version", "age-keygen --version"]
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
-  { "name": "android", "tests": ["adb --version"] },
+  {
+    "name": "android",
+    "skip": [{ "os": "openwrt" }, { "os": "suse" }],
+    "tests": ["adb --version"]
+  },
   {
     "name": "audacity",
     "skip": [{ "os": "freebsd" }],
@@ -24,12 +28,17 @@
   { "name": "bat", "tests": ["bat --version"] },
   {
     "name": "bats",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["bats --version"]
   },
   { "name": "beekeeper" },
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
+  {
+    "name": "bun",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }],
+    "tests": ["bun --version"]
+  },
   { "name": "caffeine" },
   {
     "name": "chrome",
@@ -140,7 +149,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
-  { "name": "helix", "tests": ["hx --version"] },
+  { "name": "helix", "skip": [{ "os": "openwrt" }], "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
@@ -295,7 +304,7 @@
   { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {
@@ -325,7 +334,6 @@
     }
   },
   { "name": "terraform", "tests": ["terraform --version"] },
-  { "name": "terragrunt", "tests": ["terragrunt --version"] },
   {
     "name": "tilt",
     "skip": [{ "os": "freebsd" }],

@@ -9,13 +9,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Android, and Debug roles.
+- Android, Bun, GDB, LLDB, and Readline roles.
+- Injection support for Pipx application installations.
 - Tmux keybindings.
+- Yazi change directory shell integration.
+
+### Changed
+
+- Improved Fzf search with FD integration.
 
 ### Fixed
 
 - Fish keybindings for PowerShell.
 - GlazeWM workspaces for Windows.
+- Several roles to be OpenWrt compatible.
+
+### Removed
+
+- Quickemu installation.
+- Terragrunt role.
 
 ## 2024-03-11
 

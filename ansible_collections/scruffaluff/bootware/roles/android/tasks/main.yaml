@@ -16,7 +16,7 @@
   ansible.builtin.package:
     name: "{{ 'android-sdk' if ansible_pkg_mgr == 'apt' else 'android-tools' }}"
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["opkg", "zypper"]
 
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:
