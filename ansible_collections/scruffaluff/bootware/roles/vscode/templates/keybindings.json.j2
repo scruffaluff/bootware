@@ -114,8 +114,16 @@
     "key": "ctrl+`",
     "when": "panelFocus"
   },
-  { "command": "workbench.action.navigateBack", "key": "ctrl+shift+i" },
-  { "command": "workbench.action.navigateForward", "key": "ctrl+shift+o" },
+  {
+    "command": "workbench.action.navigateBack",
+    "key": "ctrl+shift+i",
+    "when": "editorFocus"
+  },
+  {
+    "command": "workbench.action.navigateForward",
+    "key": "ctrl+shift+o",
+    "when": "editorFocus"
+  },
   {
     "command": "workbench.action.nextEditor",
     "key": "ctrl+shift+;",
