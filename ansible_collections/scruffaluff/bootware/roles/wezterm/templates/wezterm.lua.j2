@@ -25,7 +25,9 @@ config.font_size = {{ font_size }}
 config.keys = {
   { action = wezterm.action.ActivateTabRelative(-1), key = 'j', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.ActivateTabRelative(1), key = ':', mods = 'CTRL|SHIFT' },
-  { action = wezterm.action.SpawnTab 'CurrentPaneDomain', key = 't', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.MoveTabRelative(-1), key = 'LeftArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SpawnTab('CurrentPaneDomain'), key = 't', mods = 'CTRL|SHIFT' },
 }
 config.window_close_confirmation = 'NeverPrompt'
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
