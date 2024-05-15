@@ -5,14 +5,19 @@
 " General settings.
 
 highlight linenr ctermbg=lightgrey
-set hlsearch " Highlight all search results
+set backspace=indent,eol,start  " Make insert mode backspace always delete.
+set hlsearch " Highlight all search results.
 set laststatus=2 " Always show the status line.
 set number " Show line numbers.
 set ruler " Show row and column rulers.
 set showmatch " Highlight matching braces.
 set statusline=\ %f\ %m%=%l:%c\ \ %{&fileformat}\ 
 set wildmenu " Enable tab completion menu in command prompt.
-syntax enable " Enable syntax highlighting.
+
+" Enable syntax highlighting if supported.
+if has('syntax')
+	syntax enable
+endif
 
 " Cursor settings.
 
@@ -30,10 +35,6 @@ set tabstop=4
 
 " Keybinding settings.
 
-noremap <C-Left> <C-o> " Change goto previous location.
-noremap <C-Right> <C-i> " Change goto next location.
-
-" Change navigation.
 noremap ; l
 noremap l k
 noremap k j

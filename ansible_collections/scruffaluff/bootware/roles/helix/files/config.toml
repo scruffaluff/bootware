@@ -40,11 +40,25 @@ right = [
     "file-encoding",
 ]
 
+[keys.insert]
+C-a = "goto_line_start"
+C-e = "goto_line_end"
+C-left = "move_prev_word_start"
+C-right = "move_next_word_end"
+C-S-i = "jump_backward"
+C-S-o = "jump_forward"
+S-left = "move_prev_long_word_start"
+S-right = "move_next_long_word_end"
+
 [keys.normal]
 ";" = "move_char_right"
 c = "change_selection_noyank"
-C-left = "jump_backward"
-C-right = "jump_forward"
+C-a = "goto_line_start"
+C-e = "goto_line_end"
+C-left = "move_prev_word_start"
+C-right = "move_next_word_end"
+C-S-i = "jump_backward"
+C-S-o = "jump_forward"
 D = "delete_char_backward"
 d = "delete_selection_noyank"
 esc = ["collapse_selection", "keep_primary_selection"]
@@ -52,6 +66,8 @@ h = "no_op"
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
+S-left = "move_prev_long_word_start"
+S-right = "move_next_long_word_end"
 
 [keys.normal.C-w]
 ";" = "jump_view_right"
@@ -138,8 +154,12 @@ z = "no_op"
 [keys.select]
 ";" = "move_char_right"
 c = "change_selection_noyank"
-C-left = "jump_backward"
-C-right = "jump_forward"
+C-a = "goto_line_start"
+C-e = "goto_line_end"
+C-left = "move_prev_word_start"
+C-right = "move_next_word_end"
+C-S-i = "jump_backward"
+C-S-o = "jump_forward"
 D = "delete_char_backward"
 d = "delete_selection_noyank"
 esc = ["collapse_selection", "keep_primary_selection"]
@@ -147,6 +167,8 @@ h = "no_op"
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
+S-left = "move_prev_long_word_start"
+S-right = "move_next_long_word_end"
 
 [keys.select.C-w]
 ";" = "jump_view_right"
