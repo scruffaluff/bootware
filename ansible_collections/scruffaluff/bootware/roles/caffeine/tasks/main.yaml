@@ -65,3 +65,31 @@
   # Command does not provide stdout information to determine a change.
   changed_when: true
   when: ansible_system == "Linux" and gnome_desktop
+
+- name: Copy Caffeinate script for GNOME desktops
+  ansible.builtin.copy:
+    dest: /usr/local/bin/caffeinate
+    force: true
+    mode: "755"
+    src: caffeinate.sh
+  become: true
+  when: ansible_system == "Linux" and gnome_desktop
+
+- name: Create PowerShell scripts directory for Windows
+  ansible.windows.win_file:
+    path: "C:/Program Files/PowerShell/Scripts"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include PowerShell scripts directory for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\PowerShell\\Scripts"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Copy Caffeinate script for Windows
+  ansible.windows.win_copy:
+    dest: "C:/Program Files/PowerShell/Scripts/caffeinate.ps1"
+    force: true
+    src: caffeinate.ps1
+  when: ansible_system == "Win32NT"

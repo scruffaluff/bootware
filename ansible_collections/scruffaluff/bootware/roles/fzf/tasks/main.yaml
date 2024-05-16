@@ -1,11 +1,11 @@
 ---
-- name: Install FzF for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: fzf
-  when: ansible_system == "FreeBSD"
-
 # TODO: Renable when Fzf package in most distributions reaches version 0.48.0.
+# - name: Install FzF for FreeBSD
+#   become: true
+#   community.general.pkgng:
+#     name: fzf
+#   when: ansible_system == "FreeBSD"
+#
 # - name: Install Fzf for Linux
 #   ansible.builtin.package:
 #     name: fzf
@@ -14,15 +14,15 @@
 #   register: fzf_linux
 #   when: ansible_system == "Linux"
 
-- name: Get latest Fzf version for Linux
+- name: Get latest Fzf version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/fzf.json
   register: fzf_formula
-  when: ansible_system == "Linux"
+  when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install Fzf for Linux
+- name: Install Fzf for Unix
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
@@ -30,10 +30,11 @@
     src: >-
       https://github.com/junegunn/fzf/releases/download/{{
       fzf_formula.json.versions.stable }}/fzf-{{
-      fzf_formula.json.versions.stable }}-linux_{{ system_architecture }}.tar.gz
-  when: ansible_system == "Linux"
+      fzf_formula.json.versions.stable }}-{{ ansible_system | lower }}_{{
+      system_architecture }}.tar.gz
+  when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Install Fzf for Linux
+- name: Install Fzf for Unix
   ansible.builtin.copy:
     dest: /usr/local/bin/fzf
     force: true
@@ -41,7 +42,7 @@
     remote_src: true
     src: /tmp/fzf
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install FzF for MacOS
   become: true

@@ -29,7 +29,6 @@
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "C:/Program Files/Kubeshark"
     state: directory
   when: ansible_system == "Win32NT"
