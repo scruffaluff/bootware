@@ -1,10 +1,4 @@
 ---
-- name: Install Dust for Alpine
-  become: true
-  community.general.apk:
-    name: dust
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Dust for FreeBSD
   become: true
   community.general.pkgng:
@@ -17,7 +11,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/dust.json
   register: dust_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
@@ -27,9 +21,9 @@
     src: >-
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
-      dust_formula.json.versions.stable }}-{{ dust_arch
-      }}-unknown-linux-gnu.tar.gz
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+      dust_formula.json.versions.stable }}-{{ dust_arch }}-unknown-linux-{{
+      system_libc }}.tar.gz
+  when: ansible_system == "Linux"
 
 - name: Install Dust for Linux
   ansible.builtin.copy:
@@ -39,9 +33,9 @@
     remote_src: true
     src: >-
       /tmp/dust-v{{ dust_formula.json.versions.stable }}-{{ dust_arch
-      }}-unknown-linux-gnu/dust
+      }}-unknown-linux-{{ system_libc }}/dust
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
 - name: Install Dust for MacOS
   community.general.homebrew:
