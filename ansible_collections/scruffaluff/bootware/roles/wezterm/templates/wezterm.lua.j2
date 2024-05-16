@@ -27,6 +27,7 @@ config.keys = {
   { action = wezterm.action.ActivateTabRelative(1), key = ':', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.MoveTabRelative(-1), key = 'LeftArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SendString('\u{e000}'), key = ';', mods = 'CTRL' },
   { action = wezterm.action.SpawnTab('CurrentPaneDomain'), key = 't', mods = 'CTRL|SHIFT' },
 }
 config.window_close_confirmation = 'NeverPrompt'

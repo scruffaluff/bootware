@@ -54,6 +54,11 @@ style = "Italic"
 family = "FiraCode Nerd Font"
 style = "Regular"
 
+[[keyboard.bindings]]
+chars = "\ue000"
+key = ";"
+mods = "Control"
+
 [shell]
 args = ["{{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
 program = "{{ user_shell }}"

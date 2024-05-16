@@ -41,8 +41,12 @@ right = [
 ]
 
 [keys.insert]
+"\ue000" = "move_char_right"
 C-a = "goto_line_start"
 C-e = "goto_line_end"
+C-j = "move_char_left"
+C-k = "move_line_down"
+C-l = "move_line_up"
 C-left = "move_prev_word_start"
 C-right = "move_next_word_end"
 C-S-i = "jump_backward"

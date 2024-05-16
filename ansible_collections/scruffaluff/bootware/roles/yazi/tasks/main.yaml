@@ -89,8 +89,8 @@
     path: "{{ user_home }}/AppData/Roaming/yazi/{{ item }}"
     state: directory
   loop:
-    - yazi
-    - yazi/plugins/smart-open.yazi
+    - config
+    - config/plugins/smart-open.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
