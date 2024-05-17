@@ -19,6 +19,10 @@ set visible-stats on
 # Use tab to cycle through completions.
 tab: menu-complete
 
+# Add Vim like keybindings for line navigation.
+"\C-j": backward-char
+"": forward-char
+
 # Use Up and Down to search history for commands matching text before cursor.
 "\e[A": history-search-backward
 "\e[B": history-search-forward

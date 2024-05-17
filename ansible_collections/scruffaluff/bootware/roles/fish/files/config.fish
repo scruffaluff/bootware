@@ -151,6 +151,8 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
     bind \cd _delete_commandline_from_history
+    bind \cj backward-char
+    bind \ue000 forward-char
     bind \eZ redo
     bind \ez undo
 end
