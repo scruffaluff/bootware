@@ -56,7 +56,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .ls_colors
+    src: ls_colors
   become: true
   when: ansible_system != "Win32NT"
 

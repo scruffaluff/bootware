@@ -64,7 +64,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .ripgreprc
+    src: ripgreprc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -73,7 +73,7 @@
     dest: "{{ user_home }}/.ripgreprc"
     force: true
     owner: "{{ user_id }}"
-    src: .ripgreprc
+    src: ripgreprc
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix

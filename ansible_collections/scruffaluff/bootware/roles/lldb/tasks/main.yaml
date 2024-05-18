@@ -89,7 +89,7 @@
   become: true
   loop:
     - dest: .lldbinit
-      src: .lldbinit
+      src: lldbinit
     - dest: .config/lldbinit.py
       src: lldbinit.py
   when: ansible_system != "Win32NT"
@@ -109,7 +109,7 @@
     src: "{{ item.src }}"
   loop:
     - dest: .lldbinit
-      src: .lldbinit
+      src: lldbinit
     - dest: .config/lldbinit.py
       src: lldbinit.py
   when: ansible_system == "Win32NT"

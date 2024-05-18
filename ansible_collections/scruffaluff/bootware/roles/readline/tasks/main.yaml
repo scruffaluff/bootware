@@ -6,7 +6,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .inputrc
+    src: inputrc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -15,5 +15,5 @@
     dest: "{{ user_home }}/.inputrc"
     force: true
     owner: "{{ user_id }}"
-    src: .inputrc
+    src: inputrc
   when: ansible_system == "Win32NT"

@@ -44,7 +44,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .bashrc
+    src: bashrc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -55,7 +55,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .bash_profile
+    src: bash_profile
   become: true
   when: ansible_system != "Win32NT"
 

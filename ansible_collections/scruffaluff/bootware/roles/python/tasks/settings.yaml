@@ -37,7 +37,7 @@
 
 - name: Copy Python settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/{{ item }}"
+    dest: "{{ user_home }}/.{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
@@ -45,19 +45,19 @@
     src: "{{ item }}"
   become: true
   loop:
-    - .pdbrc
-    - .pyrc.py
+    - pdbrc
+    - pyrc.py
   when: ansible_system != "Win32NT"
 
 - name: Copy Python settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item }}"
+    dest: "{{ user_home }}/.{{ item }}"
     force: true
     owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
-    - .pdbrc
-    - .pyrc.py
+    - pdbrc
+    - pyrc.py
   when: ansible_system == "Win32NT"
 
 - name: Create PuDB settings directory for Unix

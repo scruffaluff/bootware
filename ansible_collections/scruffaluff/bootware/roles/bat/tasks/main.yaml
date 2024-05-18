@@ -138,7 +138,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .lesskey
+    src: lesskey
   become: true
   when: ansible_system != "Win32NT"
 
@@ -149,7 +149,7 @@
     dest: "{{ user_home }}/_lesskey"
     force: true
     owner: "{{ user_id }}"
-    src: .lesskey
+    src: lesskey
   when: ansible_system == "Win32NT"
 
 - name: Create Bat settings directory for Unix

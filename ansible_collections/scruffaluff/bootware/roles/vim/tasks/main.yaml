@@ -26,11 +26,11 @@
     dest: "{{ ansible_env.HOME }}/.vimrc"
     force: true
     mode: "644"
-    src: .vimrc
+    src: vimrc
   when: ansible_system != "Win32NT"
 
 - name: Copy Vim settings files for Windows
   ansible.windows.win_copy:
     dest: "{{ ansible_env.HOME }}/_vimrc"
-    src: .vimrc
+    src: vimrc
   when: ansible_system == "Win32NT"

@@ -34,7 +34,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .sqliterc
+    src: sqliterc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -43,5 +43,5 @@
     dest: "{{ user_home }}/.sqliterc"
     force: true
     owner: "{{ user_id }}"
-    src: .sqliterc
+    src: sqliterc
   when: ansible_system == "Win32NT"

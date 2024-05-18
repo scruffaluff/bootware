@@ -37,7 +37,7 @@
   become: true
   loop:
     - dest: .gdbinit
-      src: .gdbinit
+      src: gdbinit
     - dest: .config/gdbinit.py
       src: gdbinit.py
   when: ansible_system in ["FreeBSD", "Linux"]
@@ -57,7 +57,7 @@
     src: "{{ item.src }}"
   loop:
     - dest: .gdbinit
-      src: .gdbinit
+      src: gdbinit
     - dest: .config/gdbinit.py
       src: gdbinit.py
   when: ansible_system == "Win32NT"

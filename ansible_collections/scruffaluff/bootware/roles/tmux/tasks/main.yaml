@@ -39,6 +39,6 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .tmux.conf
+    src: tmux.conf
   become: true
   when: ansible_system != "Win32NT"

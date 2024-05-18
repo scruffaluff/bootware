@@ -61,7 +61,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .usqlrc
+    src: usqlrc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -70,5 +70,5 @@
     dest: "{{ user_home }}/.usqlrc"
     force: true
     owner: "{{ user_id }}"
-    src: .usqlrc
+    src: usqlrc
   when: ansible_system == "Win32NT"
