@@ -376,8 +376,7 @@ set --export BUN_INSTALL "$HOME/.bun"
 prepend_paths "$BUN_INSTALL/bin"
 
 # Add Deno binaries to system path.
-set --export DENO_INSTALL "$HOME/.deno"
-prepend_paths "$DENO_INSTALL/bin"
+prepend_paths "$HOME/.deno/bin"
 
 # Add NPM global binaries to system path.
 prepend_paths "$HOME/.npm-global/bin"

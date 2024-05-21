@@ -216,10 +216,13 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.deno
       tags:
+        - container
         - deno
-        - extras
+        - desktop
         - language
-        - never
+        - server
+        - sysadmin
+        - wsl
 
     - name: Configure system desktop environment
       ansible.builtin.import_role:

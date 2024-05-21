@@ -1,13 +1,9 @@
 ---
-# TODO: Integrate once installation becomes stable.
-# - name: Install Deno for Alpine
-#   become: true
-#   community.general.apk:
-#     name: deno
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
+- name: Install Deno for Alpine
+  become: true
+  community.general.apk:
+    name: deno
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true
@@ -15,63 +11,98 @@
     name: deno
   when: ansible_system == "FreeBSD"
 
-# TODO: Add Deno Linux ARM install when supported. See
-# https://github.com/denoland/deno/issues/1846 for status.
-- name: Download Deno installer for Unix
-  ansible.builtin.get_url:
-    dest: /tmp/deno_install.sh
-    mode: "755"
-    url: https://deno.land/x/install/install.sh
+- name: Download Deno for Unix
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/denoland/deno/releases/latest/download/deno-{{
+      deno_arch[system_architecture] }}-{{ deno_env[ansible_system] }}.zip
+  vars:
+    deno_arch:
+      amd64: x86_64
+      arm64: aarch64
+    deno_env:
+      Darwin: apple-darwin
+      Linux: unknown-linux-{{ system_libc }}
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
-    != "apk" and system_architecture == "amd64")
+    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
+    "gnu")
 
 - name: Install Deno for Unix
-  ansible.builtin.command: /tmp/deno_install.sh
+  ansible.builtin.copy:
+    dest: /usr/local/bin/deno
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/deno
   become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'installed successfully' in deno_install"
-  register: deno_install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and ansible_pkg_mgr
-    != "apk" and system_architecture == "amd64")
+    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
+    "gnu")
 
-- name: Install Deno for Windows
-  community.windows.win_scoop:
-    name: deno
+- name: Create Deno program directory for Windows
+  ansible.windows.win_file:
+    path: "C:/Program Files/Deno/bin"
+    state: directory
   when: ansible_system == "Win32NT"
 
-- name: Create user shell completion directories for Unix
+- name: Update system path to include Kubeshark program directory for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\Deno\\bin"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Install Deno for Windows
+  ansible.windows.win_get_url:
+    dest: "C:/Program Files/Deno//bin/deno.exe"
+    url: >-
+      https://github.com/denoland/deno/releases/download/latest/deno-x86_64-pc-windows-msvc.zip
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/{{ item }}"
+    path: "{{ item }}"
     state: directory
   become: true
   loop:
-    - .local/share/bash-completion/completions
-    - .config/fish/completions
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    ansible_pkg_mgr != "apk" and system_architecture == "amd64")
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
-- name: Generate user Deno shell completions for Unix
-  ansible.builtin.shell: >-
-    deno completions {{ item.shell }} > {{ user_home }}/{{ item.path }}
+- name: Generate Deno shell completions for Unix
+  ansible.builtin.shell: deno completions {{ item }} > /tmp/deno.{{ item }}
   become: true
-  become_user: "{{ user_id }}"
   changed_when: true
   environment:
-    PATH: "{{ user_home }}/.deno/bin:{{ ansible_env.PATH }}"
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
   loop:
-    - path: .local/share/bash-completion/completions/deno
+    - bash
+    - fish
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+
+- name: Install Deno shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/deno.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/deno"
       shell: bash
-    - path: .config/fish/completions/deno.fish
+    - dest: "{{ fish_completion }}/deno.fish"
       shell: fish
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    ansible_pkg_mgr != "apk" and system_architecture == "amd64")
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
 - name: Create Deno PowerShell completions directory for Windows
   ansible.windows.win_file:
