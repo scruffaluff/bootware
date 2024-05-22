@@ -29,7 +29,7 @@ Describe 'Bootstrap' {
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
-            + '--start-at-task Install Deno for FreeBSD'
+            + '--start-at-task Install Deno for Alpine'
 
         $Actual = "$(& $Bootware bootstrap --start-at-role deno --playbook $Playbook)"
         $Actual | Should -Be $Expected
