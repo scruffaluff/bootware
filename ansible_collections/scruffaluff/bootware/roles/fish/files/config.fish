@@ -410,7 +410,10 @@ function yz
     set tmp (mktemp)
     yazi --cwd-file $tmp $argv
     set cwd (cat $tmp)
-    if test -n $cwd; and test $cwd != $PWD
+
+    # Quotes are necessary for the if statement to ensure that the test function
+    # always receives the correct number of arguments.
+    if test -n "$cwd"; and test "$cwd" != "$PWD"
         cd $cwd
     end
     rm $tmp

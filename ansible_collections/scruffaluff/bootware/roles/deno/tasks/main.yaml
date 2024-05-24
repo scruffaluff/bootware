@@ -42,23 +42,37 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
     "gnu")
 
+- name: Download Deno archive for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}/deno.zip"
+    url: >-
+      https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip
+  when: ansible_system == "Win32NT"
+
+- name: Decompress Deno archive for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}/deno"
+    src: "{{ ansible_env.TEMP }}/deno.zip"
+  when: ansible_system == "Win32NT"
+
 - name: Create Deno program directory for Windows
   ansible.windows.win_file:
     path: "C:/Program Files/Deno/bin"
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Update system path to include Kubeshark program directory for Windows
+- name: Update system path to include Deno program directory for Windows
   ansible.windows.win_path:
     elements: "C:\\Program Files\\Deno\\bin"
     scope: machine
   when: ansible_system == "Win32NT"
 
 - name: Install Deno for Windows
-  ansible.windows.win_get_url:
-    dest: "C:/Program Files/Deno//bin/deno.exe"
-    url: >-
-      https://github.com/denoland/deno/releases/download/latest/deno-x86_64-pc-windows-msvc.zip
+  ansible.windows.win_copy:
+    dest: "C:/Program Files/Deno/bin/deno.exe"
+    force: true
+    remote_src: true
+    src: "{{ ansible_env.TEMP }}/deno/deno.exe"
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -117,4 +131,6 @@
     deno completions powershell > {{ user_home
     }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1
   changed_when: true
+  environment:
+    Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"

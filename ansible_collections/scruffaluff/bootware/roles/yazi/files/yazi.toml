@@ -82,3 +82,7 @@ edit = [
     { block = true, for = "unix", run = '$EDITOR "$@"' },
     { for = "windows", orphan = true, run = 'hx "%*"' },
 ]
+
+[preview]
+max_height = 1080
+max_width = 1920
