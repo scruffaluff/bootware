@@ -10,7 +10,7 @@ Describe 'Config' {
         $Env:BOOTWARE_NOLOG = ''
         $Expected = 'Writing empty configuration file to /dev/null'
 
-        $Actual = "$(& $Bootware config -e --dest /dev/null)"
+        $Actual = & $Bootware config -e --dest /dev/null
         $Actual | Should -Be $Expected
     }
 

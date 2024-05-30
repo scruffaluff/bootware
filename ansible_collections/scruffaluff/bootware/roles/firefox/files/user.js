@@ -47,6 +47,8 @@ user_pref("extensions.pocket.enabled", false);
 user_pref("extensions.formautofill.addresses.enabled", false);
 // Disable autofilling credit cards.
 user_pref("extensions.formautofill.creditCards.enabled", false);
+// Disable notifications about webpages entering fullscreen mode.
+user_pref("full-screen-api.warning.timeout", 0);
 // Disable audio and video autoplay.
 user_pref("media.autoplay.blocking_policy", 2);
 // Allow DRM protected content to be played.

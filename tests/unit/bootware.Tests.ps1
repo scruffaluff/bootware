@@ -15,7 +15,7 @@ Describe 'FindConfigPath' {
         Mock Test-Path { Write-Output 1 }
 
         $Expected = 'C:\Windows\regedit.exe'
-        $Actual = "$(FindConfigPath $Expected)"
+        $Actual = FindConfigPath $Expected
         $Actual | Should -Be $Expected
     }
 
@@ -24,7 +24,7 @@ Describe 'FindConfigPath' {
 
         $Expected = 'C:\Windows\regedit.exe'
         $Env:BOOTWARE_CONFIG = $Expected
-        $Actual = "$(FindConfigPath)"
+        $Actual = FindConfigPath
         $Actual | Should -Be $Expected
     }
 
@@ -39,13 +39,13 @@ Describe 'FindConfigPath' {
 Describe 'WSLPath' {
     It 'Map C Drive correctly' {
         $Expected = '/mnt/c/Program Files/regedit.exe'
-        $Actual = "$(WSLPath 'C:\Program Files\regedit.exe')"
+        $Actual = WSLPath 'C:\Program Files\regedit.exe'
         $Actual | Should -Be $Expected
     }
 
     It 'Map HK Drive correctly' {
         $Expected = '/mnt/hk/ProgramData/Bootware/config.yaml'
-        $Actual = "$(WSLPath 'HK:\ProgramData/Bootware\config.yaml')"
+        $Actual = WSLPath 'HK:\ProgramData/Bootware\config.yaml'
         $Actual | Should -Be $Expected
     }
 }

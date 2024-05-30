@@ -183,7 +183,7 @@ Function Bootstrap() {
             }
             '--private-key' {
                 $ExtraArgs += "--private-key"
-                $ExtraArgs += "$(MakeWSLKey $Args[0][$ArgIdx + 1])"
+                $ExtraArgs += MakeWSLKey $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
@@ -204,7 +204,7 @@ Function Bootstrap() {
             }
             '--temp-key' {
                 $ExtraArgs += "--temp-key"
-                $ExtraArgs += "$(MakeWSLKey $Args[0][$ArgIdx + 1])"
+                $ExtraArgs += MakeWSLKey $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 Break
             }
@@ -231,20 +231,20 @@ Function Bootstrap() {
         $Params += '--url', $URL
         Setup $Params
     }
-    ElseIf (-Not (Get-Command wsl -ErrorAction SilentlyContinue)) {
+    ElseIf (-Not (Get-Command -ErrorAction SilentlyContinue wsl)) {
         Throw 'Error: The WSL needs to be setup before bootstrapping'
         Exit 1
     }
 
     # Configure run to find task associated with start role.
     If ($StartRole) {
-        $RepoPath = "$(Split-Path -Path $Playbook -Parent)"
-        $StartTask = "$(yq '.[0].name' "$RepoPath/ansible_collections/scruffaluff/bootware/roles/$StartRole/tasks/main.yaml")"
+        $RepoPath = Split-Path -Parent -Path $Playbook
+        $StartTask = yq '.[0].name' "$RepoPath/ansible_collections/scruffaluff/bootware/roles/$StartRole/tasks/main.yaml"
         $ExtraArgs += @("--start-at-task", $StartTask)
     }
 
     Try {
-        $ConfigPath = "$(FindConfigPath $ConfigPath)"
+        $ConfigPath = FindConfigPath $ConfigPath
     }
     Catch [System.IO.FileNotFoundException] {
         $Params = @()
@@ -254,11 +254,11 @@ Function Bootstrap() {
     }
 
     Log "Using $ConfigPath as configuration file"
-    $WSLConfigPath = "$(WSLPath $ConfigPath)"
+    $WSLConfigPath = WSLPath $ConfigPath
     If (-Not $Remote) {
-        $Inventory = "$(FindRelativeIP)"
+        $Inventory = FindRelativeIP
     }
-    $PlaybookPath = "$(WSLPath $Playbook)"
+    $PlaybookPath = WSLPath $Playbook
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish. Have not found a way to optionally include arguments in
@@ -386,7 +386,7 @@ Function Config() {
         }
     }
 
-    $DstDir = "$(Split-Path -Path $DstFile -Parent)"
+    $DstDir = Split-Path -Parent -Path $DstFile
     If (-Not (Test-Path -Path $DstDir -PathType Container)) {
         New-Item -ItemType Directory -Path $DstDir | Out-Null
     }
@@ -411,7 +411,7 @@ Function Config() {
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -UseBasicParsing -Uri $SrcURL -OutFile $DstFile
+    Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
 }
 
 # Print error message and exit script with usage error code.
@@ -457,7 +457,7 @@ Function FindRelativeIP {
         Return '127.0.0.1'
     }
     Else {
-        Return "$(wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1)"
+        Return wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1
     }
 }
 
@@ -490,7 +490,7 @@ Function Log($Message) {
 # Required when SSH private key lives in Windows file system, since its open
 # permissions cannot be changed.
 Function MakeWSLKey($FilePath) {
-    $WSLFile = "$(wsl mktemp --dry-run)"
+    $WSLFile = wsl mktemp --dry-run
     wsl cp "$(WSLPath $FilePath)" $WSLFile
     wsl chmod 600 $WSLFile
     Return $WSLFile
@@ -569,13 +569,13 @@ Function Setup() {
     }
 
     # Install Chocolatey package manager.
-    If (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    If (-Not (Get-Command -ErrorAction SilentlyContinue choco)) {
         Log 'Downloading Chocolatey package manager'
         RemoteScript 'https://chocolatey.org/install.ps1'
     }
 
     # Install Scoop package manager.
-    If (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    If (-Not (Get-Command -ErrorAction SilentlyContinue scoop)) {
         Log 'Downloading Scoop package manager'
         # Scoop disallows installation from an admin console by default. For
         # more information, visit
@@ -592,17 +592,17 @@ Function Setup() {
     }
 
     # Git is required for addding Scoop buckets.
-    If (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
+    If (-Not (Get-Command -ErrorAction SilentlyContinue git)) {
         Log 'Installing Git'
         scoop install mingit
     }
 
-    If (-Not (Get-Command yq -ErrorAction SilentlyContinue)) {
+    If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
         Log 'Installing YQ'
         scoop install yq
     }
 
-    $ScoopBuckets = $(scoop bucket list)
+    $ScoopBuckets = scoop bucket list
     ForEach ($Bucket In @('extras', 'main', 'versions')) {
         If ($Bucket -NotIn $ScoopBuckets.Name) {
             scoop bucket add $Bucket
@@ -658,7 +658,7 @@ Function SetupSSHKeys {
 
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
-        $WSLKeyPath = "$(WSLPath $WindowsKeyPath)"
+        $WSLKeyPath = WSLPath $WindowsKeyPath
         wsl mkdir --parents --mode 700 "`$HOME/.ssh"
         wsl mv $WSLKeyPath "`$HOME/.ssh/bootware"
         wsl chmod 600 "`$HOME/.ssh/bootware"
@@ -690,7 +690,7 @@ Function SetupSSHServer() {
         Log 'Setting up OpenSSH server'
 
         # Turn on Windows Update and TrustedInstaller services.
-        Start-Service -Name wuauserv -ErrorAction SilentlyContinue
+        Start-Service -ErrorAction SilentlyContinue -Name wuauserv
         If ($? -Eq $False) {
             Set-Service -Name wuauserv -StartupType Manual
             Start-Service -Name wuauserv
@@ -749,9 +749,9 @@ Function SetupSSHServer() {
 # https://docs.microsoft.com/en-us/windows/wsl/install-win10.
 Function SetupWSL($Branch) {
     $Debug = $Global:Debug
-    $WSLExe = "$(Get-Command wsl -ErrorAction SilentlyContinue)"
-    $MWSL = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
-    $VMP = $(Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux)
+    $WSLExe = Get-Command -ErrorAction SilentlyContinue wsl
+    $MWSL = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    $VMP = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
     If ((-Not $WSLExe) -Or ($MWSL.State -NE 'Enabled') -Or ($VMP.State -NE 'Enabled')) {
         # Dism appears to require arguments in a specific order.
@@ -776,7 +776,7 @@ Function SetupWSL($Branch) {
     # Unable to figure a better way to check if a Linux distro is installed.
     # Checking output of wsl list seems to never work.
     $MatchString = 'A WSL distro is installed'
-    $DistroCheck = "$(wsl echo $MatchString)"
+    $DistroCheck = wsl echo $MatchString
     If (-Not ($DistroCheck -Like $MatchString)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.msi'
         Log 'Downloading WSL update'
@@ -828,7 +828,7 @@ Function Uninstall() {
     }
 
     # Uninstall WSL copy of Bootware.
-    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue wsl) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
             If ($Debug) {
@@ -872,7 +872,7 @@ Function Update() {
     UpdateCompletion $Version
 
     # Update WSL copy of Bootware.
-    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue wsl) {
         # Check if Bootware is installed on WSL.
         If (wsl command -v bootware) {
             If ($Debug) {
@@ -914,7 +914,7 @@ Function Version() {
 
 # Convert path to WSL relative path.
 Function WSLPath($FilePath) {
-    $FilePath = "$($FilePath -Replace '~', $HOME)"
+    $FilePath = $FilePath -Replace '~', $HOME
     $Drive = $(Split-Path -Path $FilePath -Qualifier) -Replace ':', ''
     $ChildPath = $(Split-Path -Path $FilePath -NoQualifier) -Replace '\\', '/'
     Return "/mnt/$($Drive.ToLower())$ChildPath"

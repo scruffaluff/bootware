@@ -39,7 +39,7 @@ Function DefaultProfile($Module) {
     }
     $ProfilesPath = "$Env:APPDATA\Mozilla\Firefox\profiles.ini"
 
-    $Parser = $(ReadIni $ProfilesPath)
+    $Parser = ReadIni $ProfilesPath
     ForEach ($Section In $Parser.Keys) {
         $Keys = $Parser[$Section].Keys
         If (($Section -Like 'Profile*') -And ($Keys -Contains 'Path')) {
@@ -72,6 +72,6 @@ If ($MyInvocation.InvocationName -NE '.') {
     }
 
     $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
-    $Module = "$(DefaultProfile $Module)"
+    $Module = DefaultProfile $Module
     Write-Output $Module
 }

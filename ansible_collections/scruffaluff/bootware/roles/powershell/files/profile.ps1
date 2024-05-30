@@ -21,7 +21,7 @@ Function _GetParameters($Params, $Index) {
 # Public convenience interactive functions.
 
 Function edit-history() {
-    If (Get-Command $Env:EDITOR -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue $Env:EDITOR) {
         & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
     }
 }
@@ -63,7 +63,7 @@ Function which() {
 
 Function PrependPaths() {
     While ($ArgIdx -LT $Args[0].Count) {
-        $Folder = "$(_GetParameters $Args $ArgIdx)"
+        $Folder = _GetParameters $Args $ArgIdx
         If (
             (Test-Path -Path $Folder -PathType Container) -And `
             (-Not ($Env:Path -Like "*$Folder*"))
@@ -219,7 +219,7 @@ Set-Alias -Name cbpaste -Value Get-Clipboard
 # Bat settings.
 
 # Set default pager to Bat.
-If (Get-Command bat -ErrorAction SilentlyContinue) {
+If (Get-Command -ErrorAction SilentlyContinue bat) {
     $Env:PAGER = 'bat'
 }
 
@@ -227,7 +227,7 @@ If (Get-Command bat -ErrorAction SilentlyContinue) {
 
 # Load Bootware autocompletion if available.
 If ($_Tty) {
-    Import-Module BootwareCompletion -ErrorAction SilentlyContinue
+    Import-Module -ErrorAction SilentlyContinue BootwareCompletion
 }
 
 # Docker settings.
@@ -239,7 +239,7 @@ $Env:DOCKER_CLI_HINTS = 'false'
 
 # Load Docker autocompletion if available.
 If ($_Tty) {
-    Import-Module DockerCompletion -ErrorAction SilentlyContinue
+    Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
 
 # Fzf settings.
@@ -253,12 +253,12 @@ $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 If (($_Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
     Import-Module PsFzf
 
-    If (Get-Command fd -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue fd) {
         $Env:FZF_CTRL_T_COMMAND = 'fd --strip-cwd-prefix'
     }
     If (
-        (Get-Command bat -ErrorAction SilentlyContinue) -And `
-        (Get-Command lsd -ErrorAction SilentlyContinue)
+        (Get-Command -ErrorAction SilentlyContinue bat) -And `
+        (Get-Command -ErrorAction SilentlyContinue lsd)
     ) {
         # PSFzf requires inline code since it cannot lookup profile defined
         # functions at runtime.
@@ -277,13 +277,13 @@ If (($_Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
 
 # Load Git autocompletion if available.
 If ($_Tty) {
-    Import-Module posh-git -ErrorAction SilentlyContinue
+    Import-Module -ErrorAction SilentlyContinue posh-git
 }
 
 # Helix settings.
 
 # Set full color support for terminal and default editor to Helix.
-If (Get-Command hx -ErrorAction SilentlyContinue) {
+If (Get-Command -ErrorAction SilentlyContinue hx) {
     $Env:EDITOR = 'hx'
 }
 
@@ -317,7 +317,7 @@ $Env:STARSHIP_LOG = 'error'
 
 # Initialize Starship if available.
 If ($_Tty) {
-    If (Get-Command starship -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue starship) {
         Invoke-Expression (&starship init powershell)
     }
     Else {
@@ -332,7 +332,7 @@ If ($_Tty) {
 
 # Load SSH autocompletion if available.
 If ($_Tty) {
-    Import-Module SSHCompletion -ErrorAction SilentlyContinue
+    Import-Module -ErrorAction SilentlyContinue SSHCompletion
 }
 
 # Ripgrep settings.
@@ -352,7 +352,7 @@ Set-Alias -Name rld -Value rust-lldb
 Function yz() {
     $Tmp = [System.IO.Path]::GetTempFileName()
     yazi --cwd-file $Tmp $Args
-    $Cwd = "$(Get-Content -Path $Tmp)"
+    $Cwd = Get-Content -Path $Tmp
     If (($Cwd) -And ($Cwd -NE $PWD.Path)) {
         Set-Location $Cwd
     }
@@ -362,7 +362,7 @@ Function yz() {
 # Zoxide settings.
 
 # Initialize Zoxide if available.
-If ($_Tty -And (Get-Command zoxide -ErrorAction SilentlyContinue)) {
+If ($_Tty -And (Get-Command -ErrorAction SilentlyContinue zoxide)) {
     Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
 }
 
@@ -376,7 +376,7 @@ If ($_Tty -And ($Env:TERM -Eq 'alacritty')) {
     # For more information, visit
     # https://zellij.dev/documentation/integration.html.
     If (
-        (Get-Command zellij -ErrorAction SilentlyContinue) -And
+        (Get-Command -ErrorAction SilentlyContinue zellij) -And
         (-Not $_SshSession)
     ) {
         # Attach to a default session if it exists.

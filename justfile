@@ -21,10 +21,14 @@ format:
   npx prettier --check .
   shfmt --diff bootware.sh install.sh completions ansible_collections/scruffaluff
 
+# Check code formatting.
 [windows]
 format:
   npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Setting CodeFormatting
 
 # Run code analyses.
 [unix]
@@ -32,9 +36,13 @@ lint:
   ./scripts/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
+# Run code analyses.
 [windows]
 lint:
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
+  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Settings PSScriptAnalyzerSettings.psd1
 
 # Install development dependencies.
 setup: _setup-python _setup-shell
@@ -110,6 +118,7 @@ _setup-shell:
 test-unit:
   npx bats --recursive tests
 
+# Run unit test suites.
 [windows]
 test-unit:
   Invoke-Pester -Output Detailed tests
