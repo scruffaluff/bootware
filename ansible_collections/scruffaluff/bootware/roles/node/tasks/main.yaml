@@ -68,7 +68,7 @@
 # administrator permissions.
 - name: Install multiple Node versions for Windows
   community.windows.win_scoop:
-    name: nodejs{{ item | replace('20', '') }}
+    name: nodejs{{ item | replace('22', '') }}
   loop: "{{ node_versions }}"
   when: ansible_system == "Win32NT"
 

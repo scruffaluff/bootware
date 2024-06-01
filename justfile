@@ -116,8 +116,22 @@ _setup-shell:
 
 [windows]
 _setup-shell:
+  #!powershell.exe
+  $ErrorActionPreference = 'Stop'
+  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
+    If (Get-Command -ErrorAction SilentlyContinue scoop) {
+      scoop install yq
+    }
+    ElseIf (Get-Command -ErrorAction SilentlyContinue choco) {
+      choco install --yes yq
+    }
+    Else {
+        Throw 'Error: Unable to install Yq'
+        Exit 1
+    }
+  }
   Install-Module -Force -Name PSScriptAnalyzer
-  Install-Module -Force -Name Pester
+  Install-Module -Force -SkipPublisherCheck -Name Pester
 
 # Run unit test suites.
 [unix]

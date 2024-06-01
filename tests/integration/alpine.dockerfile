@@ -60,5 +60,5 @@ ARG test
 #   -n: Check if the string has nonzero length.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/integration/roles.test.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
     fi
