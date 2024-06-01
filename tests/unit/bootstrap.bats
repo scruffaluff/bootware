@@ -140,7 +140,7 @@ main.yaml"
   expected="ansible-playbook --extra-vars ansible_become_method=sudo \
 --extra-vars ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task Install Deno for FreeBSD --connection local \
+--start-at-task Install Deno for Alpine --connection local \
 ${tmp_dir}/playbook.yaml"
 
   actual="$(bootstrap --start-at-role deno)"
