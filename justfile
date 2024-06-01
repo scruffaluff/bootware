@@ -62,6 +62,7 @@ _setup-python:
   python3 -m venv .venv
   .venv/bin/pip install --upgrade pip setuptools wheel
   python3 -m pip --version
+  which poetry || python3 -m pip install --user poetry
   poetry check --lock
   poetry install --no-root
 
