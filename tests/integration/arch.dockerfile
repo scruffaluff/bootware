@@ -62,5 +62,5 @@ ARG test
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
     export PATH="${HOME}/.deno/bin:${PATH}"; \
-    ./tests/integration/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+    tests/integration/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

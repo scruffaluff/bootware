@@ -14,7 +14,7 @@ COPY scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Fedora package.
-RUN ./scripts/package.sh --version "${version?}" build rpm
+RUN scripts/package.sh --version "${version?}" build rpm
 
 FROM scratch AS dist
 

@@ -2,11 +2,12 @@
  * Vuepress documentation builder.
  */
 
+import * as vitepress from "vitepress";
 import fs from "node:fs";
-import path from "node:path";
 import mustache from "mustache";
+import path from "node:path";
 import prettier from "prettier";
-import vitepress from "vitepress";
+import url from "node:url";
 
 interface Condition {
   arch?: string;
@@ -121,7 +122,9 @@ async function writeSoftware(repoPath: string): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const repoPath = path.dirname(__dirname);
+  const repoPath = path.dirname(
+    path.dirname(url.fileURLToPath(import.meta.url))
+  );
   writeSoftware(repoPath);
   vitepress.build(".");
 }

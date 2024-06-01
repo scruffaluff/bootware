@@ -38,7 +38,7 @@ alias lo local %*
 # Next and list code.
 alias nextlist next;; list
 alias nl nextlist %*
-# Step and list code.
+# Execute command with default shell.
 alias shell pyrc.shell(*"%*".split(), frame=$_frame)
 alias sh shell %*
 # Step and list code.

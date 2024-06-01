@@ -63,7 +63,7 @@
   { "name": "dbeaver" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "os": "openwrt" }],
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },

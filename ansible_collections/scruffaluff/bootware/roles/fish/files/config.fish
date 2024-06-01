@@ -376,8 +376,7 @@ set --export BUN_INSTALL "$HOME/.bun"
 prepend_paths "$BUN_INSTALL/bin"
 
 # Add Deno binaries to system path.
-set --export DENO_INSTALL "$HOME/.deno"
-prepend_paths "$DENO_INSTALL/bin"
+prepend_paths "$HOME/.deno/bin"
 
 # Add NPM global binaries to system path.
 prepend_paths "$HOME/.npm-global/bin"
@@ -411,7 +410,10 @@ function yz
     set tmp (mktemp)
     yazi --cwd-file $tmp $argv
     set cwd (cat $tmp)
-    if test -n $cwd; and test $cwd != $PWD
+
+    # Quotes are necessary for the if statement to ensure that the test function
+    # always receives the correct number of arguments.
+    if test -n "$cwd"; and test "$cwd" != "$PWD"
         cd $cwd
     end
     rm $tmp

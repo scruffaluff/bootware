@@ -59,7 +59,7 @@ Run this script from an administrator console or execute with the '--user' flag.
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -UseBasicParsing -Uri $SrcURL -OutFile $DstFile
+    Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
 }
 
 # Print error message and exit script with usage error code.
@@ -134,7 +134,7 @@ Function Main() {
         $Dest = 'C:/Program Files/Bootware/bootware.ps1'
     }
 
-    $DestDir = Split-Path -Path $Dest -Parent
+    $DestDir = Split-Path -Parent -Path $Dest
     # Explicit path update needed, since SetEnvironmentVariable does not seem to
     # instantly take effect.
     $Env:Path = $DestDir + ";$Env:Path"

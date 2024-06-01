@@ -53,7 +53,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -64,7 +64,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/alpine.dockerfile
+          file: tests/integration/alpine.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:alpine
@@ -85,7 +85,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -96,7 +96,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/arch.dockerfile
+          file: tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:arch
@@ -117,7 +117,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -128,7 +128,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/debian.dockerfile
+          file: tests/integration/debian.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:debian
@@ -149,7 +149,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -160,7 +160,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/fedora.dockerfile
+          file: tests/integration/fedora.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:fedora
@@ -180,7 +180,7 @@ jobs:
       ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Test installation, setup, and bootstrapping
         uses: vmactions/freebsd-vm@v1
@@ -195,7 +195,7 @@ jobs:
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles.test.ts --arch amd64 freebsd'
+            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -212,7 +212,7 @@ jobs:
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'macos' }}
     runs-on: macos-13
     steps:
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Bootware
         run: |
@@ -245,7 +245,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.js --arch amd64 --skip bats,build,docker,tilt macos
+          node tests/integration/roles.test.cjs --arch amd64 --skip bats,build,docker,tilt macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -268,12 +268,12 @@ jobs:
           - rpm
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Test building package
-        run: ./scripts/package.sh test ${{ matrix.package }}
+        run: scripts/package.sh test ${{ matrix.package }}
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -291,7 +291,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -302,7 +302,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/suse.dockerfile
+          file: tests/integration/suse.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:suse
@@ -323,7 +323,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -334,7 +334,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/ubuntu.dockerfile
+          file: tests/integration/ubuntu.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:ubuntu
@@ -351,7 +351,7 @@ jobs:
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'windows' }}
     runs-on: windows-latest
     steps:
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v3
         with:
@@ -412,8 +412,8 @@ jobs:
       # Github hosted runner and is broken.
       - name: Test installed binaries for roles
         run: |
-          $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.test.js --arch amd64 --skip ffsend,lldb,qsv windows
+          $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
+          node tests/integration/roles.test.cjs --arch amd64 --skip ffsend,lldb,qsv windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

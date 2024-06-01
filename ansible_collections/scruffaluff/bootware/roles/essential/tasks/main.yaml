@@ -1,4 +1,10 @@
 ---
+- name: Update package list for OpenWrt
+  ansible.builtin.command: opkg update
+  become: true
+  changed_when: false
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Install essential packages for FreeBSD
   become: true
   community.general.pkgng:

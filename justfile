@@ -2,18 +2,24 @@
 #
 # For more information, visit https://just.systems.
 
-set windows-shell := ['pwsh.exe', '-NoLogo', '-Command']
+set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
 
 # List all commands available in justfile.
 list:
   just --list
 
 # Execute all commands.
-all: setup format lint docs test-unit
+all: setup format lint docs test
+
+# Build distribution packages.
+[unix]
+dist version:
+  scripts/package.sh --version {{version}} ansible
+  scripts/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
 docs:
-  npx ts-node scripts/build_docs.ts
+  npx tsx scripts/build_docs.ts
 
 # Check code formatting.
 [unix]
@@ -21,20 +27,28 @@ format:
   npx prettier --check .
   shfmt --diff bootware.sh install.sh completions ansible_collections/scruffaluff
 
+# Check code formatting.
 [windows]
 format:
   npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path . -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Setting CodeFormatting
 
 # Run code analyses.
 [unix]
 lint:
-  ./scripts/shellcheck.sh
+  scripts/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
+# Run code analyses.
 [windows]
 lint:
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
+  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Settings PSScriptAnalyzerSettings.psd1
 
 # Install development dependencies.
 setup: _setup-python _setup-shell
@@ -46,8 +60,9 @@ setup: _setup-python _setup-shell
 _setup-python:
   python3 --version
   python3 -m venv .venv
-  ./.venv/bin/pip install --upgrade pip setuptools wheel
+  .venv/bin/pip install --upgrade pip setuptools wheel
   python3 -m pip --version
+  which poetry || python3 -m pip install --user poetry
   poetry check --lock
   poetry install --no-root
 
@@ -102,14 +117,29 @@ _setup-shell:
 
 [windows]
 _setup-shell:
+  #!powershell.exe
+  $ErrorActionPreference = 'Stop'
+  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
+    If (Get-Command -ErrorAction SilentlyContinue scoop) {
+      scoop install yq
+    }
+    ElseIf (Get-Command -ErrorAction SilentlyContinue choco) {
+      choco install --yes yq
+    }
+    Else {
+        Throw 'Error: Unable to install Yq'
+        Exit 1
+    }
+  }
   Install-Module -Force -Name PSScriptAnalyzer
-  Install-Module -Force -Name Pester
+  Install-Module -Force -SkipPublisherCheck -Name Pester
 
 # Run unit test suites.
 [unix]
-test-unit:
+test:
   npx bats --recursive tests
 
+# Run unit test suites.
 [windows]
-test-unit:
+test:
   Invoke-Pester -Output Detailed tests

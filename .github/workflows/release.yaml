@@ -34,7 +34,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Cache packages
         uses: actions/cache@v4
@@ -44,9 +44,13 @@ jobs:
             .venv
             node_modules
           key: >-
-            node-20_python-3.12_${{ runner.os }}_npm-${{
+            node-22_python-3.12_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | bash -s -- --to
+          /usr/local/bin
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -54,34 +58,22 @@ jobs:
       - name: Install Node interpreter
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
+          node-version: "22"
       - name: Install Python interpreter
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install Python packages
-        run: |
-          python --version
-          python -m pip --version
-          python -m pip install poetry
-          poetry install --no-root
-      - name: Build packages with checksums
-        run: >-
-          ./scripts/package.sh --version ${{ github.ref_name }} dist alpm apk
-          deb rpm
+      - name: Install development dependencies
+        run: just setup
+      - name: Build packages
+        run: just dist ${{ github.ref_name }}
       - name: Build and publish collection
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
-        run: |
-          filename="scruffaluff-bootware-${{ github.ref_name }}.tar.gz"
-          ./scripts/package.sh --version ${{ github.ref_name }} ansible
-          poetry run ansible-galaxy collection publish --token \
-            "${ANSIBLE_GALAXY_TOKEN}" "dist/${filename}"
+        run: >-
+          poetry run ansible-galaxy collection publish --token
+          "${ANSIBLE_GALAXY_TOKEN}" "dist/scruffaluff-bootware-${{
+          github.ref_name }}.tar.gz"
       - name: Create GitHub release
         id: release
         uses: softprops/action-gh-release@v2
@@ -105,7 +97,7 @@ jobs:
       # Homebrew formulas required the checksum of the GitHub release archive
       # and thus cannot be created before the release.
       - name: Build Homebrew formula
-        run: ./scripts/package.sh --version ${{ github.ref_name }} dist brew
+        run: scripts/package.sh --version ${{ github.ref_name }} dist brew
       - name: Upload Homebrew formula to release
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -113,7 +105,7 @@ jobs:
         with:
           asset_content_type: text/plain
           asset_name: bootware.rb
-          asset_path: ./dist/bootware.rb
+          asset_path: dist/bootware.rb
           upload_url: ${{ steps.release.outputs.upload_url }}
       - name: Setup Tmate session if debug enabled
         if: >-
