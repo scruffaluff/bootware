@@ -4,8 +4,8 @@
 
 // Execute shell commands to test binaries installed from roles.
 import Denomander from "https://deno.land/x/denomander@0.9.3/mod.ts";
-import * as path from "https://deno.land/std@0.186.0/path/mod.ts";
-import * as streams from "https://deno.land/std@0.186.0/streams/mod.ts";
+import * as path from "jsr:@std/path@0.224.0/path/mod.ts";
+import * as streams from "jsr:@std/path@0.224.0/streams/mod.ts";
 
 interface Dict {
   [key: string]: string;

@@ -2,8 +2,8 @@
  * Run all Docker integration tests for an architecture.
  */
 
-const childProcess = require("child_process");
-const { Command } = require("commander");
+import childProcess from "node:child_process";
+import { Command } from "commander";
 
 function main(): void {
   const program = new Command();

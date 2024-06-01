@@ -2,18 +2,24 @@
 #
 # For more information, visit https://just.systems.
 
-set windows-shell := ['pwsh.exe', '-NoLogo', '-Command']
+set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
 
 # List all commands available in justfile.
 list:
   just --list
 
 # Execute all commands.
-all: setup format lint docs test-unit
+all: setup format lint docs test
+
+# Build distribution packages.
+[unix]
+dist version:
+  scripts/package.sh --version {{version}} ansible
+  scripts/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
 docs:
-  npx ts-node scripts/build_docs.ts
+  npx tsx scripts/build_docs.ts
 
 # Check code formatting.
 [unix]
@@ -33,7 +39,7 @@ format:
 # Run code analyses.
 [unix]
 lint:
-  ./scripts/shellcheck.sh
+  scripts/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
 # Run code analyses.
@@ -54,7 +60,7 @@ setup: _setup-python _setup-shell
 _setup-python:
   python3 --version
   python3 -m venv .venv
-  ./.venv/bin/pip install --upgrade pip setuptools wheel
+  .venv/bin/pip install --upgrade pip setuptools wheel
   python3 -m pip --version
   poetry check --lock
   poetry install --no-root
@@ -115,10 +121,10 @@ _setup-shell:
 
 # Run unit test suites.
 [unix]
-test-unit:
+test:
   npx bats --recursive tests
 
 # Run unit test suites.
 [windows]
-test-unit:
+test:
   Invoke-Pester -Output Detailed tests

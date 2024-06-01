@@ -13,12 +13,38 @@
   register: croc_linux
   when: ansible_system == "Linux"
 
+# Temporarily overriden as of 05/31/2024 until Homebrew gets the Croc version
+# correct.
+# - name: Get latest Croc version for Linux
+#   ansible.builtin.uri:
+#     method: GET
+#     return_content: true
+#     url: https://formulae.brew.sh/api/formula/croc.json
+#   register: croc_formula
+#   when: ansible_system == "Linux" and croc_linux is failed
+
+# - name: Download Croc for Linux
+#   ansible.builtin.unarchive:
+#     dest: /tmp
+#     mode: "777"
+#     remote_src: true
+#     src: >-
+#       https://github.com/schollz/croc/releases/download/v{{
+#       croc_formula.json.versions.stable }}/croc_v{{
+#       croc_formula.json.versions.stable }}_Linux-{{
+#       croc_arch[system_architecture] }}.tar.gz
+#   vars:
+#     croc_arch:
+#       amd64: 64bit
+#       arm64: ARM64
+#   when: ansible_system == "Linux" and croc_linux is failed
+
 - name: Get latest Croc version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://formulae.brew.sh/api/formula/croc.json
-  register: croc_formula
+    url: https://api.github.com/repos/schollz/croc/releases/latest
+  register: croc_release
   when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Download Croc for Linux
@@ -27,10 +53,9 @@
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/schollz/croc/releases/download/v{{
-      croc_formula.json.versions.stable }}/croc_v{{
-      croc_formula.json.versions.stable }}_Linux-{{
-      croc_arch[system_architecture] }}.tar.gz
+      https://github.com/schollz/croc/releases/download/{{
+      croc_release.json.tag_name }}/croc_{{ croc_release.json.tag_name
+      }}_Linux-{{ croc_arch[system_architecture] }}.tar.gz
   vars:
     croc_arch:
       amd64: 64bit

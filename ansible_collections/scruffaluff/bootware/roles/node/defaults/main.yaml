@@ -2,7 +2,6 @@
 node_applications:
   - "@taplo/cli"
   - "@vue/cli"
-  - "gitmoji-cli"
   - bash-language-server
   - dockerfile-language-server-nodejs
   - lean-language-server
@@ -19,4 +18,4 @@ node_applications:
   - wikit
   - yaml-language-server
 node_versions:
-  - "20"
+  - "22"
