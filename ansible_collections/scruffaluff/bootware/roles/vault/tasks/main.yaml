@@ -45,7 +45,7 @@
 
 - name: Install Vault for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: vault
   when: ansible_system == "Darwin"

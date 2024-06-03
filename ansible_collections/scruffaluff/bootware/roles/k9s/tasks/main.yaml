@@ -44,7 +44,7 @@
 
 - name: Install K9s for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k9s
   when: ansible_system == "Darwin"

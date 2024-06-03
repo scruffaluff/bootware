@@ -58,6 +58,7 @@ bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
 bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
+brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
 fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"

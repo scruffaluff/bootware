@@ -20,7 +20,7 @@
 
 - name: Install Kind for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: kind
   when: ansible_system == "Darwin"

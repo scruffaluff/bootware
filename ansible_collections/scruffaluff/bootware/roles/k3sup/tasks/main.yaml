@@ -25,7 +25,7 @@
 
 - name: Install K3sup for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k3sup
   when: ansible_system == "Darwin"

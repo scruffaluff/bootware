@@ -60,7 +60,7 @@
 
 - name: Install Just for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: just
   when: ansible_system == "Darwin"
@@ -81,14 +81,24 @@
     - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
+- name: Generate Just shell completions for Unix
+  ansible.builtin.shell: just --completions {{ item }} > /tmp/just.{{ item }}
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: ansible_system != "Win32NT"
+
 - name: Install Just shell completions for Unix
-  ansible.builtin.get_url:
+  ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
     mode: "644"
-    url: >-
-      https://raw.githubusercontent.com/casey/just/master/completions/just.{{
-      item.shell }}
+    remote_src: true
+    src: /tmp/just.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/just"

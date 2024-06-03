@@ -58,7 +58,7 @@
 
 - name: Install QEMU for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"

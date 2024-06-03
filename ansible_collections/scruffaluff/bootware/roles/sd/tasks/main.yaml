@@ -46,7 +46,7 @@
 
 - name: Install SD for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: sd
   when: ansible_system == "Darwin"

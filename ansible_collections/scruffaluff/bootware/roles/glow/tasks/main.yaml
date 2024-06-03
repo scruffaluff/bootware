@@ -63,7 +63,7 @@
 
 - name: Install Glow for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: glow
   when: ansible_system == "Darwin"
