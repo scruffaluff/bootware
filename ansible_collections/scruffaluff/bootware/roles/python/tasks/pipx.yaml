@@ -24,7 +24,7 @@
 
 - name: Install Pipx for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"

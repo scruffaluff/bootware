@@ -43,7 +43,7 @@
 
 - name: Install GitLab Runner for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"
