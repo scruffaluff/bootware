@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Android, Bun, GDB, LLDB, and Readline roles.
+- Android, Bitwig, Bun, GDB, LLDB, OBS, and Readline roles.
 - Injection support for Pipx application installations.
 - Tmux keybindings.
 - Yazi change directory shell integration.

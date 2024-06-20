@@ -131,6 +131,13 @@
         - database
         - desktop
 
+    - name: Install Bitwig Studio audio workstation
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bitwig
+      tags:
+        - bitwig
+        - extras
+
     - name: Install build tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.build
@@ -724,6 +731,13 @@
         - node
         - server
         - wsl
+
+    - name: Install OBS Studio video recorder
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.obs
+      tags:
+        - extras
+        - obs
 
     - name: Install optional packages
       ansible.builtin.import_role:
