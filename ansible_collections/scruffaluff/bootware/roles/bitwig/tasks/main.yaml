@@ -8,11 +8,11 @@
 - name: Install Bitwig for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
-    name: bitwig
+    name: bitwig-studio
     state: present
   when: ansible_system == "Darwin"
 
 - name: Install Bitwig for Windows
-  community.windows.win_scoop:
+  chocolatey.chocolatey.win_chocolatey:
     name: bitwig
   when: ansible_system == "Win32NT"

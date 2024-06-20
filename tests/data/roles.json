@@ -11,8 +11,8 @@
   },
   {
     "name": "audacity",
-    "skip": [{ "os": "freebsd" }],
     "tests": {
+      "freebsd": ["audacity --version"],
       "linux": ["flatpak info org.audacityteam.Audacity"],
       "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
       "windows": ["scoop prefix audacity"]
@@ -32,6 +32,15 @@
     "tests": ["bats --version"]
   },
   { "name": "beekeeper" },
+  {
+    "name": "bitwig",
+    "skip": [{ "os": "freebsd" }],
+    "tests": {
+      "linux": ["flatpak info com.bitwig.BitwigStudio"],
+      "macos": [],
+      "windows": []
+    }
+  },
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
   {
@@ -246,6 +255,15 @@
     "tests": ["mongosh --version"]
   },
   { "name": "node", "tests": ["node --version", "npm --version"] },
+  {
+    "name": "obs",
+    "tests": {
+      "freebsd": ["obs --version"],
+      "linux": ["flatpak info com.obsproject.Studio"],
+      "macos": ["/Applications/OBS.app/Contents/MacOS/OBS --version"],
+      "windows": ["scoop prefix obs-studio"]
+    }
+  },
   { "name": "package" },
   { "name": "packer", "tests": ["packer --version"] },
   {
