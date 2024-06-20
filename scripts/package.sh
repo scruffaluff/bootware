@@ -264,7 +264,7 @@ test() {
 # Script entrypoint.
 #######################################
 main() {
-  version='0.8.0'
+  version='0.8.1'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
