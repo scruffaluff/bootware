@@ -11,6 +11,7 @@
   become: true
   vars:
     lua_package:
+      apk: lua5.4
       apt: lua5.3
       zypper: lua53
   when: ansible_system == "Linux"
