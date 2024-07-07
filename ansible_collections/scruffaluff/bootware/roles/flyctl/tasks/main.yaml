@@ -15,12 +15,8 @@
     src: >-
       https://github.com/superfly/flyctl/releases/download/v{{
       flyctl_formula.json.versions.stable }}/flyctl_{{
-      flyctl_formula.json.versions.stable }}_Linux_{{
-      flyctl_arch[system_architecture] }}.tar.gz
-  vars:
-    flyctl_arch:
-      amd64: x86_64
-      arm64: arm64
+      flyctl_formula.json.versions.stable }}_Linux_{{ system_architecture
+      }}.tar.gz
   when: ansible_system == "Linux"
 
 - name: Install Flyctl for Linux

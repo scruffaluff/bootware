@@ -41,7 +41,7 @@ jobs:
             hashFiles('poetry.lock') }}
       - name: Install Just
         run: >-
-          curl -LSfs https://just.systems/install.sh | bash -s -- --to
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
           /usr/local/bin
       - name: Install Node interpreter
         uses: actions/setup-node@v4

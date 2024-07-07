@@ -101,7 +101,7 @@ _setup-shell:
   if [ ! -x "$(command -v yq)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install yq
-    elif [ -x "$(command -v brew)" ]; then
+    elif [ -x "$(command -v pkg)" ]; then
       ${super:+"${super}"} pkg update
       ${super:+"${super}"} pkg install --yes yq
     else
