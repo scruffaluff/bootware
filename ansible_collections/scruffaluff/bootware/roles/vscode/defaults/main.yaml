@@ -12,9 +12,11 @@ vscode_remote_extensions:
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mhutchie.git-graph
+  - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - skellock.just
   - stkb.rewrap
+  - sukumo28.wav-preview
   - tamasfe.even-better-toml
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
@@ -29,7 +31,6 @@ vscode_extensions:
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
   - dbaeumer.vscode-eslint
-  - dorzey.vscode-sqlfluff
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
@@ -46,11 +47,13 @@ vscode_extensions:
   - ms-python.python
   - ms-vscode-remote.vscode-remote-extensionpack
   - ms-vscode.vscode-serial-monitor
+  - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - ritwickdey.liveserver
   - rust-lang.rust-analyzer
   - skellock.just
   - stkb.rewrap
+  - sukumo28.wav-preview
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
   - tilt-dev.tiltfile

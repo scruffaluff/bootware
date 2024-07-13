@@ -22,17 +22,31 @@
   register: fzf_formula
   when: ansible_system in ["FreeBSD", "Linux"]
 
+# Some of the Fzf releases have a "v" in the name while others do not.
+#
+# The ignore_errors, loop, and vars allow for trying mutliple URLs and breaking
+# the loop if a URL succeeds. Since ignore_errors is false on the last loop
+# item, the task will fail if none of the URLs work.
 - name: Install Fzf for Unix
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/junegunn/fzf/releases/download/{{
+      https://github.com/junegunn/fzf/releases/download/{{ item }}{{
       fzf_formula.json.versions.stable }}/fzf-{{
       fzf_formula.json.versions.stable }}-{{ ansible_system | lower }}_{{
       system_architecture }}.tar.gz
-  when: ansible_system in ["FreeBSD", "Linux"]
+  ignore_errors: "{{ item != 'v' }}"
+  loop:
+    - ""
+    - v
+  register: fzf_unarchive_result
+  vars:
+    fzf_unarchive_run: >-
+      {{ (fzf_unarchive_result is failed) if fzf_unarchive_result is defined
+      else true }}
+  when: ansible_system in ["FreeBSD", "Linux"] and fzf_unarchive_run
 
 - name: Install Fzf for Unix
   ansible.builtin.copy:
