@@ -92,7 +92,7 @@ Function IsAdministrator {
 
 # Print log message to stdout if logging is enabled.
 Function Log($Message) {
-    If (-Not "$Env:BOOTWARE_NOLOG") {
+    If (-Not "$Env:INSTALL_NOLOG") {
         Write-Output $Message
     }
 }

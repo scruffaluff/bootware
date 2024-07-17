@@ -28,3 +28,6 @@ skip_list:
   # variable naming is consistent for all other files by commenting the next
   # line.
   - var-naming[no-role-prefix]
+  # Prettier already enforces line length, so YamlLint only complains about long
+  # URLs.
+  - yaml[line-length]

@@ -94,7 +94,9 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          build-args: test=true
+          build-args: |
+            skip=libvirt
+            test=true
           context: .
           file: tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
@@ -231,21 +233,18 @@ jobs:
         continue-on-error: true
         run: bootware bootstrap --dev --no-passwd --tags update
       # Bats is already installed with NPM and causes a conflict. Docker is not
-      # installable on the GitHub MacOS VM. # Homebrew cmake installer is broken
-      # as of 03/28/2024 due to a cask conflict warning. For more information,
-      # visit
-      # https://github.com/ansible-collections/community.general/issues/7044#issuecomment-2026519552.
+      # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --skip
-          bats,build,docker --tags desktop,extras
+          bootware bootstrap --dev --no-passwd --retries 3 --skip bats,docker
+          --tags desktop,extras
       # Ruby Tilt is already installed and the VM's shell is configured to point
       # to the Ruby executable even after it is removed and another Tilt
       # exectuable is installed.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.cjs --arch amd64 --skip bats,build,docker,tilt macos
+          node tests/integration/roles.test.cjs --arch amd64 --skip bats,docker,tilt macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

@@ -107,7 +107,7 @@ error() {
 error_usage() {
   bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  printf "Run 'bootware --help' for usage.\n" >&2
+  printf "Run 'install --help' for usage.\n" >&2
   exit 2
 }
 
@@ -239,7 +239,7 @@ install_man() {
 #######################################
 # Print log message to stdout if logging is enabled.
 # Globals:
-#   BOOTWARE_NOLOG
+#   INSTALL_NOLOG
 # Outputs:
 #   Log message to stdout.
 #######################################
@@ -248,7 +248,7 @@ log() {
   #
   # Flags:
   #   -z: Check if string has zero length.
-  if [ -z "${BOOTWARE_NOLOG:-}" ]; then
+  if [ -z "${INSTALL_NOLOG:-}" ]; then
     echo "$@"
   fi
 }

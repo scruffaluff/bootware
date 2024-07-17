@@ -7,7 +7,7 @@ setup() {
   load '../../node_modules/bats-assert/load'
 
   # Disable logging to simplify stdout for testing.
-  export BOOTWARE_NOLOG='true'
+  export INSTALL_NOLOG='true'
 
   # Mock functions for child processes by printing received arguments.
   #

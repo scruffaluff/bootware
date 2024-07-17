@@ -73,6 +73,27 @@
     name: glow
   when: ansible_system == "Win32NT"
 
+- name: Create Glow settings directory for MacOS
+  ansible.builtin.file:
+    dest: "{{ user_home }}/Library/Preferences/glow"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Copy Glow settings file for MacOS
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/Library/Preferences/glow/glow.yaml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: glow.yaml
+  become: true
+  when: ansible_system == "Darwin"
+
 - name: Create Glow settings directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -81,7 +102,7 @@
     path: "{{ user_home }}/.config/glow"
     state: directory
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["Darwin", "Win32NT"]
 
 - name: Copy Glow settings file for Unix
   ansible.builtin.copy:
@@ -92,7 +113,7 @@
     owner: "{{ user_id }}"
     src: glow.yaml
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system not in ["Darwin", "Win32NT"]
 
 - name: Create Glow settings directory for Windows
   ansible.windows.win_file:
