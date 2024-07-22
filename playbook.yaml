@@ -68,6 +68,7 @@
       tags:
         - audacity
         - desktop
+        - music
 
     - name: Install audio tools
       ansible.builtin.import_role:
@@ -75,6 +76,7 @@
       tags:
         - audio
         - desktop
+        - music
 
     - name: Install Amazon Web Services development tools
       ansible.builtin.import_role:
@@ -136,7 +138,8 @@
         name: scruffaluff.bootware.bitwig
       tags:
         - bitwig
-        - extras
+        - desktop
+        - music
 
     - name: Install build tools
       ansible.builtin.import_role:
@@ -189,7 +192,8 @@
       tags:
         - compass
         - database
-        - desktop
+        - extras
+        - never
 
     - name: Install Croc secure file transfer
       ansible.builtin.import_role:
@@ -588,6 +592,7 @@
       tags:
         - desktop
         - kdenlive
+        - video
 
     - name: Install Kind Kubernetes development cluster manager
       ansible.builtin.import_role:
@@ -721,6 +726,14 @@
         - server
         - wsl
 
+    - name: Install MuseScore music notater
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.musescore
+      tags:
+        - desktop
+        - musescore
+        - music
+
     - name: Install Node JavaScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.node
@@ -736,8 +749,9 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.obs
       tags:
-        - extras
+        - desktop
         - obs
+        - video
 
     - name: Install optional packages
       ansible.builtin.import_role:
@@ -918,6 +932,7 @@
         name: scruffaluff.bootware.sonic_pi
       tags:
         - desktop
+        - music
         - sonic_pi
 
     - name: Install Sops secrets editor

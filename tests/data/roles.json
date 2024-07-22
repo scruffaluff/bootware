@@ -254,6 +254,17 @@
     "skip": [{ "os": "alpine" }, { "os": "fedora" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
   },
+  {
+    "name": "musescore",
+    "tests": {
+      "freebsd": ["mscore --version"],
+      "linux": ["flatpak info org.musescore.MuseScore"],
+      "macos": [
+        "/Applications/MuseScore 4.app/Contents/MacOS/mscore --version"
+      ],
+      "windows": ["scoop prefix musescore"]
+    }
+  },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   {
     "name": "obs",

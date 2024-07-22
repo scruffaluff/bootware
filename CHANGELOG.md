@@ -5,6 +5,21 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Shell keybindings to insert current working directory.
+- MuseScore role.
+
+### Changed
+
+- Glow to always use a pager.
+
+### Fixed
+
+- Helix end of line keybindings.
+
 ## 0.8.1 - 2024-06-21
 
 ### Added
