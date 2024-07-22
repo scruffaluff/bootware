@@ -127,6 +127,24 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
     # Add Fish style keybindings.
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadLineKeyHandler -Chord Alt+c -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+
+        $WorkingDir = "$(Get-Location)\"
+        # Need to use ".Replace" instead of "-Replace" to avoid regular
+        # expression features as explained at
+        # https://stackoverflow.com/a/24287874.
+        $StripLine = $Line.Replace("$WorkingDir", '')
+        If ($StripLine.Length -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
+        }
+        Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line$WorkingDir")
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
         If ($Env:PAGER) {
             $Pager = $Env:PAGER

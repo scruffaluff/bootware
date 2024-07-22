@@ -8,6 +8,7 @@ highlight linenr ctermbg=lightgrey
 set backspace=indent,eol,start  " Make insert mode backspace always delete.
 set hlsearch " Highlight all search results.
 set laststatus=2 " Always show the status line.
+set nohlsearch " Disable search highlights since they persist.
 set number " Show line numbers.
 set ruler " Show row and column rulers.
 set showmatch " Highlight matching braces.
@@ -16,7 +17,7 @@ set wildmenu " Enable tab completion menu in command prompt.
 
 " Enable syntax highlighting if supported.
 if has('syntax')
-	syntax enable
+    syntax enable
 endif
 
 " Cursor settings.
@@ -39,4 +40,5 @@ noremap ; l
 noremap l k
 noremap k j
 noremap j h
+vmap y ygv<Esc> " Yank text without moving cursor.
 

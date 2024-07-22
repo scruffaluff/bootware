@@ -16,7 +16,7 @@
 # Flags:
 #   -n: Check if string is nonempty.
 function _delete_commandline_from_history
-    set command (string trim (commandline))
+    set command (commandline | string collect | string trim)
     if test -n $command
         set results "$(history search $command)"
 
@@ -26,6 +26,42 @@ function _delete_commandline_from_history
             history save
             commandline --function kill-whole-line
         end
+    end
+end
+
+# Paste pipe to system pager command into the commandline.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function _paginate_command
+    # Variable 'PAGER' needs quotes in case it is not defined.
+    if test -n "$PAGER"
+        set pager_ $PAGER
+    else
+        set pager_ less
+    end
+
+    set line (commandline | string collect)
+    set command " &| $pager_"
+    set query (string escape --style regex $command)
+
+    set newline (string replace --regex "$query\$" '' $line)
+    if test $line = $newline
+        commandline --insert $command
+    else
+        commandline --replace $newline
+    end
+end
+
+# Paste current working directory into the commandline.
+function _paste_working_directory
+    set line (commandline | string collect)
+    set working_directory "$(string replace "$HOME" '~' $(pwd))/"
+
+    if string match --entire --quiet $working_directory $line
+        commandline --replace (string replace $working_directory '' $line)
+    else
+        commandline --insert $working_directory
     end
 end
 
@@ -153,6 +189,8 @@ function fish_user_key_bindings
     bind \cd _delete_commandline_from_history
     bind \cj backward-char
     bind \ue000 forward-char
+    bind \ec _paste_working_directory
+    bind \ep _paginate_command
     bind \eZ redo
     bind \ez undo
 end
