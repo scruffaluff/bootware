@@ -192,6 +192,10 @@
     - scoop/apps/vscode/current/data/user-data/User/settings.json
   when: ansible_system == "Win32NT"
 
+- name: Apply customizations to VSCode
+  ansible.builtin.import_tasks: customize.yaml
+  when: vscode_install_customizations and ansible_pkg_mgr != "apk"
+
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
   become: true
