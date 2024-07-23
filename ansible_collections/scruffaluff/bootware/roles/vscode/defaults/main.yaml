@@ -3,6 +3,13 @@ vscode_arch_:
   amd64: x64
   arm64: arm64
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
+vscode_custom_html: |
+  <style>
+    .terminal.xterm {
+      top: 0px;
+    }
+  </style>
+vscode_install_customizations: true
 vscode_install_extensions: true
 vscode_remote_extensions:
   - alefragnani.bookmarks
@@ -64,3 +71,14 @@ vscode_extensions:
   - yzhang.markdown-all-in-one
   - zhwu95.riscv
   - zxh404.vscode-proto3
+vscode_path_linux_:
+  apk: /usr/lib/code-oss/resources/app
+  pacman: /opt/visual-studio-code/resources/app
+vscode_path_:
+  Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
+  FreeBSD: /usr/local/share/code-oss/resources/app
+  Linux: >-
+    {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
+    }}
+  Win32NT: "{{ scoop_apps }}/vscode/current/resources/app"
+vscode_path: "{{ vscode_path_[ansible_system] }}"

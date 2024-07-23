@@ -1,0 +1,78 @@
+---
+- name: Backup VSCode internal files for Unix
+  ansible.builtin.copy:
+    dest: "{{ item }}.bak"
+    force: false
+    mode: preserve
+    remote_src: true
+    src: "{{ item }}"
+  become: true
+  loop:
+    - "{{ vscode_path }}/product.json"
+    - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+  when: ansible_system != "Win32NT"
+
+- name: Backup VSCode internal files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ item }}.bak"
+    force: false
+    owner: "{{ user_id }}"
+    remote_src: true
+    src: "{{ item }}"
+  loop:
+    - "{{ vscode_path }}/product.json"
+    - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+  when: ansible_system == "Win32NT"
+
+- name: Update VSCode styles for Unix
+  ansible.builtin.blockinfile:
+    block: "{{ vscode_custom_html }}"
+    create: false
+    insertbefore: </html>
+    marker: >-
+      <!--{mark} ANSIBLE MANAGED styles for vscode BLOCK-->
+    path: >-
+      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Update VSCode styles for Windows
+  community.windows.win_lineinfile:
+    create: false
+    insertbefore: </html>
+    line: "{{ vscode_custom_html | replace('\n', '') }}"
+    path: >-
+      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+    state: present
+  when: ansible_system == "Win32NT"
+
+- name: Read contents of VSCode workbench file
+  ansible.builtin.slurp:
+    src: >-
+      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+  register: vscode_workbench_file
+
+- name: Compute checksum of VSCode workbench file
+  ansible.builtin.set_fact:
+    vscode_workbench_checksum: >-
+      {{ vscode_workbench_file['content'] | b64decode |
+      scruffaluff.bootware.vscode_checksum }}
+
+- name: Write contents of VSCode product file for Unix
+  ansible.builtin.lineinfile:
+    backrefs: true
+    line: '\g<1>"{{ vscode_workbench_checksum }}",'
+    path: "{{ vscode_path }}/product.json"
+    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    state: present
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Write contents of VSCode product file for Windows
+  community.windows.win_lineinfile:
+    backrefs: true
+    line: '$1"{{ vscode_workbench_checksum }}",'
+    path: "{{ vscode_path }}/product.json"
+    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    state: present
+  when: ansible_system == "Win32NT"
