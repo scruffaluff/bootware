@@ -5,7 +5,8 @@
 " General settings.
 
 highlight linenr ctermbg=lightgrey
-set backspace=indent,eol,start  " Make insert mode backspace always delete.
+set backspace=indent,eol,start " Make insert mode backspace always delete.
+set belloff=all " Disable error sounds.
 set hlsearch " Highlight all search results.
 set laststatus=2 " Always show the status line.
 set nohlsearch " Disable search highlights since they persist.

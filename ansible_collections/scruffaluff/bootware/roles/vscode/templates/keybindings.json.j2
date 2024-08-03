@@ -109,11 +109,26 @@
     "key": "alt+q",
     "when": "inDebugMode && !focusedSessionIsAttach"
   },
+  {
+    "command": "workbench.action.files.newUntitledFile",
+    "key": "ctrl+shift+n",
+    "when": "!panelFocus"
+  },
   { "command": "workbench.action.findInFiles", "key": "ctrl+shift+f" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
     "key": "ctrl+`",
     "when": "panelFocus"
+  },
+  {
+    "command": "workbench.action.moveEditorLeftInGroup",
+    "key": "ctrl+shift+left",
+    "when": "editorFocus"
+  },
+  {
+    "command": "workbench.action.moveEditorRightInGroup",
+    "key": "ctrl+shift+right",
+    "when": "editorFocus"
   },
   {
     "command": "workbench.action.navigateBack",
@@ -173,6 +188,11 @@
     "args": { "text": "\ue000" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+;"
+  },
+  {
+    "command": "workbench.action.terminal.split",
+    "key": "ctrl+shift+n",
+    "when": "terminalFocus"
   },
   {
     "command": "workbench.action.toggleMaximizedPanel",

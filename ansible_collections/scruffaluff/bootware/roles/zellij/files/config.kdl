@@ -6,84 +6,64 @@
 default_layout "layout"
 
 keybinds {
+    tmux clear-defaults=true {}
     unbind "Alt h"
     unbind "Ctrl b"
     unbind "Ctrl f"
-    RenameTab {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+    unbind "Ctrl q"
+
+    shared_except "locked" {
+        bind "Alt j" { MoveFocusOrTab "Left"; }
+        bind "Alt k" { MoveFocus "Down"; }
+        bind "Alt l" { MoveFocus "Up"; }
+        bind "Alt ;" { MoveFocusOrTab "Right"; }
+        bind "Alt Down" { MovePane "Down"; }
+        bind "Alt Left" { MovePane "Left"; }
+        bind "Alt Right" { MovePane "Right"; }
+        bind "Alt Up" { MovePane "Up"; }
     }
-    RenamePane {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+    shared_among "renametab" "tab" {
+        bind "Alt j" { GoToPreviousTab; }
+        bind "Alt ;" { GoToNextTab; }
+        bind "Alt Left" { MoveTab "Left"; }
+        bind "Alt Right" { MoveTab "Right"; }
     }
+
     move {
         bind "j" "Left" { MovePane "Left"; }
         bind "k" "Down" { MovePane "Down"; }
         bind "l" "Up" { MovePane "Up"; }
         bind ";" "Right" { MovePane "Right"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     normal {
         bind "Alt f" "Alt Up" { ToggleFocusFullscreen; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
         bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {
-        bind "j" "Left" { MoveFocus "Left"; }
-        bind ";" "Right" { MoveFocus "Right"; }
-        bind "k" "Down" { MoveFocus "Down"; }
-        bind "l" "Up" { MoveFocus "Up"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "j" { MoveFocus "Left"; }
+        bind "k" { MoveFocus "Down"; }
+        bind "l" { MoveFocus "Up"; }
+        bind ";" { MoveFocus "Right"; }
+        bind "Down" { MovePane "Down"; }
+        bind "Left" { MovePane "Left"; }
+        bind "Right" { MovePane "Right"; }
+        bind "Up" { MovePane "Up"; }
     }
     resize {
         bind "j" "Left" { Resize "Left"; }
         bind "k" "Down" { Resize "Down"; }
         bind "l" "Up" { Resize "Up"; }
         bind ";" "Right" { Resize "Right"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     scroll {
         bind "k" "Down" { ScrollDown; }
         bind "l" "Up" { ScrollUp; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
-    }
-    session {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     tab {
-        bind "j" "Left" { GoToPreviousTab; }
-        bind ";" "Right" { GoToNextTab; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
-    }
-    tmux clear-defaults=true {}
-    shared_except "tmux" "locked" {
-        unbind "Ctrl b"
+        bind "j" { GoToPreviousTab; }
+        bind ";" { GoToNextTab; }
+        bind "Left" { MoveTab "Left"; }
+        bind "Right" { MoveTab "Right"; }
     }
 }
 

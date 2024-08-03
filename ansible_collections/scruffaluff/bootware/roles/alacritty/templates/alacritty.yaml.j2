@@ -57,9 +57,9 @@ keyboard:
       mods: Control
 
 shell:
-  program: {{ user_shell }}
   args:
     - {{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}
+  program: {{ user_shell }}
 
 window:
 {% if ansible_system == "Darwin" %}
