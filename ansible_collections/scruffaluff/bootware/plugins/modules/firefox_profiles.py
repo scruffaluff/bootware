@@ -43,7 +43,12 @@ path:
 def main() -> None:
     """Find name and path of Firefox default profile for current user."""
     result = {"changed": False, "name": "", "path": ""}
-    module = AnsibleModule(argument_spec={}, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec={
+            "user": {"default": "", "required": False, "type": "str"}
+        },
+        supports_check_mode=True,
+    )
     if module.check_mode:
         module.exit_json(**result)
 
@@ -66,10 +71,13 @@ def main() -> None:
 
 def profiles_database(module: AnsibleModule, system: str) -> Path:
     """Find Firefox profiles database."""
+    user = module.params["user"]
     if system == "Darwin":
-        path = Path.home() / "Library/Application Support/Firefox/profiles.ini"
+        user_home = Path(f"/Users/{user}") if user else Path.home()
+        path = user_home / "Library/Application Support/Firefox/profiles.ini"
     elif system in ["FreeBSD", "Linux"]:
-        path = Path.home() / ".mozilla/firefox/profiles.ini"
+        user_home = Path(f"/home/{user}") if user else Path.home()
+        path = user_home / ".mozilla/firefox/profiles.ini"
     else:
         module.fail_json(
             msg=f"Module does not support operating system '{system}'.",

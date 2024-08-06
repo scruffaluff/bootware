@@ -5,6 +5,7 @@
 local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
+config.audible_bell = 'Disabled'
 config.color_scheme = 'Builtin Solarized Light'
 config.colors = {
   scrollbar_thumb = '#fdf6e3',
@@ -29,6 +30,7 @@ config.keys = {
   { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.SendString('\u{e000}'), key = ';', mods = 'CTRL' },
   { action = wezterm.action.SpawnTab('CurrentPaneDomain'), key = 't', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' }), key = 'n', mods = 'CTRL|SHIFT' },
 }
 config.window_close_confirmation = 'NeverPrompt'
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
