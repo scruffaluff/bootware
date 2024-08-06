@@ -7,10 +7,7 @@ default_layout "layout"
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "Alt h"
-    unbind "Ctrl b"
-    unbind "Ctrl f"
-    unbind "Ctrl q"
+    unbind "h" "H" "Alt h" "Ctrl b" "Ctrl q"
 
     shared_except "locked" {
         bind "Alt j" { MoveFocusOrTab "Left"; }
@@ -50,16 +47,27 @@ keybinds {
         bind "Up" { MovePane "Up"; }
     }
     resize {
-        bind "j" "Left" { Resize "Left"; }
-        bind "k" "Down" { Resize "Down"; }
-        bind "l" "Up" { Resize "Up"; }
-        bind ";" "Right" { Resize "Right"; }
+        bind "j" "Left" { Resize "Increase Left"; }
+        bind "k" "Down" { Resize "Increase Down"; }
+        bind "l" "Up" { Resize "Increase Up"; }
+        bind ";" "Right" { Resize "Increase Right"; }
+        bind "J" { Resize "Increase Left"; }
+        bind "K" { Resize "Increase Down"; }
+        bind "L" { Resize "Increase Up"; }
+        bind ":" { Resize "Increase Right"; }
+    }
+    search {
+        unbind "j" "Ctrl f"
+        bind "k" "Down" { ScrollDown; }
+        bind "l" "Up" { ScrollUp; }
     }
     scroll {
+        unbind "j" "Ctrl f"
         bind "k" "Down" { ScrollDown; }
         bind "l" "Up" { ScrollUp; }
     }
     tab {
+        unbind "l" "Down" "Up"
         bind "j" { GoToPreviousTab; }
         bind ";" { GoToNextTab; }
         bind "Left" { MoveTab "Left"; }
