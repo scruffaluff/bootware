@@ -72,6 +72,12 @@
   register: essential_bucket_add
   when: ansible_system == "Win32NT"
 
+- name: Add Scoop global shims to path for Windows
+  ansible.windows.win_path:
+    elements: "C:\\ProgramData\\scoop\\shims"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
 - name: Install essential packages for Windows
   community.windows.win_scoop:
     name:
