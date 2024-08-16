@@ -37,6 +37,7 @@ keybinds {
         bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {
+        unbind "c" "d"
         bind "j" { MoveFocus "Left"; }
         bind "k" { MoveFocus "Down"; }
         bind "l" { MoveFocus "Up"; }
@@ -45,6 +46,7 @@ keybinds {
         bind "Left" { MovePane "Left"; }
         bind "Right" { MovePane "Right"; }
         bind "Up" { MovePane "Up"; }
+        bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     resize {
         bind "j" "Left" { Resize "Increase Left"; }
