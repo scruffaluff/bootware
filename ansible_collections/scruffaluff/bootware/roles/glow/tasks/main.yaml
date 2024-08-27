@@ -39,12 +39,8 @@
     remote_src: true
     src: >-
       https://github.com/charmbracelet/glow/releases/download/v{{
-      glow_formula.json.versions.stable }}/glow_Linux_{{
-      glow_arch[system_architecture] }}.tar.gz
-  vars:
-    glow_arch:
-      amd64: x86_64
-      arm64: arm64
+      glow_formula.json.versions.stable }}/glow_{{
+      glow_formula.json.versions.stable }}_Linux_{{ glow_arch }}.tar.gz
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
     failed
@@ -55,7 +51,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/glow
+    src: >-
+      /tmp/glow_{{ glow_formula.json.versions.stable }}_Linux_{{ glow_arch
+      }}/glow
   become: true
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is

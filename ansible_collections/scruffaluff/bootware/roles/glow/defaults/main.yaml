@@ -1,0 +1,5 @@
+---
+glow_arch_:
+  amd64: x86_64
+  arm64: arm64
+glow_arch: "{{ glow_arch_[system_architecture] }}"

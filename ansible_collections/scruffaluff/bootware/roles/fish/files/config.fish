@@ -268,6 +268,7 @@ function _fzf_path_preview
     end
 end
 
+
 # Set Fzf solarized light theme.
 set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
@@ -281,9 +282,8 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 if test -n $_tty; and type -q fzf
     fzf --fish | source
 
-    if type -q fd
-        set --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix'
-    end
+    # Do not change CTRL_T command to fd. Fzf will lose the ability to prefix
+    # searches with the directory under the command line cursor.
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
