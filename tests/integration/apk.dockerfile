@@ -1,4 +1,4 @@
-FROM alpine:3.19.1 AS build
+FROM alpine:3.20.2 AS build
 
 ARG version
 
@@ -30,7 +30,8 @@ WORKDIR /bootware
 
 # Generate Alpine package signing keys.
 RUN openssl genrsa --out alpine.rsa  \
-    && doas openssl rsa --pubout --in alpine.rsa --out alpine.rsa.pub
+    && doas openssl rsa --pubout --in alpine.rsa --out alpine.rsa.pub \
+    && doas cp alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
 
 # Build Alpine package.
 RUN scripts/package.sh --version "${version?}" build apk
@@ -39,7 +40,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM alpine:3.18.4
+FROM alpine:3.20.2
 
 ARG version
 
