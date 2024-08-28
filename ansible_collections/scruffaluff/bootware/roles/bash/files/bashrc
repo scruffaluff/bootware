@@ -147,6 +147,8 @@ _fzf_path_preview() {
   fi
 }
 
+# Disable Fzf Alt-C command.
+export FZF_ALT_C_COMMAND=''
 # Set Fzf solarized light theme.
 _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
@@ -161,9 +163,6 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
   eval "$(fzf --bash)"
-
-  # Do not change CTRL_T command to fd. Fzf will lose the ability to prefix
-  # searches with the directory under the command line cursor.
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
     export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
   fi

@@ -1,0 +1,7 @@
+---
+starship_arch_:
+  amd64: x86_64
+  arm64: aarch64
+starship_arch: "{{ starship_arch_[system_architecture] }}"
+starship_libc: >-
+  {{ system_libc if system_architecture == 'amd64' else 'musl' }}

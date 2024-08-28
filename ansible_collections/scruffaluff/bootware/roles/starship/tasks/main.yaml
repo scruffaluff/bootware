@@ -28,13 +28,8 @@
     remote_src: true
     src: >-
       https://github.com/starship/starship/releases/download/v{{
-      starship_formula.json.versions.stable }}/starship-{{
-      starship_arch[system_architecture] }}-unknown-linux-{{ system_libc
-      }}.tar.gz
-  vars:
-    starship_arch:
-      amd64: x86_64
-      arm64: aarch64
+      starship_formula.json.versions.stable }}/starship-{{ starship_arch
+      }}-unknown-linux-{{ starship_libc }}.tar.gz
   when: ansible_system == "Linux" and starship_linux is failed
 
 - name: Install Starship for Linux

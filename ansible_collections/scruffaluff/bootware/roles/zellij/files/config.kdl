@@ -33,7 +33,7 @@ keybinds {
         bind ";" "Right" { MovePane "Right"; }
     }
     normal {
-        bind "Alt f" "Alt Up" { ToggleFocusFullscreen; }
+        bind "Alt m" "Alt Up" { ToggleFocusFullscreen; }
         bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {

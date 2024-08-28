@@ -10,6 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Shell keybindings to insert current working directory.
+- Shell keybindings to pipe to Fzf.
 - MuseScore role.
 
 ### Changed

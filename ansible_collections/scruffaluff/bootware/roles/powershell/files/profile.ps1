@@ -145,6 +145,20 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line$WorkingDir")
         }
     }
+    Set-PSReadLineKeyHandler -Chord Alt+f -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+
+        $StripLine = $Line -Replace " 2>&1 `\| fzf`$", ''
+        If ($StripLine.Length -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
+        }
+        Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line 2>&1 | fzf")
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
         If ($Env:PAGER) {
             $Pager = $Env:PAGER
@@ -262,6 +276,8 @@ If ($_Tty) {
 
 # Fzf settings.
 
+# Disable Fzf Alt-C command.
+$Env:FZF_ALT_C_COMMAND = ''
 # Set Fzf solarized light theme.
 $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
@@ -271,9 +287,6 @@ $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
 If (($_Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
     Import-Module PsFzf
 
-    If (Get-Command -ErrorAction SilentlyContinue fd) {
-        $Env:FZF_CTRL_T_COMMAND = 'fd --strip-cwd-prefix'
-    }
     If (
         (Get-Command -ErrorAction SilentlyContinue bat) -And `
         (Get-Command -ErrorAction SilentlyContinue lsd)

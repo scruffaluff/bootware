@@ -47,7 +47,7 @@ function _paginate_command
 
     set newline (string replace --regex "$query\$" '' $line)
     if test $line = $newline
-        commandline --insert $command
+        commandline --append $command
     else
         commandline --replace $newline
     end
@@ -62,6 +62,23 @@ function _paste_working_directory
         commandline --replace (string replace $working_directory '' $line)
     else
         commandline --insert $working_directory
+    end
+end
+
+# Paste pipe to fuzzy finder into the commandline.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function _select_command
+    set line (commandline | string collect)
+    set command " &| fzf"
+    set query (string escape --style regex $command)
+
+    set newline (string replace --regex "$query\$" '' $line)
+    if test $line = $newline
+        commandline --append $command
+    else
+        commandline --replace $newline
     end
 end
 
@@ -190,6 +207,7 @@ function fish_user_key_bindings
     bind \cj backward-char
     bind \ue000 forward-char
     bind \ec _paste_working_directory
+    bind \ef _select_command
     bind \ep _paginate_command
     bind \eZ redo
     bind \ez undo
@@ -268,7 +286,8 @@ function _fzf_path_preview
     end
 end
 
-
+# Disable Fzf Alt-C command.
+set --export FZF_ALT_C_COMMAND ''
 # Set Fzf solarized light theme.
 set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
@@ -281,9 +300,6 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 #   -q: Only check for exit status by supressing output.
 if test -n $_tty; and type -q fzf
     fzf --fish | source
-
-    # Do not change CTRL_T command to fd. Fzf will lose the ability to prefix
-    # searches with the directory under the command line cursor.
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
