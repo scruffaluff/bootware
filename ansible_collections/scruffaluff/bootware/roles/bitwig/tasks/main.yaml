@@ -3,7 +3,7 @@
   become: true
   community.general.flatpak:
     name: com.bitwig.BitwigStudio
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Bitwig for MacOS
   community.general.homebrew_cask:

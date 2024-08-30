@@ -9,7 +9,7 @@
   become: true
   community.general.flatpak:
     name: com.obsproject.Studio
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install OBS Studio for MacOS
   community.general.homebrew_cask:
