@@ -46,7 +46,7 @@
       - virt-viewer
   when: ansible_system == "FreeBSD"
 
-- name: Install Libvirt for Fedora and Suse
+- name: Install Libvirt for Fedora
   ansible.builtin.package:
     name:
       - guestfs-tools
@@ -60,7 +60,7 @@
       - virt-top
       - virt-viewer
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr == "dnf"
 
 - name: Install Libvirt for MacOS
   become: true
@@ -71,6 +71,21 @@
       - spice-gtk
       - virt-manager
   when: ansible_system == "Darwin"
+
+- name: Install Libvirt for Suse
+  ansible.builtin.package:
+    name:
+      - guestfs-tools
+      - libguestfs
+      - libguestfs-rescue
+      - libguestfs-rsync
+      - libvirt
+      - libvirt-client
+      - virt-install
+      - virt-top
+      - virt-viewer
+  become: true
+  when: ansible_pkg_mgr == "zypper"
 
 - name: Install Libvirt for Windows
   community.windows.win_scoop:

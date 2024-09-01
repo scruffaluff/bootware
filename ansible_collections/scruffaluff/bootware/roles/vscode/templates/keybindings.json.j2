@@ -59,6 +59,11 @@
   { "command": "-workbench.action.toggleSidebarVisibility", "key": "ctrl+b" },
   { "command": "-workbench.actions.view.problems", "key": "ctrl+shift+m" },
   { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
+  {
+    "command": "actions.find",
+    "key": "ctrl+f",
+    "when": "editorFocus || editorIsOpen"
+  },
   { "command": "bookmarks.list", "key": "ctrl+shift+l" },
   {
     "command": "bookmarks.toggleLabeled",
@@ -77,6 +82,11 @@
     "command": "editor.action.insertCursorBelow",
     "key": "ctrl+shift+down",
     "when": "editorTextFocus"
+  },
+  { 
+    "command": "editor.action.startFindReplaceAction", 
+    "key": "ctrl+h",
+    "when": "editorFocus || editorIsOpen"
   },
   { "command": "workbench.action.closeActiveEditor", "key": "ctrl+w" },
   {
@@ -137,12 +147,12 @@
   },
   {
     "command": "workbench.action.navigateBack",
-    "key": "ctrl+shift+i",
+    "key": "ctrl+shift+[",
     "when": "editorFocus"
   },
   {
     "command": "workbench.action.navigateForward",
-    "key": "ctrl+shift+o",
+    "key": "ctrl+shift+]",
     "when": "editorFocus"
   },
   {
@@ -158,6 +168,7 @@
     "when": "editorFocus"
   },
   { "command": "workbench.action.quickOpen", "key": "ctrl+p" },
+  { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h"},
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
   {
     "command": "workbench.action.terminal.focus",

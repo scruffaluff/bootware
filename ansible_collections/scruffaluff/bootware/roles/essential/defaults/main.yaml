@@ -46,6 +46,7 @@ essential_linux_packages_:
     - gnupg
     - libopenssl-devel
     - openssl
+    - python3-dnf
     - which
     - xz
     - zip
