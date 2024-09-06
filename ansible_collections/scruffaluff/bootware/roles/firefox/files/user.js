@@ -10,10 +10,20 @@ user_pref("browser.aboutConfig.showWarning", false);
 user_pref("browser.aboutwelcome.enabled", false);
 // Enable enhanced tracking protection.
 user_pref("browser.contentblocking.category", "strict");
+// Hide Mozilla VPN recommendations.
+user_pref("browser.contentblocking.report.hide_vpn_banner", true);
+// Hide Firefox Lockwise recommendations.
+user_pref("browser.contentblocking.report.lockwise.enabled", false);
+// Hide Firefox Monitor recommendations.
+user_pref("browser.contentblocking.report.monitor.enabled", false);
 // Disable saving information entered in web page forms and search bar.
 user_pref("browser.formfill.enable", false);
 // Remove news stories recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
+// Remove weather status recommendations from homepage.
+user_pref("browser.newtabpage.activity-stream.feeds.weatherfeed", false);
+// Disable Firefox telemetry.
+user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
 // Remove top sites recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
 // Remove Pocket recommendations from homepage.
@@ -21,24 +31,44 @@ user_pref(
   "browser.newtabpage.activity-stream.section.highlights.includePocket",
   false
 );
+// Disable Firefox telemetry.
+user_pref("browser.newtabpage.activity-stream.telemetry", false);
+// Disable weather status suggestions in search bar.
+user_pref("browser.newtabpage.activity-stream.showWeather", false);
+// Disable weather status suggestions from system recommendations.
+user_pref("browser.newtabpage.activity-stream.system.showWeather", false);
 // Disable detaching tab to a new window.
 user_pref("browser.tabs.allowTabDetach", false);
 // Show bookmarks bar in toolbar.
 user_pref("browser.toolbars.bookmarks.visibility", "always");
 // Disable automatic translation popups.
 user_pref("browser.translations.automaticallyPopup", false);
-// Disable search engine suggestions in search bar.
-user_pref("browser.urlbar.suggest.engines", false);
+// Enable bookmarks suggestions in search bar.
+user_pref("browser.urlbar.suggest.bookmark", true);
+// Enable search engine suggestions in search bar.
+user_pref("browser.urlbar.suggest.engines", true);
 // Disable history suggestions in search bar.
 user_pref("browser.urlbar.suggest.history", false);
+// Disable open tab suggestions in search bar.
+user_pref("browser.urlbar.suggest.openpage", true);
 // Disable partner suggestions in search bar.
 user_pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
 // Disable sponsored suggestions in search bar.
 user_pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
+// Disable popular websites suggestions in search bar.
+user_pref("browser.urlbar.suggest.topsites", false);
+// Disable weather suggestions in search bar.
+user_pref("browser.urlbar.suggest.weather", false);
 // Don't warning on quitting Firefox.
 user_pref("browser.warnOnQuit", false);
 // Don't warning on quitting Firefox.
 user_pref("browser.warnOnQuitShortcut", false);
+// Disable Firefox health reporting.
+user_pref("datareporting.healthreport.uploadEnabled", false);
+// Disable Firefox data reporting.
+user_pref("datareporting.policy.dataSubmissionEnabled", false);
+// Disable Firefox website advertising preferences telemetry.
+user_pref("dom.private-attribution.submission.enabled", false);
 // Enable HTTPS only mode.
 user_pref("dom.security.https_only_mode", true);
 // Remove Pocket extension from Firefox.

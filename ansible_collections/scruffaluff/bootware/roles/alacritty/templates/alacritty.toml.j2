@@ -59,6 +59,16 @@ chars = "\ue000"
 key = ";"
 mods = "Control"
 
+[[keyboard.bindings]]
+chars = "\ue001"
+key = "["
+mods = "Control"
+
+[[keyboard.bindings]]
+chars = "\ue002"
+key = "]"
+mods = "Control"
+
 [shell]
 args = ["{{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
 program = "{{ user_shell }}"

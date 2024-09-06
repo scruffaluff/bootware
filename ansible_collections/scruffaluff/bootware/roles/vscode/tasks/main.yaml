@@ -89,38 +89,6 @@
     name: vscode
   when: ansible_system == "Win32NT"
 
-- name: Create VSCode user directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/Code/User"
-    state: directory
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
-
-- name: Copy VSCode keybindings file for Linux
-  ansible.builtin.template:
-    dest: "{{ user_home }}/.config/Code/User/keybindings.json"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: keybindings.json.j2
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
-
-- name: Copy VSCode settings file for Linux
-  ansible.builtin.template:
-    dest: "{{ user_home }}/.config/Code/User/settings.json"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: settings.json.j2
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
-
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -154,6 +122,38 @@
     src: settings.json.j2
   become: true
   when: ansible_system == "Darwin"
+
+- name: Create VSCode user directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/Code/User"
+    state: directory
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+
+- name: Copy VSCode keybindings file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/Code/User/keybindings.json"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: keybindings.json.j2
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+
+- name: Copy VSCode settings file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/Code/User/settings.json"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: settings.json.j2
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
 
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
