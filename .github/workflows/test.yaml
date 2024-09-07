@@ -212,7 +212,7 @@ jobs:
     name: Test bootstrapping software for MacOS
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'macos' }}
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

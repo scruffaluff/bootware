@@ -697,7 +697,10 @@ Function SetupSSHServer() {
         }
 
         Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-        If (-Not (Get-NetFirewallRule -DisplayName 'Bootware SSH' -ErrorAction SilentlyContinue)) {
+        If (
+            (-Not (Get-NetFirewallRule -DisplayName 'Bootware SSH' -ErrorAction SilentlyContinue)) -And
+            (-Not (Get-NetFirewallRule -Name 'sshd' -ErrorAction SilentlyContinue))
+        ) {
             New-NetFirewallRule `
                 -Action Allow `
                 -Direction Inbound `
