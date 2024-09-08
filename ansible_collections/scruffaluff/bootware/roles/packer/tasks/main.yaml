@@ -51,5 +51,6 @@
 
 - name: Install Packer for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: packer
   when: ansible_system == "Win32NT"

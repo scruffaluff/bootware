@@ -20,5 +20,6 @@
 
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: adb
   when: ansible_system == "Win32NT"

@@ -49,5 +49,6 @@
 
 - name: Install Google Chrome for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: googlechrome
   when: ansible_system == "Win32NT"

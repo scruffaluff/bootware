@@ -13,6 +13,7 @@
 
 - name: Install GDB for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gdb
   when: ansible_system == "Win32NT"
 

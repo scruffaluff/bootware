@@ -63,6 +63,7 @@
 
 - name: Install build tools with Scoop for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - cmake
       - dotnet-sdk

@@ -20,5 +20,6 @@
 
 - name: Install VLC for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: vlc
   when: ansible_system == "Win32NT"

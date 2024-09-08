@@ -31,6 +31,7 @@
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: llvm
   when: ansible_system == "Win32NT"
 

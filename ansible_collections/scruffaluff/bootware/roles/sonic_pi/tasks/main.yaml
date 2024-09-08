@@ -14,5 +14,6 @@
 
 - name: Install Sonic Pi for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: sonic-pi
   when: ansible_system == "Win32NT"

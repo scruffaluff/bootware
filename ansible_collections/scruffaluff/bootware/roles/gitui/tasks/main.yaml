@@ -72,6 +72,7 @@
 
 - name: Install GitUI for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gitui
   when: ansible_system == "Win32NT"
 

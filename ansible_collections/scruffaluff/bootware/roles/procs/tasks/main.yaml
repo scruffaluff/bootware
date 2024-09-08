@@ -66,6 +66,7 @@
 
 - name: Install Procs for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: procs
   when: ansible_system == "Win32NT"
 

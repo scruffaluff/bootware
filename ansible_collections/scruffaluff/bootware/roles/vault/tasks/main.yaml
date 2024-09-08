@@ -52,5 +52,6 @@
 
 - name: Install Vault for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: vault
   when: ansible_system == "Win32NT"

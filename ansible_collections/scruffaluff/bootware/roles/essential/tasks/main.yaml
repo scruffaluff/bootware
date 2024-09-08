@@ -54,6 +54,7 @@
 
 - name: Install Scoop bucket dependency for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: mingit
   when: ansible_system == "Win32NT"
 
@@ -80,6 +81,7 @@
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - 7zip
       - bzip2

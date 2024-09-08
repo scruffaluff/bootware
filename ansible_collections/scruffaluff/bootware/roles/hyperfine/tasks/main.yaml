@@ -54,6 +54,7 @@
 
 - name: Install Hyperfine for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: hyperfine
   when: ansible_system == "Win32NT"
 

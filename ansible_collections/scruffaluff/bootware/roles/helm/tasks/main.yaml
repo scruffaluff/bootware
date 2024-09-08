@@ -50,6 +50,7 @@
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: helm
   when: ansible_system == "Win32NT"
 

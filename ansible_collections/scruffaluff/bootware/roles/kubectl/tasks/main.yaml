@@ -54,6 +54,7 @@
 
 - name: Install Kubectl for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: kubectl
   when: ansible_system == "Win32NT"
 

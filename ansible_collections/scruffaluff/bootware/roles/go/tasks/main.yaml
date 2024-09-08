@@ -40,6 +40,7 @@
 
 - name: Install Go for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: go
   when: ansible_system == "Win32NT"
 

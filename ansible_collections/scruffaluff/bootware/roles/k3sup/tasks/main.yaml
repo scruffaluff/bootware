@@ -32,6 +32,7 @@
 
 - name: Install K3sup for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: k3sup
   when: ansible_system == "Win32NT"
 

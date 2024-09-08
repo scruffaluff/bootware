@@ -72,6 +72,7 @@
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: rust-analyzer
   when: ansible_system == "Win32NT"
 

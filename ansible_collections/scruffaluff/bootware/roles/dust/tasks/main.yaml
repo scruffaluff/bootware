@@ -44,6 +44,7 @@
 
 - name: Install Dust for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: dust
   when: ansible_system == "Win32NT"
 

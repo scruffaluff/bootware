@@ -68,6 +68,7 @@
 
 - name: Install Glow for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: glow
   when: ansible_system == "Win32NT"
 

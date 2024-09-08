@@ -38,6 +38,7 @@
 
 - name: Install TDLR for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: tealdeer
   when: ansible_system == "Win32NT"
 

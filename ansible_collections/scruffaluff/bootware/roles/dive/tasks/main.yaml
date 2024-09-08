@@ -52,5 +52,6 @@
 
 - name: Install Dive for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: dive
   when: ansible_system == "Win32NT"

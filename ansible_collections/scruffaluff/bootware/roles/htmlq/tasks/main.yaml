@@ -65,5 +65,6 @@
 
 - name: Install Htmlq for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: htmlq
   when: ansible_system == "Win32NT"

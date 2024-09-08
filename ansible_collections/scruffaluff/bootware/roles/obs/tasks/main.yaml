@@ -20,5 +20,6 @@
 
 - name: Install OBS Studio for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: obs-studio
   when: ansible_system == "Win32NT"

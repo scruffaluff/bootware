@@ -27,6 +27,7 @@
 
 - name: Install Kind for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: kind
   when: ansible_system == "Win32NT"
 

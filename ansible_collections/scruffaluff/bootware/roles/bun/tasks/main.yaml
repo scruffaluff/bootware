@@ -33,6 +33,7 @@
 
 - name: Install Bun for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: bun
   when: ansible_system == "Win32NT"
 

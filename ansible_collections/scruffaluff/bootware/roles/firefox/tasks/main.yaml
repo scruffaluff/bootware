@@ -40,7 +40,7 @@
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ scoop_global }}"
     name: firefox
   when: ansible_system == "Win32NT"
 

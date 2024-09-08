@@ -24,6 +24,7 @@
 
 - name: Install SQLite for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: sqlite
   when: ansible_system == "Win32NT"
 

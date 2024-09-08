@@ -27,5 +27,6 @@
 
 - name: Install K3d for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: k3d
   when: ansible_system == "Win32NT"

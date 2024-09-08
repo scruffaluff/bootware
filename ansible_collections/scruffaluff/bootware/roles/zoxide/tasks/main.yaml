@@ -83,5 +83,6 @@
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: zoxide
   when: ansible_system == "Win32NT"

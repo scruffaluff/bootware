@@ -51,6 +51,7 @@
 
 - name: Install Starship for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: starship
   when: ansible_system == "Win32NT"
 

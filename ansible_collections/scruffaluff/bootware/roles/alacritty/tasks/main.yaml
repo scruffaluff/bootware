@@ -20,6 +20,7 @@
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: alacritty
   when: ansible_system == "Win32NT"
 

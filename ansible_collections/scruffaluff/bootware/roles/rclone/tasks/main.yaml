@@ -21,5 +21,6 @@
 
 - name: Install RClone for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: rclone
   when: ansible_system == "Win32NT"

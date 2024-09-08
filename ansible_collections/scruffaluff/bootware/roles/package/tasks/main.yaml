@@ -58,6 +58,7 @@
 
 - name: Install Scoop packages for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
   when: ansible_system == "Win32NT"

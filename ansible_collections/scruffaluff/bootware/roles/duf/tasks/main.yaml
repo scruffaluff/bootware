@@ -71,5 +71,6 @@
 
 - name: Install Duf for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: duf
   when: ansible_system == "Win32NT"
