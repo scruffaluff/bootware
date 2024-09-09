@@ -62,7 +62,7 @@
 
 - name: Copy Wez's terminal configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
+    dest: "{{ user_home }}\\.config\\wezterm\\wezterm.lua"
     force: true
     owner: "{{ user_id }}"
     src: wezterm.lua.j2

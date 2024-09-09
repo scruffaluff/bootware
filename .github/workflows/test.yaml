@@ -220,11 +220,6 @@ jobs:
         run: |
           ./install.sh
           sudo cp bootware.sh $(which bootware)
-      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
-      - name: >-
-          Install Ansible with Python since Brew installation appears to be
-          broken
-        run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
       # Github actions MacOS VM has issues where the first homebrew upgrade
@@ -404,7 +399,7 @@ jobs:
       - name: Test bootstrapping
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip ffsend,qsv --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qsv --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
