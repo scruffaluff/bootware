@@ -94,9 +94,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-          build-args: |
-            skip=libvirt
-            test=true
+          build-args: test=true
           context: .
           file: tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
@@ -191,7 +189,7 @@ jobs:
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes curl
-          release: "14.0"
+          release: "14.1"
           run: |
             set -eou pipefail
             ./install.sh
@@ -214,6 +212,8 @@ jobs:
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'macos' }}
     runs-on: macos-latest
     steps:
+      - name: Free disk space
+        run: rm -fr "${HOME}/Library/Android" "${HOME}/Library/Developer"
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Bootware
@@ -222,24 +222,14 @@ jobs:
           sudo cp bootware.sh $(which bootware)
       - name: Install dependencies for Bootware
         run: bootware setup
-      # Github actions MacOS VM has issues where the first homebrew upgrade
-      # often fails with kmutil virtualization errors.
-      - name: Initialize Brew to avoid weird GitHub actions error
-        continue-on-error: true
-        run: bootware bootstrap --dev --no-passwd --tags update
-      # Bats is already installed with NPM and causes a conflict. Docker is not
-      # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --skip bats,docker
-          --tags desktop,extras
-      # Ruby Tilt is already installed and the VM's shell is configured to point
-      # to the Ruby executable even after it is removed and another Tilt
-      # exectuable is installed.
+          bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
+      # Yazi hangs during startup on GitHub Arm64 MacOS runners.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.cjs --arch amd64 --skip bats,docker,tilt macos
+          node tests/integration/roles.test.cjs --arch arm64 --skip yazi macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -349,7 +339,8 @@ jobs:
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v3
         with:
-          distribution: Debian
+          # Setup WSL uses the old version 11 for Debian.
+          distribution: Ubuntu-24.04
           set-as-default: "true"
       # Variable ${{ github.ref_name }} does not replace this step, since
       # ref_name will be name of the pull request instead of the branch.
