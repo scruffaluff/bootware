@@ -339,7 +339,8 @@ jobs:
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v3
         with:
-          # Setup WSL uses the old version 11 for Debian.
+          # Setup WSL uses the version 11 for Debian which has an out of date
+          # version of Ansible.
           distribution: Ubuntu-24.04
           set-as-default: "true"
       # Variable ${{ github.ref_name }} does not replace this step, since

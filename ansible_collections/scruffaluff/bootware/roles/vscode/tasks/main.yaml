@@ -172,7 +172,7 @@
 # and Windows version.
 - name: Copy VSCode keybindings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}\\{{ item }}"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     src: keybindings.json.j2
   loop:
@@ -184,7 +184,7 @@
 # Windows version.
 - name: Copy VSCode settings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}\\{{ item }}"
+    dest: "{{ user_home }}/{{ item }}"
     force: true
     owner: "{{ user_id }}"
     src: settings.json.j2

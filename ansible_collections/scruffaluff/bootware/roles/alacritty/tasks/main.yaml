@@ -60,10 +60,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Copy Alacritty configuration file for Windows
-  # As of 08/30/2024 forward slashes in win_template cause "No such file"
-  # errors in the the GitHub hosted windows runners.
   ansible.windows.win_template:
-    dest: "{{ user_home }}\\AppData\\Roaming\\alacritty\\{{ item.dest }}"
+    dest: "{{ user_home }}/AppData/Roaming/alacritty/{{ item.dest }}"
     force: true
     owner: "{{ user_id }}"
     src: "{{ item.src }}"

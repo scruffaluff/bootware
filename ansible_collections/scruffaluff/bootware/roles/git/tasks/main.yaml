@@ -101,9 +101,7 @@
 
 - name: Copy Git configuration file for Windows
   ansible.windows.win_template:
-    # As of 08/30/2024 forward slashes in win_template cause "No such file"
-    # errors in the the GitHub hosted windows runners.
-    dest: "{{ user_home }}\\.gitconfig"
+    dest: "{{ user_home }}/.gitconfig"
     force: true
     owner: "{{ user_id }}"
     src: gitconfig.j2
