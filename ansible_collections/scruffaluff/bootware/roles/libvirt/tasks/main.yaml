@@ -89,5 +89,6 @@
 
 - name: Install Libvirt for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: virt-viewer
   when: ansible_system == "Win32NT"

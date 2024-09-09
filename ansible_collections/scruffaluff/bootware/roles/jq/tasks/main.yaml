@@ -20,5 +20,6 @@
 
 - name: Install JQ for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: jq
   when: ansible_system == "Win32NT"

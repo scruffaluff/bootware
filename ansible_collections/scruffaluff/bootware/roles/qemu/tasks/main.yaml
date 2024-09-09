@@ -78,5 +78,6 @@
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: qemu
   when: ansible_system == "Win32NT"

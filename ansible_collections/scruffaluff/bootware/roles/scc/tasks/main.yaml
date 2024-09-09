@@ -47,5 +47,6 @@
 
 - name: Install Scc for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: scc
   when: ansible_system == "Win32NT"

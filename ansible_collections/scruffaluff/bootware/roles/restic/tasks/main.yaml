@@ -20,6 +20,7 @@
 
 - name: Install Restic for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: restic
   when: ansible_system == "Win32NT"
 

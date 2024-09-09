@@ -69,6 +69,7 @@
 
 - name: Install FzF for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - fzf
       - psfzf

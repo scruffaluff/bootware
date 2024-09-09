@@ -37,5 +37,6 @@
 
 - name: Install Qsv for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: qsv
   when: ansible_system == "Win32NT"

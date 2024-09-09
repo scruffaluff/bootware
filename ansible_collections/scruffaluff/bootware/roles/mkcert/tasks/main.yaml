@@ -54,5 +54,6 @@
 
 - name: Install Mkcert for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: mkcert
   when: ansible_system == "Win32NT"

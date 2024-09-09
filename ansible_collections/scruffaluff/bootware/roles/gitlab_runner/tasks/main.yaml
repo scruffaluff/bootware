@@ -58,6 +58,7 @@
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gitlab-runner
   when: ansible_system == "Win32NT"
 

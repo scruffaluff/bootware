@@ -42,6 +42,7 @@
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: yq
   when: ansible_system == "Win32NT"
 

@@ -67,6 +67,7 @@
 
 - name: Install Just for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: just
   when: ansible_system == "Win32NT"
 

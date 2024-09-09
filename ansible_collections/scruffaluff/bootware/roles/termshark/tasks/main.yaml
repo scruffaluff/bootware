@@ -60,6 +60,7 @@
 
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: termshark
   when: ansible_system == "Win32NT"
 

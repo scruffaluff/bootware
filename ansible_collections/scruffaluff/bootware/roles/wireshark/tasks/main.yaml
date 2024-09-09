@@ -33,6 +33,7 @@
 # information, visit https://npcap.com/oem/internal.html.
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: wireshark
   when: ansible_system == "Win32NT"
 

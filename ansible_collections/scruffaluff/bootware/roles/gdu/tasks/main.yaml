@@ -66,5 +66,6 @@
 
 - name: Install GDU for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gdu
   when: ansible_system == "Win32NT"

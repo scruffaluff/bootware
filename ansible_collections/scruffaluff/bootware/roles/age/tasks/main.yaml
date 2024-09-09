@@ -54,5 +54,6 @@
 
 - name: Install Age for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: age
   when: ansible_system == "Win32NT"

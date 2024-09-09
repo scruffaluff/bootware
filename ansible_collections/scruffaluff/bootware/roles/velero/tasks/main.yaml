@@ -48,6 +48,7 @@
 
 - name: Install Velero for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: velero
   when: ansible_system == "Win32NT"
 

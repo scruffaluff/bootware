@@ -1,4 +1,5 @@
 ---
+scoop_global: true
 user_id: "{{ ansible_user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
@@ -65,7 +66,10 @@ fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 # Backslashes are required for Windows Defender firewall rules.
-scoop_apps: "{{ user_home }}\\scoop\\apps"
+scoop_apps: >-
+  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps
+scoop_shims: >-
+  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_shell: "{{ user_shell_.get(ansible_system, '/usr/bin/fish') }}"

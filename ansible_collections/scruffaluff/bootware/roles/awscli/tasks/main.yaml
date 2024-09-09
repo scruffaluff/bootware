@@ -42,5 +42,6 @@
 
 - name: Install AWSCLI for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: aws
   when: ansible_system == "Win32NT"

@@ -52,5 +52,6 @@
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: terraform
   when: ansible_system == "Win32NT"

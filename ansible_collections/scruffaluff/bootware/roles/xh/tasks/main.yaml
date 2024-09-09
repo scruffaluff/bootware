@@ -53,6 +53,7 @@
 
 - name: Install Xh for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: xh
   when: ansible_system == "Win32NT"
 

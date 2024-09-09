@@ -51,6 +51,7 @@
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: k9s
   when: ansible_system == "Win32NT"
 

@@ -28,6 +28,7 @@
 
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: wezterm
   when: ansible_system == "Win32NT"
 

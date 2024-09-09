@@ -52,6 +52,7 @@
 
 - name: Install Digital Ocean CLI for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: doctl
   when: ansible_system == "Win32NT"
 

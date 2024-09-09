@@ -20,5 +20,6 @@
 
 - name: Install Audacity for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: audacity
   when: ansible_system == "Win32NT"

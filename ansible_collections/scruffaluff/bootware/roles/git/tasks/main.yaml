@@ -80,6 +80,7 @@
 
 - name: Install Git for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - delta
       - git-lfs

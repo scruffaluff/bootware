@@ -49,5 +49,6 @@
 
 - name: Install FFSend for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: ffsend
   when: ansible_system == "Win32NT"

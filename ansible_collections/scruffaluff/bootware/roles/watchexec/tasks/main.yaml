@@ -48,6 +48,7 @@
 
 - name: Install Watchexec for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: watchexec
   when: ansible_system == "Win32NT"
 

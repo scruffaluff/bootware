@@ -54,6 +54,7 @@
 
 - name: Install Ripgrep for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: ripgrep
   when: ansible_system == "Win32NT"
 

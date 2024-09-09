@@ -50,6 +50,7 @@
 
 - name: Install Caffeine for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: caffeine
   when: ansible_system == "Win32NT"
 

@@ -14,5 +14,6 @@
 
 - name: Install Beekeeper for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: beekeeper-studio
   when: ansible_system == "Win32NT"

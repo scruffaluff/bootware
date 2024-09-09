@@ -42,5 +42,6 @@
 
 - name: Install Sops for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: sops
   when: ansible_system == "Win32NT"

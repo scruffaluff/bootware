@@ -81,6 +81,7 @@
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: croc
   when: ansible_system == "Win32NT"
 

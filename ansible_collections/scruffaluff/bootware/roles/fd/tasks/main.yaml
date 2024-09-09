@@ -45,5 +45,6 @@
 
 - name: Install FD for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: fd
   when: ansible_system == "Win32NT"

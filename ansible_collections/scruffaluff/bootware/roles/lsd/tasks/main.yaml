@@ -46,6 +46,7 @@
 
 - name: Install Lsd for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: lsd
   when: ansible_system == "Win32NT"
 

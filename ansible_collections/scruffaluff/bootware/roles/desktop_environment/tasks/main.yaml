@@ -31,6 +31,7 @@
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: powertoys
   when: ansible_system == "Win32NT"
 

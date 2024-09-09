@@ -12,6 +12,7 @@
 
 - name: Install GlazeWM for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: glazewm
   when: ansible_system == "Win32NT"
 

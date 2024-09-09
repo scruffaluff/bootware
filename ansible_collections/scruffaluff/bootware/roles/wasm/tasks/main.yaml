@@ -16,6 +16,7 @@
 
 - name: Install Wasmtime for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: wasmtime
   when: ansible_system == "Win32NT"
 

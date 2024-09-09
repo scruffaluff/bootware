@@ -84,14 +84,6 @@ If (Test-Path $WindowsFeedsPath) {
         -Type DWord `
         -Value 0
 }
-$ShellFeedsPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds'
-If (Test-Path $ShellFeedsPath) {
-    Set-ItemProperty `
-        -Name 'ShellFeedsTaskbarViewMode' `
-        -Path $ShellFeedsPath `
-        -Type DWord `
-        -Value 2
-}
 
 # Remove application recommendations.
 $ContentPath = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'

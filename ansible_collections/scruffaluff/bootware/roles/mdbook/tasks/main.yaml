@@ -56,5 +56,6 @@
 
 - name: Install Mdbook for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: mdbook
   when: ansible_system == "Win32NT"
