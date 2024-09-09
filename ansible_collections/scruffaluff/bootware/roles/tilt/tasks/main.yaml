@@ -47,8 +47,8 @@
 #   community.windows.win_scoop_bucket:
 #     name: tilt-dev
 #     repo: https://github.com/tilt-dev/scoop-bucket
-#   environment:
-#     Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
+# environment:
+#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
 #   when: ansible_system == "Win32NT"
 
 - name: Install Tilt Scoop bucket for Windows
@@ -56,7 +56,7 @@
     scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   changed_when: "'bucket was added successfully' in tilt_bucket_add"
   environment:
-    Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
     tilt_bucket_add.rc != 0 and 'bucket already exists' not in
     tilt_bucket_add.stdout
