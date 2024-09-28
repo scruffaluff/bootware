@@ -68,6 +68,7 @@
   { "command": "-workbench.action.toggleSidebarVisibility", "key": "ctrl+b" },
   { "command": "-workbench.actions.view.problems", "key": "ctrl+shift+m" },
   { "command": "-workbench.debug.action.toggleRepl", "key": "ctrl+shift+y" },
+  { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscode_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
   {
     "command": "actions.find",
@@ -91,6 +92,11 @@
   {
     "command": "editor.action.insertCursorBelow",
     "key": "ctrl+shift+down",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.revealDefinition",
+    "key": "{{ vscode_ctrl_key }}+k d",
     "when": "editorTextFocus"
   },
   {

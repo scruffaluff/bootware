@@ -5,17 +5,19 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.8.2 - 2024-09-27
 
 ### Added
 
+- Custom styling for VSCode.
+- MuseScore role.
 - Shell keybindings to insert current working directory.
 - Shell keybindings to pipe to Fzf.
-- MuseScore role.
 
 ### Changed
 
 - Glow to always use a pager.
+- Scoop to prefer global installations.
 
 ### Fixed
 
