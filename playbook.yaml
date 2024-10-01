@@ -376,15 +376,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Google Cloud Platform development tools
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.gcloud
-      tags:
-        - cloud
-        - extras
-        - gcloud
-        - never
-
     - name: Install GDB debugger
       ansible.builtin.import_role:
         name: scruffaluff.bootware.gdb
@@ -763,15 +754,6 @@
         - server
         - wsl
 
-    - name: Install Packer image generator
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.packer
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - packer
-
     - name: Install PowerShell shell
       ansible.builtin.import_role:
         name: scruffaluff.bootware.powershell
@@ -994,7 +976,6 @@
       tags:
         - container
         - desktop
-        - hashicorp
         - server
         - terraform
         - wsl
@@ -1060,16 +1041,6 @@
         - sysadmin
         - utility
         - wsl
-
-    - name: Install Vault secrets manager
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.vault
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - secrets
-        - vault
 
     - name: Install Velero backup manager for Kubernetes
       ansible.builtin.import_role:

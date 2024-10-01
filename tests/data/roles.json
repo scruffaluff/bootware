@@ -119,11 +119,6 @@
   { "name": "font" },
   { "name": "fzf", "tests": ["fzf --version"] },
   {
-    "name": "gcloud",
-    "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
-    "tests": ["gcloud --version", "gsutil --version"]
-  },
-  {
     "name": "gdb",
     "skip": [{ "os": "macos" }],
     "tests": ["gdb --version"]
@@ -277,7 +272,6 @@
     }
   },
   { "name": "package" },
-  { "name": "packer", "tests": ["packer --version"] },
   {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
@@ -374,7 +368,6 @@
   { "name": "topgrade", "tests": ["topgrade --version"] },
   { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
-  { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "velero",
     "skip": [{ "os": "freebsd" }],
