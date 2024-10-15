@@ -56,10 +56,10 @@
 
 - name: Configure Caffeine shell extension for GNOME desktops
   ansible.builtin.shell:
-    cmd: >-
-      gsettings --schemadir
-      "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas"
-      set org.gnome.shell.extensions.caffeine show-notifications false
+    cmd: |
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine enable-fullscreen false
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine screen-blank 'always'
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine show-notifications false
     executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
