@@ -47,11 +47,19 @@
         - desktop
         - terminal
 
-    - name: Install Android platform tools client
+    - name: Install Android Studio
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.android
+        name: scruffaluff.bootware.android_studio
       tags:
-        - android
+        - android_studio
+        - extras
+        - never
+
+    - name: Install Android platform tools
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.android_tools
+      tags:
+        - android_tools
         - extras
         - never
 
