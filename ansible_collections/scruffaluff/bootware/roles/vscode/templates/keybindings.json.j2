@@ -1,6 +1,10 @@
 [
   { "command": "-bookmarks.toggle", "key": "ctrl+alt+k" },
   { "command": "-breadcrumbs.focus", "key": "ctrl+shift+;" },
+  { "command": "-cursorColumnSelectLeft", "key": "shift+left" },
+  { "command": "-cursorColumnSelectRight", "key": "shift+right" },
+  { "command": "-cursorLeftSelect", "key": "shift+left" },
+  { "command": "-cursorRightSelect", "key": "shift+right" },
   {
     "command": "-editor.action.accessibleViewGoToSymbol",
     "key": "ctrl+shift+o"
@@ -92,6 +96,26 @@
   },
   { "command": "cursorLineEnd", "key": "ctrl+e", "when": "editorTextFocus" },
   { "command": "cursorLineStart", "key": "ctrl+a", "when": "editorTextFocus" },
+  { 
+    "command": "cursorWordLeft",
+    "key": "shift+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartLeft",
+    "key": "ctrl+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartRight",
+    "key": "ctrl+right",
+    "when": "textInputFocus"
+  },
+  { 
+    "command": "cursorWordRight",
+    "key": "shift+right",
+    "when": "textInputFocus"
+  },
   { "command": "deleteAllLeft", "key": "ctrl+u", "when": "editorTextFocus" },
   {
     "command": "editor.action.insertCursorAbove",
