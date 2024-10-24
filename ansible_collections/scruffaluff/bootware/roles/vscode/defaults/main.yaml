@@ -31,6 +31,7 @@ vscode_extensions:
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
   - dbaeumer.vscode-eslint
+  - denoland.vscode-deno
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
@@ -52,7 +53,8 @@ vscode_extensions:
   - ritwickdey.liveserver
   - rust-lang.rust-analyzer
   - skellock.just
-  - stkb.rewrap
+  # TODO: Disabled as of 10/23/2024 since extension is not signed for Windows.
+  # - stkb.rewrap
   - sukumo28.wav-preview
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
@@ -80,7 +82,7 @@ vscode_remote_extensions:
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - skellock.just
-  - stkb.rewrap
+  # - stkb.rewrap
   - sukumo28.wav-preview
   - tamasfe.even-better-toml
   - timonwong.shellcheck
