@@ -18,8 +18,12 @@
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["opkg", "zypper"]
 
+# TODO: FIgure out how to configure android-clt for Windows so adb does not need
+# to be separately installed.
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
-    name: android-clt
+    name:
+      - adb
+      - android-clt
   when: ansible_system == "Win32NT"

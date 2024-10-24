@@ -52,7 +52,6 @@
         name: scruffaluff.bootware.android_studio
       tags:
         - android_studio
-        - extras
         - never
 
     - name: Install Android platform tools
