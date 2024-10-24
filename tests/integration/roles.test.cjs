@@ -7,6 +7,7 @@
 const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const process = require("node:process");
 
 /**
  * Check if operating system is a Linux distribution.
@@ -19,8 +20,8 @@ function isLinux(distro) {
 }
 
 function parseArgs(args) {
-  let params = {
-    architecture: "amd64",
+  const params = {
+    architecture: process.arch === "x86" ? "amd64" : process.arch,
     os: null,
     skips: null,
     shell: {

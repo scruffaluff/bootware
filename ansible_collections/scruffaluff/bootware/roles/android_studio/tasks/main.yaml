@@ -1,0 +1,19 @@
+---
+- name: Install Android Studio for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: android-studio
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Android Studio for Linux
+  become: true
+  community.general.flatpak:
+    name: com.google.AndroidStudio
+  when: ansible_system == "Linux"
+
+- name: Install Android Studio for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: android-studio
+  when: ansible_system == "Win32NT"

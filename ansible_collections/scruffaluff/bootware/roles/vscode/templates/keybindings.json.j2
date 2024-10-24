@@ -1,6 +1,10 @@
 [
   { "command": "-bookmarks.toggle", "key": "ctrl+alt+k" },
   { "command": "-breadcrumbs.focus", "key": "ctrl+shift+;" },
+  { "command": "-cursorColumnSelectLeft", "key": "shift+left" },
+  { "command": "-cursorColumnSelectRight", "key": "shift+right" },
+  { "command": "-cursorLeftSelect", "key": "shift+left" },
+  { "command": "-cursorRightSelect", "key": "shift+right" },
   {
     "command": "-editor.action.accessibleViewGoToSymbol",
     "key": "ctrl+shift+o"
@@ -73,17 +77,46 @@
   {
     "command": "actions.find",
     "key": "ctrl+f",
-    "when": "editorFocus || editorIsOpen"
+    "when": "editorFocus"
   },
-  { "command": "bookmarks.list", "key": "ctrl+shift+l" },
-  {
-    "command": "bookmarks.toggleLabeled",
-    "key": "ctrl+shift+k",
+  { 
+    "command": "bookmarks.list", 
+    "key": "{{ vscode_ctrl_key }}+k l",
     "when": "editorTextFocus"
   },
-  { "command": "cursorLineEnd", "key": "ctrl+e", "when": "editorFocus" },
-  { "command": "cursorLineStart", "key": "ctrl+a", "when": "editorFocus" },
-  { "command": "deleteAllLeft", "key": "ctrl+u", "when": "editorFocus" },
+  {
+    "command": "bookmarks.toggle",
+    "key": "{{ vscode_ctrl_key }}+k b",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "bookmarks.toggleLabeled",
+    "key": "{{ vscode_ctrl_key }}+k m",
+    "when": "editorTextFocus"
+  },
+  { "command": "cursorLineEnd", "key": "ctrl+e", "when": "editorTextFocus" },
+  { "command": "cursorLineStart", "key": "ctrl+a", "when": "editorTextFocus" },
+  { 
+    "command": "cursorWordLeft",
+    "key": "shift+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartLeft",
+    "key": "ctrl+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartRight",
+    "key": "ctrl+right",
+    "when": "textInputFocus"
+  },
+  { 
+    "command": "cursorWordRight",
+    "key": "shift+right",
+    "when": "textInputFocus"
+  },
+  { "command": "deleteAllLeft", "key": "ctrl+u", "when": "editorTextFocus" },
   {
     "command": "editor.action.insertCursorAbove",
     "key": "ctrl+shift+up",
@@ -95,14 +128,29 @@
     "when": "editorTextFocus"
   },
   {
+    "command": "editor.action.insertLineAfter",
+    "key": "shift+enter",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.insertLineBefore",
+    "key": "ctrl+shift+enter",
+    "when": "editorTextFocus"
+  },
+  {
     "command": "editor.action.revealDefinition",
     "key": "{{ vscode_ctrl_key }}+k d",
-    "when": "editorTextFocus"
+    "when": "editorTextFocus && editorHasDefinitionProvider"
   },
   {
     "command": "editor.action.startFindReplaceAction",
     "key": "ctrl+h",
     "when": "editorFocus || editorIsOpen"
+  },
+  {
+    "command": "expandLineSelection",
+    "key": "ctrl+l",
+    "when": "textInputFocus"
   },
   { 
     "command": "workbench.action.closeActiveEditor",

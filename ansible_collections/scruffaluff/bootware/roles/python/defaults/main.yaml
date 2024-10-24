@@ -9,4 +9,4 @@ python_applications:
     injections:
       - poetry-plugin-up
 python_versions:
-  - "3.12"
+  - "3.13"

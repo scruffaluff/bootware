@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: variable
+  - role: flatpak
+    when: flatpak_role_executed is not defined and ansible_system == "Linux"

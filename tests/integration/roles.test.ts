@@ -3,8 +3,9 @@
 // on some versions of Arch Linux.
 
 // Execute shell commands to test binaries installed from roles.
-import Denomander from "https://deno.land/x/denomander@0.9.3/mod.ts";
-import * as path from "https://deno.land/std@0.224.0/path/mod.ts";
+import { Command } from "jsr:@cliffy/command@1.0.0-rc.7";
+import * as path from "jsr:@std/path";
+import * as write_all from "jsr:@std/io/write-all";
 
 interface Dict {
   [key: string]: string;
@@ -18,10 +19,6 @@ interface RoleTest {
   name: string;
   skip?: Array<Dict>;
   tests?: Array<string> | DictArray;
-}
-
-function identity<Type>(parameter: Type): Type {
-  return parameter;
 }
 
 /**
@@ -76,7 +73,7 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
   const decoder = new TextDecoder();
   let tests: Array<string>;
   const message = new TextEncoder().encode(`testing: ${role.name}`);
-  await Deno.writeAll(Deno.stdout, message);
+  await write_all.writeAll(Deno.stdout, message);
 
   if (role.tests && !shouldSkip(system, role.skip)) {
     if (Array.isArray(role.tests)) {
@@ -89,15 +86,16 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
     }
 
     for (const test of tests) {
-      const process = await Deno.run({
-        cmd: [system.shell, "-c", test],
+      const process = new Deno.Command(system.shell, {
+        args: ["-c", test],
         stderr: "piped",
         stdout: "piped",
       });
-      if (!(await process.status()).success) {
+      const result = await process.output();
+      if (!result.success) {
         error = true;
         console.log("-> fail\n");
-        console.error(decoder.decode(await process.stderrOutput()));
+        console.error(decoder.decode(await result.stderr));
       }
     }
 
@@ -112,13 +110,11 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
 }
 
 async function main(): Promise<void> {
-  const program = new Denomander({
-    app_name: "roles-test",
-    app_description:
-      "Execute shell commands to test binaries installed from roles",
-    app_version: "0.0.1",
-  });
-
+  const defaultArch = {
+    aarch64: "arm64",
+    x86_64: "amd64",
+  }[Deno.build.arch];
+  // @ts-ignore Only the following operating systems are supported.
   const defaultShell = {
     darwin: "/bin/bash",
     freebsd: "/usr/local/bin/bash",
@@ -126,32 +122,44 @@ async function main(): Promise<void> {
     windows: "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
   }[Deno.build.os];
 
-  program
-    .defaultCommand("[os]")
-    .argDescription("os", "Operating system")
-    .option("-a --arch", "System architecture", identity, "amd64")
-    .option("--shell", "Test shell", identity, defaultShell)
-    .option("-s --skip", "Roles to skip")
-    .option("-t --tags", "Roles to test")
-    .parse(Deno.args);
+  const program = await new Command()
+    .name("roles-test")
+    .description("Execute shell commands to test binaries installed from roles")
+    .version("0.0.2")
+    .option("-a --arch <architecture:string>", "System architecture", {
+      default: defaultArch,
+    })
+    .option("--shell <shell:string>", "Test shell", { default: defaultShell })
+    .option("-s --skip <roles:string>", "Roles to skip")
+    .option("-t --tags <roles:string>", "Roles to test")
+    .arguments("<os:string>")
+    .parse();
 
   const scriptFolder = path.dirname(path.fromFileUrl(import.meta.url));
   const rolesPath = path.join(path.dirname(scriptFolder), "data/roles.json");
   let roles = JSON.parse(await Deno.readTextFile(rolesPath));
 
-  if (program.tags) {
-    roles = roles.filter((role: RoleTest) => program.tags.includes(role.name));
+  if (program.options.tags) {
+    roles = roles.filter((role: RoleTest) =>
+      program.options.tags.includes(role.name)
+    );
   }
 
-  if (program.skip) {
-    roles = roles.filter((role: RoleTest) => !program.skip.includes(role.name));
+  if (program.options.skip) {
+    roles = roles.filter(
+      (role: RoleTest) => !program.options.skip.includes(role.name)
+    );
   }
 
   let error = false;
   for (const role of roles) {
     error =
       (await testRole(
-        { arch: program.architecture, os: program.os, shell: program.shell },
+        {
+          arch: program.options.arch,
+          os: program.args[0],
+          shell: program.options.shell,
+        },
         role
       )) || error;
   }

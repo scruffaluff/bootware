@@ -1,3 +1,7 @@
 ---
-flatpak_packages:
+flatpak_packages_:
   - com.github.tchx84.Flatseal
+flatpak_packages_gnome:
+  - com.mattjakeman.ExtensionManager
+flatpak_packages: >-
+  {{ flatpak_packages_ + flatpak_packages_gnome if gnome_desktop else [] }}
