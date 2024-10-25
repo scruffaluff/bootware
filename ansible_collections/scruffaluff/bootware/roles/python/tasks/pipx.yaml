@@ -40,9 +40,9 @@
   changed_when: "'Successfully installed' in python_pipx_install"
   environment:
     Path: >-
-      {{ scoop_apps }}\\python\\current;{{ scoop_apps }}\\python312\\current;{{
-      scoop_apps }}\\python311\\current;{{ scoop_apps }}\\python310\\current;{{
-      scoop_apps }}\\python39\\current;{{ scoop_apps }}\\python38\\current;{{
+      {{ scoop_apps }}\\python\\current;{{ scoop_apps }}\\python313\\current;{{
+      scoop_apps }}\\python312\\current;{{ scoop_apps }}\\python311\\current;{{
+      scoop_apps }}\\python310\\current;{{ scoop_apps }}\\python39\\current;{{
       ansible_env.Path }}
   register: python_pipx_install
   when: ansible_system == "Win32NT"
@@ -87,11 +87,11 @@
   environment:
     Path: >-
       {{ scoop_apps }}\\python\\current\\Scripts;{{ scoop_apps
+      }}\\python313\\current\\Scripts;{{ scoop_apps
       }}\\python312\\current\\Scripts;{{ scoop_apps
       }}\\python311\\current\\Scripts;{{ scoop_apps
       }}\\python310\\current\\Scripts;{{ scoop_apps
-      }}\\python39\\current\\Scripts;{{ scoop_apps
-      }}\\python38\\current\\Scripts;{{ ansible_env.Path }}
+      }}\\python39\\current\\Scripts;{{ ansible_env.Path }}
   loop: "{{ python_applications }}"
   register: python_pipx_application_install
   when: ansible_system == "Win32NT"

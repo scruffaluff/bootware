@@ -20,7 +20,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM fedora:39
+FROM fedora:40
 
 ARG version
 

@@ -1,4 +1,4 @@
-FROM homebrew/brew:4.3.21 AS build
+FROM homebrew/brew:4.4.2 AS build
 
 ARG version
 
@@ -22,7 +22,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM homebrew/brew:4.3.21
+FROM homebrew/brew:4.4.2
 
 ARG version
 
