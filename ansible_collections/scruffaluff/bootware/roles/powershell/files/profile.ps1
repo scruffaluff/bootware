@@ -80,7 +80,7 @@ Function PrependPaths() {
 # have a restricted set of entries, but the correct values can be obtained with
 # GetEnvironmentVariable.
 $Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
-    + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine') 
+    + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine')
 
 # Private convenience variables.
 
