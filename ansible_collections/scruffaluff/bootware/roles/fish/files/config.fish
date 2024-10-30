@@ -94,30 +94,6 @@ function _ssh_session
     end
 end
 
-# Source shell files if they exist.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-function _source_files
-    for inode in $argv
-        if test -f $inode
-            source $inode
-        end
-    end
-end
-
-# Source Bash files if they exist.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-function _source_bash_files
-    for inode in $argv
-        if test -f $inode
-            bass source $inode
-        end
-    end
-end
-
 # Public convenience interactive functions.
 
 # Open Fish history file with default editor.
@@ -128,6 +104,14 @@ function edit-history
     if type -q $EDITOR
         $EDITOR "$HOME/.local/share/fish/fish_history"
     end
+end
+
+# Override system implementation of command not found.
+#
+# Some system implementations will perform a long lookup to see if a package
+# provides the command.
+function fish_command_not_found
+    echo "Error: command '$argv[1]' not found" >&2
 end
 
 # Public convenience script functions.
@@ -144,6 +128,30 @@ function prepend_paths
     for inode in $argv
         if test -d $inode; and not contains $inode $PATH
             set --export PATH $inode $PATH
+        end
+    end
+end
+
+# Source Bash files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+function source_bash_files
+    for inode in $argv
+        if test -f $inode
+            bass source $inode
+        end
+    end
+end
+
+# Source shell files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+function source_files
+    for inode in $argv
+        if test -f $inode
+            source $inode
         end
     end
 end
@@ -522,6 +530,6 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-    _source_bash_files "$HOME/.env" "$HOME/.secrets"
+    source_bash_files "$HOME/.env" "$HOME/.secrets"
 end
-_source_files "$HOME/.env.fish" "$HOME/.secrets.fish"
+source_files "$HOME/.env.fish" "$HOME/.secrets.fish"

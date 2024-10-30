@@ -7,7 +7,6 @@ node_applications:
   - lean-language-server
   - live-server
   - playwright
-  - pnpm
   - prettier
   - speed-test
   - speedscope

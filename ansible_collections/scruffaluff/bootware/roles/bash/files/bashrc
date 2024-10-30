@@ -4,22 +4,17 @@
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
 
-# Convenience variables.
+# Public convenience interactive functions.
+
+# Override system implementation of command not found.
 #
-# Do not use long form flags for uname. They are not supported on MacOS. Command
-# "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
-# and running under an Rosetta 2 emulated terminal.
-#
-# Flags:
-#   -d: Check if path is a directory.
-#   -s: Show operating system kernel name.
-if [[ -d '/opt/homebrew' ]]; then
-  _brew_prefix='/opt/homebrew'
-else
-  _brew_prefix='/usr/local'
-fi
-_os="$(uname -s)"
-_tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
+# Some system implementations will perform a long lookup to see if a package
+# provides the command.
+command_not_found_handle() {
+  echo "Error: command '${1}' not found" >&2
+}
+
+# Public convenience script functions.
 
 # Prepend existing directories that are not in the system path.
 #
@@ -48,6 +43,23 @@ source_files() {
     fi
   done
 }
+
+# Private convenience variables.
+#
+# Do not use long form flags for uname. They are not supported on MacOS. Command
+# "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
+# and running under an Rosetta 2 emulated terminal.
+#
+# Flags:
+#   -d: Check if path is a directory.
+#   -s: Show operating system kernel name.
+if [[ -d '/opt/homebrew' ]]; then
+  _brew_prefix='/opt/homebrew'
+else
+  _brew_prefix='/usr/local'
+fi
+_os="$(uname -s)"
+_tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
 # Shell settings.
 

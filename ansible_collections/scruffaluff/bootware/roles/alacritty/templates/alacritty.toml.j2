@@ -69,7 +69,7 @@ chars = "\ue002"
 key = "]"
 mods = "Control"
 
-[shell]
+[terminal.shell]
 args = ["{{ '-NoLogo' if ansible_system == 'Win32NT' else '--login' }}"]
 program = "{{ user_shell }}"
 {% if ansible_system == "Darwin" %}
