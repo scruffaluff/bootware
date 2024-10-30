@@ -589,6 +589,22 @@ Function Setup() {
         Else {
             RemoteScript 'https://get.scoop.sh'
         }
+
+         # Add Scoop shims to system path.
+        $Path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+        $GlobalShims = 'C:\ProgramData\scoop\shims'
+        If (-Not ($Path -Like "*$GlobalShims*")) {
+            [System.Environment]::SetEnvironmentVariable(
+                'Path', $GlobalShims + ";$Path", 'Machine'
+            )
+        }
+        $Path = [Environment]::GetEnvironmentVariable('Path', 'User')
+        $UserShims = "$HOME\scoop\shims"
+        If (-Not ($Path -Like "*$UserShims*")) {
+            [System.Environment]::SetEnvironmentVariable(
+                'Path', $UserShims + ";$Path", 'User'
+            )
+        }
     }
 
     # Git is required for addding Scoop buckets.

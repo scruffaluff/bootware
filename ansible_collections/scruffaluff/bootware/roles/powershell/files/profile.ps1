@@ -74,6 +74,14 @@ Function PrependPaths() {
     }
 }
 
+# Fix system path for SSH connections.
+#
+# On some Windows SSH configurations the path environment variable will only
+# have a restricted set of entries, but the correct values can be obtained with
+# GetEnvironmentVariable.
+$Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
+    + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine') 
+
 # Private convenience variables.
 
 $_SshSession = "$Env:SSH_CLIENT$Env:SSH_CONNECTION$Env:SSH_TTY"

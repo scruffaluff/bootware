@@ -142,4 +142,4 @@ test:
 # Run unit test suites.
 [windows]
 test:
-  Invoke-Pester -Output Detailed tests
+  Invoke-Pester -CI -Output Detailed tests
