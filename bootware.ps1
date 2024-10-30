@@ -590,7 +590,7 @@ Function Setup() {
             RemoteScript 'https://get.scoop.sh'
         }
 
-         # Add Scoop shims to system path.
+        # Add Scoop shims to system path.
         $Path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
         $GlobalShims = 'C:\ProgramData\scoop\shims'
         If (-Not ($Path -Like "*$GlobalShims*")) {
