@@ -183,8 +183,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Test installation, setup, and bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         uses: vmactions/freebsd-vm@v1
         with:
+          envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
@@ -223,6 +226,8 @@ jobs:
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
           bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
       # Yazi hangs during startup on GitHub Arm64 MacOS runners.
@@ -390,6 +395,8 @@ jobs:
       # 03/09/2024 respectively due to hash checksum issues. As of 09/08/2024,
       # QEMU installer experiences timeout issues.
       - name: Test bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,qsv --tags desktop,extras

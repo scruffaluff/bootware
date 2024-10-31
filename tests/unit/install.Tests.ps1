@@ -3,6 +3,7 @@ BeforeAll {
     $Install = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../install.ps1")
     . $Install
 
+    Mock CheckEnvironment { }
     Mock DownloadFile { }
     Mock New-Item { }
     Mock Test-Path { Write-Output 1 }

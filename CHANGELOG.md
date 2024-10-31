@@ -7,9 +7,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Added
+
+- Android Studio role.
+
 ### Removed
 
-- Gcloud, Packer, and Vault roles.
+- Gcloud, Go, Packer, and Vault roles.
 
 ## 0.8.2 - 2024-09-30
 

@@ -99,6 +99,7 @@
 
 - name: Get latest GitHub Runner version for Unix
   ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
     method: GET
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest
@@ -125,6 +126,7 @@
 
 - name: Get latest GitHub Runner version for Windows
   ansible.windows.win_uri:
+    headers: "{{ github_api_headers }}"
     method: GET
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest

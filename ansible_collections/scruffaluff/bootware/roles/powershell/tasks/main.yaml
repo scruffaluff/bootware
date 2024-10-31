@@ -75,6 +75,14 @@
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"
 
+- name: Set PowerShell Core as default OpenSSH shell for Windows
+  ansible.windows.win_regedit:
+    data: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    name: DefaultShell
+    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    type: string
+  when: ansible_system == "Win32NT"
+
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
