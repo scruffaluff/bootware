@@ -34,6 +34,8 @@ fish_executable_:
     '/usr/local' }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
+github_api_token_: >-
+  {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
   Darwin: staff
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
@@ -62,8 +64,11 @@ bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
 brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
-fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
+fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
+github_api_headers: >-
+  {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
+  {} }}
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-

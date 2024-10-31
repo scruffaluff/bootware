@@ -41,6 +41,7 @@
 
 - name: Get latest Croc version for Linux
   ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
     method: GET
     return_content: true
     url: https://api.github.com/repos/schollz/croc/releases/latest

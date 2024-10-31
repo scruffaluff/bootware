@@ -17,6 +17,7 @@ Describe 'Install' {
     It 'Pass local path to DownloadFile' {
         If (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
+            Mock CheckEnvironment { Write-Output '' }
         }
         Else {
             Function bootware() { Write-Output '' }
