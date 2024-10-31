@@ -3,6 +3,7 @@ BeforeAll {
     $Install = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../install.ps1")
     . $Install
 
+    Mock CheckEnvironment { }
     Mock DownloadFile { }
     Mock New-Item { }
     Mock Test-Path { Write-Output 1 }
@@ -17,7 +18,6 @@ Describe 'Install' {
     It 'Pass local path to DownloadFile' {
         If (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
-            Mock CheckEnvironment { Write-Output '' }
         }
         Else {
             Function bootware() { Write-Output '' }
