@@ -147,7 +147,6 @@
   { "name": "gitlab_runner", "tests": ["gitlab-runner --version"] },
   { "name": "gitui", "tests": ["gitui --version"] },
   { "name": "glow", "tests": ["glow --version"] },
-  { "name": "go", "tests": ["go version"] },
   {
     "name": "hdf5",
     "skip": [{ "os": "alpine" }, { "os": "windows" }],

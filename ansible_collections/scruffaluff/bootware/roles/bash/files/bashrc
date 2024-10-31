@@ -145,6 +145,13 @@ fi
 export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
   DOCKER_CLI_HINTS='false'
 
+# FFmpeg settings.
+
+# Disable verbose FFmpeg banners.
+alias ffmpeg='ffmpeg -hide_banner'
+alias ffplay='ffplay -hide_banner'
+alias ffprobe='ffprobe -hide_banner'
+
 # Fzf settings.
 
 # Add path preview to Fzf file finder.
@@ -184,24 +191,6 @@ if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
   bind -r "\ec"
   bind -x '"\C-f": fzf-file-widget'
 fi
-
-# Go settings.
-
-# Export Go root directory to system path if available.
-#
-# Flags:
-#   -d: Check if path is a directory.
-if [[ -d "${_brew_prefix}/opt/go/libexec" ]]; then
-  export GOROOT="${_brew_prefix}/opt/go/libexec"
-  prepend_paths "${GOROOT}/bin"
-elif [[ -d '/usr/local/go' ]]; then
-  export GOROOT='/usr/local/go'
-  prepend_paths "${GOROOT}/bin"
-fi
-
-# Set path for Go local binaries.
-export GOPATH="${HOME}/.go"
-prepend_paths "${GOPATH}/bin"
 
 # Helix settings.
 

@@ -454,15 +454,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Go language
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.go
-      tags:
-        - extras
-        - go
-        - language
-        - never
-
     - name: Install Hadolint linter
       ansible.builtin.import_role:
         name: scruffaluff.bootware.hadolint

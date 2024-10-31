@@ -83,11 +83,11 @@ Describe 'Bootstrap' {
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
             + "--private-key `$HOME/.ssh/bootware --skip python " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags go --user $Env:UserName --timeout 60"
+            + "--tags lsd --user $Env:UserName --timeout 60"
 
         $Actual = & $Bootware bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python --timeout 60 `
-            --tags go
+            --tags lsd
         $Actual | Should -Be $Expected
     }
 }
