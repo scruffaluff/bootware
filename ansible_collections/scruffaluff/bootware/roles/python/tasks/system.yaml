@@ -40,7 +40,7 @@
   become: true
   community.general.pkgng:
     name:
-      - py39-pip
+      - py311-pip
       - python3
       - rust
   when: ansible_system == "FreeBSD"
