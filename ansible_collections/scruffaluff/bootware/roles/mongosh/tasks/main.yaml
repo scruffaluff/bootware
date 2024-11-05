@@ -20,7 +20,8 @@
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch }}.tgz
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
 
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
@@ -32,7 +33,8 @@
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch }}/bin/mongosh
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
 
 - name: Install Mongo Shell for MacOS
   become: true

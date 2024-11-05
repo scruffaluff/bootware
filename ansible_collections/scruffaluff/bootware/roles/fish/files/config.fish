@@ -217,6 +217,7 @@ function fish_user_key_bindings
     bind \ec _paste_working_directory
     bind \ef _select_command
     bind \ep _paginate_command
+    bind \ew backward-kill-word
     bind \eZ redo
     bind \ez undo
 end

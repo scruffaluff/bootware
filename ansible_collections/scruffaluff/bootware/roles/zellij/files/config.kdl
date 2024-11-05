@@ -34,7 +34,7 @@ keybinds {
     }
     normal {
         bind "Alt m" "Alt Up" { ToggleFocusFullscreen; }
-        bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
+        bind "Alt y" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {
         unbind "c" "d"

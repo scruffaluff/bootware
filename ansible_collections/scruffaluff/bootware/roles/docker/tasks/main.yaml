@@ -81,7 +81,7 @@
     mode: "644"
     url: https://download.docker.com/linux/fedora/docker-ce.repo
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for Fedora
   ansible.builtin.dnf:
@@ -90,7 +90,7 @@
       - docker-ce
       - docker-ce-cli
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for FreeBSD
   become: true

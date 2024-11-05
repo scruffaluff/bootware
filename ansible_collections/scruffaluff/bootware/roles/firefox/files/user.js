@@ -81,6 +81,10 @@ user_pref("extensions.formautofill.creditCards.enabled", false);
 user_pref("full-screen-api.warning.timeout", 0);
 // Disable audio and video autoplay.
 user_pref("media.autoplay.blocking_policy", 2);
+// Disable touchpad history navigation when alt key is pressed.
+user_pref("mousewheel.with_alt.action", 0);
+// Disable touchpad zoom when control key is pressed.
+user_pref("mousewheel.with_control.action", 0);
 // Allow DRM protected content to be played.
 user_pref("media.eme.enabled", true);
 // Prevent "add application for mailto links" popup.

@@ -34,7 +34,7 @@
   ansible.builtin.rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
@@ -45,13 +45,13 @@
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
       }}/stable
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCode for Fedora
   ansible.builtin.dnf:
     name: /tmp/vscode.rpm
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 # FreeBSD package repository provides the open source version of Visual Studio
 # Code, which cannot install proprietary Microsoft extensions.

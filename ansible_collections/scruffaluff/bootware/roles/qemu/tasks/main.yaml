@@ -45,7 +45,7 @@
       - qemu-user
       - qemu-tools
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 # FreeBSD "qemu" package is incompatible with "qemu-tools" package.
 - name: Install QEMU for FreeBSD

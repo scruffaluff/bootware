@@ -33,7 +33,7 @@
       - python3-devel
       - python3-pip
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 # Rust is required for installing some Python packages on FreeBSD.
 - name: Install Python packages for FreeBSD

@@ -10,6 +10,7 @@
       apk: nss-tools
       apt: libnss3-tools
       dnf: nss-tools
+      dnf5: nss-tools
       opkg: nss-utils
       pacman: nss
       zypper: mozilla-nss

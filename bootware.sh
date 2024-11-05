@@ -88,13 +88,14 @@ Subcommands:
   update      Update Bootware to latest version
 
 Environment Variables:
-  BOOTWARE_CONFIG     Set the configuration file path
-  BOOTWARE_NOPASSWD   Assume passwordless doas or sudo
-  BOOTWARE_NOSETUP    Skip Ansible install and system setup
-  BOOTWARE_PLAYBOOK   Set Ansible playbook name
-  BOOTWARE_SKIP       Set skip tags for Ansible roles
-  BOOTWARE_TAGS       Set tags for Ansible roles
-  BOOTWARE_URL        Set location of Ansible repository
+  BOOTWARE_CONFIG         Set the configuration file path
+  BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
+  BOOTWARE_NOPASSWD       Assume passwordless doas or sudo
+  BOOTWARE_NOSETUP        Skip Ansible install and system setup
+  BOOTWARE_PLAYBOOK       Set Ansible playbook name
+  BOOTWARE_SKIP           Set skip tags for Ansible roles
+  BOOTWARE_TAGS           Set tags for Ansible roles
+  BOOTWARE_URL            Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
