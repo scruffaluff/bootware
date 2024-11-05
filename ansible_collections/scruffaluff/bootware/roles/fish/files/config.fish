@@ -205,7 +205,7 @@ end
 prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
     /opt/homebrew/bin "$HOME/.local/bin"
 
-# Add custom Fish key bindings. 
+# Add custom Fish key bindings.
 #
 # To discover Fish character sequences for keybindings, use the
 # 'fish_key_reader' command. For more information, visit
@@ -213,11 +213,12 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 function fish_user_key_bindings
     bind \cd _delete_commandline_from_history
     bind \cj backward-char
+    bind \cw backward-kill-bigword
     bind \ue000 forward-char
     bind \ec _paste_working_directory
     bind \ef _select_command
     bind \ep _paginate_command
-    bind \ew backward-kill-word
+    bind \ew kill-bigword
     bind \eZ redo
     bind \ez undo
 end

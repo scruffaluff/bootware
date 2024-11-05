@@ -19,6 +19,7 @@
   { "command": "-list.selectAll", "key": "ctrl+a" },
   { "command": "-notification.acceptPrimaryAction", "key": "ctrl+shift+a" },
   { "command": "-rust-analyzer.joinLines", "key": "ctrl+shift+j" },
+  { "command": "-workbench.action.closeActiveEditor", "key": "ctrl+w" },
   { "command": "-workbench.action.closeWindow", "key": "ctrl+shift+w" },
   { "command": "-workbench.action.debug.continue", "key": "f5" },
   { "command": "-workbench.action.debug.restart", "key": "ctrl+shift+f5" },
@@ -94,8 +95,16 @@
     "key": "{{ vscode_ctrl_key }}+k m",
     "when": "editorTextFocus"
   },
-  { "command": "cursorLineEnd", "key": "ctrl+e", "when": "editorTextFocus" },
-  { "command": "cursorLineStart", "key": "ctrl+a", "when": "editorTextFocus" },
+  {
+    "command": "cursorLineEnd",
+    "key": "ctrl+e",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "cursorLineStart",
+    "key": "ctrl+a",
+    "when": "textInputFocus && !terminalFocus"
+  },
   { 
     "command": "cursorWordLeft",
     "key": "shift+left",
@@ -116,7 +125,21 @@
     "key": "shift+right",
     "when": "textInputFocus"
   },
-  { "command": "deleteAllLeft", "key": "ctrl+u", "when": "editorTextFocus" },
+  { 
+    "command": "deleteAllLeft",
+    "key": "ctrl+u",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "deleteWordLeft",
+    "key": "ctrl+w",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "deleteWordRight",
+    "key": "alt+w",
+    "when": "textInputFocus && !terminalFocus"
+  },
   {
     "command": "editor.action.insertCursorAbove",
     "key": "ctrl+shift+up",
@@ -154,7 +177,7 @@
   },
   { 
     "command": "workbench.action.closeActiveEditor",
-    "key": "ctrl+w",
+    "key": "ctrl+shift+w",
     "when": "editorFocus"
   },
   {

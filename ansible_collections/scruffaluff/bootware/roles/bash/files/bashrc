@@ -103,6 +103,10 @@ if [[ -n "${_tty}" ]]; then
   else
     source_files '/usr/share/bash-completion/bash_completion'
   fi
+
+  # Add custom Bash key bindings.
+  bind -x '"\cj": backward-char'
+  bind -x '"\ue000": forward-char'
 fi
 
 # Add unified clipboard aliases.
