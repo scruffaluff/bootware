@@ -61,7 +61,9 @@
   become: true
   loop:
     - yazi
-    - yazi/plugins/smart-open.yazi
+    - yazi/plugins/chmod.yazi
+    - yazi/plugins/open.yazi
+    - yazi/plugins/ripgrep.yazi
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
@@ -80,8 +82,12 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
-      src: smart_open.lua
+    - dest: plugins/chmod.yazi/init.lua
+      src: chmod.lua
+    - dest: plugins/open.yazi/init.lua
+      src: open.lua
+    - dest: plugins/ripgrep.yazi/init.lua
+      src: ripgrep.lua
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directories for Windows
@@ -91,7 +97,9 @@
     state: directory
   loop:
     - config
-    - config/plugins/smart-open.yazi
+    - config/plugins/chmod.yazi
+    - config/plugins/open.yazi
+    - yazi/plugins/ripgrep.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
@@ -107,8 +115,12 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
-      src: smart_open.lua
+    - dest: plugins/chmod.yazi/init.lua
+      src: chmod.lua
+    - dest: plugins/open.yazi/init.lua
+      src: open.lua
+    - dest: plugins/ripgrep.yazi/init.lua
+      src: ripgrep.lua
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
