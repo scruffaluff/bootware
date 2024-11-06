@@ -211,16 +211,16 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
-    bind \cd _delete_commandline_from_history
+    bind \cd backward-kill-bigword
     bind \cj backward-char
-    bind \cw backward-kill-bigword
-    bind \ue000 forward-char
     bind \ec _paste_working_directory
+    bind \ed kill-bigword
     bind \ef _select_command
     bind \ep _paginate_command
-    bind \ew kill-bigword
+    bind \ex _delete_commandline_from_history
     bind \eZ redo
     bind \ez undo
+    bind \ue000 forward-char
 end
 
 # Add unified clipboard aliases.

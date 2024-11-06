@@ -35,5 +35,9 @@ tab: menu-complete
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
 
+# Use Control+D and Alt+D to delete words backwards and forwards
+"\C-d": backward-kill-word
+"\ed": kill-word
+
 # Use Alt+Z to undo command line edits.
 "\ez": undo
