@@ -60,7 +60,7 @@
       - virt-top
       - virt-viewer
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Libvirt for MacOS
   become: true

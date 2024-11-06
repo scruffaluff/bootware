@@ -14,6 +14,7 @@
       apk: tshark
       apt: tshark
       dnf: wireshark-cli
+      dnf5: wireshark-cli
       pacman: wireshark-cli
       zypper: wireshark
   when: ansible_system == "Linux"

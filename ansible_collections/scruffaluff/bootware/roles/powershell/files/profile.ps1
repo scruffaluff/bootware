@@ -109,6 +109,7 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
+    Set-PSReadLineKeyHandler -Chord Alt+w -Function BackwardDeleteWord
     Set-PSReadLineKeyHandler -Chord Alt+Z -Function Redo
     Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine

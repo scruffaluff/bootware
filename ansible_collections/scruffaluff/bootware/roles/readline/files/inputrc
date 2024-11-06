@@ -5,6 +5,8 @@
 
 # Disable bell sound.
 set bell-style none
+# Disable terminal driver bindings.
+set bind-tty-special-chars off
 # Use colors to distinguish completion options.
 set colored-stats on
 # Ignore case during completions.
@@ -34,6 +36,11 @@ tab: menu-complete
 # Use Control+Left and Control+Right to jump backwards and forwards.
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
+
+# Use Control+D and Alt+D to delete words backwards and forwards
+"\C-w":
+"\C-d": backward-kill-word
+"\ed": kill-word
 
 # Use Alt+Z to undo command line edits.
 "\ez": undo

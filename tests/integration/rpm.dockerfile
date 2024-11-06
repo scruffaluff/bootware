@@ -1,4 +1,4 @@
-FROM fedora:40 AS build
+FROM fedora:41 AS build
 
 ARG version
 
@@ -20,7 +20,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM fedora:40
+FROM fedora:41
 
 ARG version
 

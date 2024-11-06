@@ -92,6 +92,8 @@ prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
 
 # Configure keybindings and completions for interactive shells.
 #
+# Custom Bash keybindings are loaded from ~/.inputrc with readline.
+#
 # Flags:
 #   -n: Check if the string has nonzero length.
 if [[ -n "${_tty}" ]]; then

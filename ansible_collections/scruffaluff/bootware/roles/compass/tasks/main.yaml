@@ -5,7 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
   register: compass_cask_linux
-  when: ansible_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+  when:
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Debian
   ansible.builtin.apt:
@@ -22,7 +23,7 @@
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       compass_cask_linux.json.version }}.x86_64.rpm
   become: true
-  when: ansible_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
   community.general.homebrew_cask:

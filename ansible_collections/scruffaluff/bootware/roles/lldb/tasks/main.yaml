@@ -26,7 +26,7 @@
   ansible.builtin.package:
     name: lldb
   become: true
-  when: ansible_pkg_mgr in ["dnf", "pacman"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "pacman"]
 
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows

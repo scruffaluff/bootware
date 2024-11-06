@@ -4,7 +4,7 @@
   community.general.pkgng:
     name:
       - htop
-      - neofetch
+      - fastfetch
       - rsync
   when: ansible_system == "FreeBSD"
 
@@ -12,7 +12,7 @@
   ansible.builtin.package:
     name:
       - htop
-      - neofetch
+      - "{{ 'neofetch' if ansible_pkg_mgr == 'apt' else 'fastfetch' }}"
       - rsync
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
@@ -23,7 +23,7 @@
   community.general.homebrew:
     name:
       - htop
-      - neofetch
+      - fastfetch
       - rsync
   when: ansible_system == "Darwin"
 
@@ -34,3 +34,9 @@
       - rsync
   become: true
   when: ansible_pkg_mgr == "opkg"
+
+- name: Install utilities for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: fastfetch
+  when: ansible_system == "Win32NT"

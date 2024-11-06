@@ -23,7 +23,7 @@
       - fuse
       - fuse-libs
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install FUSE for Ubuntu
   ansible.builtin.apt:
