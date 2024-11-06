@@ -12,7 +12,7 @@
   ansible.builtin.package:
     name:
       - htop
-      - fastfetch
+      - "{{ 'neofetch' if ansible_pkg_mgr == 'apt' else 'fastfetch' }}"
       - rsync
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"

@@ -211,6 +211,7 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
+    bind \cw true
     bind \cd backward-kill-bigword
     bind \cj backward-char
     bind \ec _paste_working_directory
