@@ -6,7 +6,6 @@
 disable_exec_warn = true
 
 [manager]
-linemode = "size"
 ratio = [0, 1, 2]
 
 [open]

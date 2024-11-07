@@ -4,6 +4,7 @@ yazi_arch_:
   arm64: aarch64
 yazi_arch: "{{ yazi_arch_[system_architecture] }}"
 yazi_plugins:
+  - lpnh/fg
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:hide-preview
   - yazi-rs/plugins:max-preview

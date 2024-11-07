@@ -1,13 +1,21 @@
 ---
-- name: Get latest Yazi version for Unix
+- name: Get latest Yazi version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Download Yazi for Unix
+- name: Install Yazi for Linux
+  ansible.builtin.package:
+    name: yazi
+  become: true
+  ignore_errors: true
+  register: yazi_linux
+  when: ansible_system == "Linux"
+
+- name: Download Yazi for Linux
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
@@ -16,14 +24,6 @@
       https://github.com/sxyazi/yazi/releases/download/v{{
       yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch }}-unknown-linux-{{
       system_libc }}.zip
-  when: ansible_system in ["Darwin", "Linux"]
-
-- name: Install Yazi for Linux
-  ansible.builtin.package:
-    name: yazi
-  become: true
-  ignore_errors: true
-  register: yazi_linux
   when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
@@ -65,7 +65,6 @@
   loop:
     - yazi
     - yazi/plugins/open.yazi
-    - yazi/plugins/ripgrep.yazi
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
@@ -86,8 +85,6 @@
       src: yazi.toml
     - dest: plugins/open.yazi/init.lua
       src: open.lua
-    - dest: plugins/ripgrep.yazi/init.lua
-      src: ripgrep.lua
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directories for Windows
@@ -98,7 +95,6 @@
   loop:
     - config
     - config/plugins/open.yazi
-    - config/plugins/ripgrep.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
@@ -116,8 +112,6 @@
       src: yazi.toml
     - dest: plugins/open.yazi/init.lua
       src: open.lua
-    - dest: plugins/ripgrep.yazi/init.lua
-      src: ripgrep.lua
   when: ansible_system == "Win32NT"
 
 - name: Install Yazi plugins for Unix
@@ -144,7 +138,7 @@
   register: yazi_plugin_install
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -153,9 +147,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Install Yazi shell completions for Unix
+- name: Install Yazi shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
@@ -170,4 +164,4 @@
       shell: bash
     - dest: "{{ fish_completion }}/yazi.fish"
       shell: fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
