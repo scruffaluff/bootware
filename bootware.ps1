@@ -9,7 +9,7 @@ Function Usage() {
     Switch ($Args[0]) {
         'bootstrap' {
             Write-Output @'
-Boostrap install computer software
+Boostrap install computer software.
 
 Usage: bootware bootstrap [OPTIONS]
 
@@ -42,7 +42,7 @@ Ansible Options:
         }
         'config' {
             Write-Output @'
-Download default Bootware configuration file
+Download default Bootware configuration file.
 
 Usage: bootware config [OPTIONS]
 
@@ -55,7 +55,7 @@ Options:
         }
         'main' {
             Write-Output @'
-Boostrapping software installer
+Boostrapping software installer.
 
 Usage: bootware [OPTIONS] [SUBCOMMAND]
 
@@ -87,7 +87,7 @@ See 'bootware <subcommand> --help' for more information on a specific command.
         }
         'roles' {
             Write-Output @'
-List all Bootware roles
+List all Bootware roles.
 
 Usage: bootware roles [OPTIONS]
 
@@ -98,7 +98,7 @@ Options:
         }
         'setup' {
             Write-Output @'
-Install dependencies for Bootware
+Install dependencies for Bootware.
 
 Usage:
     bootware setup [OPTIONS]
@@ -112,7 +112,7 @@ Options:
         }
         'uninstall' {
             Write-Output @'
-Remove Bootware files
+Remove Bootware files.
 
 Usage: bootware uninstall
 
@@ -122,7 +122,7 @@ FLAGS:
         }
         'update' {
             Write-Output @'
-Update Bootware to latest version
+Update Bootware to latest version.
 
 Usage: bootware update [FLAGS]
 

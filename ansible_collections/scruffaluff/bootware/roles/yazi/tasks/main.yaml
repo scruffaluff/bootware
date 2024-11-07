@@ -1,22 +1,11 @@
 ---
-- name: Get latest Yazi version for Unix
+- name: Get latest Yazi version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
-  when: ansible_system in ["Darwin", "Linux"]
-
-- name: Download Yazi for Unix
-  ansible.builtin.unarchive:
-    dest: /tmp
-    mode: "777"
-    remote_src: true
-    src: >-
-      https://github.com/sxyazi/yazi/releases/download/v{{
-      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
-      }}-unknown-linux-musl.zip
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
   ansible.builtin.package:
@@ -26,14 +15,28 @@
   register: yazi_linux
   when: ansible_system == "Linux"
 
+- name: Download Yazi for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/sxyazi/yazi/releases/download/v{{
+      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch }}-unknown-linux-{{
+      system_libc }}.zip
+  when: ansible_system == "Linux"
+
 - name: Install Yazi for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/yazi
+    dest: /usr/local/bin/{{ item }}
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/yazi
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ system_libc }}/{{ item }}
   become: true
+  loop:
+    - ya
+    - yazi
   when: ansible_system == "Linux" and yazi_linux is failed
 
 - name: Install Yazi for MacOS
@@ -61,7 +64,7 @@
   become: true
   loop:
     - yazi
-    - yazi/plugins/smart-open.yazi
+    - yazi/plugins/open.yazi
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
@@ -80,8 +83,8 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
-      src: smart_open.lua
+    - dest: plugins/open.yazi/init.lua
+      src: open.lua
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directories for Windows
@@ -91,7 +94,7 @@
     state: directory
   loop:
     - config
-    - config/plugins/smart-open.yazi
+    - config/plugins/open.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
@@ -107,11 +110,35 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
-      src: smart_open.lua
+    - dest: plugins/open.yazi/init.lua
+      src: open.lua
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
+- name: Install Yazi plugins for Unix
+  ansible.builtin.command: ya pack --add {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Yazi plugins for Windows
+  ansible.windows.win_shell: ya pack --add {{ item }}
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  environment:
+    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -120,21 +147,21 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Install Yazi shell completions for Unix
+- name: Install Yazi shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/completions/yazi.{{
-      item.shell }}
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ system_libc
+      }}/completions/yazi.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
     - dest: "{{ fish_completion }}/yazi.fish"
       shell: fish
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_system == "Linux"

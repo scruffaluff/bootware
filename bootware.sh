@@ -20,7 +20,7 @@ usage() {
   case "${1}" in
     bootstrap)
       cat 1>&2 << EOF
-Boostrap install computer software
+Boostrap install computer software.
 
 Usage: bootware bootstrap [OPTIONS]
 
@@ -57,7 +57,7 @@ EOF
       ;;
     config)
       cat 1>&2 << EOF
-Download default Bootware configuration file
+Download default Bootware configuration file.
 
 Usage: bootware config [OPTIONS]
 
@@ -70,7 +70,7 @@ EOF
       ;;
     main)
       cat 1>&2 << EOF
-Boostrapping software installer
+Boostrapping software installer.
 
 Usage: bootware [OPTIONS] [SUBCOMMAND]
 
@@ -102,7 +102,7 @@ EOF
       ;;
     roles)
       cat 1>&2 << EOF
-List all Bootware roles
+List all Bootware roles.
 
 Usage: bootware roles [OPTIONS]
 
@@ -114,7 +114,7 @@ EOF
       ;;
     setup)
       cat 1>&2 << EOF
-Install dependencies for Bootware
+Install dependencies for Bootware.
 
 Usage: bootware setup [OPTIONS]
 
@@ -124,7 +124,7 @@ EOF
       ;;
     uninstall)
       cat 1>&2 << EOF
-Remove Bootware files
+Remove Bootware files.
 
 Usage: bootware uninstall
 
@@ -134,7 +134,7 @@ EOF
       ;;
     update)
       cat 1>&2 << EOF
-Update Bootware to latest version
+Update Bootware to latest version.
 
 Usage: bootware update [OPTIONS]
 

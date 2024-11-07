@@ -18,6 +18,20 @@ set show-all-if-unmodified on
 # Use symbols to distinguish completion options.
 set visible-stats on
 
+# Undefine keybindings.
+"\C-w":
+
+# Use common shell keybindings.
+"\C-a": beginning-of-line
+"\C-e": end-of-line
+"\C-k": kill-line
+"\C-l": clear-screen
+"\C-u": backward-kill-line
+"\ez": undo
+
+# Use common Fish keybindings.
+"\ee": edit-and-execute-command
+
 # Use tab to cycle through completions.
 tab: menu-complete
 
@@ -38,9 +52,5 @@ tab: menu-complete
 "\e[1;5C": forward-word
 
 # Use Control+D and Alt+D to delete words backwards and forwards
-"\C-w":
 "\C-d": backward-kill-word
 "\ed": kill-word
-
-# Use Alt+Z to undo command line edits.
-"\ez": undo

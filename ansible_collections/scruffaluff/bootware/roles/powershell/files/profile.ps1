@@ -102,6 +102,9 @@ Set-Alias -Name touch -Value New-Item
 If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Import-Module PSReadLine
 
+    # Remove shell key bindings.
+    Remove-PSReadLineKeyHandler -Chord Ctrl+w
+
     # Disable sounds for errors.
     Set-PSReadLineOption -BellStyle None
 
@@ -109,12 +112,12 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
-    Set-PSReadLineKeyHandler -Chord Alt+w -Function BackwardDeleteWord
+    Set-PSReadLineKeyHandler -Chord Alt+d -Function DeleteWord
     Set-PSReadLineKeyHandler -Chord Alt+Z -Function Redo
     Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
-    Set-PSReadLineKeyHandler -Chord Ctrl+w -Function BackwardDeleteWord
+    Set-PSReadLineKeyHandler -Chord Ctrl+d -Function BackwardDeleteWord
     Set-PSReadLineKeyHandler -Chord Shift+LeftArrow -Function ShellBackwardWord
 
     # Set shift+rightarrow to jump to end of next suggestion if at the end
@@ -154,6 +157,7 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line$WorkingDir")
         }
     }
+    Set-PSReadLineKeyHandler -Chord Alt+e ViEditVisually
     Set-PSReadLineKeyHandler -Chord Alt+f -ScriptBlock {
         $Line = $Null
         $Cursor = $Null
