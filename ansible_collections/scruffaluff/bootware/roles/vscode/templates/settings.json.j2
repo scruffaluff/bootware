@@ -81,6 +81,8 @@
     "editor.tabSize": 2
   },
   "bookmarks.sideBar.countBadge": "off",
+  "browse-lite.chromeExecutable": "{{ vscode_chrome_path }}",
+  "csv-preview.lineNumbers": "ordinal",
   "debug.console.fontFamily": "FiraCode Nerd Font",
   "debug.console.fontSize": {{ font_size }},
   "debug.focusEditorOnBreak": false,
@@ -114,6 +116,7 @@
   },
   "emmet.triggerExpansionOnTab": true,
   "evenBetterToml.schema.enabled": false,
+  "excel-viewer.showInfo": false,
   "explorer.autoReveal": false,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
@@ -133,6 +136,7 @@
     "**/.DS_Store": true,
     "**/.git": true,
     "**/.hg": true,
+    "**/.sl": true,
     "**/.svn": true,
     "**/*.olean": true,
     "**/CVS": true
@@ -231,8 +235,16 @@
   "workbench.colorTheme": "Solarized Light",
   "workbench.editor.focusRecentEditorAfterClose": false,
   "workbench.editorAssociations": {
+    "*.csv": "gc-excelviewer-csv-editor",
+    "*.flac": "wavPreview.audioPreview",
     "*.ipynb": "jupyter-notebook",
-    "*.wav": "wavPreview.audioPreview"
+    "*.m4a": "wavPreview.audioPreview",
+    "*.mp3": "wavPreview.audioPreview",
+    "*.ogg": "wavPreview.audioPreview",
+    "*.opus": "wavPreview.audioPreview",
+    "*.tsv": "gc-excelviewer-csv-editor",
+    "*.wav": "wavPreview.audioPreview",
+    "*.xlsx": "gc-excelviewer-excel-editor"
   },
   "workbench.iconTheme": "vscode-icons",
   "workbench.startupEditor": "welcomePage",

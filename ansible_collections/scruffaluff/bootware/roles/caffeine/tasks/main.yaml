@@ -67,12 +67,12 @@
   changed_when: true
   when: ansible_system == "Linux" and gnome_desktop
 
-- name: Copy Caffeinate script for GNOME desktops
-  ansible.builtin.copy:
+- name: Download Caffeinate script for GNOME desktops
+  ansible.builtin.get_url:
     dest: /usr/local/bin/caffeinate
     force: true
     mode: "755"
-    src: caffeinate.sh
+    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.sh
   become: true
   when: ansible_system == "Linux" and gnome_desktop
 
@@ -88,9 +88,10 @@
     scope: machine
   when: ansible_system == "Win32NT"
 
-- name: Copy Caffeinate script for Windows
-  ansible.windows.win_copy:
+- name: Download Caffeinate script for Windows
+  ansible.windows.win_get_url:
     dest: "C:/Program Files/PowerShell/Scripts/caffeinate.ps1"
     force: true
-    src: caffeinate.ps1
+    url: >-
+      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.ps1
   when: ansible_system == "Win32NT"

@@ -2,6 +2,18 @@
 vscode_arch_:
   amd64: x64
   arm64: arm64
+vscode_chrome_path_linux_:
+  apk: /usr/bin/chromium
+  apt: /usr/bin/google-chrome
+  dnf: /usr/bin/google-chrome
+  pacman: /usr/sbin/chromium
+vscode_chrome_path_:
+  Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+  FreeBSD: /usr/local/bin/chrome
+  Linux: >-
+    {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
+    }}
+  Win32NT: "{{ scoop_apps }}/googlechrome/current/chrome.exe"
 vscode_path_linux_:
   apk: /usr/lib/code-oss/resources/app
   pacman: /opt/visual-studio-code/resources/app
@@ -14,6 +26,7 @@ vscode_path_:
   Win32NT: "{{ scoop_apps }}/vscode/current/resources/app"
 
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
+vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
 vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
 vscode_custom_html: |
   <style>
@@ -50,7 +63,6 @@ vscode_extensions:
   - ms-vscode.vscode-serial-monitor
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
-  - ritwickdey.liveserver
   - rust-lang.rust-analyzer
   - skellock.just
   # TODO: Disabled as of 10/23/2024 since extension is not signed for Windows.
@@ -65,7 +77,6 @@ vscode_extensions:
   - vscode-icons-team.vscode-icons
   - vue.volar
   - waderyan.gitblame
-  - yzhang.markdown-all-in-one
   - zhwu95.riscv
   - zxh404.vscode-proto3
 vscode_install_customizations: true
@@ -88,4 +99,3 @@ vscode_remote_extensions:
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
   - waderyan.gitblame
-  - yzhang.markdown-all-in-one

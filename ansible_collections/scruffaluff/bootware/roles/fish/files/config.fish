@@ -212,7 +212,7 @@ prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 # https://fishshell.com/docs/current/cmds/bind.html.
 function fish_user_key_bindings
     bind \cw true
-    bind \cd backward-kill-bigword
+    bind \cd backward-kill-path-component
     bind \cj backward-char
     bind \ec _paste_working_directory
     bind \ed kill-bigword
