@@ -78,7 +78,7 @@
   {
     "command": "actions.find",
     "key": "ctrl+f",
-    "when": "editorFocus"
+    "when": "editorFocus || editorIsOpen"
   },
   { 
     "command": "bookmarks.listFromAllFiles", 
@@ -180,6 +180,16 @@
     "when": "!panelFocus"
   },
   {
+    "command": "workbench.action.compareEditor.nextChange",
+    "key": "{{ vscode_ctrl_key }}+k ]",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.previousChange",
+    "key": "{{ vscode_ctrl_key }}+k [",
+    "when": "textCompareEditorVisible"
+  },
+  {
     "command": "workbench.action.debug.continue",
     "key": "alt+c",
     "when": "debugState == 'stopped'"
@@ -210,6 +220,16 @@
     "when": "inDebugMode && !focusedSessionIsAttach"
   },
   {
+    "command": "workbench.action.editor.nextChange",
+    "key": "{{ vscode_ctrl_key }}+k ]",
+    "when": "editorTextFocus && !textCompareEditorActive"
+  },
+  {
+    "command": "workbench.action.editor.previousChange",
+    "key": "{{ vscode_ctrl_key }}+k [",
+    "when": "editorTextFocus && !textCompareEditorActive"
+  },
+  {
     "command": "workbench.action.files.newUntitledFile",
     "key": "ctrl+shift+n",
     "when": "!panelFocus"
@@ -223,83 +243,83 @@
   {
     "command": "workbench.action.moveEditorLeftInGroup",
     "key": "ctrl+shift+left",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.moveEditorRightInGroup",
     "key": "ctrl+shift+right",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.moveEditorToNextGroup",
     "key": "ctrl+shift+s",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.navigateBack",
     "key": "ctrl+[",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.navigateForward",
     "key": "ctrl+]",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.nextEditor",
     "key": "ctrl+shift+;",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.nextEditor",
     "key": "ctrl+tab",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
 {% if ansible_system == "Darwin" %}
   {
     "command": "workbench.action.openEditorAtIndex1",
     "key": "cmd+1",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex2",
     "key": "cmd+2",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex3",
     "key": "cmd+3",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex4",
     "key": "cmd+4",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex5",
     "key": "cmd+5",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex6",
     "key": "cmd+6",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex7",
     "key": "cmd+7",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex8",
     "key": "cmd+8",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.openEditorAtIndex9",
     "key": "cmd+9",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
 {% endif %}
   { "command": "workbench.action.positionPanelBottom", "key": "ctrl+shift+b" },
@@ -307,12 +327,12 @@
   {
     "command": "workbench.action.previousEditor",
     "key": "ctrl+shift+j",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   {
     "command": "workbench.action.previousEditor",
     "key": "ctrl+shift+tab",
-    "when": "editorFocus"
+    "when": "!panelFocus"
   },
   { "command": "workbench.action.quickOpen", "key": "ctrl+p" },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
