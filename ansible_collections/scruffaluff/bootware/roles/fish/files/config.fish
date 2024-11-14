@@ -322,7 +322,10 @@ if test -n $_tty; and type -q fzf
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
     if type -q fd
-        set --global FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix'
+        set --export FZF_DEFAULT_COMMAND 'fd --hidden --strip-cwd-prefix --exclude .git --exclude .hg --exclude .sl'
+        if test $_os = Darwin
+            set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --base-directory \$dir"
+        end
     end
 
     # Change Fzf file search keybinding to Ctrl+F.
