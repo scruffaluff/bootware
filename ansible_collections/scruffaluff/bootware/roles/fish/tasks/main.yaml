@@ -95,16 +95,17 @@
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
-- name: Install Bass Bash compatibility utility for Unix
+- name: Install Fish plugins for Unix
   ansible.builtin.shell:
     cmd: |
       source {{ user_home }}/.config/fish/config.fish
-      fisher install edc/bass
+      fisher install {{ item }}
     executable: "{{ fish_executable }}"
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installing edc/bass' in fish_bass_install"
-  register: fish_bass_install
+  changed_when: "'Installing' in fish_plugin_install"
+  loop: "{{ fish_plugins }}"
+  register: fish_plugin_install
   when: >-
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")

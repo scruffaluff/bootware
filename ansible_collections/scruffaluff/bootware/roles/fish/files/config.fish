@@ -321,6 +321,9 @@ if test -n $_tty; and type -q fzf
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
+    if type -q fd
+        set --global FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix'
+    end
 
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
