@@ -40,7 +40,10 @@ prepend_keymap = [
     { desc = "Chmod selected files", on = ["c", "m"], run = "plugin chmod" },
     { desc = "Hide or show preview", on = "T", run = "plugin --sync hide-preview" },
     { desc = "Maximize preview toggle", on = "M", run = "plugin --sync max-preview" },
-    { desc = "Search Ripgrep", on = "S", run = "plugin fg" },
+    { desc = "Search file content via fzf", on = ["s", "F"], run = "plugin fg" },
+    { desc = "Search file content via rg", on = ["s", "S"], run = "search rg" },
+    { desc = "Search file name via fd", on = ["s", "s"], run = "search fd" },
+    { desc = "Search file name via fzf", on = ["s", "f"], run = "plugin fg --args fzf" },
     { desc = "Smart filter", on = "F", run = "plugin smart-filter" },
 ]
 
