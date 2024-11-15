@@ -524,6 +524,17 @@
         - server
         - wsl
 
+    - name: Install ignore file
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.ignore
+      tags:
+        - container
+        - desktop
+        - ignore
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Jq JSON parser
       ansible.builtin.import_role:
         name: scruffaluff.bootware.jq

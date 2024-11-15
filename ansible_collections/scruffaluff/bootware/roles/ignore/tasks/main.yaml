@@ -1,0 +1,19 @@
+---
+- name: Copy ignore file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ignore"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: ignore
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy ignore file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.ignore"
+    force: true
+    owner: "{{ user_id }}"
+    src: ignore
+  when: ansible_system == "Win32NT"

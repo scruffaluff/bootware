@@ -319,16 +319,12 @@ set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
 if test -n $_tty; and type -q fzf
     fzf --fish | source
     if type -q bat; and type -q lsd
-        if test $_os = Darwin
-            set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview \$dir/{}'"
-        else
-            set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
-        end
+        set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
     if type -q fd
-        set --export FZF_DEFAULT_COMMAND 'fd --hidden --strip-cwd-prefix --exclude .git --exclude .hg --exclude .sl'
+        set --export FZF_DEFAULT_COMMAND 'fd --hidden'
         if test $_os = Darwin
-            set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --base-directory \$dir"
+            set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --search-path \$dir"
         end
     end
 

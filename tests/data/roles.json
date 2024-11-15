@@ -166,6 +166,7 @@
     "tests": ["htmlq --version"]
   },
   { "name": "hyperfine", "tests": ["hyperfine --version"] },
+  { "name": "ignore" },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "just", "tests": ["just --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
