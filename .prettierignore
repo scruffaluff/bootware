@@ -3,6 +3,7 @@
 # For more information, visit https://prettier.io/docs/en/ignore.html.
 
 .git/
+.mypy_cache/
 .venv/
 .vitepress/cache/
 .vitepress/dist/

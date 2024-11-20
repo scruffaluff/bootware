@@ -7,8 +7,6 @@
 set bell-style none
 # Disable terminal driver bindings.
 set bind-tty-special-chars off
-# Use colors to distinguish completion options.
-set colored-stats on
 # Ignore case during completions.
 set completion-ignore-case on
 # Show all options if there are multiple options.
@@ -27,13 +25,12 @@ set visible-stats on
 "\C-k": kill-line
 "\C-l": clear-screen
 "\C-u": backward-kill-line
+"\ee": edit-and-execute-command
 "\ez": undo
 
-# Use common Fish keybindings.
-"\ee": edit-and-execute-command
-
-# Use tab to cycle through completions.
+# Use Tab and Shift+Tab to cycle through completions.
 tab: menu-complete
+"\e[Z": menu-complete-backward
 
 # Add Vim like keybindings for line navigation.
 "\C-j": backward-char
@@ -54,3 +51,10 @@ tab: menu-complete
 # Use Control+D and Alt+D to delete words backwards and forwards
 "\C-d": backward-kill-word
 "\ed": kill-word
+
+# Use common Fish keybindings when in Bash.
+$if bash
+"\ef": "\C-e &| fzf"
+"\ep": "\C-e &| bat"
+"\es": "\C-asudo \C-e"
+$endif

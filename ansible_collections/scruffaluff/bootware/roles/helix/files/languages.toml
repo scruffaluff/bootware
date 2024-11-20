@@ -61,6 +61,10 @@ formatter = { command = "black", args = ["-"] }
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
 
 [[language]]
+name = "starlark"
+file-types = ["bzl", "bazel", "star", { glob = "BUCK" }, { glob = "BUILD" }, { glob = "BUILD.*" }, { glob = "TARGETS" }, { glob = "Tiltfile" }, { glob = "WORKSPACE" }]
+
+[[language]]
 name = "typescript"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "typescript"] }

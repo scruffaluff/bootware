@@ -128,7 +128,8 @@
     ".justfile": "just",
     "*.bats": "shellscript",
     "*.yaml.gotmpl": "yaml",
-    "inputrc": "plaintext",
+    "*ignore": "plaintext",
+    "*inputrc": "plaintext",
     "rust-toolchain": "toml"
   },
   "files.defaultLanguage": "markdown",
@@ -138,23 +139,19 @@
     "**/.hg": true,
     "**/.sl": true,
     "**/.svn": true,
-    "**/*.olean": true,
-    "**/CVS": true
   },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {
     "**/__pycache__/**": true,
-    "**/_target/**": true,
     "**/.benchmarks/**": true,
+    "**/.cache/**": true,
     "**/.dvc/**": true,
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
+    "**/.git/**": true,
     "**/.hypothesis/**": true,
     "**/.mypy_cache/**": true,
     "**/.pytest_cache/**": true,
     "**/.tox/**": true,
     "**/.venv/**": true,
-    "**/build/**": true,
     "**/node_modules/**": true,
     "**/target/**": true,
     "**/venv/**": true
@@ -173,6 +170,12 @@
   "lldb.launch.initCommands": ["command source ~/.lldbinit"],
   "lldb.launch.sourceLanguages": ["rust"],
   "lldb.suppressUpdateNotifications": true,
+  "ltex.configurationTarget": {
+    "dictionary": "userExternalFile",
+    "disabledRules": "userExternalFile",
+    "hiddenFalsePositives": "userExternalFile"
+  },
+  "ltex.enabled": ["bibtex", "latex", "markdown", "restructuredtext"],
   "MATLAB.telemetry": false,
   "markdown.preview.fontFamily": "PT Serif",
   "markdown.preview.fontSize": {{ font_size }},
