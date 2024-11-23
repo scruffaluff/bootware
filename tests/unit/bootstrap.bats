@@ -93,8 +93,7 @@ ansible_become_method=sudo --extra-vars ansible_python_interpreter=auto_silent \
   local actual expected
   export BOOTWARE_TAGS=''
 
-  expected="ansible-playbook --extra-vars ansible_become_method=sudo \
---extra-vars ansible_pkg_mgr=scoop \
+  expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
