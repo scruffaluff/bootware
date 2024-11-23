@@ -132,6 +132,19 @@
       - less
   when: ansible_system == "Win32NT"
 
+# VSCode remote terminals for MacOS automatically prepend folders to the system
+# path, which makes the /usr/bin/less appear before the /opt/homebrew/bin/less.
+# Luckily /usr/local/bin still appears before /usr/bin.
+- name: Make less command symlink for MacOS
+  ansible.builtin.file:
+    src: /opt/homebrew/bin/less
+    dest: /usr/local/bin/less
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_system == "Darwin" and ansible_architecture == "arm64"
+
 - name: Copy Less settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.lesskey"

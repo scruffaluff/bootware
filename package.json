@@ -1,18 +1,18 @@
 {
   "devDependencies": {
     "@types/mustache": "^4.2.0",
-    "@types/node": "^20.13.0",
+    "@types/node": "^22.9.0",
     "bats": "^1.11.0",
     "bats-assert": "https://github.com/bats-core/bats-assert#v2.1.0",
     "bats-file": "https://github.com/bats-core/bats-file#v0.4.0",
     "bats-support": "https://github.com/bats-core/bats-support#v0.3.0",
     "commander": "^12.1.0",
     "mustache": "^4.2.0",
-    "prettier": "^3.2.0",
-    "tsx": "^4.11.0",
-    "typescript": "^5.4.0",
-    "vitepress": "^1.2.0",
-    "vue": "^3.4.0"
+    "prettier": "^3.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.0"
   },
   "private": true,
   "scripts": {
