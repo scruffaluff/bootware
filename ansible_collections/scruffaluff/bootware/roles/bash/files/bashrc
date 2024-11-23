@@ -306,14 +306,18 @@ prepend_paths "${HOME}/.deno/bin"
 # Add NPM global binaries to system path.
 prepend_paths "${HOME}/.npm-global/bin"
 
-# Load Node version manager and its bash completion.
+# Initialize Fast Node Manager if available.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
-export NVM_DIR="${HOME}/.nvm"
-source_files "${NVM_DIR}/nvm.sh"
-if [[ -n "${_tty}" ]]; then
-  source_files "${NVM_DIR}/bash_completion"
+#   -d: Check if path is a directory.
+if [[ "${_os}" == 'Darwin' ]]; then
+  export FNM_PATH="${HOME}/Library/Application Support/fnm"
+else
+  export FNM_PATH="${HOME}/.local/share/fnm"
+fi
+if [ -d "${FNM_PATH}" ]; then
+  prepend_paths "${FNM_PATH}"
+  eval "$(fnm env)"
 fi
 
 # Visual Studio Code settings.

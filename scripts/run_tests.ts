@@ -15,7 +15,7 @@ function main(): void {
       process.arch === "x64" ? "amd64" : process.arch
     )
     .option("-c, --cache", "Use Docker cache")
-    .option("-d, --distros <distributions...>", "Linux distributions list", [
+    .option("-d, --distro <distributions...>", "Linux distributions list", [
       "alpine",
       "arch",
       "collection",
@@ -37,7 +37,7 @@ function main(): void {
     args = args + ` --build-arg tags=${config.tags}`;
   }
 
-  for (const distro of config.distros) {
+  for (const distro of config.distro) {
     const command = `docker build ${
       config.cache ? "" : "--no-cache"
     } --file tests/integration/${distro}.dockerfile --tag docker.io/scruffaluff/bootware:${distro} --platform linux/${

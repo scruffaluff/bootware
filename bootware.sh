@@ -355,7 +355,7 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  if [[ -z "${become_method:-}" ]]; then
+  if [[ -z "${become_method:-}" && "${inventory}" == '127.0.0.1,' ]]; then
     become_method="$(find_super)"
   fi
 
@@ -367,7 +367,7 @@ bootstrap() {
     ${checkout:+--checkout "${checkout}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
-    --extra-vars "ansible_become_method=${become_method}" \
+    ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \

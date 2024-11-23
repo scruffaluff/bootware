@@ -441,12 +441,18 @@ prepend_paths "$HOME/.deno/bin"
 # Add NPM global binaries to system path.
 prepend_paths "$HOME/.npm-global/bin"
 
-# Initialize NVM default version of Node if available.
+# Initialize Fast Node Manager if available.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q nvm
-    nvm use default
+#   -d: Check if path is a directory.
+if test $_os = Darwin
+    set --export FNM_PATH "$HOME/Library/Application Support/fnm"
+else
+    set --export FNM_PATH "$HOME/.local/share/fnm"
+end
+if test -d $FNM_PATH
+    prepend_paths $FNM_PATH
+    fnm env | source
 end
 
 # Visual Studio Code settings.
