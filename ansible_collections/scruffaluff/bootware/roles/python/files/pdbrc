@@ -2,45 +2,30 @@
 #
 # For more information, visit https://docs.python.org/3/library/pdb.html.
 
-import importlib
-import os
-import pdb
-import rlcompleter
-import sys
-
-# Add local variables to command line completion.
-pdb.Pdb.complete = rlcompleter.Completer(locals()).complete
 
 # Load interactive functions from pyrc module.
-spec = importlib.util.spec_from_file_location("pyrc", os.path.expanduser("~/.pyrc.py"))
-pyrc = importlib.util.module_from_spec(spec)
-sys.modules["pyrc"] = pyrc
-spec.loader.exec_module(pyrc)
+import os, pdb, sys
+sys.path.append(os.path.expanduser("~/.config"))
+import pyrc
+pyrc.setup(pdb.Pdb)
 
 # Remove setup imports and variables from namespace.
-del importlib, os, pdb, rlcompleter, spec, sys
+_ = sys.path.pop()
+del os, pdb, sys
 
-# Print object catalog with pager.
-alias cat pyrc.cat(%1, name="%1", regex=pyrc.get("%*".split(), index=1))
-# Print dictionary as object catalog with default pager.
-alias dictclass pyrc.cat(pyrc.dictclass(%1), name="%1", regex=pyrc.get("%*".split(), index=1))
-alias dc dictclass %*
-# Print documentation for object.
-alias docs pyrc.docs(%1)
-# Open object source code in editor.
-alias edit pyrc.edit(pyrc.get([%*]), frame=$_frame)
+
 # Print global variables.
 alias global pyrc.cat(pyrc.dictclass(globals()), name="global", regex=pyrc.get("%*".split()))
 alias gl global %*
+
 # Print local variables.
 alias local pyrc.cat(pyrc.dictclass(locals()), name="local", regex=pyrc.get("%*".split()))
 alias lo local %*
+
 # Next and list code.
 alias nextlist next;; list
 alias nl nextlist %*
-# Execute command with default shell.
-alias shell pyrc.shell(*"%*".split(), frame=$_frame)
-alias sh shell %*
+
 # Step and list code.
 alias steplist step;; list
 alias sl steplist %*
