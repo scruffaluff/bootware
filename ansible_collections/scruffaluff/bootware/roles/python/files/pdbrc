@@ -8,24 +8,5 @@ import os, pdb, sys
 sys.path.append(os.path.expanduser("~/.config"))
 import pyrc
 pyrc.setup(pdb.Pdb)
-
-# Remove setup imports and variables from namespace.
 _ = sys.path.pop()
-del _, os, pdb, sys
-
-
-# Print global variables.
-alias global pyrc.cat(pyrc.dictclass(globals()), name="global", regex=pyrc.get("%*".split()))
-alias gl global %*
-
-# Print local variables.
-alias local pyrc.cat(pyrc.dictclass(locals()), name="local", regex=pyrc.get("%*".split()))
-alias lo local %*
-
-# Next and list code.
-alias nextlist next;; list
-alias nl nextlist %*
-
-# Step and list code.
-alias steplist step;; list
-alias sl steplist %*
+del _, os, pdb, pyrc, sys

@@ -8,7 +8,7 @@ import re
 import subprocess
 from subprocess import CalledProcessError
 import tempfile
-from typing import Any, cast, Dict, List, Optional, Type, Union
+from typing import Any, cast, Optional, Type, Union
 
 
 def cat(
@@ -46,32 +46,18 @@ def catalog(
         return pprint.pformat(object)
 
 
-def dictclass(dictionary: Dict) -> Any:
-    """Convert dictionary to class."""
-    object = lambda: None  # noqa: E731
-    if isinstance(dictionary, dict):
-        object.__dict__ = dictionary
-    else:
-        object.__dict__ = dict(dictionary)
-    return object
-
-
 def do_cat(self, line: str) -> None:
-    """cat [object] [regex]
+    """cat object [, regex]
 
     Print object catalog with default pager.
     """
-    arguments = line.strip().split()
-    if arguments:
-        try:
-            object = variable(arguments[0], self.curframe)
-        except (AttributeError, ValueError) as exception:
-            error(exception)
-            return
-        regex = arguments[1] if len(arguments) > 1 else None
-        cat(object, regex)
-    else:
+    object = parse(self, line)
+    if object is None:
         error("Command cat takes one or two arguments")
+    elif isinstance(object, tuple):
+        cat(*object)
+    else:
+        cat(object)
 
 
 def do_doc(self, line: str) -> None:
@@ -79,21 +65,16 @@ def do_doc(self, line: str) -> None:
 
     Print object signature and documentation in default pager.
     """
-    argument = line.strip()
-    if argument:
-        try:
-            object = variable(argument, self.curframe)
-        except (AttributeError, ValueError) as exception:
-            error(exception)
-            return
-        doc(object)
-    else:
+    object = parse(self, line)
+    if object is None:
         try:
             docstring = self.curframe.f_globals["__doc__"]
         except KeyError:
             error("Unable to find current module docstring")
         else:
             cat(docstring)
+    else:
+        doc(object)
 
 
 def do_edit(self, line: str) -> None:
@@ -101,18 +82,17 @@ def do_edit(self, line: str) -> None:
 
     Open object source code or current module in default text editor.
     """
-    argument = line.strip()
-    if not argument:
-        edit(None, self.curframe)
-    elif is_int(argument):
-        edit(int(argument), self.curframe)
-    else:
-        try:
-            object = variable(argument, self.curframe)
-        except (AttributeError, ValueError) as exception:
-            error(exception)
-            return
-        edit(object, self.curframe)
+    object = parse(self, line)
+    edit(object, self.curframe)
+
+
+def do_nextlist(self, arg) -> None:
+    """nl | nextlist
+
+    Continue execution until the next line and then list source code.
+    """
+    self.next(arg)
+    self.list(arg)
 
 
 def do_shell(self, line: str) -> None:
@@ -121,6 +101,15 @@ def do_shell(self, line: str) -> None:
     Execute shell command or start interactive shell on empty command.
     """
     shell(line.strip(), self.curframe)
+
+
+def do_steplist(self, arg) -> None:
+    """sl | steplist
+
+    Execution current line and then list source code.
+    """
+    self.step(arg)
+    self.list(arg)
 
 
 def doc(object: Any) -> None:
@@ -149,12 +138,11 @@ def edit(object: Any = None, frame: Any = None) -> None:
     elif object is None and frame is not None:
         file, line = frame.f_code.co_filename, frame.f_lineno
         command = [editor, f"+{line}", file]
-    elif inspect.ismodule(object):
-        command = [editor, inspect.getsourcefile(object)]
-    elif isinstance(object, str):
-        command = [editor, object]
     else:
-        type_ = object if inspect.isclass(object) else type(object)
+        type_ = object if is_type(object) else type(object)
+        if inspect.isbuiltin(object):
+            error(f"Cannot view source code for builtin '{object}'")
+            return
         file = inspect.getsourcefile(type_)
         line = inspect.findsource(type_)[1] + 1
         command = [editor, f"+{line}", file]
@@ -166,28 +154,25 @@ def error(message: Union[str, Exception]) -> None:
     print(f"*** {message}")
 
 
-def get(list: List, index: int = 0, default: Any = None) -> Any:
-    """Get nth item from list or default."""
-    try:
-        item = list[index]
-    except IndexError:
-        return default
-
-    # Split surrounding quotes for PDB parameters.
-    if isinstance(item, str):
-        return item.strip("'\"")
-    else:
-        return item
-
-
 def is_int(value: Any) -> bool:
     """Check if value can be converted to an integer."""
     try:
         int(value)
-    except ValueError:
+    except (TypeError, ValueError):
         return False
     else:
         return True
+
+
+def is_type(value: Any) -> bool:
+    """Check if value is a type or variable."""
+    return any(
+        (
+            inspect.isclass(value),
+            inspect.ismodule(value),
+            inspect.isroutine(value),
+        )
+    )
 
 
 def page(text: str) -> None:
@@ -204,6 +189,14 @@ def page(text: str) -> None:
         subprocess.run(command + [file.name], check=True)
 
 
+def parse(pdb: Type, line: str) -> Any:
+    """Parse and possibly execute command line input."""
+    try:
+        return pdb._getval_except(line)
+    except Exception:
+        return None
+
+
 def setup(pdb: Type) -> None:
     """Extend PDB with custom functionality."""
     pdb.do_cat = do_cat
@@ -212,8 +205,12 @@ def setup(pdb: Type) -> None:
     pdb.complete_doc = pdb._complete_expression
     pdb.do_edit = do_edit
     pdb.complete_edit = pdb._complete_expression
+    pdb.do_nl = do_nextlist
+    pdb.do_nextlist = do_nextlist
     pdb.do_sh = do_shell
     pdb.do_shell = do_shell
+    pdb.do_sl = do_steplist
+    pdb.do_steplist = do_steplist
 
 
 def shell(cmd: str, frame: Any = None) -> None:
@@ -227,20 +224,3 @@ def shell(cmd: str, frame: Any = None) -> None:
         subprocess.run(command, check=True, cwd=folder)
     except (CalledProcessError, FileNotFoundError) as exception:
         error(exception)
-
-
-def variable(argument: str, frame: Any) -> Any:
-    """Convert string argument to session variable."""
-    value = None
-    parts = argument.split(".")
-    if parts[0] in frame.f_locals:
-        value = frame.f_locals[parts[0]]
-    elif parts[0] in frame.f_globals:
-        value = frame.f_globals[parts[0]]
-
-    if value is None:
-        raise ValueError(f"Unable to find '{argument}' in the currect scope")
-    else:
-        for part in parts[1:]:
-            value = getattr(value, part)
-    return value
