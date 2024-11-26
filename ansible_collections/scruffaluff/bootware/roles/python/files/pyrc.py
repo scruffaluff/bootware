@@ -6,6 +6,7 @@ from pathlib import Path
 import pprint
 import re
 import subprocess
+from subprocess import CalledProcessError
 import tempfile
 from typing import Any, cast, Dict, List, Optional, Type, Union
 
@@ -87,7 +88,12 @@ def do_doc(self, line: str) -> None:
             return
         doc(object)
     else:
-        doc(self.curframe.f_locals["__file__"])
+        try:
+            docstring = self.curframe.f_globals["__doc__"]
+        except KeyError:
+            error("Unable to find current module docstring")
+        else:
+            cat(docstring)
 
 
 def do_edit(self, line: str) -> None:
@@ -97,7 +103,7 @@ def do_edit(self, line: str) -> None:
     """
     argument = line.strip()
     if not argument:
-        edit(argument, self.curframe)
+        edit(None, self.curframe)
     elif is_int(argument):
         edit(int(argument), self.curframe)
     else:
@@ -148,7 +154,10 @@ def edit(object: Any = None, frame: Any = None) -> None:
     elif isinstance(object, str):
         command = [editor, object]
     else:
-        raise ValueError(f"Unable to process arguments: ({object}, {frame})")
+        type_ = object if inspect.isclass(object) else type(object)
+        file = inspect.getsourcefile(type_)
+        line = inspect.findsource(type_)[1] + 1
+        command = [editor, f"+{line}", file]
     subprocess.run(command, check=True)
 
 
@@ -198,9 +207,11 @@ def page(text: str) -> None:
 def setup(pdb: Type) -> None:
     """Extend PDB with custom functionality."""
     pdb.do_cat = do_cat
+    pdb.complete_cat = pdb._complete_expression
     pdb.do_doc = do_doc
-    pdb.do_ed = do_edit
+    pdb.complete_doc = pdb._complete_expression
     pdb.do_edit = do_edit
+    pdb.complete_edit = pdb._complete_expression
     pdb.do_sh = do_shell
     pdb.do_shell = do_shell
 
@@ -212,14 +223,14 @@ def shell(cmd: str, frame: Any = None) -> None:
     else:
         command = [os.environ.get("SHELL", "/bin/sh")]
     folder = Path(frame.f_code.co_filename).parent if frame else None
-    subprocess.run(command, check=True, cwd=folder)
+    try:
+        subprocess.run(command, check=True, cwd=folder)
+    except (CalledProcessError, FileNotFoundError) as exception:
+        error(exception)
 
 
 def variable(argument: str, frame: Any) -> Any:
     """Convert string argument to session variable."""
-    if os.path.exists(argument):
-        return argument
-
     value = None
     parts = argument.split(".")
     if parts[0] in frame.f_locals:
@@ -228,9 +239,7 @@ def variable(argument: str, frame: Any) -> Any:
         value = frame.f_globals[parts[0]]
 
     if value is None:
-        raise ValueError(
-            f"Unable to find argument '{argument}' in the currect scope"
-        )
+        raise ValueError(f"Unable to find '{argument}' in the currect scope")
     else:
         for part in parts[1:]:
             value = getattr(value, part)

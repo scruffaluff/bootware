@@ -11,7 +11,7 @@ pyrc.setup(pdb.Pdb)
 
 # Remove setup imports and variables from namespace.
 _ = sys.path.pop()
-del os, pdb, sys
+del _, os, pdb, sys
 
 
 # Print global variables.
