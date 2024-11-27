@@ -360,6 +360,16 @@ alias jt "just --justfile $HOME/.justfile --working-directory ."
 # Add Kubectl plugins to system path.
 prepend_paths "$HOME/.krew/bin"
 
+# Lsd settings.
+
+# Replace Ls with Lsd if avialable.
+#
+# Flags:
+#   -q: Only check for exit status by supressing output.
+if type -q lsd
+    alias ls lsd
+end
+
 # Procs settings.
 
 # Set light theme since Procs automatic theming fails on some systems.
@@ -444,14 +454,8 @@ prepend_paths "$HOME/.npm-global/bin"
 # Initialize Fast Node Manager if available.
 #
 # Flags:
-#   -d: Check if path is a directory.
-if test $_os = Darwin
-    set --export FNM_PATH "$HOME/Library/Application Support/fnm"
-else
-    set --export FNM_PATH "$HOME/.local/share/fnm"
-end
-if test -d $FNM_PATH
-    prepend_paths $FNM_PATH
+#   -q: Only check for exit status by supressing output.
+if type -q fnm
     fnm env | source
 end
 

@@ -338,6 +338,13 @@ Function jt() {
     just --justfile "$HOME/.justfile" --working-directory . $Args
 }
 
+# Lsd settings.
+
+# Replace Ls with Lsd if avialable.
+If (Get-Command -ErrorAction SilentlyContinue lsd) {
+    Set-Alias -Name ls -Value lsd
+}
+
 # Python settings.
 
 # Add Python debugger alias.

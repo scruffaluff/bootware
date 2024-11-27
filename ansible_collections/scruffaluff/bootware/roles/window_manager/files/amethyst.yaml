@@ -14,6 +14,11 @@ cycle-layout-backward:
   mod: mod1
   key: "["
 
+# Do not display the name of the layout when a new layout is selected.
+enables-layout-hud: false
+# Do not display the name of the layout when moving to a new space.
+enables-layout-hud-on-space-change: false
+
 # Focus the next window in the list going counter-clockwise.
 focus-ccw:
   key: j

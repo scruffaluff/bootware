@@ -54,25 +54,11 @@
     ansible_system == "Linux" and system_libc != "musl" and node_fnm_linux is
     failed
 
-- name: Create Fast Node Manager directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    dest: "{{ user_home }}/.local/share/fnm"
-    state: directory
-  become: true
-  when: >-
-    ansible_system == "Linux" and system_libc != "musl" and node_fnm_linux is
-    failed
-
 - name: Install Fast Node Manager for Linux
   ansible.builtin.copy:
-    group: "{{ group_id }}"
-    dest: "{{ user_home }}/.local/share/fnm/fnm"
+    dest: /usr/local/bin/fnm
     force: true
     mode: "755"
-    owner: "{{ user_id }}"
     remote_src: true
     src: /tmp/fnm
   become: true
@@ -182,6 +168,36 @@
   loop: "{{ node_applications }}"
   when: ansible_system == "Win32NT"
 
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl" and
+    user_id != "root"
+
+- name: Generate FNM shell completions for Unix
+  ansible.builtin.shell:
+    cmd: |
+      source {{ user_home }}/.bashrc
+      fnm completions --shell {{ item.shell }} > {{ item.path }}
+    executable: "{{ bash_executable }}"
+  become: true
+  changed_when: true
+  loop:
+    - path: "{{ bash_completion }}/fnm"
+      shell: bash
+    - path: "{{ fish_completion }}/fnm.fish"
+      shell: fish
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl" and
+    user_id != "root"
+
 - name: Create user shell completion directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -194,24 +210,6 @@
     - .local/share/bash-completion/completions
     - .config/fish/completions
   when: ansible_system != "Win32NT" and user_id != "root"
-
-- name: Generate FNM user shell completions for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      fnm completions --shell {{ item.shell }} > {{ user_home }}/{{ item.path }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: true
-  loop:
-    - path: .local/share/bash-completion/completions/fnm
-      shell: bash
-    - path: .config/fish/completions/fnm.fish
-      shell: fish
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl" and
-    user_id != "root"
 
 - name: Generate PNPM user shell completions for Unix
   ansible.builtin.shell:
