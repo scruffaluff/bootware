@@ -9,25 +9,22 @@ import shlex
 import subprocess
 from subprocess import CalledProcessError
 import tempfile
-from typing import Any, cast, Optional, Type, Union
+from typing import Any, cast, Optional, Tuple, Type, Union
 
 
-def cat(
-    object: Any, regex: Optional[str] = None, name: Optional[str] = None
-) -> None:
+def cat(object: Any, regex: Optional[str] = None) -> None:
     """Print object catalog with default pager."""
     regex = "^[^_].*" if regex is None else regex
-    page(catalog(object, name=name, regex=regex))
+    page(catalog(object, regex=regex))
 
 
 def catalog(
     object: Any,
     regex: str = "^[^_].*",
-    name: Optional[str] = None,
 ) -> str:
     """Convert object to string representation with all attributes."""
     if hasattr(object, "__dict__"):
-        name = name or object.__name__
+        name_ = name(object)
         regex_ = re.compile(regex, re.IGNORECASE)
 
         values = []
@@ -37,7 +34,7 @@ def catalog(
                 key != "__builtins__" and regex_.match(key)
             ):
                 value = pprint.pformat(object.__dict__[key])
-                values.append(f"{name}.{key} = {value}")
+                values.append(f"{name_}.{key} = {value}")
         return "\n".join(values)
     elif isinstance(object, dict):
         return pprint.pformat(
@@ -55,7 +52,11 @@ def do_cat(self, line: str) -> None:
     object = parse(self, line)
     if object is None:
         error("Command cat takes one or two arguments")
-    elif isinstance(object, tuple) and len(object) == 2:
+    elif (
+        isinstance(object, tuple)
+        and len(object) == 2
+        and isinstance(object[1], str)
+    ):
         cat(*object)
     else:
         cat(object)
@@ -125,7 +126,7 @@ def doc(object: Any) -> None:
     """Print object signature and documentation in default pager."""
     docstring = inspect.getdoc(object)
     try:
-        signature = f"{object.__name__}{inspect.signature(object)}"
+        signature = f"{name(object)}{inspect.signature(object)}"
     except (AttributeError, TypeError):
         signature = None
 
@@ -149,11 +150,11 @@ def edit(object: Any = None, frame: Any = None) -> None:
         command = [editor, f"+{line}", file]
     else:
         type_ = object if is_type(object) else type(object)
-        if inspect.isbuiltin(object):
-            error(f"Cannot view source code for builtin '{object}'")
+        try:
+            file, line = find_source(type_)
+        except Exception as exception:
+            error(exception)
             return
-        file = inspect.getsourcefile(type_)
-        line = inspect.findsource(type_)[1] + 1
         command = [editor, f"+{line}", file]
     subprocess.run(command, check=True)
 
@@ -163,14 +164,13 @@ def error(message: Union[str, Exception]) -> None:
     print(f"*** {message}")
 
 
-def is_int(value: Any) -> bool:
-    """Check if value can be converted to an integer."""
-    try:
-        int(value)
-    except (TypeError, ValueError):
-        return False
-    else:
-        return True
+def find_source(type: Type) -> Tuple[str, int]:
+    """Find location of source code for a type."""
+    file = inspect.getsourcefile(type)
+    if file is None or not isinstance(file, str):
+        raise ValueError(f"Unable to find source file for '{type}'")
+    line = inspect.findsource(type)[1] + 1
+    return file, line
 
 
 def is_type(value: Any) -> bool:
@@ -182,6 +182,11 @@ def is_type(value: Any) -> bool:
             inspect.isroutine(value),
         )
     )
+
+
+def name(object: Any) -> str:
+    """Get name object of name of its type."""
+    return getattr(object, "__name__", object.__class__.__name__)
 
 
 def page(text: str) -> None:
