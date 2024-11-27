@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import pprint
 import re
+import shlex
 import subprocess
 from subprocess import CalledProcessError
 import tempfile
@@ -54,7 +55,7 @@ def do_cat(self, line: str) -> None:
     object = parse(self, line)
     if object is None:
         error("Command cat takes one or two arguments")
-    elif isinstance(object, tuple):
+    elif isinstance(object, tuple) and len(object) == 2:
         cat(*object)
     else:
         cat(object)
@@ -86,13 +87,15 @@ def do_edit(self, line: str) -> None:
     edit(object, self.curframe)
 
 
-def do_nextlist(self, arg) -> None:
+def do_nextlist(self, arg) -> int:
     """nl | nextlist
 
     Continue execution until the next line and then list source code.
     """
-    self.next(arg)
-    self.list(arg)
+    self.set_next(self.curframe)
+    self.do_list(None)
+    # Returning "1" appears to be necessary for subsequent calls to work.
+    return 1
 
 
 def do_shell(self, line: str) -> None:
@@ -100,16 +103,22 @@ def do_shell(self, line: str) -> None:
 
     Execute shell command or start interactive shell on empty command.
     """
-    shell(line.strip(), self.curframe)
+    arguments = []
+    for argument in shlex.split(line.strip()):
+        result = parse(self, argument)
+        arguments.append(argument if result is None else str(result))
+    shell(shlex.join(arguments), self.curframe)
 
 
-def do_steplist(self, arg) -> None:
+def do_steplist(self, arg) -> int:
     """sl | steplist
 
     Execution current line and then list source code.
     """
-    self.step(arg)
-    self.list(arg)
+    self.set_step()
+    self.do_list(arg)
+    # Returning "1" appears to be necessary for subsequent calls to work.
+    return 1
 
 
 def doc(object: Any) -> None:
@@ -192,7 +201,7 @@ def page(text: str) -> None:
 def parse(pdb: Type, line: str) -> Any:
     """Parse and possibly execute command line input."""
     try:
-        return pdb._getval_except(line)
+        return eval(line, pdb.curframe.f_globals, pdb.curframe_locals)
     except Exception:
         return None
 
