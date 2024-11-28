@@ -69,7 +69,7 @@
         dest: "{{ scoop_apps }}/llvm/current/bin"
         src: "{{ ansible_env.TEMP }}/python_embed.zip"
 
-- name: Create LLDB settings directory for Unix
+- name: Create user config directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config"
     group: "{{ group_id }}"
@@ -95,7 +95,7 @@
       src: lldbinit.py
   when: ansible_system != "Win32NT"
 
-- name: Create debugger settings directory for Windows
+- name: Create user config directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config"

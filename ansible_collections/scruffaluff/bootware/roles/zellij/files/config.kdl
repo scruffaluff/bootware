@@ -7,7 +7,7 @@ default_layout "layout"
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt h" "Ctrl b" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl q"
 
     shared_except "locked" {
         bind "Alt j" { MoveFocusOrTab "Left"; }
