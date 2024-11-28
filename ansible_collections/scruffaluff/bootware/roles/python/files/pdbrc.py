@@ -8,8 +8,9 @@ import re
 import shlex
 import subprocess
 from subprocess import CalledProcessError
+import sys
 import tempfile
-from typing import Any, cast, Optional, Tuple, Type, Union
+from typing import Any, cast, List, Optional, Tuple, Type, Union
 
 
 def cat(object: Any, regex: Optional[str] = None) -> None:
@@ -108,7 +109,7 @@ def do_shell(self, line: str) -> None:
     for argument in shlex.split(line.strip()):
         result = parse(self, argument)
         arguments.append(argument if result is None else str(result))
-    shell(shlex.join(arguments), self.curframe)
+    shell(arguments, self.curframe)
 
 
 def do_steplist(self, arg) -> int:
@@ -203,6 +204,15 @@ def page(text: str) -> None:
         subprocess.run(command + [file.name], check=True)
 
 
+def parent_shell() -> str:
+    """Get shell of parent process or default system shell."""
+    if sys.platform == "win32":
+        default = "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+    else:
+        default = "/bin/sh"
+    return os.environ.get("SHELL", default)
+
+
 def parse(pdb: Type, line: str) -> Any:
     """Parse and possibly execute command line input."""
     try:
@@ -227,12 +237,10 @@ def setup(pdb: Type) -> None:
     pdb.do_steplist = do_steplist
 
 
-def shell(cmd: str, frame: Any = None) -> None:
+def shell(command: List[str], frame: Any = None) -> None:
     """Execute shell command or start interactive shell on empty command."""
-    if cmd:
-        command = cmd.split()
-    else:
-        command = [os.environ.get("SHELL", "/bin/sh")]
+    if not command:
+        command = [parent_shell()]
     folder = Path(frame.f_code.co_filename).parent if frame else None
     try:
         subprocess.run(command, check=True, cwd=folder)

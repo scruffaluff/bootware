@@ -344,10 +344,6 @@ Function jt() {
 Function pdb() {
     python3 -m pdb $Args
 }
-Function pudb() {
-    python3 -m pip install --quiet pudb
-    python3 -m pudb $Args
-}
 
 # Make Poetry create virutal environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
