@@ -15,24 +15,26 @@ prepend_keymap = [
 
 [input]
 prepend_keymap = [
+    { on = "<C-w>", run = "noop" },
     { desc = "Move backward a character", on = "<C-j>", run = "move -1" },
     { desc = "Move forward a character", on = "\ue000", run = "move 1" },
     { desc = "Move backward a word", on = "<C-Left>", run = "backward" },
     { desc = "Move backward a word", on = "<S-Left>", run = "backward" },
     { desc = "Move forward a word", on = "<C-Right>", run = "forward" },
     { desc = "Move forward a word", on = "<S-Right>", run = "forward" },
+    { desc = "Kill backwards a word", on = "<C-d>", run = "kill backward" },
 ]
 
 [manager]
 prepend_keymap = [
     { desc = "Go back to the parent directory", on = "j", run = "leave" },
     { desc = "Go back to the previous directory", on = "J", run = "back" },
-    { desc = "Go forward to the next directory", on = ":", run = "forward" },
-    { desc = "Enter the child directory", on = ";", run = "enter" },
     { desc = "Move cursor down", on = "k", run = "arrow 1" },
     { desc = "Move cursor down 5 lines", on = "K", run = "arrow 5" },
     { desc = "Move cursor up", on = "l", run = "arrow -1" },
     { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
+    { desc = "Enter the child directory", on = ";", run = "enter" },
+    { desc = "Go forward to the next directory", on = ":", run = "forward" },
     { desc = "Open file or exit to directory", on = "<Enter>", run = "plugin --sync open" },
     { desc = "Open file or exit to directory", on = "o", run = "plugin --sync open" },
     { desc = "Seek down 5 units in the preview", on = "<A-k>", run = "seek 5" },
@@ -40,11 +42,14 @@ prepend_keymap = [
     { desc = "Chmod selected files", on = ["c", "m"], run = "plugin chmod" },
     { desc = "Hide or show preview", on = "T", run = "plugin --sync hide-preview" },
     { desc = "Maximize preview toggle", on = "M", run = "plugin --sync max-preview" },
-    { desc = "Search file content via fzf", on = ["s", "F"], run = "plugin fg" },
-    { desc = "Search file content via rg", on = ["s", "S"], run = "search rg" },
-    { desc = "Search file name via fd", on = ["s", "s"], run = "search fd" },
-    { desc = "Search file name via fzf", on = ["s", "f"], run = "plugin fg --args fzf" },
-    { desc = "Smart filter", on = "F", run = "plugin smart-filter" },
+    { desc = "Filter files", on = ["f", "f"], run = "filter --smart" },
+    { desc = "Smart filter", on = ["f", "F"], run = "plugin smart-filter" },
+    { desc = "Search file name via fd", on = ["f", "s"], run = "search fd" },
+    { desc = "Search file content via rg", on = ["f", "S"], run = "search rg" },
+    { desc = "Search file name via fzf", on = ["f", "z"], run = "plugin fg --args=fzf" },
+    { desc = "Search file content via fzf", on = ["f", "Z"], run = "plugin fg" },
+    { desc = "Run a shell command", on = "s", run = "shell --interactive" },
+    { desc = "Run a blocking shell command", on = "S", run = "shell --block --interactive" },
 ]
 
 [select]

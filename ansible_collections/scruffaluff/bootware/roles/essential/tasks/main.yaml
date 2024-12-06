@@ -9,6 +9,7 @@
   become: true
   community.general.pkgng:
     name:
+      - 7-zip
       - bzip2
       - gnupg
       - gtar
@@ -38,6 +39,7 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
+      - 7zip
       - bzip2
       - gnu-tar
       - gnupg

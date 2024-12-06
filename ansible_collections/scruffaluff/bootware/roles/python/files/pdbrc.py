@@ -15,13 +15,13 @@ from typing import Any, cast, List, Optional, Tuple, Type, Union
 
 def cat(object: Any, regex: Optional[str] = None) -> None:
     """Print object catalog with default pager."""
-    regex = "^[^_].*" if regex is None else regex
+    regex = ".*" if regex is None else regex
     page(catalog(object, regex=regex))
 
 
 def catalog(
     object: Any,
-    regex: str = "^[^_].*",
+    regex: str = ".*",
 ) -> str:
     """Convert object to string representation with all attributes."""
     if hasattr(object, "__dict__"):
