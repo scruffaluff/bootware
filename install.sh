@@ -174,7 +174,7 @@ install_completions() {
   fish_url="${repo_url}/completions/bootware.fish"
 
   # Flags:
-  #   -z: Check if the string has zero length or is null.
+  #   -z: Check if the string is empty.
   if [ -z "${2:-}" ]; then
     if [ "$(uname -m)" = 'arm64' ]; then
       brew_prefix='/opt/homebrew'
@@ -247,7 +247,7 @@ log() {
   # Log if environment variable is not set.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [ -z "${INSTALL_NOLOG:-}" ]; then
     echo "$@"
   fi
@@ -300,7 +300,7 @@ main() {
   # Flags:
   #   -u: Print only the user id.
   #   -w: Check if file exists and is writable.
-  #   -z: Check if the string has zero length or is null.
+  #   -z: Check if the string is empty.
   if [ -z "${user_install:-}" ] && [ ! -w "${dst_file}" ] &&
     [ "$(id -u)" -ne 0 ]; then
     super="$(find_super)"
@@ -342,7 +342,7 @@ main() {
   # Installl man pages if a system install.
   #
   # Flags:
-  #   -z: Check if the string has zero length or is null.
+  #   -z: Check if the string is empty.
   if [ -z "${user_install:-}" ]; then
     install_man "${super}" "${version}"
   fi

@@ -9,11 +9,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Android Studio role.
+- Android Studio and Ignore role.
+- More custom VSCode keybindings.
+- Support for Dnf5.
+- Yazi plugins.
+
+### Changed
+
+- Node role to depend on FNM instead of NVM.
+
+### Fixed
+
+- Browser Lite extension settings for VSCode.
+- Custom commands for PDB.
+- Fzf preview for MacOS.
+- Helix runtime files on Linux.
+- Installation of Fd shell completions.
 
 ### Removed
 
 - Gcloud, Go, Packer, and Vault roles.
+- PUDB configuration file.
+- Shell keybindings for Ctrl+W.
 
 ## 0.8.2 - 2024-09-30
 

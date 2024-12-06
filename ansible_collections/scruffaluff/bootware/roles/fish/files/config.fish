@@ -501,7 +501,12 @@ end
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if test -n $_tty; and test $TERM = alacritty
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -q: Only check for exit status by supressing output.
+#   -z: Check if the string is empty.
+if test -n $_tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -509,10 +514,6 @@ if test -n $_tty; and test $TERM = alacritty
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    #
-    # Flags:
-    #   -n: Check if string is nonempty.
-    #   -q: Only check for exit status by supressing output.
     if type -q zellij; and not _ssh_session; and test $LOGNAME = $USER
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true

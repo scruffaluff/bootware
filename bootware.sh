@@ -159,7 +159,6 @@ EOF
 #   BOOTWARE_SKIP
 #   BOOTWARE_TAGS
 #   BOOTWARE_URL
-#   USER
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
@@ -195,7 +194,7 @@ bootstrap() {
   # Check if Ansible should ask for user password.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
     ask_passwd='true'
   fi
@@ -309,7 +308,7 @@ bootstrap() {
   # Check if Bootware setup should be run.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${no_setup:-}" ]]; then
     setup
   fi
@@ -317,7 +316,7 @@ bootstrap() {
   # Download repository if no playbook is selected.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ "${cmd}" == 'playbook' && -z "${playbook:-}" ]]; then
     # Do not use long form --dry-run flag. It is not supported on MacOS.
     tmp_dir="$(mktemp -u)"
@@ -328,7 +327,7 @@ bootstrap() {
   # Find task associated with start role.
   #
   # Flags:
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   if [[ -n "${start_role:-}" ]]; then
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
@@ -431,7 +430,7 @@ config() {
   # Check if empty configuration file should be generated.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf 'super_passwordless: false' > "${dst_file}"
@@ -504,7 +503,7 @@ error_usage() {
 find_config_path() {
   # Flags:
   #   -f: Check if file exists and is a regular file.
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   #   -v: Only show file path of command.
   if [[ -f "${1:-}" ]]; then
     RET_VAL="${1}"
@@ -597,7 +596,7 @@ install_yq() {
 #######################################
 log() {
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
     echo "$@"
   fi
@@ -638,7 +637,7 @@ roles() {
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
 
   # Flags:
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   if [[ -n "${tags:-}" ]]; then
     contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
     filter=".[0].tasks[] | select(.tags | (${contains}))"
@@ -1169,7 +1168,7 @@ update_completions() {
   local fish_url="${repo_url}/completions/bootware.fish"
 
   # Flags:
-  #   -z: Check if the string has zero length or is null.
+  #  -z: Check if the string is empty.
   if [[ -z "${2:-}" ]]; then
     if [[ "$(uname -m)" == 'arm64' ]]; then
       brew_prefix='/opt/homebrew'

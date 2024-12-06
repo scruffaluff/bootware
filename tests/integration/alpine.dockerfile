@@ -57,7 +57,7 @@ ARG test
 # Test installed binaries for roles.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
     node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \

@@ -77,7 +77,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 if [[ -n "${_tty}" && -f "${HOME}/.ls_colors" ]]; then
   # shellcheck disable=SC2155
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
@@ -95,7 +95,7 @@ prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
 # Custom Bash keybindings are loaded from ~/.inputrc with readline.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 if [[ -n "${_tty}" ]]; then
   # Load Bash completion.
   if [[ "${_os}" == 'Darwin' ]]; then
@@ -113,7 +113,7 @@ fi
 # removing the final newline from text during clipboard copies.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${_tty}" ]]; then
@@ -178,7 +178,7 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 # Load Fzf keybindings if available.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 #   -r: Remove keybinding.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
@@ -260,7 +260,7 @@ prepend_paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
 # Initialize Pyenv if available.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
@@ -292,7 +292,7 @@ export STARSHIP_LOG='error'
 # Initialize Starship if available.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${_tty}" ]]; then
