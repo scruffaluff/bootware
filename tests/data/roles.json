@@ -18,7 +18,7 @@
     "name": "audacity",
     "tests": {
       "freebsd": ["audacity --version"],
-      "linux": ["flatpak info org.audacityteam.Audacity"],
+      "linux": ["audacity --version || flatpak info org.audacityteam.Audacity"],
       "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
       "windows": ["scoop prefix audacity"]
     }
@@ -180,7 +180,7 @@
     "name": "kdenlive",
     "tests": {
       "freebsd": [],
-      "linux": ["flatpak info org.kde.kdenlive"],
+      "linux": ["kdenlive --version || flatpak info org.kde.kdenlive"],
       "macos": ["/Applications/kdenlive.app/Contents/MacOS/kdenlive --version"],
       "windows": ["scoop prefix kdenlive"]
     }
@@ -258,7 +258,7 @@
     "name": "musescore",
     "tests": {
       "freebsd": ["mscore --version"],
-      "linux": ["flatpak info org.musescore.MuseScore"],
+      "linux": ["mscore --version || flatpak info org.musescore.MuseScore"],
       "macos": [
         "/Applications/MuseScore\\ 4.app/Contents/MacOS/mscore --version"
       ],
@@ -271,7 +271,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": {
       "freebsd": ["obs --version"],
-      "linux": ["flatpak info com.obsproject.Studio"],
+      "linux": ["obs --version || flatpak info com.obsproject.Studio"],
       "macos": ["/Applications/OBS.app/Contents/MacOS/OBS --version"],
       "windows": ["scoop prefix obs-studio"]
     }
@@ -386,7 +386,7 @@
     "name": "vlc",
     "tests": {
       "default": ["vlc --version"],
-      "linux": ["flatpak info org.videolan.VLC"],
+      "linux": ["vlc --version || flatpak info org.videolan.VLC"],
       "windows": ["scoop prefix vlc"]
     }
   },
