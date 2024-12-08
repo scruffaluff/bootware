@@ -1,0 +1,32 @@
+---
+- name: Check if Android command line tools are installed for Unix
+  ansible.builtin.stat:
+    path: "{{ android_sdk_path }}/cmdline-tools"
+  register: android_cmdline_check_unix
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Android command line tools for Unix
+  ansible.builtin.import_tasks: cmdline.yaml
+  environment:
+    ANDROID_HOME: "{{ android_sdk_path }}"
+    PATH: "{{ android_sdk_path }}/cmdline-tools/latest:{{ ansible_env.PATH }}"
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and not
+    android_cmdline_check_unix.stat.exists
+
+- name: Configure Android SDK for Unix
+  environment:
+    ANDROID_HOME: "{{ android_sdk_path }}"
+    PATH: "{{ android_sdk_path }}/cmdline-tools/latest:{{ ansible_env.PATH }}"
+  when: >-
+    ansible_system in ["Darwin", "Linux"]
+  block:
+    - name: Install Android packages
+      ansible.builtin.shell:
+        cmd: >-
+          {{ android_sdk_path }}/cmdline-tools/latest/bin/sdkmanager {{ item }}
+      become: true
+      loop:
+        - emulator
+        - ndk-bundle
+        - platform-tools

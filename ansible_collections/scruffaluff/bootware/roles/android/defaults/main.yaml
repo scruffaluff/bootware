@@ -1,0 +1,6 @@
+---
+android_sdk_path_:
+  Darwin: /Library/Android/sdk
+  Linux: /usr/local/android/sdk
+android_sdk_path: >-
+  {{ android_sdk_path_.get(ansible_system, '/usr/local/android/sdk') }}

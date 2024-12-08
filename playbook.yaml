@@ -47,19 +47,11 @@
         - desktop
         - terminal
 
-    - name: Install Android Studio
+    - name: Install Android development tools
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.android_studio
+        name: scruffaluff.bootware.android
       tags:
-        - android_studio
-        - never
-
-    - name: Install Android platform tools
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.android_tools
-      tags:
-        - android_tools
-        - extras
+        - android
         - never
 
     - name: Install AppImage dependencies

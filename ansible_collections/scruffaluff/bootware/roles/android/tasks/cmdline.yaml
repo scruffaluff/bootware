@@ -1,0 +1,56 @@
+---
+- name: Download Android command line tools for Unix
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://dl.google.com/android/repository/commandlinetools-{{
+      android_cmdline_os[ansible_system] }}-11076708_latest.zip
+  vars:
+    android_cmdline_os:
+      Darwin: mac
+      Linux: linux
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Android tools directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ android_sdk_path }}/{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - cmdline-tools
+    - cmdline-tools/latest
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Android tools for Unix
+  ansible.builtin.copy:
+    dest: "{{ android_sdk_path }}"
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/cmdline-tools
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create symlinks for Android command line tools for Unix
+  ansible.builtin.file:
+    src: "{{ android_sdk_path }}/cmdline-tools/{{ item }}"
+    dest: "{{ android_sdk_path }}/cmdline-tools/latest/{{ item }}"
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  loop:
+    - bin
+    - lib
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Accept Android licenses for Unix
+  ansible.builtin.shell:
+    cmd: >-
+      yes | {{ android_sdk_path }}/cmdline-tools/latest/bin/sdkmanager
+      --licenses
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
