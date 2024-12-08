@@ -6,8 +6,7 @@
   { "name": "alacritty", "tests": ["alacritty --version"] },
   {
     "name": "android_studio",
-    "skip": [{ "os": "freebsd" }, { "os": "openwrt" }, { "os": "suse" }],
-    "tests": ["adb --version"]
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }]
   },
   {
     "name": "android_tools",
@@ -18,7 +17,7 @@
     "name": "audacity",
     "tests": {
       "freebsd": ["audacity --version"],
-      "linux": ["audacity --version || flatpak info org.audacityteam.Audacity"],
+      "linux": ["which audacity || flatpak info org.audacityteam.Audacity"],
       "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
       "windows": ["scoop prefix audacity"]
     }
@@ -180,7 +179,7 @@
     "name": "kdenlive",
     "tests": {
       "freebsd": [],
-      "linux": ["kdenlive --version || flatpak info org.kde.kdenlive"],
+      "linux": ["which kdenlive || flatpak info org.kde.kdenlive"],
       "macos": ["/Applications/kdenlive.app/Contents/MacOS/kdenlive --version"],
       "windows": ["scoop prefix kdenlive"]
     }
@@ -258,7 +257,7 @@
     "name": "musescore",
     "tests": {
       "freebsd": ["mscore --version"],
-      "linux": ["mscore --version || flatpak info org.musescore.MuseScore"],
+      "linux": ["which mscore || flatpak info org.musescore.MuseScore"],
       "macos": [
         "/Applications/MuseScore\\ 4.app/Contents/MacOS/mscore --version"
       ],

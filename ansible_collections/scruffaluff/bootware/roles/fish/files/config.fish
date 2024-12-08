@@ -267,7 +267,7 @@ end
 
 # Android settings.
 
-# Export first version of native development kit.
+# Export first available version of Android native development kit.
 #
 # Flags:
 #   -d: Check if path is a directory.
@@ -285,7 +285,7 @@ end
 if test $_os = Darwin
     set --export ANDROID_HOME "$HOME/Library/Android/sdk"
 else
-    set --export ANDROID_HOME "$HOME/.android/sdk"
+    set --export ANDROID_HOME "$HOME/.local/android/sdk"
 end
 _export_ndk_home "$ANDROID_HOME/ndk"
 prepend_paths "$ANDROID_HOME/cmdline-tools/latest/bin" \
