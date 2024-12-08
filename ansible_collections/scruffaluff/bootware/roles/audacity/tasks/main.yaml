@@ -6,10 +6,18 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Audacity for Linux
+  ansible.builtin.package:
+    name: audacity
+  become: true
+  ignore_errors: true
+  register: audacity_linux
+  when: ansible_system == "Linux"
+
+- name: Install Audacity for Linux
   become: true
   community.general.flatpak:
     name: org.audacityteam.Audacity
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and audacity_linux is failed
 
 - name: Install Audacity for MacOS
   community.general.homebrew_cask:

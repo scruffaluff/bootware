@@ -6,10 +6,20 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install OBS Studio for Linux
+  ansible.builtin.package:
+    name: obs-studio
+  become: true
+  ignore_errors: true
+  register: obs_linux
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
+- name: Install OBS Studio for Linux
   become: true
   community.general.flatpak:
     name: com.obsproject.Studio
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: >-
+    ansible_system == "Linux" and system_architecture == "amd64" and obs_linux
+    is failed
 
 - name: Install OBS Studio for MacOS
   community.general.homebrew_cask:

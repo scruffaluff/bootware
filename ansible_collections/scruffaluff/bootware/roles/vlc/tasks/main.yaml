@@ -6,10 +6,18 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install VLC for Linux
+  ansible.builtin.package:
+    name: vlc
+  become: true
+  ignore_errors: true
+  register: vlc_linux
+  when: ansible_system == "Linux"
+
+- name: Install VLC for Linux
   become: true
   community.general.flatpak:
     name: org.videolan.VLC
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and vlc_linux is failed
 
 - name: Install VLC for MacOS
   community.general.homebrew_cask:
