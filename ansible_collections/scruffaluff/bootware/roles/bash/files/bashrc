@@ -130,6 +130,31 @@ if [[ -n "${_tty}" ]]; then
   fi
 fi
 
+# Android settings.
+
+# Export first available version of Android native development kit.
+#
+# Flags:
+#   -d: Check if path is a directory.
+_export_ndk_home() {
+  for folder in "${1}"/*; do
+    if [[ -d "${folder}" ]]; then
+      export NDK_HOME="${folder}"
+      break
+    fi
+  done
+}
+
+# Add Android CLI tools to system path.
+if [[ "${_os}" == 'Darwin' ]]; then
+  export ANDROID_HOME="${HOME}/Library/Android/sdk"
+else
+  export ANDROID_HOME="${HOME}/.local/android/sdk"
+fi
+_export_ndk_home "${ANDROID_HOME}/ndk"
+prepend_paths "${ANDROID_HOME}/cmdline-tools/latest/bin" \
+  "${ANDROID_HOME}/emulator" "${ANDROID_HOME}/platform-tools"
+
 # Bat settings.
 
 # Set default pager to Bat.

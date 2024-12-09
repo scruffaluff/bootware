@@ -266,7 +266,7 @@ Set-Alias -Name cbpaste -Value Get-Clipboard
 # Export first available version of Android native development kit.
 Function _ExportNdkHome($Path) {
     If (Test-Path -Path $Path -PathType Container) {
-        $NdkDir = $(Get-ChildItem -Path $Path| Select-Object -First 1)
+        $NdkDir = $(Get-ChildItem -Path $Path | Select-Object -First 1)
         If ($NdkDir) {
             $Env:NDK_HOME = "$NdkDir"
         }
@@ -360,7 +360,7 @@ Function jt() {
 
 # Replace Ls with Lsd if avialable.
 If (Get-Command -ErrorAction SilentlyContinue lsd) {
-    Set-Alias -Name ls -Value lsd
+    Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
 # Python settings.

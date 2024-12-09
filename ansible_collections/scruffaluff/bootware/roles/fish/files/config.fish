@@ -271,12 +271,11 @@ end
 #
 # Flags:
 #   -d: Check if path is a directory.
-#   -n: Check if string is nonempty.
 function _export_ndk_home
-    if test -d $argv[1]
-        set ndk_version (ls -1 $argv[1] | head -1)
-        if test -n $ndk_version
-            set --export --global NDK_HOME "$argv[1]/$ndk_version"
+    for folder in $argv[1]/*
+        if test -d $folder
+            set --export --global NDK_HOME $folder
+            break
         end
     end
 end
