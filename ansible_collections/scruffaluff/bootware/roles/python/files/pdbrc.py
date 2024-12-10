@@ -50,7 +50,12 @@ def do_cat(self, line: str) -> None:
 
     Print object catalog with default pager.
     """
-    object = parse(self, line)
+    try:
+        object = parse(self, line)
+    except Exception as exception:
+        error(exception)
+        return
+
     if object is None:
         error("Command cat takes one or two arguments")
     elif (
@@ -68,7 +73,12 @@ def do_doc(self, line: str) -> None:
 
     Print object signature and documentation in default pager.
     """
-    object = parse(self, line)
+    try:
+        object = parse(self, line)
+    except Exception as exception:
+        error(exception)
+        return
+
     if object is None:
         try:
             docstring = self.curframe.f_globals["__doc__"]
@@ -85,8 +95,12 @@ def do_edit(self, line: str) -> None:
 
     Open object source code or current module in default text editor.
     """
-    object = parse(self, line)
-    edit(object, self.curframe)
+    try:
+        object = parse(self, line)
+    except Exception as exception:
+        error(exception)
+    else:
+        edit(object, self.curframe)
 
 
 def do_nextlist(self, arg) -> int:
@@ -107,8 +121,12 @@ def do_shell(self, line: str) -> None:
     """
     arguments = []
     for argument in shlex.split(line.strip()):
-        result = parse(self, argument)
-        arguments.append(argument if result is None else str(result))
+        try:
+            object = parse(self, argument)
+        except Exception:
+            arguments.append(argument)
+        else:
+            arguments.append(str(object))
     shell(arguments, self.curframe)
 
 
@@ -162,7 +180,10 @@ def edit(object: Any = None, frame: Any = None) -> None:
 
 def error(message: Union[str, Exception]) -> None:
     """Print error to console."""
-    print(f"*** {message}")
+    if isinstance(message, str):
+        print(f"*** {message}")
+    else:
+        print(f"*** {type(message).__name__}: {message}")
 
 
 def find_source(type: Type) -> Tuple[str, int]:
@@ -215,9 +236,9 @@ def parent_shell() -> str:
 
 def parse(pdb: Type, line: str) -> Any:
     """Parse and possibly execute command line input."""
-    try:
+    if line.strip():
         return eval(line, pdb.curframe.f_globals, pdb.curframe_locals)
-    except Exception:
+    else:
         return None
 
 
