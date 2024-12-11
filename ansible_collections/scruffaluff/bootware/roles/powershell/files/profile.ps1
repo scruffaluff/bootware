@@ -411,13 +411,6 @@ $Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
 Set-Alias -Name rgd -Value rust-gdb
 Set-Alias -Name rld -Value rust-lldb
 
-# TypeScript settings.
-
-# Initialize Fast Node Manager if available.
-If (Get-Command -ErrorAction SilentlyContinue fnm) {
-    fnm env --shell powershell | Out-String | Invoke-Expression
-}
-
 # Yazi settings.
 
 # Yazi wrapper to change directory on program exit.

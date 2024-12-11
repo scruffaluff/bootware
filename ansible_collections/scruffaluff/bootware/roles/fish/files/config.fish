@@ -474,12 +474,12 @@ prepend_paths "$HOME/.deno/bin"
 # Add NPM global binaries to system path.
 prepend_paths "$HOME/.npm-global/bin"
 
-# Initialize Fast Node Manager if available.
+# Initialize Node Version Manager if available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
-if type -q fnm
-    fnm env | source
+if type -q nvm
+    nvm use default
 end
 
 # Visual Studio Code settings.
