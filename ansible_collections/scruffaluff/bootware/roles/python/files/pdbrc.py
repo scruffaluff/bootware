@@ -24,7 +24,7 @@ def catalog(
     regex: str = ".*",
 ) -> str:
     """Convert object to string representation with all attributes."""
-    if hasattr(object, "__dict__"):
+    if hasattr(object, "__dict__") and object.__dict__:
         name_ = name(object)
         regex_ = re.compile(regex, re.IGNORECASE)
 
@@ -50,15 +50,16 @@ def do_cat(self, line: str) -> None:
 
     Print object catalog with default pager.
     """
+    if not line.strip():
+        error("Command cat takes one or two arguments")
+        return
     try:
         object = parse(self, line)
     except Exception as exception:
         error(exception)
         return
 
-    if object is None:
-        error("Command cat takes one or two arguments")
-    elif (
+    if (
         isinstance(object, tuple)
         and len(object) == 2
         and isinstance(object[1], str)
