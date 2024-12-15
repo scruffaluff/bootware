@@ -2,9 +2,6 @@
 #
 # For more information, visit https://yazi-rs.github.io/docs/configuration/yazi.
 
-[headsup]
-disable_exec_warn = true
-
 [manager]
 ratio = [0, 1, 2]
 

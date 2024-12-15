@@ -5,7 +5,6 @@ yazi_arch_:
 yazi_arch: "{{ yazi_arch_[system_architecture] }}"
 yazi_plugins:
   - lpnh/fg
-  - yazi-rs/flavors:catppuccin-latte
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:hide-preview
   - yazi-rs/plugins:max-preview
