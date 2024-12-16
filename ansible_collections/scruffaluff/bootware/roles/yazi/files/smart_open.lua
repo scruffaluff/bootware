@@ -1,3 +1,5 @@
+--- @sync entry
+
 -- Yazi plugin to customized open keybindings.
 --
 -- Based on logic https://yazi-rs.github.io/docs/tips/#smart-enter.
