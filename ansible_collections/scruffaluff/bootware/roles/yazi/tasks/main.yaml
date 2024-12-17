@@ -64,7 +64,7 @@
   become: true
   loop:
     - yazi
-    - yazi/plugins/open.yazi
+    - yazi/plugins/smart-open.yazi
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
@@ -83,8 +83,8 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/open.yazi/init.lua
-      src: open.lua
+    - dest: plugins/smart-open.yazi/init.lua
+      src: smart_open.lua
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directories for Windows
@@ -94,7 +94,7 @@
     state: directory
   loop:
     - config
-    - config/plugins/open.yazi
+    - config/plugins/smart-open.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
@@ -110,8 +110,8 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/open.yazi/init.lua
-      src: open.lua
+    - dest: plugins/smart-open.yazi/init.lua
+      src: smart_open.lua
   when: ansible_system == "Win32NT"
 
 - name: Install Yazi plugins for Unix
