@@ -23,6 +23,12 @@ defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool fa
 defaults write com.apple.WindowManager GloballyEnabled -bool false
 # Prevent accent character popup when holding down a key.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+# Disble Apple intelligence report.
+defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
+# Disable Apple handling passwordless autofill.
+defaults write com.apple.Safari AutoFillPasswords -bool false
+# Delete verification codes after use.
+defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 
 # Dock and menu bar settings.
 
@@ -32,6 +38,9 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 0
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
+# Disable arranging spaces based on recent use for Amethyst.
+defaults write com.apple.dock mru-spaces -bool false
+defaults write com.apple.dock workspaces-auto-swoosh -bool false
 # Remove keyboard settings from menu bar.
 defaults write com.apple.TextInputMenu visible -bool false
 
