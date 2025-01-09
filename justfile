@@ -127,7 +127,8 @@ _setup-shell:
       choco install --yes yq
     }
     Else {
-        Throw 'Error: Unable to install Yq'
+        Throw 'Error: Scoop not found for Yq installation.'
+        Throw 'Please install Yq or Scoop manually before continuing.'
         Exit 1
     }
   }
