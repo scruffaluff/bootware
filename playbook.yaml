@@ -212,15 +212,6 @@
         - server
         - wsl
 
-    - name: Install Datree Kubernetes linter
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.datree
-      tags:
-        - datree
-        - extras
-        - kubernetes
-        - never
-
     - name: Install DBeaver database client
       ansible.builtin.import_role:
         name: scruffaluff.bootware.dbeaver

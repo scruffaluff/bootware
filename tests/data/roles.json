@@ -68,11 +68,6 @@
   },
   { "name": "compass" },
   { "name": "croc", "tests": ["croc --version"] },
-  {
-    "name": "datree",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["datree version"]
-  },
   { "name": "dbeaver" },
   {
     "name": "deno",

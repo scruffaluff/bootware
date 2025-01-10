@@ -7,6 +7,7 @@ python_applications:
   - jupytext
   - name: poetry
     injections:
+      - poetry-plugin-shell
       - poetry-plugin-up
 python_versions:
   - "3.13"

@@ -21,6 +21,9 @@ version = "0.8.3"
 [tool.black]
 line-length = 80
 
+[tool.poetry]
+package-mode = false
+
 [tool.poetry.group.dev.dependencies]
 ansible = "^11.1.0"
 ansible-compat = "^24.10.0"

@@ -51,28 +51,25 @@ lint:
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Settings PSScriptAnalyzerSettings.psd1
 
 # Install development dependencies.
-setup: _setup-python _setup-shell
+setup: _setup
   node --version
   npm --version
   npm ci
 
 [unix]
-_setup-python:
+_setup: _setup-unix
   python3 --version
   python3 -m venv .venv
-  .venv/bin/pip install --upgrade pip setuptools wheel
-  python3 -m pip --version
-  which poetry || python3 -m pip install --user poetry
+  poetry --version
   poetry check --lock
-  poetry install --no-root
-
-[windows]
-_setup-python:
+  poetry install
 
 [unix]
-_setup-shell:
+_setup-unix:
   #!/usr/bin/env sh
   set -eu
+  arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ | sed s/aarch64/arm64/)"
+  os="$(uname -s | tr '[A-Z]' '[a-z]')"
   if [ "$(id -u)" -eq 0 ]; then
     super=''
   elif [ -x "$(command -v sudo)" ]; then
@@ -80,8 +77,63 @@ _setup-shell:
   elif [ -x "$(command -v doas)" ]; then
     super='doas'
   fi
-  arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ | sed s/aarch64/arm64/)"
-  os="$(uname -s | tr '[A-Z]' '[a-z]')"
+  if [ ! -x "$(command -v node)" ]; then
+    if [ -x "$(command -v apk)" ]; then
+      ${super:+"${super}"} apk update
+      ${super:+"${super}"} apk add nodejs npm
+    elif [ -x "$(command -v apt-get)" ]; then
+      ${super:+"${super}"} apt-get update
+      ${super:+"${super}"} apt-get install --yes nodejs npm
+    elif [ -x "$(command -v brew)" ]; then
+      brew install node
+    elif [ -x "$(command -v dnf)" ]; then
+      ${super:+"${super}"} dnf check-update || {
+        code="$?"
+        [ "${code}" -ne 100 ] && exit "${code}"
+      }
+      ${super:+"${super}"} dnf install --assumeyes nodejs nodejs-npm
+    elif [ -x "$(command -v pacman)" ]; then
+      ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+      ${super:+"${super}"} pacman --noconfirm --sync nodejs npm
+    elif [ -x "$(command -v pkg)" ]; then
+      ${super:+"${super}"} pkg update
+      ${super:+"${super}"} pkg install --yes node npm-node
+    else
+      echo 'Error: No supported package manager to install NodeJS.' >&2
+      echo 'Please install NodeJS manually before continuing.' >&2
+      exit 1
+    fi
+  fi
+   if [ ! -x "$(command -v python)" ]; then
+    if [ -x "$(command -v apk)" ]; then
+      ${super:+"${super}"} apk update
+      ${super:+"${super}"} apk add py3-pip python3 python3-dev
+    elif [ -x "$(command -v apt-get)" ]; then
+      ${super:+"${super}"} apt-get update
+      ${super:+"${super}"} apt-get install --yes python3 python3-dev python3-pip python3-venv
+    elif [ -x "$(command -v brew)" ]; then
+      brew install python
+    elif [ -x "$(command -v dnf)" ]; then
+      ${super:+"${super}"} dnf check-update || {
+        code="$?"
+        [ "${code}" -ne 100 ] && exit "${code}"
+      }
+      ${super:+"${super}"} dnf install --assumeyes python3 python3-devel python3-pip
+    elif [ -x "$(command -v pacman)" ]; then
+      ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+      ${super:+"${super}"} pacman --noconfirm --sync python python-pip
+    elif [ -x "$(command -v pkg)" ]; then
+      ${super:+"${super}"} pkg update
+      ${super:+"${super}"} pkg install --yes py311-pip python3
+    else
+      echo 'Error: No supported package manager to install Python.' >&2
+      echo 'Please install Python manually before continuing.' >&2
+      exit 1
+    fi
+  fi
+  if [ ! -x "$(command -v poetry)" ]; then
+    python3 -m pip install --user poetry poetry-plugin-shell
+  fi
   if [ ! -x "$(command -v shfmt)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install shfmt
@@ -97,7 +149,7 @@ _setup-shell:
       ${super:+"${super}"} install /tmp/shfmt /usr/local/bin/shfmt
     fi
   fi
-  shfmt --version
+  echo "shfmt version $(shfmt --version)"
   if [ ! -x "$(command -v yq)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install yq
@@ -116,19 +168,38 @@ _setup-shell:
   yq --version
 
 [windows]
-_setup-shell:
+_setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
-  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
-    If (Get-Command -ErrorAction SilentlyContinue scoop) {
-      scoop install yq
+  If (-Not (Get-Command -ErrorAction SilentlyContinue node)) {
+    If (Get-Command -ErrorAction SilentlyContinue choco) {
+      choco install --yes nodejs
     }
-    ElseIf (Get-Command -ErrorAction SilentlyContinue choco) {
+    ElseIf (Get-Command -ErrorAction SilentlyContinue scoop) {
+      scoop install nodejs
+    }
+    ElseIf (Get-Command -ErrorAction SilentlyContinue winget) {
+      winget install --disable-interactivity --exact --id openjs.nodejs
+    } 
+    Else {
+      Write-Error 'Error: No supported package manager to install NodeJS.'
+      Write-Error 'Please install NodeJS manually before continuing.'
+      Exit 1
+    }
+  }
+  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
+    If (Get-Command -ErrorAction SilentlyContinue choco) {
       choco install --yes yq
     }
+    ElseIf (Get-Command -ErrorAction SilentlyContinue scoop) {
+      scoop install yq
+    }
+    ElseIf (Get-Command -ErrorAction SilentlyContinue winget) {
+      winget install --disable-interactivity --exact --id mikefarah.yq
+    } 
     Else {
-        Throw 'Error: Scoop not found for Yq installation.'
-        Throw 'Please install Yq or Scoop manually before continuing.'
+        Write-Error 'Error: No supported package manager to install Yq.'
+        Write-Error 'Please install Yq manually before continuing.'
         Exit 1
     }
   }

@@ -5,6 +5,26 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Support for Yazi 0.4.
+
+### Changed
+
+- Node version manager back to NVM.
+- Roles to prefer system packages over Flatpaks.
+- Yazi theme.
+
+### Fixed
+
+- PDB error handling.
+
+### Removed
+
+- Datree role.
+
 ## 0.8.3 - 2024-12-05
 
 ### Added
