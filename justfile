@@ -94,7 +94,7 @@ _setup-unix:
         https://formulae.brew.sh/api/formula/shellcheck.json |
         jq --exit-status --raw-output .versions.stable)"
       curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
-        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.linux.{{ arch() }}.tar.xz"
+        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.{{ arch() }}.tar.xz"
       tar fx /tmp/shellcheck.tar.xz -C /tmp
       install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" "${HOME}/.local/bin/shellcheck"
     fi

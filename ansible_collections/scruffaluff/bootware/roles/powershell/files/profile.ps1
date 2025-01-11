@@ -261,24 +261,6 @@ If ($_Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 Set-Alias -Name cbcopy -Value Set-Clipboard
 Set-Alias -Name cbpaste -Value Get-Clipboard
 
-# Android settings.
-
-# Export first available version of Android native development kit.
-Function _ExportNdkHome($Path) {
-    If (Test-Path -Path $Path -PathType Container) {
-        $NdkDir = $(Get-ChildItem -Path $Path | Select-Object -First 1)
-        If ($NdkDir) {
-            $Env:NDK_HOME = "$NdkDir"
-        }
-    }
-}
-
-# Add Android CLI tools to system path.
-$Env:ANDROID_HOME = "$HOME\AppData\Local\Android\Sdk"
-_ExportNdkHome "$Env:ANDROID_HOME\ndk"
-PrependPaths "$Env:ANDROID_HOME\cmdline-tools\latest\bin" `
-    "$Env:ANDROID_HOME\emulator" "$Env:ANDROID_HOME\platform-tools"
-
 # Bat settings.
 
 # Set default pager to Bat.

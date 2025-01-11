@@ -1,7 +1,6 @@
 ---
 node_applications:
   - "@taplo/cli"
-  - "@vue/cli"
   - bash-language-server
   - dockerfile-language-server-nodejs
   - lean-language-server
@@ -14,6 +13,7 @@ node_applications:
   - typescript-language-server
   - vls
   - vscode-langservers-extracted
+  - vue-language-server
   - wikit
   - yaml-language-server
 node_versions:
