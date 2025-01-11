@@ -66,11 +66,6 @@
   when: >-
     ansible_system == "Linux" and system_libc == "gnu" and helix_linux is failed
 
-- name: Patch Helix for older Libc
-  ansible.builtin.import_tasks: patch.yaml
-  when: >-
-    ansible_system == "Linux" and system_libc == "gnu" and helix_linux is failed
-
 - name: Install Helix for MacOS
   become: true
   become_user: "{{ brew_user }}"

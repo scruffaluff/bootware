@@ -2,11 +2,12 @@
 #
 # For more information, visit https://just.systems.
 
+set ignore-comments := true
 set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
 
 # List all commands available in justfile.
 list:
-  just --list
+  @just --list
 
 # Execute all commands.
 all: setup format lint docs test
@@ -14,8 +15,8 @@ all: setup format lint docs test
 # Build distribution packages.
 [unix]
 dist version:
-  scripts/package.sh --version {{version}} ansible
-  scripts/package.sh --version {{version}} dist alpm apk deb rpm
+  scripts/package.sh --version {{ version }} ansible
+  scripts/package.sh --version {{ version }} dist alpm apk deb rpm
 
 # Build documentation.
 docs:
@@ -68,68 +69,17 @@ _setup: _setup-unix
 _setup-unix:
   #!/usr/bin/env sh
   set -eu
-  arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ | sed s/aarch64/arm64/)"
-  os="$(uname -s | tr '[A-Z]' '[a-z]')"
-  if [ "$(id -u)" -eq 0 ]; then
-    super=''
-  elif [ -x "$(command -v sudo)" ]; then
-    super='sudo'
-  elif [ -x "$(command -v doas)" ]; then
-    super='doas'
-  fi
+  arch="$(echo {{ arch() }} | sed s/x86_64/amd64/ | sed s/aarch64/arm64/)"
+  os="{{ replace(os(), "macos", "darwin") }}"
   if [ ! -x "$(command -v node)" ]; then
-    if [ -x "$(command -v apk)" ]; then
-      ${super:+"${super}"} apk update
-      ${super:+"${super}"} apk add nodejs npm
-    elif [ -x "$(command -v apt-get)" ]; then
-      ${super:+"${super}"} apt-get update
-      ${super:+"${super}"} apt-get install --yes nodejs npm
-    elif [ -x "$(command -v brew)" ]; then
-      brew install node
-    elif [ -x "$(command -v dnf)" ]; then
-      ${super:+"${super}"} dnf check-update || {
-        code="$?"
-        [ "${code}" -ne 100 ] && exit "${code}"
-      }
-      ${super:+"${super}"} dnf install --assumeyes nodejs nodejs-npm
-    elif [ -x "$(command -v pacman)" ]; then
-      ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
-      ${super:+"${super}"} pacman --noconfirm --sync nodejs npm
-    elif [ -x "$(command -v pkg)" ]; then
-      ${super:+"${super}"} pkg update
-      ${super:+"${super}"} pkg install --yes node npm-node
-    else
-      echo 'Error: No supported package manager to install NodeJS.' >&2
-      echo 'Please install NodeJS manually before continuing.' >&2
-      exit 1
-    fi
+    echo 'Error: Unable to find NodeJS.' >&2
+    echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
+    exit 1
   fi
-   if [ ! -x "$(command -v python)" ]; then
-    if [ -x "$(command -v apk)" ]; then
-      ${super:+"${super}"} apk update
-      ${super:+"${super}"} apk add py3-pip python3 python3-dev
-    elif [ -x "$(command -v apt-get)" ]; then
-      ${super:+"${super}"} apt-get update
-      ${super:+"${super}"} apt-get install --yes python3 python3-dev python3-pip python3-venv
-    elif [ -x "$(command -v brew)" ]; then
-      brew install python
-    elif [ -x "$(command -v dnf)" ]; then
-      ${super:+"${super}"} dnf check-update || {
-        code="$?"
-        [ "${code}" -ne 100 ] && exit "${code}"
-      }
-      ${super:+"${super}"} dnf install --assumeyes python3 python3-devel python3-pip
-    elif [ -x "$(command -v pacman)" ]; then
-      ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
-      ${super:+"${super}"} pacman --noconfirm --sync python python-pip
-    elif [ -x "$(command -v pkg)" ]; then
-      ${super:+"${super}"} pkg update
-      ${super:+"${super}"} pkg install --yes py311-pip python3
-    else
-      echo 'Error: No supported package manager to install Python.' >&2
-      echo 'Please install Python manually before continuing.' >&2
-      exit 1
-    fi
+   if [ ! -x "$(command -v python3)" ]; then
+    echo 'Error: Unable to find Python.' >&2
+    echo 'Install Python, https://python.org, manually before continuing.' >&2
+    exit 1
   fi
   if [ ! -x "$(command -v poetry)" ]; then
     python3 -m pip install --user poetry poetry-plugin-shell
@@ -137,32 +87,36 @@ _setup-unix:
   if [ ! -x "$(command -v shfmt)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install shfmt
-    elif [ -x "$(command -v pkg)" ]; then
-      ${super:+"${super}"} pkg update
-      ${super:+"${super}"} pkg install --yes shfmt
     else
       shfmt_version="$(curl  --fail --location --show-error \
         https://formulae.brew.sh/api/formula/shfmt.json |
         jq --exit-status --raw-output .versions.stable)"
       curl --fail --location --show-error --output /tmp/shfmt \
         "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${arch}"
-      ${super:+"${super}"} install /tmp/shfmt /usr/local/bin/shfmt
+      install /tmp/shfmt "${HOME}/.local/bin/shfmt"
+      if [ ! -x "$(command -v shfmt)" ]; then
+        echo "Error: Folder '${HOME}/.local/bin' is not in the system path." >&2
+        echo "Add folder '${HOME}/.local/bin' to the system path before continuing." >&2
+        exit 1
+      fi
     fi
   fi
   echo "shfmt version $(shfmt --version)"
   if [ ! -x "$(command -v yq)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install yq
-    elif [ -x "$(command -v pkg)" ]; then
-      ${super:+"${super}"} pkg update
-      ${super:+"${super}"} pkg install --yes yq
     else
       yq_version="$(curl  --fail --location --show-error \
         https://formulae.brew.sh/api/formula/yq.json |
         jq --exit-status --raw-output .versions.stable)"
       curl --fail --location --show-error --output /tmp/yq \
         "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_${os}_${arch}"
-      ${super:+"${super}"} install /tmp/yq /usr/local/bin/yq
+      install /tmp/yq "${HOME}/.local/bin/yq"
+      if [ ! -x "$(command -v yq)" ]; then
+        echo "Error: Folder '${HOME}/.local/bin' is not in the system path." >&2
+        echo "Add folder '${HOME}/.local/bin' to the system path before continuing." >&2
+        exit 1
+      fi
     fi
   fi
   yq --version
@@ -172,20 +126,9 @@ _setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
   If (-Not (Get-Command -ErrorAction SilentlyContinue node)) {
-    If (Get-Command -ErrorAction SilentlyContinue choco) {
-      choco install --yes nodejs
-    }
-    ElseIf (Get-Command -ErrorAction SilentlyContinue scoop) {
-      scoop install nodejs
-    }
-    ElseIf (Get-Command -ErrorAction SilentlyContinue winget) {
-      winget install --disable-interactivity --exact --id openjs.nodejs
-    } 
-    Else {
-      Write-Error 'Error: No supported package manager to install NodeJS.'
-      Write-Error 'Please install NodeJS manually before continuing.'
-      Exit 1
-    }
+    Write-Error 'Error: Unable to find NodeJS.'
+    Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
+    Exit 1
   }
   If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
     If (Get-Command -ErrorAction SilentlyContinue choco) {
@@ -198,9 +141,9 @@ _setup:
       winget install --disable-interactivity --exact --id mikefarah.yq
     } 
     Else {
-        Write-Error 'Error: No supported package manager to install Yq.'
-        Write-Error 'Please install Yq manually before continuing.'
-        Exit 1
+      Write-Error 'Error: Unable to install Yq with system package managers.'
+      Write-Error 'Install Yq, https://mikefarah.gitbook.io/yq, manually before continuing.'
+      Exit 1
     }
   }
   Install-Module -Force -Name PSScriptAnalyzer

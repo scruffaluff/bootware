@@ -265,31 +265,6 @@ if test -n $_tty
     end
 end
 
-# Android settings.
-
-# Export first available version of Android native development kit.
-#
-# Flags:
-#   -d: Check if path is a directory.
-function _export_ndk_home
-    for folder in $argv[1]/*
-        if test -d $folder
-            set --export --global NDK_HOME $folder
-            break
-        end
-    end
-end
-
-# Add Android CLI tools to system path.
-if test $_os = Darwin
-    set --export ANDROID_HOME "$HOME/Library/Android/sdk"
-else
-    set --export ANDROID_HOME "$HOME/.local/android/sdk"
-end
-_export_ndk_home "$ANDROID_HOME/ndk"
-prepend_paths "$ANDROID_HOME/cmdline-tools/latest/bin" \
-    "$ANDROID_HOME/emulator" "$ANDROID_HOME/platform-tools"
-
 # Bat settings.
 
 # Set default pager to Bat.
