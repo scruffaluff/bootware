@@ -4,6 +4,7 @@
 
 set ignore-comments := true
 set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
+export PATH := home_dir() / ".local/bin:" + env_var("PATH")
 
 # List all commands available in justfile.
 list:
@@ -71,8 +72,8 @@ _setup-unix:
   set -eu
   arch="$(echo {{ arch() }} | sed s/x86_64/amd64/ | sed s/aarch64/arm64/)"
   os="{{ replace(os(), "macos", "darwin") }}"
-  if [ ! -x "$(command -v node)" ]; then
-    echo 'Error: Unable to find NodeJS.' >&2
+  if [ ! -x "$(command -v node)" ] || [ ! -x "$(command -v npm)" ]; then
+    echo 'Error: Unable to find NodeJS and NPM.' >&2
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
     exit 1
   fi
@@ -82,7 +83,21 @@ _setup-unix:
     exit 1
   fi
   if [ ! -x "$(command -v poetry)" ]; then
-    python3 -m pip install --user poetry poetry-plugin-shell
+    curl -LSfs https://install.python-poetry.org | python3 -
+  fi
+  if [ ! -x "$(command -v shellcheck)" ]; then
+    if [ -x "$(command -v brew)" ]; then
+      brew install shellcheck
+    else
+      # TODO: Check for installation of curl, jq, and tar.
+      shellcheck_version="$(curl  --fail --location --show-error \
+        https://formulae.brew.sh/api/formula/shellcheck.json |
+        jq --exit-status --raw-output .versions.stable)"
+      curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
+        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.linux.{{ arch() }}.tar.xz"
+      tar fx /tmp/shellcheck.tar.xz -C /tmp
+      install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" "${HOME}/.local/bin/shellcheck"
+    fi
   fi
   if [ ! -x "$(command -v shfmt)" ]; then
     if [ -x "$(command -v brew)" ]; then
@@ -94,11 +109,6 @@ _setup-unix:
       curl --fail --location --show-error --output /tmp/shfmt \
         "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${arch}"
       install /tmp/shfmt "${HOME}/.local/bin/shfmt"
-      if [ ! -x "$(command -v shfmt)" ]; then
-        echo "Error: Folder '${HOME}/.local/bin' is not in the system path." >&2
-        echo "Add folder '${HOME}/.local/bin' to the system path before continuing." >&2
-        exit 1
-      fi
     fi
   fi
   echo "shfmt version $(shfmt --version)"
@@ -112,11 +122,6 @@ _setup-unix:
       curl --fail --location --show-error --output /tmp/yq \
         "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_${os}_${arch}"
       install /tmp/yq "${HOME}/.local/bin/yq"
-      if [ ! -x "$(command -v yq)" ]; then
-        echo "Error: Folder '${HOME}/.local/bin' is not in the system path." >&2
-        echo "Add folder '${HOME}/.local/bin' to the system path before continuing." >&2
-        exit 1
-      fi
     fi
   fi
   yq --version
