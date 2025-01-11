@@ -1,4 +1,4 @@
-FROM debian:12.7 AS build
+FROM debian:12.8 AS build
 
 ARG version
 
@@ -19,7 +19,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM debian:12.7
+FROM debian:12.8
 
 ARG version
 

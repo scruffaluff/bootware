@@ -13,10 +13,12 @@
 
 - name: Install GitLab Runner for Debian
   ansible.builtin.apt:
-    deb: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
-      system_architecture }}.deb
+    deb: "{{ item }}"
   become: true
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner-helper-images.deb
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner_{{
+      system_architecture }}.deb
   when: ansible_pkg_mgr == "apt"
 
 - name: Add GitLab GPG key for Fedora and Suse
@@ -29,10 +31,12 @@
   ansible.builtin.dnf:
     # GitLab GPG key is frequently mismatched with GitLab runner package.
     disable_gpg_check: true
-    name: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
-      system_architecture }}.rpm
+    name: "{{ item }}"
   become: true
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
+      system_architecture }}.rpm
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install GitLab Runner for FreeBSD
@@ -51,8 +55,10 @@
 - name: Install GitLab Runner for Suse
   become: true
   community.general.zypper:
-    name: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
+    name: "{{ item }}"
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm
   when: ansible_pkg_mgr == "zypper"
 

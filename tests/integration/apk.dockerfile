@@ -1,4 +1,4 @@
-FROM alpine:3.20.3 AS build
+FROM alpine:3.21.2 AS build
 
 ARG version
 
@@ -40,7 +40,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM alpine:3.20.3
+FROM alpine:3.21.2
 
 ARG version
 
