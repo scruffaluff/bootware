@@ -62,31 +62,10 @@
     name: nushell
   when: ansible_system == "Darwin"
 
-- name: Get latest Nushell version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/nushell.json
-  register: nushell_formula_windows
-  when: ansible_system == "Win32NT"
-
 - name: Install Nushell for Windows
-  ansible.windows.win_package:
-    path: >-
-      https://github.com/nushell/nushell/releases/download/{{
-      nushell_formula_windows.json.versions.stable }}/nu-{{
-      nushell_formula_windows.json.versions.stable }}-{{ nushell_arch
-      }}-pc-windows-msvc.msi
-  vars:
-    nushell_arch:
-      amd64: x86_64
-      arm64: aarch64
-  when: ansible_system == "Win32NT"
-
-- name: Update system path to include Nushell binaries for Windows
-  ansible.windows.win_path:
-    elements: "C:\\Program Files\\nu\\bin"
-    scope: machine
+  community.windows.win_scoop:
+    global: true
+    name: nu
   when: ansible_system == "Win32NT"
 
 - name: Register Nushell as a valid login shell for Unix
@@ -179,3 +158,11 @@
   when: >-
     ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and
     nushell_default_shell
+
+- name: Set Nushell as default OpenSSH shell for Windows
+  ansible.windows.win_regedit:
+    data: "{{ nushell_executable }}"
+    name: DefaultShell
+    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    type: string
+  when: ansible_system == "Win32NT" and nushell_default_shell

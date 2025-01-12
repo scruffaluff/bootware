@@ -77,6 +77,13 @@ $env.config = {
         },
     },
     ls: { clickable_links: true, use_ls_colors: true },
+    # Prevents prompt duplication in SSH sessions to a remote Windows machine.
+    #
+    # For more information, visit
+    # https://github.com/nushell/nushell/issues/5585.
+    shell_integration: {
+        osc133: false,
+    },
     show_banner: false,
 }
 

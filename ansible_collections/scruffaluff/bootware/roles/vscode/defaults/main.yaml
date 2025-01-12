@@ -69,6 +69,7 @@ vscode_extensions:
   - sukumo28.wav-preview
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
+  - thenuprojectcontributors.vscode-nushell-lang
   - tilt-dev.tiltfile
   - timonwong.shellcheck
   - vadimcn.vscode-lldb
@@ -96,6 +97,7 @@ vscode_remote_extensions:
   - redhat.vscode-yaml
   - sukumo28.wav-preview
   - tamasfe.even-better-toml
+  - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - valentjn.vscode-ltex
   - vscode-icons-team.vscode-icons

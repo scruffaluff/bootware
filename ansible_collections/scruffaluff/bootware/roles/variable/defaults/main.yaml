@@ -45,6 +45,7 @@ nushell_executable_:
     '/usr/local' }}/bin/nu
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
+  Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
 system_libc_:
   Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
