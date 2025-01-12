@@ -30,7 +30,7 @@
       https://github.com/nushell/nushell/releases/download/{{
       nushell_formula_linux.json.versions.stable }}/nu-{{
       nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
-      }}-linux-gnu-full.tar.gz
+      }}-unknown-linux-{{ system_libc }}.tar.gz
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for Linux
@@ -41,7 +41,7 @@
     remote_src: true
     src: >-
       /tmp/nu-{{ nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
-      }}-linux-gnu-full/{{ item }}
+      }}-unknown-linux-{{ system_libc }}/{{ item }}
   become: true
   loop:
     - nu
@@ -50,7 +50,9 @@
     - nu_plugin_formats
     - nu_plugin_gstat
     - nu_plugin_inc
+    - nu_plugin_polars
     - nu_plugin_query
+    - nu_plugin_stress_internals
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for MacOS
@@ -73,8 +75,8 @@
     path: >-
       https://github.com/nushell/nushell/releases/download/{{
       nushell_formula_windows.json.versions.stable }}/nu-{{
-      nushell_formula_windows.json.versions.stable }}-{{
-      nushell_arch[system_architecture] }}-windows-msvc-full.msi
+      nushell_formula_windows.json.versions.stable }}-{{ nushell_arch
+      }}-pc-windows-msvc.msi
   vars:
     nushell_arch:
       amd64: x86_64
@@ -159,3 +161,21 @@
     - config.nu
     - env.nu
   when: ansible_system == "Win32NT"
+
+# User shell is not updated on Alpine Linux when using Ansible user module.
+# Workaround comes from https://github.com/ansible/ansible/issues/61911.
+- name: Change user default shell to Nushell for Alpine
+  ansible.builtin.command:
+    cmd: chsh -s {{ nushell_executable }} {{ user_id }}
+  become: true
+  changed_when: true
+  when: ansible_pkg_mgr == "apk" and nushll_default_shell
+
+- name: Change user default shell to Nushell for Unix
+  ansible.builtin.user:
+    name: "{{ user_id }}"
+    shell: "{{ nushell_executable }}"
+  become: true
+  when: >-
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and
+    nushell_default_shell

@@ -117,14 +117,16 @@
     cmd: chsh -s {{ fish_executable }} {{ user_id }}
   become: true
   changed_when: true
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_pkg_mgr == "apk" and fish_default_shell
 
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
     name: "{{ user_id }}"
     shell: "{{ fish_executable }}"
   become: true
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and
+    fish_default_shell
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
