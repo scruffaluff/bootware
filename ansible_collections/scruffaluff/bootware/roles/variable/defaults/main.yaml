@@ -1,4 +1,5 @@
 ---
+scoop_global: true
 user_id: "{{ ansible_user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
@@ -33,6 +34,8 @@ fish_executable_:
     '/usr/local' }}/bin/fish
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
+github_api_token_: >-
+  {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
   Darwin: staff
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
@@ -42,6 +45,8 @@ nushell_executable_:
     '/usr/local' }}/bin/nu
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
+system_libc_:
+  Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
   64-bit: amd64
   64bit: amd64
@@ -62,14 +67,22 @@ bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
 bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
+brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
-fish_executable: "{{  fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
+fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 font_size: 14
+github_api_headers: >-
+  {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
+  {} }}
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
 # Backslashes are required for Windows Defender firewall rules.
-scoop_apps: "{{ user_home }}\\scoop\\apps"
+scoop_apps: >-
+  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps
+scoop_shims: >-
+  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
+system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_shell: "{{ user_shell_.get(ansible_system, '/usr/bin/fish') }}"

@@ -1,83 +1,85 @@
 // Configuraion file for Zellij.
 //
 // For more information, visit
-// https://zellij.dev/documentation/configuration.html.
+// https://zellij.dev/documentation/configuration.
+
+default_layout "layout"
 
 keybinds {
-    RenameTab {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+    tmux clear-defaults=true {}
+    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl q"
+
+    shared_except "locked" {
+        bind "Alt j" { MoveFocusOrTab "Left"; }
+        bind "Alt k" { MoveFocus "Down"; }
+        bind "Alt l" { MoveFocus "Up"; }
+        bind "Alt ;" { MoveFocusOrTab "Right"; }
+        bind "Alt Down" { MovePane "Down"; }
+        bind "Alt Left" { MovePane "Left"; }
+        bind "Alt Right" { MovePane "Right"; }
+        bind "Alt Up" { MovePane "Up"; }
     }
-    RenamePane {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+    shared_among "renametab" "tab" {
+        bind "Alt j" { GoToPreviousTab; }
+        bind "Alt ;" { GoToNextTab; }
+        bind "Alt Left" { MoveTab "Left"; }
+        bind "Alt Right" { MoveTab "Right"; }
     }
+
     move {
         bind "j" "Left" { MovePane "Left"; }
         bind "k" "Down" { MovePane "Down"; }
         bind "l" "Up" { MovePane "Up"; }
         bind ";" "Right" { MovePane "Right"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
     normal {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
-        bind "Ctrl b" { SwitchToMode "locked"; }
+        bind "Alt m" "Alt Up" { ToggleFocusFullscreen; }
+        bind "Alt w" "Alt Up" { ToggleFloatingPanes; }
     }
     pane {
-        bind "j" "Left" { MoveFocus "Left"; }
-        bind ";" "Right" { MoveFocus "Right"; }
-        bind "k" "Down" { MoveFocus "Down"; }
-        bind "l" "Up" { MoveFocus "Up"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        unbind "c" "d"
+        bind "j" { MoveFocus "Left"; }
+        bind "k" { MoveFocus "Down"; }
+        bind "l" { MoveFocus "Up"; }
+        bind ";" { MoveFocus "Right"; }
+        bind "Down" { MovePane "Down"; }
+        bind "Left" { MovePane "Left"; }
+        bind "Right" { MovePane "Right"; }
+        bind "Up" { MovePane "Up"; }
+        bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     resize {
-        bind "j" "Left" { Resize "Left"; }
-        bind "k" "Down" { Resize "Down"; }
-        bind "l" "Up" { Resize "Up"; }
-        bind ";" "Right" { Resize "Right"; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        bind "j" "Left" { Resize "Increase Left"; }
+        bind "k" "Down" { Resize "Increase Down"; }
+        bind "l" "Up" { Resize "Increase Up"; }
+        bind ";" "Right" { Resize "Increase Right"; }
+        bind "J" { Resize "Increase Left"; }
+        bind "K" { Resize "Increase Down"; }
+        bind "L" { Resize "Increase Up"; }
+        bind ":" { Resize "Increase Right"; }
     }
-    scroll {
+    search {
+        unbind "j" "Ctrl f"
         bind "k" "Down" { ScrollDown; }
         bind "l" "Up" { ScrollUp; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
     }
-    session {
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+    scroll {
+        unbind "j" "Ctrl f"
+        bind "k" "Down" { ScrollDown; }
+        bind "l" "Up" { ScrollUp; }
     }
     tab {
-        bind "j" "Left" { GoToPreviousTab; }
-        bind ";" "Right" { GoToNextTab; }
-        bind "Alt j" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt ;" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt k" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt l" "Alt Up" { MoveFocus "Up"; }
+        unbind "l" "Down" "Up"
+        bind "j" { GoToPreviousTab; }
+        bind ";" { GoToNextTab; }
+        bind "Left" { MoveTab "Left"; }
+        bind "Right" { MoveTab "Right"; }
     }
 }
 
 session_serialization false
+serialize_pane_viewport false
+styled_underlines true
 
 themes {
     default {

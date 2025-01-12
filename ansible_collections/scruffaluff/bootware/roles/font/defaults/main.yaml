@@ -5,6 +5,11 @@ font_families:
     patterns:
       - FiraCode-*.ttf
     url: https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip
+  - check: FiraCodeNerdFont-Regular.ttf
+    name: fira-code-nerd-font
+    patterns:
+      - FiraCodeNerdFont-*.ttf
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip
   - check: FiraMono-Regular.ttf
     name: fira-mono
     patterns:

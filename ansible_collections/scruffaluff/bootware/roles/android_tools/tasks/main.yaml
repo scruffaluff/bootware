@@ -1,0 +1,29 @@
+---
+- name: Install Android platform tools for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: android-tools
+  when: ansible_system == "FreeBSD"
+
+- name: Install Android platform tools for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: android-platform-tools
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Android platform tools for Linux
+  ansible.builtin.package:
+    name: "{{ 'android-sdk' if ansible_pkg_mgr == 'apt' else 'android-tools' }}"
+  become: true
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["opkg", "zypper"]
+
+# TODO: FIgure out how to configure android-clt for Windows so adb does not need
+# to be separately installed.
+- name: Install Android platform tools for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name:
+      - adb
+      - android-clt
+  when: ansible_system == "Win32NT"

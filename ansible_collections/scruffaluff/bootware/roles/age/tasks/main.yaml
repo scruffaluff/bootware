@@ -47,12 +47,13 @@
 
 - name: Install Age for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: age
   when: ansible_system == "Darwin"
 
 - name: Install Age for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: age
   when: ansible_system == "Win32NT"

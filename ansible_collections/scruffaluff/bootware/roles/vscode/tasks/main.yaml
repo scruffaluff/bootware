@@ -1,4 +1,14 @@
 ---
+# TODO: Integrate once installation becomes stable.
+# - name: Install VSCode for Alpine
+#   become: true
+#   community.general.apk:
+#     name: code-oss
+#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+#     state: latest
+#     update_cache: true
+#   when: ansible_pkg_mgr == "apk"
+
 # Arch package repository provides the open source version of Visual Studio
 # Code, which cannot install proprietary Microsoft extensions. For more
 # information, see
@@ -24,7 +34,7 @@
   ansible.builtin.rpm_key:
     key: https://packages.microsoft.com/keys/microsoft.asc
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
@@ -35,13 +45,13 @@
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
       }}/stable
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCode for Fedora
   ansible.builtin.dnf:
     name: /tmp/vscode.rpm
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 # FreeBSD package repository provides the open source version of Visual Studio
 # Code, which cannot install proprietary Microsoft extensions.
@@ -76,40 +86,9 @@
 
 - name: Install VSCode for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: vscode
   when: ansible_system == "Win32NT"
-
-- name: Create VSCode user directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/Code/User"
-    state: directory
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
-
-- name: Copy VSCode keybindings file for Linux
-  ansible.builtin.template:
-    dest: "{{ user_home }}/.config/Code/User/keybindings.json"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: keybindings.json.j2
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
-
-- name: Copy VSCode settings file for Linux
-  ansible.builtin.template:
-    dest: "{{ user_home }}/.config/Code/User/settings.json"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: settings.json.j2
-  become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
 
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
@@ -144,6 +123,38 @@
     src: settings.json.j2
   become: true
   when: ansible_system == "Darwin"
+
+- name: Create VSCode user directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/Code/User"
+    state: directory
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+
+- name: Copy VSCode keybindings file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/Code/User/keybindings.json"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: keybindings.json.j2
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+
+- name: Copy VSCode settings file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/Code/User/settings.json"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: settings.json.j2
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
 
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
@@ -182,6 +193,10 @@
     - scoop/apps/vscode/current/data/user-data/User/settings.json
   when: ansible_system == "Win32NT"
 
+- name: Apply customizations to VSCode
+  ansible.builtin.import_tasks: customize.yaml
+  when: vscode_install_customizations and ansible_pkg_mgr != "apk"
+
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
   become: true
@@ -189,7 +204,9 @@
   changed_when: "'successfully installed' in vscode_extension_install"
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk" and
+    vscode_install_extensions
 
 - name: Install VSCode extensions for Windows
   ansible.windows.win_shell: code --install-extension {{ item }}
@@ -198,7 +215,7 @@
     Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and vscode_install_extensions
 
 - name: Add VSCode Firewall rules for Windows
   community.windows.win_firewall_rule:

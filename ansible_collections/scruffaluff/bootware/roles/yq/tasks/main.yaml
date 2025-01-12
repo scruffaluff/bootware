@@ -1,32 +1,85 @@
 ---
-- name: Get latest Yq version for FreeBSD and Linux
+- name: Install Yq for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: go-yq
+  when: ansible_system == "FreeBSD"
+
+# TODO: Renable when Yq package in most distributions reaches version 4.0.0.
+# - name: Install Yq for Linux
+#   ansible.builtin.package:
+#     name: yq
+#   become: true
+#   ignore_errors: true
+#   register: yq_linux
+#   when: ansible_system == "Linux"
+
+- name: Get latest Yq version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/yq.json
   register: yq_formula
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux"
 
-- name: Install Yq for FreeBSD and Linux
+- name: Install Yq for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/yq
     force: true
     mode: "755"
     url: >-
       https://github.com/mikefarah/yq/releases/download/v{{
-      yq_formula.json.versions.stable }}/yq_{{ ansible_system | lower }}_{{
-      system_architecture }}
+      yq_formula.json.versions.stable }}/yq_linux_{{ system_architecture }}
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_system == "Linux"
 
 - name: Install Yq for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yq
   when: ansible_system == "Darwin"
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: yq
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system != "Win32NT"
+
+- name: Create Yq shell completions for Unix
+  ansible.builtin.shell:
+    cmd: yq shell-completion {{ item }} > /tmp/yq.{{ item }}
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: ansible_system != "Win32NT"
+
+- name: Install Yq shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/yq.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/yq"
+      shell: bash
+    - dest: "{{ fish_completion }}/yq.fish"
+      shell: fish
+  when: ansible_system != "Win32NT"

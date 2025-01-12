@@ -1,2 +1,0 @@
----
-wezterm_ctrl_key: "{{ 'SUPER' if ansible_system == 'Darwin' else 'CTRL' }}"

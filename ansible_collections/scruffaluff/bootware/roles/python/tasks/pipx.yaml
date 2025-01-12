@@ -1,5 +1,5 @@
 ---
-# FreeBSD py39-pipx package is often broken.
+# FreeBSD py*-pipx package is often broken.
 - name: Install Pipx for FreeBSD
   become: true
   ansible.builtin.command: /usr/local/bin/python3 -m pip install --upgrade pipx
@@ -24,7 +24,7 @@
 
 - name: Install Pipx for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: pipx
   when: ansible_system == "Darwin"
@@ -40,8 +40,9 @@
   changed_when: "'Successfully installed' in python_pipx_install"
   environment:
     Path: >-
-      {{ scoop_apps }}\\python\\current;{{ scoop_apps }}\\python312\\current;{{
-      scoop_apps }}\\python311\\current;{{ scoop_apps }}\\python310\\current;{{
+      {{ scoop_apps }}\\python\\current;{{ scoop_apps }}\\python313\\current;{{
+      scoop_apps }}\\python312\\current;{{ scoop_apps }}\\python311\\current;{{
+      scoop_apps }}\\python310\\current;{{ scoop_apps }}\\python39\\current;{{
       ansible_env.Path }}
   register: python_pipx_install
   when: ansible_system == "Win32NT"
@@ -56,8 +57,11 @@
     # Pipx installation can break if associated Python interpreter is updated.
     # If so a new installation should overwrite the current.
     cmd: >-
-      pipx install {{ item }} || pipx upgrade {{ item }} || pipx install --force
-      {{ item }}
+      (pipx install {{ item.name if item.name is defined else item }} || pipx
+      upgrade {{ item.name if item.name is defined else item }} || pipx install
+      --force {{ item.name if item.name is defined else item }}) && {{
+      'pipx inject ' + item.name + ' ' + (item.injections | join(' ')) if
+      item.injections is defined else ':' }}
     executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
@@ -72,13 +76,22 @@
   # Pipx installation can break if associated Python interpreter is updated.
   # If so a new installation should overwrite the current.
   ansible.windows.win_shell: >-
-    (pipx install {{ item }}) -Or (pipx upgrade {{ item }}) -Or (pipx install
-    --force {{ item }})
+    ((pipx install {{ item.name if item.name is defined else item }}) -Or (pipx
+    upgrade {{ item.name if item.name is defined else item }}) -Or (pipx install
+    --force {{ item.name if item.name is defined else item }})) -And ({{ 'pipx
+    inject ' + item.name + ' ' + (item.injections | join(' ')) if
+    item.injections is defined else '? .' }})
   changed_when: >-
     "installed package" in python_pipx_application_install or "upgraded package"
     in python_pipx_application_install
   environment:
-    Path: "{{ scoop_apps }}\\python\\current\\\\Scripts;{{ ansible_env.Path }}"
+    Path: >-
+      {{ scoop_apps }}\\python\\current\\Scripts;{{ scoop_apps
+      }}\\python313\\current\\Scripts;{{ scoop_apps
+      }}\\python312\\current\\Scripts;{{ scoop_apps
+      }}\\python311\\current\\Scripts;{{ scoop_apps
+      }}\\python310\\current\\Scripts;{{ scoop_apps
+      }}\\python39\\current\\Scripts;{{ ansible_env.Path }}
   loop: "{{ python_applications }}"
   register: python_pipx_application_install
   when: ansible_system == "Win32NT"

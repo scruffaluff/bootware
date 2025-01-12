@@ -25,7 +25,7 @@
     name: "{{ item }}"
   become: true
   loop: "{{ dnf_packages }}"
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Pkg packages for FreeBSD
   become: true
@@ -44,7 +44,7 @@
 
 - name: Install Homebrew packages for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: "{{ item }}"
   loop: "{{ homebrew_packages }}"
@@ -58,6 +58,7 @@
 
 - name: Install Scoop packages for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
   when: ansible_system == "Win32NT"

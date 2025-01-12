@@ -40,17 +40,22 @@
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: firefox
   when: ansible_system == "Win32NT"
 
 # Ubuntu is skipped because its version of Firefox depends on Snap.
 - name: Find Firefox profiles for Unix
-  scruffaluff.bootware.firefox_profiles: {}
+  become: true
+  become_user: "{{ user_id }}"
+  scruffaluff.bootware.firefox_profiles:
+    user: "{{ user_id }}"
   register: firefox_profiles_unix
   when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
 
 - name: Find Firefox profiles for Windows
-  scruffaluff.bootware.win_firefox_profiles: {}
+  scruffaluff.bootware.win_firefox_profiles:
+    user: "{{ user_id }}"
   register: firefox_profiles_windows
   when: ansible_system == "Win32NT"
 

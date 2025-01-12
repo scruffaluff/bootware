@@ -18,7 +18,7 @@ execute playbooks for the local computer. Bootware requires no dependencies and
 works on FreeBSD, Linux, MacOS, and Windows operating systems.
 
 Bootware is designed for my personal usage, but can be configured for anyone to
-use. All of the Bootware default settings point to this repository, but most
+use. All the Bootware default settings point to this repository, but most
 settings can be changed with environment variables, a configuration file, or
 command line flags. If you want your own version of Bootware with different
 defaults, just fork this repository and edit away.

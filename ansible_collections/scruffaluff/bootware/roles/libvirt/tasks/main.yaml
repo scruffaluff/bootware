@@ -46,7 +46,7 @@
       - virt-viewer
   when: ansible_system == "FreeBSD"
 
-- name: Install Libvirt for Fedora and Suse
+- name: Install Libvirt for Fedora
   ansible.builtin.package:
     name:
       - guestfs-tools
@@ -60,11 +60,11 @@
       - virt-top
       - virt-viewer
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Libvirt for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - libvirt
@@ -72,22 +72,23 @@
       - virt-manager
   when: ansible_system == "Darwin"
 
+- name: Install Libvirt for Suse
+  ansible.builtin.package:
+    name:
+      - guestfs-tools
+      - libguestfs
+      - libguestfs-rescue
+      - libguestfs-rsync
+      - libvirt
+      - libvirt-client
+      - virt-install
+      - virt-top
+      - virt-viewer
+  become: true
+  when: ansible_pkg_mgr == "zypper"
+
 - name: Install Libvirt for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: virt-viewer
   when: ansible_system == "Win32NT"
-
-- name: Install Quickemu for Linux
-  ansible.builtin.get_url:
-    dest: "/usr/local/bin/{{ item }}"
-    mode: "755"
-    url: >-
-      https://raw.githubusercontent.com/quickemu-project/quickemu/master/{{ item
-      }}
-  become: true
-  loop:
-    - macrecovery
-    - quickemu
-    - quickget
-    - windowskey
-  when: ansible_system == "Linux"

@@ -1,7 +1,7 @@
-FROM ubuntu:23.10
+FROM ubuntu:24.04
 
 ARG TARGETARCH
-ARG version=0.7.3
+ARG version=0.8.3
 
 # Install Ansible Curl and Sudo.
 RUN apt-get update --ignore-missing \
@@ -60,8 +60,8 @@ ARG test
 # Test installed binaries for roles.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/integration/roles.test.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

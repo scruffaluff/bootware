@@ -1,4 +1,4 @@
-FROM fedora:39 AS build
+FROM fedora:41 AS build
 
 ARG version
 
@@ -14,13 +14,13 @@ COPY scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Fedora package.
-RUN ./scripts/package.sh --version "${version?}" build rpm
+RUN scripts/package.sh --version "${version?}" build rpm
 
 FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM fedora:39
+FROM fedora:41
 
 ARG version
 

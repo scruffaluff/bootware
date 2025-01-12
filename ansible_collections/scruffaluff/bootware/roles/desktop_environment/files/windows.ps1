@@ -37,7 +37,7 @@ $Services = @(
 )
 
 ForEach ($Service In $Services) {
-    Get-Service -Name $Service -ErrorAction SilentlyContinue |
+    Get-Service -ErrorAction SilentlyContinue -Name $Service |
         Set-Service -StartupType Manual
 }
 
@@ -48,7 +48,7 @@ If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
         -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' `
         -Type DWord `
         -Value 0
-    Stop-Process -Force -ProcessName Explorer -ErrorAction SilentlyContinue
+    Stop-Process -Force -ErrorAction SilentlyContinue -ProcessName Explorer
 }
 
 # Change Windows error beep sound to nothing.
@@ -84,14 +84,6 @@ If (Test-Path $WindowsFeedsPath) {
         -Type DWord `
         -Value 0
 }
-$ShellFeedsPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds'
-If (Test-Path $ShellFeedsPath) {
-    Set-ItemProperty `
-        -Name 'ShellFeedsTaskbarViewMode' `
-        -Path $ShellFeedsPath `
-        -Type DWord `
-        -Value 2
-}
 
 # Remove application recommendations.
 $ContentPath = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'
@@ -121,7 +113,7 @@ $ContextKeys = @(
 )
 
 ForEach ($ContextKey In $ContextKeys) {
-    If (Test-Path "$ContextKey") {
-        Remove-Item -Force -Recurse -Path "$ContextKey"
+    If (Test-Path $ContextKey) {
+        Remove-Item -Force -Recurse -Path $ContextKey
     }
 }

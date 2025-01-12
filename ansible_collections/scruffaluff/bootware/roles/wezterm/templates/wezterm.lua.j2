@@ -5,6 +5,7 @@
 local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
+config.audible_bell = 'Disabled'
 config.color_scheme = 'Builtin Solarized Light'
 config.colors = {
   scrollbar_thumb = '#fdf6e3',
@@ -18,21 +19,32 @@ config.colors = {
   },
 }
 config.default_cursor_style = 'SteadyBar'
-config.default_prog = { '{{ user_shell }}', '{{ "/NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
+config.default_prog = { '{{ user_shell }}', '{{ "-NoLogo" if ansible_system == "Win32NT" else "--login" }}' }
 config.enable_scroll_bar = true
-config.font = wezterm.font { family = 'Fira Code', weight = 'Regular' }
+config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ font_size }}
 config.keys = {
-  { action = wezterm.action.ActivateTabRelative(-1), key = '{', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
-  { action = wezterm.action.ActivateTabRelative(1), key = '}', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
-  { action = wezterm.action.SpawnTab 'CurrentPaneDomain', key = 't', mods = '{{ wezterm_ctrl_key }}|SHIFT' },
+  { action = wezterm.action.ActivatePaneDirection('Left'), key = 'k', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.ActivatePaneDirection('Right'), key = 'l', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.ActivateTabRelative(-1), key = 'j', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.ActivateTabRelative(1), key = ':', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.MoveTabRelative(-1), key = 'LeftArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.RotatePanes('CounterClockwise'), key = 'DownArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.RotatePanes('Clockwise'), key = 'UpArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SendString('\u{e000}'), key = ';', mods = 'CTRL' },
+  { action = wezterm.action.SendString('\u{e001}'), key = '[', mods = 'CTRL' },
+  { action = wezterm.action.SendString('\u{e002}'), key = ']', mods = 'CTRL' },
+  { action = wezterm.action.SpawnTab('CurrentPaneDomain'), key = 't', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' }), key = 'n', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.TogglePaneZoomState, key = 'f', mods = 'CTRL|SHIFT' },
 }
 config.window_close_confirmation = 'NeverPrompt'
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
 config.window_frame = {
   active_titlebar_bg = '#e6e6e6',
   font_size = {{ font_size }},
-  font = wezterm.font { family = 'Fira Code', weight = 'Bold' },
+  font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Bold' },
   inactive_titlebar_bg = '#e6e6e6',
 }
 config.window_padding = { top = 0 }

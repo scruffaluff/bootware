@@ -2,7 +2,7 @@
 - name: Install AWSCLI for FreeBSD
   become: true
   community.general.pkgng:
-    name: py39-awscli
+    name: py311-awscli
   when: ansible_system == "FreeBSD"
 
 - name: Install AWSCLI for Alpine
@@ -35,12 +35,13 @@
 
 - name: Install AWSCLI for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: awscli
   when: ansible_system == "Darwin"
 
 - name: Install AWSCLI for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: aws
   when: ansible_system == "Win32NT"

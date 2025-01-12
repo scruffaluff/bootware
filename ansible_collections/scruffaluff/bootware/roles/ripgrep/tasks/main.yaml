@@ -8,18 +8,128 @@
 - name: Install Ripgrep for Linux
   ansible.builtin.package:
     name: ripgrep
-    state: present
   become: true
+  ignore_errors: true
+  register: ripgrep_linux
   when: ansible_system == "Linux"
+
+- name: Get latest Ripgrep version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ripgrep.json
+  register: ripgrep_formula
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Download Ripgrep for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/BurntSushi/ripgrep/releases/download/{{
+      ripgrep_formula.json.versions.stable }}/ripgrep-{{
+      ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl.tar.gz
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Install Ripgrep for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/ripgrep
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl/rg
+  become: true
+  when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: ripgrep
   when: ansible_system == "Darwin"
 
 - name: Install Ripgrep for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: ripgrep
   when: ansible_system == "Win32NT"
+
+- name: Copy Ripgrep settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: ripgreprc
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Ripgrep settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    owner: "{{ user_id }}"
+    src: ripgreprc
+  when: ansible_system == "Win32NT"
+
+- name: Download Rgi script for Unix
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/rgi
+    force: true
+    mode: "755"
+    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.sh
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create PowerShell scripts directory for Windows
+  ansible.windows.win_file:
+    path: "C:/Program Files/PowerShell/Scripts"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include PowerShell scripts directory for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\PowerShell\\Scripts"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Download Rgi script for Windows
+  ansible.windows.win_get_url:
+    dest: "C:/Program Files/PowerShell/Scripts/rgi.ps1"
+    force: true
+    url: >-
+      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.ps1
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Install Ripgrep shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
+      }}-unknown-linux-musl/complete/rg.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/rg"
+      shell: bash
+    - dest: "{{ fish_completion }}/rg.fish"
+      shell: fish
+  when: ansible_system == "Linux" and ripgrep_linux is failed

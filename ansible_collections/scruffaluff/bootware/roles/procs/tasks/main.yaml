@@ -8,15 +8,31 @@
     update_cache: true
   when: ansible_pkg_mgr == "apk"
 
-- name: Get latest Procs version for Debian
+- name: Install Procs for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: procs
+  when: ansible_system == "FreeBSD"
+
+- name: Install Procs for Linux
+  ansible.builtin.package:
+    name: procs
+  become: true
+  ignore_errors: true
+  register: procs_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Procs version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/procs.json
   register: procs_formula
-  when: ansible_pkg_mgr == "apt"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64" and procs_linux is failed
 
-- name: Download Procs for Debian
+- name: Download Procs for Linux
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
@@ -25,9 +41,11 @@
       https://github.com/dalance/procs/releases/download/v{{
       procs_formula.json.versions.stable }}/procs-v{{
       procs_formula.json.versions.stable }}-x86_64-linux.zip
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64" and procs_linux is failed
 
-- name: Install Procs for Debian
+- name: Install Procs for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/procs
     force: true
@@ -35,31 +53,20 @@
     remote_src: true
     src: /tmp/procs
   become: true
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
-
-# Procs is listed as available on https://freebsd.org/ports, but is not yet
-# available for FreeBSD 13.2 as of 11/22/2023.
-# - name: Install Procs for FreeBSD
-#   become: true
-#   community.general.pkgng:
-#     name: procs
-#   when: ansible_system == "FreeBSD"
-
-- name: Install Procs for Linux
-  ansible.builtin.package:
-    name: procs
-  become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "apt"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64" and procs_linux is failed
 
 - name: Install Procs for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: procs
   when: ansible_system == "Darwin"
 
 - name: Install Procs for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: procs
   when: ansible_system == "Win32NT"
 

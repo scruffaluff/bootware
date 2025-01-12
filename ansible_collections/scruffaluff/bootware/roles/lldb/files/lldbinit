@@ -1,0 +1,5 @@
+# LLDB settings file.
+#
+# For more information, visit https://lldb.llvm.org/index.html.
+
+command script import ~/.config/lldbinit.py

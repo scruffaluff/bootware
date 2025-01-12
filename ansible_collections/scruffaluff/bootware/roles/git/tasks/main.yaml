@@ -1,18 +1,4 @@
 ---
-- name: Get latest Git Delta version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/git-delta.json
-  register: git_delta_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
-- name: Install Git Delta for Alpine
-  become: true
-  community.general.apk:
-    name: delta
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Git for FreeBSD
   become: true
   community.general.pkgng:
@@ -30,6 +16,24 @@
   become: true
   when: ansible_system == "Linux"
 
+- name: Install Git Delta for Linux
+  ansible.builtin.package:
+    name: git-delta
+  become: true
+  ignore_errors: true
+  register: git_delta_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Git Delta version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/git-delta.json
+  register: git_delta_formula
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64") and git_delta_linux is failed
+
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
     dest: /tmp
@@ -39,8 +43,10 @@
       https://github.com/dandavison/delta/releases/download/{{
       git_delta_formula.json.versions.stable }}/delta-{{
       git_delta_formula.json.versions.stable }}-{{ git_delta_arch
-      }}-unknown-linux-{{ git_delta_env }}.tar.gz
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+      }}-unknown-linux-{{ system_libc }}.tar.gz
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64") and git_delta_linux is failed
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
@@ -50,13 +56,15 @@
     remote_src: true
     src: >-
       /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
-      }}-unknown-linux-{{ git_delta_env }}/delta
+      }}-unknown-linux-{{ system_libc }}/delta
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64") and git_delta_linux is failed
 
 - name: Install Git for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - git
@@ -64,8 +72,15 @@
       - git-lfs
   when: ansible_system == "Darwin"
 
+- name: Install Git HTTP for OpenWrt
+  community.general.opkg:
+    name: git-http
+  become: true
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Install Git for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - delta
       - git-lfs

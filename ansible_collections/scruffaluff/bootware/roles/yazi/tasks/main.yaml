@@ -5,86 +5,140 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
-- name: Download Yazi for Unix
+- name: Install Yazi for Linux
+  ansible.builtin.package:
+    name: yazi
+  become: true
+  ignore_errors: true
+  register: yazi_linux
+  when: ansible_system == "Linux"
+
+- name: Download Yazi for Linux
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://github.com/sxyazi/yazi/releases/download/v{{
-      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
-      }}-unknown-linux-gnu.zip
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch }}-unknown-linux-{{
+      system_libc }}.zip
+  when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/yazi
+    dest: /usr/local/bin/{{ item }}
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/yazi
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ system_libc }}/{{ item }}
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  loop:
+    - ya
+    - yazi
+  when: ansible_system == "Linux" and yazi_linux is failed
 
 - name: Install Yazi for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yazi
   when: ansible_system == "Darwin"
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    name: yazi
+    global: "{{ scoop_global }}"
+    name:
+      - file
+      - yazi
   when: ansible_system == "Win32NT"
 
-- name: Create Yazi configuration directory for Unix
+- name: Create Yazi configuration directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/yazi"
+    path: "{{ user_home }}/.config/{{ item }}"
     state: directory
   become: true
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  loop:
+    - yazi
+    - yazi/plugins/smart-open.yazi
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/yazi/{{ item }}"
+    dest: "{{ user_home }}/.config/yazi/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: "{{ item.src }}"
   become: true
   loop:
-    - keymap.toml
-    - theme.toml
-    - yazi.toml
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+    - dest: keymap.toml
+      src: keymap.toml
+    - dest: theme.toml
+      src: theme.toml
+    - dest: yazi.toml
+      src: yazi.toml
+    - dest: plugins/smart-open.yazi/init.lua
+      src: smart_open.lua
+  when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create Yazi configuration directory for Windows
+- name: Create Yazi configuration directories for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/yazi/config"
+    path: "{{ user_home }}/AppData/Roaming/yazi/{{ item }}"
     state: directory
+  loop:
+    - config
+    - config/plugins/smart-open.yazi
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/yazi/config/{{ item }}"
+    dest: "{{ user_home }}/AppData/Roaming/yazi/config/{{ item.dest }}"
     force: true
     owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: "{{ item.src }}"
   loop:
-    - keymap.toml
-    - theme.toml
-    - yazi.toml
+    - dest: keymap.toml
+      src: keymap.toml
+    - dest: theme.toml
+      src: theme.toml
+    - dest: yazi.toml
+      src: yazi.toml
+    - dest: plugins/smart-open.yazi/init.lua
+      src: smart_open.lua
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
+- name: Install Yazi plugins for Unix
+  ansible.builtin.command: ya pack --add {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Yazi plugins for Windows
+  ansible.windows.win_shell: ya pack --add {{ item }}
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  environment:
+    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Linux
   ansible.builtin.file:
     mode: "755"
     path: "{{ item }}"
@@ -93,21 +147,21 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"
 
-- name: Install Yazi shell completions for Unix
+- name: Install Yazi shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-gnu/completions/yazi.{{ item.shell
-      }}
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ system_libc
+      }}/completions/yazi.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
     - dest: "{{ fish_completion }}/yazi.fish"
       shell: fish
-  when: ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux"

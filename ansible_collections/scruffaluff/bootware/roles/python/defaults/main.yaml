@@ -5,6 +5,9 @@ python_applications:
   - "black[jupyter]"
   - cookiecutter
   - jupytext
-  - poetry
+  - name: poetry
+    injections:
+      - poetry-plugin-shell
+      - poetry-plugin-up
 python_versions:
-  - "3.11"
+  - "3.13"

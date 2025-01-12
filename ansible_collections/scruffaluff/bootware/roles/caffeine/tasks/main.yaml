@@ -50,5 +50,48 @@
 
 - name: Install Caffeine for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: caffeine
+  when: ansible_system == "Win32NT"
+
+- name: Configure Caffeine shell extension for GNOME desktops
+  ansible.builtin.shell:
+    cmd: |
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine enable-fullscreen false
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine screen-blank 'always'
+      gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/caffeine@patapon.info/schemas" set org.gnome.shell.extensions.caffeine show-notifications false
+    executable: "{{ bash_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
+  # Command does not provide stdout information to determine a change.
+  changed_when: true
+  when: ansible_system == "Linux" and gnome_desktop
+
+- name: Download Caffeinate script for GNOME desktops
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/caffeinate
+    force: true
+    mode: "755"
+    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.sh
+  become: true
+  when: ansible_system == "Linux" and gnome_desktop
+
+- name: Create PowerShell scripts directory for Windows
+  ansible.windows.win_file:
+    path: "C:/Program Files/PowerShell/Scripts"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Update system path to include PowerShell scripts directory for Windows
+  ansible.windows.win_path:
+    elements: "C:\\Program Files\\PowerShell\\Scripts"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Download Caffeinate script for Windows
+  ansible.windows.win_get_url:
+    dest: "C:/Program Files/PowerShell/Scripts/caffeinate.ps1"
+    force: true
+    url: >-
+      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.ps1
   when: ansible_system == "Win32NT"

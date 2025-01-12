@@ -26,7 +26,6 @@ on:
         options:
           - documenation
           - lint
-          - package
           - posix
           - powershell
         type: choice
@@ -48,27 +47,35 @@ jobs:
     name: Build documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Cache Node packages
-        uses: actions/cache@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
         with:
           path: |
             .cache
+            .venv
             node_modules
           key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
+          /usr/local/bin
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install development dependencies
+        run: just setup
       - name: Build documentation
-        run: npm run docs
+        run: just docs
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -81,57 +88,37 @@ jobs:
     name: Check code with formatter and linter
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Cache packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             .cache
             .venv
             node_modules
           key: >-
-            node-20_python-3.11_${{ runner.os }}_npm-${{
+            node-22_python-3.12_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
+          /usr/local/bin
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
+          node-version: "22"
       - name: Install Python interpreter
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install Python packages
-        run: |
-          python --version
-          python -m pip --version
-          python -m pip install poetry
-          poetry lock --check
-          poetry install --no-root
-      - name: Check format of configuration files
-        run: npm run prettier
-      - name: Install Shfmt
-        run: |
-          shfmt_version="$(curl -LSfs https://formulae.brew.sh/api/formula/shfmt.json | jq --raw-output .versions.stable)"
-          sudo curl -LSfs "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_linux_amd64" --output "/usr/local/bin/shfmt"
-          sudo chmod 755 "/usr/local/bin/shfmt"
-      - name: Check format of shell scripts
-        run: npm run shfmt
-      - name: Install ShellCheck
-        run: sudo apt install --yes shellcheck
-      - name: Run ShellCheck on shell scripts
-        run: npm run shellcheck
-      - name: Lint Ansible playbook and roles
-        run: |
-          poetry run ansible-lint --version
-          poetry run ansible-lint ansible_collections/scruffaluff
-          poetry run ansible-lint playbook.yaml
+          python-version: "3.12"
+      - name: Install development dependencies
+        run: just setup
+      - name: Check code formatting
+        run: just format
+      - name: Run code analyses
+        run: just lint
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -145,31 +132,35 @@ jobs:
     name: Run unit tests for POSIX scripts
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Cache Node packages
-        uses: actions/cache@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
         with:
           path: |
             .cache
+            .venv
             node_modules
           key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
-      - name: Install YQ YAML parser
-        run: |
-          sudo curl -LSfs https://github.com/mikefarah/yq/releases/download/v4.35.2/yq_linux_amd64 --output /usr/local/bin/yq
-          sudo chmod 755 /usr/local/bin/yq
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
+          /usr/local/bin
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
-      - name: Run POSIX unit tests with Bats
-        run: npm run bats
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install development dependencies
+        run: just setup
+      - name: Build test suites
+        run: just test
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -184,22 +175,31 @@ jobs:
     name: Run linter and unit tests for PowerShell scripts
     runs-on: windows-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Install YQ YAML parser
-        run: choco install --yes yq
-      - name: Install PSScriptAnalyzer
-        run: Install-Module -Force -Name PSScriptAnalyzer
-        shell: pwsh
-      - name: Run PSScriptAnalyzer code lints on all PowerShell scripts
-        run: Invoke-ScriptAnalyzer -EnableExit -Recurse -Path .
-        shell: pwsh
-      - name: Install Pester
-        run: Install-Module -Force -Name Pester
-        shell: pwsh
-      - name: Run PowerShell unit tests with Pester
-        run: Invoke-Pester -Output Detailed tests/unit
-        shell: pwsh
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            node_modules
+          key: >-
+            node-22_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+      - name: Install Just for Windows
+        run: choco install --yes just
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install development dependencies
+        run: just setup
+        shell: powershell
+      - name: Check code formatting
+        run: just format
+      - name: Run code analyses
+        run: just lint
+      - name: Run test suites
+        run: just test
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

@@ -2,6 +2,9 @@
 #
 # For more information, visit https://yazi-rs.github.io/docs/configuration/yazi.
 
+[manager]
+ratio = [0, 1, 2]
+
 [open]
 rules = [
     { mime = "*/javascript", use = [
@@ -12,23 +15,23 @@ rules = [
         "extract",
         "reveal",
     ] },
-    { mime = "application/x-7z-compressed", use = [
+    { mime = "application/7z-compressed", use = [
         "extract",
         "reveal",
     ] },
-    { mime = "application/x-bzip", use = [
+    { mime = "application/bzip", use = [
         "extract",
         "reveal",
     ] },
-    { mime = "application/x-bzip2", use = [
+    { mime = "application/bzip2", use = [
         "extract",
         "reveal",
     ] },
-    { mime = "application/x-rar", use = [
+    { mime = "application/rar", use = [
         "extract",
         "reveal",
     ] },
-    { mime = "application/x-tar", use = [
+    { mime = "application/tar", use = [
         "extract",
         "reveal",
     ] },
@@ -48,7 +51,7 @@ rules = [
         "open",
         "reveal",
     ] },
-    { mime = "inode/x-empty", use = [
+    { mime = "inode/empty", use = [
         "edit",
         "reveal",
     ] },
@@ -73,6 +76,10 @@ rules = [
 
 [opener]
 edit = [
-    { exec = '$EDITOR "$@"', block = true, for = "unix" },
-    { exec = 'hx "%*"', orphan = true, for = "windows" },
+    { block = true, for = "unix", run = '$EDITOR "$@"' },
+    { for = "windows", orphan = true, run = 'hx "%*"' },
 ]
+
+[preview]
+max_height = 1080
+max_width = 1920

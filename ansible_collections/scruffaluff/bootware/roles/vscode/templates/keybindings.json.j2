@@ -1,32 +1,460 @@
 [
-  { "command": "workbench.action.terminal.toggleTerminal", "key": "{{ vscode_ctrl_key }}+`" },
+  { "command": "-bookmarks.toggle", "key": "ctrl+alt+k" },
+  { "command": "-breadcrumbs.focus", "key": "ctrl+shift+;" },
+  { "command": "-cursorColumnSelectLeft", "key": "shift+left" },
+  { "command": "-cursorColumnSelectRight", "key": "shift+right" },
+  { "command": "-cursorLeftSelect", "key": "shift+left" },
+  { "command": "-cursorRightSelect", "key": "shift+right" },
+  {
+    "command": "-editor.action.accessibleViewGoToSymbol",
+    "key": "ctrl+shift+o"
+  },
+  { "command": "-editor.action.blockComment", "key": "ctrl+shift+a" },
+  { "command": "-editor.action.deleteLines", "key": "ctrl+shift+k" },
+  { "command": "-editor.action.selectAll", "key": "ctrl+a" },
+  { "command": "-editor.action.selectHighlights", "key": "ctrl+shift+l" },
+  { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
+  { "command": "-editor.action.toggleWordWrap", "key": "alt+z" },
+  { "command": "-editor.fold", "key": "ctrl+shift+[" },
+  { "command": "-editor.unfold", "key": "ctrl+shift+]" },
+  { "command": "-list.find", "key": "ctrl+f" },
+  { "command": "-list.selectAll", "key": "ctrl+a" },
+  { "command": "-notebook.fold", "key": "ctrl+shift+[" },
+  { "command": "-notebook.unfold", "key": "ctrl+shift+]" },
+  { "command": "-notification.acceptPrimaryAction", "key": "ctrl+shift+a" },
+  { "command": "-rust-analyzer.joinLines", "key": "ctrl+shift+j" },
+  { "command": "-workbench.action.closeActiveEditor", "key": "{{ vscode_ctrl_key }}+w" },
+  { "command": "-workbench.action.closeWindow", "key": "{{ vscode_ctrl_key }}+shift+w" },
+  { "command": "-workbench.action.debug.continue", "key": "f5" },
+  { "command": "-workbench.action.debug.restart", "key": "ctrl+shift+f5" },
+  { "command": "-workbench.action.debug.stepInto", "key": "f11" },
+  { "command": "-workbench.action.debug.stepOut", "key": "shift+f11" },
+  { "command": "-workbench.action.debug.stepOver", "key": "f10" },
+  { "command": "-workbench.action.debug.stop", "key": "shift+f5" },
+  {
+    "command": "-workbench.action.files.copyPathOfActiveFile",
+    "key": "ctrl+k p"
+  },
+  { "command": "-workbench.action.focusSecondEditorGroup", "key": "cmd+2" },
+  { "command": "-workbench.action.gotoSymbol", "key": "ctrl+shift+o" },
+  { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
+  { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
+  { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
+  {
+    "command": "-workbench.action.quickOpenLeastRecentlyUsedEditorInGroup",
+    "key": "ctrl+shift+tab"
+  },
+  {
+    "command": "-workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+    "key": "ctrl+tab"
+  },
+  { "command": "-workbench.action.reopenClosedEditor", "key": "ctrl+shift+t" },
+  { "command": "-workbench.action.switchWindow", "key": "ctrl+w" },
+  { "command": "-workbench.action.tasks.build", "key": "ctrl+shift+b" },
+  { "command": "-workbench.action.terminal.focusFind", "key": "ctrl+f" },
+  {
+    "command": "-workbench.action.terminal.openDetectedLink",
+    "key": "ctrl+shift+g"
+  },
+  {
+    "command": "-workbench.action.terminal.openDetectedLink",
+    "key": "ctrl+shift+o"
+  },
+  {
+    "command": "-workbench.action.terminal.openNativeConsole",
+    "key": "ctrl+shift+c"
+  },
+  {
+    "command": "-workbench.action.terminal.searchWorkspace",
+    "key": "ctrl+shift+f"
+  },
+  {
+    "command": "-workbench.action.terminal.sizeToContentWidth",
+    "key": "alt+z"
+  },
+  {
+    "command": "-workbench.action.terminal.toggleFindWholeWord",
+    "key": "alt+w"
+  },
+  { "command": "-workbench.action.terminal.toggleTerminal", "key": "ctrl+`" },
+  { "command": "-workbench.action.togglePanel", "key": "ctrl+j" },
+  { "command": "-workbench.action.toggleSidebarVisibility", "key": "ctrl+b" },
+  { "command": "-workbench.actions.view.problems", "key": "ctrl+shift+m" },
+  { "command": "-workbench.debug.action.toggleRepl", "key": "ctrl+shift+y" },
+  { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscode_ctrl_key }}+k d" },
+  { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
+  {
+    "command": "actions.find",
+    "key": "ctrl+f",
+    "when": "editorFocus || editorIsOpen"
+  },
+  { 
+    "command": "bookmarks.listFromAllFiles", 
+    "key": "{{ vscode_ctrl_key }}+k l"
+  },
+  {
+    "command": "bookmarks.toggle",
+    "key": "{{ vscode_ctrl_key }}+k b",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "bookmarks.toggleLabeled",
+    "key": "{{ vscode_ctrl_key }}+k m",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "breadcrumbs.focusAndSelect",
+    "key": "ctrl+shift+.",
+    "when": "breadcrumbsPossible && breadcrumbsVisible"
+  },
+  {
+    "command": "cursorLineEnd",
+    "key": "ctrl+e",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "cursorLineStart",
+    "key": "ctrl+a",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  { 
+    "command": "cursorWordLeft",
+    "key": "shift+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartLeft",
+    "key": "ctrl+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartRight",
+    "key": "ctrl+right",
+    "when": "textInputFocus"
+  },
+  { 
+    "command": "cursorWordRight",
+    "key": "shift+right",
+    "when": "textInputFocus"
+  },
+  { 
+    "command": "deleteAllLeft",
+    "key": "ctrl+u",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "deleteWordLeft",
+    "key": "ctrl+d",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "deleteWordRight",
+    "key": "alt+d",
+    "when": "textInputFocus && !terminalFocus"
+  },
+  {
+    "command": "editor.action.commentLine",
+    "key": "ctrl+/",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.insertCursorAbove",
+    "key": "ctrl+shift+up",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.insertCursorBelow",
+    "key": "ctrl+shift+down",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.insertLineAfter",
+    "key": "shift+enter",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.insertLineBefore",
+    "key": "ctrl+shift+enter",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.peekDefinition",
+    "key": "{{ vscode_ctrl_key }}+k p",
+    "when": "editorTextFocus && editorHasDefinitionProvider"
+  },
+  {
+    "command": "editor.action.revealDefinition",
+    "key": "{{ vscode_ctrl_key }}+k d",
+    "when": "editorTextFocus && editorHasDefinitionProvider"
+  },
+  {
+    "command": "editor.action.quickFix",
+    "key": "ctrl+.",
+    "when": "textInputFocus && editorHasCodeActionsProvider"
+  },
+  {
+    "command": "editor.action.startFindReplaceAction",
+    "key": "ctrl+h",
+    "when": "editorFocus || editorIsOpen"
+  },
+  {
+    "command": "expandLineSelection",
+    "key": "ctrl+l",
+    "when": "textInputFocus"
+  },
+  { 
+    "command": "workbench.action.closeActiveEditor",
+    "key": "{{ vscode_ctrl_key }}+w",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.compareEditor.nextChange",
+    "key": "ctrl+shift+]",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.previousChange",
+    "key": "ctrl+shift+[",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.debug.continue",
+    "key": "alt+c",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.restart",
+    "key": "alt+r",
+    "when": "inDebugMode"
+  },
+  {
+    "command": "workbench.action.debug.stepInto",
+    "key": "alt+s",
+    "when": "debugState != 'inactive'"
+  },
+  {
+    "command": "workbench.action.debug.stepOut",
+    "key": "alt+u",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.stepOver",
+    "key": "alt+n",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.stop",
+    "key": "alt+q",
+    "when": "inDebugMode && !focusedSessionIsAttach"
+  },
+  {
+    "command": "workbench.action.editor.nextChange",
+    "key": "ctrl+shift+]",
+    "when": "editorTextFocus && !textCompareEditorActive"
+  },
+  {
+    "command": "workbench.action.editor.previousChange",
+    "key": "ctrl+shift+[",
+    "when": "editorTextFocus && !textCompareEditorActive"
+  },
+  {
+    "command": "workbench.action.files.newUntitledFile",
+    "key": "ctrl+shift+n",
+    "when": "!panelFocus"
+  },
+  { "command": "workbench.action.findInFiles", "key": "ctrl+shift+f" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
-    "key": "{{ vscode_ctrl_key }}+`",
-    "when": "terminalFocus"
+    "key": "ctrl+`",
+    "when": "panelFocus"
   },
-  { "command": "workbench.action.showCommands", "key": "alt+shift+p" },
-  { "command": "workbench.action.showCommands", "key": "{{ vscode_ctrl_key }}+shift+p" },
+  {
+    "command": "workbench.action.moveEditorLeftInGroup",
+    "key": "ctrl+shift+left",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.moveEditorRightInGroup",
+    "key": "ctrl+shift+right",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.moveEditorToNextGroup",
+    "key": "ctrl+shift+s",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.navigateBack",
+    "key": "ctrl+[",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.navigateForward",
+    "key": "ctrl+]",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.nextEditor",
+    "key": "ctrl+shift+;",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.nextEditor",
+    "key": "ctrl+tab",
+    "when": "!panelFocus"
+  },
+{% if ansible_system == "Darwin" %}
+  {
+    "command": "workbench.action.openEditorAtIndex1",
+    "key": "cmd+1",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex2",
+    "key": "cmd+2",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex3",
+    "key": "cmd+3",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex4",
+    "key": "cmd+4",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex5",
+    "key": "cmd+5",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex6",
+    "key": "cmd+6",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex7",
+    "key": "cmd+7",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex8",
+    "key": "cmd+8",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.openEditorAtIndex9",
+    "key": "cmd+9",
+    "when": "!panelFocus"
+  },
+{% endif %}
+  { "command": "workbench.action.positionPanelBottom", "key": "ctrl+shift+b" },
+  { "command": "workbench.action.positionPanelRight", "key": "ctrl+shift+r" },
+  {
+    "command": "workbench.action.previousEditor",
+    "key": "ctrl+shift+j",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.previousEditor",
+    "key": "ctrl+shift+tab",
+    "when": "!panelFocus"
+  },
+  { "command": "workbench.action.quickOpen", "key": "ctrl+p" },
+  { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
+  { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
+  {
+    "command": "workbench.action.terminal.focus",
+    "key": "ctrl+`",
+    "when": "!panelFocus && activePanel != 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.action.terminal.focus",
+    "key": "ctrl+shift+t",
+    "when": "!terminalFocus"
+  },
   {
     "command": "workbench.action.terminal.focusNext",
-    "key": "{{ vscode_ctrl_key }}+shift+]",
+    "key": "ctrl+shift+;",
     "when": "terminalFocus"
   },
   {
     "command": "workbench.action.terminal.focusPrevious",
-    "key": "{{ vscode_ctrl_key }}+shift+[",
+    "key": "ctrl+shift+j",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusNextPane",
+    "key": "ctrl+shift+l",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusPreviousPane",
+    "key": "ctrl+shift+k",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.kill",
+    "key": "ctrl+shift+w",
     "when": "terminalFocus"
   },
   {
     "command": "workbench.action.terminal.new",
-    "key": "{{ vscode_ctrl_key }}+shift+t",
+    "key": "ctrl+shift+t",
     "when": "terminalFocus"
   },
-  { "command": "-workbench.action.quickOpen",
-    "key": "ctrl+e",
+  {
+    "args": { "text": "\ue000" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+;",
+    "when": "terminalFocus"
   },
-  { 
-    "command": "-workbench.actions.view.problems",
-    "key": "{{ vscode_ctrl_key }}+shift+m" }
+  {
+    "args": { "text": "\ue001" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+[",
+    "when": "terminalFocus"
+  },
+  {
+    "args": { "text": "\ue002" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+]",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.split",
+    "key": "ctrl+shift+n",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.toggleMaximizedPanel",
+    "key": "ctrl+shift+m"
+  },
+  { "command": "workbench.action.togglePanel", "key": "ctrl+shift+x" },
+  {
+    "command": "workbench.action.toggleSidebarVisibility",
+    "key": "ctrl+shift+a"
+  },
+  {
+    "command": "workbench.panel.repl.view.focus",
+    "key": "ctrl+`",
+    "when": "!panelFocus && activePanel == 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.panel.repl.view.focus",
+    "key": "ctrl+shift+y"
+  },
+  { "command": "workbench.view.debug", "key": "ctrl+shift+d" },
+  {
+    "command": "workbench.view.explorer",
+    "key": "ctrl+shift+e",
+    "when": "viewContainer.workbench.view.explorer.enabled"
+  },
+  {
+    "command": "workbench.view.scm",
+    "key": "ctrl+shift+g",
+    "when": "workbench.scm.active"
   }
 ]

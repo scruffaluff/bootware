@@ -13,16 +13,29 @@
       - bash
       - bash-completion
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - bash
       - bash-completion@2
   when: ansible_system == "Darwin"
+
+- name: Install Bash for OpenWrt
+  ansible.builtin.package:
+    name: bash
+  become: true
+  when: ansible_pkg_mgr == "opkg"
+
+- name: Register Bash as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ bash_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
 
 - name: Copy Bash non-login settings file for Unix
   ansible.builtin.copy:
@@ -31,7 +44,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .bashrc
+    src: bashrc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -42,18 +55,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .bash_profile
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Copy LS colors file for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.ls_colors"
-    force: true
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    src: .ls_colors
+    src: bash_profile
   become: true
   when: ansible_system != "Win32NT"
 

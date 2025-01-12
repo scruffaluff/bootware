@@ -8,6 +8,7 @@
 # As of 12/10/2023, Usql is not in the main Homebrew package list.
 - name: Get latest Usql version for Linux
   ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
     method: GET
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
@@ -44,13 +45,14 @@
 
 - name: Install Usql for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: xo/xo/usql
   when: ansible_system == "Darwin"
 
 - name: Install Usql for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: usql
   when: ansible_system == "Win32NT"
 
@@ -61,7 +63,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .usqlrc
+    src: usqlrc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -70,5 +72,5 @@
     dest: "{{ user_home }}/.usqlrc"
     force: true
     owner: "{{ user_id }}"
-    src: .usqlrc
+    src: usqlrc
   when: ansible_system == "Win32NT"

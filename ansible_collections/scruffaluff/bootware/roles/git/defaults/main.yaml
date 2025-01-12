@@ -3,10 +3,5 @@ git_delta_arch_:
   amd64: x86_64
   arm64: aarch64
 git_delta_arch: "{{ git_delta_arch_[system_architecture] }}"
-# Git Delta uses newer Glibc version that is not compatible with older Debian
-# Amd64 systems.
-git_delta_env: >-
-  {{ 'musl' if ansible_pkg_mgr == 'apk' or (ansible_pkg_mgr == 'apt' and
-  system_architecture == 'amd64') else 'gnu' }}
 git_user_email: "{{ git_user_name | lower | replace(' ', '.') }}@gmail.com"
 git_user_name: User Name

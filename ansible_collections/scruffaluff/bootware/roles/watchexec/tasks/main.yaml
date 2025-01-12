@@ -7,15 +7,6 @@
   register: watchexec_formula
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Watchexec for Alpine
-  become: true
-  community.general.apk:
-    name: watchexec
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
-
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
     dest: /tmp
@@ -24,9 +15,17 @@
     src: >-
       https://github.com/watchexec/watchexec/releases/download/v{{
       watchexec_formula.json.versions.stable }}/watchexec-{{
-      watchexec_formula.json.versions.stable }}-{{ watchexec_arch
-      }}-unknown-linux-gnu.tar.xz
+      watchexec_formula.json.versions.stable }}-{{ watchexec_arch }}-{{
+      watchexec_env }}.tar.xz
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Watchexec for Linux
+  ansible.builtin.package:
+    name: watchexec
+  become: true
+  ignore_errors: true
+  register: watchexec_linux
+  when: ansible_system == "Linux"
 
 - name: Install Watchexec for Linux
   ansible.builtin.copy:
@@ -36,19 +35,20 @@
     remote_src: true
     src: >-
       /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-unknown-linux-gnu/watchexec
+      watchexec_arch }}-{{ watchexec_env }}/watchexec
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and watchexec_linux is failed
 
 - name: Install Watchexec for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: watchexec
   when: ansible_system == "Darwin"
 
 - name: Install Watchexec for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: watchexec
   when: ansible_system == "Win32NT"
 
@@ -71,7 +71,7 @@
     remote_src: true
     src: >-
       /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-unknown-linux-gnu/completions/{{ item.shell }}
+      watchexec_arch }}-{{ watchexec_env }}/completions/{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/watchexec"

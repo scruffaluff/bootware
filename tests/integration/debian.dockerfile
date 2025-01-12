@@ -1,4 +1,4 @@
-FROM debian:12.4
+FROM debian:12.8
 
 ARG TARGETARCH
 
@@ -55,8 +55,8 @@ ARG test
 # Test installed binaries for roles.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/integration/roles.test.js --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

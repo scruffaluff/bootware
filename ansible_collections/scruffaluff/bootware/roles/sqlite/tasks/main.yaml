@@ -12,17 +12,19 @@
   vars:
     sqlite_package:
       apt: sqlite3
+      opkg: sqlite3-cli
   when: ansible_system == "Linux"
 
 - name: Install SQLite for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: sqlite
   when: ansible_system == "Darwin"
 
 - name: Install SQLite for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: sqlite
   when: ansible_system == "Win32NT"
 
@@ -33,7 +35,7 @@
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: .sqliterc
+    src: sqliterc
   become: true
   when: ansible_system != "Win32NT"
 
@@ -42,5 +44,5 @@
     dest: "{{ user_home }}/.sqliterc"
     force: true
     owner: "{{ user_id }}"
-    src: .sqliterc
+    src: sqliterc
   when: ansible_system == "Win32NT"

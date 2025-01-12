@@ -1,6 +1,6 @@
 BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
-    . "$Bootware"
+    . $Bootware
 
     Mock FindConfigPath {
         Return 'C:\Users\Administrator\.bootware\config.yaml'
@@ -9,7 +9,7 @@ BeforeAll {
     Mock Setup { }
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
-    If (Get-Command wsl -ErrorAction SilentlyContinue) {
+    If (Get-Command -ErrorAction SilentlyContinue wsl) {
         Mock wsl { Return "wsl $($Args | ForEach-Object {$_})" }
     }
     Else {
@@ -29,9 +29,9 @@ Describe 'Bootstrap' {
             + "--private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
-            + '--start-at-task Install Deno for FreeBSD'
+            + '--start-at-task Install Deno for Alpine'
 
-        $Actual = "$(& "$Bootware" bootstrap --start-at-role deno --playbook "$Playbook")"
+        $Actual = & $Bootware bootstrap --start-at-role deno --playbook $Playbook
         $Actual | Should -Be $Expected
     }
 
@@ -44,7 +44,7 @@ Describe 'Bootstrap' {
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
             + "--user $Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook C:/Fake\path/repo/playbook.yaml)"
+        $Actual = & $Bootware bootstrap --playbook C:/Fake\path/repo/playbook.yaml
         $Actual | Should -Be $Expected
     }
 
@@ -53,12 +53,12 @@ Describe 'Bootstrap' {
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip python " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd,go --user $Env:UserName --debug"
+            + "--tags fd --user $Env:UserName --debug"
 
-        $Actual = "$(& "$Bootware" bootstrap --debug --playbook `
-            C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
+        $Actual = & $Bootware bootstrap --debug --playbook `
+            C:/Fake\path/repo/playbook.yaml --skip python --tags fd
         $Actual | Should -Be $Expected
     }
 
@@ -67,12 +67,12 @@ Describe 'Bootstrap' {
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip rust " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd,go --user $Env:UserName"
+            + "--tags fd --user $Env:UserName"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook `
-            C:/Fake\path/repo/playbook.yaml --skip python,rust --tags fd,go)"
+        $Actual = & $Bootware bootstrap --playbook `
+            C:/Fake\path/repo/playbook.yaml --skip rust --tags fd
         $Actual | Should -Be $Expected
     }
 
@@ -81,13 +81,13 @@ Describe 'Bootstrap' {
         $Expected = 'wsl bootware bootstrap --windows --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip python,rust " `
+            + "--private-key `$HOME/.ssh/bootware --skip python " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd,go --user $Env:UserName --timeout 60"
+            + "--tags lsd --user $Env:UserName --timeout 60"
 
-        $Actual = "$(& "$Bootware" bootstrap --playbook `
-            C:/Fake\path/repo/playbook.yaml --skip python,rust --timeout 60 `
-            --tags fd,go)"
+        $Actual = & $Bootware bootstrap --playbook `
+            C:/Fake\path/repo/playbook.yaml --skip python --timeout 60 `
+            --tags lsd
         $Actual | Should -Be $Expected
     }
 }

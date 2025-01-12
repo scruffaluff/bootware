@@ -1,0 +1,115 @@
+---
+# Android Studio dependencies are specified at
+# https://developer.android.com/studio/install#64bit-libs.
+- name: Install Android Studio dependencies for Debian
+  ansible.builtin.apt:
+    name:
+      - lib32z1
+      - libbz2-1.0
+      - libc6
+      - libncurses5
+      - libstdc++6
+  become: true
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+
+# Android Studio dependencies are specified at
+# https://developer.android.com/studio/install#64bit-libs.
+- name: Install Android Studio dependencies for Fedora
+  ansible.builtin.dnf:
+    name:
+      - bzip2-libs
+      - ncurses-libs
+      - zlib
+  become: true
+  when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
+
+- name: Install Android Studio dependencies for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: openjdk@17
+  when: ansible_system == "Darwin"
+
+- name: Add OpenJDK to Java virtual machine list for MacOS
+  ansible.builtin.file:
+    dest: /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+    force: true
+    mode: "755"
+    src: /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk
+    state: link
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Check if Android Studio is installed for Linux
+  ansible.builtin.stat:
+    path: /usr/local/share/applications/android_studio.desktop
+  register: android_studio_check
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+
+- name: Get latest Android Studio version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/android-studio.json
+  register: android_studio_cask
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    and not android_studio_check.stat.exists
+
+# Using source build since virtual devices fail onFlatpak build.
+- name: Download Android Studio for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://redirector.gvt1.com/edgedl/android/studio/ide-zips/{{
+      android_studio_cask.json.version }}/android-studio-{{
+      android_studio_cask.json.version }}-linux.tar.gz
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    and not android_studio_check.stat.exists
+
+- name: Install Android Studio for Linux
+  ansible.builtin.copy:
+    dest: /usr/local
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/android-studio
+  become: true
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    and not android_studio_check.stat.exists
+
+- name: Install Android Studio desktop manifest for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/share/applications/android_studio.desktop
+    force: true
+    mode: "644"
+    src: android_studio.desktop
+  become: true
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+
+- name: Install Android Studio for Linux
+  become: true
+  community.general.flatpak:
+    name: com.google.AndroidStudio
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf", "dnf5"]
+    and system_architecture == "amd64"
+
+- name: Install Android Studio for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: android-studio
+    state: present
+  when: ansible_system == "Darwin"
+
+- name: Install Android Studio for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: android-studio
+  when: ansible_system == "Win32NT"

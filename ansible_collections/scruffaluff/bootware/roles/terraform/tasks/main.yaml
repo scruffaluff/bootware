@@ -1,31 +1,44 @@
 ---
-- name: Get latest Terraform version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/terraform.json
-  register: terraform_formula
-  when: ansible_system == "Linux"
-
 - name: Install Terraform for FreeBSD
   become: true
   community.general.pkgng:
     name: terraform
   when: ansible_system == "FreeBSD"
 
-- name: Download Terraform for Linux
+- name: Install Terraform for Linux
+  ansible.builtin.package:
+    name: terraform
+  become: true
+  ignore_errors: true
+  register: terraform_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Terraform version for Unix
+  ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/hashicorp/terraform/releases/latest
+  register: terraform_release
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
+    is failed)
+
+- name: Download Terraform for Unix
   ansible.builtin.unarchive:
     dest: /tmp
     mode: "777"
     remote_src: true
     src: >-
       https://releases.hashicorp.com/terraform/{{
-      terraform_formula.json.versions.stable }}/terraform_{{
-      terraform_formula.json.versions.stable }}_linux_{{ system_architecture
-      }}.zip
-  when: ansible_system == "Linux"
+      terraform_release.json.tag_name[1:] }}/terraform_{{
+      terraform_release.json.tag_name[1:] }}_{{ ansible_system | lower }}_{{
+      system_architecture }}.zip
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
+    is failed)
 
-- name: Install Terraform for Linux
+- name: Install Terraform for Unix
   ansible.builtin.copy:
     dest: /usr/local/bin/terraform
     force: true
@@ -33,16 +46,12 @@
     remote_src: true
     src: /tmp/terraform
   become: true
-  when: ansible_system == "Linux"
-
-- name: Install Terraform for MacOS
-  become: true
-  become_user: "{{ user_id }}"
-  community.general.homebrew:
-    name: terraform
-  when: ansible_system == "Darwin"
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
+    is failed)
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: terraform
   when: ansible_system == "Win32NT"

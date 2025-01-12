@@ -1,17 +1,25 @@
 ---
-- name: Get latest Shfmt version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/shfmt.json
-  register: shfmt_formula
-  when: ansible_system == "Linux"
-
 - name: Install Shfmt for FreeBSD
   become: true
   community.general.pkgng:
     name: shfmt
   when: ansible_system == "FreeBSD"
+
+- name: Install Shfmt for Linux
+  ansible.builtin.package:
+    name: shfmt
+  become: true
+  ignore_errors: true
+  register: shfmt_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Shfmt version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/shfmt.json
+  register: shfmt_formula
+  when: ansible_system == "Linux" and shfmt_linux is failed
 
 - name: Install Shfmt for Linux
   ansible.builtin.get_url:
@@ -23,16 +31,17 @@
       shfmt_formula.json.versions.stable }}/shfmt_v{{
       shfmt_formula.json.versions.stable }}_linux_{{ system_architecture }}
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and shfmt_linux is failed
 
 - name: Install Shfmt for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: shfmt
   when: ansible_system == "Darwin"
 
 - name: Install Shfmt for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: shfmt
   when: ansible_system == "Win32NT"

@@ -39,7 +39,7 @@ setup() {
   expected="ansible-playbook --extra-vars ansible_become_method=sudo \
 --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task Install Deno for FreeBSD --connection local playbook.yaml"
+--start-at-task Install Deno for Alpine --connection local playbook.yaml"
 
   actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
   assert_equal "${actual}" "${expected}"
@@ -93,8 +93,7 @@ ansible_become_method=sudo --extra-vars ansible_python_interpreter=auto_silent \
   local actual expected
   export BOOTWARE_TAGS=''
 
-  expected="ansible-playbook --extra-vars ansible_become_method=sudo \
---extra-vars ansible_pkg_mgr=scoop \
+  expected="ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
@@ -140,7 +139,7 @@ main.yaml"
   expected="ansible-playbook --extra-vars ansible_become_method=sudo \
 --extra-vars ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
---start-at-task Install Deno for FreeBSD --connection local \
+--start-at-task Install Deno for Alpine --connection local \
 ${tmp_dir}/playbook.yaml"
 
   actual="$(bootstrap --start-at-role deno)"

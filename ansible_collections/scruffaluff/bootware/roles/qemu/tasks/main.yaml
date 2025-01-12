@@ -4,11 +4,14 @@
   community.general.apk:
     name:
       - qemu
+      - qemu-aarch64
       - qemu-img
+      - qemu-riscv64
       - qemu-system-aarch64
       - qemu-system-riscv64
       - qemu-system-x86_64
       - qemu-tools
+      - qemu-x86_64
   when: ansible_pkg_mgr == "apk"
 
 - name: Install QEMU packages for Arch
@@ -21,12 +24,14 @@
       - qemu-system-riscv
       - qemu-system-x86
       - qemu-tools
+      - qemu-user
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install QEMU for Debian
   ansible.builtin.apt:
     name:
       - qemu-system
+      - qemu-user
       - qemu-utils
   become: true
   when: ansible_pkg_mgr == "apt"
@@ -37,20 +42,23 @@
       - qemu
       - qemu-img
       - qemu-kvm
+      - qemu-user
       - qemu-tools
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 # FreeBSD "qemu" package is incompatible with "qemu-tools" package.
 - name: Install QEMU for FreeBSD
   become: true
   community.general.pkgng:
-    name: qemu
+    name:
+      - qemu
+      - qemu-user-static
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: qemu
   when: ansible_system == "Darwin"
@@ -70,5 +78,6 @@
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: qemu
   when: ansible_system == "Win32NT"

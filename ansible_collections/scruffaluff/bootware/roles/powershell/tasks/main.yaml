@@ -1,7 +1,7 @@
 ---
 # Do not integrate PSGallery! Its trust workflow is exceedingly unrealiable on
 # Windows 11.
-- name: Get latest PowerShell Core version
+- name: Get latest PowerShell Core version for Windows
   ansible.windows.win_uri:
     method: GET
     return_content: true
@@ -18,7 +18,11 @@
     path: >-
       https://github.com/PowerShell/PowerShell/releases/download/v{{
       powershell_cask.json.version }}/PowerShell-{{ powershell_cask.json.version
-      }}-win-x64.msi
+      }}-win-{{ powershell_arch[system_architecture] }}.msi
+  vars:
+    powershell_arch:
+      amd64: x64
+      arm64: arm64
   when: ansible_system == "Win32NT"
 
 - name: Create PowerShell settings directories for Windows
@@ -70,6 +74,14 @@
         src: "{{ item[1] }}.psm1"
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"
+
+- name: Set PowerShell Core as default OpenSSH shell for Windows
+  ansible.windows.win_regedit:
+    data: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    name: DefaultShell
+    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    type: string
+  when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

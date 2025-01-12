@@ -7,6 +7,8 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - mpv
+      - sox
   when: ansible_pkg_mgr == "apk"
 
 - name: Install audio packages for Arch
@@ -17,6 +19,8 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - mpv
+      - sox
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
@@ -26,6 +30,8 @@
       - libasound2-dev
       - ffmpeg
       - mediainfo
+      - mpv
+      - sox
   become: true
   when: ansible_pkg_mgr == "apt"
 
@@ -35,41 +41,10 @@
       - alsa-lib
       - alsa-utils
       - mediainfo
+      - mpv
+      - sox
   become: true
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Get latest FFmpeg version for Fedora
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/ffmpeg.json
-  register: ffmpeg_formula
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Download FFmpeg for Fedora
-  ansible.builtin.unarchive:
-    dest: /tmp
-    mode: "777"
-    remote_src: true
-    src: >-
-      https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-{{
-      system_architecture }}-static.tar.xz
-  when: ansible_pkg_mgr == "dnf"
-
-- name: Install FFmpeg for Fedora
-  ansible.builtin.copy:
-    dest: "/usr/local/bin/{{ item }}"
-    force: true
-    mode: "755"
-    remote_src: true
-    src: >-
-      /tmp/ffmpeg-{{ ffmpeg_formula.json.versions.stable }}-{{
-      system_architecture }}-static/{{ item }}
-  become: true
-  loop:
-    - ffmpeg
-    - ffprobe
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install audio packages for FreeBSD
   become: true
@@ -79,20 +54,27 @@
       - alsa-utils
       - ffmpeg
       - mediainfo
+      - mpv
+      - sox
   when: ansible_system == "FreeBSD"
 
 - name: Install audio packages for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - ffmpeg
       - media-info
+      - mpv
+      - sox
   when: ansible_system == "Darwin"
 
 - name: Install audio packages for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
-      - mediainfo
       - ffmpeg
+      - mediainfo
+      - mpv
+      - sox
   when: ansible_system == "Win32NT"

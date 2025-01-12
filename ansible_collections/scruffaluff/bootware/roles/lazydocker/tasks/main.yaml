@@ -1,5 +1,5 @@
 ---
-- name: Get latest Lazydocker version
+- name: Get latest Lazydocker version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -35,12 +35,13 @@
 
 - name: Install Lazydocker for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lazydocker
   when: ansible_system == "Darwin"
 
 - name: Install Lazydocker for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: lazydocker
   when: ansible_system == "Win32NT"

@@ -4,7 +4,7 @@
   community.general.pkgng:
     name:
       - htop
-      - neofetch
+      - fastfetch
       - rsync
   when: ansible_system == "FreeBSD"
 
@@ -12,17 +12,31 @@
   ansible.builtin.package:
     name:
       - htop
-      - neofetch
+      - "{{ 'neofetch' if ansible_pkg_mgr == 'apt' else 'fastfetch' }}"
       - rsync
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install utilities for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - htop
-      - neofetch
+      - fastfetch
       - rsync
   when: ansible_system == "Darwin"
+
+- name: Install utilities for OpenWrt
+  ansible.builtin.package:
+    name:
+      - htop
+      - rsync
+  become: true
+  when: ansible_pkg_mgr == "opkg"
+
+- name: Install utilities for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: fastfetch
+  when: ansible_system == "Win32NT"

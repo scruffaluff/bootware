@@ -5,22 +5,53 @@
     name: starship
   when: ansible_system == "FreeBSD"
 
-- name: Download Starship shell prompt installer for Unix
-  ansible.builtin.get_url:
-    dest: /tmp/starship_install.sh
-    mode: "755"
-    url: https://starship.rs/install.sh
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
-
-- name: Install Starship shell prompt for Unix
-  ansible.builtin.command: /tmp/starship_install.sh --yes
+- name: Install Starship for Linux
+  ansible.builtin.package:
+    name: starship
   become: true
-  changed_when: "'Starship installed' in starship_install"
-  register: starship_install
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  ignore_errors: true
+  register: starship_linux
+  when: ansible_system == "Linux"
 
-- name: Install Starship shell prompt for Windows
+- name: Get latest Starship version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/starship.json
+  register: starship_formula
+  when: ansible_system == "Linux" and starship_linux is failed
+
+- name: Download Starship for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/starship/starship/releases/download/v{{
+      starship_formula.json.versions.stable }}/starship-{{ starship_arch
+      }}-unknown-linux-{{ starship_libc }}.tar.gz
+  when: ansible_system == "Linux" and starship_linux is failed
+
+- name: Install Starship for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/starship
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/starship
+  become: true
+  when: ansible_system == "Linux" and starship_linux is failed
+
+- name: Install Starship for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: starship
+  when: ansible_system == "Darwin"
+
+- name: Install Starship for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: starship
   when: ansible_system == "Win32NT"
 
@@ -34,7 +65,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Create Starship settings file for Unix
+- name: Copy Starship settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/starship.toml"
     force: true
@@ -52,7 +83,7 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Create Starship settings file for Windows
+- name: Copy Starship settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/.config/starship.toml"
     force: true

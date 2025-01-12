@@ -1,5 +1,5 @@
 ---
-- name: Get latest Cargo Binstall version
+- name: Get latest Cargo Binstall version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -60,23 +60,6 @@
         state: directory
       become: true
 
-    # TODO: Enable when Mold is installable on FreeBSD and Suse.
-    # - name: Enable Mold linker for Unix
-    #   ansible.builtin.blockinfile:
-    #     block: |
-    #       # Enable mold linker for FreeBSD and Linux targets.
-    #       [target.'cfg(any(target_os = "freebsd", target_os = "linux"))']
-    #       linker = "clang"
-    #       rustflags = ["--codegen", "link-arg=-fuse-ld=mold"]
-    #     create: true
-    #     group: "{{ group_id }}"
-    #     marker: >-
-    #       # {mark} ANSIBLE MANAGED mold linker configuration BLOCK
-    #     mode: "644"
-    #     owner: "{{ user_id }}"
-    #     path: "{{ user_home }}/.cargo/config.toml"
-    #   become: true
-
     - name: Create Cargo Binstall applications directory for Unix
       ansible.builtin.file:
         group: "{{ group_id }}"
@@ -103,9 +86,7 @@
           arm64: aarch64
         rust_binstall_suffix:
           Darwin: apple-darwin.zip
-          Linux: >-
-            unknown-linux-{{ 'musl' if ansible_pkg_mgr == 'apk' else 'gnu'
-            }}.tgz
+          Linux: unknown-linux-{{ system_libc }}.tgz
       when: ansible_system in ["Darwin", "Linux"]
 
     - name: Install Cargo Binstall for Unix

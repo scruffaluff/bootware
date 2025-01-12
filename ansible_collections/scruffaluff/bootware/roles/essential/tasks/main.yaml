@@ -1,8 +1,15 @@
 ---
+- name: Update package list for OpenWrt
+  ansible.builtin.command: opkg update
+  become: true
+  changed_when: false
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Install essential packages for FreeBSD
   become: true
   community.general.pkgng:
     name:
+      - 7-zip
       - bzip2
       - gnupg
       - gtar
@@ -10,6 +17,14 @@
       - unzip
       - zip
   when: ansible_system == "FreeBSD"
+
+- name: Remove bloatware packages for Linux
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ bloatware_linux_packages }}"
+  when: ansible_system == "Linux"
 
 - name: Install essential packages for Linux
   ansible.builtin.package:
@@ -21,9 +36,10 @@
 
 - name: Install essential packages for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
+      - 7zip
       - bzip2
       - gnu-tar
       - gnupg
@@ -38,19 +54,25 @@
 # - name: Add essential Scoop buckets for Windows
 #   community.windows.win_scoop_bucket:
 #     name: "{{ item }}"
-#   environment:
-#     Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
+# environment:
+#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
 #   loop:
 #     - extras
 #     - main
 #     - versions
 #   when: ansible_system == "Win32NT"
 
+- name: Install Scoop bucket dependency for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: mingit
+  when: ansible_system == "Win32NT"
+
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: "scoop bucket add {{ item }}"
   changed_when: "'bucket was added successfully' in essential_bucket_add"
   environment:
-    Path: "{{ user_home }}\\scoop\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
     essential_bucket_add.rc != 0 and 'bucket already exists' not in
     essential_bucket_add.stdout
@@ -61,14 +83,30 @@
   register: essential_bucket_add
   when: ansible_system == "Win32NT"
 
+- name: Add Scoop global shims to path for Windows
+  ansible.windows.win_path:
+    elements: "C:\\ProgramData\\scoop\\shims"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
 - name: Install essential packages for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - 7zip
       - bzip2
+      - file
       - gsudo
       - scoop-completion
       - unzip
       - xz
       - zip
   when: ansible_system == "Win32NT"
+
+- name: Create system binaries directory for Unix
+  ansible.builtin.file:
+    dest: /usr/local/bin
+    mode: "755"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"

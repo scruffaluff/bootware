@@ -1,27 +1,28 @@
 ---
-- name: Get latest FFSend version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/ffsend.json
-  register: ffsend_formula
-  when: ansible_system == "Linux"
-
-# TODO: Integrate once installation becomes stable.
-# - name: Install FFSend for Alpine
-#   become: true
-# community.general.apk:
-#     name: ffsend
-#     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
-#     state: latest
-#     update_cache: true
-#   when: ansible_pkg_mgr == "apk"
+- name: Install FFSend for Alpine
+  become: true
+  community.general.apk:
+    name: ffsend
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
 
 - name: Install FFSend for FreeBSD
   become: true
   community.general.pkgng:
     name: ffsend
   when: ansible_system == "FreeBSD"
+
+- name: Get latest FFSend version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/ffsend.json
+  register: ffsend_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64"
 
 # Static FFSend installation avoids OpenSSL compatibility issues on newer
 # versions of Fedora and Ubuntu.
@@ -41,12 +42,16 @@
 
 - name: Install FFSend for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: ffsend
   when: ansible_system == "Darwin"
 
+# As of 10/31/2024, the FFSend Scoop package usually fails during installation
+# because Windows Defener considers the program to be a virus. Installation will
+# work after marking the program as safe in Windows Defender.
 - name: Install FFSend for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: ffsend
   when: ansible_system == "Win32NT"

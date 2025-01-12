@@ -25,6 +25,7 @@
       ansible.windows.win_shell: |
         $ErrorActionPreference = 'Stop'
         [System.Reflection.Assembly]::LoadWithPartialName('PresentationFramework')
+        Add-Type -PassThru -AssemblyName PresentationFramework | Out-Null
         $Folder = '{{ ansible_env.TEMP }}/{{ font_family.name }}'
         $Patterns = {{ font_family.patterns | map('quote') | join(',') }}
         ForEach ($File in Get-ChildItem -Recurse -Include $Patterns -Path $Folder) {

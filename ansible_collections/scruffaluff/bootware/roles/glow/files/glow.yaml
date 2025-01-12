@@ -1,0 +1,8 @@
+# Glow mardown renderer configuration file.
+#
+# For more information, visit
+# https://github.com/charmbracelet/glow#the-config-file.
+
+---
+pager: true
+style: light

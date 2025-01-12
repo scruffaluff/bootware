@@ -1,21 +1,4 @@
 ---
-- name: Get latest Hyperfine version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/hyperfine.json
-  register: hyperfine_formula
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install Hyperfine for Debian
-  ansible.builtin.apt:
-    deb: >-
-      https://github.com/sharkdp/hyperfine/releases/download/v{{
-      hyperfine_formula.json.versions.stable }}/hyperfine_{{
-      hyperfine_formula.json.versions.stable }}_{{ system_architecture }}.deb
-  become: true
-  when: ansible_pkg_mgr == "apt"
-
 - name: Install Hyperfine for FreeBSD
   become: true
   community.general.pkgng:
@@ -26,16 +9,80 @@
   ansible.builtin.package:
     name: hyperfine
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apt"
+  ignore_errors: true
+  register: hyperfine_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Hyperfine version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/hyperfine.json
+  register: hyperfine_formula
+  when: ansible_system == "Linux" and hyperfine_linux is failed
+
+- name: Download Hyperfine for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/sharkdp/hyperfine/releases/download/v{{
+      hyperfine_formula.json.versions.stable }}/hyperfine-v{{
+      hyperfine_formula.json.versions.stable }}-{{ hyperfine_arch
+      }}-unknown-linux-musl.tar.gz
+  when: ansible_system == "Linux" and hyperfine_linux is failed
+
+- name: Install Hyperfine for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/hyperfine
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/hyperfine-v{{ hyperfine_formula.json.versions.stable }}-{{
+      hyperfine_arch }}-unknown-linux-musl/hyperfine
+  become: true
+  when: ansible_system == "Linux" and hyperfine_linux is failed
 
 - name: Install Hyperfine for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: hyperfine
   when: ansible_system == "Darwin"
 
 - name: Install Hyperfine for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: hyperfine
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and hyperfine_linux is failed
+
+- name: Install Hyperfine shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/hyperfine-v{{ hyperfine_formula.json.versions.stable }}-{{
+      hyperfine_arch }}-unknown-linux-musl/autocomplete/hyperfine.{{ item.shell
+      }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/hyperfine"
+      shell: bash
+    - dest: "{{ fish_completion }}/hyperfine.fish"
+      shell: fish
+  when: ansible_system == "Linux" and hyperfine_linux is failed

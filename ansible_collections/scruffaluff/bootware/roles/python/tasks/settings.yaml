@@ -1,0 +1,82 @@
+---
+- name: Create Jupyter settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.jupyter"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Jupyter settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.jupyter"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Jupyter notebook settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.jupyter/jupyter_notebook_config.py"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: jupyter_notebook_config.py
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Jupyter notebook settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.jupyter/jupyter_notebook_config.py"
+    force: true
+    owner: "{{ user_id }}"
+    src: jupyter_notebook_config.py
+  when: ansible_system == "Win32NT"
+
+- name: Create user config directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy PDB settings files for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/{{ item.dest }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item.src }}"
+  become: true
+  loop:
+    - dest: .pdbrc
+      src: pdbrc
+    - dest: .config/pdbrc.py
+      src: pdbrc.py
+  when: ansible_system != "Win32NT"
+
+- name: Create user config directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy PDB settings files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/{{ item.dest }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item.src }}"
+  loop:
+    - dest: .pdbrc
+      src: pdbrc
+    - dest: .config/pdbrc.py
+      src: pdbrc.py
+  when: ansible_system == "Win32NT"

@@ -1,0 +1,116 @@
+---
+- name: Install LLDB for Alpine
+  become: true
+  community.general.apk:
+    name:
+      - lldb
+      - py3-lldb
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install LLDB for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: llvm
+  when: ansible_system == "FreeBSD"
+
+# TODO: Fix LLDB Python for Debian. LLDB Python works on Ubunut.
+- name: Install LLDB for Debian
+  ansible.builtin.package:
+    name:
+      - lldb
+      - python3-lldb
+  become: true
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install LLDB for Linux
+  ansible.builtin.package:
+    name: lldb
+  become: true
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "pacman"]
+
+# LLDB is included in LLVM Scoop package.
+- name: Install debuggers for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: llvm
+  when: ansible_system == "Win32NT"
+
+- name: Check if LLDB Python is installed for Windows
+  ansible.windows.win_stat:
+    path: "{{ scoop_apps }}/llvm/current/bin/python.exe"
+  register: lldb_python_check
+  when: ansible_system == "Win32NT"
+
+# On Windows LLDB crashes during startup if Python310 is not found in its
+# folder. This issue happens whether LLVM is installed via Chocolatey or Scoop
+# and even if Python310 is available elsewhere on the system. The soluation
+# comes from
+# https://github.com/llvm/llvm-project/issues/61878#issuecomment-1492960093.
+- name: Install embedded Python 3.10 for Windows
+  when: ansible_system == "Win32NT" and not lldb_python_check.stat.exists
+  block:
+    - name: Get latest Python 3.10 version for Windows
+      ansible.windows.win_uri:
+        method: GET
+        return_content: true
+        url: https://raw.githubusercontent.com/ScoopInstaller/Versions/master/bucket/python310.json
+      register: debug_embed_python_bucket
+
+    - name: Download embedded Python 3.10 for Windows
+      ansible.windows.win_get_url:
+        dest: "{{ ansible_env.TEMP }}/python_embed.zip"
+        url: >-
+          https://www.python.org/ftp/python/{{
+          debug_embed_python_bucket.json.version }}/python-{{
+          debug_embed_python_bucket.json.version }}-embed-amd64.zip
+
+    - name: Decompress embedded Python 3.10 for Windows
+      community.windows.win_unzip:
+        dest: "{{ scoop_apps }}/llvm/current/bin"
+        src: "{{ ansible_env.TEMP }}/python_embed.zip"
+
+- name: Create user config directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy LLDB settings files for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/{{ item.dest }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item.src }}"
+  become: true
+  loop:
+    - dest: .lldbinit
+      src: lldbinit
+    - dest: .config/lldbinit.py
+      src: lldbinit.py
+  when: ansible_system != "Win32NT"
+
+- name: Create user config directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy LLDB settings files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/{{ item.dest }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item.src }}"
+  loop:
+    - dest: .lldbinit
+      src: lldbinit
+    - dest: .config/lldbinit.py
+      src: lldbinit.py
+  when: ansible_system == "Win32NT"

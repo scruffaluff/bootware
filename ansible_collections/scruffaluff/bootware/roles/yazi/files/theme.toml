@@ -1,73 +1,83 @@
 # Yazi configuration file for color theme.
 #
+# This theme is a solarized light fork of Yazi's default light theme at
+# https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/theme-light.toml.
 # For more information, visit
 # https://yazi-rs.github.io/docs/configuration/theme.
 
 [completion]
-active = { bg = "#586e75" }
 border = { fg = "#268bd2" }
+
+[confirm]
+border = { fg = "#268bd2" }
+title = { fg = "#268bd2" }
 
 [filetype]
 rules = [
-    { mime = "application/gzip", fg = "#d33682" },
-    { mime = "application/x-7z-compressed", fg = "#d33682" },
-    { mime = "application/x-bzip", fg = "#d33682" },
-    { mime = "application/x-bzip2", fg = "#d33682" },
-    { mime = "application/x-rar", fg = "#d33682" },
-    { mime = "application/x-tar", fg = "#d33682" },
-    { mime = "application/zip", fg = "#d33682" },
-    { mime = "audio/*", fg = "#b58900" },
-    { mime = "image/*", fg = "#2aa198" },
-    { mime = "video/*", fg = "#b58900" },
-    { name = "*/", fg = "#268bd2" },
+    { fg = "#268bd2", name = "*/" },
+	{ fg = "#b58900", mime = "{audio,image,video}/*" },
+	{ fg = "#d33682", mime = "application/{gzip,zip}" },
+	{ fg = "#d33682", mime = "application/{7z*,bzip*,rar,tar,xz}" },
+	{ fg = "#2aa198", mime = "application/{doc,msword,pdf,rtf,vnd.ms-*,vnd.openxmlformats-*}" },
+    { fg = "#859900", is = "exec", name = "*" },
+    { fg = "#dc322f", is = "orphan", name = "*" },
+    { fg = "#586e75", name = "*"},
 ]
 
 [help]
-desc = { fg = "#fdf6e3" }
-exec = { fg = "#2aa198" }
-footer = { fg = "#073642", bg = "#eee8d5" }
-hovered = { bg = "#586e75" }
-on = { fg = "#d33682" }
+footer = { bg = "#fdf6e3", fg = "#002b36" }
+on = { fg = "#2aa198" }
+run = { fg = "#d33682" }
 
 [input]
 border = { fg = "#268bd2" }
 
 [manager]
-border_style = { fg = "#fdf6e3" }
+border_style = { fg = "#839496" }
+count_copied = { bg = "#859900", fg = "#fdf6e3" }
+count_cut = { bg = "#dc322f", fg = "#fdf6e3" }
+count_selected = { bg = "#b58900", fg = "#fdf6e3" }
 cwd = { fg = "#2aa198" }
-find_keyword = { fg = "#b58900" }
-find_position = { fg = "#d33682", bg = "reset" }
-hovered = { fg = "#073642", bg = "#839496" }
-marker_copied = { fg = "#657b83", bg = "#657b83" }
-marker_cut = { fg = "#cb4b16", bg = "#cb4b16" }
-marker_selected = { fg = "#586e75", bg = "#586e75" }
-tab_active = { fg = "#073642", bg = "#839496" }
-tab_inactive = { fg = "#eee8d5", bg = "#586e75" }
+find_keyword = { bold = true, fg = "#b58900", italic = true, underline = true }
+find_position = { bg = "reset", bold = true, fg = "#d33682", italic = true }
+marker_copied = { bg = "#859900", fg = "#859900" }
+marker_cut = { bg = "#dc322f", fg = "#dc322f" }
+marker_marked = { bg = "#2aa198", fg = "#2aa198" }
+marker_selected = { bg = "#b58900", fg = "#b58900" }
 
-[select]
-active = { fg = "#d33682" }
+[mode]
+normal_alt = { bg = "#eee8d5", fg = "#268bd2" }
+normal_main = { bg = "#268bd2", bold = true, fg = "#fdf6e3" }
+select_alt = { bg = "#eee8d5", fg = "#859900" }
+select_main = { bg = "#859900", bold = true, fg = "#fdf6e3" }
+unset_alt = { bg = "#eee8d5", fg = "#dc322f" }
+unset_main = { bg = "#dc322f", bold = true, fg = "#fdf6e3" }
+
+[notify]
+title_error = { fg = "#dc322f" }
+title_info = { fg = "#859900" }
+title_warn = { fg = "#b58900" }
+
+[pick]
+active = { bold = true, fg = "#d33682" }
 border = { fg = "#268bd2" }
 
 [status]
-mode_normal = { fg = "#073642", bg = "#839496" }
-mode_select = { fg = "#073642", bg = "#586e75" }
-mode_unset = { fg = "#073642", bg = "#6c71c4" }
-permissions_r = { fg = "#657b83" }
-permissions_s = { fg = "#586e75" }
-permissions_t = { fg = "#586e75" }
-permissions_w = { fg = "#cb4b16" }
-permissions_x = { fg = "#93a1a1" }
-progress_error = { fg = "#dc322f", bg = "#073642" }
-progress_label = { bold = true }
-progress_normal = { fg = "#268bd2", bg = "#073642" }
-separator_style = { fg = "#586e75", bg = "#586e75" }
+perm_exec = { fg = "#859900" }
+perm_read = { fg = "#b58900" }
+perm_sep = { fg = "#586e75" }
+perm_type = { fg = "#268bd2" }
+perm_write = { fg = "#dc322f" }
+progress_error = { bg = "#002b36", fg = "#dc322f" }
+progress_normal = { bg = "#002b36", fg = "#268bd2" }
 
 [tasks]
 border = { fg = "#268bd2" }
+hovered = { fg = "#d33682", underline = true }
 
 [which]
-cand = { fg = "#93a1a1" }
+cand = { fg = "#2aa198" }
 desc = { fg = "#d33682" }
-mask = { bg = "#073642" }
+mask = { bg = "#002b36" }
 rest = { fg = "#586e75" }
 separator_style = { fg = "#586e75" }

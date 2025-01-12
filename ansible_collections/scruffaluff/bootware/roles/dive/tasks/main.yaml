@@ -1,0 +1,57 @@
+---
+- name: Install Dive for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: dive
+  when: ansible_system == "FreeBSD"
+
+- name: Install Dive for Linux
+  ansible.builtin.package:
+    name: dive
+  become: true
+  ignore_errors: true
+  register: dive_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Dive version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/dive.json
+  register: dive_formula
+  when: ansible_system == "Linux" and dive_linux is failed
+
+- name: Download Dive for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/wagoodman/dive/releases/download/v{{
+      dive_formula.json.versions.stable }}/dive_{{
+      dive_formula.json.versions.stable }}_linux_{{ system_architecture
+      }}.tar.gz
+  when: ansible_system == "Linux" and dive_linux is failed
+
+- name: Install Dive for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/dive
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/dive
+  become: true
+  when: ansible_system == "Linux" and dive_linux is failed
+
+- name: Install Dive for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: dive
+  when: ansible_system == "Darwin"
+
+- name: Install Dive for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: dive
+  when: ansible_system == "Win32NT"

@@ -1,12 +1,4 @@
 ---
-- name: Get latest GitUI version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/gitui.json
-  register: gitui_formula
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
 - name: Install GitUI for Alpine
   become: true
   community.general.apk:
@@ -21,6 +13,23 @@
   community.general.pkgng:
     name: gitui
   when: ansible_system == "FreeBSD"
+
+# TODO: Renable when Fzf package in most distributions reaches version 0.25.0.
+# - name: Install GitUI for Linux
+#   ansible.builtin.package:
+#     name: gitui
+#   become: true
+#   ignore_errors: true
+#   register: gitui_linux
+#   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest GitUI version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/gitui.json
+  register: gitui_formula
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 # GitUI cannot download to /tmp after several other roles have been executed.
 - name: Create temporary directory for Linux
@@ -37,10 +46,10 @@
     src: >-
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
-      gitui_env[system_architecture] }}.tar.gz
+      gitui_arch[system_architecture] }}.tar.gz
   vars:
-    gitui_env:
-      amd64: musl
+    gitui_arch:
+      amd64: x86_64
       arm64: aarch64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
@@ -56,12 +65,49 @@
 
 - name: Install GitUI for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitui
   when: ansible_system == "Darwin"
 
 - name: Install GitUI for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gitui
+  when: ansible_system == "Win32NT"
+
+- name: Create GitUI configuration directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/gitui"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy GitUI configuration files for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/gitui/key_bindings.ron"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: key_bindings.ron
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create GitUI configuration directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Roaming/gitui"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy GitUI configuration files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/gitui/key_bindings.ron"
+    force: true
+    owner: "{{ user_id }}"
+    src: key_bindings.ron
   when: ansible_system == "Win32NT"

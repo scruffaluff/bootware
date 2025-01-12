@@ -6,8 +6,9 @@ rust_applications_:
     - cargo-cache
     - cargo-edit
     - cargo-make
-    - cross
+    - cargo-update
     - cargo-watch
+    - cross
   Darwin:
     amd64: []
     always: []

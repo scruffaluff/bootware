@@ -1,4 +1,4 @@
-FROM archlinux:base-20231112.0.191179
+FROM archlinux:base-20250105.0.295102
 
 ARG TARGETARCH
 
@@ -58,9 +58,9 @@ ARG test
 # Test installed binaries for roles.
 #
 # Flags:
-#   -n: Check if the string has nonzero length.
+#   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
     export PATH="${HOME}/.deno/bin:${PATH}"; \
-    ./tests/integration/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+    tests/integration/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

@@ -24,33 +24,39 @@ env:
 jobs:
   docs:
     name: Build and publish documentation
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - name: Cache Node packages
-        uses: actions/cache@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
         with:
           path: |
             .cache
+            .venv
             node_modules
           key: >-
-            node-20_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
+          /usr/local/bin
       - name: Install Node interpreter
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - name: Install Node packages
-        run: |
-          node --version
-          npm --version
-          npm ci
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install development dependencies
+        run: just setup
       - name: Build documentation
-        run: npm run docs
+        run: just docs
       - name: Publish documentation
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ github.token }}
           publish_dir: site

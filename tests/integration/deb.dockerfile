@@ -1,4 +1,4 @@
-FROM debian:12.4 AS build
+FROM debian:12.8 AS build
 
 ARG version
 
@@ -13,13 +13,13 @@ COPY scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Debian package.
-RUN ./scripts/package.sh --version "${version?}" build deb
+RUN scripts/package.sh --version "${version?}" build deb
 
 FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM debian:12.4
+FROM debian:12.8
 
 ARG version
 

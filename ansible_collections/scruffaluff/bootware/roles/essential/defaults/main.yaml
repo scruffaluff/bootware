@@ -1,37 +1,71 @@
 ---
+bloatware_linux_packages_:
+  always: []
+  apk:
+    - command-not-found
+  apt:
+    - command-not-found
+  dnf:
+    - PackageKit-command-not-found
 essential_linux_packages_:
   always:
     - acl
     - bzip2
     - ca-certificates
+    - curl
     - findutils
-    - gnupg
     - gzip
-    - openssl
     - tar
     - unzip
-    - zip
   apk:
+    - 7zip
+    - gnupg
+    - openssl
     - openssl-dev
     - which
     - xz
+    - zip
   apt:
+    - 7zip
     - apt-file
     - apt-transport-https
+    - gnupg
     - lsb-release
+    - openssl
     - pbuilder
     - ubuntu-dev-tools
     - xz-utils
+    - zip
   dnf:
     - dnf-plugins-core
+    - gnupg
+    - openssl
+    - p7zip
+    - which
+    - xz
+    - zip
+  opkg:
     - which
     - xz
   pacman:
+    - gnupg
+    - openssl
+    - p7zip
     - which
     - xz
+    - zip
   zypper:
+    - gnupg
+    - libopenssl-devel
+    - openssl
+    - p7zip
+    - python3-dnf
     - which
     - xz
+    - zip
+bloatware_linux_packages: >-
+  {{ bloatware_linux_packages_.always +
+  bloatware_linux_packages_.get(ansible_pkg_mgr, []) }}
 essential_linux_packages: >-
   {{ essential_linux_packages_.always +
   essential_linux_packages_.get(ansible_pkg_mgr, []) }}

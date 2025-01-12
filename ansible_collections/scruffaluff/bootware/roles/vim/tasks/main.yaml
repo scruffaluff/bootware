@@ -1,0 +1,37 @@
+---
+- name: Install Vim for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: vim
+  when: ansible_system == "FreeBSD"
+
+- name: Install Vim for Linux
+  ansible.builtin.package:
+    name: vim
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Vim for MacOS
+  community.general.homebrew:
+    name: vim
+  when: ansible_system == "Darwin"
+
+- name: Install Vim for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: vim
+  when: ansible_system == "Win32NT"
+
+- name: Copy Vim settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.vimrc"
+    force: true
+    mode: "644"
+    src: vimrc
+  when: ansible_system != "Win32NT"
+
+- name: Copy Vim settings files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ ansible_env.HOME }}/_vimrc"
+    src: vimrc
+  when: ansible_system == "Win32NT"

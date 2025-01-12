@@ -1,4 +1,4 @@
-FROM archlinux:base-20231112.0.191179 AS build
+FROM archlinux:base-20250105.0.295102 AS build
 
 ARG version
 
@@ -22,13 +22,13 @@ COPY --chown="${USER}" scripts/ /bootware/scripts/
 WORKDIR /bootware
 
 # Build Arch package.
-RUN ./scripts/package.sh --version "${version?}" build alpm
+RUN scripts/package.sh --version "${version?}" build alpm
 
 FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM archlinux:base-20231112.0.191179
+FROM archlinux:base-20250105.0.295102
 
 ARG version
 

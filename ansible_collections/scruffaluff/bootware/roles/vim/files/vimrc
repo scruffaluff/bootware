@@ -1,0 +1,45 @@
+" Vim configuration file for text editing.
+"
+" For more information, visit https://vimhelp.org/usr_05.txt.html.
+
+" General settings.
+
+highlight linenr ctermbg=lightgrey
+set backspace=indent,eol,start " Make insert mode backspace always delete.
+set belloff=all " Disable error sounds.
+set hlsearch " Highlight all search results.
+set laststatus=2 " Always show the status line.
+set nohlsearch " Disable search highlights since they persist.
+set number " Show line numbers.
+set ruler " Show row and column rulers.
+set showmatch " Highlight matching braces.
+set statusline=\ %f\ %m%=%l:%c\ \ %{&fileformat}\ 
+set wildmenu " Enable tab completion menu in command prompt.
+
+" Enable syntax highlighting if supported.
+if has('syntax')
+    syntax enable
+endif
+
+" Cursor settings.
+
+set guicursor=a:ver100
+
+" Indentation settings.
+
+set autoindent " Auto-indent new lines.
+set expandtab
+set shiftwidth=4 " Number of auto-indent spaces.
+set smartindent " Enable smart-indent.
+set smarttab " Enable smart-tabs.
+set softtabstop=4 " Number of spaces per Tab.
+set tabstop=4
+
+" Keybinding settings.
+
+noremap ; l
+noremap l k
+noremap k j
+noremap j h
+vmap y ygv<Esc> " Yank text without moving cursor.
+

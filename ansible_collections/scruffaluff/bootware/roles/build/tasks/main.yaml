@@ -11,7 +11,6 @@
     name:
       - cmake
       - gcc
-      - gdb
       - gmake
       - llvm
       - openocd
@@ -23,15 +22,13 @@
       - clang
       - cmake
       - gcc
-      - gdb
       - lld
-      - lldb
       - llvm
       - make
       - openocd
       - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
@@ -46,11 +43,15 @@
       - openocd
   when: ansible_system == "Darwin"
 
-- name: Install OpenSSL development files for Suse
+- name: Install build tools for OpenWrt
+  ansible.builtin.package:
+    name:
+      - gcc
+      - make
+      - openocd
+      - pkg-config
   become: true
-  community.general.zypper:
-    name: libopenssl-devel
-  when: ansible_pkg_mgr == "zypper"
+  when: ansible_pkg_mgr == "opkg"
 
 - name: Install build tools with Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
@@ -62,30 +63,16 @@
 
 - name: Install build tools with Scoop for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name:
       - cmake
       - dotnet-sdk
-      - gdb
       - llvm
       - make
       - openocd
+      - pkg-config
       - vcredist2022
   when: ansible_system == "Win32NT"
-
-- name: Download GEF installer for Unix
-  ansible.builtin.get_url:
-    dest: /tmp/gef_install.sh
-    mode: "755"
-    url: https://gef.blah.cat/sh
-  when: ansible_system != "Win32NT"
-
-- name: Install GEF for Unix
-  ansible.builtin.command:
-    cmd: /tmp/gef_install.sh
-    creates: "{{ user_home }}/.gdbinit"
-  become: true
-  become_user: "{{ user_id }}"
-  when: ansible_system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

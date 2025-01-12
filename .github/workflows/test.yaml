@@ -53,18 +53,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/alpine.dockerfile
+          file: tests/integration/alpine.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:alpine
@@ -85,18 +85,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/arch.dockerfile
+          file: tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:arch
@@ -117,18 +117,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/debian.dockerfile
+          file: tests/integration/debian.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:debian
@@ -149,18 +149,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/fedora.dockerfile
+          file: tests/integration/fedora.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:fedora
@@ -180,22 +180,25 @@ jobs:
       ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Test installation, setup, and bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         uses: vmactions/freebsd-vm@v1
         with:
+          envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
             sudo freebsd-update fetch
             sudo freebsd-update install
             pkg install --yes curl
-          release: "14.0"
+          release: "14.1"
           run: |
             set -eou pipefail
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && ./tests/integration/roles.test.ts --arch amd64 freebsd'
+            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -210,39 +213,28 @@ jobs:
     name: Test bootstrapping software for MacOS
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'macos' }}
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Free disk space
+        run: rm -fr "${HOME}/Library/Android" "${HOME}/Library/Developer"
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Install Bootware
         run: |
           ./install.sh
           sudo cp bootware.sh $(which bootware)
-      # Brew installation causes ModuleNotFound ansible.plugins.filter errors.
-      - name: >-
-          Install Ansible with Python since Brew installation appears to be
-          broken
-        run: python3 -m pip install ansible
       - name: Install dependencies for Bootware
         run: bootware setup
-      # Github actions MacOS VM has issues where the first homebrew upgrade
-      # often fails with kmutil virtualization errors.
-      - name: Initialize Brew to avoid weird GitHub actions error
-        continue-on-error: true
-        run: bootware bootstrap --dev --no-passwd --tags update
-      # Bats is already installed with NPM and causes a conflict. Docker is not
-      # installable on the GitHub MacOS VM.
       - name: Test bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --skip bats,docker
-          --tags desktop,extras
-      # Ruby Tilt is already installed and the VM's shell is configured to point
-      # to the Ruby executable even after it is removed and another Tilt
-      # exectuable is installed.
+          bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
+      # Yazi hangs during startup on GitHub Arm64 MacOS runners.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.js --arch amd64 --skip bats,docker,tilt macos
+          node tests/integration/roles.test.cjs --arch arm64 --skip yazi macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -265,12 +257,12 @@ jobs:
           - rpm
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Test building package
-        run: ./scripts/package.sh test ${{ matrix.package }}
+        run: scripts/package.sh test ${{ matrix.package }}
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -288,18 +280,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/suse.dockerfile
+          file: tests/integration/suse.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:suse
@@ -320,18 +312,18 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
-      - name: Checkout code repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: test=true
           context: .
-          file: ./tests/integration/ubuntu.dockerfile
+          file: tests/integration/ubuntu.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:ubuntu
@@ -348,17 +340,19 @@ jobs:
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'windows' }}
     runs-on: windows-latest
     steps:
-      - name: Checkout code repository
-        uses: actions/checkout@v3
-      - uses: Vampire/setup-wsl@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: Vampire/setup-wsl@v3
         with:
-          distribution: Debian
+          # Setup WSL uses the version 11 for Debian which has an out of date
+          # version of Ansible.
+          distribution: Ubuntu-24.04
           set-as-default: "true"
       # Variable ${{ github.ref_name }} does not replace this step, since
       # ref_name will be name of the pull request instead of the branch.
       - name: Get current branch
         id: branch
-        uses: tj-actions/branch-names@v7
+        uses: tj-actions/branch-names@v8
       - name: Install Bootware
         run: |
           ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}
@@ -397,19 +391,23 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Scoop FFSend installer is broken as of 12/19/2023 due to hash checksum
-      # issues.
+      # Scoop FFSend installer fails as of 12/19/2023 since Windows Defender
+      # considers the program to be a virus. As of 09/08/2024, QEMU installer
+      # experiences timeout issues.
       - name: Test bootstrapping
+        env:
+          BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --no-setup --retries 3 --skip ffsend --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
-      # Appears to work on other Windows servers.
+      # Appears to work on other Windows servers. LLDB is already installed on
+      # Github hosted runner and is broken.
       - name: Test installed binaries for roles
         run: |
-          $Env:Path = "C:\Program Files\Datree;C:\Program Files\Kubeshark;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/integration/roles.test.js --arch amd64 --skip ffsend windows
+          $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;C:\Program Files\Kubeshark;C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
+          node tests/integration/roles.test.cjs --arch amd64 --skip ffsend,lldb,qemu,rust windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

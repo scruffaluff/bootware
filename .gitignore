@@ -13,6 +13,7 @@ __pycache__/
 .vitepress/dist/
 .vscode/
 *.bak
+*.log
 *.tar.gz
 /build/
 /docs/software.md
@@ -22,6 +23,7 @@ ansible_collections/*
 ansible_collections/scruffaluff/bootware/CHANGELOG.md
 ansible_collections/scruffaluff/bootware/README.md
 CHANGELOG.md
+deno.lock
 dist/
 node_modules/
 !ansible_collections/scruffaluff

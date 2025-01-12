@@ -39,15 +39,27 @@
 
 - name: Install Lsd for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lsd
   when: ansible_system == "Darwin"
 
 - name: Install Lsd for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: lsd
   when: ansible_system == "Win32NT"
+
+- name: Copy Ls colors file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ls_colors"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: ls_colors
+  become: true
+  when: ansible_system != "Win32NT"
 
 - name: Create Lsd configuration directory for Unix
   ansible.builtin.file:

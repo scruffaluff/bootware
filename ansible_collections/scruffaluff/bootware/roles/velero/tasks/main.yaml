@@ -1,11 +1,19 @@
 ---
+- name: Install Velero for Linux
+  ansible.builtin.package:
+    name: velero
+  become: true
+  ignore_errors: true
+  register: velero_linux
+  when: ansible_system == "Linux"
+
 - name: Get latest Velero version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/velero.json
   register: velero_formula
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Download Velero for Linux
   ansible.builtin.unarchive:
@@ -17,7 +25,7 @@
       velero_formula.json.versions.stable }}/velero-v{{
       velero_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Install Velero for Linux
   ansible.builtin.copy:
@@ -29,17 +37,18 @@
       /tmp/velero-v{{ velero_formula.json.versions.stable }}-linux-{{
       system_architecture }}/velero
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Install Velero for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: velero
   when: ansible_system == "Darwin"
 
 - name: Install Velero for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: velero
   when: ansible_system == "Win32NT"
 

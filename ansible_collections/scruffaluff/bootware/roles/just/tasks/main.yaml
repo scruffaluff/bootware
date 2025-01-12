@@ -14,13 +14,14 @@
     name: just
   when: ansible_system == "FreeBSD"
 
-- name: Install Just for Linux
-  ansible.builtin.package:
-    name: just
-  become: true
-  ignore_errors: true
-  register: just_linux
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+# TODO: Renable when Just package in most distributions reaches version 1.38.
+# - name: Install Just for Linux
+#   ansible.builtin.package:
+#     name: just
+#   become: true
+#   ignore_errors: true
+#   register: just_linux
+#   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Just version for Linux
   ansible.builtin.uri:
@@ -28,9 +29,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/just.json
   register: just_formula
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download Just for Linux
   ansible.builtin.unarchive:
@@ -42,9 +41,7 @@
       just_formula.json.versions.stable }}/just-{{
       just_formula.json.versions.stable }}-{{ just_arch
       }}-unknown-linux-musl.tar.gz
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Just for Linux
   ansible.builtin.copy:
@@ -54,19 +51,18 @@
     remote_src: true
     src: /tmp/just
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and just_linux is
-    failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Just for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: just
   when: ansible_system == "Darwin"
 
 - name: Install Just for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: just
   when: ansible_system == "Win32NT"
 
@@ -81,14 +77,24 @@
     - "{{ fish_completion }}"
   when: ansible_system != "Win32NT"
 
+- name: Generate Just shell completions for Unix
+  ansible.builtin.shell: just --completions {{ item }} > /tmp/just.{{ item }}
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  when: ansible_system != "Win32NT"
+
 - name: Install Just shell completions for Unix
-  ansible.builtin.get_url:
+  ansible.builtin.copy:
     dest: "{{ item.dest }}"
     force: true
     mode: "644"
-    url: >-
-      https://raw.githubusercontent.com/casey/just/master/completions/just.{{
-      item.shell }}
+    remote_src: true
+    src: /tmp/just.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/just"

@@ -81,7 +81,7 @@
     mode: "644"
     url: https://download.docker.com/linux/fedora/docker-ce.repo
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for Fedora
   ansible.builtin.dnf:
@@ -90,7 +90,7 @@
       - docker-ce
       - docker-ce-cli
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for FreeBSD
   become: true
@@ -110,11 +110,25 @@
     name: docker-desktop
   when: ansible_system == "Win32NT"
 
+- name: Check if service manager is available for Alpine
+  ansible.builtin.stat:
+    path: /sbin/service
+  register: docker_service
+  when: ansible_pkg_mgr == "apk"
+
 - name: Check if systemd is available for Linux
   ansible.builtin.stat:
     path: /usr/bin/systemctl
   register: docker_systemd
   when: ansible_system == "Linux"
+
+- name: Start Containerd on system boot for Alpine
+  ansible.builtin.service:
+    enabled: true
+    name: containerd
+    state: started
+  become: true
+  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Containerd on system boot for Linux
   ansible.builtin.systemd:
@@ -123,12 +137,29 @@
   become: true
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
+- name: Start Docker on system boot for Alpine
+  ansible.builtin.service:
+    enabled: true
+    name: docker
+    state: started
+  become: true
+  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
+
 - name: Start Docker on system boot for Linux
   ansible.builtin.systemd:
     enabled: true
     name: docker
   become: true
   when: ansible_system == "Linux" and docker_systemd.stat.exists
+
+- name: Add user to Docker group for Alpine
+  ansible.builtin.user:
+    append: true
+    groups:
+      - docker
+    name: "{{ user_id }}"
+  become: true
+  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:

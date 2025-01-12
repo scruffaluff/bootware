@@ -1,5 +1,5 @@
 ---
-- name: Get latest Krew version
+- name: Get latest Krew version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -31,7 +31,7 @@
 
 - name: Install Krew for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: krew
   when: ansible_system == "Darwin"

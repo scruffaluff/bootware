@@ -1,4 +1,16 @@
 ---
+- name: Install Shadow for Alpine
+  become: true
+  community.general.apk:
+    name: shadow
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Shadow for OpenWrt
+  become: true
+  community.general.opkg:
+    name: shadow-usermod
+  when: ansible_pkg_mgr == "opkg"
+
 - name: Install Fish for FreeBSD
   become: true
   community.general.pkgng:
@@ -13,10 +25,17 @@
 
 - name: Install Fish for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: fish
   when: ansible_system == "Darwin"
+
+- name: Register Fish as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ fish_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
 
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
@@ -49,7 +68,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Get installed Fish version
+- name: Get installed Fish version for Unix
   ansible.builtin.command: fish --version
   changed_when: false
   register: fish_version_text
@@ -76,28 +95,36 @@
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
-- name: Install Bass Bash compatibility utility for Unix
+- name: Install Fish plugins for Unix
   ansible.builtin.shell:
     cmd: |
       source {{ user_home }}/.config/fish/config.fish
-      fisher install edc/bass
+      fisher install {{ item }}
     executable: "{{ fish_executable }}"
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installing edc/bass' in fish_bass_install"
-  register: fish_bass_install
+  changed_when: "'Installing' in fish_plugin_install"
+  loop: "{{ fish_plugins }}"
+  register: fish_plugin_install
   when: >-
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
-# TODO: Solve issue where user's shell is not updated on Alpine Linux. For more
-# information, visit https://github.com/ansible/ansible/issues/61911.
+# User shell is not updated on Alpine Linux when using Ansible user module.
+# Workaround comes from https://github.com/ansible/ansible/issues/61911.
+- name: Change user default shell to Fish for Alpine
+  ansible.builtin.command:
+    cmd: chsh -s {{ fish_executable }} {{ user_id }}
+  become: true
+  changed_when: true
+  when: ansible_pkg_mgr == "apk"
+
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
     name: "{{ user_id }}"
     shell: "{{ fish_executable }}"
   become: true
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "apk"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

@@ -12,11 +12,11 @@ Function ReadIni($File) {
     $Data[$Section] = @{}
 
     Switch -Regex -File $File {
-        "^\[(.+)\]$" {
+        '^\[(.+)\]$' {
             $Section = $Matches[1].Trim()
             $Data[$Section] = @{}
         }
-        "^\s*([^#].+?)\s*=\s*(.*)" {
+        '^\s*([^#].+?)\s*=\s*(.*)' {
             $Name, $Value = $Matches[1..2]
 
             # Skip comments that start with semicolon.
@@ -31,15 +31,24 @@ Function ReadIni($File) {
 
 # Script entrypoint.
 Function DefaultProfile($Module) {
-    If (Test-Path "$HOME\scoop\persist\firefox\profile") {
-        $Paths = @("$HOME\scoop\persist\firefox\profile")
+    $User = $Module.Params.user
+    If ($User) {
+        $UserHome = "C:\Users\$User"
+    }
+    Else {
+        $UserHome = "$HOME"
+    }
+    $AppData = "$UserHome\AppData\Roaming"
+
+    If (Test-Path "$UserHome\scoop\persist\firefox\profile") {
+        $Paths = @("$UserHome\scoop\persist\firefox\profile")
     }
     Else {
         $Paths = @()
     }
-    $ProfilesPath = "$Env:APPDATA\Mozilla\Firefox\profiles.ini"
+    $ProfilesPath = "$AppData\Mozilla\Firefox\profiles.ini"
 
-    $Parser = $(ReadIni $ProfilesPath)
+    $Parser = ReadIni $ProfilesPath
     ForEach ($Section In $Parser.Keys) {
         $Keys = $Parser[$Section].Keys
         If (($Section -Like 'Profile*') -And ($Keys -Contains 'Path')) {
@@ -56,7 +65,7 @@ Function DefaultProfile($Module) {
             $Module.Result.paths += $Path
         }
         Else {
-            $Module.Result.paths += "$Env:APPDATA\Mozilla\Firefox\$Path"
+            $Module.Result.paths += "$AppData\Mozilla\Firefox\$Path"
         }
     }
     $Module.ExitJson()
@@ -67,11 +76,13 @@ Function DefaultProfile($Module) {
 If ($MyInvocation.InvocationName -NE '.') {
     # Variables Module and Spec need to be defined at the root of the script.
     $Spec = @{
-        options             = @{}
+        options             = @{
+            user = @{ default = ''; required = $False; type = 'str' }
+        }
         supports_check_mode = $true
     }
 
     $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
-    $Module = $(DefaultProfile $Module)
+    $Module = DefaultProfile $Module
     Write-Output $Module
 }

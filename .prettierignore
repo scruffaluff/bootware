@@ -3,10 +3,12 @@
 # For more information, visit https://prettier.io/docs/en/ignore.html.
 
 .git/
+.mypy_cache/
 .venv/
 .vitepress/cache/
 .vitepress/dist/
 *.bats
+*.log
 ansible_collections/*
 node_modules/
 package-lock.json

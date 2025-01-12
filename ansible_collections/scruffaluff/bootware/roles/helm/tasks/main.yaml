@@ -1,17 +1,25 @@
 ---
-- name: Get latest Helm version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/helm.json
-  register: helm_formula
-  when: ansible_system == "Linux"
-
 - name: Install Helm for FreeBSD
   become: true
   community.general.pkgng:
     name: helm
   when: ansible_system == "FreeBSD"
+
+- name: Install Helm for Linux
+  ansible.builtin.package:
+    name: helm
+  become: true
+  ignore_errors: true
+  register: helm_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Helm version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/helm.json
+  register: helm_formula
+  when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
@@ -21,7 +29,7 @@
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
       system_architecture }}.tar.gz
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Install Helm for Linux
   ansible.builtin.copy:
@@ -31,17 +39,18 @@
     remote_src: true
     src: /tmp/linux-{{ system_architecture }}/helm
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Install Helm for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helm
   when: ansible_system == "Darwin"
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: helm
   when: ansible_system == "Win32NT"
 
@@ -62,6 +71,8 @@
 - name: Install Helm plugins for Windows
   ansible.windows.win_command: "helm plugin install {{ item }}"
   changed_when: "'Installed plugin' in helm_plugin_install"
+  environment:
+    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
     helm_plugin_install.rc != 0 and 'plugin already exists' not in
     helm_plugin_install.stderr

@@ -41,10 +41,12 @@ formatter = { command = "prettier", args = ["--parser", "typescript"] }
 
 [[language]]
 name = "json"
+auto-format = true
 formatter = { command = "prettier", args = ["--parser", "json"] }
 
 [[language]]
 name = "html"
+auto-format = true
 formatter = { command = "prettier", args = ["--parser", "html"] }
 
 [[language]]
@@ -55,7 +57,12 @@ formatter = { command = "prettier", args = ["--parser", "markdown"] }
 [[language]]
 name = "python"
 auto-format = true
+formatter = { command = "black", args = ["-"] }
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
+
+[[language]]
+name = "starlark"
+file-types = ["bzl", "bazel", "star", { glob = "BUCK" }, { glob = "BUILD" }, { glob = "BUILD.*" }, { glob = "TARGETS" }, { glob = "Tiltfile" }, { glob = "WORKSPACE" }]
 
 [[language]]
 name = "typescript"

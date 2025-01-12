@@ -2,15 +2,20 @@
  * Run all Docker integration tests for an architecture.
  */
 
-const childProcess = require("child_process");
-const { Command } = require("commander");
+import childProcess from "node:child_process";
+import process from "node:process";
+import { Command } from "commander";
 
 function main(): void {
   const program = new Command();
   program
-    .option("-a, --arch <architecture>", "chip architecture", "amd64")
+    .option(
+      "-a, --arch <architecture>",
+      "Chip architecture",
+      process.arch === "x64" ? "amd64" : process.arch
+    )
     .option("-c, --cache", "Use Docker cache")
-    .option("-d, --distros <distributions...>", "Linux distributions list", [
+    .option("-d, --distro <distributions...>", "Linux distributions list", [
       "alpine",
       "arch",
       "collection",
@@ -19,8 +24,8 @@ function main(): void {
       "suse",
       "ubuntu",
     ])
-    .option("-s, --skip <roles...>", "Ansible roles to skip", null)
-    .option("-t, --tags <roles...>", "Ansible roles to keep", null)
+    .option("-s, --skip <roles...>", "Ansible roles to skip", "")
+    .option("-t, --tags <roles...>", "Ansible roles to keep", "")
     .parse();
   const config = program.opts();
 
@@ -32,7 +37,7 @@ function main(): void {
     args = args + ` --build-arg tags=${config.tags}`;
   }
 
-  for (const distro of config.distros) {
+  for (const distro of config.distro) {
     const command = `docker build ${
       config.cache ? "" : "--no-cache"
     } --file tests/integration/${distro}.dockerfile --tag docker.io/scruffaluff/bootware:${distro} --platform linux/${

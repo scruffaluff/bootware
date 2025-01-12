@@ -1,5 +1,5 @@
 ---
-- name: Get latest K3d version
+- name: Get latest K3d version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -20,12 +20,13 @@
 
 - name: Install K3d for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k3d
   when: ansible_system == "Darwin"
 
 - name: Install K3d for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: k3d
   when: ansible_system == "Win32NT"

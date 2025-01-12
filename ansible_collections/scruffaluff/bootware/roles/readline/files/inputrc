@@ -1,0 +1,60 @@
+# Readline configuration file.
+#
+# For more information, visit
+# https://tiswww.case.edu/php/chet/readline/readline.html#Readline-Init-File.
+
+# Disable bell sound.
+set bell-style none
+# Disable terminal driver bindings.
+set bind-tty-special-chars off
+# Ignore case during completions.
+set completion-ignore-case on
+# Show all options if there are multiple options.
+set show-all-if-ambiguous on
+# Show all options if a partial completion cannot be made.
+set show-all-if-unmodified on
+# Use symbols to distinguish completion options.
+set visible-stats on
+
+# Undefine keybindings.
+"\C-w":
+
+# Use common shell keybindings.
+"\C-a": beginning-of-line
+"\C-e": end-of-line
+"\C-k": kill-line
+"\C-l": clear-screen
+"\C-u": backward-kill-line
+"\ee": edit-and-execute-command
+"\ez": undo
+
+# Use Tab and Shift+Tab to cycle through completions.
+tab: menu-complete
+"\e[Z": menu-complete-backward
+
+# Add Vim like keybindings for line navigation.
+"\C-j": backward-char
+"": forward-char
+
+# Use Up and Down to search history for commands matching text before cursor.
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Use Shift+Left and Shift+Right to jump backwards and forwards.
+"\e[1;2D": backward-word
+"\e[1;2C": forward-word
+
+# Use Control+Left and Control+Right to jump backwards and forwards.
+"\e[1;5D": backward-word
+"\e[1;5C": forward-word
+
+# Use Control+D and Alt+D to delete words backwards and forwards
+"\C-d": backward-kill-word
+"\ed": kill-word
+
+# Use common Fish keybindings when in Bash.
+$if bash
+"\ef": "\C-e &| fzf"
+"\ep": "\C-e &| bat"
+"\es": "\C-asudo \C-e"
+$endif

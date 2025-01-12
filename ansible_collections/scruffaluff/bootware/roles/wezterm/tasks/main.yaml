@@ -6,10 +6,18 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install Wez's terminal for Linux
+  ansible.builtin.package:
+    name: wezterm
+  become: true
+  ignore_errors: true
+  register: wezterm_linux
+  when: ansible_system == "Linux"
+
+- name: Install Wez's terminal for Linux
   become: true
   community.general.flatpak:
     name: org.wezfurlong.wezterm
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and wezterm_linux is failed
 
 - name: Install Wez's terminal for MacOS
   community.general.homebrew_cask:
@@ -20,6 +28,7 @@
 
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: wezterm
   when: ansible_system == "Win32NT"
 

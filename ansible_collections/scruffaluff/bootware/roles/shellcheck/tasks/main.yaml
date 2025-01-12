@@ -21,13 +21,11 @@
       {{ 'ShellCheck' if ansible_pkg_mgr in ['dnf', 'zypper'] else 'shellcheck'
       }}
   become: true
-  when: >-
-    ansible_system == "Linux" and (ansible_pkg_mgr != "apk" or
-    system_architecture == "amd64")
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install ShellCheck for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: shellcheck
   when: ansible_system == "Darwin"

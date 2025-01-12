@@ -9,11 +9,11 @@
   ansible.builtin.package:
     name: bats
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install Bats for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: bats-core
   when: ansible_system == "Darwin"

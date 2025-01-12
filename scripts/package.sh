@@ -160,7 +160,14 @@ build() {
 checksum() {
   folder="$(dirname "${1}")"
   file="$(basename "${1}")"
-  (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
+
+  if [ -x "$(command -v shasum)" ]; then
+    (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
+  elif [ -x "$(command -v sha512sum)" ]; then
+    (cd "${folder}" && sha512sum "${file}" > "${file}.sha512")
+  else
+    error 'Unable to find a checksum command'
+  fi
 }
 
 #######################################
@@ -199,6 +206,17 @@ dist() {
       --file "tests/integration/${package}.dockerfile" \
       --output dist --target dist .
   done
+}
+
+#######################################
+# Print error message and exit script with error code.
+# Outputs:
+#   Writes error message to stderr.
+#######################################
+error() {
+  bold_red='\033[1;31m' default='\033[0m'
+  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  exit 1
 }
 
 #######################################
@@ -246,7 +264,7 @@ test() {
 # Script entrypoint.
 #######################################
 main() {
-  version='0.7.3'
+  version='0.8.3'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do

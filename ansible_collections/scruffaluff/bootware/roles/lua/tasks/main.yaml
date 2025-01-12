@@ -11,18 +11,20 @@
   become: true
   vars:
     lua_package:
+      apk: lua5.4
       apt: lua5.3
       zypper: lua53
   when: ansible_system == "Linux"
 
 - name: Install Lua for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lua
   when: ansible_system == "Darwin"
 
 - name: Install Lua for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: lua
   when: ansible_system == "Win32NT"

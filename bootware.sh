@@ -20,7 +20,7 @@ usage() {
   case "${1}" in
     bootstrap)
       cat 1>&2 << EOF
-Boostrap install computer software
+Boostrap install computer software.
 
 Usage: bootware bootstrap [OPTIONS]
 
@@ -57,7 +57,7 @@ EOF
       ;;
     config)
       cat 1>&2 << EOF
-Download default Bootware configuration file
+Download default Bootware configuration file.
 
 Usage: bootware config [OPTIONS]
 
@@ -70,7 +70,7 @@ EOF
       ;;
     main)
       cat 1>&2 << EOF
-Boostrapping software installer
+Boostrapping software installer.
 
 Usage: bootware [OPTIONS] [SUBCOMMAND]
 
@@ -88,20 +88,21 @@ Subcommands:
   update      Update Bootware to latest version
 
 Environment Variables:
-  BOOTWARE_CONFIG     Set the configuration file path
-  BOOTWARE_NOPASSWD   Assume passwordless doas or sudo
-  BOOTWARE_NOSETUP    Skip Ansible install and system setup
-  BOOTWARE_PLAYBOOK   Set Ansible playbook name
-  BOOTWARE_SKIP       Set skip tags for Ansible roles
-  BOOTWARE_TAGS       Set tags for Ansible roles
-  BOOTWARE_URL        Set location of Ansible repository
+  BOOTWARE_CONFIG         Set the configuration file path
+  BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
+  BOOTWARE_NOPASSWD       Assume passwordless doas or sudo
+  BOOTWARE_NOSETUP        Skip Ansible install and system setup
+  BOOTWARE_PLAYBOOK       Set Ansible playbook name
+  BOOTWARE_SKIP           Set skip tags for Ansible roles
+  BOOTWARE_TAGS           Set tags for Ansible roles
+  BOOTWARE_URL            Set location of Ansible repository
 
 See 'bootware <subcommand> --help' for more information on a specific command.
 EOF
       ;;
     roles)
       cat 1>&2 << EOF
-List all Bootware roles
+List all Bootware roles.
 
 Usage: bootware roles [OPTIONS]
 
@@ -113,7 +114,7 @@ EOF
       ;;
     setup)
       cat 1>&2 << EOF
-Install dependencies for Bootware
+Install dependencies for Bootware.
 
 Usage: bootware setup [OPTIONS]
 
@@ -123,7 +124,7 @@ EOF
       ;;
     uninstall)
       cat 1>&2 << EOF
-Remove Bootware files
+Remove Bootware files.
 
 Usage: bootware uninstall
 
@@ -133,7 +134,7 @@ EOF
       ;;
     update)
       cat 1>&2 << EOF
-Update Bootware to latest version
+Update Bootware to latest version.
 
 Usage: bootware update [OPTIONS]
 
@@ -158,7 +159,6 @@ EOF
 #   BOOTWARE_SKIP
 #   BOOTWARE_TAGS
 #   BOOTWARE_URL
-#   USER
 #######################################
 bootstrap() {
   # /dev/null is never a normal file.
@@ -194,7 +194,7 @@ bootstrap() {
   # Check if Ansible should ask for user password.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
     ask_passwd='true'
   fi
@@ -308,7 +308,7 @@ bootstrap() {
   # Check if Bootware setup should be run.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${no_setup:-}" ]]; then
     setup
   fi
@@ -316,7 +316,7 @@ bootstrap() {
   # Download repository if no playbook is selected.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ "${cmd}" == 'playbook' && -z "${playbook:-}" ]]; then
     # Do not use long form --dry-run flag. It is not supported on MacOS.
     tmp_dir="$(mktemp -u)"
@@ -327,7 +327,7 @@ bootstrap() {
   # Find task associated with start role.
   #
   # Flags:
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   if [[ -n "${start_role:-}" ]]; then
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
@@ -354,7 +354,7 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  if [[ -z "${become_method:-}" ]]; then
+  if [[ -z "${become_method:-}" && "${inventory}" == '127.0.0.1,' ]]; then
     become_method="$(find_super)"
   fi
 
@@ -366,7 +366,7 @@ bootstrap() {
     ${checkout:+--checkout "${checkout}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
-    --extra-vars "ansible_become_method=${become_method}" \
+    ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
@@ -430,7 +430,7 @@ config() {
   # Check if empty configuration file should be generated.
   #
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
     log "Writing empty configuration file to ${dst_file}"
     printf 'super_passwordless: false' > "${dst_file}"
@@ -503,7 +503,7 @@ error_usage() {
 find_config_path() {
   # Flags:
   #   -f: Check if file exists and is a regular file.
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   #   -v: Only show file path of command.
   if [[ -f "${1:-}" ]]; then
     RET_VAL="${1}"
@@ -596,7 +596,7 @@ install_yq() {
 #######################################
 log() {
   # Flags:
-  #   -z: Check if string has zero length.
+  #   -z: Check if the string is empty.
   if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
     echo "$@"
   fi
@@ -637,7 +637,7 @@ roles() {
   git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
 
   # Flags:
-  #   -n: Check if the string has nonzero length.
+  #   -n: Check if string is nonempty.
   if [[ -n "${tags:-}" ]]; then
     contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
     filter=".[0].tasks[] | select(.tags | (${contains}))"
@@ -1168,7 +1168,7 @@ update_completions() {
   local fish_url="${repo_url}/completions/bootware.fish"
 
   # Flags:
-  #   -z: Check if the string has zero length or is null.
+  #  -z: Check if the string is empty.
   if [[ -z "${2:-}" ]]; then
     if [[ "$(uname -m)" == 'arm64' ]]; then
       brew_prefix='/opt/homebrew'
@@ -1221,7 +1221,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.7.3'
+  echo 'Bootware 0.8.3'
 }
 
 #######################################

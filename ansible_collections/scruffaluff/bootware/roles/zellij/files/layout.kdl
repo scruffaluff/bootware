@@ -1,0 +1,14 @@
+// Layout file for Zellij.
+//
+// Forked from output of command `zellij setup --dump-layout compact`. For more
+// information, visit https://zellij.dev/documentation/creating-a-layout.
+
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:compact-bar"
+    }
+    pane
+    pane size=1 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}

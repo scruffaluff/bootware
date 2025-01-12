@@ -55,5 +55,6 @@
 
 - name: Install Balena Etcher for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: etcher
   when: ansible_system == "Win32NT"

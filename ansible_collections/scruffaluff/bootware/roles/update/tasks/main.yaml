@@ -28,11 +28,11 @@
     autoremove: true
     update_cache: true
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Update packages for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     update_homebrew: true
     upgrade_all: true

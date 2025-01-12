@@ -1,6 +1,6 @@
 # Docker configuration file for ignoring paths while collecting context.
 #
-# For more information, visit 
+# For more information, visit
 # https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/.
 
 .DS_Store
@@ -11,6 +11,7 @@
 .venv/
 *.bak
 *.dockerfile
+*.log
 ansible_collections/*
 node_modules/
 !ansible_collections/scruffaluff

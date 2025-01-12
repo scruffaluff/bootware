@@ -25,9 +25,20 @@
 
 - name: Install Tmux for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - tmate
       - tmux
   when: ansible_system == "Darwin"
+
+- name: Copy Tmux settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.tmux.conf"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: tmux.conf
+  become: true
+  when: ansible_system != "Win32NT"

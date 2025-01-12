@@ -1,15 +1,105 @@
 ---
+- name: Check if Less is installed for Linux
+  ansible.builtin.shell:
+    cmd: command -v less
+    executable: "{{ bash_executable }}"
+  become: true
+  changed_when: false
+  ignore_errors: true
+  register: bat_less_linux
+  when: ansible_system == "Linux"
+
+- name: Install Less for Linux
+  ansible.builtin.package:
+    name: less
+  become: true
+  when: ansible_system == "Linux" and bat_less_linux is failed
+
 - name: Install Bat for FreeBSD
   become: true
   community.general.pkgng:
-    name: bat
+    name:
+      - bat
+      - less
   when: ansible_system == "FreeBSD"
 
 - name: Install Bat for Linux
   ansible.builtin.package:
     name: bat
   become: true
+  ignore_errors: true
+  register: bat_linux
   when: ansible_system == "Linux"
+
+- name: Get latest Bat version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/bat.json
+  register: bat_formula
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
+
+- name: Download Bat for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/sharkdp/bat/releases/download/v{{
+      bat_formula.json.versions.stable }}/bat-v{{
+      bat_formula.json.versions.stable }}-{{ bat_arch }}-unknown-linux-{{
+      system_libc }}.tar.gz
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
+
+- name: Install Bat for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/bat
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
+      }}-unknown-linux-{{ system_libc }}/bat
+  become: true
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
+
+- name: Create shell completion directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
+
+- name: Install Bat shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
+      }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/bat"
+      shell: bash
+    - dest: "{{ fish_completion }}/bat.fish"
+      shell: fish
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
 
 # Debian Bat package installs Bat as command "batcat" since another package
 # installs the command "bat".
@@ -23,16 +113,57 @@
   become: true
   when: ansible_pkg_mgr == "apt"
 
+# Bat uses Less configuration for keybindings. MacOS default version of Less is
+# too old to support keybindings.
 - name: Install Bat for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
-    name: bat
+    name:
+      - bat
+      - less
   when: ansible_system == "Darwin"
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    name: bat
+    global: "{{ scoop_global }}"
+    name:
+      - bat
+      - less
+  when: ansible_system == "Win32NT"
+
+# VSCode remote terminals for MacOS automatically prepend folders to the system
+# path, which makes the /usr/bin/less appear before the /opt/homebrew/bin/less.
+# Luckily /usr/local/bin still appears before /usr/bin.
+- name: Make less command symlink for MacOS
+  ansible.builtin.file:
+    src: /opt/homebrew/bin/less
+    dest: /usr/local/bin/less
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  when: ansible_system == "Darwin" and ansible_architecture == "arm64"
+
+- name: Copy Less settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.lesskey"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: lesskey
+  become: true
+  when: ansible_system != "Win32NT"
+
+# On Windows Less configuration files start with "_" instead of ".". For more
+# information, visit https://linux.die.net/man/1/less.
+- name: Copy Less settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/_lesskey"
+    force: true
+    owner: "{{ user_id }}"
+    src: lesskey
   when: ansible_system == "Win32NT"
 
 - name: Create Bat settings directory for Unix
@@ -45,7 +176,7 @@
   become: true
   when: ansible_system != "Win32NT"
 
-- name: Create Bat settings file for Unix
+- name: Copy Bat settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/bat/config"
     force: true
@@ -63,7 +194,7 @@
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Create Bat settings file for Windows
+- name: Copy Bat settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/AppData/Roaming/bat/config"
     force: true

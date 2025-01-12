@@ -5,15 +5,24 @@
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
   {
+    "name": "android_studio",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }]
+  },
+  {
+    "name": "android_tools",
+    "skip": [{ "os": "openwrt" }, { "os": "suse" }],
+    "tests": ["adb --version"]
+  },
+  {
     "name": "audacity",
-    "skip": [{ "os": "freebsd" }],
     "tests": {
-      "linux": ["flatpak info org.audacityteam.Audacity"],
+      "freebsd": ["audacity --version"],
+      "linux": ["which audacity || flatpak info org.audacityteam.Audacity"],
       "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
       "windows": ["scoop prefix audacity"]
     }
   },
-  { "name": "audio" },
+  { "name": "audio", "tests": ["play --version"] },
   { "name": "awscli", "tests": ["aws --version"] },
   {
     "name": "bash",
@@ -23,11 +32,26 @@
   { "name": "bat", "tests": ["bat --version"] },
   {
     "name": "bats",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["bats --version"]
   },
   { "name": "beekeeper" },
+  {
+    "name": "bitwig",
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
+    "tests": {
+      "linux": ["flatpak info com.bitwig.BitwigStudio"],
+      "macos": [],
+      "windows": []
+    }
+  },
   { "name": "build" },
+  { "name": "bottom", "tests": ["btm --version"] },
+  {
+    "name": "bun",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }],
+    "tests": ["bun --version"]
+  },
   { "name": "caffeine" },
   {
     "name": "chrome",
@@ -44,24 +68,16 @@
   },
   { "name": "compass" },
   { "name": "croc", "tests": ["croc --version"] },
-  {
-    "name": "datree",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["datree version"]
-  },
   { "name": "dbeaver" },
   {
     "name": "deno",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "os": "openwrt" }],
     "tests": ["deno --version"]
   },
   { "name": "desktop_environment" },
+  { "name": "dive", "tests": ["dive --version"] },
   {
     "name": "dust",
-    "skip": [
-      { "arch": "arm64", "os": "debian" },
-      { "arch": "arm64", "os": "fedora" }
-    ],
     "tests": ["dust --version"]
   },
   { "name": "doctl", "tests": ["doctl version"] },
@@ -74,7 +90,7 @@
   { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["ffsend --version"]
   },
   {
@@ -102,13 +118,12 @@
   { "name": "font" },
   { "name": "fzf", "tests": ["fzf --version"] },
   {
-    "name": "gcloud",
-    "skip": [{ "arch": "arm64", "os": "fedora" }, { "os": "suse" }],
-    "tests": ["gcloud --version", "gsutil --version"]
+    "name": "gdb",
+    "skip": [{ "os": "macos" }],
+    "tests": ["gdb --version"]
   },
   {
     "name": "gdu",
-    "skip": [{ "os": "alpine" }],
     "tests": {
       "default": ["gdu --version"],
       "macos": ["gdu-go --version"]
@@ -123,13 +138,9 @@
     "skip": [{ "os": "freebsd" }],
     "tests": []
   },
-  {
-    "name": "gitlab_runner",
-    "tests": ["gitlab-runner --version"]
-  },
+  { "name": "gitlab_runner", "tests": ["gitlab-runner --version"] },
   { "name": "gitui", "tests": ["gitui --version"] },
-  { "name": "glow", "skip": [{ "os": "alpine" }], "tests": ["glow --version"] },
-  { "name": "go", "tests": ["go version"] },
+  { "name": "glow", "tests": ["glow --version"] },
   {
     "name": "hdf5",
     "skip": [{ "os": "alpine" }, { "os": "windows" }],
@@ -140,7 +151,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
-  { "name": "helix", "tests": ["hx --version"] },
+  { "name": "helix", "skip": [{ "os": "openwrt" }], "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
@@ -149,6 +160,7 @@
     "tests": ["htmlq --version"]
   },
   { "name": "hyperfine", "tests": ["hyperfine --version"] },
+  { "name": "ignore" },
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "just", "tests": ["just --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
@@ -162,7 +174,7 @@
     "name": "kdenlive",
     "tests": {
       "freebsd": [],
-      "linux": ["flatpak info org.kde.kdenlive"],
+      "linux": ["which kdenlive || flatpak info org.kde.kdenlive"],
       "macos": ["/Applications/kdenlive.app/Contents/MacOS/kdenlive --version"],
       "windows": ["scoop prefix kdenlive"]
     }
@@ -214,6 +226,7 @@
       "windows": ["virt-viewer --version"]
     }
   },
+  { "name": "lldb", "tests": ["lldb --version"] },
   { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",
@@ -224,10 +237,7 @@
     }
   },
   { "name": "mdbook", "tests": ["mdbook --version"] },
-  {
-    "name": "miniserve",
-    "tests": ["miniserve --version"]
-  },
+  { "name": "miniserve", "tests": ["miniserve --version"] },
   {
     "name": "mkcert",
     "skip": [{ "os": "freebsd" }],
@@ -238,10 +248,30 @@
     "skip": [{ "os": "alpine" }, { "os": "fedora" }, { "os": "freebsd" }],
     "tests": ["mongosh --version"]
   },
+  {
+    "name": "musescore",
+    "tests": {
+      "freebsd": ["mscore --version"],
+      "linux": ["which mscore || flatpak info org.musescore.MuseScore"],
+      "macos": [
+        "/Applications/MuseScore\\ 4.app/Contents/MacOS/mscore --version"
+      ],
+      "windows": ["scoop prefix musescore"]
+    }
+  },
   { "name": "node", "tests": ["node --version", "npm --version"] },
   { "name": "nushell", "tests": ["nu --version"] },
+  {
+    "name": "obs",
+    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "tests": {
+      "freebsd": ["obs --version"],
+      "linux": ["obs --version || flatpak info com.obsproject.Studio"],
+      "macos": ["/Applications/OBS.app/Contents/MacOS/OBS --version"],
+      "windows": ["scoop prefix obs-studio"]
+    }
+  },
   { "name": "package" },
-  { "name": "packer", "tests": ["packer --version"] },
   {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
@@ -252,10 +282,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["procs --version"]
   },
-  {
-    "name": "python",
-    "tests": ["pipx --version", "python --version"]
-  },
+  { "name": "python", "tests": ["pipx --version", "python --version"] },
   {
     "name": "qemu",
     "skip": [{ "arch": "arm64", "os": "suse" }],
@@ -266,10 +293,21 @@
         "qemu-system-riscv64 --version",
         "qemu-system-x86_64 --version"
       ],
+      "linux": [
+        "qemu-img --version",
+        "qemu-aarch64 --version",
+        "qemu-riscv64 --version",
+        "qemu-system-aarch64 --version",
+        "qemu-system-riscv64 --version",
+        "qemu-system-x86_64 --version",
+        "qemu-x86_64 --version"
+      ],
       "suse": [
         "qemu-img --version",
+        "qemu-aarch64 --version",
         "qemu-system-aarch64 --version",
-        "qemu-system-x86_64 --version"
+        "qemu-system-x86_64 --version",
+        "qemu-x86_64 --version"
       ]
     }
   },
@@ -279,14 +317,18 @@
     "tests": ["qsv --version"]
   },
   { "name": "rclone", "tests": ["rclone --version"] },
+  { "name": "readline" },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
-  { "name": "rust", "tests": ["rustc --version", "cargo --version"] },
+  {
+    "name": "rust",
+    "tests": ["cargo --version", "rustc --version", "rust-analyzer --version"]
+  },
   { "name": "scc", "tests": ["scc --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "windows" }],
+    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
     "tests": ["shellcheck --version"]
   },
   {
@@ -316,27 +358,30 @@
     }
   },
   { "name": "terraform", "tests": ["terraform --version"] },
-  { "name": "terragrunt", "tests": ["terragrunt --version"] },
   {
     "name": "tilt",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [{ "os": "freebsd" }],
     "tests": ["tilt version"]
   },
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
+  { "name": "topgrade", "tests": ["topgrade --version"] },
   { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
-  { "name": "vault", "tests": ["vault --version"] },
   {
     "name": "velero",
     "skip": [{ "os": "freebsd" }],
     "tests": ["velero help"]
   },
   {
+    "name": "vim",
+    "tests": ["vim --version"]
+  },
+  {
     "name": "vlc",
     "tests": {
       "default": ["vlc --version"],
-      "linux": ["flatpak info org.videolan.VLC"],
+      "linux": ["vlc --version || flatpak info org.videolan.VLC"],
       "windows": ["scoop prefix vlc"]
     }
   },
@@ -358,7 +403,7 @@
     "name": "wezterm",
     "tests": {
       "default": ["wezterm --version"],
-      "linux": ["flatpak info org.wezfurlong.wezterm"]
+      "linux": ["wezterm --version || flatpak info org.wezfurlong.wezterm"]
     }
   },
   { "name": "window_manager" },
@@ -367,10 +412,7 @@
     "skip": [{ "os": "macos" }],
     "tests": ["wireshark --version"]
   },
-  {
-    "name": "xh",
-    "tests": ["xh --version"]
-  },
+  { "name": "xh", "tests": ["xh --version"] },
   {
     "name": "yazi",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
@@ -381,5 +423,6 @@
     "name": "zellij",
     "skip": [{ "os": "windows" }],
     "tests": ["zellij --version"]
-  }
+  },
+  { "name": "zoxide", "tests": ["zoxide --version"] }
 ]

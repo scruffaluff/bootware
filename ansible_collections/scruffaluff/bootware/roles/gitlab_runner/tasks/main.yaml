@@ -13,27 +13,31 @@
 
 - name: Install GitLab Runner for Debian
   ansible.builtin.apt:
-    deb: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/deb/gitlab-runner_{{
-      system_architecture }}.deb
+    deb: "{{ item }}"
   become: true
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner-helper-images.deb
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner_{{
+      system_architecture }}.deb
   when: ansible_pkg_mgr == "apt"
 
 - name: Add GitLab GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
     key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-49F16C5CC3A0F81F.pub.gpg
   become: true
-  when: ansible_pkg_mgr in ["dnf", "zypper"]
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
     # GitLab GPG key is frequently mismatched with GitLab runner package.
     disable_gpg_check: true
-    name: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
-      system_architecture }}.rpm
+    name: "{{ item }}"
   become: true
-  when: ansible_pkg_mgr == "dnf"
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
+      system_architecture }}.rpm
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install GitLab Runner for FreeBSD
   become: true
@@ -43,7 +47,7 @@
 
 - name: Install GitLab Runner for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitlab-runner
   when: ansible_system == "Darwin"
@@ -51,13 +55,16 @@
 - name: Install GitLab Runner for Suse
   become: true
   community.general.zypper:
-    name: >-
-      https://gitlab-runner-downloads.s3.amazonaws.com/latest/rpm/gitlab-runner_{{
+    name: "{{ item }}"
+  loop:
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
+    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm
   when: ansible_pkg_mgr == "zypper"
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: gitlab-runner
   when: ansible_system == "Win32NT"
 
@@ -118,7 +125,7 @@
   register: gitlab_runner_sudo_available
   when: ansible_system != "Win32NT"
 
-- name: Enable GitHub runner passwordless sudo for Unix
+- name: Enable GitHub Runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for gitlab-runner user.

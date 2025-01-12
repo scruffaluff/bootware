@@ -47,6 +47,21 @@
         - desktop
         - terminal
 
+    - name: Install Android Studio
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.android_studio
+      tags:
+        - android_studio
+        - never
+
+    - name: Install Android platform tools
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.android_tools
+      tags:
+        - android_tools
+        - extras
+        - never
+
     - name: Install AppImage dependencies
       ansible.builtin.import_role:
         name: scruffaluff.bootware.appimage
@@ -60,6 +75,7 @@
       tags:
         - audacity
         - desktop
+        - music
 
     - name: Install audio tools
       ansible.builtin.import_role:
@@ -67,6 +83,7 @@
       tags:
         - audio
         - desktop
+        - music
 
     - name: Install Amazon Web Services development tools
       ansible.builtin.import_role:
@@ -123,6 +140,14 @@
         - database
         - desktop
 
+    - name: Install Bitwig Studio audio workstation
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bitwig
+      tags:
+        - bitwig
+        - desktop
+        - music
+
     - name: Install build tools
       ansible.builtin.import_role:
         name: scruffaluff.bootware.build
@@ -132,6 +157,26 @@
         - desktop
         - server
         - wsl
+
+    - name: Install Bottom process monitor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bottom
+      tags:
+        - bottom
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+
+    - name: Install Bun JavaScript and TypeScript runtime
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.bun
+      tags:
+        - bun
+        - extras
+        - language
+        - never
 
     - name: Install Caffeine
       ansible.builtin.import_role:
@@ -154,7 +199,8 @@
       tags:
         - compass
         - database
-        - desktop
+        - extras
+        - never
 
     - name: Install Croc secure file transfer
       ansible.builtin.import_role:
@@ -165,15 +211,6 @@
         - desktop
         - server
         - wsl
-
-    - name: Install Datree Kubernetes linter
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.datree
-      tags:
-        - datree
-        - extras
-        - kubernetes
-        - never
 
     - name: Install DBeaver database client
       ansible.builtin.import_role:
@@ -209,7 +246,6 @@
       tags:
         - desktop
         - docker
-        - server
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -219,6 +255,16 @@
         - container
         - desktop
         - doctl
+        - server
+        - wsl
+
+    - name: Install Dive container image explorer
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.dive
+      tags:
+        - container
+        - desktop
+        - dive
         - server
         - wsl
 
@@ -328,14 +374,16 @@
         - sysadmin
         - wsl
 
-    - name: Install Google Cloud Platform development tools
+    - name: Install GDB debugger
       ansible.builtin.import_role:
-        name: scruffaluff.bootware.gcloud
+        name: scruffaluff.bootware.gdb
       tags:
-        - cloud
-        - extras
-        - gcloud
-        - never
+        - container
+        - debug
+        - desktop
+        - gdb
+        - server
+        - wsl
 
     - name: Install GDU disk space analyzer
       ansible.builtin.import_role:
@@ -356,11 +404,10 @@
         - desktop
         - git
         - server
-        - sysadmin
         - vcs
         - wsl
 
-    - name: Install GitHub runner
+    - name: Install GitHub Runner
       ansible.builtin.import_role:
         name: scruffaluff.bootware.github_runner
       tags:
@@ -384,7 +431,6 @@
         - desktop
         - gitui
         - server
-        - sysadmin
         - vcs
         - wsl
 
@@ -398,15 +444,6 @@
         - server
         - sysadmin
         - wsl
-
-    - name: Install Go language
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.go
-      tags:
-        - extras
-        - go
-        - language
-        - never
 
     - name: Install Hadolint linter
       ansible.builtin.import_role:
@@ -478,6 +515,17 @@
         - server
         - wsl
 
+    - name: Install ignore file
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.ignore
+      tags:
+        - container
+        - desktop
+        - ignore
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Jq JSON parser
       ansible.builtin.import_role:
         name: scruffaluff.bootware.jq
@@ -535,6 +583,7 @@
       tags:
         - desktop
         - kdenlive
+        - video
 
     - name: Install Kind Kubernetes development cluster manager
       ansible.builtin.import_role:
@@ -592,6 +641,17 @@
         - libvirt
         - never
         - vm
+
+    - name: Install LLDB debugger
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.lldb
+      tags:
+        - container
+        - debug
+        - desktop
+        - lldb
+        - server
+        - wsl
 
     - name: Install Lsd file lister
       ansible.builtin.import_role:
@@ -657,6 +717,14 @@
         - server
         - wsl
 
+    - name: Install MuseScore music notater
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.musescore
+      tags:
+        - desktop
+        - musescore
+        - music
+
     - name: Install Node JavaScript runtime
       ansible.builtin.import_role:
         name: scruffaluff.bootware.node
@@ -676,6 +744,14 @@
         - never
         - nushell
 
+    - name: Install OBS Studio video recorder
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.obs
+      tags:
+        - desktop
+        - obs
+        - video
+
     - name: Install optional packages
       ansible.builtin.import_role:
         name: scruffaluff.bootware.package
@@ -686,15 +762,6 @@
         - server
         - wsl
 
-    - name: Install Packer image generator
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.packer
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - packer
-
     - name: Install PowerShell shell
       ansible.builtin.import_role:
         name: scruffaluff.bootware.powershell
@@ -704,6 +771,7 @@
         - powershell
         - server
         - shell
+        - sysadmin
 
     - name: Install Procs process viewer
       ansible.builtin.import_role:
@@ -755,6 +823,17 @@
         - never
         - rclone
 
+    - name: Install Readline configuration
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.readline
+      tags:
+        - container
+        - desktop
+        - readline
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Restic backup tool
       ansible.builtin.import_role:
         name: scruffaluff.bootware.restic
@@ -796,7 +875,6 @@
         - desktop
         - scc
         - server
-        - sysadmin
         - wsl
 
     - name: Install SD find and replace tool
@@ -826,7 +904,6 @@
         - server
         - shell
         - shellcheck
-        - sysadmin
         - wsl
 
     - name: Install Shfmt shell formatter
@@ -838,7 +915,6 @@
         - server
         - shell
         - shfmt
-        - sysadmin
         - wsl
 
     - name: Install Sonic Pi music coding environment
@@ -846,6 +922,7 @@
         name: scruffaluff.bootware.sonic_pi
       tags:
         - desktop
+        - music
         - sonic_pi
 
     - name: Install Sops secrets editor
@@ -907,19 +984,9 @@
       tags:
         - container
         - desktop
-        - hashicorp
         - server
         - terraform
         - wsl
-
-    - name: Install Terragrunt Terraform manager
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.terragrunt
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - terragrunt
 
     - name: Install Tilt Kubernetes development suite
       ansible.builtin.import_role:
@@ -950,6 +1017,17 @@
         - never
         - tmux
 
+    - name: Install Topgrade package updater
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.topgrade
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - topgrade
+        - wsl
+
     - name: Install USQL
       ansible.builtin.import_role:
         name: scruffaluff.bootware.usql
@@ -972,16 +1050,6 @@
         - utility
         - wsl
 
-    - name: Install Vault secrets manager
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.vault
-      tags:
-        - extras
-        - hashicorp
-        - never
-        - secrets
-        - vault
-
     - name: Install Velero backup manager for Kubernetes
       ansible.builtin.import_role:
         name: scruffaluff.bootware.velero
@@ -990,6 +1058,14 @@
         - kubernetes
         - never
         - velero
+
+    - name: Install Vim text editor
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.vim
+      tags:
+        - extras
+        - never
+        - vim
 
     - name: Install VLC video player
       ansible.builtin.import_role:
@@ -1096,3 +1172,14 @@
         - terminal
         - wsl
         - zellij
+
+    - name: Install Zoxide directory jumper
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.zoxide
+      tags:
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+        - zoxide

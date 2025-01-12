@@ -1,4 +1,4 @@
-FROM homebrew/brew:4.1.25 AS build
+FROM homebrew/brew:4.4.15 AS build
 
 ARG version
 
@@ -16,13 +16,13 @@ WORKDIR /bootware
 RUN sudo mkdir -p -m 777 dist
 
 # Build Debian package.
-RUN ./scripts/package.sh --version "${version?}" build brew
+RUN scripts/package.sh --version "${version?}" build brew
 
 FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM homebrew/brew:4.1.25
+FROM homebrew/brew:4.4.15
 
 ARG version
 

@@ -1,0 +1,12 @@
+# Python debugger settings file.
+#
+# For more information, visit https://docs.python.org/3/library/pdb.html.
+
+
+# Load interactive functions from pdbrc module.
+import os, pdb, sys
+sys.path.append(os.path.expanduser("~/.config"))
+import pdbrc
+pdbrc.setup(pdb.Pdb)
+_ = sys.path.pop()
+del _, os, pdb, pdbrc, sys

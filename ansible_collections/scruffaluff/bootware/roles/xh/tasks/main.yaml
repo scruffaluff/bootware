@@ -1,17 +1,25 @@
 ---
-- name: Get latest Xh version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/xh.json
-  register: xh_formula
-  when: ansible_system == "Linux"
-
 - name: Install Xh for FreeBSD
   become: true
   community.general.pkgng:
     name: xh
   when: ansible_system == "FreeBSD"
+
+- name: Install Xh for Linux
+  ansible.builtin.package:
+    name: xh
+  become: true
+  ignore_errors: true
+  register: xh_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Xh version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/xh.json
+  register: xh_formula
+  when: ansible_system == "Linux" and xh_linux is failed
 
 - name: Download Xh for Linux
   ansible.builtin.unarchive:
@@ -22,7 +30,7 @@
       https://github.com/ducaale/xh/releases/download/v{{
       xh_formula.json.versions.stable }}/xh-v{{ xh_formula.json.versions.stable
       }}-{{ xh_arch }}-unknown-linux-musl.tar.gz
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and xh_linux is failed
 
 - name: Install Xh for Linux
   ansible.builtin.copy:
@@ -34,16 +42,45 @@
       /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
       }}-unknown-linux-musl/xh
   become: true
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and xh_linux is failed
 
 - name: Install Xh for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: xh
   when: ansible_system == "Darwin"
 
 - name: Install Xh for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: xh
   when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  when: ansible_system == "Linux" and xh_linux is failed
+
+- name: Install Xh shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
+      }}-unknown-linux-musl/completions/xh.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/xh"
+      shell: bash
+    - dest: "{{ fish_completion }}/xh.fish"
+      shell: fish
+  when: ansible_system == "Linux" and xh_linux is failed

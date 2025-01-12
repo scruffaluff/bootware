@@ -1,12 +1,4 @@
 ---
-- name: Get latest Termshark version
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/termshark.json
-  register: termshark_formula
-  when: ansible_system == "Linux"
-
 - name: Install Termshark for FreeBSD
   become: true
   community.general.pkgng:
@@ -22,8 +14,17 @@
       apk: tshark
       apt: tshark
       dnf: wireshark-cli
+      dnf5: wireshark-cli
       pacman: wireshark-cli
       zypper: wireshark
+  when: ansible_system == "Linux"
+
+- name: Get latest Termshark version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/termshark.json
+  register: termshark_formula
   when: ansible_system == "Linux"
 
 - name: Download Termshark for Linux
@@ -53,13 +54,14 @@
 # Do not install the Wireshark formula. It conflicts with the Wireshark cask.
 - name: Install Termshark for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: termshark
   when: ansible_system == "Darwin"
 
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: termshark
   when: ansible_system == "Win32NT"
 

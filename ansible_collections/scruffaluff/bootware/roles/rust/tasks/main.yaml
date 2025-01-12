@@ -13,52 +13,81 @@
     name: rust-analyzer
   when: ansible_system == "FreeBSD"
 
-- name: Download Rust Analyzer for Alpine
-  ansible.builtin.get_url:
-    dest: /tmp/rust-analyzer.gz
-    mode: "755"
-    url: >-
-      https://github.com/rust-lang/rust-analyzer/releases/download/2022-08-29/rust-analyzer-x86_64-unknown-linux-musl.gz
-  when: ansible_pkg_mgr == "apk" and ansible_system == "x86_64"
-
 - name: Download Rust Analyzer for Linux
   ansible.builtin.get_url:
     dest: /tmp/rust-analyzer.gz
     mode: "755"
     url: >-
       https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
-      rust_analyzer_arch[system_architecture] }}-unknown-linux-gnu.gz
+      rust_analyzer_arch[system_architecture] }}-unknown-linux-{{ system_libc
+      }}.gz
   vars:
     rust_analyzer_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64")
 
 - name: Decompress Rust Analyzer for Linux
   ansible.builtin.command:
-    cmd: gunzip --force /tmp/rust-analyzer.gz
-  become: true
+    cmd: gzip --decompress --force /tmp/rust-analyzer.gz
   changed_when: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
+    == "apk" and system_architecture == "amd64")
+
+- name: Create user bin directory for Linux
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.local/bin"
+    state: directory
+  become: true
+  when: >-
+    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
+    == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/rust-analyzer
+    dest: "{{ user_home }}/.local/bin/rust-analyzer"
     force: true
+    group: "{{ group_id }}"
     mode: "755"
+    owner: "{{ user_id }}"
     remote_src: true
     src: /tmp/rust-analyzer
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: >-
+    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
+    == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: rust-analyzer
   when: ansible_system == "Darwin"
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: rust-analyzer
+  when: ansible_system == "Win32NT"
+
+# The default Rust Analyzer installed by Rustup doesn't work and complains.
+# According to https://github.com/rust-lang/rust-analyzer/issues/14776, the
+# default Rust Analyzer is often out of date.
+- name: Remove default Rust Analyzer for Unix
+  ansible.builtin.file:
+    path: "{{ user_home }}/.cargo/bin/rust-analyzer"
+    state: absent
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Remove default Rust Analyzer for Windows
+  ansible.windows.win_file:
+    path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/rust-analyzer.exe"
+    state: absent
   when: ansible_system == "Win32NT"

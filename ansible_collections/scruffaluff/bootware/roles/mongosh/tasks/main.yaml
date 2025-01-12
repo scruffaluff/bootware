@@ -7,14 +7,6 @@
   register: mongosh_formula_linux
   when: ansible_system == "Linux"
 
-- name: Get latest Mongo Shell version for Windows
-  ansible.windows.win_uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/mongosh.json
-  register: mongosh_formula_windows
-  when: ansible_system == "Win32NT"
-
 # TODO: Add back support for DNF when Mongosh works with newer OpenSSL versions.
 #
 # As of 10/3/2023, Mongosh is not compatible with Fedora 38's OpenSSL version.
@@ -28,7 +20,8 @@
     src: >-
       https://downloads.mongodb.com/compass/mongosh-{{
       mongosh_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch }}.tgz
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
 
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
@@ -40,14 +33,23 @@
       /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
       mongosh_arch }}/bin/mongosh
   become: true
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf"]
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
 
 - name: Install Mongo Shell for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: mongosh
   when: ansible_system == "Darwin"
+
+- name: Get latest Mongo Shell version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/mongosh.json
+  register: mongosh_formula_windows
+  when: ansible_system == "Win32NT"
 
 - name: Install Mongo Shell for Windows
   ansible.windows.win_package:

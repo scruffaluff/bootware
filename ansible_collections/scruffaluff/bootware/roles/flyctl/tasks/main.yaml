@@ -1,5 +1,5 @@
 ---
-- name: Get latest Flyctl version
+- name: Get latest Flyctl version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -35,13 +35,14 @@
 
 - name: Install Flyctl for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: flyctl
   when: ansible_system == "Darwin"
 
 - name: Install Flyctl for Windows
   community.windows.win_scoop:
+    global: "{{ scoop_global }}"
     name: flyctl
   when: ansible_system == "Win32NT"
 
@@ -56,7 +57,7 @@
     - "{{ fish_completion }}"
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Flyctl shell completions for Unix
+- name: Create Flyctl shell completions for Unix
   ansible.builtin.shell:
     cmd: flyctl completion {{ item }} > /tmp/flyctl.{{ item }}
   become: true

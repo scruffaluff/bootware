@@ -1,0 +1,361 @@
+# Bash settings file for non-login shells.
+# shellcheck disable=SC1090,SC1091 shell=bash
+#
+# For more information, visit
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
+
+# Public convenience interactive functions.
+
+# Override system implementation of command not found.
+#
+# Some system implementations will perform a long lookup to see if a package
+# provides the command.
+command_not_found_handle() {
+  echo "Error: command '${1}' not found" >&2
+}
+
+# Public convenience script functions.
+
+# Prepend existing directories that are not in the system path.
+#
+# Flags:
+#   -d: Check if path is a directory.
+prepend_paths() {
+  local inode
+  for inode in "$@"; do
+    # Variable in regex is quoted to perform an exact substring match.
+    # shellcheck disable=SC2076
+    if [[ -d "${inode}" && ! "${PATH}" =~ ":${inode}:" ]]; then
+      export PATH="${inode}:${PATH}"
+    fi
+  done
+}
+
+# Source shell files if they exist.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+source_files() {
+  local inode
+  for inode in "$@"; do
+    if [[ -f "${inode}" ]]; then
+      source "${inode}"
+    fi
+  done
+}
+
+# Private convenience variables.
+#
+# Do not use long form flags for uname. They are not supported on MacOS. Command
+# "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
+# and running under an Rosetta 2 emulated terminal.
+#
+# Flags:
+#   -d: Check if path is a directory.
+#   -s: Show operating system kernel name.
+if [[ -d '/opt/homebrew' ]]; then
+  _brew_prefix='/opt/homebrew'
+else
+  _brew_prefix='/usr/local'
+fi
+_os="$(uname -s)"
+_tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
+
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf='rm -fr'
+# Make rsync use human friendly output.
+alias rsync='rsync --partial --progress --filter ":- .gitignore"'
+# Disable MacOS default shell is now Zsh message. Value must be 1.
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+#   -n: Check if string is nonempty.
+if [[ -n "${_tty}" && -f "${HOME}/.ls_colors" ]]; then
+  # shellcheck disable=SC2155
+  export LS_COLORS="$(cat "${HOME}/.ls_colors")"
+fi
+
+# Add directories to system path that are not always included.
+#
+# Homebrew ARM directories should appear in system path before AMD directories
+# since some ARM systems might have slower emulated AMD copies of programs.
+prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
+  '/opt/homebrew/bin' "${HOME}/.local/bin"
+
+# Configure keybindings and completions for interactive shells.
+#
+# Custom Bash keybindings are loaded from ~/.inputrc with readline.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+if [[ -n "${_tty}" ]]; then
+  # Load Bash completion.
+  if [[ "${_os}" == 'Darwin' ]]; then
+    source_files "${_brew_prefix}/etc/profile.d/bash_completion.sh"
+  elif [[ "${_os}" == 'FreeBSD' ]]; then
+    source_files '/usr/local/share/bash-completion/bash_completion'
+  else
+    source_files '/usr/share/bash-completion/bash_completion'
+  fi
+fi
+
+# Add unified clipboard aliases.
+#
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -n "${_tty}" ]]; then
+  if [[ "${_os}" == 'Darwin' ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | pbcopy
+    }
+    alias cbpaste='pbpaste'
+  elif [[ -x "$(command -v wl-copy)" ]]; then
+    cbcopy() {
+      echo -n "$(cat)" | wl-copy
+    }
+    alias cbpaste='wl-paste'
+  fi
+fi
+
+# Bat settings.
+
+# Set default pager to Bat.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v bat)" ]]; then
+  export PAGER='bat'
+fi
+
+# Docker settings.
+
+# Ensure newer Docker features are enabled.
+export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
+  DOCKER_CLI_HINTS='false'
+
+# FFmpeg settings.
+
+# Disable verbose FFmpeg banners.
+alias ffmpeg='ffmpeg -hide_banner'
+alias ffplay='ffplay -hide_banner'
+alias ffprobe='ffprobe -hide_banner'
+
+# Fzf settings.
+
+# Add path preview to Fzf file finder.
+#
+# Flags:
+#   -d: Check if path is a directory.
+_fzf_path_preview() {
+  if [[ -d "${1}" ]]; then
+    lsd --tree --depth 1 "${1}"
+  else
+    bat --color always --line-range :100 --style numbers "${1}"
+  fi
+}
+
+# Disable Fzf Alt-C command.
+export FZF_ALT_C_COMMAND=''
+# Set Fzf solarized light theme.
+_fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+_fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
+
+# Load Fzf keybindings if available.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -r: Remove keybinding.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
+  eval "$(fzf --bash)"
+  if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
+    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
+  fi
+
+  # Change Fzf file search keybinding to Ctrl+F.
+  bind -r "\C-t"
+  bind -r "\ec"
+  bind -x '"\C-f": fzf-file-widget'
+fi
+
+# Helix settings.
+
+# Set full color support for terminal and default editor to Helix.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v hx)" ]]; then
+  export EDITOR='hx'
+fi
+
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+export HOMEBREW_NO_ENV_HINTS='true'
+
+# Just settings.
+
+# Add alias for account wide Just recipes.
+# shellcheck disable=SC2139
+alias jt="just --justfile ${HOME}/.justfile --working-directory ."
+
+# Kubernetes settings.
+
+# Add Kubectl plugins to system path.
+prepend_paths "${HOME}/.krew/bin"
+
+# Lsd settings.
+
+# Replace Ls with Lsd if avialable.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v lsd)" ]]; then
+  alias ls='lsd'
+fi
+
+# Procs settings.
+
+# Set light theme since Procs automatic theming fails on some systems.
+alias procs='procs --theme light'
+
+# Python settings.
+
+# Add Python debugger alias.
+alias pdb='python3 -m pdb'
+
+# Make Poetry create virutal environments inside projects.
+export POETRY_VIRTUALENVS_IN_PROJECT='true'
+# Fix Poetry package install issue on headless systems.
+export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
+
+# Make numerical compute libraries findable for MacOS.
+if [[ "${_os}" == 'Darwin' ]]; then
+  export OPENBLAS="${_brew_prefix}/opt/openblas"
+  prepend_paths "${OPENBLAS}"
+fi
+
+# Add Pyenv binaries to system path.
+export PYENV_ROOT="${HOME}/.pyenv"
+prepend_paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
+
+# Initialize Pyenv if available.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -x "$(command -v pyenv)" ]]; then
+  eval "$(pyenv init -)"
+  if [[ -n "${_tty}" ]]; then
+    source "$(pyenv root)/completions/pyenv.bash"
+  fi
+fi
+
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+export RIPGREP_CONFIG_PATH="${HOME}/.ripgreprc"
+
+# Rust settings.
+
+# Add Rust debugger aliases.
+alias rgd='rust-gdb --quiet'
+alias rld='rust-lldb --source-quietly'
+
+# Add Rust binaries to system path.
+prepend_paths "${HOME}/.cargo/bin"
+
+# Starship settings.
+
+# Disable Starship warnings about command timeouts.
+export STARSHIP_LOG='error'
+
+# Initialize Starship if available.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -n "${_tty}" ]]; then
+  if [[ -x "$(command -v starship)" ]]; then
+    eval "$(starship init bash)"
+  else
+    PS1="\n\u at \h in \w\n❯ "
+  fi
+fi
+
+# TypeScript settings.
+
+# Add Bun binaries to system path.
+export BUN_INSTALL="${HOME}/.bun"
+prepend_paths "${BUN_INSTALL}/bin"
+
+# Add Deno binaries to system path.
+prepend_paths "${HOME}/.deno/bin"
+
+# Add NPM global binaries to system path.
+prepend_paths "${HOME}/.npm-global/bin"
+
+# Initialize Node Version Manager if available.
+#
+# Flags:
+#   -n: Check if the string has nonzero length.
+export NVM_DIR="${HOME}/.nvm"
+source_files "${NVM_DIR}/nvm.sh"
+if [[ -n "${_tty}" ]]; then
+  source_files "${NVM_DIR}/bash_completion"
+fi
+
+# Visual Studio Code settings.
+
+# Add Visual Studio Code binaries to system path for Linux.
+prepend_paths '/usr/share/code/bin'
+
+# Wasmtime settings.
+
+# Add Wasmtime binaries to system path.
+export WASMTIME_HOME="${HOME}/.wasmtime"
+prepend_paths "${WASMTIME_HOME}/bin"
+
+# Yazi settings.
+
+# Yazi wrapper to change directory on program exit.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+yz() {
+  local cwd='' tmp=''
+  tmp="$(mktemp)"
+  yazi --cwd-file "${tmp}" "$@"
+  cwd="$(cat "${tmp}")"
+  if [[ -n "${cwd}" && "${cwd}" != "${PWD}" ]]; then
+    # shellcheck disable=SC2164
+    cd "${cwd}"
+  fi
+  rm "${tmp}"
+}
+
+# User settings.
+
+# Load user aliases, secrets, and variables.
+source_files "${HOME}/.env" "${HOME}/.secrets" "${HOME}/.env.bash" \
+  "${HOME}/.secrets.bash"

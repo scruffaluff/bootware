@@ -9,19 +9,118 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Support for Yazi 0.4.
+
+### Changed
+
+- Node version manager back to NVM.
+- Roles to prefer system packages over Flatpaks.
+- Yazi theme.
+
+### Fixed
+
+- GitLab runner installation.
+- PDB error handling.
+
+### Removed
+
+- Datree role.
+
+## 0.8.3 - 2024-12-05
+
+### Added
+
+- Android Studio and Ignore role.
+- More custom VSCode keybindings.
+- Support for Dnf5.
+- Yazi plugins.
+
+### Changed
+
+- Node role to depend on FNM instead of NVM.
+
+### Fixed
+
+- Browser Lite extension settings for VSCode.
+- Custom commands for PDB.
+- Fzf preview for MacOS.
+- Helix runtime files on Linux.
+- Installation of Fd shell completions.
+
+### Removed
+
+- Gcloud, Go, Packer, and Vault roles.
+- PUDB configuration file.
+- Shell keybindings for Ctrl+W.
+
+## 0.8.2 - 2024-09-30
+
+### Added
+
+- Custom styling for VSCode.
+- MuseScore role.
+- Shell keybindings to insert current working directory.
+- Shell keybindings to pipe to Fzf.
+
+### Changed
+
+- Glow to always use a pager.
+- Scoop to prefer global installations.
+
+### Fixed
+
+- Helix end of line keybindings.
+
+## 0.8.1 - 2024-06-21
+
+### Added
+
+- Android, Bitwig, Bun, GDB, LLDB, OBS, and Readline roles.
+- Injection support for Pipx application installations.
+- Tmux keybindings.
+- Yazi change directory shell integration.
+
+### Changed
+
+- Improved Fzf search with FD integration.
+
+### Fixed
+
+- Fish keybindings for PowerShell.
+- GlazeWM workspaces for Windows.
+- Several roles to be OpenWrt compatible.
+
+### Removed
+
+- Quickemu installation.
+- Terragrunt role.
+
+## 0.8.0 - 2024-03-11
+
+### Added
+
 - Arch and Alpine Linux packages.
-- Audacity, Just, Kdenlive, Sonic Pi, VLC, and Watchexec roles.
+- Audacity, Dive, Just, Kdenlive, Sonic Pi, Topgrade, VLC, Watchexec, and Zoxide
+  roles.
+- Balena Etcher support for all Linux distributions.
+- Fira and PT fonts.
+- Less keybindings customization.
+- QEMU user emulation support for Linux.
 - SSH port flag for scripts.
 - Wget support in install scripts.
+- VSCode panel keybindings.
 
 ### Changed
 
 - Move shell completions to system folders.
+- Simplified FFmpeg installation for Fedora.
 - Simplified shell profiles.
 
 ### Fixed
 
 - Extra newlines in unified clipboard aliases.
+- Fira Code font integration in Lsd and Yazi.
+- Login shell registration for Bash and Fish.
 
 ### Removed
 

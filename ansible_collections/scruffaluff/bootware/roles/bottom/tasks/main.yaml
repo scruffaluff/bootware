@@ -1,0 +1,111 @@
+---
+- name: Install Bottom for Alpine
+  become: true
+  community.general.apk:
+    name: bottom
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
+    state: latest
+    update_cache: true
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install Bottom for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: bottom
+  when: ansible_system == "FreeBSD"
+
+- name: Install Bottom for Linux
+  ansible.builtin.package:
+    name: bottom
+  become: true
+  ignore_errors: true
+  register: bottom_linux
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Get latest Bottom version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/bottom.json
+  register: bottom_formula
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
+    failed
+
+- name: Download Bottom for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/ClementTsang/bottom/releases/download/{{
+      bottom_formula.json.versions.stable }}/bottom_{{
+      bottom_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+  vars:
+    bottom_arch:
+      amd64: x86_64
+      arm64: aarch64
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
+    failed
+
+- name: Install Bottom for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/btm
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/btm
+  become: true
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
+    failed
+
+- name: Install Bottom for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: bottom
+  when: ansible_system == "Darwin"
+
+- name: Install Bottom for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: bottom
+  when: ansible_system == "Win32NT"
+
+- name: Create Bottom settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config/bottom"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Bottom settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/bottom/bottom.toml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: bottom.toml
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Bottom settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Roaming/bottom"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Bottom settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/bottom/bottom.toml"
+    force: true
+    owner: "{{ user_id }}"
+    src: bottom.toml
+  when: ansible_system == "Win32NT"
