@@ -12,7 +12,7 @@ Role uses the following variables with default values.
 
 ```yaml
 font_size: 14
-user_shell: "{{ standard_powershell_or_fish_shell_path }}"
+user_shell: "{{ shell_name }}"
 ```
 
 The role will automatically select the standard path for the Fish shell for host

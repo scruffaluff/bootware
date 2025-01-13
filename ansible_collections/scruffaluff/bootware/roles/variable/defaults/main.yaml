@@ -57,13 +57,6 @@ system_architecture_:
   riscv64: riscv64
   x64: amd64
   x86_64: amd64
-user_shell_:
-  Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-    '/usr/local' }}/bin/fish
-  FreeBSD: /usr/local/bin/fish
-  Linux: /usr/bin/fish
-  Win32NT: "C:/Program Files/PowerShell/7/pwsh.exe"
 bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
@@ -79,6 +72,7 @@ github_api_headers: >-
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
+powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps
@@ -86,4 +80,4 @@ scoop_shims: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
-user_shell: "{{ user_shell_.get(ansible_system, '/usr/bin/fish') }}"
+user_shell: "{{ 'powershell' if ansible_system == 'Win32NT' else 'fish' }}"

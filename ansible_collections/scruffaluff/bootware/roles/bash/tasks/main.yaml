@@ -66,7 +66,7 @@
     cmd: chsh -s {{ bash_executable }} {{ user_id }}
   become: true
   changed_when: true
-  when: ansible_pkg_mgr == "apk" and bash_default_shell
+  when: ansible_pkg_mgr == "apk" and user_shell == "bash"
 
 - name: Change user default shell to Bash for Unix
   ansible.builtin.user:
@@ -74,8 +74,8 @@
     shell: "{{ bash_executable }}"
   become: true
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and
-    bash_default_shell
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" user_shell ==
+    "bash"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

@@ -148,7 +148,7 @@
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
   become: true
   changed_when: true
-  when: ansible_pkg_mgr == "apk" and nushll_default_shell
+  when: ansible_pkg_mgr == "apk" and user_shell == "nushell"
 
 - name: Change user default shell to Nushell for Unix
   ansible.builtin.user:
@@ -156,8 +156,8 @@
     shell: "{{ nushell_executable }}"
   become: true
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and
-    nushell_default_shell
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+    "nushell"
 
 - name: Set Nushell as default OpenSSH shell for Windows
   ansible.windows.win_regedit:
@@ -165,4 +165,4 @@
     name: DefaultShell
     path: "HKLM:\\SOFTWARE\\OpenSSH"
     type: string
-  when: ansible_system == "Win32NT" and nushell_default_shell
+  when: ansible_system == "Win32NT" and user_shell == "nushell"

@@ -1,5 +1,4 @@
 ---
-powershell_default_shell: false
 powershell_modules:
   - GcloudTabComplete
   - npm-completion
