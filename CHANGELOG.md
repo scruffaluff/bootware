@@ -9,7 +9,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Nushell role.
 - Support for Yazi 0.4.
+- Variable to configure default user shell.
 
 ### Changed
 

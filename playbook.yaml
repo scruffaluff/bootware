@@ -740,9 +740,13 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.nushell
       tags:
-        - extras
-        - never
+        - container
+        - desktop
         - nushell
+        - server
+        - shell
+        - sysadmin
+        - wsl
 
     - name: Install OBS Studio video recorder
       ansible.builtin.import_role:
