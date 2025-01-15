@@ -31,10 +31,10 @@ def is-ssh-session [] {
 # Public convenience script functions.
 
 # Prepend existing directories that are not in the system path.
-def prepend-paths [...paths: directory] {
+def --env prepend-paths [...paths: directory] {
     for path in $paths {
         if ($path | path type) == "dir" and not ($path in $env.PATH) {
-            $env.PATH = $env.PATH | prepend $path
+            $env.PATH = [$path ...$env.PATH]
         }
     }
 }
@@ -280,7 +280,7 @@ if $_os == "darwin" {
 
 # Add Pyenv binaries to system path.
 $env.PYENV_ROOT = $"($env.HOME)/.pyenv"
-prepend-paths $"($env.PYENV_ROOT)/bin" f"($env.PYENV_ROOT)/shims"
+prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
 
 # Initialize Pyenv if available.
 if (which pyenv | is-not-empty) {
@@ -338,10 +338,10 @@ $env.BUN_INSTALL = $"($env.HOME)/.bun"
 prepend-paths $"($env.BUN_INSTALL)/bin"
 
 # Add Deno binaries to system path.
-prepend-paths "${HOME}/.deno/bin"
+prepend-paths $"($env.HOME)/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend-paths "${HOME}/.npm-global/bin"
+prepend-paths $"($env.HOME)/.npm-global/bin"
 
 # Initialize Node Version Manager if available.
 $env.NVM_DIR = $"($env.HOME)/.nvm"
@@ -385,7 +385,8 @@ if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if (which "zellij" | is-not-empty) and not (is-ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
-        with-env { SHELL: (which nu | get path | first) } { zellij attach --create }
+        let nu_path = which nu | get path | first
+        with-env { SHELL: $nu_path } { zellij attach --create }
         exit
     }
 
