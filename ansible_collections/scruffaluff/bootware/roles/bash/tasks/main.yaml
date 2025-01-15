@@ -74,7 +74,7 @@
     shell: "{{ bash_executable }}"
   become: true
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" user_shell ==
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
     "bash"
 
 - name: Mark role as executed to prevent reruns
