@@ -2,6 +2,9 @@
 #
 # For more information, visit https://www.nushell.sh/book/configuration.html.
 
+# use std/util
+# path add "~/.local/bin"
+
 # Private convenience functions.
 
 def append-pager [] {
@@ -45,14 +48,104 @@ let _brew_prefix = if ("/opt/homebrew" | path exists) {
 }
 let _os = get-os
 
-# Shell settings.
-
-# Add alias for remove by force.
-alias rmf = rm -fr
-# Make rsync use human friendly output.
-alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
+# Nusehll configuration.
 
 $env.config = {
+    # Based on solarized light theme from
+    # https://github.com/nushell/nu_scripts/tree/main/themes.
+    color_config: {
+        background: "#fdf6e3"
+        binary: "#6c71c4"
+        block: "#268bd2"
+        bool: {|| if $in { "#2aa198" } else { "#b58900" }}
+        cell-path: "#586e75"
+        closure: "#2aa198"
+        cursor: "#586e75"
+        custom: "#002b36"
+        date: {|| (date now) - $in |
+            if $in < 1hr {
+                { attr: "b", fg: "#dc322f" }
+            } else if $in < 6hr {
+                "#dc322f"
+            } else if $in < 1day {
+                "#b58900"
+            } else if $in < 3day {
+                "#859900"
+            } else if $in < 1wk {
+                { attr: "b", fg: "#859900" }
+            } else if $in < 6wk {
+                "#2aa198"
+            } else if $in < 52wk {
+                "#268bd2"
+            } else {
+                "dark_gray"
+            }
+        }
+        duration: "#b58900"
+        empty: "#268bd2"
+        filesize: {|element|
+            if $element == 0b {
+                "#586e75"
+            } else if $element < 1mb {
+                "#2aa198"
+            } else {
+                { fg: "#268bd2" }
+            }
+        }
+        float: "#dc322f"
+        foreground: "#586e75"
+        glob: "#002b36"
+        header: { attr: "b", fg: "#859900" }
+        hints: "#839496"
+        int: "#6c71c4"
+        leading_trailing_space_bg: { attr: "n" }
+        list: "#2aa198"
+        nothing: "#dc322f"
+        range: "#b58900"
+        record: "#2aa198"
+        row_index: { attr: "b", fg: "#859900" }
+        search_result: { bg: "#586e75", fg: "#dc322f" }
+        separator: "#586e75"
+        shape_and: { attr: "b", fg: "#6c71c4" }
+        shape_binary: { attr: "b", fg: "#6c71c4" }
+        shape_block: { attr: "b", fg: "#268bd2" }
+        shape_bool: "#2aa198"
+        shape_closure: { attr: "b", fg: "#2aa198" }
+        shape_custom: "#859900"
+        shape_datetime: { attr: "b", fg: "#2aa198" }
+        shape_directory: "#2aa198"
+        shape_external_resolved: "#2aa198"
+        shape_external: "#2aa198"
+        shape_externalarg: { attr: "b", fg: "#859900" }
+        shape_filepath: "#2aa198"
+        shape_flag: { attr: "b", fg: "#268bd2" }
+        shape_float: { attr: "b", fg: "#dc322f" }
+        shape_garbage: { attr: "b", bg: "#FF0000", fg: "#FFFFFF" }
+        shape_glob_interpolation: { attr: "b", fg: "#2aa198" }
+        shape_globpattern: { attr: "b", fg: "#2aa198" }
+        shape_int: { attr: "b", fg: "#6c71c4" }
+        shape_internalcall: { attr: "b", fg: "#2aa198" }
+        shape_keyword: { attr: "b", fg: "#6c71c4" }
+        shape_list: { attr: "b", fg: "#2aa198" }
+        shape_literal: "#268bd2"
+        shape_match_pattern: "#859900"
+        shape_matching_brackets: { attr: "u" }
+        shape_nothing: "#dc322f"
+        shape_operator: "#b58900"
+        shape_or: { attr: "b", fg: "#6c71c4" }
+        shape_pipe: { attr: "b", fg: "#6c71c4" }
+        shape_range: { attr: "b", fg: "#b58900" }
+        shape_raw_string: { attr: "b", fg: "#002b36" }
+        shape_record: { attr: "b", fg: "#2aa198" }
+        shape_redirection: { attr: "b", fg: "#6c71c4" }
+        shape_signature: { attr: "b", fg: "#859900" }
+        shape_string_interpolation: { attr: "b", fg: "#2aa198" }
+        shape_string: "#859900"
+        shape_table: { attr: "b", fg: "#268bd2" }
+        shape_vardecl: { attr: "u", fg: "#268bd2" }
+        shape_variable: "#6c71c4"
+        string: "#859900"
+    },
     keybindings: [
         {
             event: { send: openeditor }
@@ -96,6 +189,28 @@ $env.config = {
     show_banner: false,
 }
 
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf = rm -fr
+# Make rsync use human friendly output.
+alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+if ($"($env.HOME)/.ls_colors" | path exists) {
+    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
+}
+
+# Add directories to system path that are not always included.
+#
+# Homebrew ARM directories should appear in system path before AMD directories
+# since some ARM systems might have slower emulated AMD copies of programs.
+(prepend-paths "/usr/sbin" "/usr/local/bin" "/opt/homebrew/sbin"
+    "/opt/homebrew/bin" $"($env.HOME)/.local/bin")
+
 # Bat settings.
 
 # Set default pager to Bat.
@@ -116,6 +231,8 @@ $env.DOCKER_CLI_HINTS = "false"
 alias ffmpeg = ^ffmpeg -hide_banner
 alias ffplay = ^ffplay -hide_banner
 alias ffprobe = ^ffprobe -hide_banner
+
+# Fzf settings.
 
 # Helix settings.
 
@@ -164,6 +281,27 @@ if $_os == "darwin" {
 # Add Pyenv binaries to system path.
 $env.PYENV_ROOT = $"($env.HOME)/.pyenv"
 prepend-paths $"($env.PYENV_ROOT)/bin" f"($env.PYENV_ROOT)/shims"
+
+# Initialize Pyenv if available.
+if (which pyenv | is-not-empty) {
+    # while set pyenv_index (contains -i -- "/home/scruffaluff/.pyenv/shims" $PATH)
+    # set -eg PATH[$pyenv_index]; end; set -e pyenv_index
+    # set -gx PATH '/home/scruffaluff/.pyenv/shims' $PATH
+    # set -gx PYENV_SHELL fish
+    # source '/home/scruffaluff/.pyenv/completions/pyenv.fish'
+    # command pyenv rehash 2>/dev/null
+    # function pyenv
+    #   set command $argv[1]
+    #   set -e argv[1]
+    
+    #   switch "$command"
+    #   case activate deactivate rehash shell
+    #     source (pyenv "sh-$command" $argv|psub)
+    #   case "*"
+    #     command pyenv "$command" $argv
+    #   end
+    # end
+}
 
 # Ripgrep settings.
 
@@ -226,7 +364,7 @@ def --env --wrapped yz [...args] {
   let tmp_file = mktemp --tmpdir
   yazi --cwd-file $tmp_file ...$args
 
-  let cwd = cat $tmp_file
+  let cwd = open $tmp_file
   if ($cwd | is-not-empty) and ($cwd != $env.PWD) {
     cd $cwd
   }
@@ -245,7 +383,17 @@ if ($env.TERM == "alacritty") and ($env.TERM_PROGRAM | is-empty) {
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if (which "zellij" | is-not-empty) and (not is-ssh-session) and ($env.LOGNAME == $env.USER) {
-        zellij attach -c
+        # if not set -q ZELLIJ
+        #     if test "$ZELLIJ_AUTO_ATTACH" = "true"
+        #         zellij attach -c
+        #     else
+        #         zellij
+        #     end
+
+        #     if test "$ZELLIJ_AUTO_EXIT" = "true"
+        #         kill $fish_pid
+        #     end
+        # end
     }
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
