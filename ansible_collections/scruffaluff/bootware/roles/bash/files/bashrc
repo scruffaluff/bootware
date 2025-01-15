@@ -54,12 +54,12 @@ source_files() {
 #   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
 if [[ -d '/opt/homebrew' ]]; then
-  _brew_prefix='/opt/homebrew'
+  brew_prefix='/opt/homebrew'
 else
-  _brew_prefix='/usr/local'
+  brew_prefix='/usr/local'
 fi
-_os="$(uname -s)"
-_tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
+os="$(uname -s)"
+tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
 # Shell settings.
 
@@ -78,7 +78,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if [[ -n "${_tty}" && -f "${HOME}/.ls_colors" ]]; then
+if [[ -n "${tty}" && -f "${HOME}/.ls_colors" ]]; then
   # shellcheck disable=SC2155
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
 fi
@@ -96,11 +96,11 @@ prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
 #
 # Flags:
 #   -n: Check if string is nonempty.
-if [[ -n "${_tty}" ]]; then
+if [[ -n "${tty}" ]]; then
   # Load Bash completion.
-  if [[ "${_os}" == 'Darwin' ]]; then
-    source_files "${_brew_prefix}/etc/profile.d/bash_completion.sh"
-  elif [[ "${_os}" == 'FreeBSD' ]]; then
+  if [[ "${os}" == 'Darwin' ]]; then
+    source_files "${brew_prefix}/etc/profile.d/bash_completion.sh"
+  elif [[ "${os}" == 'FreeBSD' ]]; then
     source_files '/usr/local/share/bash-completion/bash_completion'
   else
     source_files '/usr/share/bash-completion/bash_completion'
@@ -116,8 +116,8 @@ fi
 #   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" ]]; then
-  if [[ "${_os}" == 'Darwin' ]]; then
+if [[ -n "${tty}" ]]; then
+  if [[ "${os}" == 'Darwin' ]]; then
     cbcopy() {
       echo -n "$(cat)" | pbcopy
     }
@@ -174,6 +174,8 @@ export FZF_ALT_C_COMMAND=''
 _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
 export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
+unset _fzf_colors
+unset _fzf_highlights
 
 # Load Fzf keybindings if available.
 #
@@ -182,7 +184,7 @@ export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
 #   -r: Remove keybinding.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" && -x "$(command -v fzf)" ]]; then
+if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
     export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
@@ -248,8 +250,8 @@ export POETRY_VIRTUALENVS_IN_PROJECT='true'
 export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable for MacOS.
-if [[ "${_os}" == 'Darwin' ]]; then
-  export OPENBLAS="${_brew_prefix}/opt/openblas"
+if [[ "${os}" == 'Darwin' ]]; then
+  export OPENBLAS="${brew_prefix}/opt/openblas"
   prepend_paths "${OPENBLAS}"
 fi
 
@@ -265,7 +267,7 @@ prepend_paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v pyenv)" ]]; then
   eval "$(pyenv init -)"
-  if [[ -n "${_tty}" ]]; then
+  if [[ -n "${tty}" ]]; then
     source "$(pyenv root)/completions/pyenv.bash"
   fi
 fi
@@ -295,7 +297,7 @@ export STARSHIP_LOG='error'
 #   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -n "${_tty}" ]]; then
+if [[ -n "${tty}" ]]; then
   if [[ -x "$(command -v starship)" ]]; then
     eval "$(starship init bash)"
   else
@@ -321,7 +323,7 @@ prepend_paths "${HOME}/.npm-global/bin"
 #   -n: Check if the string has nonzero length.
 export NVM_DIR="${HOME}/.nvm"
 source_files "${NVM_DIR}/nvm.sh"
-if [[ -n "${_tty}" ]]; then
+if [[ -n "${tty}" ]]; then
   source_files "${NVM_DIR}/bash_completion"
 fi
 
@@ -353,6 +355,12 @@ yz() {
   fi
   rm "${tmp}"
 }
+
+# Remove private convenience variables.
+
+unset brew_prefix
+unset os
+unset tty
 
 # User settings.
 

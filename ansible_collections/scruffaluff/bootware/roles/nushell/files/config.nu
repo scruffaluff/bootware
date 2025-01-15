@@ -25,7 +25,7 @@ def get-os [] {
 
 # Check if current shell is within a remote SSH session.
 def is-ssh-session [] {
-    not ($"($env.$SSH_CLIENT)($env.SSH_CONNECTION)$env.SSH_TTY)" | is-empty)
+    "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
 }
 
 # Public convenience script functions.
@@ -374,26 +374,19 @@ def --env --wrapped yz [...args] {
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if ($env.TERM == "alacritty") and ($env.TERM_PROGRAM | is-empty) {
+if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
     #
+    # Based on output of "zellij setup --generate-auto-start bash" command.
+    #
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if (which "zellij" | is-not-empty) and (not is-ssh-session) and ($env.LOGNAME == $env.USER) {
-        # if not set -q ZELLIJ
-        #     if test "$ZELLIJ_AUTO_ATTACH" = "true"
-        #         zellij attach -c
-        #     else
-        #         zellij
-        #     end
-
-        #     if test "$ZELLIJ_AUTO_EXIT" = "true"
-        #         kill $fish_pid
-        #     end
-        # end
+    if (which "zellij" | is-not-empty) and not (is-ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
+        with-env { SHELL: (which nu | get path | first) } { zellij attach --create }
+        exit
     }
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors

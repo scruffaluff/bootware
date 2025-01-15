@@ -24,6 +24,10 @@ vscode_path_:
     {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
     }}
   Win32NT: "{{ scoop_apps }}/vscode/current/resources/app"
+vscode_system_:
+  Darwin: osx
+  Linux: linux
+  Win32NT: windows
 
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
 vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
@@ -102,3 +106,4 @@ vscode_remote_extensions:
   - valentjn.vscode-ltex
   - vscode-icons-team.vscode-icons
   - waderyan.gitblame
+vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"

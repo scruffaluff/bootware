@@ -207,6 +207,7 @@
   "terminal.integrated.allowChords": false,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorStyleInactive": "none",
+  "terminal.integrated.defaultProfile.{{ vscode_system }}": "{{ user_shell }}",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.environmentChangesIndicator": "off",
@@ -215,10 +216,10 @@
   "terminal.integrated.fontSize": {{ font_size }},
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.macOptionIsMeta": true,
-  "terminal.integrated.profiles.windows": {
-    "PowerShell": {
-      "source": "PowerShell",
-      "args": ["-NoLogo"]
+  "terminal.integrated.profiles.{{ vscode_system }}": {
+    "{{ user_shell }}": {
+      "args": ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"],
+      "path": "{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}"
     }
   },
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",

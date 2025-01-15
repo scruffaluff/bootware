@@ -16,9 +16,9 @@
 # Flags:
 #   -n: Check if string is nonempty.
 function _delete_commandline_from_history
-    set command (commandline | string collect | string trim)
+    set --local command (commandline | string collect | string trim)
     if test -n $command
-        set results "$(history search $command)"
+        set --local results "$(history search $command)"
 
         if test -n $results
             printf '\nFish History Entry Delete\n\n'
@@ -35,17 +35,18 @@ end
 #   -n: Check if string is nonempty.
 function _paginate_command
     # Variable 'PAGER' needs quotes in case it is not defined.
+    set --local program
     if test -n "$PAGER"
-        set pager_ $PAGER
+        set program $PAGER
     else
-        set pager_ less
+        set program less
     end
 
-    set line (commandline | string collect)
-    set command " &| $pager_"
-    set query (string escape --style regex $command)
+    set --local line (commandline | string collect)
+    set --local command " &| $program"
+    set --local query (string escape --style regex $command)
 
-    set newline (string replace --regex "$query\$" '' $line)
+    set --local newline (string replace --regex "$query\$" '' $line)
     if test $line = $newline
         commandline --append $command
     else
@@ -55,8 +56,8 @@ end
 
 # Paste current working directory into the commandline.
 function _paste_working_directory
-    set line (commandline | string collect)
-    set working_directory "$(string replace "$HOME" '~' $(pwd))/"
+    set --local line (commandline | string collect)
+    set --local working_directory "$(string replace "$HOME" '~' $(pwd))/"
 
     if string match --entire --quiet $working_directory $line
         commandline --replace (string replace $working_directory '' $line)
@@ -70,11 +71,11 @@ end
 # Flags:
 #   -n: Check if string is nonempty.
 function _select_command
-    set line (commandline | string collect)
-    set command " &| fzf"
-    set query (string escape --style regex $command)
+    set --local line (commandline | string collect)
+    set --local command " &| fzf"
+    set --local query (string escape --style regex $command)
 
-    set newline (string replace --regex "$query\$" '' $line)
+    set --local newline (string replace --regex "$query\$" '' $line)
     if test $line = $newline
         commandline --append $command
     else
@@ -166,15 +167,15 @@ end
 #   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
 if test -d /opt/homebrew
-    set _brew_prefix /opt/homebrew
+    set brew_prefix /opt/homebrew
 else
-    set _brew_prefix /usr/local
+    set brew_prefix /usr/local
 end
-set _os (uname -s)
+set os (uname -s)
 if status is-interactive
-    set _tty true
+    set tty true
 else
-    set _tty ''
+    set tty ''
 end
 
 # Shell settings.
@@ -184,7 +185,7 @@ alias rmf 'rm -fr'
 # Make rsync use human friendly output.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
-set fish_greeting
+set fish_greeting ''
 
 # Set solarized light color theme for several Unix tools.
 #
@@ -194,7 +195,7 @@ set fish_greeting
 # Flags:
 #   -f: Check if file exists and is a regular file.
 #   -n: Check if string is nonempty.
-if test -n $_tty; and test -f "$HOME/.ls_colors"
+if test -n $tty; and test -f "$HOME/.ls_colors"
     set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
 end
 
@@ -233,8 +234,8 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Read input until null terminated instead of newline.
-if test -n $_tty
-    if test $_os = Darwin
+if test -n $tty
+    if test $os = Darwin
         function cbcopy
             set --local text
             while read -z line
@@ -310,20 +311,22 @@ set --export FZF_ALT_C_COMMAND ''
 set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
 set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
 set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
+set --erase _fzf_colors
+set --erase _fzf_highlights
 
 # Load Fzf keybindings if available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty; and type -q fzf
+if test -n $tty; and type -q fzf
     fzf --fish | source
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
     if type -q fd
         set --export FZF_DEFAULT_COMMAND 'fd --hidden'
-        if test $_os = Darwin
+        if test $os = Darwin
             set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --search-path \$dir"
         end
     end
@@ -386,8 +389,8 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT true
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
-if test $_os = Darwin
-    set --export OPENBLAS "$_brew_prefix/opt/openblas"
+if test $os = Darwin
+    set --export OPENBLAS "$brew_prefix/opt/openblas"
     prepend_paths $OPENBLAS
 end
 
@@ -427,7 +430,7 @@ set --export STARSHIP_LOG error
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty
+if test -n $tty
     if type -q starship
         starship init fish | source
     else
@@ -475,9 +478,9 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Flags:
 #   -n: Check if string is nonempty.
 function yz
-    set tmp (mktemp)
+    set --local tmp (mktemp)
     yazi --cwd-file $tmp $argv
-    set cwd (cat $tmp)
+    set --local cwd (cat $tmp)
 
     # Quotes are necessary for the if statement to ensure that the test function
     # always receives the correct number of arguments.
@@ -494,7 +497,7 @@ end
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty; and type -q zoxide
+if test -n $tty; and type -q zoxide
     zoxide init --cmd cd fish | source
 end
 
@@ -506,7 +509,7 @@ end
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Check if the string is empty.
-if test -n $_tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
+if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -515,11 +518,12 @@ if test -n $_tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if type -q zellij; and not _ssh_session; and test $LOGNAME = $USER
+        set --local fish_path (which fish)
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
         set --export ZELLIJ_AUTO_EXIT true
-        eval (zellij setup --generate-auto-start fish | string collect)
+        SHELL=$fish_path eval (zellij setup --generate-auto-start fish | string collect)
     end
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
@@ -529,6 +533,12 @@ if test -n $_tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # https://github.com/alacritty/alacritty/issues/3962.
     set --export TERM xterm-256color
 end
+
+# Remove private convenience variables.
+
+set --erase brew_prefix
+set --erase os
+set --erase tty
 
 # User settings.
 
