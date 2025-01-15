@@ -196,7 +196,7 @@ fi
 
 # Helix settings.
 
-# Set full color support for terminal and default editor to Helix.
+# Set default editor to Helix if available.
 #
 # Flags:
 #   -v: Only show file path of command.

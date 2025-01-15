@@ -336,7 +336,7 @@ end
 
 # Helix settings.
 
-# Set full color support for terminal and default editor to Helix.
+# Set default editor to Helix if available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
