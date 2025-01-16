@@ -5,30 +5,83 @@
 # use std/util
 # path add "~/.local/bin"
 
-# Private convenience functions.
-
-def append-pager [] {
-    let cmd = $" &| ($env.PAGER)"
-    let line = commandline
-
-    if ($line | str ends-with $cmd) {
-        commandline edit --replace ($line | str replace $cmd "")
-    } else {
-        commandline edit --append $cmd
+# Find Homebrew installation prefix.
+#
+# Defined as a function instead of a variable instead Nushell does not yet
+# support hiding variables. For more information, visit
+# https://github.com/nushell/nushell/issues/11818.
+def brew-prefix [] { if ("/opt/homebrew" | path
+exists) { "/opt/homebrew" } else { "/usr/local"
     }
 }
 
-def get-os [] {
-    let os = sys host | get name | str downcase
-    if ($os | str contains "linux") { "linux" } else { $os }
-}
-
 # Check if current shell is within a remote SSH session.
-def is-ssh-session [] {
+def ssh-session [] {
     "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
 }
 
+# Get current operating system.
+#
+# Defined as a function instead of a variable instead Nushell does not yet
+# support hiding variables. For more information, visit
+# https://github.com/nushell/nushell/issues/11818.
+def os [] {
+    sys host | get name | str downcase | match $in {
+        "darwin" => "macos"
+        "freebsd" => "freebsd"
+        "windows" => "windows"
+        _ => "linux"
+    }
+}
+
 # Public convenience script functions.
+
+# Paste current working directory into the commandline.
+def paste-cwd [] {
+    let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
+    let line = commandline | str replace $cwd ""
+
+    if $line == (commandline) {
+        commandline edit --insert $cwd
+    } else {
+        commandline edit --replace $line
+    }
+}
+
+# Paste pipe to fuzzy finder into the commandline.
+def paste-fzf [] {
+    let line = commandline | str replace --regex $" \\| fzf\$" ""
+
+    if $line == (commandline) {
+        commandline edit --replace $"($line) | fzf"
+    } else {
+        commandline edit --replace $line
+    }
+}
+
+# Paste pipe to system pager command into the commandline.
+def paste-pager [] {
+    let pager = if "PAGER" in $env { $env.PAGER } else { "less" }
+    let line = commandline | str replace --regex $" \\| ($pager)\$" ""
+
+    if $line == (commandline) {
+        commandline edit --replace $"($line) | ($pager)"
+    } else {
+        commandline edit --replace $line
+    }
+}
+
+# Prepend super user command into the commandline.
+def paste-super [] {
+    let super = if (which doas | is-not-empty) { "doas" } else { "sudo" }
+    let line = commandline | str replace --regex $"^($super) " ""
+
+    if $line == (commandline) {
+        commandline edit --replace $"($super) ($line)"
+    } else {
+        commandline edit --replace $line
+    }
+}
 
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
@@ -38,15 +91,6 @@ def --env prepend-paths [...paths: directory] {
         }
     }
 }
-
-# Private convenience variables.
-
-let _brew_prefix = if ("/opt/homebrew" | path exists) {
-    "/opt/homebrew"
-} else {
-    "/usr/local"
-}
-let _os = get-os
 
 # Nusehll configuration.
 
@@ -154,14 +198,32 @@ $env.config = {
             modifier: alt
         },
         {
+            event: { cmd: paste-cwd, send: executehostcommand }
+            keycode: char_c
+            mode: [emacs, vi_insert, vi_normal]
+            modifier: alt
+        },
+        {
+            event: { cmd: paste-fzf, send: executehostcommand }
+            keycode: char_f
+            mode: [emacs, vi_insert, vi_normal]
+            modifier: alt
+        },
+        {
             event: { name: help_menu, send: menu }
             keycode: char_h
             mode: [emacs, vi_insert, vi_normal]
             modifier: alt
         },
         {
-            event: { cmd: append-pager, send: executehostcommand }
+            event: { cmd: paste-pager, send: executehostcommand }
             keycode: char_p
+            mode: [emacs, vi_insert, vi_normal]
+            modifier: alt
+        },
+        {
+            event: { cmd: paste-super, send: executehostcommand }
+            keycode: char_s
             mode: [emacs, vi_insert, vi_normal]
             modifier: alt
         },
@@ -176,7 +238,19 @@ $env.config = {
             keycode: char_w
             mode: [emacs, vi_insert, vi_normal,]
             modifier: control
-        }
+        },
+        {
+            event: { edit: movebigwordleft }
+            keycode: left
+            mode: [emacs, vi_insert, vi_normal]
+            modifier: shift
+        },
+        {
+            event: { edit: movebigwordrightend }
+            keycode: right
+            mode: [emacs, vi_insert, vi_normal]
+            modifier: shift
+        },
     ],
     ls: { clickable_links: true, use_ls_colors: true },
     # Prevents prompt duplication in SSH sessions to a remote Windows machine.
@@ -184,7 +258,7 @@ $env.config = {
     # For more information, visit
     # https://github.com/nushell/nushell/issues/5585.
     shell_integration: {
-        osc133: ($_os != "windows"),
+        osc133: ((os) != "windows"),
     },
     show_banner: false,
 }
@@ -273,8 +347,8 @@ $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
 # Make numerical compute libraries findable on MacOS.
-if $_os == "darwin" {
-    $env.OPENBLAS = $"($_brew_prefix)/opt/openblas"
+if (os) == "macos" {
+    $env.OPENBLAS = $"(brew_prefix)/opt/openblas"
     prepend-paths $env.OPENBLAS
 }
 
@@ -371,6 +445,15 @@ def --env --wrapped yz [...args] {
   rm $tmp_file
 }
 
+# Initialize Zoxide if available.
+if (which "zoxide" | is-not-empty) {
+    let script = ($nu.data-dir | path join "vendor/autoload/zoxide.nu")
+    if not ($script | path exists) {
+        mkdir ($script | path dirname)
+        zoxide init --cmd cd nushell | save --force $script
+    }
+}
+
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
@@ -384,9 +467,8 @@ if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if (which "zellij" | is-not-empty) and not (is-ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
-        let nu_path = which nu | get path | first
-        with-env { SHELL: $nu_path } { zellij attach --create }
+    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
+        with-env { SHELL: $nu.current-exe } { zellij attach --create }
         exit
     }
 
@@ -397,3 +479,9 @@ if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # https://github.com/alacritty/alacritty/issues/3962.
     $env.TERM = "xterm-256color"
 }
+
+# Remove private convenience functions.
+
+hide brew_prefix
+hide os
+hide ssh-session
