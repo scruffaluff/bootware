@@ -1,17 +1,19 @@
-# Nushell settings file.
+# Nushell general configuration file.
 #
 # For more information, visit https://www.nushell.sh/book/configuration.html.
 
-# use std/util
-# path add "~/.local/bin"
+# Private convenience functions.
 
 # Find Homebrew installation prefix.
 #
 # Defined as a function instead of a variable instead Nushell does not yet
 # support hiding variables. For more information, visit
 # https://github.com/nushell/nushell/issues/11818.
-def brew-prefix [] { if ("/opt/homebrew" | path
-exists) { "/opt/homebrew" } else { "/usr/local"
+def brew-prefix [] {
+    if ("/opt/homebrew" | path exists) {
+        "/opt/homebrew"
+    } else { 
+        "/usr/local"
     }
 }
 
@@ -34,7 +36,7 @@ def os [] {
     }
 }
 
-# Public convenience script functions.
+# Public convenience functions.
 
 # Paste current working directory into the commandline.
 def paste-cwd [] {
@@ -50,10 +52,10 @@ def paste-cwd [] {
 
 # Paste pipe to fuzzy finder into the commandline.
 def paste-fzf [] {
-    let line = commandline | str replace --regex $" \\| fzf\$" ""
+    let line = commandline | str replace --regex $" o+e>\\| fzf\$" ""
 
     if $line == (commandline) {
-        commandline edit --replace $"($line) | fzf"
+        commandline edit --replace $"($line) o+e>| fzf"
     } else {
         commandline edit --replace $line
     }
@@ -61,11 +63,11 @@ def paste-fzf [] {
 
 # Paste pipe to system pager command into the commandline.
 def paste-pager [] {
-    let pager = if "PAGER" in $env { $env.PAGER } else { "less" }
-    let line = commandline | str replace --regex $" \\| ($pager)\$" ""
+    let pager = $env.PAGER? | default "less"
+    let line = commandline | str replace --regex $" o+e>\\| ($pager)\$" ""
 
     if $line == (commandline) {
-        commandline edit --replace $"($line) | ($pager)"
+        commandline edit --replace $"($line) o+e>| ($pager)"
     } else {
         commandline edit --replace $line
     }
@@ -85,11 +87,10 @@ def paste-super [] {
 
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
-    for path in $paths {
-        if ($path | path type) == "dir" and not ($path in $env.PATH) {
-            $env.PATH = [$path ...$env.PATH]
-        }
-    }
+    $env.PATH = $paths 
+    | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH)}
+    | reverse
+    | [...$in ...$env.PATH]
 }
 
 # Nusehll configuration.
@@ -253,6 +254,38 @@ $env.config = {
         },
     ],
     ls: { clickable_links: true, use_ls_colors: true },
+    menus: [
+        {
+            marker: ""
+            name: completion_menu
+            only_buffer_difference: false
+            style: {
+                description_text: yellow
+                selected_text: green_reverse
+                text: green
+            }
+            type: {
+                col_padding: 2
+                col_width: 20
+                columns: 4
+                layout: columnar
+            }
+        },
+        {
+            marker: ""
+            name: history_menu
+            only_buffer_difference: true
+            style: {
+                description_text: yellow
+                selected_text: green_reverse
+                text: green
+            }
+            type: {
+                layout: list
+                page_size: 10
+            }
+        },
+    ],
     # Prevents prompt duplication in SSH sessions to a remote Windows machine.
     #
     # For more information, visit
@@ -403,7 +436,14 @@ if (which "starship" | is-not-empty) {
         mkdir ($script | path dirname)
         starship init nu | save --force $script
     }
-}
+} else {
+    $env.PROMPT_COMMAND = {||
+        let path = $env.PWD | path basename
+        $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
+    }
+    $env.PROMPT_COMMAND_RIGHT = ""
+    $env.PROMPT_INDICATOR = "❯ "
+} 
 
 # TypeScript settings.
 

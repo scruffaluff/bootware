@@ -29,33 +29,8 @@ function _delete_commandline_from_history
     end
 end
 
-# Paste pipe to system pager command into the commandline.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-function _paginate_command
-    # Variable 'PAGER' needs quotes in case it is not defined.
-    set --local program
-    if test -n "$PAGER"
-        set program $PAGER
-    else
-        set program less
-    end
-
-    set --local line (commandline | string collect)
-    set --local command " &| $program"
-    set --local query (string escape --style regex $command)
-
-    set --local newline (string replace --regex "$query\$" '' $line)
-    if test $line = $newline
-        commandline --append $command
-    else
-        commandline --replace $newline
-    end
-end
-
 # Paste current working directory into the commandline.
-function _paste_working_directory
+function _paste_cwd
     set --local line (commandline | string collect)
     set --local working_directory "$(string replace "$HOME" '~' $(pwd))/"
 
@@ -70,9 +45,34 @@ end
 #
 # Flags:
 #   -n: Check if string is nonempty.
-function _select_command
+function _paste_fzf
     set --local line (commandline | string collect)
     set --local command " &| fzf"
+    set --local query (string escape --style regex $command)
+
+    set --local newline (string replace --regex "$query\$" '' $line)
+    if test $line = $newline
+        commandline --append $command
+    else
+        commandline --replace $newline
+    end
+end
+
+# Paste pipe to system pager command into the commandline.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function _paste_pager
+    # Variable 'PAGER' needs quotes in case it is not defined.
+    set --local program
+    if test -n "$PAGER"
+        set program $PAGER
+    else
+        set program less
+    end
+
+    set --local line (commandline | string collect)
+    set --local command " &| $program"
     set --local query (string escape --style regex $command)
 
     set --local newline (string replace --regex "$query\$" '' $line)
@@ -215,10 +215,10 @@ function fish_user_key_bindings
     bind \cw true
     bind \cd backward-kill-path-component
     bind \cj backward-char
-    bind \ec _paste_working_directory
+    bind \ec _paste_cwd
     bind \ed kill-bigword
-    bind \ef _select_command
-    bind \ep _paginate_command
+    bind \ef _paste_fzf
+    bind \ep _paste_pager
     bind \ex _delete_commandline_from_history
     bind \eZ redo
     bind \ez undo

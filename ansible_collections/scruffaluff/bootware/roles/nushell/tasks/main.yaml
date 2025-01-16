@@ -1,4 +1,7 @@
 ---
+# https://github.com/carapace-sh/carapace-bin/releases/download/v1.1.1/carapace-bin_1.1.1_linux_amd64.tar.gz
+# carapace _carapace nushell | save ~/.local/share/nushell/vendor/autoload/carapace.nu
+
 - name: Install Nushell for FreeBSD
   become: true
   community.general.pkgng:
@@ -96,7 +99,6 @@
   become: true
   loop:
     - config.nu
-    - env.nu
   when: ansible_system == "Darwin"
 
 - name: Create Nushell configuration directory for Unix
@@ -120,7 +122,6 @@
   become: true
   loop:
     - config.nu
-    - env.nu
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Create Nushell settings directory for Windows
@@ -138,7 +139,6 @@
     src: "{{ item }}"
   loop:
     - config.nu
-    - env.nu
   when: ansible_system == "Win32NT"
 # # User shell is not updated on Alpine Linux when using Ansible user module.
 # # Workaround comes from https://github.com/ansible/ansible/issues/61911.
