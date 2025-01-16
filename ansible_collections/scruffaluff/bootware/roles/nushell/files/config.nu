@@ -88,7 +88,7 @@ def paste-super [] {
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
-    | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH)}
+    | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]
 }
@@ -102,14 +102,14 @@ $env.config = {
         background: "#fdf6e3"
         binary: "#6c71c4"
         block: "#268bd2"
-        bool: {|| if $in { "#2aa198" } else { "#b58900" }}
+        bool: {|| if $in { "#2aa198" } else { "#b58900" } }
         cell-path: "#586e75"
         closure: "#2aa198"
         cursor: "#586e75"
         custom: "#002b36"
         date: {|| (date now) - $in |
             if $in < 1hr {
-                { attr: "b", fg: "#dc322f" }
+                { attr: "b" fg: "#dc322f" }
             } else if $in < 6hr {
                 "#dc322f"
             } else if $in < 1day {
@@ -117,7 +117,7 @@ $env.config = {
             } else if $in < 3day {
                 "#859900"
             } else if $in < 1wk {
-                { attr: "b", fg: "#859900" }
+                { attr: "b" fg: "#859900" }
             } else if $in < 6wk {
                 "#2aa198"
             } else if $in < 52wk {
@@ -140,7 +140,7 @@ $env.config = {
         float: "#dc322f"
         foreground: "#586e75"
         glob: "#002b36"
-        header: { attr: "b", fg: "#859900" }
+        header: { attr: "b" fg: "#859900" }
         hints: "#839496"
         int: "#6c71c4"
         leading_trailing_space_bg: { attr: "n" }
@@ -148,112 +148,127 @@ $env.config = {
         nothing: "#dc322f"
         range: "#b58900"
         record: "#2aa198"
-        row_index: { attr: "b", fg: "#859900" }
-        search_result: { bg: "#586e75", fg: "#dc322f" }
+        row_index: { attr: "b" fg: "#859900" }
+        search_result: { bg: "#586e75" fg: "#dc322f" }
         separator: "#586e75"
-        shape_and: { attr: "b", fg: "#6c71c4" }
-        shape_binary: { attr: "b", fg: "#6c71c4" }
-        shape_block: { attr: "b", fg: "#268bd2" }
+        shape_and: { attr: "b" fg: "#6c71c4" }
+        shape_binary: { attr: "b" fg: "#6c71c4" }
+        shape_block: { attr: "b" fg: "#268bd2" }
         shape_bool: "#2aa198"
-        shape_closure: { attr: "b", fg: "#2aa198" }
+        shape_closure: { attr: "b" fg: "#2aa198" }
         shape_custom: "#859900"
-        shape_datetime: { attr: "b", fg: "#2aa198" }
+        shape_datetime: { attr: "b" fg: "#2aa198" }
         shape_directory: "#2aa198"
         shape_external_resolved: "#2aa198"
         shape_external: "#2aa198"
-        shape_externalarg: { attr: "b", fg: "#859900" }
+        shape_externalarg: { attr: "b" fg: "#859900" }
         shape_filepath: "#2aa198"
-        shape_flag: { attr: "b", fg: "#268bd2" }
-        shape_float: { attr: "b", fg: "#dc322f" }
-        shape_garbage: { attr: "b", bg: "#FF0000", fg: "#FFFFFF" }
-        shape_glob_interpolation: { attr: "b", fg: "#2aa198" }
-        shape_globpattern: { attr: "b", fg: "#2aa198" }
-        shape_int: { attr: "b", fg: "#6c71c4" }
-        shape_internalcall: { attr: "b", fg: "#2aa198" }
-        shape_keyword: { attr: "b", fg: "#6c71c4" }
-        shape_list: { attr: "b", fg: "#2aa198" }
+        shape_flag: { attr: "b" fg: "#268bd2" }
+        shape_float: { attr: "b" fg: "#dc322f" }
+        shape_garbage: { attr: "b" bg: "#FF0000" fg: "#FFFFFF" }
+        shape_glob_interpolation: { attr: "b" fg: "#2aa198" }
+        shape_globpattern: { attr: "b" fg: "#2aa198" }
+        shape_int: { attr: "b" fg: "#6c71c4" }
+        shape_internalcall: { attr: "b" fg: "#2aa198" }
+        shape_keyword: { attr: "b" fg: "#6c71c4" }
+        shape_list: { attr: "b" fg: "#2aa198" }
         shape_literal: "#268bd2"
         shape_match_pattern: "#859900"
         shape_matching_brackets: { attr: "u" }
         shape_nothing: "#dc322f"
         shape_operator: "#b58900"
-        shape_or: { attr: "b", fg: "#6c71c4" }
-        shape_pipe: { attr: "b", fg: "#6c71c4" }
-        shape_range: { attr: "b", fg: "#b58900" }
-        shape_raw_string: { attr: "b", fg: "#002b36" }
-        shape_record: { attr: "b", fg: "#2aa198" }
-        shape_redirection: { attr: "b", fg: "#6c71c4" }
-        shape_signature: { attr: "b", fg: "#859900" }
-        shape_string_interpolation: { attr: "b", fg: "#2aa198" }
+        shape_or: { attr: "b" fg: "#6c71c4" }
+        shape_pipe: { attr: "b" fg: "#6c71c4" }
+        shape_range: { attr: "b" fg: "#b58900" }
+        shape_raw_string: { attr: "b" fg: "#002b36" }
+        shape_record: { attr: "b" fg: "#2aa198" }
+        shape_redirection: { attr: "b" fg: "#6c71c4" }
+        shape_signature: { attr: "b" fg: "#859900" }
+        shape_string_interpolation: { attr: "b" fg: "#2aa198" }
         shape_string: "#859900"
-        shape_table: { attr: "b", fg: "#268bd2" }
-        shape_vardecl: { attr: "u", fg: "#268bd2" }
+        shape_table: { attr: "b" fg: "#268bd2" }
+        shape_vardecl: { attr: "u" fg: "#268bd2" }
         shape_variable: "#6c71c4"
         string: "#859900"
-    },
+    }
     keybindings: [
+        {
+            event: { cmd: paste-cwd send: executehostcommand }
+            keycode: char_c
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
         {
             event: { send: openeditor }
             keycode: char_e
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: alt
-        },
+        }
         {
-            event: { cmd: paste-cwd, send: executehostcommand }
-            keycode: char_c
-            mode: [emacs, vi_insert, vi_normal]
-            modifier: alt
-        },
-        {
-            event: { cmd: paste-fzf, send: executehostcommand }
+            event: { cmd: paste-fzf send: executehostcommand }
             keycode: char_f
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: alt
-        },
+        }
         {
-            event: { name: help_menu, send: menu }
+            event: { name: help_menu send: menu }
             keycode: char_h
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: alt
-        },
+        }
         {
-            event: { cmd: paste-pager, send: executehostcommand }
+            event: { cmd: paste-pager send: executehostcommand }
             keycode: char_p
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: alt
-        },
+        }
         {
-            event: { cmd: paste-super, send: executehostcommand }
+            event: { cmd: paste-super send: executehostcommand }
             keycode: char_s
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: alt
-        },
+        }
         {
             event: { edit: cutwordleft }
             keycode: char_d
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: control
-        },
+        }
+        {
+            event: { edit: moveleft }
+            keycode: char_j
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
         {
             event: null
             keycode: char_w
-            mode: [emacs, vi_insert, vi_normal,]
+            mode: [emacs vi_insert vi_normal]
             modifier: control
-        },
+        }
+        {
+            event: { edit: moveright }
+            keycode: char_ue000
+            mode: [emacs vi_insert vi_normal]
+            modifier: none
+        }
         {
             event: { edit: movebigwordleft }
             keycode: left
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: shift
-        },
+        }
         {
-            event: { edit: movebigwordrightend }
+            event: [
+                { edit: movebigwordrightend }
+                { edit: moveright }
+            ]
             keycode: right
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             modifier: shift
-        },
-    ],
-    ls: { clickable_links: true, use_ls_colors: true },
+        }
+    ]
+    ls: { clickable_links: true use_ls_colors: true }
     menus: [
         {
             marker: ""
@@ -270,7 +285,7 @@ $env.config = {
                 columns: 4
                 layout: columnar
             }
-        },
+        }
         {
             marker: ""
             name: history_menu
@@ -284,16 +299,14 @@ $env.config = {
                 layout: list
                 page_size: 10
             }
-        },
-    ],
+        }
+    ]
     # Prevents prompt duplication in SSH sessions to a remote Windows machine.
     #
     # For more information, visit
     # https://github.com/nushell/nushell/issues/5585.
-    shell_integration: {
-        osc133: ((os) != "windows"),
-    },
-    show_banner: false,
+    shell_integration: { osc133: ((os) != "windows") }
+    show_banner: false
 }
 
 # Shell settings.
@@ -315,8 +328,14 @@ if ($"($env.HOME)/.ls_colors" | path exists) {
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-(prepend-paths "/usr/sbin" "/usr/local/bin" "/opt/homebrew/sbin"
-    "/opt/homebrew/bin" $"($env.HOME)/.local/bin")
+(
+    prepend-paths
+    "/usr/sbin"
+    "/usr/local/bin"
+    "/opt/homebrew/sbin"
+    "/opt/homebrew/bin"
+    $"($env.HOME)/.local/bin"
+)
 
 # Bat settings.
 
