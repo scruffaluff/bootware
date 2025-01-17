@@ -178,6 +178,7 @@ alias ffprobe='ffprobe -hide_banner'
 # Load Fzf settings if interactive and available.
 #
 # Flags:
+#   -f: Make name refer to a function.
 #   -n: Check if string is nonempty.
 #   -r: Remove keybinding.
 #   -v: Only show file path of command.
@@ -194,6 +195,7 @@ if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
 
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
+    export -f _fzf_path_preview
     export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
   fi
 
