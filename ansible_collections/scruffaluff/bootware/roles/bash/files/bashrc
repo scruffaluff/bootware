@@ -31,7 +31,7 @@ command_not_found_handle() {
 # Open Bash history file with default editor.
 edit-history() {
   local program="${EDITOR:-vim}"
-  ${program} "${HOME}/.bash_history"
+  "${program}" "${HOME}/.bash_history"
 }
 
 # Prepend existing directories that are not in the system path.
@@ -176,6 +176,7 @@ alias ffprobe='ffprobe -hide_banner'
 # Load Fzf settings if interactive and available.
 #
 # Flags:
+#   -c: Run commands in Bash shell.
 #   -f: Make name refer to a function.
 #   -n: Check if string is nonempty.
 #   -r: Remove keybinding.

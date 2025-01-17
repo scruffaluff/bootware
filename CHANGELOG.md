@@ -26,6 +26,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - GitLab runner installation.
 - Helix move to end of word keybindings.
 - PDB error handling.
+- Shell commands for Fzf.
 
 ### Removed
 

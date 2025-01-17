@@ -104,14 +104,11 @@ end
 #   -n: Check if string is nonempty.
 function edit-history
     # Variable 'EDITOR' needs quotes in case it is not defined.
-    set --local program
     if test -n "$EDITOR"
-        set program $EDITOR
+        $EDITOR "$HOME/.local/share/fish/fish_history"
     else
-        set program less
+        vim "$HOME/.local/share/fish/fish_history"
     end
-
-    $program "$HOME/.local/share/fish/fish_history"
 end
 
 # Override system implementation of command not found.
@@ -298,6 +295,7 @@ alias ffprobe 'ffprobe -hide_banner'
 # Load Fzf settings if interactive and available.
 #
 # Flags:
+#   -c: Run commands in Fish shell.
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 if test -n $tty; and type -q fzf

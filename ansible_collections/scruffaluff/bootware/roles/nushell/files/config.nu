@@ -4,22 +4,8 @@
 
 # Private convenience functions.
 
-# Get current operating system.
-#
-# Defined as a function instead of a variable instead Nushell does not yet
-# support hiding variables. For more information, visit
-# https://github.com/nushell/nushell/issues/11818.
-def os [] {
-    sys host | get name | str downcase | match $in {
-        "darwin" => "macos"
-        "freebsd" => "freebsd"
-        "windows" => "windows"
-        _ => "linux"
-    }
-}
-
 # Paste current working directory into the commandline.
-def paste-cwd [] {
+def _paste-cwd [] {
     let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
     let line = commandline | str replace $cwd ""
 
@@ -31,7 +17,7 @@ def paste-cwd [] {
 }
 
 # Paste pipe to fuzzy finder into the commandline.
-def paste-fzf [] {
+def _paste-fzf [] {
     let line = commandline | str replace --regex $" \\| fzf\$" ""
 
     if $line == (commandline) {
@@ -42,7 +28,7 @@ def paste-fzf [] {
 }
 
 # Paste pipe to system pager command into the commandline.
-def paste-pager [] {
+def _paste-pager [] {
     let pager = $env.PAGER? | default "less"
     let line = commandline | str replace --regex $" \\| ($pager)\$" ""
 
@@ -54,7 +40,7 @@ def paste-pager [] {
 }
 
 # Prepend super user command into the commandline.
-def paste-super [] {
+def _paste-super [] {
     let super = if (which doas | is-not-empty) { "doas" } else { "sudo" }
     let line = commandline | str replace --regex $"^($super) " ""
 
@@ -66,6 +52,15 @@ def paste-super [] {
 }
 
 # Public convenience functions.
+
+# Open Nushell history file with default editor.
+def edit-history [] {
+    if ("EDITOR" in $env) {
+        run-external $env.EDITOR $nu.history-path
+    } else {
+        vim $nu.history-path
+    }
+}
 
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
@@ -97,7 +92,11 @@ def ssh-session [] {
 
 # Alacritty settings.
 
-if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
+if (
+    $nu.is-interactive
+    and ($env.TERM == "alacritty")
+    and not ("TERM_PROGRAM" in $env)
+) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -107,7 +106,12 @@ if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in 
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
+    if (
+        (which "zellij" | is-not-empty)
+        and not (ssh-session)
+        and ($env.LOGNAME == $env.USER)
+        and not ("ZELLIJ" in $env)
+    ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
         exit
     }
@@ -127,6 +131,20 @@ if (which "bat" | is-not-empty) {
     $env.PAGER = "bat"
 }
 
+# Clipboard settings.
+
+# Add unified clipboard aliases.
+if $nu.os-info.name == "macos" {
+    alias cbcopy = pbcopy
+    alias cbpaste = pbpaste
+} else if $nu.os-info.name == "windows" {
+    alias cbcopy = clip
+    alias cbpaste = powershell -c "Get-Clipboard"
+} else if (which wl-copy | is-not-empty) {
+    alias cbcopy = wl-copy
+    alias cbpaste = wl-paste
+}
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
@@ -142,6 +160,18 @@ alias ffplay = ^ffplay -hide_banner
 alias ffprobe = ^ffprobe -hide_banner
 
 # Fzf settings.
+
+# Load Fzf settings if interactive and available.
+if $nu.is-interactive and (which fzf | is-not-empty) {
+    # Disable Fzf Alt-C command.
+    $env.FZF_ALT_C_COMMAND = ""
+    # Set Fzf solarized light theme and shell command for child processes.
+    $env.FZF_DEFAULT_OPTS = (
+        "--reverse --color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
+        + "--color info:136,prompt:136,pointer:230,marker:230,spinner:136 "
+        + "--with-shell 'nu --commands'"
+    )
+}
 
 # Helix settings.
 
@@ -192,13 +222,12 @@ $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
 # Make numerical compute libraries findable on MacOS.
-if (os) == "macos" {
+if $nu.os-info.name == "macos" {
     let brew_prefix = if ("/opt/homebrew" | path exists) {
-        "/opt/homebrew"
+        $env.OPENBLAS = "/opt/homebrew/opt/openblas"
     } else { 
-        "/usr/local"
+        $env.OPENBLAS = "/usr/local/opt/openblas"
     }
-    $env.OPENBLAS = $"($brew_prefix)/opt/openblas"
     prepend-paths $env.OPENBLAS
 }
 
@@ -227,7 +256,7 @@ alias rmf = rm --force --recursive
 # Make rsync use human friendly output.
 alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 
-# Configure prompt if interactive
+# Configure prompt if interactive.
 if $nu.is-interactive {
     $env.PROMPT_COMMAND = {||
         let path = $env.PWD | path basename
@@ -335,7 +364,7 @@ $env.config = {
     }
     keybindings: [
         {
-            event: { cmd: paste-cwd send: executehostcommand }
+            event: { cmd: _paste-cwd send: executehostcommand }
             keycode: char_c
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -347,7 +376,7 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: paste-fzf send: executehostcommand }
+            event: { cmd: _paste-fzf send: executehostcommand }
             keycode: char_f
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -359,13 +388,13 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: paste-pager send: executehostcommand }
+            event: { cmd: _paste-pager send: executehostcommand }
             keycode: char_p
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { cmd: paste-super send: executehostcommand }
+            event: { cmd: _paste-super send: executehostcommand }
             keycode: char_s
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -483,7 +512,7 @@ $env.config = {
     #
     # For more information, visit
     # https://github.com/nushell/nushell/issues/5585.
-    shell_integration: { osc133: ((os) != "windows") }
+    shell_integration: { osc133: ($nu.os-info.name != "windows") }
     show_banner: false
 }
 
@@ -531,7 +560,3 @@ def --env --wrapped yz [...args] {
   }
   rm $tmp_file
 }
-
-# Remove private convenience functions.
-
-hide os
