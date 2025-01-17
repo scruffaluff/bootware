@@ -90,3 +90,37 @@
     owner: "{{ user_id }}"
     src: starship.toml
   when: ansible_system == "Win32NT"
+
+- name: Create Nushell autoload directories for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ nushell_autoload }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Generate Starship Nushell configuration for Unix
+  ansible.builtin.shell: >-
+    starship init nu > {{ nushell_autoload }}/starship.nu
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  when: ansible_system != "Win32NT"
+
+- name: Create Nushell autoload directories for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ nushell_autoload }}"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Generate Starship Nushell configuration for Windows
+  ansible.windows.win_shell: >-
+    starship init nu > {{ nushell_autoload }}/starship.nu
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\starship\\current;{{ ansible_env.Path }}"
+  when: ansible_system == "Win32NT"

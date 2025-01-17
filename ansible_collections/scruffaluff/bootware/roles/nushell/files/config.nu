@@ -4,24 +4,6 @@
 
 # Private convenience functions.
 
-# Find Homebrew installation prefix.
-#
-# Defined as a function instead of a variable instead Nushell does not yet
-# support hiding variables. For more information, visit
-# https://github.com/nushell/nushell/issues/11818.
-def brew-prefix [] {
-    if ("/opt/homebrew" | path exists) {
-        "/opt/homebrew"
-    } else { 
-        "/usr/local"
-    }
-}
-
-# Check if current shell is within a remote SSH session.
-def ssh-session [] {
-    "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
-}
-
 # Get current operating system.
 #
 # Defined as a function instead of a variable instead Nushell does not yet
@@ -35,8 +17,6 @@ def os [] {
         _ => "linux"
     }
 }
-
-# Public convenience functions.
 
 # Paste current working directory into the commandline.
 def paste-cwd [] {
@@ -52,10 +32,10 @@ def paste-cwd [] {
 
 # Paste pipe to fuzzy finder into the commandline.
 def paste-fzf [] {
-    let line = commandline | str replace --regex $" o+e>\\| fzf\$" ""
+    let line = commandline | str replace --regex $" \\| fzf\$" ""
 
     if $line == (commandline) {
-        commandline edit --replace $"($line) o+e>| fzf"
+        commandline edit --replace $"($line) | fzf"
     } else {
         commandline edit --replace $line
     }
@@ -64,10 +44,10 @@ def paste-fzf [] {
 # Paste pipe to system pager command into the commandline.
 def paste-pager [] {
     let pager = $env.PAGER? | default "less"
-    let line = commandline | str replace --regex $" o+e>\\| ($pager)\$" ""
+    let line = commandline | str replace --regex $" \\| ($pager)\$" ""
 
     if $line == (commandline) {
-        commandline edit --replace $"($line) o+e>| ($pager)"
+        commandline edit --replace $"($line) | ($pager)"
     } else {
         commandline edit --replace $line
     }
@@ -85,12 +65,24 @@ def paste-super [] {
     }
 }
 
+# Wrapper for interactive check.
+def tty [] {
+    is-terminal --stdin
+}
+
+# Public convenience functions.
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
     | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]
+}
+
+# Check if current shell is within a remote SSH session.
+def ssh-session [] {
+    "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
 }
 
 # Nusehll configuration.
@@ -229,6 +221,12 @@ $env.config = {
             modifier: alt
         }
         {
+            event: { edit: undo }
+            keycode: char_z
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { edit: cutwordleft }
             keycode: char_d
             mode: [emacs vi_insert vi_normal]
@@ -237,6 +235,12 @@ $env.config = {
         {
             event: { edit: moveleft }
             keycode: char_j
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: null
+            keycode: char_o
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -267,6 +271,12 @@ $env.config = {
             mode: [emacs vi_insert vi_normal]
             modifier: shift
         }
+        {
+            event: { edit: redo }
+            keycode: char_z
+            mode: [emacs vi_insert vi_normal]
+            modifier: shift_alt
+        }
     ]
     ls: { clickable_links: true use_ls_colors: true }
     menus: [
@@ -284,6 +294,24 @@ $env.config = {
                 col_width: 20
                 columns: 4
                 layout: columnar
+            }
+        }
+        {
+            marker: ""
+            name: help_menu
+            only_buffer_difference: true
+            style: {
+                description_text: yellow
+                selected_text: green_reverse
+                text: green
+            }
+            type: {
+                col_padding: 2
+                col_width: 20
+                columns: 4
+                description_rows: 10
+                layout: description
+                selection_rows: 4
             }
         }
         {
@@ -312,9 +340,17 @@ $env.config = {
 # Shell settings.
 
 # Add alias for remove by force.
-alias rmf = rm -fr
+alias rmf = rm --force --recursive
 # Make rsync use human friendly output.
 alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
+
+# Configure prompt.
+$env.PROMPT_COMMAND = {||
+    let path = $env.PWD | path basename
+    $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
+}
+$env.PROMPT_COMMAND_RIGHT = ""
+$env.PROMPT_INDICATOR = "❯ "
 
 # Set solarized light color theme for several Unix tools.
 #
@@ -400,6 +436,11 @@ $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
 # Make numerical compute libraries findable on MacOS.
 if (os) == "macos" {
+    let brew_prefix = if ("/opt/homebrew" | path exists) {
+        "/opt/homebrew"
+    } else { 
+        "/usr/local"
+    }
     $env.OPENBLAS = $"(brew_prefix)/opt/openblas"
     prepend-paths $env.OPENBLAS
 }
@@ -407,27 +448,6 @@ if (os) == "macos" {
 # Add Pyenv binaries to system path.
 $env.PYENV_ROOT = $"($env.HOME)/.pyenv"
 prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
-
-# Initialize Pyenv if available.
-if (which pyenv | is-not-empty) {
-    # while set pyenv_index (contains -i -- "/home/scruffaluff/.pyenv/shims" $PATH)
-    # set -eg PATH[$pyenv_index]; end; set -e pyenv_index
-    # set -gx PATH '/home/scruffaluff/.pyenv/shims' $PATH
-    # set -gx PYENV_SHELL fish
-    # source '/home/scruffaluff/.pyenv/completions/pyenv.fish'
-    # command pyenv rehash 2>/dev/null
-    # function pyenv
-    #   set command $argv[1]
-    #   set -e argv[1]
-    
-    #   switch "$command"
-    #   case activate deactivate rehash shell
-    #     source (pyenv "sh-$command" $argv|psub)
-    #   case "*"
-    #     command pyenv "$command" $argv
-    #   end
-    # end
-}
 
 # Ripgrep settings.
 
@@ -447,22 +467,6 @@ prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Disable Starship warnings about command timeouts.
 $env.STARSHIP_LOG = "error"
-
-# Initialize Starship if available.
-if (which "starship" | is-not-empty) {
-    let script = ($nu.data-dir | path join "vendor/autoload/starship.nu")
-    if not ($script | path exists) {
-        mkdir ($script | path dirname)
-        starship init nu | save --force $script
-    }
-} else {
-    $env.PROMPT_COMMAND = {||
-        let path = $env.PWD | path basename
-        $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
-    }
-    $env.PROMPT_COMMAND_RIGHT = ""
-    $env.PROMPT_INDICATOR = "❯ "
-} 
 
 # TypeScript settings.
 
@@ -504,19 +508,10 @@ def --env --wrapped yz [...args] {
   rm $tmp_file
 }
 
-# Initialize Zoxide if available.
-if (which "zoxide" | is-not-empty) {
-    let script = ($nu.data-dir | path join "vendor/autoload/zoxide.nu")
-    if not ($script | path exists) {
-        mkdir ($script | path dirname)
-        zoxide init --cmd cd nushell | save --force $script
-    }
-}
-
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
+if (tty) and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -541,6 +536,5 @@ if ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
 
 # Remove private convenience functions.
 
-hide brew_prefix
 hide os
-hide ssh-session
+hide tty

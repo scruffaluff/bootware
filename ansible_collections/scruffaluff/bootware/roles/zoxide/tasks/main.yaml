@@ -48,6 +48,19 @@
   become: true
   when: ansible_system == "Linux"
 
+- name: Install Zoxide for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: zoxide
+  when: ansible_system == "Darwin"
+
+- name: Install Zoxide for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: zoxide
+  when: ansible_system == "Win32NT"
+
 - name: Create shell completion directories for Linux
   ansible.builtin.file:
     mode: "755"
@@ -74,15 +87,36 @@
       shell: fish
   when: ansible_system == "Linux"
 
-- name: Install Zoxide for MacOS
+- name: Create Nushell autoload directories for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ nushell_autoload }}"
+    state: directory
   become: true
-  become_user: "{{ brew_user }}"
-  community.general.homebrew:
-    name: zoxide
-  when: ansible_system == "Darwin"
+  when: ansible_system != "Win32NT"
 
-- name: Install Zoxide for Windows
-  community.windows.win_scoop:
-    global: "{{ scoop_global }}"
-    name: zoxide
+- name: Generate Zoxide Nushell configuration for Unix
+  ansible.builtin.shell: >-
+    zoxide init nushell > {{ nushell_autoload }}/zoxide.nu
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  when: ansible_system != "Win32NT"
+
+- name: Create Nushell autoload directories for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ nushell_autoload }}"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Generate Zoxide Nushell configuration for Windows
+  ansible.windows.win_shell: >-
+    zoxide init nushell > {{ nushell_autoload }}/zoxide.nu
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\zoxide\\current;{{ ansible_env.Path }}"
   when: ansible_system == "Win32NT"

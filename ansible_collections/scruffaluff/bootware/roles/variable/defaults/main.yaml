@@ -39,6 +39,11 @@ github_api_token_: >-
 group_id_:
   Darwin: staff
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
+nushell_autoload_:
+  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
+  FreeBSD: "{{ user_home }}.local/share/nushell/vendor/autoload"
+  Linux: "{{ user_home }}.local/share/nushell/vendor/autoload"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 nushell_executable_:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
@@ -70,6 +75,9 @@ github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
+nushell_autoload: >-
+  {{  nushell_autoload_.get(ansible_system, user_home +
+  '.local/share/nushell/vendor/autoload') }}
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe

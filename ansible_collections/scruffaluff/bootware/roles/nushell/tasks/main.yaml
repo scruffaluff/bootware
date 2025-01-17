@@ -1,7 +1,4 @@
 ---
-# https://github.com/carapace-sh/carapace-bin/releases/download/v1.1.1/carapace-bin_1.1.1_linux_amd64.tar.gz
-# carapace _carapace nushell | save ~/.local/share/nushell/vendor/autoload/carapace.nu
-
 - name: Install Nushell for FreeBSD
   become: true
   community.general.pkgng:

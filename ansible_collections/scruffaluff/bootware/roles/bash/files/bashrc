@@ -4,7 +4,7 @@
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
 
-# Public convenience interactive functions.
+# Public convenience functions.
 
 # Override system implementation of command not found.
 #
@@ -14,13 +14,17 @@ command_not_found_handle() {
   echo "Error: command '${1}' not found" >&2
 }
 
-# Public convenience script functions.
+# Open Bash history file with default editor.
+edit-history() {
+  local program="${EDITOR:-vim}"
+  ${program} "${HOME}/.bash_history"
+}
 
 # Prepend existing directories that are not in the system path.
 #
 # Flags:
 #   -d: Check if path is a directory.
-prepend_paths() {
+prepend-paths() {
   local inode
   for inode in "$@"; do
     # Variable in regex is quoted to perform an exact substring match.
@@ -35,7 +39,7 @@ prepend_paths() {
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-source_files() {
+source-files() {
   local inode
   for inode in "$@"; do
     if [[ -f "${inode}" ]]; then
@@ -44,20 +48,26 @@ source_files() {
   done
 }
 
-# Private convenience variables.
+# Check if current shell is within a remote SSH session.
 #
-# Do not use long form flags for uname. They are not supported on MacOS. Command
-# "(brew --prefix)" will give the incorrect path when sourced on Apple silicon
-# and running under an Rosetta 2 emulated terminal.
+# Since function returns an exit code, zero is true and nonzero is false.
 #
 # Flags:
-#   -d: Check if path is a directory.
+#   -n: Check if string is nonempty.
+ssh-session() {
+  if [[ -n "${SSH_CLIENT}${SSH_CONNECTION}${SSH_TTY}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Private convenience variables.
+#
+# Do not use long form flags for uname. They are not supported on MacOS.
+#
+# Flags:
 #   -s: Show operating system kernel name.
-if [[ -d '/opt/homebrew' ]]; then
-  brew_prefix='/opt/homebrew'
-else
-  brew_prefix='/usr/local'
-fi
 os="$(uname -s)"
 tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
@@ -77,8 +87,7 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-#   -n: Check if string is nonempty.
-if [[ -n "${tty}" && -f "${HOME}/.ls_colors" ]]; then
+if [[ -f "${HOME}/.ls_colors" ]]; then
   # shellcheck disable=SC2155
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
 fi
@@ -87,46 +96,28 @@ fi
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-prepend_paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
+prepend-paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
   '/opt/homebrew/bin' "${HOME}/.local/bin"
 
-# Configure keybindings and completions for interactive shells.
+# Configure keybindings and completions if interactive.
 #
 # Custom Bash keybindings are loaded from ~/.inputrc with readline.
 #
 # Flags:
+#   -d: Check if path is a directory.
 #   -n: Check if string is nonempty.
 if [[ -n "${tty}" ]]; then
   # Load Bash completion.
   if [[ "${os}" == 'Darwin' ]]; then
-    source_files "${brew_prefix}/etc/profile.d/bash_completion.sh"
+    if [[ -d '/opt/homebrew' ]]; then
+      source-files "/opt/homebrew/etc/profile.d/bash_completion.sh"
+    else
+      source-files "/usr/local/etc/profile.d/bash_completion.sh"
+    fi
   elif [[ "${os}" == 'FreeBSD' ]]; then
-    source_files '/usr/local/share/bash-completion/bash_completion'
+    source-files '/usr/local/share/bash-completion/bash_completion'
   else
-    source_files '/usr/share/bash-completion/bash_completion'
-  fi
-fi
-
-# Add unified clipboard aliases.
-#
-# Command cbcopy is defined as a function instead of an alias to add logic for
-# removing the final newline from text during clipboard copies.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -v: Only show file path of command.
-#   -x: Check if file exists and execute permission is granted.
-if [[ -n "${tty}" ]]; then
-  if [[ "${os}" == 'Darwin' ]]; then
-    cbcopy() {
-      echo -n "$(cat)" | pbcopy
-    }
-    alias cbpaste='pbpaste'
-  elif [[ -x "$(command -v wl-copy)" ]]; then
-    cbcopy() {
-      echo -n "$(cat)" | wl-copy
-    }
-    alias cbpaste='wl-paste'
+    source-files '/usr/share/bash-completion/bash_completion'
   fi
 fi
 
@@ -139,6 +130,28 @@ fi
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v bat)" ]]; then
   export PAGER='bat'
+fi
+
+# Clipboard settings.
+
+# Add unified clipboard aliases.
+#
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ "${os}" == 'Darwin' ]]; then
+  cbcopy() {
+    echo -n "$(cat)" | pbcopy
+  }
+  alias cbpaste='pbpaste'
+elif [[ -x "$(command -v wl-copy)" ]]; then
+  cbcopy() {
+    echo -n "$(cat)" | wl-copy
+  }
+  alias cbpaste='wl-paste'
 fi
 
 # Docker settings.
@@ -156,28 +169,7 @@ alias ffprobe='ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Add path preview to Fzf file finder.
-#
-# Flags:
-#   -d: Check if path is a directory.
-_fzf_path_preview() {
-  if [[ -d "${1}" ]]; then
-    lsd --tree --depth 1 "${1}"
-  else
-    bat --color always --line-range :100 --style numbers "${1}"
-  fi
-}
-
-# Disable Fzf Alt-C command.
-export FZF_ALT_C_COMMAND=''
-# Set Fzf solarized light theme.
-_fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-_fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
-unset _fzf_colors
-unset _fzf_highlights
-
-# Load Fzf keybindings if available.
+# Load Fzf settings if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
@@ -185,6 +177,27 @@ unset _fzf_highlights
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
+  # Add path preview to Fzf file finder.
+  #
+  # Flags:
+  #   -d: Check if path is a directory.
+  _fzf_path_preview() {
+    if [[ -d "${1}" ]]; then
+      lsd --tree --depth 1 "${1}"
+    else
+      bat --color always --line-range :100 --style numbers "${1}"
+    fi
+  }
+
+  # Disable Fzf Alt-C command.
+  export FZF_ALT_C_COMMAND=''
+  # Set Fzf solarized light theme.
+  _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+  _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+  export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
+  unset _fzf_colors
+  unset _fzf_highlights
+
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
     export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
@@ -205,6 +218,7 @@ fi
 #   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v hx)" ]]; then
   export EDITOR='hx'
+  export SUDO_EDITOR='hx'
 fi
 
 # Homebrew settings
@@ -221,7 +235,7 @@ alias jt="just --justfile ${HOME}/.justfile --working-directory ."
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
-prepend_paths "${HOME}/.krew/bin"
+prepend-paths "${HOME}/.krew/bin"
 
 # Lsd settings.
 
@@ -251,13 +265,17 @@ export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable for MacOS.
 if [[ "${os}" == 'Darwin' ]]; then
-  export OPENBLAS="${brew_prefix}/opt/openblas"
-  prepend_paths "${OPENBLAS}"
+  if [[ -d '/opt/homebrew' ]]; then
+    export OPENBLAS='/opt/homebrew/opt/openblas'
+  else
+    export OPENBLAS='/usr/local/opt/openblas'
+  fi
+  prepend-paths "${OPENBLAS}"
 fi
 
 # Add Pyenv binaries to system path.
 export PYENV_ROOT="${HOME}/.pyenv"
-prepend_paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
+prepend-paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
 
 # Initialize Pyenv if available.
 #
@@ -284,7 +302,7 @@ alias rgd='rust-gdb --quiet'
 alias rld='rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
-prepend_paths "${HOME}/.cargo/bin"
+prepend-paths "${HOME}/.cargo/bin"
 
 # Starship settings.
 
@@ -309,34 +327,34 @@ fi
 
 # Add Bun binaries to system path.
 export BUN_INSTALL="${HOME}/.bun"
-prepend_paths "${BUN_INSTALL}/bin"
+prepend-paths "${BUN_INSTALL}/bin"
 
 # Add Deno binaries to system path.
-prepend_paths "${HOME}/.deno/bin"
+prepend-paths "${HOME}/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend_paths "${HOME}/.npm-global/bin"
+prepend-paths "${HOME}/.npm-global/bin"
 
 # Initialize Node Version Manager if available.
 #
 # Flags:
 #   -n: Check if the string has nonzero length.
 export NVM_DIR="${HOME}/.nvm"
-source_files "${NVM_DIR}/nvm.sh"
+source-files "${NVM_DIR}/nvm.sh"
 if [[ -n "${tty}" ]]; then
-  source_files "${NVM_DIR}/bash_completion"
+  source-files "${NVM_DIR}/bash_completion"
 fi
 
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
-prepend_paths '/usr/share/code/bin'
+prepend-paths '/usr/share/code/bin'
 
 # Wasmtime settings.
 
 # Add Wasmtime binaries to system path.
 export WASMTIME_HOME="${HOME}/.wasmtime"
-prepend_paths "${WASMTIME_HOME}/bin"
+prepend-paths "${WASMTIME_HOME}/bin"
 
 # Yazi settings.
 
@@ -356,14 +374,60 @@ yz() {
   rm "${tmp}"
 }
 
+# Zoxide settings.
+
+# Initialize Zoxide if interactive and available.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+if [[ -n "${tty}" && -x "$(command -v zoxide)" ]]; then
+  eval "$(zoxide init --cmd cd bash)"
+fi
+
+# Alacritty settings.
+
+# Placed near end of config to ensure Zellij reads the correct window size.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+#   -z: Check if the string is empty.
+if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
+  # Autostart Zellij or connect to existing session if within Alacritty
+  # terminal and within an interactive shell for the login user. For more
+  # information, visit https://zellij.dev/documentation/integration.html.
+  #
+  # Do not use logname command, since it sometimes incorrectly returns "root"
+  # on MacOS. For for information, visit
+  # https://github.com/vercel/hyper/issues/3762.
+  if ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
+    _bash_path="$(which bash)"
+    # Attach to a default session if it exists.
+    export ZELLIJ_AUTO_ATTACH='true'
+    # Exit the shell when Zellij exits.
+    export ZELLIJ_AUTO_EXIT='true'
+    SHELL="${_bash_path}" eval "$(zellij setup --generate-auto-start bash)"
+    unset _bash_path
+  fi
+
+  # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+  # during remote connections.
+  #
+  # For more information, visit
+  # https://github.com/alacritty/alacritty/issues/3962.
+  export TERM='xterm-256color'
+fi
+
 # Remove private convenience variables.
 
-unset brew_prefix
 unset os
 unset tty
 
 # User settings.
 
 # Load user aliases, secrets, and variables.
-source_files "${HOME}/.env" "${HOME}/.secrets" "${HOME}/.env.bash" \
+source-files "${HOME}/.env" "${HOME}/.secrets" "${HOME}/.env.bash" \
   "${HOME}/.secrets.bash"

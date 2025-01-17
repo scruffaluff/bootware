@@ -83,28 +83,22 @@ function _paste_pager
     end
 end
 
-# Check if current shell is within a remote SSH session.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-function _ssh_session
-    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
-        return 0
-    else
-        return 1
-    end
-end
-
-# Public convenience interactive functions.
+# Public convenience functions.
 
 # Open Fish history file with default editor.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
+#   -n: Check if string is nonempty.
 function edit-history
-    if type -q $EDITOR
-        $EDITOR "$HOME/.local/share/fish/fish_history"
+    # Variable 'EDITOR' needs quotes in case it is not defined.
+    set --local program
+    if test -n "$EDITOR"
+        set program $EDITOR
+    else
+        set program less
     end
+
+    $program "$HOME/.local/share/fish/fish_history"
 end
 
 # Override system implementation of command not found.
@@ -115,8 +109,6 @@ function fish_command_not_found
     echo "Error: command '$argv[1]' not found" >&2
 end
 
-# Public convenience script functions.
-
 # Prepend existing directories that are not in the system path.
 #
 # Builtin fish_add_path function changes system path permanently. This
@@ -125,7 +117,7 @@ end
 #
 # Flags:
 #   -d: Check if path is a directory.
-function prepend_paths
+function prepend-paths
     for inode in $argv
         if test -d $inode; and not contains $inode $PATH
             set --export PATH $inode $PATH
@@ -137,7 +129,7 @@ end
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-function source_bash_files
+function source-bash-files
     for inode in $argv
         if test -f $inode
             bass source $inode
@@ -149,7 +141,7 @@ end
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-function source_files
+function source-files
     for inode in $argv
         if test -f $inode
             source $inode
@@ -157,20 +149,26 @@ function source_files
     end
 end
 
-# Private convenience variables.
+# Check if current shell is within a remote SSH session.
 #
-# Do not use long form flags for uname. They are not supported on MacOS. Command
-# (brew --prefix) will give the incorrect path when sourced on Apple silicon and
-# running under an Rosetta 2 emulated terminal.
+# Since function returns an exit code, zero is true and nonzero is false.
 #
 # Flags:
-#   -d: Check if path is a directory.
-#   -s: Show operating system kernel name.
-if test -d /opt/homebrew
-    set brew_prefix /opt/homebrew
-else
-    set brew_prefix /usr/local
+#   -n: Check if string is nonempty.
+function ssh-session
+    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
+        return 0
+    else
+        return 1
+    end
 end
+
+# Private convenience variables.
+#
+# Do not use long form flags for uname. They are not supported on MacOS.
+#
+# Flags:
+#   -s: Show operating system kernel name.
 set os (uname -s)
 if status is-interactive
     set tty true
@@ -194,8 +192,7 @@ set fish_greeting ''
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-#   -n: Check if string is nonempty.
-if test -n $tty; and test -f "$HOME/.ls_colors"
+if test -f "$HOME/.ls_colors"
     set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
 end
 
@@ -203,66 +200,30 @@ end
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
+prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
     /opt/homebrew/bin "$HOME/.local/bin"
 
-# Add custom Fish key bindings.
+# Add keybindings if interactive.
 #
 # To discover Fish character sequences for keybindings, use the
 # 'fish_key_reader' command. For more information, visit
 # https://fishshell.com/docs/current/cmds/bind.html.
-function fish_user_key_bindings
-    bind \cw true
-    bind \cd backward-kill-path-component
-    bind \cj backward-char
-    bind \ec _paste_cwd
-    bind \ed kill-bigword
-    bind \ef _paste_fzf
-    bind \ep _paste_pager
-    bind \ex _delete_commandline_from_history
-    bind \eZ redo
-    bind \ez undo
-    bind \ue000 forward-char
-end
-
-# Add unified clipboard aliases.
-#
-# Command cbcopy is defined as a function instead of an alias to add logic for
-# removing the final newline from text during clipboard copies.
 #
 # Flags:
 #   -n: Check if string is nonempty.
-#   -q: Only check for exit status by supressing output.
-#   -z: Read input until null terminated instead of newline.
 if test -n $tty
-    if test $os = Darwin
-        function cbcopy
-            set --local text
-            while read -z line
-                # Variable 'text' needs quotes to send test a one line string.
-                if test -n "$text"
-                    set
-                else
-                    set text $line
-                end
-            end
-            echo -n "$(printf '%s' $text)" | pbcopy
-        end
-        alias cbpaste pbpaste
-    else if type -q wl-copy
-        function cbcopy
-            set --local text
-            while read -z line
-                # Variable 'text' needs quotes to send test a one line string.
-                if test -n "$text"
-                    set
-                else
-                    set text $line
-                end
-            end
-            echo -n "$(printf '%s' $text)" | wl-copy
-        end
-        alias cbpaste wl-paste
+    function fish_user_key_bindings
+        bind \cw true
+        bind \cd backward-kill-path-component
+        bind \cj backward-char
+        bind \ec _paste_cwd
+        bind \ed kill-bigword
+        bind \ef _paste_fzf
+        bind \ep _paste_pager
+        bind \ex _delete_commandline_from_history
+        bind \eZ redo
+        bind \ez undo
+        bind \ue000 forward-char
     end
 end
 
@@ -274,6 +235,47 @@ end
 #   -q: Only check for exit status by supressing output.
 if type -q bat
     set --export PAGER bat
+end
+
+# Clipboard settings.
+
+# Add unified clipboard aliases.
+#
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -q: Only check for exit status by supressing output.
+#   -z: Read input until null terminated instead of newline.
+if test $os = Darwin
+    function cbcopy
+        set --local text
+        while read -z line
+            # Variable 'text' needs quotes to send test a one line string.
+            if test -n "$text"
+                set
+            else
+                set text $line
+            end
+        end
+        echo -n "$(printf '%s' $text)" | pbcopy
+    end
+    alias cbpaste pbpaste
+else if type -q wl-copy
+    function cbcopy
+        set --local text
+        while read -z line
+            # Variable 'text' needs quotes to send test a one line string.
+            if test -n "$text"
+                set
+            else
+                set text $line
+            end
+        end
+        echo -n "$(printf '%s' $text)" | wl-copy
+    end
+    alias cbpaste wl-paste
 end
 
 # Docker settings.
@@ -292,34 +294,34 @@ alias ffprobe 'ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Add path preview to Fzf file finder.
-#
-# Flags:
-#   -d: Check if path is a directory.
-#   -q: Only check for exit status by supressing output.
-function _fzf_path_preview
-    if test -d $argv[1]
-        lsd --tree --depth 1 $argv[1]
-    else
-        bat --color always --line-range :100 --style numbers $argv[1]
-    end
-end
-
-# Disable Fzf Alt-C command.
-set --export FZF_ALT_C_COMMAND ''
-# Set Fzf solarized light theme.
-set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
-set --erase _fzf_colors
-set --erase _fzf_highlights
-
-# Load Fzf keybindings if available.
+# Load Fzf settings if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 if test -n $tty; and type -q fzf
+    # Add path preview to Fzf file finder.
+    #
+    # Flags:
+    #   -d: Check if path is a directory.
+    #   -q: Only check for exit status by supressing output.
+    function _fzf_path_preview
+        if test -d $argv[1]
+            lsd --tree --depth 1 $argv[1]
+        else
+            bat --color always --line-range :100 --style numbers $argv[1]
+        end
+    end
+
+    # Disable Fzf Alt-C command.
+    set --export FZF_ALT_C_COMMAND ''
+    # Set Fzf solarized light theme.
+    set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+    set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+    set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
+    set --erase _fzf_colors
+    set --erase _fzf_highlights
+
     fzf --fish | source
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
@@ -361,7 +363,7 @@ alias jt "just --justfile $HOME/.justfile --working-directory ."
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
-prepend_paths "$HOME/.krew/bin"
+prepend-paths "$HOME/.krew/bin"
 
 # Lsd settings.
 
@@ -390,13 +392,17 @@ set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
 if test $os = Darwin
-    set --export OPENBLAS "$brew_prefix/opt/openblas"
-    prepend_paths $OPENBLAS
+    if test -d /opt/homebrew
+        set --export OPENBLAS /opt/homebrew/opt/openblas
+    else
+        set --export OPENBLAS /usr/local/opt/openblas
+    end
+    prepend-paths $OPENBLAS
 end
 
 # Add Pyenv binaries to system path.
 set --export PYENV_ROOT "$HOME/.pyenv"
-prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
+prepend-paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 
 # Initialize Pyenv if available.
 #
@@ -418,7 +424,7 @@ alias rgd 'rust-gdb --quiet'
 alias rld 'rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
-prepend_paths "$HOME/.cargo/bin"
+prepend-paths "$HOME/.cargo/bin"
 
 # Starship settings.
 
@@ -444,13 +450,13 @@ end
 
 # Add Bun binaries to system path.
 set --export BUN_INSTALL "$HOME/.bun"
-prepend_paths "$BUN_INSTALL/bin"
+prepend-paths "$BUN_INSTALL/bin"
 
 # Add Deno binaries to system path.
-prepend_paths "$HOME/.deno/bin"
+prepend-paths "$HOME/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend_paths "$HOME/.npm-global/bin"
+prepend-paths "$HOME/.npm-global/bin"
 
 # Initialize Node Version Manager if available.
 #
@@ -463,13 +469,13 @@ end
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
-prepend_paths /usr/share/code/bin
+prepend-paths /usr/share/code/bin
 
 # Wasmtime settings.
 
 # Add Wasmtime binaries to system path.
 set --export WASMTIME_HOME "$HOME/.wasmtime"
-prepend_paths "$WASMTIME_HOME/bin"
+prepend-paths "$WASMTIME_HOME/bin"
 
 # Yazi settings.
 
@@ -492,7 +498,7 @@ end
 
 # Zoxide settings.
 
-# Initialize Zoxide if available.
+# Initialize Zoxide if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
@@ -517,7 +523,7 @@ if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if type -q zellij; and not _ssh_session; and test $LOGNAME = $USER
+    if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
         set --local fish_path (which fish)
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
@@ -536,7 +542,6 @@ end
 
 # Remove private convenience variables.
 
-set --erase brew_prefix
 set --erase os
 set --erase tty
 
@@ -547,6 +552,6 @@ set --erase tty
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-    source_bash_files "$HOME/.env" "$HOME/.secrets"
+    source-bash-files "$HOME/.env" "$HOME/.secrets"
 end
-source_files "$HOME/.env.fish" "$HOME/.secrets.fish"
+source-files "$HOME/.env.fish" "$HOME/.secrets.fish"
