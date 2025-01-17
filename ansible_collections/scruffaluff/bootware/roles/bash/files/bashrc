@@ -110,13 +110,11 @@ if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
   # on MacOS. For for information, visit
   # https://github.com/vercel/hyper/issues/3762.
   if ! ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
-    _bash_path="$(which bash)"
     # Attach to a default session if it exists.
     export ZELLIJ_AUTO_ATTACH='true'
     # Exit the shell when Zellij exits.
     export ZELLIJ_AUTO_EXIT='true'
-    SHELL="${_bash_path}" eval "$(zellij setup --generate-auto-start bash)"
-    unset _bash_path
+    SHELL="${BASH}" eval "$(zellij setup --generate-auto-start bash)"
   fi
 
   # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
@@ -186,10 +184,10 @@ alias ffprobe='ffprobe -hide_banner'
 if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   # Disable Fzf Alt-C command.
   export FZF_ALT_C_COMMAND=''
-  # Set Fzf solarized light theme.
+  # Set Fzf solarized light theme and shell command for child processes.
   _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
   _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-  export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights}"
+  export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights} --with-shell 'bash -c'"
   unset _fzf_colors
   unset _fzf_highlights
 

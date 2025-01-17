@@ -213,12 +213,11 @@ if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
-        set --local fish_path (which fish)
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
         set --export ZELLIJ_AUTO_EXIT true
-        SHELL=$fish_path eval (zellij setup --generate-auto-start fish | string collect)
+        SHELL=(status fish-path) eval (zellij setup --generate-auto-start fish | string collect)
     end
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
@@ -304,10 +303,10 @@ alias ffprobe 'ffprobe -hide_banner'
 if test -n $tty; and type -q fzf
     # Disable Fzf Alt-C command.
     set --export FZF_ALT_C_COMMAND ''
-    # Set Fzf solarized light theme.
+    # Set Fzf solarized light theme and shell command for child processes.
     set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
     set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-    set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
+    set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights --with-shell 'fish -c'"
     set --erase _fzf_colors
     set --erase _fzf_highlights
 
