@@ -431,7 +431,7 @@ prepend-paths "$HOME/.cargo/bin"
 # Disable Starship warnings about command timeouts.
 set --export STARSHIP_LOG error
 
-# Initialize Starship if available.
+# Initialize Starship if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
