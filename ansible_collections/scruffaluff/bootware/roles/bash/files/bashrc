@@ -403,7 +403,7 @@ if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
   # Do not use logname command, since it sometimes incorrectly returns "root"
   # on MacOS. For for information, visit
   # https://github.com/vercel/hyper/issues/3762.
-  if ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
+  if ! ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
     _bash_path="$(which bash)"
     # Attach to a default session if it exists.
     export ZELLIJ_AUTO_ATTACH='true'

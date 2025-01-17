@@ -65,11 +65,6 @@ def paste-super [] {
     }
 }
 
-# Wrapper for interactive check.
-def tty [] {
-    is-terminal --stdin
-}
-
 # Public convenience functions.
 
 # Prepend existing directories that are not in the system path.
@@ -511,7 +506,7 @@ def --env --wrapped yz [...args] {
 # Alacritty settings.
 
 # Placed near end of config to ensure Zellij reads the correct window size.
-if (tty) and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
+if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -537,4 +532,3 @@ if (tty) and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
 # Remove private convenience functions.
 
 hide os
-hide tty

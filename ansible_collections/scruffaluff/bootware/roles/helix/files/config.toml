@@ -23,9 +23,8 @@ hidden = false
 [editor.indent-guides]
 render = true
 
-# Enable only if on Helix 25.01 or later.
-# [editor.inline-diagnostics]
-# cursor-line = "warning"
+[editor.inline-diagnostics]
+cursor-line = "warning"
 
 [editor.smart-tab]
 enable = false
