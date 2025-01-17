@@ -4,6 +4,20 @@
 # For more information, visit
 # https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html.
 
+# Private convenience functions.
+
+# Path preview for Fzf file finder.
+#
+# Flags:
+#   -d: Check if path is a directory.
+_fzf_path_preview() {
+  if [[ -d "${1}" ]]; then
+    lsd --tree --depth 1 "${1}"
+  else
+    bat --color always --line-range :100 --style numbers "${1}"
+  fi
+}
+
 # Public convenience functions.
 
 # Override system implementation of command not found.
@@ -80,18 +94,6 @@ alias rsync='rsync --partial --progress --filter ":- .gitignore"'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-if [[ -f "${HOME}/.ls_colors" ]]; then
-  # shellcheck disable=SC2155
-  export LS_COLORS="$(cat "${HOME}/.ls_colors")"
-fi
-
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -99,7 +101,7 @@ fi
 prepend-paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
   '/opt/homebrew/bin' "${HOME}/.local/bin"
 
-# Configure keybindings and completions if interactive.
+# Configure completions if interactive.
 #
 # Custom Bash keybindings are loaded from ~/.inputrc with readline.
 #
@@ -119,6 +121,39 @@ if [[ -n "${tty}" ]]; then
   else
     source-files '/usr/share/bash-completion/bash_completion'
   fi
+fi
+
+# Alacritty settings.
+
+# Flags:
+#   -n: Check if string is nonempty.
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
+#   -z: Check if the string is empty.
+if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
+  # Autostart Zellij or connect to existing session if within Alacritty
+  # terminal and within an interactive shell for the login user. For more
+  # information, visit https://zellij.dev/documentation/integration.html.
+  #
+  # Do not use logname command, since it sometimes incorrectly returns "root"
+  # on MacOS. For for information, visit
+  # https://github.com/vercel/hyper/issues/3762.
+  if ! ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
+    _bash_path="$(which bash)"
+    # Attach to a default session if it exists.
+    export ZELLIJ_AUTO_ATTACH='true'
+    # Exit the shell when Zellij exits.
+    export ZELLIJ_AUTO_EXIT='true'
+    SHELL="${_bash_path}" eval "$(zellij setup --generate-auto-start bash)"
+    unset _bash_path
+  fi
+
+  # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+  # during remote connections.
+  #
+  # For more information, visit
+  # https://github.com/alacritty/alacritty/issues/3962.
+  export TERM='xterm-256color'
 fi
 
 # Bat settings.
@@ -177,18 +212,6 @@ alias ffprobe='ffprobe -hide_banner'
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
-  # Add path preview to Fzf file finder.
-  #
-  # Flags:
-  #   -d: Check if path is a directory.
-  _fzf_path_preview() {
-    if [[ -d "${1}" ]]; then
-      lsd --tree --depth 1 "${1}"
-    else
-      bat --color always --line-range :100 --style numbers "${1}"
-    fi
-  }
-
   # Disable Fzf Alt-C command.
   export FZF_ALT_C_COMMAND=''
   # Set Fzf solarized light theme.
@@ -238,6 +261,18 @@ alias jt="just --justfile ${HOME}/.justfile --working-directory ."
 prepend-paths "${HOME}/.krew/bin"
 
 # Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+if [[ -f "${HOME}/.ls_colors" ]]; then
+  # shellcheck disable=SC2155
+  export LS_COLORS="$(cat "${HOME}/.ls_colors")"
+fi
 
 # Replace Ls with Lsd if avialable.
 #
@@ -384,41 +419,6 @@ yz() {
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${tty}" && -x "$(command -v zoxide)" ]]; then
   eval "$(zoxide init --cmd cd bash)"
-fi
-
-# Alacritty settings.
-
-# Placed near end of config to ensure Zellij reads the correct window size.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -v: Only show file path of command.
-#   -x: Check if file exists and execute permission is granted.
-#   -z: Check if the string is empty.
-if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
-  # Autostart Zellij or connect to existing session if within Alacritty
-  # terminal and within an interactive shell for the login user. For more
-  # information, visit https://zellij.dev/documentation/integration.html.
-  #
-  # Do not use logname command, since it sometimes incorrectly returns "root"
-  # on MacOS. For for information, visit
-  # https://github.com/vercel/hyper/issues/3762.
-  if ! ssh-session && [[ -x "$(command -v zellij)" && "${LOGNAME}" == "${USER}" ]]; then
-    _bash_path="$(which bash)"
-    # Attach to a default session if it exists.
-    export ZELLIJ_AUTO_ATTACH='true'
-    # Exit the shell when Zellij exits.
-    export ZELLIJ_AUTO_EXIT='true'
-    SHELL="${_bash_path}" eval "$(zellij setup --generate-auto-start bash)"
-    unset _bash_path
-  fi
-
-  # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-  # during remote connections.
-  #
-  # For more information, visit
-  # https://github.com/alacritty/alacritty/issues/3962.
-  export TERM='xterm-256color'
 fi
 
 # Remove private convenience variables.

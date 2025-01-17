@@ -29,6 +29,19 @@ function _delete_commandline_from_history
     end
 end
 
+# Path preview for Fzf file finder.
+#
+# Flags:
+#   -d: Check if path is a directory.
+#   -q: Only check for exit status by supressing output.
+function _fzf_path_preview
+    if test -d $argv[1]
+        lsd --tree --depth 1 $argv[1]
+    else
+        bat --color always --line-range :100 --style numbers $argv[1]
+    end
+end
+
 # Paste current working directory into the commandline.
 function _paste_cwd
     set --local line (commandline | string collect)
@@ -185,17 +198,6 @@ alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
 
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-if test -f "$HOME/.ls_colors"
-    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
-end
-
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -225,6 +227,37 @@ if test -n $tty
         bind \ez undo
         bind \ue000 forward-char
     end
+end
+
+# Alacritty settings.
+
+# Flags:
+#   -n: Check if string is nonempty.
+#   -q: Only check for exit status by supressing output.
+#   -z: Check if the string is empty.
+if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal and within an interactive shell for the login user. For more
+    # information, visit https://zellij.dev/documentation/integration.html.
+    #
+    # Do not use logname command, since it sometimes incorrectly returns "root"
+    # on MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
+    if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
+        set --local fish_path (which fish)
+        # Attach to a default session if it exists.
+        set --export ZELLIJ_AUTO_ATTACH true
+        # Exit the shell when Zellij exits.
+        set --export ZELLIJ_AUTO_EXIT true
+        SHELL=$fish_path eval (zellij setup --generate-auto-start fish | string collect)
+    end
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    set --export TERM xterm-256color
 end
 
 # Bat settings.
@@ -300,19 +333,6 @@ alias ffprobe 'ffprobe -hide_banner'
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 if test -n $tty; and type -q fzf
-    # Add path preview to Fzf file finder.
-    #
-    # Flags:
-    #   -d: Check if path is a directory.
-    #   -q: Only check for exit status by supressing output.
-    function _fzf_path_preview
-        if test -d $argv[1]
-            lsd --tree --depth 1 $argv[1]
-        else
-            bat --color always --line-range :100 --style numbers $argv[1]
-        end
-    end
-
     # Disable Fzf Alt-C command.
     set --export FZF_ALT_C_COMMAND ''
     # Set Fzf solarized light theme.
@@ -366,6 +386,17 @@ alias jt "just --justfile $HOME/.justfile --working-directory ."
 prepend-paths "$HOME/.krew/bin"
 
 # Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+if test -f "$HOME/.ls_colors"
+    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
+end
 
 # Replace Ls with Lsd if avialable.
 #
@@ -505,39 +536,6 @@ end
 #   -q: Only check for exit status by supressing output.
 if test -n $tty; and type -q zoxide
     zoxide init --cmd cd fish | source
-end
-
-# Alacritty settings.
-
-# Placed near end of config to ensure Zellij reads the correct window size.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -q: Only check for exit status by supressing output.
-#   -z: Check if the string is empty.
-if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
-    # Do not use logname command, since it sometimes incorrectly returns "root"
-    # on MacOS. For for information, visit
-    # https://github.com/vercel/hyper/issues/3762.
-    if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
-        set --local fish_path (which fish)
-        # Attach to a default session if it exists.
-        set --export ZELLIJ_AUTO_ATTACH true
-        # Exit the shell when Zellij exits.
-        set --export ZELLIJ_AUTO_EXIT true
-        SHELL=$fish_path eval (zellij setup --generate-auto-start fish | string collect)
-    end
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    set --export TERM xterm-256color
 end
 
 # Remove private convenience variables.

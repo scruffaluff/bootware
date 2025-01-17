@@ -347,14 +347,6 @@ $env.PROMPT_COMMAND = {||
 $env.PROMPT_COMMAND_RIGHT = ""
 $env.PROMPT_INDICATOR = "❯ "
 
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-if ($"($env.HOME)/.ls_colors" | path exists) {
-    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
-}
-
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -367,6 +359,31 @@ if ($"($env.HOME)/.ls_colors" | path exists) {
     "/opt/homebrew/bin"
     $"($env.HOME)/.local/bin"
 )
+
+# Alacritty settings.
+
+if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal and within an interactive shell for the login user. For more
+    # information, visit https://zellij.dev/documentation/integration.html.
+    #
+    # Based on output of "zellij setup --generate-auto-start bash" command.
+    #
+    # Do not use logname command, since it sometimes incorrectly returns "root"
+    # on MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
+    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
+        with-env { SHELL: $nu.current-exe } { zellij attach --create }
+        exit
+    }
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $env.TERM = "xterm-256color"
+}
 
 # Bat settings.
 
@@ -414,6 +431,16 @@ alias jt = just --justfile $"($env.HOME)/.justfile" --working-directory .
 # Add Kubectl plugins to system path.
 prepend-paths $"($env.HOME)/.krew/bin"
 
+# Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+if ($"($env.HOME)/.ls_colors" | path exists) {
+    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
+}
+
 # Procs settings.
 
 # Set light theme since Procs automatic theming fails on some systems.
@@ -436,7 +463,7 @@ if (os) == "macos" {
     } else { 
         "/usr/local"
     }
-    $env.OPENBLAS = $"(brew_prefix)/opt/openblas"
+    $env.OPENBLAS = $"($brew_prefix)/opt/openblas"
     prepend-paths $env.OPENBLAS
 }
 
@@ -501,32 +528,6 @@ def --env --wrapped yz [...args] {
     cd $cwd
   }
   rm $tmp_file
-}
-
-# Alacritty settings.
-
-# Placed near end of config to ensure Zellij reads the correct window size.
-if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
-    # Based on output of "zellij setup --generate-auto-start bash" command.
-    #
-    # Do not use logname command, since it sometimes incorrectly returns "root"
-    # on MacOS. For for information, visit
-    # https://github.com/vercel/hyper/issues/3762.
-    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
-        with-env { SHELL: $nu.current-exe } { zellij attach --create }
-        exit
-    }
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    $env.TERM = "xterm-256color"
 }
 
 # Remove private convenience functions.

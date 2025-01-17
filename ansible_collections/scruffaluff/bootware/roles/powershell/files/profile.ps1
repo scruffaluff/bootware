@@ -264,6 +264,34 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     }
 }
 
+# Alacritty settings.
+
+If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal.
+    #
+    # For more information, visit
+    # https://zellij.dev/documentation/integration.html.
+    If (
+        (Get-Command -ErrorAction SilentlyContinue zellij) -And
+        (-Not $(ssh-session))
+    ) {
+        # Attach to a default session if it exists.
+        $Env:ZELLIJ_AUTO_ATTACH = 'true'
+        # Exit the shell when Zellij exits.
+        $Env:ZELLIJ_AUTO_EXIT = 'true'
+        # TODO: Uncomment when Zellij gains Windows support.
+        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
+    }
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $Env:TERM = 'xterm-256color'
+}
+
 # Bat settings.
 
 # Set default pager to Bat.
@@ -306,8 +334,8 @@ If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
     $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
     $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
     $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
-    Remove-Variable -Force FzfColors
-    Remove-Variable -Force FzfHighlights
+    Remove-Variable -Name FzfColors
+    Remove-Variable -Name FzfHighlights
 
     Import-Module PsFzf
     If (
@@ -349,6 +377,14 @@ Function jt() {
 }
 
 # Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+If (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
+  $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
+}
 
 # Replace Ls with Lsd if avialable.
 If (Get-Command -ErrorAction SilentlyContinue lsd) {
@@ -423,38 +459,9 @@ If ($Tty -And (Get-Command -ErrorAction SilentlyContinue zoxide)) {
     Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
 }
 
-# Alacritty settings.
-
-# Placed near end of config to ensure Zellij reads the correct window size.
-If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal.
-    #
-    # For more information, visit
-    # https://zellij.dev/documentation/integration.html.
-    If (
-        (Get-Command -ErrorAction SilentlyContinue zellij) -And
-        (-Not $(ssh-session))
-    ) {
-        # Attach to a default session if it exists.
-        $Env:ZELLIJ_AUTO_ATTACH = 'true'
-        # Exit the shell when Zellij exits.
-        $Env:ZELLIJ_AUTO_EXIT = 'true'
-        # TODO: Uncomment when Zellij gains Windows support.
-        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
-    }
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    $Env:TERM = 'xterm-256color'
-}
-
 # Remove private convenience variables.
 
-Remove-Variable -Force Tty
+Remove-Variable -Name Tty
 
 # User settings.
 
