@@ -85,14 +85,7 @@ ssh-session() {
 os="$(uname -s)"
 tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
-# Shell settings.
-
-# Add alias for remove by force.
-alias rmf='rm -fr'
-# Make rsync use human friendly output.
-alias rsync='rsync --partial --progress --filter ":- .gitignore"'
-# Disable MacOS default shell is now Zsh message. Value must be 1.
-export BASH_SILENCE_DEPRECATION_WARNING=1
+# System settings.
 
 # Add directories to system path that are not always included.
 #
@@ -100,28 +93,6 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 # since some ARM systems might have slower emulated AMD copies of programs.
 prepend-paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
   '/opt/homebrew/bin' "${HOME}/.local/bin"
-
-# Configure completions if interactive.
-#
-# Custom Bash keybindings are loaded from ~/.inputrc with readline.
-#
-# Flags:
-#   -d: Check if path is a directory.
-#   -n: Check if string is nonempty.
-if [[ -n "${tty}" ]]; then
-  # Load Bash completion.
-  if [[ "${os}" == 'Darwin' ]]; then
-    if [[ -d '/opt/homebrew' ]]; then
-      source-files "/opt/homebrew/etc/profile.d/bash_completion.sh"
-    else
-      source-files "/usr/local/etc/profile.d/bash_completion.sh"
-    fi
-  elif [[ "${os}" == 'FreeBSD' ]]; then
-    source-files '/usr/local/share/bash-completion/bash_completion'
-  else
-    source-files '/usr/share/bash-completion/bash_completion'
-  fi
-fi
 
 # Alacritty settings.
 
@@ -338,6 +309,37 @@ alias rld='rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
 prepend-paths "${HOME}/.cargo/bin"
+
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf='rm -fr'
+# Make rsync use human friendly output.
+alias rsync='rsync --partial --progress --filter ":- .gitignore"'
+# Disable MacOS default shell is now Zsh message. Value must be 1.
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Configure completions if interactive.
+#
+# Custom Bash keybindings are loaded from ~/.inputrc with readline.
+#
+# Flags:
+#   -d: Check if path is a directory.
+#   -n: Check if string is nonempty.
+if [[ -n "${tty}" ]]; then
+  # Load Bash completion.
+  if [[ "${os}" == 'Darwin' ]]; then
+    if [[ -d '/opt/homebrew' ]]; then
+      source-files "/opt/homebrew/etc/profile.d/bash_completion.sh"
+    else
+      source-files "/usr/local/etc/profile.d/bash_completion.sh"
+    fi
+  elif [[ "${os}" == 'FreeBSD' ]]; then
+    source-files '/usr/local/share/bash-completion/bash_completion'
+  else
+    source-files '/usr/share/bash-completion/bash_completion'
+  fi
+fi
 
 # Starship settings.
 

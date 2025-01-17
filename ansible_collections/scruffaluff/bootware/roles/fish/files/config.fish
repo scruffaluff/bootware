@@ -189,14 +189,7 @@ else
     set tty ''
 end
 
-# Shell settings.
-
-# Add alias for remove by force.
-alias rmf 'rm -fr'
-# Make rsync use human friendly output.
-alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
-# Disable welcome message.
-set fish_greeting ''
+# System settings.
 
 # Add directories to system path that are not always included.
 #
@@ -204,30 +197,6 @@ set fish_greeting ''
 # since some ARM systems might have slower emulated AMD copies of programs.
 prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
     /opt/homebrew/bin "$HOME/.local/bin"
-
-# Add keybindings if interactive.
-#
-# To discover Fish character sequences for keybindings, use the
-# 'fish_key_reader' command. For more information, visit
-# https://fishshell.com/docs/current/cmds/bind.html.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-if test -n $tty
-    function fish_user_key_bindings
-        bind \cw true
-        bind \cd backward-kill-path-component
-        bind \cj backward-char
-        bind \ec _paste_cwd
-        bind \ed kill-bigword
-        bind \ef _paste_fzf
-        bind \ep _paste_pager
-        bind \ex _delete_commandline_from_history
-        bind \eZ redo
-        bind \ez undo
-        bind \ue000 forward-char
-    end
-end
 
 # Alacritty settings.
 
@@ -456,6 +425,39 @@ alias rld 'rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
 prepend-paths "$HOME/.cargo/bin"
+
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf 'rm -fr'
+# Make rsync use human friendly output.
+alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
+# Disable welcome message.
+set fish_greeting ''
+
+# Add keybindings if interactive.
+#
+# To discover Fish character sequences for keybindings, use the
+# 'fish_key_reader' command. For more information, visit
+# https://fishshell.com/docs/current/cmds/bind.html.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+if test -n $tty
+    function fish_user_key_bindings
+        bind \cw true
+        bind \cd backward-kill-path-component
+        bind \cj backward-char
+        bind \ec _paste_cwd
+        bind \ed kill-bigword
+        bind \ef _paste_fzf
+        bind \ep _paste_pager
+        bind \ex _delete_commandline_from_history
+        bind \eZ redo
+        bind \ez undo
+        bind \ue000 forward-char
+    end
+end
 
 # Starship settings.
 

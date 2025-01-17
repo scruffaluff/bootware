@@ -80,7 +80,162 @@ def ssh-session [] {
     "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
 }
 
-# Nusehll configuration.
+# System settings.
+
+# Add directories to system path that are not always included.
+#
+# Homebrew ARM directories should appear in system path before AMD directories
+# since some ARM systems might have slower emulated AMD copies of programs.
+(
+    prepend-paths
+    "/usr/sbin"
+    "/usr/local/bin"
+    "/opt/homebrew/sbin"
+    "/opt/homebrew/bin"
+    $"($env.HOME)/.local/bin"
+)
+
+# Alacritty settings.
+
+if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal and within an interactive shell for the login user. For more
+    # information, visit https://zellij.dev/documentation/integration.html.
+    #
+    # Based on output of "zellij setup --generate-auto-start bash" command.
+    #
+    # Do not use logname command, since it sometimes incorrectly returns "root"
+    # on MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
+    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
+        with-env { SHELL: $nu.current-exe } { zellij attach --create }
+        exit
+    }
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $env.TERM = "xterm-256color"
+}
+
+# Bat settings.
+
+# Set default pager to Bat.
+if (which "bat" | is-not-empty) {
+    $env.PAGER = "bat"
+}
+
+# Docker settings.
+
+# Ensure newer Docker features are enabled.
+$env.COMPOSE_DOCKER_CLI_BUILD = "true"
+$env.DOCKER_BUILDKIT = "true"
+$env.DOCKER_CLI_HINTS = "false"
+
+# FFmpeg settings.
+
+# Disable verbose FFmpeg banners.
+alias ffmpeg = ^ffmpeg -hide_banner
+alias ffplay = ^ffplay -hide_banner
+alias ffprobe = ^ffprobe -hide_banner
+
+# Fzf settings.
+
+# Helix settings.
+
+# Set default editor to Helix if available.
+if (which "hx" | is-not-empty) {
+    $env.EDITOR = "hx"
+    $env.SUDO_EDITOR = "hx"
+}
+
+# Homebrew settings
+
+# Avoid Homebrew hints after installing a package.
+$env.HOMEBREW_NO_ENV_HINTS = "true"
+
+# Just settings.
+
+# Add alias for account wide Just recipes.
+alias jt = just --justfile $"($env.HOME)/.justfile" --working-directory .
+
+# Kubernetes settings.
+
+# Add Kubectl plugins to system path.
+prepend-paths $"($env.HOME)/.krew/bin"
+
+# Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+if ($"($env.HOME)/.ls_colors" | path exists) {
+    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
+}
+
+# Procs settings.
+
+# Set light theme since Procs automatic theming fails on some systems.
+alias procs = ^procs --theme light
+
+# Python settings.
+
+# Add Python debugger alias.
+alias pdb = python3 -m pdb
+
+# Make Poetry create virutal environments inside projects.
+$env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
+# Fix Poetry package install issue on headless systems.
+$env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
+
+# Make numerical compute libraries findable on MacOS.
+if (os) == "macos" {
+    let brew_prefix = if ("/opt/homebrew" | path exists) {
+        "/opt/homebrew"
+    } else { 
+        "/usr/local"
+    }
+    $env.OPENBLAS = $"($brew_prefix)/opt/openblas"
+    prepend-paths $env.OPENBLAS
+}
+
+# Add Pyenv binaries to system path.
+$env.PYENV_ROOT = $"($env.HOME)/.pyenv"
+prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
+
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+$env.RIPGREP_CONFIG_PATH = $"($env.HOME)/.ripgreprc"
+
+# Rust settings.
+
+# Add Rust debugger aliases.
+alias rgd = rust-gdb --quiet
+alias rld = rust-lldb --source-quietly
+
+# Add Rust binaries to system path.
+prepend-paths $"($env.HOME)/.cargo/bin"
+
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf = rm --force --recursive
+# Make rsync use human friendly output.
+alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
+
+# Configure prompt if interactive
+if $nu.is-interactive {
+    $env.PROMPT_COMMAND = {||
+        let path = $env.PWD | path basename
+        $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
+    }
+    $env.PROMPT_COMMAND_RIGHT = ""
+    $env.PROMPT_INDICATOR = "❯ "
+}
 
 $env.config = {
     # Based on solarized light theme from
@@ -331,159 +486,6 @@ $env.config = {
     shell_integration: { osc133: ((os) != "windows") }
     show_banner: false
 }
-
-# Shell settings.
-
-# Add alias for remove by force.
-alias rmf = rm --force --recursive
-# Make rsync use human friendly output.
-alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
-
-# Configure prompt.
-$env.PROMPT_COMMAND = {||
-    let path = $env.PWD | path basename
-    $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
-}
-$env.PROMPT_COMMAND_RIGHT = ""
-$env.PROMPT_INDICATOR = "❯ "
-
-# Add directories to system path that are not always included.
-#
-# Homebrew ARM directories should appear in system path before AMD directories
-# since some ARM systems might have slower emulated AMD copies of programs.
-(
-    prepend-paths
-    "/usr/sbin"
-    "/usr/local/bin"
-    "/opt/homebrew/sbin"
-    "/opt/homebrew/bin"
-    $"($env.HOME)/.local/bin"
-)
-
-# Alacritty settings.
-
-if $nu.is-interactive and ($env.TERM == "alacritty") and not ("TERM_PROGRAM" in $env) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
-    # Based on output of "zellij setup --generate-auto-start bash" command.
-    #
-    # Do not use logname command, since it sometimes incorrectly returns "root"
-    # on MacOS. For for information, visit
-    # https://github.com/vercel/hyper/issues/3762.
-    if (which "zellij" | is-not-empty) and not (ssh-session) and ($env.LOGNAME == $env.USER) and not ("ZELLIJ" in $env) {
-        with-env { SHELL: $nu.current-exe } { zellij attach --create }
-        exit
-    }
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    $env.TERM = "xterm-256color"
-}
-
-# Bat settings.
-
-# Set default pager to Bat.
-if (which "bat" | is-not-empty) {
-    $env.PAGER = "bat"
-}
-
-# Docker settings.
-
-# Ensure newer Docker features are enabled.
-$env.COMPOSE_DOCKER_CLI_BUILD = "true"
-$env.DOCKER_BUILDKIT = "true"
-$env.DOCKER_CLI_HINTS = "false"
-
-# FFmpeg settings.
-
-# Disable verbose FFmpeg banners.
-alias ffmpeg = ^ffmpeg -hide_banner
-alias ffplay = ^ffplay -hide_banner
-alias ffprobe = ^ffprobe -hide_banner
-
-# Fzf settings.
-
-# Helix settings.
-
-# Set default editor to Helix if available.
-if (which "hx" | is-not-empty) {
-    $env.EDITOR = "hx"
-    $env.SUDO_EDITOR = "hx"
-}
-
-# Homebrew settings
-
-# Avoid Homebrew hints after installing a package.
-$env.HOMEBREW_NO_ENV_HINTS = "true"
-
-# Just settings.
-
-# Add alias for account wide Just recipes.
-alias jt = just --justfile $"($env.HOME)/.justfile" --working-directory .
-
-# Kubernetes settings.
-
-# Add Kubectl plugins to system path.
-prepend-paths $"($env.HOME)/.krew/bin"
-
-# Lsd settings.
-
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-if ($"($env.HOME)/.ls_colors" | path exists) {
-    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
-}
-
-# Procs settings.
-
-# Set light theme since Procs automatic theming fails on some systems.
-alias procs = ^procs --theme light
-
-# Python settings.
-
-# Add Python debugger alias.
-alias pdb = python3 -m pdb
-
-# Make Poetry create virutal environments inside projects.
-$env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
-# Fix Poetry package install issue on headless systems.
-$env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
-
-# Make numerical compute libraries findable on MacOS.
-if (os) == "macos" {
-    let brew_prefix = if ("/opt/homebrew" | path exists) {
-        "/opt/homebrew"
-    } else { 
-        "/usr/local"
-    }
-    $env.OPENBLAS = $"($brew_prefix)/opt/openblas"
-    prepend-paths $env.OPENBLAS
-}
-
-# Add Pyenv binaries to system path.
-$env.PYENV_ROOT = $"($env.HOME)/.pyenv"
-prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
-
-# Ripgrep settings.
-
-# Set Ripgrep settings file location.
-$env.RIPGREP_CONFIG_PATH = $"($env.HOME)/.ripgreprc"
-
-# Rust settings.
-
-# Add Rust debugger aliases.
-alias rgd = rust-gdb --quiet
-alias rld = rust-lldb --source-quietly
-
-# Add Rust binaries to system path.
-prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Starship settings.
 

@@ -80,7 +80,11 @@ Function which() {
     }
 }
 
-# Essential fixes.
+# Private convenience variables.
+
+$Tty = -Not [System.Console]::IsOutputRedirected
+
+# System settings.
 
 # Fix system path for SSH connections.
 #
@@ -90,9 +94,162 @@ Function which() {
 $Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
     + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine')
 
-# Private convenience variables.
+# Alacritty settings.
 
-$Tty = -Not [System.Console]::IsOutputRedirected
+If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal.
+    #
+    # For more information, visit
+    # https://zellij.dev/documentation/integration.html.
+    If (
+        (Get-Command -ErrorAction SilentlyContinue zellij) -And
+        (-Not $(ssh-session))
+    ) {
+        # Attach to a default session if it exists.
+        $Env:ZELLIJ_AUTO_ATTACH = 'true'
+        # Exit the shell when Zellij exits.
+        $Env:ZELLIJ_AUTO_EXIT = 'true'
+        # TODO: Uncomment when Zellij gains Windows support.
+        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
+    }
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    $Env:TERM = 'xterm-256color'
+}
+
+# Bat settings.
+
+# Set default pager to Bat.
+If (Get-Command -ErrorAction SilentlyContinue bat) {
+    $Env:PAGER = 'bat'
+}
+
+# Bootware settings.
+
+# Load Bootware autocompletion if available.
+If ($Tty) {
+    Import-Module -ErrorAction SilentlyContinue BootwareCompletion
+}
+
+# Clipboard settings.
+
+# Add unified clipboard aliases.
+Set-Alias -Name cbcopy -Value Set-Clipboard
+Set-Alias -Name cbpaste -Value Get-Clipboard
+
+# Docker settings.
+
+# Ensure newer Docker features are enabled.
+$Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
+$Env:DOCKER_BUILDKIT = 'true'
+$Env:DOCKER_CLI_HINTS = 'false'
+
+# Load Docker autocompletion if interactice and available.
+If ($Tty) {
+    Import-Module -ErrorAction SilentlyContinue DockerCompletion
+}
+
+# Fzf settings.
+
+# Setup Fzf PowerShell integration if interactive and available.
+If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
+    # Disable Fzf Alt-C command.
+    $Env:FZF_ALT_C_COMMAND = ''
+    # Set Fzf solarized light theme.
+    $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+    $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+    $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
+    Remove-Variable -Name FzfColors
+    Remove-Variable -Name FzfHighlights
+
+    Import-Module PsFzf
+    If (
+        (Get-Command -ErrorAction SilentlyContinue bat) -And `
+        (Get-Command -ErrorAction SilentlyContinue lsd)
+    ) {
+        # PSFzf requires inline code since it cannot lookup profile defined
+        # functions at runtime.
+        $FzfFilePreview = 'bat --color always --line-range :100 --style numbers'
+        $FzfDirPreview = 'lsd --tree --depth 1'
+        $Env:FZF_CTRL_T_OPTS = "--preview 'If (Test-Path -Path {} -PathType Container) { $FzfDirPreview {} } Else { $FzfFilePreview {} }'"
+    }
+
+    # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
+    Set-PsFzfOption `
+        -PSReadlineChordProvider 'Ctrl+f' `
+        -PSReadlineChordReverseHistory 'Ctrl+r'
+}
+
+# Git settings.
+
+# Load Git autocompletion if interactive and available.
+If ($Tty) {
+    Import-Module -ErrorAction SilentlyContinue posh-git
+}
+
+# Helix settings.
+
+# Set default editor to Helix if available.
+If (Get-Command -ErrorAction SilentlyContinue hx) {
+    $Env:EDITOR = 'hx'
+}
+
+# Just settings.
+
+# Add alias for account wide Just recipes.
+Function jt() {
+    just --justfile "$HOME/.justfile" --working-directory . $Args
+}
+
+# Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+If (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
+    $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
+}
+
+# Replace Ls with Lsd if avialable.
+If (Get-Command -ErrorAction SilentlyContinue lsd) {
+    Set-Alias -Name ls -Option AllScope -Value lsd
+}
+
+# Python settings.
+
+# Add Python debugger alias.
+Function pdb() {
+    python3 -m pdb $Args
+}
+
+# Make Poetry create virutal environments inside projects.
+$Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
+# Fix Poetry package install issue on headless systems.
+$Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
+
+# Ripgrep settings.
+
+# Set Ripgrep settings file location.
+$Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
+
+# Rust settings.
+
+# Add Rust debugger aliases.
+Set-Alias -Name rgd -Value rust-gdb
+Set-Alias -Name rld -Value rust-lldb
+
+# Secure Shell settings.
+
+# Load SSH autocompletion if interactive and available.
+If ($Tty) {
+    Import-Module -ErrorAction SilentlyContinue SSHCompletion
+}
 
 # Shell settings.
 
@@ -262,163 +419,6 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         # PSStyle requires ANSI color codes and double quotes.
         $PSStyle.FileInfo.Directory = "`e[34;1m"
     }
-}
-
-# Alacritty settings.
-
-If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal.
-    #
-    # For more information, visit
-    # https://zellij.dev/documentation/integration.html.
-    If (
-        (Get-Command -ErrorAction SilentlyContinue zellij) -And
-        (-Not $(ssh-session))
-    ) {
-        # Attach to a default session if it exists.
-        $Env:ZELLIJ_AUTO_ATTACH = 'true'
-        # Exit the shell when Zellij exits.
-        $Env:ZELLIJ_AUTO_EXIT = 'true'
-        # TODO: Uncomment when Zellij gains Windows support.
-        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
-    }
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    $Env:TERM = 'xterm-256color'
-}
-
-# Bat settings.
-
-# Set default pager to Bat.
-If (Get-Command -ErrorAction SilentlyContinue bat) {
-    $Env:PAGER = 'bat'
-}
-
-# Bootware settings.
-
-# Load Bootware autocompletion if available.
-If ($Tty) {
-    Import-Module -ErrorAction SilentlyContinue BootwareCompletion
-}
-
-# Clipboard settings.
-
-# Add unified clipboard aliases.
-Set-Alias -Name cbcopy -Value Set-Clipboard
-Set-Alias -Name cbpaste -Value Get-Clipboard
-
-# Docker settings.
-
-# Ensure newer Docker features are enabled.
-$Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
-$Env:DOCKER_BUILDKIT = 'true'
-$Env:DOCKER_CLI_HINTS = 'false'
-
-# Load Docker autocompletion if interactice and available.
-If ($Tty) {
-    Import-Module -ErrorAction SilentlyContinue DockerCompletion
-}
-
-# Fzf settings.
-
-# Setup Fzf PowerShell integration if interactive and available.
-If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
-    # Disable Fzf Alt-C command.
-    $Env:FZF_ALT_C_COMMAND = ''
-    # Set Fzf solarized light theme.
-    $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-    $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-    $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
-    Remove-Variable -Name FzfColors
-    Remove-Variable -Name FzfHighlights
-
-    Import-Module PsFzf
-    If (
-        (Get-Command -ErrorAction SilentlyContinue bat) -And `
-        (Get-Command -ErrorAction SilentlyContinue lsd)
-    ) {
-        # PSFzf requires inline code since it cannot lookup profile defined
-        # functions at runtime.
-        $FzfFilePreview = 'bat --color always --line-range :100 --style numbers'
-        $FzfDirPreview = 'lsd --tree --depth 1'
-        $Env:FZF_CTRL_T_OPTS = "--preview 'If (Test-Path -Path {} -PathType Container) { $FzfDirPreview {} } Else { $FzfFilePreview {} }'"
-    }
-
-    # Replace builtin 'Ctrl+t' and 'Ctrl+r' bindings with Fzf key bindings.
-    Set-PsFzfOption `
-        -PSReadlineChordProvider 'Ctrl+f' `
-        -PSReadlineChordReverseHistory 'Ctrl+r'
-}
-
-# Git settings.
-
-# Load Git autocompletion if interactive and available.
-If ($Tty) {
-    Import-Module -ErrorAction SilentlyContinue posh-git
-}
-
-# Helix settings.
-
-# Set default editor to Helix if available.
-If (Get-Command -ErrorAction SilentlyContinue hx) {
-    $Env:EDITOR = 'hx'
-}
-
-# Just settings.
-
-# Add alias for account wide Just recipes.
-Function jt() {
-    just --justfile "$HOME/.justfile" --working-directory . $Args
-}
-
-# Lsd settings.
-
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-If (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
-  $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
-}
-
-# Replace Ls with Lsd if avialable.
-If (Get-Command -ErrorAction SilentlyContinue lsd) {
-    Set-Alias -Name ls -Option AllScope -Value lsd
-}
-
-# Python settings.
-
-# Add Python debugger alias.
-Function pdb() {
-    python3 -m pdb $Args
-}
-
-# Make Poetry create virutal environments inside projects.
-$Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
-# Fix Poetry package install issue on headless systems.
-$Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
-
-# Ripgrep settings.
-
-# Set Ripgrep settings file location.
-$Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
-
-# Rust settings.
-
-# Add Rust debugger aliases.
-Set-Alias -Name rgd -Value rust-gdb
-Set-Alias -Name rld -Value rust-lldb
-
-# Secure Shell settings.
-
-# Load SSH autocompletion if interactive and available.
-If ($Tty) {
-    Import-Module -ErrorAction SilentlyContinue SSHCompletion
 }
 
 # Starship settings.
