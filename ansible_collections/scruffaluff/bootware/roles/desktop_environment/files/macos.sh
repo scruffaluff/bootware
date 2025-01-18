@@ -213,11 +213,11 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
 # Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Delete verification codes after use.
-defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool 1
+defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 # Disable Apple password manager.
-defaults write com.apple.Safari AutoFillPasswords -bool 0
+defaults write com.apple.Safari AutoFillPasswords -bool false
 # Disable sharing search queries with Apple.
-defaults write com.apple.SpotlightResources.Defaults "Search Queries Data Sharing Status" -float 2
+defaults write com.apple.SpotlightResources.Defaults 'Search Queries Data Sharing Status' -float 2
 
 # TextEdit settings.
 

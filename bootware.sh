@@ -354,7 +354,9 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  if [[ -z "${become_method:-}" && "${inventory}" == '127.0.0.1,' ]]; then
+  if [[ "${EUID}" -ne 0 &&
+    -z "${become_method:-}" &&
+    "${inventory}" == '127.0.0.1,' ]]; then
     become_method="$(find_super)"
   fi
 
