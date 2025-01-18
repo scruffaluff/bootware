@@ -179,7 +179,7 @@
   ansible.builtin.import_tasks: customize.yaml
   when: >-
     vscode_install_customizations and ansible_system in ["Darwin", "Linux",
-    "Win32NT"] ansible_pkg_mgr != "apk"
+    "Win32NT"] and ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}
