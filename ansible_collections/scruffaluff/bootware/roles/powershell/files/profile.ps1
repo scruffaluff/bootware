@@ -23,33 +23,27 @@ Function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
-Function get-params($Params, $Index) {
-    If ($Params.Length -GT $Index) {
-        Return $Params[$Index..($Params.Length - 1)]
-    }
-    Else {
-        Return @()
-    }
-}
-
 Function pkill() {
-    While ($ArgIdx -LT $Args[0].Count) {
-        Stop-Process -Force -Name "$(get-params $Args $ArgIdx)"
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        Stop-Process -Force -Name $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
 
 Function pgrep() {
-    While ($ArgIdx -LT $Args[0].Count) {
-        Get-Process "$(get-params $Args $ArgIdx)"
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        Get-Process $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
 
 # Prepend existing directories that are not in the system path.
 Function prepend-paths() {
-    While ($ArgIdx -LT $Args[0].Count) {
-        $Folder = get-params $Args $ArgIdx
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        $Folder = $Args[$ArgIdx]
         If (
             (Test-Path -Path $Folder -PathType Container) -And `
             (-Not ($Env:Path -Like "*$Folder*"))
@@ -61,8 +55,9 @@ Function prepend-paths() {
 }
 
 Function rmf() {
-    While ($ArgIdx -LT $Args[0].Count) {
-        Remove-Item -Force -Recurse "$(get-params $Args $ArgIdx)"
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        Remove-Item -Force -Recurse $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
@@ -72,9 +67,21 @@ Function ssh-session() {
     !!"$Env:SSH_CLIENT$Env:SSH_CONNECTION$Env:SSH_TTY"
 }
 
+Function touch() {
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        $Path = $Args[$ArgIdx]
+        If (-Not (Test-Path -Path $Path)) {
+            New-Item $Path | Out-Null
+        }
+        $ArgIdx += 1
+    }
+}
+
 Function which() {
-    While ($ArgIdx -LT $Args[0].Count) {
-        Get-Command "$(get-params $Args $ArgIdx)" |
+    $ArgIdx = 0
+    While ($ArgIdx -LT $Args.Count) {
+        Get-Command $Args[$ArgIdx] |
             Select-Object -ExpandProperty Definition
         $ArgIdx += 1
     }
@@ -93,6 +100,10 @@ $Tty = -Not [System.Console]::IsOutputRedirected
 # GetEnvironmentVariable.
 $Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
     + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine')
+
+# Add standard Unix environment variables for Windows.
+$Env:HOME = "$($Env:HOMEDRIVE)$($Env:HOMEPATH)"
+$Env:USER = $Env:USERNAME
 
 # Alacritty settings.
 
@@ -152,6 +163,19 @@ $Env:DOCKER_CLI_HINTS = 'false'
 # Load Docker autocompletion if interactice and available.
 If ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
+}
+
+# FFmpeg settings.
+
+# Disable verbose FFmpeg banners.
+Function ffmpeg() {
+    ffmpeg.exe -hide_banner $Args
+}
+Function ffplay() {
+    ffplay.exe -hide_banner $Args
+}
+Function ffprobe() {
+    ffprobe.exe -hide_banner $Args
 }
 
 # Fzf settings.
@@ -221,6 +245,13 @@ If (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
+# Procs settings.
+
+# Set light theme since Procs automatic theming fails on some systems.
+Function procs() {
+    procs.exe --theme light $Args
+}
+
 # Python settings.
 
 # Add Python debugger alias.
@@ -241,8 +272,12 @@ $Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
 # Rust settings.
 
 # Add Rust debugger aliases.
-Set-Alias -Name rgd -Value rust-gdb
-Set-Alias -Name rld -Value rust-lldb
+Function rgd() {
+    rust-gdb --quiet $Args
+}
+Function rld() {
+    rust-lldb --source-quietly $Args
+}
 
 # Secure Shell settings.
 
@@ -255,10 +290,12 @@ If ($Tty) {
 
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
-Set-Alias -Name poweroff -Value Stop-Computer
-Set-Alias -Name reboot -Value Restart-Computer
-Set-Alias -Name rsync -Value scp
-Set-Alias -Name touch -Value New-Item
+Function poweroff() {
+    Stop-Computer -Force
+}
+Function reboot() {
+    Restart-Computer -Force
+}
 
 # Configure PSReadLine settings if interactive and available.
 #

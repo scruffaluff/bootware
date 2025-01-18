@@ -77,6 +77,12 @@ def ssh-session [] {
 
 # System settings.
 
+# Add standard Unix environment variables for Windows.
+if $nu.os-info.name == "windows" {
+    $env.HOME = $"($env.HOMEDRIVE)($env.HOMEPATH)"
+    $env.USER = $env.USERNAME
+}
+
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -94,7 +100,7 @@ def ssh-session [] {
 
 if (
     $nu.is-interactive
-    and ($env.TERM == "alacritty")
+    and ($env.TERM? == "alacritty")
     and not ("TERM_PROGRAM" in $env)
 ) {
     # Autostart Zellij or connect to existing session if within Alacritty
@@ -109,10 +115,11 @@ if (
     if (
         (which "zellij" | is-not-empty)
         and not (ssh-session)
-        and ($env.LOGNAME == $env.USER)
+        and ($env.LOGNAME? == $env.USER)
         and not ("ZELLIJ" in $env)
     ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
+        # Close parent shell after Zellij exits.
         exit
     }
 
@@ -129,20 +136,6 @@ if (
 # Set default pager to Bat.
 if (which "bat" | is-not-empty) {
     $env.PAGER = "bat"
-}
-
-# Clipboard settings.
-
-# Add unified clipboard aliases.
-if $nu.os-info.name == "macos" {
-    alias cbcopy = pbcopy
-    alias cbpaste = pbpaste
-} else if $nu.os-info.name == "windows" {
-    alias cbcopy = clip
-    alias cbpaste = powershell -c "Get-Clipboard"
-} else if (which wl-copy | is-not-empty) {
-    alias cbcopy = wl-copy
-    alias cbpaste = wl-paste
 }
 
 # Docker settings.
@@ -183,8 +176,10 @@ if (which "hx" | is-not-empty) {
 
 # Homebrew settings
 
-# Avoid Homebrew hints after installing a package.
-$env.HOMEBREW_NO_ENV_HINTS = "true"
+# Avoid Homebrew hints after installing a package for Unix.
+if $nu.os-info.name != "windows" {
+    $env.HOMEBREW_NO_ENV_HINTS = "true"
+}
 
 # Just settings.
 
@@ -221,7 +216,7 @@ $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
-# Make numerical compute libraries findable on MacOS.
+# Make numerical compute libraries findable for MacOS.
 if $nu.os-info.name == "macos" {
     let brew_prefix = if ("/opt/homebrew" | path exists) {
         $env.OPENBLAS = "/opt/homebrew/opt/openblas"
@@ -231,9 +226,11 @@ if $nu.os-info.name == "macos" {
     prepend-paths $env.OPENBLAS
 }
 
-# Add Pyenv binaries to system path.
-$env.PYENV_ROOT = $"($env.HOME)/.pyenv"
-prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
+# Add Pyenv binaries to system path for Unix.
+if $nu.os-info.name != "windows" {
+    $env.PYENV_ROOT = $"($env.HOME)/.pyenv"
+    prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
+}
 
 # Ripgrep settings.
 
@@ -533,12 +530,14 @@ prepend-paths $"($env.HOME)/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths $"($env.HOME)/.npm-global/bin"
 
-# Initialize Node Version Manager if available.
-$env.NVM_DIR = $"($env.HOME)/.nvm"
+# Initialize Node Version Manager if available for Unix.
+if $nu.os-info.name != "windows" {
+    $env.NVM_DIR = $"($env.HOME)/.nvm"
+}
 
 # Visual Studio Code settings.
 
-# Add Visual Studio Code binaries to system path for Linux.
+# Add Visual Studio Code binaries to system path.
 prepend-paths "/usr/share/code/bin"
 
 # Wasmtime settings.

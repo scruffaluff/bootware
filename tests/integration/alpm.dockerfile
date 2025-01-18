@@ -1,4 +1,4 @@
-FROM archlinux:base-20250105.0.295102 AS build
+FROM archlinux:base-20250112.0.297543 AS build
 
 ARG version
 
@@ -28,7 +28,7 @@ FROM scratch AS dist
 
 COPY --from=build "/bootware/dist/" /
 
-FROM archlinux:base-20250105.0.295102
+FROM archlinux:base-20250112.0.297543
 
 ARG version
 

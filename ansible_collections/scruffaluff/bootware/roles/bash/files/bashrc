@@ -27,12 +27,14 @@ _fzf_path_preview() {
 command_not_found_handle() {
   echo "Error: command '${1}' not found" >&2
 }
+export -f command_not_found_handle
 
 # Open Bash history file with default editor.
 edit-history() {
   local program="${EDITOR:-vim}"
   "${program}" "${HOME}/.bash_history"
 }
+export -f edit-history
 
 # Prepend existing directories that are not in the system path.
 #
@@ -48,6 +50,7 @@ prepend-paths() {
     fi
   done
 }
+export -f prepend-paths
 
 # Source shell files if they exist.
 #
@@ -61,6 +64,7 @@ source-files() {
     fi
   done
 }
+export -f source-files
 
 # Check if current shell is within a remote SSH session.
 #
@@ -75,6 +79,7 @@ ssh-session() {
     return 1
   fi
 }
+export -f ssh-session
 
 # Private convenience variables.
 #
