@@ -13,7 +13,9 @@
 - name: Install GlazeWM for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
-    name: glazewm
+    name:
+      - glazewm
+      - zebar
   when: ansible_system == "Win32NT"
 
 - name: Create Amethyst configuration directory for MacOS

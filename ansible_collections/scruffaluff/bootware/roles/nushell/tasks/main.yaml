@@ -1,0 +1,166 @@
+---
+- name: Install Nushell for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: nushell
+  when: ansible_system == "FreeBSD"
+
+- name: Install Nushell for Linux
+  ansible.builtin.package:
+    name: nushell
+  become: true
+  ignore_errors: true
+  register: nushell_linux
+  when: ansible_system == "Linux"
+
+- name: Get latest Nushell version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/nushell.json
+  register: nushell_formula_linux
+  when: ansible_system == "Linux" and nushell_linux is failed
+
+- name: Download Nushell for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/nushell/nushell/releases/download/{{
+      nushell_formula_linux.json.versions.stable }}/nu-{{
+      nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
+      }}-unknown-linux-{{ system_libc }}.tar.gz
+  when: ansible_system == "Linux" and nushell_linux is failed
+
+- name: Install Nushell for Linux
+  ansible.builtin.copy:
+    dest: "/usr/bin/{{ item }}"
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      /tmp/nu-{{ nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
+      }}-unknown-linux-{{ system_libc }}/{{ item }}
+  become: true
+  loop:
+    - nu
+    - nu_plugin_custom_values
+    - nu_plugin_example
+    - nu_plugin_formats
+    - nu_plugin_gstat
+    - nu_plugin_inc
+    - nu_plugin_polars
+    - nu_plugin_query
+    - nu_plugin_stress_internals
+  when: ansible_system == "Linux" and nushell_linux is failed
+
+- name: Install Nushell for MacOS
+  become: true
+  become_user: "{{ user_id }}"
+  community.general.homebrew:
+    name: nushell
+  when: ansible_system == "Darwin"
+
+- name: Install Nushell for Windows
+  community.windows.win_scoop:
+    global: true
+    name: nu
+  when: ansible_system == "Win32NT"
+
+- name: Register Nushell as a valid login shell for Unix
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ nushell_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Nushell configuration directory for MacOS
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/Library/Application Support/nushell"
+    state: directory
+  become: true
+  when: ansible_system == "Darwin"
+
+- name: Copy Nushell settings file for MacOS
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/Library/Application Support/nushell/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - config.nu
+  when: ansible_system == "Darwin"
+
+- name: Create Nushell configuration directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/nushell"
+    state: directory
+  become: true
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Copy Nushell settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/nushell/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - config.nu
+  when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Create Nushell settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/AppData/Roaming/nushell"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Nushell settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/nushell/{{ item }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  loop:
+    - config.nu
+  when: ansible_system == "Win32NT"
+# # User shell is not updated on Alpine Linux when using Ansible user module.
+# # Workaround comes from https://github.com/ansible/ansible/issues/61911.
+# - name: Change user default shell to Nushell for Alpine
+#   ansible.builtin.command:
+#     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
+#   become: true
+#   changed_when: true
+#   when: ansible_pkg_mgr == "apk" and user_shell == "nushell"
+
+# - name: Change user default shell to Nushell for Unix
+#   ansible.builtin.user:
+#     name: "{{ user_id }}"
+#     shell: "{{ nushell_executable }}"
+#   become: true
+#   when: >-
+#     ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+#     "nushell"
+
+# TODO: Set Nushell as SSH shell without breaking Ansible compatibility.
+# See https://docs.ansible.com/ansible/latest/os_guide/windows_ssh.html#ansible-configuration.
+# - name: Set Nushell as default OpenSSH shell for Windows
+#   ansible.windows.win_regedit:
+#     data: "{{ nushell_executable }}"
+#     name: DefaultShell
+#     path: "HKLM:\\SOFTWARE\\OpenSSH"
+#     type: string
+#   when: ansible_system == "Win32NT" and user_shell == "nushell"

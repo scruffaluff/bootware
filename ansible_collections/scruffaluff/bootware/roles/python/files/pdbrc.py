@@ -162,7 +162,7 @@ def doc(object: Any) -> None:
 
 def edit(object: Any = None, frame: Any = None) -> None:
     """Open object's source code in default editor."""
-    editor = os.environ.get("EDITOR", "vim")
+    editor = os.environ.get("EDITOR", "vi")
     if isinstance(object, int) and frame is not None:
         command = [editor, f"+{object}", frame.f_code.co_filename]
     elif object is None and frame is not None:

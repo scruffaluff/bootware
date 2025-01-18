@@ -23,7 +23,7 @@ hidden = false
 [editor.indent-guides]
 render = true
 
-# Enable only if on Helix 25.01 or later.
+# TODO: Enable when Helix reaches version 25.01 on all systems.
 # [editor.inline-diagnostics]
 # cursor-line = "warning"
 
@@ -58,9 +58,9 @@ C-k = "move_line_down"
 C-l = "move_line_up"
 C-o = "no_op"
 C-left = "move_prev_word_start"
-C-right = "move_next_word_end"
+C-right = ["move_next_word_end", "move_char_right"]
 S-left = "move_prev_long_word_start"
-S-right = "move_next_long_word_end"
+S-right = ["move_next_long_word_end", "move_char_right"]
 
 [keys.normal]
 ";" = "move_char_right"
@@ -74,16 +74,18 @@ C-e = "goto_line_end_newline"
 C-i = "no_op"
 C-o = "no_op"
 C-left = "move_prev_word_start"
-C-right = "move_next_word_end"
+C-right = ["move_next_word_end", "move_char_right"]
 D = "delete_char_backward"
 d = "delete_selection_noyank"
+E = ["move_next_long_word_end", "move_char_right"]
+e = ["move_next_word_end", "move_char_right"]
 esc = ["collapse_selection", "keep_primary_selection"]
 h = "no_op"
 j = "move_char_left"
 k = "move_line_down"
 l = "move_line_up"
 S-left = "move_prev_long_word_start"
-S-right = "move_next_long_word_end"
+S-right = ["move_next_long_word_end", "move_char_right"]
 
 [keys.normal.C-w]
 ";" = "jump_view_right"
@@ -170,27 +172,25 @@ up = "no_op"
 z = "no_op"
 
 [keys.select]
-";" = "move_char_right"
+";" = "extend_char_right"
 "\ue001" = "jump_backward"
 "\ue002" = "jump_forward"
 c = "change_selection_noyank"
-A-d = "delete_word_forward"
 C-a = "goto_line_start"
-C-d = "delete_word_backward"
 C-e = "goto_line_end_newline"
 C-i = "no_op"
 C-o = "no_op"
-C-left = "move_prev_word_start"
-C-right = "move_next_word_end"
-D = "delete_char_backward"
-d = "delete_selection_noyank"
+C-left = "extend_prev_word_start"
+C-right = ["extend_next_word_end", "extend_char_right"]
+E = ["extend_next_long_word_end", "extend_char_right"]
+e = ["extend_next_word_end", "extend_char_right"]
 esc = ["collapse_selection", "keep_primary_selection"]
 h = "no_op"
-j = "move_char_left"
-k = "move_line_down"
-l = "move_line_up"
-S-left = "move_prev_long_word_start"
-S-right = "move_next_long_word_end"
+j = "extend_char_left"
+k = "extend_line_down"
+l = "extend_line_up"
+S-left = "extend_prev_long_word_start"
+S-right = ["extend_next_long_word_end", "extend_char_right"]
 
 [keys.select.C-w]
 ";" = "jump_view_right"

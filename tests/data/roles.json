@@ -260,6 +260,7 @@
     }
   },
   { "name": "node", "tests": ["node --version", "npm --version"] },
+  { "name": "nushell", "tests": ["nu --version"] },
   {
     "name": "obs",
     "skip": [{ "arch": "arm64", "os": "linux" }],
@@ -386,7 +387,7 @@
   },
   {
     "name": "vscode",
-    "skip": [{ "os": "alpine" }],
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": {
       "default": ["code --version"],
       "windows": ["scoop prefix vscode"]

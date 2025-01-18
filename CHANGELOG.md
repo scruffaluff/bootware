@@ -9,18 +9,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Nushell role.
 - Support for Yazi 0.4.
+- Variable to configure default user shell.
 
 ### Changed
 
+- Naming conventions for public functions from script profiles.
 - Node version manager back to NVM.
 - Roles to prefer system packages over Flatpaks.
 - Yazi theme.
 
 ### Fixed
 
+- Fzf preview for Bash.
 - GitLab runner installation.
+- Helix move to end of word keybindings.
 - PDB error handling.
+- PowerShell profile aliases.
+- Shell commands for Fzf.
 
 ### Removed
 

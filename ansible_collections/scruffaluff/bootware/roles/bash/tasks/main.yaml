@@ -59,6 +59,24 @@
   become: true
   when: ansible_system != "Win32NT"
 
+# User shell is not updated on Alpine Linux when using Ansible user module.
+# Workaround comes from https://github.com/ansible/ansible/issues/61911.
+- name: Change user default shell to Bash for Alpine
+  ansible.builtin.command:
+    cmd: chsh -s {{ bash_executable }} {{ user_id }}
+  become: true
+  changed_when: true
+  when: ansible_pkg_mgr == "apk" and user_shell == "bash"
+
+- name: Change user default shell to Bash for Unix
+  ansible.builtin.user:
+    name: "{{ user_id }}"
+    shell: "{{ bash_executable }}"
+  become: true
+  when: >-
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+    "bash"
+
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true

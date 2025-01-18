@@ -53,24 +53,6 @@
   become: true
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
-# FreeBSD package repository provides the open source version of Visual Studio
-# Code, which cannot install proprietary Microsoft extensions.
-- name: Install VSCode for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: vscode
-  when: ansible_system == "FreeBSD"
-
-- name: Make VSCode convenience symlink for FreeBSD
-  ansible.builtin.file:
-    src: /usr/local/bin/code-oss
-    dest: /usr/local/bin/code
-    force: true
-    mode: "755"
-    state: link
-  become: true
-  when: ansible_system == "FreeBSD"
-
 - name: Install VSCode for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
@@ -124,7 +106,7 @@
   become: true
   when: ansible_system == "Darwin"
 
-- name: Create VSCode user directory for Unix
+- name: Create VSCode user directory for Linux
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
@@ -132,9 +114,9 @@
     path: "{{ user_home }}/.config/Code/User"
     state: directory
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Copy VSCode keybindings file for Unix
+- name: Copy VSCode keybindings file for Linux
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/keybindings.json"
     force: true
@@ -143,9 +125,9 @@
     owner: "{{ user_id }}"
     src: keybindings.json.j2
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Copy VSCode settings file for Unix
+- name: Copy VSCode settings file for Linux
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/settings.json"
     force: true
@@ -154,7 +136,7 @@
     owner: "{{ user_id }}"
     src: settings.json.j2
   become: true
-  when: ansible_system in ["FreeBSD", "Linux"] and ansible_pkg_mgr != "apk"
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 # User directory can be in multiple locations depending on package installer and
 # Windows version.
@@ -195,7 +177,9 @@
 
 - name: Apply customizations to VSCode
   ansible.builtin.import_tasks: customize.yaml
-  when: vscode_install_customizations and ansible_pkg_mgr != "apk"
+  when: >-
+    vscode_install_customizations and ansible_system in ["Darwin", "Linux",
+    "Win32NT"] ansible_pkg_mgr != "apk"
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command: code --install-extension {{ item }}

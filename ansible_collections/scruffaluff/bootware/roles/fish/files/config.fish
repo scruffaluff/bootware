@@ -16,9 +16,9 @@
 # Flags:
 #   -n: Check if string is nonempty.
 function _delete_commandline_from_history
-    set command (commandline | string collect | string trim)
+    set --local command (commandline | string collect | string trim)
     if test -n $command
-        set results "$(history search $command)"
+        set --local results "$(history search $command)"
 
         if test -n $results
             printf '\nFish History Entry Delete\n\n'
@@ -29,34 +29,23 @@ function _delete_commandline_from_history
     end
 end
 
-# Paste pipe to system pager command into the commandline.
+# Path preview for Fzf file finder.
 #
 # Flags:
-#   -n: Check if string is nonempty.
-function _paginate_command
-    # Variable 'PAGER' needs quotes in case it is not defined.
-    if test -n "$PAGER"
-        set pager_ $PAGER
+#   -d: Check if path is a directory.
+#   -q: Only check for exit status by supressing output.
+function _fzf_path_preview
+    if test -d $argv[1]
+        lsd --tree --depth 1 $argv[1]
     else
-        set pager_ less
-    end
-
-    set line (commandline | string collect)
-    set command " &| $pager_"
-    set query (string escape --style regex $command)
-
-    set newline (string replace --regex "$query\$" '' $line)
-    if test $line = $newline
-        commandline --append $command
-    else
-        commandline --replace $newline
+        bat --color always --line-range :100 --style numbers $argv[1]
     end
 end
 
 # Paste current working directory into the commandline.
-function _paste_working_directory
-    set line (commandline | string collect)
-    set working_directory "$(string replace "$HOME" '~' $(pwd))/"
+function _paste_cwd
+    set --local line (commandline | string collect)
+    set --local working_directory "$(string replace "$HOME" '~' $(pwd))/"
 
     if string match --entire --quiet $working_directory $line
         commandline --replace (string replace $working_directory '' $line)
@@ -69,12 +58,12 @@ end
 #
 # Flags:
 #   -n: Check if string is nonempty.
-function _select_command
-    set line (commandline | string collect)
-    set command " &| fzf"
-    set query (string escape --style regex $command)
+function _paste_fzf
+    set --local line (commandline | string collect)
+    set --local command " &| fzf"
+    set --local query (string escape --style regex $command)
 
-    set newline (string replace --regex "$query\$" '' $line)
+    set --local newline (string replace --regex "$query\$" '' $line)
     if test $line = $newline
         commandline --append $command
     else
@@ -82,27 +71,43 @@ function _select_command
     end
 end
 
-# Check if current shell is within a remote SSH session.
+# Paste pipe to system pager command into the commandline.
 #
 # Flags:
 #   -n: Check if string is nonempty.
-function _ssh_session
-    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
-        return 0
+function _paste_pager
+    # Variable 'PAGER' needs quotes in case it is not defined.
+    set --local program
+    if test -n "$PAGER"
+        set program $PAGER
     else
-        return 1
+        set program less
+    end
+
+    set --local line (commandline | string collect)
+    set --local command " &| $program"
+    set --local query (string escape --style regex $command)
+
+    set --local newline (string replace --regex "$query\$" '' $line)
+    if test $line = $newline
+        commandline --append $command
+    else
+        commandline --replace $newline
     end
 end
 
-# Public convenience interactive functions.
+# Public convenience functions.
 
 # Open Fish history file with default editor.
 #
 # Flags:
-#   -q: Only check for exit status by supressing output.
+#   -n: Check if string is nonempty.
 function edit-history
-    if type -q $EDITOR
+    # Variable 'EDITOR' needs quotes in case it is not defined.
+    if test -n "$EDITOR"
         $EDITOR "$HOME/.local/share/fish/fish_history"
+    else
+        vi "$HOME/.local/share/fish/fish_history"
     end
 end
 
@@ -114,8 +119,6 @@ function fish_command_not_found
     echo "Error: command '$argv[1]' not found" >&2
 end
 
-# Public convenience script functions.
-
 # Prepend existing directories that are not in the system path.
 #
 # Builtin fish_add_path function changes system path permanently. This
@@ -124,7 +127,7 @@ end
 #
 # Flags:
 #   -d: Check if path is a directory.
-function prepend_paths
+function prepend-paths
     for inode in $argv
         if test -d $inode; and not contains $inode $PATH
             set --export PATH $inode $PATH
@@ -136,7 +139,7 @@ end
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-function source_bash_files
+function source-bash-files
     for inode in $argv
         if test -f $inode
             bass source $inode
@@ -148,7 +151,7 @@ end
 #
 # Flags:
 #   -f: Check if file exists and is a regular file.
-function source_files
+function source-files
     for inode in $argv
         if test -f $inode
             source $inode
@@ -156,113 +159,70 @@ function source_files
     end
 end
 
+# Check if current shell is within a remote SSH session.
+#
+# Since function returns an exit code, zero is true and nonzero is false.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+function ssh-session
+    if test -n "$SSH_CLIENT$SSH_CONNECTION$SSH_TTY"
+        return 0
+    else
+        return 1
+    end
+end
+
 # Private convenience variables.
 #
-# Do not use long form flags for uname. They are not supported on MacOS. Command
-# (brew --prefix) will give the incorrect path when sourced on Apple silicon and
-# running under an Rosetta 2 emulated terminal.
+# Do not use long form flags for uname. They are not supported on MacOS.
 #
 # Flags:
-#   -d: Check if path is a directory.
 #   -s: Show operating system kernel name.
-if test -d /opt/homebrew
-    set _brew_prefix /opt/homebrew
-else
-    set _brew_prefix /usr/local
-end
-set _os (uname -s)
+set os (uname -s)
 if status is-interactive
-    set _tty true
+    set tty true
 else
-    set _tty ''
+    set tty ''
 end
 
-# Shell settings.
-
-# Add alias for remove by force.
-alias rmf 'rm -fr'
-# Make rsync use human friendly output.
-alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
-# Disable welcome message.
-set fish_greeting
-
-# Set solarized light color theme for several Unix tools.
-#
-# Uses output of command "vivid generate solarized-light" from
-# https://github.com/sharkdp/vivid.
-#
-# Flags:
-#   -f: Check if file exists and is a regular file.
-#   -n: Check if string is nonempty.
-if test -n $_tty; and test -f "$HOME/.ls_colors"
-    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
-end
+# System settings.
 
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
-prepend_paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
+prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
     /opt/homebrew/bin "$HOME/.local/bin"
 
-# Add custom Fish key bindings.
-#
-# To discover Fish character sequences for keybindings, use the
-# 'fish_key_reader' command. For more information, visit
-# https://fishshell.com/docs/current/cmds/bind.html.
-function fish_user_key_bindings
-    bind \cw true
-    bind \cd backward-kill-path-component
-    bind \cj backward-char
-    bind \ec _paste_working_directory
-    bind \ed kill-bigword
-    bind \ef _select_command
-    bind \ep _paginate_command
-    bind \ex _delete_commandline_from_history
-    bind \eZ redo
-    bind \ez undo
-    bind \ue000 forward-char
-end
+# Alacritty settings.
 
-# Add unified clipboard aliases.
-#
-# Command cbcopy is defined as a function instead of an alias to add logic for
-# removing the final newline from text during clipboard copies.
-#
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-#   -z: Read input until null terminated instead of newline.
-if test -n $_tty
-    if test $_os = Darwin
-        function cbcopy
-            set --local text
-            while read -z line
-                # Variable 'text' needs quotes to send test a one line string.
-                if test -n "$text"
-                    set
-                else
-                    set text $line
-                end
-            end
-            echo -n "$(printf '%s' $text)" | pbcopy
-        end
-        alias cbpaste pbpaste
-    else if type -q wl-copy
-        function cbcopy
-            set --local text
-            while read -z line
-                # Variable 'text' needs quotes to send test a one line string.
-                if test -n "$text"
-                    set
-                else
-                    set text $line
-                end
-            end
-            echo -n "$(printf '%s' $text)" | wl-copy
-        end
-        alias cbpaste wl-paste
+#   -z: Check if the string is empty.
+if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
+    # Autostart Zellij or connect to existing session if within Alacritty
+    # terminal and within an interactive shell for the login user. For more
+    # information, visit https://zellij.dev/documentation/integration.html.
+    #
+    # Do not use logname command, since it sometimes incorrectly returns "root"
+    # on MacOS. For for information, visit
+    # https://github.com/vercel/hyper/issues/3762.
+    if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
+        # Attach to a default session if it exists.
+        set --export ZELLIJ_AUTO_ATTACH true
+        # Exit the shell when Zellij exits.
+        set --export ZELLIJ_AUTO_EXIT true
+        SHELL=(status fish-path) eval (zellij setup --generate-auto-start fish | string collect)
     end
+
+    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
+    # during remote connections.
+    #
+    # For more information, visit
+    # https://github.com/alacritty/alacritty/issues/3962.
+    set --export TERM xterm-256color
 end
 
 # Bat settings.
@@ -273,6 +233,47 @@ end
 #   -q: Only check for exit status by supressing output.
 if type -q bat
     set --export PAGER bat
+end
+
+# Clipboard settings.
+
+# Add unified clipboard aliases.
+#
+# Command cbcopy is defined as a function instead of an alias to add logic for
+# removing the final newline from text during clipboard copies.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+#   -q: Only check for exit status by supressing output.
+#   -z: Read input until null terminated instead of newline.
+if test $os = Darwin
+    function cbcopy
+        set --local text
+        while read -z line
+            # Variable 'text' needs quotes to send test a one line string.
+            if test -n "$text"
+                set
+            else
+                set text $line
+            end
+        end
+        echo -n "$(printf '%s' $text)" | pbcopy
+    end
+    alias cbpaste pbpaste
+else if type -q wl-copy
+    function cbcopy
+        set --local text
+        while read -z line
+            # Variable 'text' needs quotes to send test a one line string.
+            if test -n "$text"
+                set
+            else
+                set text $line
+            end
+        end
+        echo -n "$(printf '%s' $text)" | wl-copy
+    end
+    alias cbpaste wl-paste
 end
 
 # Docker settings.
@@ -291,39 +292,29 @@ alias ffprobe 'ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Add path preview to Fzf file finder.
+# Load Fzf settings if interactive and available.
 #
 # Flags:
-#   -d: Check if path is a directory.
-#   -q: Only check for exit status by supressing output.
-function _fzf_path_preview
-    if test -d $argv[1]
-        lsd --tree --depth 1 $argv[1]
-    else
-        bat --color always --line-range :100 --style numbers $argv[1]
-    end
-end
-
-# Disable Fzf Alt-C command.
-set --export FZF_ALT_C_COMMAND ''
-# Set Fzf solarized light theme.
-set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights"
-
-# Load Fzf keybindings if available.
-#
-# Flags:
+#   -c: Run commands in Fish shell.
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty; and type -q fzf
+if test -n $tty; and type -q fzf
+    # Disable Fzf Alt-C command.
+    set --export FZF_ALT_C_COMMAND ''
+    # Set Fzf solarized light theme and shell command for child processes.
+    set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
+    set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
+    set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights --with-shell 'fish -c'"
+    set --erase _fzf_colors
+    set --erase _fzf_highlights
+
     fzf --fish | source
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
     end
     if type -q fd
         set --export FZF_DEFAULT_COMMAND 'fd --hidden'
-        if test $_os = Darwin
+        if test $os = Darwin
             set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --search-path \$dir"
         end
     end
@@ -336,7 +327,7 @@ end
 
 # Helix settings.
 
-# Set full color support for terminal and default editor to Helix.
+# Set default editor to Helix if available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
@@ -358,9 +349,20 @@ alias jt "just --justfile $HOME/.justfile --working-directory ."
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
-prepend_paths "$HOME/.krew/bin"
+prepend-paths "$HOME/.krew/bin"
 
 # Lsd settings.
+
+# Set solarized light color theme for several Unix tools.
+#
+# Uses output of command "vivid generate solarized-light" from
+# https://github.com/sharkdp/vivid.
+#
+# Flags:
+#   -f: Check if file exists and is a regular file.
+if test -f "$HOME/.ls_colors"
+    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
+end
 
 # Replace Ls with Lsd if avialable.
 #
@@ -386,14 +388,18 @@ set --export POETRY_VIRTUALENVS_IN_PROJECT true
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
 # Make numerical compute libraries findable on MacOS.
-if test $_os = Darwin
-    set --export OPENBLAS "$_brew_prefix/opt/openblas"
-    prepend_paths $OPENBLAS
+if test $os = Darwin
+    if test -d /opt/homebrew
+        set --export OPENBLAS /opt/homebrew/opt/openblas
+    else
+        set --export OPENBLAS /usr/local/opt/openblas
+    end
+    prepend-paths $OPENBLAS
 end
 
 # Add Pyenv binaries to system path.
 set --export PYENV_ROOT "$HOME/.pyenv"
-prepend_paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
+prepend-paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
 
 # Initialize Pyenv if available.
 #
@@ -415,19 +421,52 @@ alias rgd 'rust-gdb --quiet'
 alias rld 'rust-lldb --source-quietly'
 
 # Add Rust binaries to system path.
-prepend_paths "$HOME/.cargo/bin"
+prepend-paths "$HOME/.cargo/bin"
+
+# Shell settings.
+
+# Add alias for remove by force.
+alias rmf 'rm -fr'
+# Make rsync use human friendly output.
+alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
+# Disable welcome message.
+set fish_greeting ''
+
+# Add keybindings if interactive.
+#
+# To discover Fish character sequences for keybindings, use the
+# 'fish_key_reader' command. For more information, visit
+# https://fishshell.com/docs/current/cmds/bind.html.
+#
+# Flags:
+#   -n: Check if string is nonempty.
+if test -n $tty
+    function fish_user_key_bindings
+        bind \cw true
+        bind \cd backward-kill-path-component
+        bind \cj backward-char
+        bind \ec _paste_cwd
+        bind \ed kill-bigword
+        bind \ef _paste_fzf
+        bind \ep _paste_pager
+        bind \ex _delete_commandline_from_history
+        bind \eZ redo
+        bind \ez undo
+        bind \ue000 forward-char
+    end
+end
 
 # Starship settings.
 
 # Disable Starship warnings about command timeouts.
 set --export STARSHIP_LOG error
 
-# Initialize Starship if available.
+# Initialize Starship if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty
+if test -n $tty
     if type -q starship
         starship init fish | source
     else
@@ -441,13 +480,13 @@ end
 
 # Add Bun binaries to system path.
 set --export BUN_INSTALL "$HOME/.bun"
-prepend_paths "$BUN_INSTALL/bin"
+prepend-paths "$BUN_INSTALL/bin"
 
 # Add Deno binaries to system path.
-prepend_paths "$HOME/.deno/bin"
+prepend-paths "$HOME/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend_paths "$HOME/.npm-global/bin"
+prepend-paths "$HOME/.npm-global/bin"
 
 # Initialize Node Version Manager if available.
 #
@@ -460,13 +499,13 @@ end
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
-prepend_paths /usr/share/code/bin
+prepend-paths /usr/share/code/bin
 
 # Wasmtime settings.
 
 # Add Wasmtime binaries to system path.
 set --export WASMTIME_HOME "$HOME/.wasmtime"
-prepend_paths "$WASMTIME_HOME/bin"
+prepend-paths "$WASMTIME_HOME/bin"
 
 # Yazi settings.
 
@@ -475,9 +514,9 @@ prepend_paths "$WASMTIME_HOME/bin"
 # Flags:
 #   -n: Check if string is nonempty.
 function yz
-    set tmp (mktemp)
+    set --local tmp (mktemp)
     yazi --cwd-file $tmp $argv
-    set cwd (cat $tmp)
+    set --local cwd (cat $tmp)
 
     # Quotes are necessary for the if statement to ensure that the test function
     # always receives the correct number of arguments.
@@ -489,46 +528,19 @@ end
 
 # Zoxide settings.
 
-# Initialize Zoxide if available.
+# Initialize Zoxide if interactive and available.
 #
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
-if test -n $_tty; and type -q zoxide
+if test -n $tty; and type -q zoxide
     zoxide init --cmd cd fish | source
 end
 
-# Alacritty settings.
+# Remove private convenience variables.
 
-# Placed near end of config to ensure Zellij reads the correct window size.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -q: Only check for exit status by supressing output.
-#   -z: Check if the string is empty.
-if test -n $_tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
-    # Do not use logname command, since it sometimes incorrectly returns "root"
-    # on MacOS. For for information, visit
-    # https://github.com/vercel/hyper/issues/3762.
-    if type -q zellij; and not _ssh_session; and test $LOGNAME = $USER
-        # Attach to a default session if it exists.
-        set --export ZELLIJ_AUTO_ATTACH true
-        # Exit the shell when Zellij exits.
-        set --export ZELLIJ_AUTO_EXIT true
-        eval (zellij setup --generate-auto-start fish | string collect)
-    end
-
-    # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
-    # during remote connections.
-    #
-    # For more information, visit
-    # https://github.com/alacritty/alacritty/issues/3962.
-    set --export TERM xterm-256color
-end
+set --erase os
+set --erase tty
 
 # User settings.
 
@@ -537,6 +549,6 @@ end
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-    source_bash_files "$HOME/.env" "$HOME/.secrets"
+    source-bash-files "$HOME/.env" "$HOME/.secrets"
 end
-source_files "$HOME/.env.fish" "$HOME/.secrets.fish"
+source-files "$HOME/.env.fish" "$HOME/.secrets.fish"

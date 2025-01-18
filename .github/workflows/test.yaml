@@ -47,7 +47,7 @@ jobs:
     name: Test bootstrapping software for Alpine Linux
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'alpine' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -60,7 +60,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -79,7 +79,7 @@ jobs:
     name: Test bootstrapping software for Arch Linux
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job ==  'arch' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -111,7 +111,7 @@ jobs:
     name: Test bootstrapping software for Debian Linux
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'debian' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -124,7 +124,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -143,7 +143,7 @@ jobs:
     name: Test bootstrapping software for Fedora Linux
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'fedora' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -156,7 +156,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -177,8 +177,8 @@ jobs:
     # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
     # acceleration again to avoid action timeouts.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
-    runs-on: ubuntu-22.04
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -230,11 +230,10 @@ jobs:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
           bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-      # Yazi hangs during startup on GitHub Arm64 MacOS runners.
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/integration/roles.test.cjs --arch arm64 --skip yazi macos
+          node tests/integration/roles.test.cjs --arch arm64 macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -255,7 +254,7 @@ jobs:
           - brew
           - deb
           - rpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -274,7 +273,7 @@ jobs:
     name: Test bootstrapping software for Suse Linux
     if: >-
       ${{ github.event_name == 'workflow_dispatch' && inputs.job ==  'suse' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -287,7 +286,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -306,7 +305,7 @@ jobs:
     name: Test Bootware collection on Ubuntu Linux
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -319,7 +318,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           build-args: test=true
           context: .
@@ -404,6 +403,9 @@ jobs:
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
       # Github hosted runner and is broken.
+      #
+      # TODO: Fix "Unknown binary 'rust-analyzer.exe' in official toolchain
+      # 'stable-x86_64-pc-windows-msvc'" error for Rust.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;C:\Program Files\Kubeshark;C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"

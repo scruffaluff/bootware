@@ -36,6 +36,10 @@ defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 defaults write com.apple.dock autohide -bool true
 # Set dock autohide delay time to 0 seconds.
 defaults write com.apple.dock autohide-delay -float 0
+# Use simplier minimized animation for hiding applications.
+defaults write com.apple.dock mineffect scale
+# Minimize multiple windows of an applications to one dock icon.
+defaults write com.apple.dock minimize-to-application -bool true
 # Do not show recent applications in the dock.
 defaults write com.apple.dock show-recents -bool false
 # Disable arranging spaces based on recent use for Amethyst.
@@ -104,6 +108,8 @@ duti -s org.videolan.vlc wmv all
 
 # Show hidden files in Finder.
 defaults write com.apple.finder AppleShowAllFiles -bool true
+# Use only the current folder for Finder searches.
+defaults write com.apple.finder FXDefaultSearchScope SCcf
 # Disable file extension change warning.
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Show items in Finder via icon view.
@@ -112,6 +118,8 @@ defaults write com.apple.Finder FXPreferredViewStyle icnv
 defaults write com.apple.Finder FXPreferredGroupBy Name
 # Show path bar in Finder folder window.
 defaults write com.apple.finder ShowPathbar -bool true
+# Hide recent tags from Finder sidebar.
+defaults write com.apple.finder ShowRecentTags -bool false
 # Do not show removable media on the desktop.
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 # Show status bar in Finder folder window.
@@ -199,6 +207,17 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
     </dict>
   </dict>
 '
+
+# Privacy settings.
+
+# Disable Apple intelligence report.
+defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
+# Delete verification codes after use.
+defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
+# Disable Apple password manager.
+defaults write com.apple.Safari AutoFillPasswords -bool false
+# Disable sharing search queries with Apple.
+defaults write com.apple.SpotlightResources.Defaults 'Search Queries Data Sharing Status' -float 2
 
 # TextEdit settings.
 

@@ -16,8 +16,8 @@ all: setup format lint docs test
 # Build distribution packages.
 [unix]
 dist version:
-  scripts/package.sh --version {{ version }} ansible
-  scripts/package.sh --version {{ version }} dist alpm apk deb rpm
+  scripts/package.sh --version {{version}} ansible
+  scripts/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
 docs:
@@ -70,14 +70,14 @@ _setup: _setup-unix
 _setup-unix:
   #!/usr/bin/env sh
   set -eu
-  arch="$(echo {{ arch() }} | sed s/x86_64/amd64/ | sed s/aarch64/arm64/)"
-  os="{{ replace(os(), "macos", "darwin") }}"
+  arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
+  os='{{replace(os(), "macos", "darwin")}}'
   if [ ! -x "$(command -v node)" ] || [ ! -x "$(command -v npm)" ]; then
     echo 'Error: Unable to find NodeJS and NPM.' >&2
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
     exit 1
   fi
-   if [ ! -x "$(command -v python3)" ]; then
+  if [ ! -x "$(command -v python3)" ]; then
     echo 'Error: Unable to find Python.' >&2
     echo 'Install Python, https://python.org, manually before continuing.' >&2
     exit 1
@@ -94,7 +94,7 @@ _setup-unix:
         https://formulae.brew.sh/api/formula/shellcheck.json |
         jq --exit-status --raw-output .versions.stable)"
       curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
-        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.{{ arch() }}.tar.xz"
+        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.{{arch()}}.tar.xz"
       tar fx /tmp/shellcheck.tar.xz -C /tmp
       install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" "${HOME}/.local/bin/shellcheck"
     fi
@@ -130,8 +130,12 @@ _setup-unix:
 _setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
-  If (-Not (Get-Command -ErrorAction SilentlyContinue node)) {
-    Write-Error 'Error: Unable to find NodeJS.'
+  $PSNativeCommandUseErrorActionPreference = $True
+  If (-Not (
+    (Get-Command -ErrorAction SilentlyContinue node) -And 
+    (Get-Command -ErrorAction SilentlyContinue npm)
+  )) {
+    Write-Error 'Error: Unable to find complete NodeJS installation.'
     Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
     Exit 1
   }

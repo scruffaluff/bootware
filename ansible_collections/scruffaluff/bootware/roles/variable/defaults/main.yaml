@@ -37,8 +37,21 @@ fish_executable_:
 github_api_token_: >-
   {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
-  Darwin: staff
+  Darwin: "{{ 'wheel' if user_id == 'root' else 'staff' }}"
+  FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
+nushell_autoload_:
+  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
+  FreeBSD: "{{ user_home }}.local/share/nushell/vendor/autoload"
+  Linux: "{{ user_home }}.local/share/nushell/vendor/autoload"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
+nushell_executable_:
+  Darwin: >-
+    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+    '/usr/local' }}/bin/nu
+  FreeBSD: /usr/local/bin/nu
+  Linux: /usr/bin/nu
+  Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
 system_libc_:
   Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
@@ -50,13 +63,6 @@ system_architecture_:
   riscv64: riscv64
   x64: amd64
   x86_64: amd64
-user_shell_:
-  Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-    '/usr/local' }}/bin/fish
-  FreeBSD: /usr/local/bin/fish
-  Linux: /usr/bin/fish
-  Win32NT: "C:/Program Files/PowerShell/7/pwsh.exe"
 bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
@@ -70,6 +76,12 @@ github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
+nushell_autoload: >-
+  {{  nushell_autoload_.get(ansible_system, user_home +
+  '.local/share/nushell/vendor/autoload') }}
+nushell_executable: >-
+  {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
+powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps
@@ -77,4 +89,4 @@ scoop_shims: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
-user_shell: "{{ user_shell_.get(ansible_system, '/usr/bin/fish') }}"
+user_shell: "{{ 'powershell' if ansible_system == 'Win32NT' else 'fish' }}"

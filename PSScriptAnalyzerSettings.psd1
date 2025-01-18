@@ -8,5 +8,6 @@
         'PSAvoidGlobalVars',
         'PSAvoidUsingInvokeExpression',
         'PSAvoidUsingPositionalParameters'
+        'PSUseApprovedVerbs'
     )
 }
