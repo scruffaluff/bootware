@@ -51,7 +51,7 @@
   scruffaluff.bootware.firefox_profiles:
     user: "{{ user_id }}"
   register: firefox_profiles_unix
-  when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
+  when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Find Firefox profiles for Windows
   scruffaluff.bootware.win_firefox_profiles:
@@ -69,7 +69,7 @@
     src: user.js
   become: true
   loop: "{{ firefox_profiles_unix['paths'] }}"
-  when: ansible_system != "Win32NT" and ansible_distribution != "Ubuntu"
+  when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Copy Firefox user preferences for Windows
   ansible.windows.win_copy:

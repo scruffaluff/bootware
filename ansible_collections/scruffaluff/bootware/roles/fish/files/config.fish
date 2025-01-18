@@ -107,7 +107,7 @@ function edit-history
     if test -n "$EDITOR"
         $EDITOR "$HOME/.local/share/fish/fish_history"
     else
-        vim "$HOME/.local/share/fish/fish_history"
+        vi "$HOME/.local/share/fish/fish_history"
     end
 end
 

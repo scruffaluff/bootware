@@ -31,7 +31,7 @@ export -f command_not_found_handle
 
 # Open Bash history file with default editor.
 edit-history() {
-  local program="${EDITOR:-vim}"
+  local program="${EDITOR:-vi}"
   "${program}" "${HOME}/.bash_history"
 }
 export -f edit-history

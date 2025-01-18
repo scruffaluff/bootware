@@ -58,7 +58,7 @@ def edit-history [] {
     if ("EDITOR" in $env) {
         run-external $env.EDITOR $nu.history-path
     } else {
-        vim $nu.history-path
+        vi $nu.history-path
     }
 }
 

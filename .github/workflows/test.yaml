@@ -341,11 +341,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: Vampire/setup-wsl@v4
+      - uses: Vampire/setup-wsl@v3
         with:
           # Setup WSL uses the version 11 for Debian which has an out of date
           # version of Ansible.
-          distribution: Ubuntu-22.04
+          distribution: Ubuntu-24.04
           set-as-default: "true"
       # Variable ${{ github.ref_name }} does not replace this step, since
       # ref_name will be name of the pull request instead of the branch.
