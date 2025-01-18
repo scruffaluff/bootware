@@ -37,7 +37,8 @@ fish_executable_:
 github_api_token_: >-
   {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
-  Darwin: staff
+  Darwin: "{{ 'wheel' if user_id == 'root' else 'staff' }}"
+  FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
 nushell_autoload_:
   Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"

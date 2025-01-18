@@ -893,21 +893,15 @@ setup_fedora() {
 #   Super user elevation command.
 #######################################
 setup_freebsd() {
+  local ansible_package
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
     ${1:+"${1}"} pkg update
-    # Python's cryptography package requires a Rust compiler on FreeBSD.
-    ${1:+"${1}"} pkg install --yes python3 rust
 
-    python_version="$(
-      python3 -c 'import sys; print("{}{}".format(*sys.version_info[:2]))'
+    ansible_package="$(
+      pkg search --quiet --regex 'py[0-9]+-ansible-[^A-Za-z]'
     )"
-    ${1:+"${1}"} pkg install --yes "py${python_version}-pip"
-
-    ${1:+"${1}"} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+"${1}"} python3 -m pip install ansible
+    ${1:+"${1}"} pkg install --yes "${ansible_package}"
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
@@ -1037,10 +1031,7 @@ setup_suse() {
   if [[ ! -x "$(command -v ansible)" ]]; then
     log 'Installing Ansible'
     ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm python3 python3-pip
-
-    ${1:+"${1}"} python3 -m pip install --upgrade pip setuptools wheel
-    ${1:+"${1}"} python3 -m pip install ansible
+    ${1:+"${1}"} zypper install --no-confirm ansible
   fi
 
   if [[ ! -x "$(command -v curl)" ]]; then
