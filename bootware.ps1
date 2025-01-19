@@ -477,7 +477,7 @@ Function GetParameters($Params, $Index) {
 # Check if script is run from an admin console.
 Function IsAdministrator {
     Return (New-Object Security.Principal.WindowsPrincipal( `
-        [Security.Principal.WindowsIdentity]::GetCurrent() `
+                [Security.Principal.WindowsIdentity]::GetCurrent() `
         )).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 

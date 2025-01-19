@@ -96,7 +96,9 @@ jobs:
         with:
           # Libvirt test fails in GitHub workflow as of 01/18/2025 due to a "No
           # module named 'gi'" Python error. The test passes when run locally.
-          build-args: test=true,skip=libvirt
+          build-args: |
+            skip=libvirt
+            test=true
           context: .
           file: tests/integration/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
@@ -198,8 +200,8 @@ jobs:
             sudo freebsd-update install
             pkg install --yes curl
           release: "14.1"
-          # Audacity test is skipped in FreeBSD VM since it requires a display
-          # connection.
+          # Audacity and Musescore tests are skipped in FreeBSD VM since they
+          # require a display connection.
           #
           # TODO: Create nonadmin user for test since VLC cannot run as root.
           run: |
@@ -207,7 +209,7 @@ jobs:
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 --skip audacity,vlc freebsd'
+            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 --skip audacity,musescore,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
