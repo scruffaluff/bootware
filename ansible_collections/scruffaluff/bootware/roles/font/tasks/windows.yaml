@@ -24,6 +24,7 @@
     - name: Install fonts for Windows
       ansible.windows.win_shell: |
         $ErrorActionPreference = 'Stop'
+        $PSNativeCommandUseErrorActionPreference = $True
         [System.Reflection.Assembly]::LoadWithPartialName('PresentationFramework')
         Add-Type -PassThru -AssemblyName PresentationFramework | Out-Null
         $Folder = '{{ ansible_env.TEMP }}/{{ font_family.name }}'

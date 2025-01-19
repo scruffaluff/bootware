@@ -3,8 +3,10 @@
     Prevent system from sleeping during a program.
 #>
 
-# Exit immediately if a PowerShell Cmdlet encounters an error.
+# Exit immediately if a PowerShell cmdlet encounters an error.
 $ErrorActionPreference = 'Stop'
+# Exit immediately when an native executable encounters an error.
+$PSNativeCommandUseErrorActionPreference = $True
 
 # Show CLI help information.
 Function Usage() {

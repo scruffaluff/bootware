@@ -971,17 +971,6 @@ setup_macos() {
     sudo xcode-select --install
   fi
 
-  # Install Rosetta 2 for Apple Silicon if not already installed.
-  #
-  # # Do not use long form --processor flag for uname. It is not supported on
-  # MacOS.
-  #
-  # Flags:
-  #   -d: Check if path exists and is a directory.
-  if [[ "$(uname -m)" == 'arm64' && ! -d '/opt/homebrew' ]]; then
-    softwareupdate --agree-to-license --install-rosetta
-  fi
-
   # Install Homebrew if not already installed.
   #
   # FLAGS:

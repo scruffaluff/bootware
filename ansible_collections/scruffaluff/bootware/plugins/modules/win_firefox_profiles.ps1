@@ -2,8 +2,10 @@
 
 #AnsibleRequires -CSharpUtil Ansible.Basic
 
-# Exit immediately if a PowerShell Cmdlet encounters an error.
+# Exit immediately if a PowerShell cmdlet encounters an error.
 $ErrorActionPreference = 'Stop'
+# Exit immediately when an native executable encounters an error.
+$PSNativeCommandUseErrorActionPreference = $True
 
 # Taken from https://stackoverflow.com/a/422529.
 Function ReadIni($File) {

@@ -1,4 +1,106 @@
 ---
+- name: Install Homebrew for MacOS
+  ansible.builtin.shell:
+    cmd: |
+      if [ ! -x "$(command -v brew)" ]; then
+        curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
+      fi
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  failed_when: essential_homebrew.rc != 0
+  register: essential_homebrew
+  when: ansible_system == "Darwin"
+
+- name: Install Chocolatey for Windows
+  ansible.windows.win_shell: |
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $True
+    If (-Not (Get-Command -ErrorAction SilentlyContinue choco)) {
+      $ProgressPreference = 'SilentlyContinue'
+      Invoke-WebRequest -UseBasicParsing -Uri `
+        'https://chocolatey.org/install.ps1' | Invoke-Expression
+    }
+  changed_when: true
+  failed_when: essential_chocolatey.rc != 0
+  register: essential_chocolatey
+  when: ansible_system == "Win32NT"
+
+- name: Install Scoop for Windows
+  ansible.windows.win_shell: |
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $True
+    If (-Not (Get-Command -ErrorAction SilentlyContinue scoop)) {
+      $ProgressPreference = 'SilentlyContinue'
+      If (
+        (New-Object Security.Principal.WindowsPrincipal( `
+        [Security.Principal.WindowsIdentity]::GetCurrent() `
+        )).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+      ) {
+        $ScoopInstaller = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.ps1'
+        Invoke-WebRequest -UseBasicParsing -OutFile $ScoopInstaller -Uri 'get.scoop.sh'
+        & $ScoopInstaller -RunAsAdmin
+        Remove-Item -Force -Path $ScoopInstaller
+      }
+      Else {
+        Invoke-WebRequest -UseBasicParsing -Uri 'https://get.scoop.sh' `
+          | Invoke-Expression
+      }
+    }
+  changed_when: true
+  failed_when: essential_scoop.rc != 0
+  register: essential_scoop
+  when: ansible_system == "Win32NT"
+
+- name: Add Scoop global shims to path for Windows
+  ansible.windows.win_path:
+    elements: "C:\\ProgramData\\scoop\\shims"
+    scope: machine
+  when: ansible_system == "Win32NT"
+
+- name: Add Scoop user shims to path for Windows
+  ansible.windows.win_path:
+    elements: "{{ user_home }}\\scoop\\shims"
+    scope: user
+  when: ansible_system == "Win32NT"
+
+# Replaced temporarily by task below since win_scoop_bucket does not properly
+# capture output and "scoop bucket add" now fails if the bucket is already
+# added.
+# - name: Add essential Scoop buckets for Windows
+#   community.windows.win_scoop_bucket:
+#     name: "{{ item }}"
+# environment:
+#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
+#   loop:
+#     - extras
+#     - main
+#     - versions
+#   when: ansible_system == "Win32NT"
+
+- name: Install Scoop bucket dependency for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: mingit
+  when: ansible_system == "Win32NT"
+
+- name: Add essential Scoop buckets for Windows
+  ansible.windows.win_shell: scoop bucket add {{ item }}
+  changed_when: "'bucket was added successfully' in essential_scoop_bucket"
+  environment:
+    Path: >-
+      {{ user_home }}\\scoop\\shims;C:\\ProgramData\\scoop\\shims;{{
+      ansible_env.Path }}
+  failed_when: >-
+    essential_scoop_bucket.rc != 0 and 'bucket already exists' not in
+    essential_scoop_bucket.stdout
+  loop:
+    - extras
+    - main
+    - versions
+  register: essential_scoop_bucket
+  when: ansible_system == "Win32NT"
+
 - name: Update package list for OpenWrt
   ansible.builtin.command: opkg update
   become: true
@@ -47,47 +149,6 @@
       - xz
       - zip
   when: ansible_system == "Darwin"
-
-# Replaced temporarily by task below since win_scoop_bucket does not properly
-# capture output and "scoop bucket add" now fails if the bucket is already
-# added.
-# - name: Add essential Scoop buckets for Windows
-#   community.windows.win_scoop_bucket:
-#     name: "{{ item }}"
-# environment:
-#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
-#   loop:
-#     - extras
-#     - main
-#     - versions
-#   when: ansible_system == "Win32NT"
-
-- name: Install Scoop bucket dependency for Windows
-  community.windows.win_scoop:
-    global: "{{ scoop_global }}"
-    name: mingit
-  when: ansible_system == "Win32NT"
-
-- name: Add essential Scoop buckets for Windows
-  ansible.windows.win_shell: "scoop bucket add {{ item }}"
-  changed_when: "'bucket was added successfully' in essential_bucket_add"
-  environment:
-    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
-  failed_when: >-
-    essential_bucket_add.rc != 0 and 'bucket already exists' not in
-    essential_bucket_add.stdout
-  loop:
-    - extras
-    - main
-    - versions
-  register: essential_bucket_add
-  when: ansible_system == "Win32NT"
-
-- name: Add Scoop global shims to path for Windows
-  ansible.windows.win_path:
-    elements: "C:\\ProgramData\\scoop\\shims"
-    scope: machine
-  when: ansible_system == "Win32NT"
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:

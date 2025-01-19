@@ -4,8 +4,10 @@
 # https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1 and
 # https://github.com/Sycnex/Windows10Debloater/blob/master/Windows10Debloater.ps1.
 
-# Exit immediately if a PowerShell Cmdlet encounters an error.
+# Exit immediately if a PowerShell cmdlet encounters an error.
 $ErrorActionPreference = 'Stop'
+# Exit immediately when an native executable encounters an error.
+$PSNativeCommandUseErrorActionPreference = $True
 
 # Remove applications.
 $Applications = @(
