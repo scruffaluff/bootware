@@ -16,3 +16,51 @@
   community.windows.win_scoop:
     name: obsidian
   when: ansible_system == "Win32NT"
+
+- name: Create Obsidian settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ obsidian_vault }}/.obsidian"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Create Obsidian settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ obsidian_vault }}/.obsidian"
+    state: directory
+  when: ansible_system == "Win32NT"
+
+- name: Copy Obsidian settings files for Unix
+  ansible.builtin.copy:
+    dest: "{{ obsidian_vault }}/.obsidian/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - app.json
+    - appearance.json
+    - community-plugins.json
+    - core-plugins.json
+    - hotkeys.json
+  when: ansible_system != "Win32NT" and obsidian_vault is defined
+
+- name: Copy Obsidian settings files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ obsidian_vault }}/.obsidian/{{ item }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  loop:
+    - app.json
+    - appearance.json
+    - community-plugins.json
+    - core-plugins.json
+    - hotkeys.json
+  when: ansible_system == "Win32NT" and obsidian_vault is defined
