@@ -756,6 +756,13 @@
         - obs
         - video
 
+    - name: Install Obsidian notetaking application
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.obsidian
+      tags:
+        - desktop
+        - obsidian
+
     - name: Install optional packages
       ansible.builtin.import_role:
         name: scruffaluff.bootware.package

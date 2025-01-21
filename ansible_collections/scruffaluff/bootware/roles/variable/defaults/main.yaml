@@ -42,8 +42,8 @@ group_id_:
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
 nushell_autoload_:
   Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
-  FreeBSD: "{{ user_home }}.local/share/nushell/vendor/autoload"
-  Linux: "{{ user_home }}.local/share/nushell/vendor/autoload"
+  FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
+  Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 nushell_executable_:
   Darwin: >-

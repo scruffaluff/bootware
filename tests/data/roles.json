@@ -271,6 +271,7 @@
       "windows": ["scoop prefix obs-studio"]
     }
   },
+  { "name": "obsidian" },
   { "name": "package" },
   {
     "name": "powershell",
