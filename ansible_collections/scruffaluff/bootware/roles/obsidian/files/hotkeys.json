@@ -1,8 +1,13 @@
 {
-  "editor:toggle-source": [
-    {
-      "modifiers": ["Mod", "Shift"],
-      "key": "S"
-    }
+  "app:go-back": [{ "key": "[", "modifiers": ["Ctrl"] }],
+  "app:go-forward": [{ "key": "]", "modifiers": ["Ctrl"] }],
+  "command-palette:open": [{ "key": "P", "modifiers": ["Ctrl", "Shift"] }],
+  "workspace:next-tab": [
+    { "key": ";", "modifiers": ["Ctrl", "Shift"] },
+    { "key": "Tab", "modifiers": ["Ctrl"] }
+  ],
+  "workspace:previous-tab": [
+    { "key": "J", "modifiers": ["Ctrl", "Shift"] },
+    { "key": "Tab", "modifiers": ["Ctrl", "Shift"] }
   ]
 }

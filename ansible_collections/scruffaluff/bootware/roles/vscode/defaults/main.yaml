@@ -70,6 +70,7 @@ vscode_extensions:
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - rust-lang.rust-analyzer
+  - streetsidesoftware.code-spell-checker
   - sukumo28.wav-preview
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
@@ -77,7 +78,6 @@ vscode_extensions:
   - tilt-dev.tiltfile
   - timonwong.shellcheck
   - vadimcn.vscode-lldb
-  - valentjn.vscode-ltex
   - vitest.explorer
   - vscode-icons-team.vscode-icons
   - vue.volar
@@ -100,10 +100,10 @@ vscode_remote_extensions:
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - sukumo28.wav-preview
+  - streetsidesoftware.code-spell-checker
   - tamasfe.even-better-toml
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
-  - valentjn.vscode-ltex
   - vscode-icons-team.vscode-icons
   - waderyan.gitblame
 vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
