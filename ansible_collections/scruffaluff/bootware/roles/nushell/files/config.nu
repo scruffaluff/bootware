@@ -520,10 +520,6 @@ $env.STARSHIP_LOG = "error"
 
 # TypeScript settings.
 
-# Add Bun binaries to system path.
-$env.BUN_INSTALL = $"($env.HOME)/.bun"
-prepend-paths $"($env.BUN_INSTALL)/bin"
-
 # Add Deno binaries to system path.
 prepend-paths $"($env.HOME)/.deno/bin"
 

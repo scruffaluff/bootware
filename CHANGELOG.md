@@ -31,7 +31,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Datree role.
+- Bun and Datree roles.
 
 ## 0.8.3 - 2024-12-05
 

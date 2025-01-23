@@ -169,15 +169,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Bun JavaScript and TypeScript runtime
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.bun
-      tags:
-        - bun
-        - extras
-        - language
-        - never
-
     - name: Install Caffeine
       ansible.builtin.import_role:
         name: scruffaluff.bootware.caffeine
