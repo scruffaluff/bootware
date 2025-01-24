@@ -441,7 +441,7 @@ config() {
 
     # Download configuration file.
     #
-    # FLAGS:
+    # Flags:
     #   -L: Follow redirect request.
     #   -S: Show errors.
     #   -f: Use archive file. Must be third flag.
@@ -475,7 +475,13 @@ dnf_check_update() {
 #######################################
 error() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  # Flags:
+  #   -t <FD>: Check if file descriptor is a terminal.
+  if [[ -t 2 ]]; then
+    printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  else
+    printf "error: %s\n" "${1}" >&2
+  fi
   exit 1
 }
 
@@ -486,7 +492,13 @@ error() {
 #######################################
 error_usage() {
   local bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  # Flags:
+  #   -t <FD>: Check if file descriptor is a terminal.
+  if [[ -t 2 ]]; then
+    printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  else
+    printf "error: %s\n" "${1}" >&2
+  fi
   printf "Run \'bootware %s--help\' for usage.\n" "${2:+${2} }" >&2
   exit 2
 }
@@ -571,11 +583,11 @@ install_yq() {
 
   # Get latest YQ version.
   #
-  # FLAGS:
+  # Flags:
   #   -L: Follow redirect request.
   #   -S: Show errors.
   #   -f: Fail silently on server errors.
-  #   -o file: Save output to file.
+  #   -o <FILE>: Save output to file.
   #   -s: Disable progress bars.
   version="$(
     curl -LSfs https://formulae.brew.sh/api/formula/yq.json |
@@ -973,7 +985,7 @@ setup_macos() {
 
   # Install Homebrew if not already installed.
   #
-  # FLAGS:
+  # Flags:
   #   -L: Follow redirect request.
   #   -S: Show errors.
   #   -f: Fail silently on server errors.

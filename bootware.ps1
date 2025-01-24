@@ -118,7 +118,7 @@ Remove Bootware files.
 
 Usage: bootware uninstall
 
-FLAGS:
+Options:
   -h, --help    Print help information
 '@
         }
@@ -128,7 +128,7 @@ Update Bootware to latest version.
 
 Usage: bootware update [FLAGS]
 
-FLAGS:
+Options:
   -h, --help                Print help information
   -v, --version <VERSION>   Version override for update
 '@
@@ -236,7 +236,6 @@ Function Bootstrap() {
     }
     ElseIf (-Not (Get-Command -ErrorAction SilentlyContinue wsl)) {
         Throw 'Error: The WSL needs to be setup before bootstrapping'
-        Exit 1
     }
 
     # Configure run to find task associated with start role.
@@ -419,7 +418,7 @@ Function DownloadFile($SrcURL, $DstFile) {
 
 # Print error message and exit script with usage error code.
 Function ErrorUsage($Message) {
-    Throw "Error: $Message"
+    Write-Error "Error: $Message"
     Exit 2
 }
 
