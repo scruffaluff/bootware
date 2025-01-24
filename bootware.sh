@@ -20,20 +20,20 @@ usage() {
   case "${1}" in
     bootstrap)
       cat 1>&2 << EOF
-Boostrap install computer software.
+Bootstrap install computer software.
 
 Usage: bootware bootstrap [OPTIONS]
 
 Options:
       --check                     Perform dry run and show possible changes
       --checkout <REF>            Git reference to run against
-  -c, --config <PATH>             Path to bootware user configuation file
+  -c, --config <PATH>             Path to bootware user configuration file
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
       --install-group <GROUP>     Remote group to install software for
       --install-user <USER>       Remote user to install software for
-  -i, --inventory <IP-LIST>       Ansible remote hosts IP addesses
+  -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote user login password
@@ -70,7 +70,7 @@ EOF
       ;;
     main)
       cat 1>&2 << EOF
-Boostrapping software installer.
+Bootstrapping software installer.
 
 Usage: bootware [OPTIONS] [SUBCOMMAND]
 
@@ -80,7 +80,7 @@ Options:
   -v, --version   Print version information
 
 Subcommands:
-  bootstrap   Boostrap install computer software
+  bootstrap   Bootstrap install computer software
   config      Generate Bootware configuration file
   roles       List all Bootware roles
   setup       Install dependencies for Bootware
@@ -90,7 +90,7 @@ Subcommands:
 Environment Variables:
   BOOTWARE_CONFIG         Set the configuration file path
   BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
-  BOOTWARE_NOPASSWD       Assume passwordless doas or sudo
+  BOOTWARE_NOPASSWD       Assume password less doas or sudo
   BOOTWARE_NOSETUP        Skip Ansible install and system setup
   BOOTWARE_PLAYBOOK       Set Ansible playbook name
   BOOTWARE_SKIP           Set skip tags for Ansible roles
@@ -504,7 +504,7 @@ error_usage() {
 }
 
 #######################################
-# Find path of Bootware configuation file.
+# Find path of Bootware configuration file.
 # Globals:
 #   HOME
 # Arguments:
@@ -526,7 +526,7 @@ find_config_path() {
   elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
   else
-    log 'Unable to find Bootware configuation file.'
+    log 'Unable to find Bootware configuration file.'
     config --empty
     RET_VAL="${HOME}/.bootware/config.yaml"
   fi
@@ -664,7 +664,7 @@ roles() {
 }
 
 #######################################
-# Subcommand to configure boostrapping services and utilities.
+# Subcommand to configure bootstrapping services and utilities.
 #######################################
 setup() {
   local collections collection_status os_type tmp_dir super=''
@@ -715,7 +715,7 @@ setup() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Alpine.
+# Configure bootstrapping services and utilities for Alpine.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -756,7 +756,7 @@ setup_alpine() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Arch.
+# Configure bootstrapping services and utilities for Arch.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -811,7 +811,7 @@ setup_arch() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Debian.
+# Configure bootstrapping services and utilities for Debian.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -857,7 +857,7 @@ setup_debian() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Fedora.
+# Configure bootstrapping services and utilities for Fedora.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -900,7 +900,7 @@ setup_fedora() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for FreeBSD.
+# Configure bootstrapping services and utilities for FreeBSD.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -941,7 +941,7 @@ setup_freebsd() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for Linux.
+# Configure bootstrapping services and utilities for Linux.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -967,7 +967,7 @@ setup_linux() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for MacOS.
+# Configure bootstrapping services and utilities for MacOS.
 #######################################
 setup_macos() {
   # On Apple silicon, brew is not in the system path after installation.
@@ -1019,7 +1019,7 @@ setup_macos() {
 }
 
 #######################################
-# Configure boostrapping services and utilities for OpenSuse.
+# Configure bootstrapping services and utilities for OpenSuse.
 # Arguments:
 #   Super user elevation command.
 #######################################

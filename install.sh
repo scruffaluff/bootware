@@ -351,7 +351,7 @@ main() {
 
   install_completions "${super}" "${user_install:-}" "${version}"
 
-  # Installl man pages if a system install.
+  # Install man pages if a system install.
   #
   # Flags:
   #   -z: Check if the string is empty.

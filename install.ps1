@@ -56,7 +56,7 @@ Run this script from an administrator console or execute with the '--user' flag.
 
 # Download file to destination efficiently.
 #
-# Required as a seperate function, since the default progress bar updates every
+# Required as a separate function, since the default progress bar updates every
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {

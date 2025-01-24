@@ -32,7 +32,7 @@ complete -c bootware -n __fish_use_subcommand -a update -d 'Update Bootware to l
 
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l check -d 'Perform dry run and show possible changes'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l checkout -d 'Git reference to run against'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l config -d 'Path to bootware user configuation file'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l config -d 'Path to bootware user configuration file'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l debug -d 'Enable Ansible task debugger'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s d -l dev -d 'Run bootstrapping in development mode'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s h -l help -d 'Print help information'

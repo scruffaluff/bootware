@@ -40,7 +40,7 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
             }
             'bootware;bootstrap' {
                 [CompletionResult]::new('--check', '--check', [CompletionResultType]::ParameterName, 'Perform dry run and show possible changes')
-                [CompletionResult]::new('--config', '--config', [CompletionResultType]::ParameterName, 'Path to bootware user configuation file')
+                [CompletionResult]::new('--config', '--config', [CompletionResultType]::ParameterName, 'Path to bootware user configuration file')
                 [CompletionResult]::new('--debug', '--debug', [CompletionResultType]::ParameterName, 'Enable Ansible task debugger')
                 [CompletionResult]::new('--dev', '--dev', [CompletionResultType]::ParameterName, 'Run bootstrapping in development mode')
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')

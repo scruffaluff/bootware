@@ -11,7 +11,7 @@ setup() {
   export BOOTWARE_NOLOG='true'
 }
 
-@test 'Bootware throws error for unkown subcommand' {
+@test 'Bootware throws error for unknown subcommand' {
   run bootware.sh notasubcommand
   assert_equal "${status}" 2
   assert_output --partial "No such subcommand or option 'notasubcommand'"
