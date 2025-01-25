@@ -4,7 +4,7 @@ BeforeAll {
 }
 
 Describe 'Main' {
-    It 'Throw error for unkown subcommand' {
+    It 'Throw error for unknown subcommand' {
         { & $Bootware notasubcommand } |
             Should -Throw "Error: No such subcommand or option 'notasubcommand'"
     }
@@ -32,7 +32,7 @@ Describe 'FindConfigPath' {
         Mock Test-Path { Write-Output 0 }
         $Env:BOOTWARE_CONFIG = '/a/fake/nonsense/path'
         { FindConfigPath } |
-            Should -Throw 'Unable to find Bootware configuation file'
+            Should -Throw 'Unable to find Bootware configuration file'
     }
 }
 

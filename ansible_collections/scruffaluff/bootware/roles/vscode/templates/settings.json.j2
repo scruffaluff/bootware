@@ -82,6 +82,14 @@
   },
   "bookmarks.sideBar.countBadge": "off",
   "browse-lite.chromeExecutable": "{{ vscode_chrome_path }}",
+  "cSpell.customDictionaries": {
+    "custom": true,
+    "customDictionary": {
+      "addWords": true,
+      "name": "Custom",
+      "path": "${userHome}/.dictionary.txt"
+    }
+  },
   "csv-preview.lineNumbers": "ordinal",
   "debug.console.fontFamily": "FiraCode Nerd Font",
   "debug.console.fontSize": {{ font_size }},
@@ -171,12 +179,6 @@
   "lldb.launch.initCommands": ["command source ~/.lldbinit"],
   "lldb.launch.sourceLanguages": ["rust"],
   "lldb.suppressUpdateNotifications": true,
-  "ltex.configurationTarget": {
-    "dictionary": "userExternalFile",
-    "disabledRules": "userExternalFile",
-    "hiddenFalsePositives": "userExternalFile"
-  },
-  "ltex.enabled": ["bibtex", "latex", "markdown", "restructuredtext"],
   "MATLAB.telemetry": false,
   "markdown.preview.fontFamily": "PT Serif",
   "markdown.preview.fontSize": {{ font_size }},

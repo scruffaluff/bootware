@@ -76,7 +76,7 @@ configure_shell() {
 #######################################
 download() {
   # Flags:
-  #   -O path: Save download to path.
+  #   -O <PATH>: Save download to path.
   #   -q: Hide log output.
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
@@ -95,7 +95,13 @@ download() {
 #######################################
 error() {
   bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  # Flags:
+  #   -t <FD>: Check if file descriptor is a terminal.
+  if [ -t 2 ]; then
+    printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  else
+    printf "error: %s\n" "${1}" >&2
+  fi
   exit 1
 }
 
@@ -106,7 +112,13 @@ error() {
 #######################################
 error_usage() {
   bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  # Flags:
+  #   -t <FD>: Check if file descriptor is a terminal.
+  if [ -t 2 ]; then
+    printf "${bold_red}error${default}: %s\n" "${1}" >&2
+  else
+    printf "error: %s\n" "${1}" >&2
+  fi
   printf "Run 'install --help' for usage.\n" >&2
   exit 2
 }
@@ -339,7 +351,7 @@ main() {
 
   install_completions "${super}" "${user_install:-}" "${version}"
 
-  # Installl man pages if a system install.
+  # Install man pages if a system install.
   #
   # Flags:
   #   -z: Check if the string is empty.

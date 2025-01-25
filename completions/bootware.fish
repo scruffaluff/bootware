@@ -10,14 +10,14 @@ complete --no-files --command bootware
 #
 # Flags:
 #   -F: Allow completion to be followed by a filename.
-#   -a <options>: Add arguments to completions list.
-#   -c <command>: Provide completions for command.
-#   -d <description>: Add description to completion prompt.
+#   -a <OPTIONS>: Add arguments to completions list.
+#   -c <COMMAND>: Provide completions for command.
+#   -d <DESCRIPTION>: Add description to completion prompt.
 #   -f: Prevent completion from being followed by a filename.
-#   -l <word>: Add word as a long switch flag.
-#   -n <condition>: Only use this configuration if condition is true.
+#   -l <WORD>: Add word as a long switch flag.
+#   -n <CONDITION>: Only use this configuration if condition is true.
 #   -r: Completion must have an argument before another option.
-#   -s <character>: Add character as a short switch flag.
+#   -s <CHARACTER>: Add character as a short switch flag.
 #   -x: Apply both -f and -r flags.
 complete -c bootware -n __fish_use_subcommand -l debug -d 'Enable shell debug traces'
 complete -c bootware -n __fish_use_subcommand -s h -l help -d 'Print help information'
@@ -32,7 +32,7 @@ complete -c bootware -n __fish_use_subcommand -a update -d 'Update Bootware to l
 
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l check -d 'Perform dry run and show possible changes'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l checkout -d 'Git reference to run against'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l config -d 'Path to bootware user configuation file'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l config -d 'Path to bootware user configuration file'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l debug -d 'Enable Ansible task debugger'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s d -l dev -d 'Run bootstrapping in development mode'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s h -l help -d 'Print help information'

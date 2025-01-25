@@ -169,15 +169,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Bun JavaScript and TypeScript runtime
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.bun
-      tags:
-        - bun
-        - extras
-        - language
-        - never
-
     - name: Install Caffeine
       ansible.builtin.import_role:
         name: scruffaluff.bootware.caffeine
@@ -717,7 +708,7 @@
         - server
         - wsl
 
-    - name: Install MuseScore music notater
+    - name: Install MuseScore music writer
       ansible.builtin.import_role:
         name: scruffaluff.bootware.musescore
       tags:
@@ -756,7 +747,7 @@
         - obs
         - video
 
-    - name: Install Obsidian notetaking application
+    - name: Install Obsidian note taking application
       ansible.builtin.import_role:
         name: scruffaluff.bootware.obsidian
       tags:
@@ -1050,7 +1041,7 @@
         - usql
         - wsl
 
-    - name: Install general utilties
+    - name: Install general utilities
       ansible.builtin.import_role:
         name: scruffaluff.bootware.utility
       tags:
@@ -1085,7 +1076,7 @@
         - desktop
         - vlc
 
-    - name: Install VSCode text exitor
+    - name: Install VSCode text editor
       ansible.builtin.import_role:
         name: scruffaluff.bootware.vscode
       tags:

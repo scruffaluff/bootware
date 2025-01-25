@@ -1,5 +1,0 @@
----
-bun_arch_:
-  amd64: x64
-  arm64: aarch64
-bun_arch: "{{ bun_arch_[system_architecture] }}"

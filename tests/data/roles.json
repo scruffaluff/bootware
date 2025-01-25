@@ -47,11 +47,6 @@
   },
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
-  {
-    "name": "bun",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }],
-    "tests": ["bun --version"]
-  },
   { "name": "caffeine" },
   {
     "name": "chrome",

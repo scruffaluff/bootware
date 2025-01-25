@@ -1,0 +1,26 @@
+{
+  "app:go-back": [{ "key": "[", "modifiers": ["Ctrl"] }],
+  "app:go-forward": [{ "key": "]", "modifiers": ["Ctrl"] }],
+  "command-palette:open": [{ "key": "P", "modifiers": ["Ctrl", "Shift"] }],
+  "editor:add-cursor-above": [
+    { "key": "ArrowUp", "modifiers": ["Ctrl", "Shift"] }
+  ],
+  "editor:add-cursor-below": [
+    { "key": "ArrowDown", "modifiers": ["Ctrl", "Shift"] }
+  ],
+  "editor:open-search": [{ "key": "F", "modifiers": ["Ctrl"] }],
+  "editor:open-search-replace": [{ "key": "H", "modifiers": ["Ctrl"] }],
+  "editor:toggle-comments": [{ "key": "/", "modifiers": ["Ctrl"] }],
+  "file-explorer:new-file": [{ "key": "N", "modifiers": ["Ctrl", "Shift"] }],
+  "file-explorer:open": [{ "key": "A", "modifiers": ["Ctrl", "Shift"] }],
+  "global-search:open": [{ "key": "F", "modifiers": ["Ctrl", "Shift"] }],
+  "workspace:next-tab": [
+    { "key": ";", "modifiers": ["Ctrl", "Shift"] },
+    { "key": "Tab", "modifiers": ["Ctrl"] }
+  ],
+  "workspace:previous-tab": [
+    { "key": "J", "modifiers": ["Ctrl", "Shift"] },
+    { "key": "Tab", "modifiers": ["Ctrl", "Shift"] }
+  ],
+  "workspace:split-vertical": [{ "key": "S", "modifiers": ["Ctrl", "Shift"] }]
+}

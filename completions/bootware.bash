@@ -6,5 +6,5 @@
 # Add Bootware options and subcommands as completions.
 #
 # Flags:
-#   -W <words>: Add words as completion subcommands.
+#   -W <WORDS>: Add words as completion subcommands.
 complete -W 'bootstrap config roles setup uninstall update' bootware

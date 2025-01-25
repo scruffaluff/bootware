@@ -11,19 +11,19 @@ Function Usage() {
     Switch ($Args[0]) {
         'bootstrap' {
             Write-Output @'
-Boostrap install computer software.
+Bootstrap install computer software.
 
 Usage: bootware bootstrap [OPTIONS]
 
 Options:
       --check                     Perform dry run and show possible changes
-  -c, --config <PATH>             Path to bootware user configuation file
+  -c, --config <PATH>             Path to bootware user configuration file
       --debug                     Enable Ansible task debugger
   -d, --dev                       Run bootstrapping in development mode
   -h, --help                      Print help information
       --install-group <GROUP>     Remote group to install software for
       --install-user <USER>       Remote user to install software for
-  -i, --inventory <IP-LIST>       Ansible remote hosts IP addesses
+  -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses
       --no-passwd                 Do not ask for user password
       --no-setup                  Skip Bootware dependency installation
       --password <PASSWORD>       Remote user login password
@@ -57,7 +57,7 @@ Options:
         }
         'main' {
             Write-Output @'
-Boostrapping software installer.
+Bootstrapping software installer.
 
 Usage: bootware [OPTIONS] [SUBCOMMAND]
 
@@ -67,7 +67,7 @@ Options:
   -v, --version   Print version information
 
 Subcommands:
-  bootstrap   Boostrap install computer software
+  bootstrap   Bootstrap install computer software
   config      Generate Bootware configuration file
   roles       List all Bootware roles
   setup       Install dependencies for Bootware
@@ -77,7 +77,7 @@ Subcommands:
 Environment Variables:
   BOOTWARE_CONFIG         Set the configuration file path
   BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
-  BOOTWARE_NOPASSWD       Assume passwordless doas or sudo
+  BOOTWARE_NOPASSWD       Assume password less doas or sudo
   BOOTWARE_NOSETUP        Skip Ansible install and system setup
   BOOTWARE_PLAYBOOK       Set Ansible playbook name
   BOOTWARE_SKIP           Set skip tags for Ansible roles
@@ -118,7 +118,7 @@ Remove Bootware files.
 
 Usage: bootware uninstall
 
-FLAGS:
+Options:
   -h, --help    Print help information
 '@
         }
@@ -128,7 +128,7 @@ Update Bootware to latest version.
 
 Usage: bootware update [FLAGS]
 
-FLAGS:
+Options:
   -h, --help                Print help information
   -v, --version <VERSION>   Version override for update
 '@
@@ -236,7 +236,6 @@ Function Bootstrap() {
     }
     ElseIf (-Not (Get-Command -ErrorAction SilentlyContinue wsl)) {
         Throw 'Error: The WSL needs to be setup before bootstrapping'
-        Exit 1
     }
 
     # Configure run to find task associated with start role.
@@ -396,7 +395,7 @@ Function Config() {
 
     If ($EmptyCfg -Or (-Not $SrcURL)) {
         Log "Writing empty configuration file to $DstFile"
-        # Do not use Write-Ouput. On PowerShell 5, it will add a byte order
+        # Do not use Write-Output. On PowerShell 5, it will add a byte order
         # marker to the file, which makes WSL Ansible throw UTF-8 errors.
         # Solution was taken from https://stackoverflow.com/a/32951824.
         [System.IO.File]::WriteAllLines($DstFile, 'font_size: 14')
@@ -409,7 +408,7 @@ Function Config() {
 
 # Download file to destination efficiently.
 #
-# Required as a seperate function, since the default progress bar updates every
+# Required as a separate function, since the default progress bar updates every
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
 Function DownloadFile($SrcURL, $DstFile) {
@@ -419,11 +418,11 @@ Function DownloadFile($SrcURL, $DstFile) {
 
 # Print error message and exit script with usage error code.
 Function ErrorUsage($Message) {
-    Throw "Error: $Message"
+    Write-Error "Error: $Message"
     Exit 2
 }
 
-# Find path of Bootware configuation file.
+# Find path of Bootware configuration file.
 Function FindConfigPath($FilePath) {
     $ConfigPath = ''
 
@@ -438,7 +437,7 @@ Function FindConfigPath($FilePath) {
     }
     Else {
         Throw [System.IO.FileNotFoundException] `
-            'Unable to find Bootware configuation file'
+            'Unable to find Bootware configuration file'
     }
 
     Return $ConfigPath
@@ -449,7 +448,7 @@ Function FindConfigPath($FilePath) {
 # For WSL version 1, the Linux subsystem and the Windows host share the same
 # network. For WSL version 2, the first "nameserver <ip-address>" section of
 # /etc/resolv.conf contains the IP address of the windows host. Note that there
-# can be several namserver sections. For more information, visit
+# can be several nameserver sections. For more information, visit
 # https://docs.microsoft.com/en-us/windows/wsl/compare-versions#accessing-windows-networking-apps-from-linux-host-ip.
 Function FindRelativeIP {
     $WSLVersion = Get-ItemPropertyValue `
@@ -501,7 +500,7 @@ Function MakeWSLKey($FilePath) {
 
 # Request remote script and execution efficiently.
 #
-# Required as a seperate function, since the default progress bar updates every
+# Required as a separate function, since the default progress bar updates every
 # byte, making downloads slow. For more information, visit
 # https://stackoverflow.com/a/43477248.
 Function RemoteScript($URL) {
@@ -537,7 +536,7 @@ Function Roles() {
     yq "$Filter | $Format" "$PSScriptRoot/repo/playbook.yaml"
 }
 
-# Subcommand to configure boostrapping services and utilities.
+# Subcommand to configure bootstrapping services and utilities.
 Function Setup() {
     $ArgIdx = 0
     $Branch = 'main'
@@ -610,7 +609,7 @@ Function Setup() {
         }
     }
 
-    # Git is required for addding Scoop buckets.
+    # Git is required for adding Scoop buckets.
     If (-Not (Get-Command -ErrorAction SilentlyContinue git)) {
         Log 'Installing Git'
         scoop install mingit

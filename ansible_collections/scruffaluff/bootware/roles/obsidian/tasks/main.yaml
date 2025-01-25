@@ -16,3 +16,105 @@
   community.windows.win_scoop:
     name: obsidian
   when: ansible_system == "Win32NT"
+
+- name: Create Obsidian user settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ obsidian_user }}"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create Obsidian user settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ obsidian_user }}"
+    state: directory
+  when: ansible_system == "Win32NT"
+# Disabled since Obsidian replaces symbolic links when adding dictionary words.
+#
+# - name: Create user dictionary for Unix
+#   ansible.builtin.file:
+#     dest: "{{ user_home }}/.dictionary.txt"
+#     group: "{{ group_id }}"
+#     mode: "640"
+#     owner: "{{ user_id }}"
+#     state: file
+#   become: true
+#   when: ansible_system in ["Darwin", "Linux"]
+
+# - name: Create user dictionary for Windows
+#   ansible.windows.win_file:
+#     owner: "{{ user_id }}"
+#     path: "{{ user_home }}/.dictionary.txt"
+#     state: file
+#   when: ansible_system == "Win32NT"
+
+# - name: Make Obsidian symlink to user dictionary for Unix
+#   ansible.builtin.file:
+#     dest: "{{ obsidian_user }}/Custom Dictionary.txt"
+#     force: true
+#     group: "{{ group_id }}"
+#     mode: "644"
+#     owner: "{{ user_id }}"
+#     src: "{{ user_home }}/.dictionary.txt"
+#     state: link
+#   become: true
+#   when: ansible_system != "Win32NT"
+
+# - name: Make Obsidian symlink to user dictionary for Windows
+#   ansible.windows.win_shell: >-
+#     New-Item -Force -ItemType SymbolicLink -Path '{{ obsidian_user }}/Custom
+#     Dictionary.txt' -Target '{{ user_home }}/.dictionary.txt'
+#   changed_when: true
+#   when: ansible_system == "Win32NT"
+
+- name: Create Obsidian vault settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ obsidian_vault }}/.obsidian"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  when: ansible_system in ["Darwin", "Linux"] and obsidian_vault is defined
+
+- name: Create Obsidian vault settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ obsidian_vault }}/.obsidian"
+    state: directory
+  when: ansible_system == "Win32NT" and obsidian_vault is defined
+
+- name: Copy Obsidian vault settings files for Unix
+  ansible.builtin.copy:
+    dest: "{{ obsidian_vault }}/.obsidian/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  become: true
+  loop:
+    - app.json
+    - appearance.json
+    - community-plugins.json
+    - core-plugins.json
+    - hotkeys.json
+  when: ansible_system in ["Darwin", "Linux"] and obsidian_vault is defined
+
+- name: Copy Obsidian vault settings files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ obsidian_vault }}/.obsidian/{{ item }}"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item }}"
+  loop:
+    - app.json
+    - appearance.json
+    - community-plugins.json
+    - core-plugins.json
+    - hotkeys.json
+  when: ansible_system == "Win32NT" and obsidian_vault is defined
