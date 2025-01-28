@@ -71,6 +71,55 @@ def edit-history [] {
     }
 }
 
+# Search and paste files under cursor path into the commandline.
+def fzf-file-widget [] {
+    let line = commandline
+    let cursor = commandline get-cursor
+    # Split command line arguments while considering quotes.
+    let parts = $line
+    | parse --regex '(".*?"|\'.*?\'|[^\s]+|\s+)' 
+    | get capture0
+
+    # Find argument under the cursor.
+    mut arg = ""
+    mut sum = 0
+    for part in $parts {
+        $sum = $sum + ($part | str length)
+        if $cursor <= $sum {
+            if ($part | str trim | is-not-empty) {
+                $arg = $part
+            }
+            break
+        }
+    }
+
+    let path = if ($arg | path type) == "dir" {
+        cd $arg
+        fzf --multi --query ""
+    } else {
+        fzf --multi --query $arg
+    }
+
+    if ($path | is-not-empty) {
+        if ($arg | is-empty) {
+            commandline edit --insert $path
+        } else {
+            let fullpath = $arg | path join $path
+            commandline edit --replace ($line | str replace $arg $fullpath)
+        }
+    }
+}
+
+# Search and paste command from history into the commandline.
+def fzf-history-widget [] {
+    let history = history | get command | reverse | uniq | to text
+    let selection = $history | fzf --tac --query (commandline) --scheme history
+
+    if ($selection | is-not-empty) {
+        commandline edit --replace $selection
+    }
+}
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
@@ -425,6 +474,12 @@ $env.config = {
             modifier: control
         }
         {
+            event: { cmd: fzf-file-widget send: executehostcommand }
+            keycode: char_f
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
             event: { edit: moveleft }
             keycode: char_j
             mode: [emacs vi_insert vi_normal]
@@ -433,6 +488,12 @@ $env.config = {
         {
             event: null
             keycode: char_o
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: { cmd: fzf-history-widget send: executehostcommand }
+            keycode: char_r
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
