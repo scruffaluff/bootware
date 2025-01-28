@@ -4,6 +4,15 @@
 
 # Private convenience functions.
 
+# Path preview for Fzf file finder.
+def _fzf-path-preview [path: string] {
+    if ($path | path type) == "dir" {
+        lsd --tree --depth 1 $path
+    } else {
+        bat --color always --line-range :100 --style numbers $path
+    }
+}
+
 # Paste current working directory into the commandline.
 def _paste-cwd [] {
     let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
@@ -114,9 +123,9 @@ if (
     # https://github.com/vercel/hyper/issues/3762.
     if (
         (which "zellij" | is-not-empty)
+        and not ("ZELLIJ" in $env)
         and not (ssh-session)
         and ($env.LOGNAME? == $env.USER)
-        and not ("ZELLIJ" in $env)
     ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
         # Close parent shell after Zellij exits.
@@ -164,6 +173,13 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
         + "--color info:136,prompt:136,pointer:230,marker:230,spinner:136 "
         + "--with-shell 'nu --commands'"
     )
+
+    if (which bat | is-not-empty) and (which lsd | is-not-empty) {
+        $env.FZF_CTRL_T_OPTS = "--preview '_fzf-path-preview {}'"
+    }
+    if (which fd | is-not-empty) {
+        $env.FZF_DEFAULT_COMMAND = "fd --hidden"
+    }
 }
 
 # Helix settings.

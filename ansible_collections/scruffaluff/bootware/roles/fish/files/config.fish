@@ -209,12 +209,14 @@ if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if type -q zellij; and not ssh-session; and test $LOGNAME = $USER
+    if type -q zellij; and test -z $ZELLIJ; and not ssh-session;
+        and test $LOGNAME = $USER
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
         set --export ZELLIJ_AUTO_EXIT true
-        SHELL=(status fish-path) eval (zellij setup --generate-auto-start fish | string collect)
+        SHELL=(status fish-path) eval (zellij setup --generate-auto-start fish |
+            string collect)
     end
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors
