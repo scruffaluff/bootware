@@ -118,8 +118,11 @@
   when: ansible_system == "Win32NT"
 
 - name: Generate Starship Nushell configuration for Windows
-  ansible.windows.win_shell: >-
-    starship init nu > {{ nushell_autoload }}/starship.nu
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = starship init nu
+    [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\starship\\current;{{ ansible_env.Path }}"

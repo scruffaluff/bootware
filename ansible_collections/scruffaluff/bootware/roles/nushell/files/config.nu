@@ -4,6 +4,22 @@
 
 # Private convenience functions.
 
+# Cut commandline one path component to the left.
+#
+# Based on Fish's backward-kill-path-component from 
+# https://fishshell.com/docs/current/cmds/bind.html#special-input-functions.
+def _cut-path-left [] {
+    let chars = commandline | split chars
+    let cursor = commandline get-cursor
+    let first = $chars | range ..$cursor | str join
+    let second = $chars | range $cursor.. | str join
+
+    let update = $first
+    | str replace --regex "[^/={}'\":@ |;<>&,]+[/={}'\":@ |;<>&,]*$" ""
+    commandline edit --replace $"($update)($second)"
+    commandline set-cursor ($update | str length)
+}
+
 # Path preview for Fzf file finder.
 def _fzf-path-preview [path: string] {
     if ($path | path type) == "dir" {
@@ -103,9 +119,12 @@ def fzf-file-widget [] {
     if ($path | is-not-empty) {
         if ($arg | is-empty) {
             commandline edit --insert $path
+            commandline set-cursor --end
         } else {
             let fullpath = $arg | path join $path
+            let diff = ($fullpath | str length) - ($arg | str length $arg)
             commandline edit --replace ($line | str replace $arg $fullpath)
+            commandline set-cursor ($sum + $diff)
         }
     }
 }
@@ -194,6 +213,34 @@ if (
 # Set default pager to Bat.
 if (which "bat" | is-not-empty) {
     $env.PAGER = "bat"
+}
+
+# Clipboard settings.
+
+# Add unified clipboard commands.
+#
+# Commands are defined as functions instead of OS specific aliases since Nushell
+# does not support conditional defintions.
+def --wrapped cbcopy [...args] {
+    match $nu.os-info.name {
+        "macos" => { pbcopy ...$args },
+        "windows" => {
+            let text = if ($in | is-empty) {
+                echo ...$args | str join " "
+            } else {
+                $in
+            }
+            powershell -command $"Set-Clipboard '($text)'"
+        },
+        _ => { wl-copy ...$args },
+    }
+}
+def --wrapped cbpaste [...args] {
+    match $nu.os-info.name {
+        "macos" => { pbpaste ...$args },
+        "windows" => { powershell -command Get-Clipboard },
+        _ => { wl-paste ...$args },
+    }
 }
 
 # Docker settings.
@@ -468,7 +515,7 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: cutwordleft }
+            event: { cmd: _cut-path-left send: executehostcommand }
             keycode: char_d
             mode: [emacs vi_insert vi_normal]
             modifier: control
