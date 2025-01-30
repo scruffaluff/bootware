@@ -99,7 +99,7 @@
 
 - name: Generate Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
-    zoxide init nushell > {{ nushell_autoload }}/zoxide.nu
+    zoxide init --cmd cd nushell > {{ nushell_autoload }}/zoxide.nu
   become: true
   changed_when: true
   environment:
@@ -117,7 +117,7 @@
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
-    $Text = zoxide init nushell
+    $Text = zoxide init --cmd cd nushell
     [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/zoxide.nu", $Text)
   changed_when: true
   environment:

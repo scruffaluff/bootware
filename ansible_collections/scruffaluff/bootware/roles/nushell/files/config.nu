@@ -20,15 +20,6 @@ def _cut-path-left [] {
     commandline set-cursor ($update | str length)
 }
 
-# Path preview for Fzf file finder.
-def _fzf-path-preview [path: string] {
-    if ($path | path type) == "dir" {
-        lsd --tree --depth 1 $path
-    } else {
-        bat --color always --line-range :100 --style numbers $path
-    }
-}
-
 # Paste current working directory into the commandline.
 def _paste-cwd [] {
     let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
@@ -109,11 +100,12 @@ def fzf-file-widget [] {
         }
     }
 
+    let preview = $env.FZF_PATH_PREVIEW? | default ""
     let path = if ($arg | path type) == "dir" {
         cd $arg
-        fzf --multi --query ""
+        fzf --multi --preview $preview --query ""
     } else {
-        fzf --multi --query $arg
+        fzf --multi --preview $preview --query $arg
     }
 
     if ($path | is-not-empty) {
@@ -122,7 +114,7 @@ def fzf-file-widget [] {
             commandline set-cursor --end
         } else {
             let fullpath = $arg | path join $path
-            let diff = ($fullpath | str length) - ($arg | str length $arg)
+            let diff = ($fullpath | str length) - ($arg | str length)
             commandline edit --replace ($line | str replace $arg $fullpath)
             commandline set-cursor ($sum + $diff)
         }
@@ -271,7 +263,15 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     )
 
     if (which bat | is-not-empty) and (which lsd | is-not-empty) {
-        $env.FZF_CTRL_T_OPTS = "--preview '_fzf-path-preview {}'"
+        # Preview function needs to be inlined since "nu --commands" does not
+        # load the configuration files.
+        $env.FZF_PATH_PREVIEW = 'do {|path|
+            if ($path | path type) == "dir" {
+                lsd --tree --depth 1 $path
+            } else {
+                bat --color always --line-range :100 --style numbers $path
+            }
+        } {}'
     }
     if (which fd | is-not-empty) {
         $env.FZF_DEFAULT_COMMAND = "fd --hidden"
@@ -547,6 +547,12 @@ $env.config = {
         {
             event: null
             keycode: char_w
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: { cmd: "commandline | cbcopy" send: executehostcommand }
+            keycode: char_x
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
