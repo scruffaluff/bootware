@@ -54,23 +54,6 @@ function _paste_cwd
     end
 end
 
-# Paste pipe to fuzzy finder into the commandline.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-function _paste_fzf
-    set --local line (commandline | string collect)
-    set --local command " &| fzf"
-    set --local query (string escape --style regex $command)
-
-    set --local newline (string replace --regex "$query\$" '' $line)
-    if test $line = $newline
-        commandline --append $command
-    else
-        commandline --replace $newline
-    end
-end
-
 # Paste pipe to system pager command into the commandline.
 #
 # Flags:
@@ -449,7 +432,6 @@ if test -n $tty
         bind \cj backward-char
         bind \ec _paste_cwd
         bind \ed kill-bigword
-        bind \ef _paste_fzf
         bind \ep _paste_pager
         bind \ex _delete_commandline_from_history
         bind \eZ redo

@@ -32,17 +32,6 @@ def _paste-cwd [] {
     }
 }
 
-# Paste pipe to fuzzy finder into the commandline.
-def _paste-fzf [] {
-    let line = commandline | str replace --regex $" \\| fzf\$" ""
-
-    if $line == (commandline) {
-        commandline edit --replace $"($line) | fzf"
-    } else {
-        commandline edit --replace $line
-    }
-}
-
 # Paste pipe to system pager command into the commandline.
 def _paste-pager [] {
     let pager = $env.PAGER? | default "less"
@@ -499,12 +488,6 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: _paste-fzf send: executehostcommand }
-            keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
             event: { name: help_menu send: menu }
             keycode: char_h
             mode: [emacs vi_insert vi_normal]
@@ -583,10 +566,15 @@ $env.config = {
             modifier: shift
         }
         {
-            event: [
-                { edit: movebigwordrightend }
-                { edit: moveright }
-            ]
+            event: {
+                until: [
+                    { send: historyhintwordcomplete }
+                    [
+                        { edit: movebigwordrightend }
+                        { edit: moveright }
+                    ]
+                ]
+            }
             keycode: right
             mode: [emacs vi_insert vi_normal]
             modifier: shift

@@ -71,6 +71,8 @@
 - name: Get installed Fish version for Unix
   ansible.builtin.command: fish --version
   changed_when: false
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   register: fish_version_text
   when: ansible_system != "Win32NT"
 
