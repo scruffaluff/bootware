@@ -11,11 +11,11 @@
 def _cut-path-left [] {
     let chars = commandline | split chars
     let cursor = commandline get-cursor
-    let first = $chars | range ..$cursor | str join
+    let first = $chars | range ..<$cursor | str join
     let second = $chars | range $cursor.. | str join
 
     let update = $first
-    | str replace --regex "[^/={}'\":@ |;<>&,]+[/={}'\":@ |;<>&,]*$" ""
+    | str replace --regex "[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$" ""
     commandline edit --replace $"($update)($second)"
     commandline set-cursor ($update | str length)
 }
@@ -103,9 +103,23 @@ def fzf-file-widget [] {
     let preview = $env.FZF_PATH_PREVIEW? | default ""
     let path = if ($arg | path type) == "dir" {
         cd $arg
-        fzf --multi --preview $preview --query ""
+        (
+            fzf
+            --multi
+            --preview $preview
+            --query ""
+            --scheme path
+            --walker "file,dir,follow,hidden"
+        )
     } else {
-        fzf --multi --preview $preview --query $arg
+        (
+            fzf
+            --multi
+            --preview $preview
+            --query $arg
+            --scheme path
+            --walker "file,dir,follow,hidden"
+        )
     }
 
     if ($path | is-not-empty) {

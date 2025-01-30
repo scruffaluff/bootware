@@ -137,23 +137,24 @@
   loop:
     - config.nu
   when: ansible_system == "Win32NT"
-# # User shell is not updated on Alpine Linux when using Ansible user module.
-# # Workaround comes from https://github.com/ansible/ansible/issues/61911.
-# - name: Change user default shell to Nushell for Alpine
-#   ansible.builtin.command:
-#     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
-#   become: true
-#   changed_when: true
-#   when: ansible_pkg_mgr == "apk" and user_shell == "nushell"
 
-# - name: Change user default shell to Nushell for Unix
-#   ansible.builtin.user:
-#     name: "{{ user_id }}"
-#     shell: "{{ nushell_executable }}"
-#   become: true
-#   when: >-
-#     ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
-#     "nushell"
+# User shell is not updated on Alpine Linux when using Ansible user module.
+# Workaround comes from https://github.com/ansible/ansible/issues/61911.
+- name: Change user default shell to Nushell for Alpine
+  ansible.builtin.command:
+    cmd: chsh -s {{ nushell_executable }} {{ user_id }}
+  become: true
+  changed_when: true
+  when: ansible_pkg_mgr == "apk" and user_shell == "nushell"
+
+- name: Change user default shell to Nushell for Unix
+  ansible.builtin.user:
+    name: "{{ user_id }}"
+    shell: "{{ nushell_executable }}"
+  become: true
+  when: >-
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+    "nushell"
 
 # TODO: Set Nushell as SSH shell without breaking Ansible compatibility.
 # See https://docs.ansible.com/ansible/latest/os_guide/windows_ssh.html#ansible-configuration.

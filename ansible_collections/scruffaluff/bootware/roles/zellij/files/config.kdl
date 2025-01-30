@@ -7,7 +7,7 @@ default_layout "layout"
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
         bind "Alt j" { MoveFocusOrTab "Left"; }
@@ -18,6 +18,12 @@ keybinds {
         bind "Alt Left" { MovePane "Left"; }
         bind "Alt Right" { MovePane "Right"; }
         bind "Alt Up" { MovePane "Up"; }
+    }
+    shared_except "pane" "locked" {
+        bind "Ctrl m" { SwitchToMode "Pane"; }
+    }
+    shared_except "resize" "locked" {
+        bind "Ctrl y" { SwitchToMode "Resize"; }
     }
     shared_among "renametab" "tab" {
         bind "Alt j" { GoToPreviousTab; }
@@ -38,6 +44,7 @@ keybinds {
     }
     pane {
         unbind "c" "d"
+        bind "Ctrl m" { SwitchToMode "Normal"; }
         bind "j" { MoveFocus "Left"; }
         bind "k" { MoveFocus "Down"; }
         bind "l" { MoveFocus "Up"; }
@@ -49,6 +56,7 @@ keybinds {
         bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     resize {
+        bind "Ctrl y" { SwitchToMode "Normal"; }
         bind "j" "Left" { Resize "Increase Left"; }
         bind "k" "Down" { Resize "Increase Down"; }
         bind "l" "Up" { Resize "Increase Up"; }

@@ -84,6 +84,7 @@ k = "move_line_down"
 l = "move_line_up"
 S-left = "move_prev_long_word_start"
 S-right = "move_next_long_word_end"
+X = ["extend_to_line_bounds", "trim_selections"]
 
 [keys.normal.C-w]
 ";" = "jump_view_right"
@@ -187,6 +188,7 @@ k = "extend_line_down"
 l = "extend_line_up"
 S-left = "extend_prev_long_word_start"
 S-right = "extend_next_long_word_end"
+X = ["extend_to_line_bounds", "trim_selections"]
 
 [keys.select.C-w]
 ";" = "jump_view_right"
