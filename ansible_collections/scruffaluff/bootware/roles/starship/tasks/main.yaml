@@ -107,7 +107,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   when: ansible_system != "Win32NT"
 
 - name: Create Nushell autoload directories for Windows

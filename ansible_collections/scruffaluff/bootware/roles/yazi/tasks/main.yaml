@@ -119,6 +119,8 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Deploying package' in yazi_plugin_install"
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   failed_when: >-
     yazi_plugin_install.rc != 0 and 'already exists' not in
     yazi_plugin_install.stderr
