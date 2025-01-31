@@ -58,7 +58,7 @@
   become_user: "{{ user_id }}"
   changed_when: "'Successfully updated' in tldr_update"
   environment:
-    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   register: tldr_update
   when: ansible_system != "Win32NT"
 

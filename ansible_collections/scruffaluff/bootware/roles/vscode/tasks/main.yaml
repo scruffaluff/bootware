@@ -186,6 +186,10 @@
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in vscode_extension_install"
+  environment:
+    PATH: >-
+      /opt/homebrew/bin:/usr/local/bin:/usr/share/code/bin:{{ ansible_env.PATH
+      }}
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
   when: >-

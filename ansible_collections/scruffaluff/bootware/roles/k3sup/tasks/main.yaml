@@ -53,7 +53,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   loop:
     - bash
     - fish

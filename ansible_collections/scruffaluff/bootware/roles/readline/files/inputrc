@@ -54,7 +54,6 @@ tab: menu-complete
 
 # Use common Fish keybindings when in Bash.
 $if bash
-"\ef": "\C-e &| fzf"
-"\ep": "\C-e &| bat"
+"\ep": "\C-e &| less"
 "\es": "\C-asudo \C-e"
 $endif

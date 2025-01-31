@@ -40,6 +40,8 @@
     cmd: restic generate --{{ item }}-completion /tmp/restic.{{ item }}
   become: true
   changed_when: true
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   loop:
     - bash
     - fish

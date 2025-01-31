@@ -75,6 +75,13 @@
       loop:
         "{{ powershell_module_folders | product(powershell_modules) | list }}"
 
+- name: Disable PowerShell update check during startup for Windows
+  ansible.windows.win_environment:
+    level: machine
+    name: POWERSHELL_UPDATECHECK
+    value: "Off"
+  when: ansible_system == "Win32NT"
+
 - name: Set PowerShell Core as default OpenSSH shell for Windows
   ansible.windows.win_regedit:
     data: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"

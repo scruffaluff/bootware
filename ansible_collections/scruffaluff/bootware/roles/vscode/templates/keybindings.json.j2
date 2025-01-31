@@ -39,7 +39,9 @@
   { "command": "-workbench.action.gotoSymbol", "key": "ctrl+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
   { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
+  { "command": "-workbench.action.files.newUntitledFile", "key": "ctrl+n" },
   { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
+  { "command": "-workbench.action.quickOpen", "key": "ctrl+p" },
   {
     "command": "-workbench.action.quickOpenLeastRecentlyUsedEditorInGroup",
     "key": "ctrl+shift+tab"
@@ -124,7 +126,17 @@
   },
   {
     "command": "cursorWordPartLeft",
+    "key": "alt+b",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartLeft",
     "key": "ctrl+left",
+    "when": "textInputFocus"
+  },
+  {
+    "command": "cursorWordPartRight",
+    "key": "alt+f",
     "when": "textInputFocus"
   },
   {
@@ -201,6 +213,16 @@
     "command": "expandLineSelection",
     "key": "ctrl+l",
     "when": "textInputFocus"
+  },
+  {
+    "command": "selectNextSuggestion",
+    "key": "ctrl+n",
+    "when": "suggestWidgetVisible"
+  },
+  {
+    "command": "selectPrevSuggestion",
+    "key": "ctrl+p",
+    "when": "suggestWidgetVisible"
   },
   { 
     "command": "workbench.action.closeActiveEditor",
@@ -362,7 +384,11 @@
     "key": "ctrl+shift+tab",
     "when": "!panelFocus"
   },
-  { "command": "workbench.action.quickOpen", "key": "ctrl+p" },
+  {
+    "command": "workbench.action.quickOpen",
+    "key": "ctrl+p",
+    "when": "!panelFocus && !suggestWidgetVisible"
+  },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
   {

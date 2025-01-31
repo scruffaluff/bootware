@@ -99,11 +99,11 @@
 
 - name: Generate Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
-    zoxide init nushell > {{ nushell_autoload }}/zoxide.nu
+    zoxide init --cmd cd nushell > {{ nushell_autoload }}/zoxide.nu
   become: true
   changed_when: true
   environment:
-    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   when: ansible_system != "Win32NT"
 
 - name: Create Nushell autoload directories for Windows
@@ -114,8 +114,11 @@
   when: ansible_system == "Win32NT"
 
 - name: Generate Zoxide Nushell configuration for Windows
-  ansible.windows.win_shell: >-
-    zoxide init nushell > {{ nushell_autoload }}/zoxide.nu
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = zoxide init --cmd cd nushell
+    [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/zoxide.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\zoxide\\current;{{ ansible_env.Path }}"

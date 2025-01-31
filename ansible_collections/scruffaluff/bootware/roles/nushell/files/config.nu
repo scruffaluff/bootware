@@ -4,13 +4,20 @@
 
 # Private convenience functions.
 
-# Path preview for Fzf file finder.
-def _fzf-path-preview [path: string] {
-    if ($path | path type) == "dir" {
-        lsd --tree --depth 1 $path
-    } else {
-        bat --color always --line-range :100 --style numbers $path
-    }
+# Cut commandline one path component to the left.
+#
+# Based on Fish's backward-kill-path-component from 
+# https://fishshell.com/docs/current/cmds/bind.html#special-input-functions.
+def _cut-path-left [] {
+    let chars = commandline | split chars
+    let cursor = commandline get-cursor
+    let first = $chars | range ..<$cursor | str join
+    let second = $chars | range $cursor.. | str join
+
+    let update = $first
+    | str replace --regex "[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$" ""
+    commandline edit --replace $"($update)($second)"
+    commandline set-cursor ($update | str length)
 }
 
 # Paste current working directory into the commandline.
@@ -20,17 +27,6 @@ def _paste-cwd [] {
 
     if $line == (commandline) {
         commandline edit --insert $cwd
-    } else {
-        commandline edit --replace $line
-    }
-}
-
-# Paste pipe to fuzzy finder into the commandline.
-def _paste-fzf [] {
-    let line = commandline | str replace --regex $" \\| fzf\$" ""
-
-    if $line == (commandline) {
-        commandline edit --replace $"($line) | fzf"
     } else {
         commandline edit --replace $line
     }
@@ -68,6 +64,73 @@ def edit-history [] {
         run-external $env.EDITOR $nu.history-path
     } else {
         vi $nu.history-path
+    }
+}
+
+# Search and paste files under cursor path into the commandline.
+def fzf-file-widget [] {
+    let line = commandline
+    let cursor = commandline get-cursor
+    # Split command line arguments while considering quotes.
+    let parts = $line
+    | parse --regex '(".*?"|\'.*?\'|[^\s]+|\s+)' 
+    | get capture0
+
+    # Find argument under the cursor.
+    mut arg = ""
+    mut sum = 0
+    for part in $parts {
+        $sum = $sum + ($part | str length)
+        if $cursor <= $sum {
+            if ($part | str trim | is-not-empty) {
+                $arg = $part
+            }
+            break
+        }
+    }
+
+    let preview = $env.FZF_PATH_PREVIEW? | default ""
+    let path = if ($arg | path type) == "dir" {
+        cd $arg
+        (
+            fzf
+            --multi
+            --preview $preview
+            --query ""
+            --scheme path
+            --walker "file,dir,follow,hidden"
+        )
+    } else {
+        (
+            fzf
+            --multi
+            --preview $preview
+            --query $arg
+            --scheme path
+            --walker "file,dir,follow,hidden"
+        )
+    }
+
+    if ($path | is-not-empty) {
+        if ($arg | is-empty) {
+            commandline edit --insert $path
+            commandline set-cursor --end
+        } else {
+            let fullpath = $arg | path join $path
+            let diff = ($fullpath | str length) - ($arg | str length)
+            commandline edit --replace ($line | str replace $arg $fullpath)
+            commandline set-cursor ($sum + $diff)
+        }
+    }
+}
+
+# Search and paste command from history into the commandline.
+def fzf-history-widget [] {
+    let history = history | get command | reverse | uniq | to text
+    let selection = $history | fzf --tac --query (commandline) --scheme history
+
+    if ($selection | is-not-empty) {
+        commandline edit --replace $selection
     }
 }
 
@@ -147,6 +210,34 @@ if (which "bat" | is-not-empty) {
     $env.PAGER = "bat"
 }
 
+# Clipboard settings.
+
+# Add unified clipboard commands.
+#
+# Commands are defined as functions instead of OS specific aliases since Nushell
+# does not support conditional defintions.
+def --wrapped cbcopy [...args] {
+    match $nu.os-info.name {
+        "macos" => { pbcopy ...$args },
+        "windows" => {
+            let text = if ($in | is-empty) {
+                echo ...$args | str join " "
+            } else {
+                $in
+            }
+            powershell -command $"Set-Clipboard '($text)'"
+        },
+        _ => { wl-copy ...$args },
+    }
+}
+def --wrapped cbpaste [...args] {
+    match $nu.os-info.name {
+        "macos" => { pbpaste ...$args },
+        "windows" => { powershell -command Get-Clipboard },
+        _ => { wl-paste ...$args },
+    }
+}
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
@@ -175,7 +266,15 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     )
 
     if (which bat | is-not-empty) and (which lsd | is-not-empty) {
-        $env.FZF_CTRL_T_OPTS = "--preview '_fzf-path-preview {}'"
+        # Preview function needs to be inlined since "nu --commands" does not
+        # load the configuration files.
+        $env.FZF_PATH_PREVIEW = 'do {|path|
+            if ($path | path type) == "dir" {
+                lsd --tree --depth 1 $path
+            } else {
+                bat --color always --line-range :100 --style numbers $path
+            }
+        } {}'
     }
     if (which fd | is-not-empty) {
         $env.FZF_DEFAULT_COMMAND = "fd --hidden"
@@ -389,12 +488,6 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: _paste-fzf send: executehostcommand }
-            keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
             event: { name: help_menu send: menu }
             keycode: char_h
             mode: [emacs vi_insert vi_normal]
@@ -419,8 +512,14 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: cutwordleft }
+            event: { cmd: _cut-path-left send: executehostcommand }
             keycode: char_d
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: { cmd: fzf-file-widget send: executehostcommand }
+            keycode: char_f
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -437,8 +536,20 @@ $env.config = {
             modifier: control
         }
         {
+            event: { cmd: fzf-history-widget send: executehostcommand }
+            keycode: char_r
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
             event: null
             keycode: char_w
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: { cmd: "commandline | cbcopy" send: executehostcommand }
+            keycode: char_x
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -455,10 +566,15 @@ $env.config = {
             modifier: shift
         }
         {
-            event: [
-                { edit: movebigwordrightend }
-                { edit: moveright }
-            ]
+            event: {
+                until: [
+                    { send: historyhintwordcomplete }
+                    [
+                        { edit: movebigwordrightend }
+                        { edit: moveright }
+                    ]
+                ]
+            }
             keycode: right
             mode: [emacs vi_insert vi_normal]
             modifier: shift
