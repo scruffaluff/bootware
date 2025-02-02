@@ -31,8 +31,11 @@ end
 
 # Complete commandline argument with interatice path search.
 function _fzf_path_keybind
+    set --local command (commandline)
     fzf-file-widget
-    commandline --function backward-delete-char
+    if test (commandline) != $command
+        commandline --function backward-delete-char
+    end
 end
 
 # Path preview for Fzf file finder.
