@@ -20,6 +20,66 @@ def _cut-path-left [] {
     commandline set-cursor ($update | str length)
 }
 
+# Prompt user to remove current command from Nushell history.
+def _delete-from-history [] {
+    let line = commandline
+    let matches = history
+    | where command =~ $line
+    | reverse
+    | get command
+    | uniq
+    if ($matches | is-empty) {
+        return
+    }
+
+    print "\nNushell History Entry Delete\n"
+    print $matches
+    print "
+Enter nothing to cancel the delete, or
+Enter one or more of the entry IDs or ranges like '5..12', separated by a space.
+For example '7 10..15 35 788..812'.
+Enter 'all' to delete all the matching entries.
+"
+
+    let text = try {
+        input "Delete which entries? "
+    } catch {
+        print "\n\nCancelling the delete!\n"
+        return 
+    }
+
+    mut selections = []
+    for word in ($text | split words) {
+        if $word == "all" {
+            print "Deleting all matching entries!"
+            $selections = $matches
+            break
+        }
+
+        let parts = $word | parse "{start}..{end}"
+        if ($parts | is-empty) {
+            try {
+                let match = $matches | get ($word | into int)
+                $selections = $match | append $selections
+            } catch {
+                print --stderr $"Ignoring invalid history entry ID \"($word)\""
+            }
+        } else {
+            let start = try { $parts | get start | get 0 } catch { 0 }
+            let end = try { $parts | get end | get 0 } catch { -1 }
+            try {
+                $selections = $matches | range $start..$end | append $selections
+            } catch {
+                print --stderr $"Ignoring invalid history entry ID \"($word)\""
+            }
+        }
+    }
+
+    let update = history | where command not-in $selections | get command
+    $update | to text | save --force $nu.history-path
+    commandline edit --replace ""
+}
+
 # Paste current working directory into the commandline.
 def _paste-cwd [] {
     let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
@@ -60,11 +120,18 @@ def _paste-super [] {
 
 # Open Nushell history file with default editor.
 def edit-history [] {
-    if ("EDITOR" in $env) {
+    if "EDITOR" in $env {
         run-external $env.EDITOR $nu.history-path
     } else {
         vi $nu.history-path
     }
+}
+
+# Complete commandline argument with Fish.
+def fish-complete [spans: list<string>] {
+    fish --command $'complete "--do-complete=($spans | str join " ")"'
+    | from tsv --flexible --noheaders --no-infer
+    | rename value description
 }
 
 # Search and paste files under cursor path into the commandline.
@@ -127,7 +194,10 @@ def fzf-file-widget [] {
 # Search and paste command from history into the commandline.
 def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
-    let selection = $history | fzf --tac --query (commandline) --scheme history
+    let selection = (
+        $history
+        | fzf --bind ctrl-r:toggle-sort --query (commandline) --scheme history
+    )
 
     if ($selection | is-not-empty) {
         commandline edit --replace $selection
@@ -172,8 +242,8 @@ if $nu.os-info.name == "windows" {
 
 if (
     $nu.is-interactive
-    and ($env.TERM? == "alacritty")
-    and not ("TERM_PROGRAM" in $env)
+    and $env.TERM? == "alacritty"
+    and "TERM_PROGRAM" not-in $env
 ) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
@@ -185,10 +255,10 @@ if (
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if (
-        (which "zellij" | is-not-empty)
-        and not ("ZELLIJ" in $env)
+        "ZELLIJ" not-in $env
         and not (ssh-session)
-        and ($env.LOGNAME? == $env.USER)
+        and $env.LOGNAME? == $env.USER
+        and (which "zellij" | is-not-empty)
     ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
         # Close parent shell after Zellij exits.
@@ -260,7 +330,8 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     $env.FZF_ALT_C_COMMAND = ""
     # Set Fzf solarized light theme and shell command for child processes.
     $env.FZF_DEFAULT_OPTS = (
-        "--reverse --color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
+        "--highlight-line --reverse "
+        + "--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
         + "--color info:136,prompt:136,pointer:230,marker:230,spinner:136 "
         + "--with-shell 'nu --commands'"
     )
@@ -474,6 +545,12 @@ $env.config = {
         shape_variable: "#6c71c4"
         string: "#859900"
     }
+    completions: {
+        external: {
+            completer: {|spans| fish-complete $spans }
+            enable: true
+        }
+    },
     keybindings: [
         {
             event: { cmd: _paste-cwd send: executehostcommand }
@@ -502,6 +579,12 @@ $env.config = {
         {
             event: { cmd: _paste-super send: executehostcommand }
             keycode: char_s
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
+            event: { cmd: _delete-from-history send: executehostcommand }
+            keycode: char_x
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
@@ -682,7 +765,7 @@ def --env --wrapped yz [...args] {
   yazi --cwd-file $tmp_file ...$args
 
   let cwd = open $tmp_file
-  if ($cwd | is-not-empty) and ($cwd != $env.PWD) {
+  if ($cwd | is-not-empty) and $cwd != $env.PWD {
     cd $cwd
   }
   rm $tmp_file
