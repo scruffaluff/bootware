@@ -127,6 +127,13 @@ def edit-history [] {
     }
 }
 
+# Complete commandline argument with Fish.
+def fish-complete [spans: list<string>] {
+    fish --command $'complete "--do-complete=($spans | str join " ")"'
+    | from tsv --flexible --noheaders --no-infer
+    | rename value description
+}
+
 # Search and paste files under cursor path into the commandline.
 def fzf-file-widget [] {
     let line = commandline
@@ -187,7 +194,10 @@ def fzf-file-widget [] {
 # Search and paste command from history into the commandline.
 def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
-    let selection = $history | fzf --query (commandline) --scheme history
+    let selection = (
+        $history
+        | fzf --bind ctrl-r:toggle-sort --query (commandline) --scheme history
+    )
 
     if ($selection | is-not-empty) {
         commandline edit --replace $selection
@@ -320,7 +330,8 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     $env.FZF_ALT_C_COMMAND = ""
     # Set Fzf solarized light theme and shell command for child processes.
     $env.FZF_DEFAULT_OPTS = (
-        "--reverse --color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
+        "--highlight-line --reverse "
+        + "--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
         + "--color info:136,prompt:136,pointer:230,marker:230,spinner:136 "
         + "--with-shell 'nu --commands'"
     )
@@ -534,6 +545,12 @@ $env.config = {
         shape_variable: "#6c71c4"
         string: "#859900"
     }
+    completions: {
+        external: {
+            completer: {|spans| fish-complete $spans }
+            enable: true
+        }
+    },
     keybindings: [
         {
             event: { cmd: _paste-cwd send: executehostcommand }
