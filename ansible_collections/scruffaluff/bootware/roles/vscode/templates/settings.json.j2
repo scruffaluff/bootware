@@ -214,7 +214,9 @@
   "terminal.integrated.allowChords": false,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorStyleInactive": "none",
-  "terminal.integrated.defaultProfile.{{ vscode_system }}": "{{ user_shell }}",
+  "terminal.integrated.defaultProfile.linux": "{{ 'fish' if user_shell == 'powershell' else user_shell }}",
+  "terminal.integrated.defaultProfile.osx": "{{ 'fish' if user_shell == 'powershell' else user_shell }}",
+  "terminal.integrated.defaultProfile.windows": "{{ 'powershell' if user_shell in ['bash', 'fish'] else user_shell }}",
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.environmentChangesIndicator": "off",
@@ -223,11 +225,19 @@
   "terminal.integrated.fontSize": {{ font_size }},
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.macOptionIsMeta": true,
-  "terminal.integrated.profiles.{{ vscode_system }}": {
-    "{{ user_shell }}": {
-      "args": ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"],
-      "path": "{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}"
-    }
+  "terminal.integrated.profiles.linux": {
+    "bash": { "args": ["--login"], "path": "bash" },
+    "fish": { "args": ["--login"], "path": "fish" },
+    "nushell": { "args": ["--login"], "path": "nu" }
+  },
+  "terminal.integrated.profiles.osx": {
+    "bash": { "args": ["--login"], "path": "bash" },
+    "fish": { "args": ["--login"], "path": "fish" },
+    "nushell": { "args": ["--login"], "path": "nu" }
+  },
+  "terminal.integrated.profiles.windows": {
+    "nushell": { "args": ["--login"], "path": "nu" },
+    "powershell": { "args": ["-NoLogo"], "path": "pwsh" }
   },
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "terminal.integrated.shellIntegration.enabled": false,
