@@ -29,6 +29,12 @@ function _delete_commandline_from_history
     end
 end
 
+# Complete commandline argument with interatice path search.
+function _fzf_path_keybind
+    fzf-file-widget
+    commandline --function backward-delete-char
+end
+
 # Path preview for Fzf file finder.
 #
 # Flags:
@@ -307,7 +313,7 @@ if test -n $tty; and type -q fzf
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
     bind --erase \ct
-    bind \cf fzf-file-widget
+    bind \cf _fzf_path_keybind
 end
 
 # Helix settings.
