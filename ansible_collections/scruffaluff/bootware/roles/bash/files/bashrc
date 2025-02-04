@@ -6,16 +6,6 @@
 
 # Private convenience functions.
 
-# Complete commandline argument with interatice path search.
-_fzf_path_keybind() {
-  local command="${READLINE_LINE}"
-  fzf-file-widget
-  if [[ "${command}" != "${READLINE_LINE}" ]]; then
-    READLINE_LINE="${READLINE_LINE:0:READLINE_POINT-1}${READLINE_LINE:READLINE_POINT}"
-    READLINE_POINT="$((READLINE_POINT - 1))"
-  fi
-}
-
 # Path preview for Fzf file finder.
 #
 # Flags:
@@ -45,6 +35,17 @@ edit-history() {
   "${program}" "${HOME}/.bash_history"
 }
 export -f edit-history
+
+# Complete commandline argument with interatice path search.
+fzf-path-widget() {
+  local line="${READLINE_LINE}" point
+  fzf-file-widget
+  if [[ "${line}" != "${READLINE_LINE}" ]]; then
+    point="${READLINE_POINT}"
+    READLINE_LINE="${READLINE_LINE:0:point-1}${READLINE_LINE:point}"
+    READLINE_POINT="$((point - 1))"
+  fi
+}
 
 # Prepend existing directories that are not in the system path.
 #
@@ -227,7 +228,7 @@ if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   # Change Fzf file search keybinding to Ctrl+F.
   bind -r "\C-t"
   bind -r "\ec"
-  bind -x '"\C-f": _fzf_path_keybind'
+  bind -x '"\C-f": fzf-path-widget'
 fi
 
 # Helix settings.

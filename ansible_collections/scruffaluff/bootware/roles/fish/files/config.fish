@@ -29,50 +29,6 @@ function _delete_commandline_from_history
     end
 end
 
-# Complete commandline argument with interatice path search.
-function _fzf_path_keybind
-    # Set temporary Fzf environment variables in same manner as "fzf --fish".
-    set --export --function FZF_DEFAULT_COMMAND "$FZF_CTRL_T_COMMAND"
-    set --export --function FZF_DEFAULT_OPTS \
-        "$FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
-
-    set --function fzf_dir '.'
-    set --function line (commandline)
-    set --function path ''
-    set --function cwd $PWD
-    set --function token (commandline --current-token)
-    set --function full_token (string replace '~' $HOME $token)
-
-    # Change Fzf execution directory if current command line token is a folder.
-    if test -d $full_token
-        set fzf_dir $full_token
-    end
-    cd $fzf_dir
-    set path (fzf --multi --scheme path --walker file,dir,follow,hidden)
-    cd $cwd
-
-    # Exit early if no selection was made, i.e. user sigkilled Fzf.
-    if test -z $path
-        commandline --function repaint
-        return
-    end
-
-    # Add quotes if path contains a space.
-    if string match '* *' $path
-        set path "'$path'"
-    end
-    # Prepand path with "/" if necessary and not current directory.
-    if string match --regex '[^\/.]$' $token
-        set path "/$path"
-    end
-
-    # Insert selection and update cursor to end of path.
-    commandline --insert $path
-    commandline --cursor --current-token \
-        (math (string length $token) + (string length $path))
-    commandline --function repaint
-end
-
 # Path preview for Fzf file finder.
 #
 # Flags:
@@ -144,6 +100,60 @@ end
 # provides the command.
 function fish_command_not_found
     echo "Error: command '$argv[1]' not found" >&2
+end
+
+# Complete commandline argument with interatice path search.
+#
+# Flags:
+#   -d: Check if path is a directory.
+function fzf-path-widget
+    # Set temporary Fzf environment variables in same manner as "fzf --fish".
+    set --export --function FZF_DEFAULT_COMMAND "$FZF_CTRL_T_COMMAND"
+    set --export --function FZF_DEFAULT_OPTS \
+        "$FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+
+    set --function fzf_dir '.'
+    set --function line (commandline)
+    set --function path ''
+    set --function cwd $PWD
+    set --function token (commandline --current-token)
+    set --function full_token \
+        (string replace '~' $HOME (string trim --chars '"\'' $token))
+
+    # Change Fzf execution directory if current command line token is a folder.
+    if test -d $full_token
+        set fzf_dir $full_token
+    end
+    cd $fzf_dir
+    set path (fzf --scheme path --walker file,dir,follow,hidden)
+    cd $cwd
+
+    # Exit early if no selection was made, i.e. user sigkilled Fzf.
+    if test -z $path
+        commandline --function repaint
+        return
+    end
+
+    # Add quotes or escape spaces if path contains a space.
+    if string match --regex '[^\\\] ' $path
+        if string match --regex '^\'' $token
+            set path "$path'"
+        else if string match --regex '^\"' $token
+            set path "$path\""
+        else
+            set path (string replace --all ' ' '\\ ' $path)
+        end
+    end
+    # Prepand path with "/" if necessary and not current directory.
+    if string match --regex '[^\/.]$' $token
+        set path "/$path"
+    end
+
+    # Insert selection and update cursor to end of path.
+    commandline --insert $path
+    commandline --cursor --current-token \
+        (math (string length $token) + (string length $path))
+    commandline --function repaint
 end
 
 # Prepend existing directories that are not in the system path.
@@ -356,7 +366,7 @@ if test -n $tty; and type -q fzf
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
     bind --erase \ct
-    bind \cf _fzf_path_keybind
+    bind \cf fzf-path-widget
 end
 
 # Helix settings.

@@ -134,69 +134,6 @@ def fish-complete [spans: list<string>] {
     | rename value description
 }
 
-# Search and paste files under cursor path into the commandline.
-def fzf-file-widget [] {
-    let line = commandline
-    let cursor = commandline get-cursor
-    # Split command line arguments while considering quotes.
-    let parts = $line
-    | parse --regex '(".*?"|\'.*?\'|[^\s]+|\s+)' 
-    | get capture0
-
-    # Find argument under the cursor.
-    mut arg = ""
-    mut sum = 0
-    for part in $parts {
-        $sum = $sum + ($part | str length)
-        if $cursor <= $sum {
-            if ($part | str trim | is-not-empty) {
-                $arg = $part
-            }
-            break
-        }
-    }
-
-    let preview = $env.FZF_PATH_PREVIEW? | default ""
-    mut path = if ($arg | path type) == "dir" {
-        cd $arg
-        (
-            fzf
-            --multi
-            --preview $preview
-            --preview-window "border-left"
-            --query ""
-            --scheme path
-            --walker "file,dir,follow,hidden"
-        )
-    } else {
-        (
-            fzf
-            --multi
-            --preview $preview
-            --preview-window "border-left"
-            --query $arg
-            --scheme path
-            --walker "file,dir,follow,hidden"
-        )
-    }
-
-    if ($path | is-not-empty) {
-        if ($path | str contains " ") {
-            $path = $"`($path)`"
-        }
-
-        if ($arg | is-empty) {
-            commandline edit --insert $path
-            commandline set-cursor --end
-        } else {
-            let fullpath = $arg | path join $path
-            let diff = ($fullpath | str length) - ($arg | str length)
-            commandline edit --replace ($line | str replace $arg $fullpath)
-            commandline set-cursor ($sum + $diff)
-        }
-    }
-}
-
 # Search and paste command from history into the commandline.
 def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
@@ -207,6 +144,59 @@ def fzf-history-widget [] {
 
     if ($selection | is-not-empty) {
         commandline edit --replace $selection
+    }
+}
+
+# Search and paste files under cursor path into the commandline.
+def fzf-path-widget [] {
+    # Set temporary Fzf environment variables in same manner as "fzf --fish".
+    $env.FZF_DEFAULT_COMMAND = $"($env.FZF_CTRL_T_COMMAND?)"
+    $env.FZF_DEFAULT_OPTS = $"($env.FZF_DEFAULT_OPTS?) ($env.FZF_CTRL_T_OPTS?)"
+
+    let line = commandline
+    let cursor = commandline get-cursor
+
+    # Split command line arguments while considering quotes.
+    let parts = $line
+    | parse --regex '(".*?"|\'.*?\'|[^\s]+|\s+)' 
+    | get capture0
+    # Find argument under the cursor.
+    mut token = ""
+    mut sum = 0
+    for part in $parts {
+        $sum = $sum + ($part | str length)
+        if $cursor <= $sum {
+            if ($part | str trim | is-not-empty) {
+                $token = $part
+            }
+            break
+        }
+    }
+
+    # Change Fzf execution directory if current command line token is a folder.
+    let fzf_dir = if ($token | path type) == "dir" { $token } else { "." }
+    cd $fzf_dir
+    let path = fzf --scheme "path" --walker "file,dir,follow,hidden"
+
+    # Exit early if no selection was made, i.e. user sigkilled Fzf.
+    if ($path | is-empty) {
+        return
+    }
+
+    # Add quotes if path contains a space.
+    mut full_path = $token | path join $path
+    if ($full_path | str contains " ") {
+        $full_path = $"`($full_path)`"
+    }
+
+    # Insert selection and update cursor to end of path.
+    if ($token | is-empty) {
+        commandline edit --insert $path
+        commandline set-cursor --end
+    } else {
+        commandline edit --replace ($line | str replace $token $full_path)
+        let diff = ($full_path | str length) - ($token | str length)
+        commandline set-cursor ($sum + $diff)
     }
 }
 
@@ -352,16 +342,19 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     if (which bat | is-not-empty) and (which lsd | is-not-empty) {
         # Preview function needs to be inlined since "nu --commands" does not
         # load the configuration files.
-        $env.FZF_PATH_PREVIEW = 'do {|path|
+        let path_preview = 'do {|path|
             if ($path | path type) == "dir" {
                 lsd --tree --depth 1 $path
             } else {
                 bat --color always --line-range :100 --style numbers $path
             }
-        } {}'
+        }'
+        $env.FZF_CTRL_T_OPTS = (
+            $"--preview '($path_preview) {}' --preview-window border-left"
+        )
     }
     if (which fd | is-not-empty) {
-        $env.FZF_DEFAULT_COMMAND = "fd --hidden --no-require-git"
+        $env.FZF_CTRL_T_COMMAND = "fd --hidden --no-require-git"
     }
 }
 
@@ -614,7 +607,7 @@ $env.config = {
             modifier: control
         }
         {
-            event: { cmd: fzf-file-widget send: executehostcommand }
+            event: { cmd: fzf-path-widget send: executehostcommand }
             keycode: char_f
             mode: [emacs vi_insert vi_normal]
             modifier: control
@@ -787,4 +780,4 @@ def --env --wrapped yz [...args] {
 # Zoxide settings.
 
 # Disable fickle Zoxide directory preview.
-$env._ZO_FZF_OPTS = $env.FZF_DEFAULT_OPTS? | default ""
+$env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS?)"
