@@ -16,7 +16,7 @@
 # Flags:
 #   -n: Check if string is nonempty.
 function _delete_commandline_from_history
-    set --local command (commandline | string collect | string trim)
+    set --function command (commandline | string collect | string trim)
     if test -n $command
         set --local results "$(history search $command)"
 
@@ -26,15 +26,6 @@ function _delete_commandline_from_history
             history save
             commandline --function kill-whole-line
         end
-    end
-end
-
-# Complete commandline argument with interatice path search.
-function _fzf_path_keybind
-    set --local command (commandline)
-    fzf-file-widget
-    if test (commandline) != $command
-        commandline --function backward-delete-char
     end
 end
 
@@ -53,8 +44,8 @@ end
 
 # Paste current working directory into the commandline.
 function _paste_cwd
-    set --local line (commandline | string collect)
-    set --local working_directory "$(string replace "$HOME" '~' $(pwd))/"
+    set --function line (commandline | string collect)
+    set --function working_directory "$(string replace "$HOME" '~' $(pwd))/"
 
     if string match --entire --quiet $working_directory $line
         commandline --replace (string replace $working_directory '' $line)
@@ -69,18 +60,18 @@ end
 #   -n: Check if string is nonempty.
 function _paste_pager
     # Variable 'PAGER' needs quotes in case it is not defined.
-    set --local program
+    set --function program
     if test -n "$PAGER"
         set program $PAGER
     else
         set program less
     end
 
-    set --local line (commandline | string collect)
-    set --local command " &| $program"
-    set --local query (string escape --style regex $command)
+    set --function line (commandline | string collect)
+    set --function command " &| $program"
+    set --function query (string escape --style regex $command)
 
-    set --local newline (string replace --regex "$query\$" '' $line)
+    set --function newline (string replace --regex "$query\$" '' $line)
     if test $line = $newline
         commandline --append $command
     else
@@ -109,6 +100,60 @@ end
 # provides the command.
 function fish_command_not_found
     echo "Error: command '$argv[1]' not found" >&2
+end
+
+# Complete commandline argument with interatice path search.
+#
+# Flags:
+#   -d: Check if path is a directory.
+function fzf-path-widget
+    # Set temporary Fzf environment variables in same manner as "fzf --fish".
+    set --export --function FZF_DEFAULT_COMMAND "$FZF_CTRL_T_COMMAND"
+    set --export --function FZF_DEFAULT_OPTS \
+        "$FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+
+    set --function fzf_dir '.'
+    set --function line (commandline)
+    set --function path ''
+    set --function cwd $PWD
+    set --function token (commandline --current-token)
+    set --function full_token \
+        (string replace '~' $HOME (string trim --chars '"\'' $token))
+
+    # Change Fzf execution directory if current command line token is a folder.
+    if test -d $full_token
+        set fzf_dir $full_token
+    end
+    cd $fzf_dir
+    set path (fzf --scheme path --walker file,dir,follow,hidden)
+    cd $cwd
+
+    # Exit early if no selection was made, i.e. user sigkilled Fzf.
+    if test -z $path
+        commandline --function repaint
+        return
+    end
+
+    # Add quotes or escape spaces if path contains a space.
+    if string match --regex '[^\\\] ' $path
+        if string match --regex '^\'' $token
+            set path "$path'"
+        else if string match --regex '^\"' $token
+            set path "$path\""
+        else
+            set path (string replace --all ' ' '\\ ' $path)
+        end
+    end
+    # Prepand path with "/" if necessary and not current directory.
+    if string match --regex '[^\/.]$' $token
+        set path "/$path"
+    end
+
+    # Insert selection and update cursor to end of path.
+    commandline --insert $path
+    commandline --cursor --current-token \
+        (math (string length $token) + (string length $path))
+    commandline --function repaint
 end
 
 # Prepend existing directories that are not in the system path.
@@ -242,7 +287,7 @@ end
 #   -z: Read input until null terminated instead of newline.
 if test $os = Darwin
     function cbcopy
-        set --local text
+        set --function text
         while read -z line
             # Variable 'text' needs quotes to send test a one line string.
             if test -n "$text"
@@ -256,7 +301,7 @@ if test $os = Darwin
     alias cbpaste pbpaste
 else if type -q wl-copy
     function cbcopy
-        set --local text
+        set --function text
         while read -z line
             # Variable 'text' needs quotes to send test a one line string.
             if test -n "$text"
@@ -302,11 +347,12 @@ if test -n $tty; and type -q fzf
     set --export FZF_ALT_C_COMMAND ''
     # Set Fzf styles with solarized light theme based on
     # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
-    set --export FZF_DEFAULT_OPTS '--border --bind ctrl-d:backward-kill-word ' \
-        '--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2' \
-        '--color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 ' \
-        '--color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 ' \
-        "--height ~80% --layout reverse --with-shell 'fish --command'"
+    set --export FZF_DEFAULT_OPTS '--border --reverse ' \
+        '--bind ctrl-d:backward-kill-word --color bg:#fdf6e3,bg+:#eee8d5 ' \
+        '--color fg:#657b83,fg+:#073642,header:#268bd2,hl:#268bd2 ' \
+        '--color hl+:#268bd2,info:#b58900,marker:#2aa198,pointer:#2aa198 ' \
+        '--color prompt:#b58900,spinner:#2aa198 --height ~80% ' \
+        "--with-shell 'fish --command'"
 
     fzf --fish | source
     if type -q bat; and type -q lsd
@@ -315,16 +361,12 @@ if test -n $tty; and type -q fzf
     end
     if type -q fd
         set --export FZF_CTRL_T_COMMAND 'fd --hidden --no-require-git'
-        if test $os = Darwin
-            set --export FZF_CTRL_T_COMMAND \
-                "$FZF_CTRL_T_COMMAND --search-path \$dir"
-        end
     end
 
     # Change Fzf file search keybinding to Ctrl+F.
     bind --erase \ec
     bind --erase \ct
-    bind \cf _fzf_path_keybind
+    bind \cf fzf-path-widget
 end
 
 # Helix settings.
@@ -511,9 +553,9 @@ prepend-paths "$WASMTIME_HOME/bin"
 # Flags:
 #   -n: Check if string is nonempty.
 function yz
-    set --local tmp (mktemp)
+    set --function tmp (mktemp)
     yazi --cwd-file $tmp $argv
-    set --local cwd (cat $tmp)
+    set --function cwd (cat $tmp)
 
     # Quotes are necessary for the if statement to ensure that the test function
     # always receives the correct number of arguments.
