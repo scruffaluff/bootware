@@ -277,6 +277,11 @@ set --export COMPOSE_DOCKER_CLI_BUILD true
 set --export DOCKER_BUILDKIT true
 set --export DOCKER_CLI_HINTS false
 
+# Fd settings.
+
+# Always have Fd read available gitignore files.
+alias fd 'fd --no-require-git'
+
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
@@ -295,21 +300,24 @@ alias ffprobe 'ffprobe -hide_banner'
 if test -n $tty; and type -q fzf
     # Disable Fzf Alt-C command.
     set --export FZF_ALT_C_COMMAND ''
-    # Set Fzf solarized light theme and shell command for child processes.
-    set _fzf_colors '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-    set _fzf_highlights '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-    set --export FZF_DEFAULT_OPTS "--reverse $_fzf_colors $_fzf_highlights --with-shell 'fish -c'"
-    set --erase _fzf_colors
-    set --erase _fzf_highlights
+    # Set Fzf styles with solarized light theme based on
+    # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
+    set --export FZF_DEFAULT_OPTS '--border --bind ctrl-d:backward-kill-word ' \
+        '--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2' \
+        '--color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 ' \
+        '--color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 ' \
+        "--height ~80% --layout reverse --with-shell 'fish --command'"
 
     fzf --fish | source
     if type -q bat; and type -q lsd
-        set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'"
+        set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'" \
+            "--preview-window border-left"
     end
     if type -q fd
-        set --export FZF_DEFAULT_COMMAND 'fd --hidden'
+        set --export FZF_CTRL_T_COMMAND 'fd --hidden --no-require-git'
         if test $os = Darwin
-            set --export FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND --search-path \$dir"
+            set --export FZF_CTRL_T_COMMAND \
+                "$FZF_CTRL_T_COMMAND --search-path \$dir"
         end
     end
 
@@ -516,6 +524,9 @@ function yz
 end
 
 # Zoxide settings.
+
+# Disable fickle Zoxide directory preview.
+set --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS"
 
 # Initialize Zoxide if interactive and available.
 #

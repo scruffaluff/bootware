@@ -180,6 +180,11 @@ fi
 export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
   DOCKER_CLI_HINTS='false'
 
+# Fd settings.
+
+# Always have Fd read available gitignore files.
+alias fd='fd --no-require-git'
+
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
@@ -201,17 +206,22 @@ alias ffprobe='ffprobe -hide_banner'
 if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   # Disable Fzf Alt-C command.
   export FZF_ALT_C_COMMAND=''
-  # Set Fzf solarized light theme and shell command for child processes.
-  _fzf_colors='--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-  _fzf_highlights='--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-  export FZF_DEFAULT_OPTS="--reverse ${_fzf_colors} ${_fzf_highlights} --with-shell 'bash -c'"
-  unset _fzf_colors
-  unset _fzf_highlights
+  # Set Fzf styles with solarized light theme based on
+  # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
+  export FZF_DEFAULT_OPTS="--border --bind ctrl-d:backward-kill-word 
+--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2 
+--color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 
+--color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 
+--height ~80% --layout reverse --with-shell 'bash -c'"
 
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
     export -f _fzf_path_preview
-    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'"
+    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}' 
+--preview-window border-left"
+  fi
+  if [[ -x "$(command -v fd)" ]]; then
+    export FZF_CTRL_T_COMMAND='fd --hidden --no-require-git'
   fi
 
   # Change Fzf file search keybinding to Ctrl+F.
@@ -425,6 +435,9 @@ yz() {
 }
 
 # Zoxide settings.
+
+# Disable fickle Zoxide directory preview.
+export _ZO_FZF_OPTS="${FZF_DEFAULT_OPTS}"
 
 # Initialize Zoxide if interactive and available.
 #

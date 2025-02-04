@@ -157,12 +157,13 @@ def fzf-file-widget [] {
     }
 
     let preview = $env.FZF_PATH_PREVIEW? | default ""
-    let path = if ($arg | path type) == "dir" {
+    mut path = if ($arg | path type) == "dir" {
         cd $arg
         (
             fzf
             --multi
             --preview $preview
+            --preview-window "border-left"
             --query ""
             --scheme path
             --walker "file,dir,follow,hidden"
@@ -172,6 +173,7 @@ def fzf-file-widget [] {
             fzf
             --multi
             --preview $preview
+            --preview-window "border-left"
             --query $arg
             --scheme path
             --walker "file,dir,follow,hidden"
@@ -179,6 +181,10 @@ def fzf-file-widget [] {
     }
 
     if ($path | is-not-empty) {
+        if ($path | str contains " ") {
+            $path = $"`($path)`"
+        }
+
         if ($arg | is-empty) {
             commandline edit --insert $path
             commandline set-cursor --end
@@ -196,7 +202,7 @@ def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
     let selection = (
         $history
-        | fzf --bind ctrl-r:toggle-sort --query (commandline) --scheme history
+        | fzf --query (commandline) --scheme history
     )
 
     if ($selection | is-not-empty) {
@@ -315,6 +321,11 @@ $env.COMPOSE_DOCKER_CLI_BUILD = "true"
 $env.DOCKER_BUILDKIT = "true"
 $env.DOCKER_CLI_HINTS = "false"
 
+# Fd settings.
+
+# Always have Fd read available gitignore files.
+alias fd = ^fd --no-require-git
+
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
@@ -328,11 +339,14 @@ alias ffprobe = ^ffprobe -hide_banner
 if $nu.is-interactive and (which fzf | is-not-empty) {
     # Disable Fzf Alt-C command.
     $env.FZF_ALT_C_COMMAND = ""
-    # Set Fzf solarized light theme and shell command for child processes.
+    # Set Fzf styles with solarized light theme based on
+    # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
     $env.FZF_DEFAULT_OPTS = (
-        "--highlight-line --reverse "
-        + "--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33 "
-        + "--color info:136,prompt:136,pointer:230,marker:230,spinner:136 "
+        "--border --bind ctrl-d:backward-kill-word "
+        + "--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642 "
+        + "--color header:#268bd2,hl:#268bd2,hl+:#268bd2,info:#b58900 "
+        + "--color marker:#2aa198,pointer:#2aa198,prompt:#b58900 "
+        + "--color spinner:#2aa198 --height ~80% --layout reverse "
         + "--with-shell 'nu --commands'"
     )
 
@@ -348,7 +362,7 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
         } {}'
     }
     if (which fd | is-not-empty) {
-        $env.FZF_DEFAULT_COMMAND = "fd --hidden"
+        $env.FZF_DEFAULT_COMMAND = "fd --hidden --no-require-git"
     }
 }
 
@@ -770,3 +784,8 @@ def --env --wrapped yz [...args] {
   }
   rm $tmp_file
 }
+
+# Zoxide settings.
+
+# Disable fickle Zoxide directory preview.
+$env._ZO_FZF_OPTS = $env.FZF_DEFAULT_OPTS? | default ""
