@@ -208,11 +208,11 @@ if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   export FZF_ALT_C_COMMAND=''
   # Set Fzf styles with solarized light theme based on
   # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
-  export FZF_DEFAULT_OPTS="--border --bind ctrl-d:backward-kill-word 
+  export FZF_DEFAULT_OPTS="--border --reverse --bind ctrl-d:backward-kill-word 
 --color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2 
 --color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 
 --color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 
---height ~80% --layout reverse --with-shell 'bash -c'"
+--height ~80% --with-shell 'bash -c'"
 
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then

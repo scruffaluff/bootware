@@ -342,12 +342,11 @@ if $nu.is-interactive and (which fzf | is-not-empty) {
     # Set Fzf styles with solarized light theme based on
     # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
     $env.FZF_DEFAULT_OPTS = (
-        "--border --bind ctrl-d:backward-kill-word "
+        "--border --reverse --bind ctrl-d:backward-kill-word "
         + "--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642 "
         + "--color header:#268bd2,hl:#268bd2,hl+:#268bd2,info:#b58900 "
         + "--color marker:#2aa198,pointer:#2aa198,prompt:#b58900 "
-        + "--color spinner:#2aa198 --height ~80% --layout reverse "
-        + "--with-shell 'nu --commands'"
+        + "--color spinner:#2aa198 --height ~80% --with-shell 'nu --commands'"
     )
 
     if (which bat | is-not-empty) and (which lsd | is-not-empty) {
