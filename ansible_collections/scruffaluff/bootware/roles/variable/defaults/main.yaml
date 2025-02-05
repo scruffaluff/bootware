@@ -89,4 +89,5 @@ scoop_shims: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
+user_login: "{{ 'powershell' if ansible_system == 'Win32NT' else 'bash' }}"
 user_shell: "{{ 'powershell' if ansible_system == 'Win32NT' else 'fish' }}"

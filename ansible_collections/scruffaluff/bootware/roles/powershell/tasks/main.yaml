@@ -88,7 +88,7 @@
     name: DefaultShell
     path: "HKLM:\\SOFTWARE\\OpenSSH"
     type: string
-  when: ansible_system == "Win32NT" and user_shell == "powershell"
+  when: ansible_system == "Win32NT" and user_login == "powershell"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

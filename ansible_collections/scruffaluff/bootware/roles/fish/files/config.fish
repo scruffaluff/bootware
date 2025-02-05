@@ -476,7 +476,7 @@ alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
 
-# Add keybindings if interactive.
+# Add keybindings and color theme if interactive.
 #
 # To discover Fish character sequences for keybindings, use the
 # 'fish_key_reader' command. For more information, visit
@@ -497,6 +497,8 @@ if test -n $tty
         bind \ez undo
         bind \ue000 forward-char
     end
+
+    fish_config theme choose 'Solarized Light'
 end
 
 # Starship settings.

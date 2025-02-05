@@ -138,6 +138,13 @@
     - config.nu
   when: ansible_system == "Win32NT"
 
+- name: Register Nushell as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ nushell_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
 - name: Change user default shell to Nushell for Alpine
@@ -145,7 +152,7 @@
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
   become: true
   changed_when: true
-  when: ansible_pkg_mgr == "apk" and user_shell == "nushell"
+  when: ansible_pkg_mgr == "apk" and user_login == "nushell"
 
 - name: Change user default shell to Nushell for Unix
   ansible.builtin.user:
@@ -153,15 +160,13 @@
     shell: "{{ nushell_executable }}"
   become: true
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_login ==
     "nushell"
 
-# TODO: Set Nushell as SSH shell without breaking Ansible compatibility.
-# See https://docs.ansible.com/ansible/latest/os_guide/windows_ssh.html#ansible-configuration.
-# - name: Set Nushell as default OpenSSH shell for Windows
-#   ansible.windows.win_regedit:
-#     data: "{{ nushell_executable }}"
-#     name: DefaultShell
-#     path: "HKLM:\\SOFTWARE\\OpenSSH"
-#     type: string
-#   when: ansible_system == "Win32NT" and user_shell == "nushell"
+- name: Set Nushell as default OpenSSH shell for Windows
+  ansible.windows.win_regedit:
+    data: "{{ nushell_executable }}"
+    name: DefaultShell
+    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    type: string
+  when: ansible_system == "Win32NT" and user_login == "nushell"

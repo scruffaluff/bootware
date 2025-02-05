@@ -30,13 +30,6 @@
     name: fish
   when: ansible_system == "Darwin"
 
-- name: Register Fish as a valid login shell
-  ansible.builtin.lineinfile:
-    path: /etc/shells
-    line: "{{ fish_executable }}"
-  become: true
-  when: ansible_system != "Win32NT"
-
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -112,6 +105,13 @@
     ansible_system != "Win32NT" and fish_version is
     ansible.builtin.version("3.0", ">=")
 
+- name: Register Fish as a valid login shell
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ fish_executable }}"
+  become: true
+  when: ansible_system != "Win32NT"
+
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
 - name: Change user default shell to Fish for Alpine
@@ -119,7 +119,7 @@
     cmd: chsh -s {{ fish_executable }} {{ user_id }}
   become: true
   changed_when: true
-  when: ansible_pkg_mgr == "apk" and user_shell == "fish"
+  when: ansible_pkg_mgr == "apk" and user_login == "fish"
 
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
@@ -127,7 +127,7 @@
     shell: "{{ fish_executable }}"
   become: true
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_shell ==
+    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_login ==
     "fish"
 
 - name: Mark role as executed to prevent reruns
