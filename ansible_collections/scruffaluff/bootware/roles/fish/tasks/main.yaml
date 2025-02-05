@@ -1,16 +1,4 @@
 ---
-- name: Install Shadow for Alpine
-  become: true
-  community.general.apk:
-    name: shadow
-  when: ansible_pkg_mgr == "apk"
-
-- name: Install Shadow for OpenWrt
-  become: true
-  community.general.opkg:
-    name: shadow-usermod
-  when: ansible_pkg_mgr == "opkg"
-
 - name: Install Fish for FreeBSD
   become: true
   community.general.pkgng:
@@ -111,6 +99,18 @@
     line: "{{ fish_executable }}"
   become: true
   when: ansible_system != "Win32NT"
+
+- name: Install Shadow for Alpine
+  become: true
+  community.general.apk:
+    name: shadow
+  when: ansible_pkg_mgr == "apk" and user_login == "fish"
+
+- name: Install Shadow for OpenWrt
+  become: true
+  community.general.opkg:
+    name: shadow-usermod
+  when: ansible_pkg_mgr == "opkg" and user_login == "fish"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
