@@ -40,11 +40,6 @@ group_id_:
   Darwin: "{{ 'wheel' if user_id == 'root' else 'staff' }}"
   FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
-nushell_autoload_:
-  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
-  FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
-  Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
-  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 nushell_executable_:
   Darwin: >-
     {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
@@ -52,6 +47,11 @@ nushell_executable_:
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
   Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
+nushell_user_autoload_:
+  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
+  FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
+  Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 system_libc_:
   Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
@@ -67,21 +67,25 @@ bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
 bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
+bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
 fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
+fish_user_completion: "{{ user_home }}/.config/fish/completions"
 font_size: 14
 github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
-nushell_autoload: >-
-  {{  nushell_autoload_.get(ansible_system, user_home +
-  '.local/share/nushell/vendor/autoload') }}
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
+nushell_user_autoload: >-
+  {{  nushell_user_autoload_.get(ansible_system, user_home +
+  '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
+powershell_user_modules: >-
+  {{ user_home }}\\Documents\\WindowsPowerShell\\Modules
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps

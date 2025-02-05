@@ -307,23 +307,6 @@ if [[ "${os}" == 'Darwin' ]]; then
   prepend-paths "${OPENBLAS}"
 fi
 
-# Add Pyenv binaries to system path.
-export PYENV_ROOT="${HOME}/.pyenv"
-prepend-paths "${PYENV_ROOT}/bin" "${PYENV_ROOT}/shims"
-
-# Initialize Pyenv if available.
-#
-# Flags:
-#   -n: Check if string is nonempty.
-#   -v: Only show file path of command.
-#   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v pyenv)" ]]; then
-  eval "$(pyenv init -)"
-  if [[ -n "${tty}" ]]; then
-    source "$(pyenv root)/completions/pyenv.bash"
-  fi
-fi
-
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
