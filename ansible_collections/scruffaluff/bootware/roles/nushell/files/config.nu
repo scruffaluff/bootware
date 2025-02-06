@@ -747,11 +747,6 @@ prepend-paths $"($env.HOME)/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths $"($env.HOME)/.npm-global/bin"
 
-# Initialize Node Version Manager if available for Unix.
-if $nu.os-info.name != "windows" {
-    $env.NVM_DIR = $"($env.HOME)/.nvm"
-}
-
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path.
