@@ -47,7 +47,7 @@
   changed_when: true
   when: ansible_system != "Win32NT" and user_id != "root"
 
-- name: Install NPM for Windows
+- name: Configure NPM for Windows
   ansible.windows.win_shell: |
     New-Item -Force -ItemType Directory -Path {{ user_home }}/.npm-global
     npm config set prefix {{ user_home }}/.npm-global
@@ -69,7 +69,7 @@
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Install Node applications for Windows
-  ansible.windows.win_command: npm install --global {{ item }}
+  ansible.windows.win_shell: npm install --global {{ item }}
   # Command always marks application as changed.
   changed_when: true
   environment:
