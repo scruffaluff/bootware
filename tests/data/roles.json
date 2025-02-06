@@ -278,7 +278,13 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["procs --version"]
   },
-  { "name": "python", "tests": ["pipx --version", "python --version"] },
+  {
+    "name": "python",
+    "tests": {
+      "default": ["pipx --version", "python --version", "uv --version"],
+      "openwrt": ["python --version", "uv --version"]
+    }
+  },
   {
     "name": "qemu",
     "skip": [{ "arch": "arm64", "os": "suse" }],

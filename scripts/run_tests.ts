@@ -18,7 +18,6 @@ function main(): void {
     .option("-d, --distro <distributions...>", "Linux distributions list", [
       "alpine",
       "arch",
-      "collection",
       "debian",
       "fedora",
       "suse",

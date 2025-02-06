@@ -1,7 +1,6 @@
 ---
 - name: Check if Doas is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v doas  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: super_doas_available
@@ -24,8 +23,7 @@
     super_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v visudo  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: super_sudo_available

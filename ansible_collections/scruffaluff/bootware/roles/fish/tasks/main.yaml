@@ -64,8 +64,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager for Unix
-  # prettier-ignore
-  ansible.builtin.shell:  # noqa command-instead-of-module
+  ansible.builtin.shell: # noqa command-instead-of-module
     cmd: |
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher

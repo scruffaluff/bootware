@@ -58,8 +58,7 @@
   environment:
     Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
-    tilt_bucket_add.rc != 0 and 'bucket already exists' not in
-    tilt_bucket_add.stdout
+    tilt_bucket_add.rc != 0 and 'bucket already exists' not in tilt_bucket_add
   register: tilt_bucket_add
   when: ansible_system == "Win32NT"
 
