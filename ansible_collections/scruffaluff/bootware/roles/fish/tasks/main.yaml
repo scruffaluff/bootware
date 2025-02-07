@@ -23,7 +23,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ fish_user_completion }}"
     state: directory
   become: true
   when: ansible_system != "Win32NT"

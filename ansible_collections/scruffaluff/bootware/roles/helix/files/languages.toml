@@ -57,7 +57,7 @@ formatter = { command = "prettier", args = ["--parser", "markdown"] }
 [[language]]
 name = "python"
 auto-format = true
-formatter = { command = "black", args = ["-"] }
+language-servers = ["ruff"]
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
 
 [[language]]
@@ -73,3 +73,7 @@ formatter = { command = "prettier", args = ["--parser", "typescript"] }
 name = "yaml"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "yaml"] }
+
+[language-server.ruff]
+args = ["server"]
+command = "ruff"

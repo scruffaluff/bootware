@@ -45,6 +45,7 @@
   community.general.pkgng:
     name:
       - py311-pip
+      - py311-pipx
       - python3
       - rust
   when: ansible_system == "FreeBSD"
@@ -133,16 +134,16 @@
       ansible_env.PATH }}
   loop: "{{ python_applications }}"
   register: python_application_unix
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
 
 - name: Install Python applications for Windows
-  ansible.windows.win_command: >-
-    (pipx install {{ item.name if item.name is defined else item }}) -And ({{ '
-    && pipx inject ' + item.name + ' ' + (item.extras | join(' ')) if
-    item.extras is defined else '? .' }})
+  ansible.windows.win_shell: >-
+    (pipx install {{ item.name if item.name is defined else item }}) -And ({{
+    'pipx inject ' + item.name + ' ' + (item.extras | join(' ')) if item.extras
+    is defined else '? .' }})
   changed_when: "'already installed' not in python_application_windows"
   environment:
-    Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
+    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   loop: "{{ python_applications }}"
   register: python_application_windows
   when: ansible_system == "Win32NT"
