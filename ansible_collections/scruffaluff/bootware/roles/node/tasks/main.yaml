@@ -1,30 +1,26 @@
 ---
-- name: Get latest NVM version for Unix
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/nvm.json
-  register: node_nvm_formula
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
-
-# NVM is not well-supported for Alpine. For more information, visit
-# https://github.com/nvm-sh/nvm/blob/master/README.md#installing-nvm-on-alpine-linux.
-- name: Install Node for Alpine
-  become: true
-  community.general.apk:
-    name:
-      - nodejs
-      - npm
-  when: ansible_pkg_mgr == "apk"
-
-# NVM does not provide binaries for FreeBSD.
 - name: Install Node for FreeBSD
   become: true
   community.general.pkgng:
     name:
-      - node20
-      - npm-node20
+      - node22
+      - npm-node22
   when: ansible_system == "FreeBSD"
+
+- name: Install Node for Linux
+  ansible.builtin.package:
+    name:
+      - nodejs
+      - "{{ 'nodejs-npm' if ansible_pkg_mgr in ['dnf'] else 'npm' }}"
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Node for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: node
+  when: ansible_system == "Darwin"
 
 - name: Install Node for OpenWrt
   become: true
@@ -34,126 +30,51 @@
       - node-npm
   when: ansible_pkg_mgr == "opkg"
 
-- name: Download Node version manager installer for Unix
-  ansible.builtin.get_url:
-    dest: /tmp/nvm_install.sh
-    mode: "755"
-    url: >-
-      https://raw.githubusercontent.com/nvm-sh/nvm/v{{
-      node_nvm_formula.json.versions.stable }}/install.sh
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl"
-
-- name: Install Node version manager for Unix
-  ansible.builtin.command: /tmp/nvm_install.sh
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'start using nvm' in node_nvm_install"
-  register: node_nvm_install
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl"
-
-- name: Install multiple Node versions for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      nvm install {{ item }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'Now using node' in node_version_install"
-  loop: "{{ node_versions }}"
-  register: node_version_install
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl"
-
-# NVM is not used for Windows due to its frustrating launch checks that require
-# administrator permissions.
-- name: Install multiple Node versions for Windows
+- name: Install Node for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
-    name: nodejs{{ item | replace('22', '') }}
-  loop: "{{ node_versions }}"
+    name: nodejs
   when: ansible_system == "Win32NT"
 
-- name: Configure NPM for Alpine and FreeBSD
+- name: Configure NPM for Unix
   ansible.builtin.shell:
     cmd: |
-      source {{ user_home }}/.bashrc
-      mkdir --parents {{ user_home }}/.npm-global
+      mkdir -p {{ user_home }}/.npm-global
       npm config set prefix {{ user_home }}/.npm-global
-    executable: "{{ bash_executable }}"
   become: true
   become_user: "{{ user_id }}"
   # Command does not provide stdout information to determine a change.
   changed_when: true
-  when: >-
-    (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and user_id !=
-    "root"
+  when: ansible_system != "Win32NT" and user_id != "root"
 
-- name: Set default Node version for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      nvm alias default {{ node_versions[-1] }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: true
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl"
-
-# NVM cannot find compatible versions of NPM for Alpine.
-- name: Update NPM for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      nvm install-latest-npm
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'npm upgraded' in node_npm_update"
-  register: node_npm_update
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and user_id != "root" and
-    system_libc != "musl"
-
-- name: >-
-    Install or update Node CLI applications for Alpine and FreeBSD
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      npm install --global {{ item }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  # Command always marks application as changed.
-  changed_when: true
-  loop: "{{ ['pnpm'] + node_applications }}"
-  when: >-
-    (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and user_id !=
-    "root"
-
-- name: Install or update Node CLI applications for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      nvm use {{ node_versions[-1] }}
-      npm install --global {{ item }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  # Command always marks application as changed.
-  changed_when: true
-  loop: "{{ ['pnpm'] + node_applications }}"
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and user_id != "root" and
-    system_libc != "musl"
-
-- name: Install or update Node CLI applications for Windows
+- name: Configure NPM for Windows
   ansible.windows.win_shell: |
-    (npm install --global {{ item }}) -Or (npm update --global {{ item }})
+    New-Item -Force -ItemType Directory -Path {{ user_home }}/.npm-global
+    npm config set prefix {{ user_home }}/.npm-global
   # Command always marks application as changed.
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
-  loop: "{{ node_applications }}"
+  loop: "{{ ['pnpm'] + node_applications }}"
+  when: ansible_system == "Win32NT"
+
+- name: Install Node applications for Unix
+  ansible.builtin.command:
+    cmd: npm install --global {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  # Command always marks application as changed.
+  changed_when: true
+  loop: "{{ ['pnpm'] + node_applications }}"
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Install Node applications for Windows
+  ansible.windows.win_shell: npm install --global {{ item }}
+  # Command always marks application as changed.
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
+  loop: "{{ ['pnpm'] + node_applications }}"
   when: ansible_system == "Win32NT"
 
 - name: Create user shell completion directories for Unix
@@ -169,62 +90,20 @@
     - .config/fish/completions
   when: ansible_system != "Win32NT" and user_id != "root"
 
-- name: Generate PNPM user shell completions for Alpine and FreeBSD
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      pnpm completion {{ item.shell }} > {{ user_home }}/{{ item.path }}
-    executable: "{{ bash_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: true
-  loop:
-    - path: .local/share/bash-completion/completions/pnpm
-      shell: bash
-    - path: .config/fish/completions/pnpm.fish
-      shell: fish
-  when: >-
-    (ansible_pkg_mgr == "apk" or ansible_system == "FreeBSD") and user_id !=
-    "root"
-
 - name: Generate PNPM user shell completions for Unix
   ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.bashrc
-      nvm use {{ node_versions[-1] }}
-      pnpm completion {{ item.shell }} > {{ user_home }}/{{ item.path }}
-    executable: "{{ bash_executable }}"
+    cmd: pnpm completion {{ item.shell }} > {{ user_home }}/{{ item.path }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "{{ user_home }}/.npm-global/bin:{{ ansible_env.PATH }}"
   loop:
     - path: .local/share/bash-completion/completions/pnpm
       shell: bash
     - path: .config/fish/completions/pnpm.fish
       shell: fish
-  when: >-
-    ansible_system not in ["FreeBSD", "Win32NT"] and user_id != "root" and
-    system_libc != "musl"
-
-- name: Create Fish functions directory for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/functions"
-    state: directory
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Download Fast NVM Fish for Unix
-  ansible.builtin.get_url:
-    dest: "{{ user_home }}/.config/fish/functions/nvm.fish"
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    url: https://raw.githubusercontent.com/brigand/fast-nvm-fish/master/nvm.fish
-  become: true
-  when: ansible_system not in ["FreeBSD", "Win32NT"] and system_libc != "musl"
+  when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

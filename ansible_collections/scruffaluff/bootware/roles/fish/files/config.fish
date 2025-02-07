@@ -529,14 +529,6 @@ prepend-paths "$HOME/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths "$HOME/.npm-global/bin"
 
-# Initialize Node Version Manager if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q nvm
-    nvm use default
-end
-
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.

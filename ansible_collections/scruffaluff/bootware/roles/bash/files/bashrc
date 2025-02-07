@@ -396,16 +396,6 @@ prepend-paths "${HOME}/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths "${HOME}/.npm-global/bin"
 
-# Initialize Node Version Manager if available.
-#
-# Flags:
-#   -n: Check if the string has nonzero length.
-export NVM_DIR="${HOME}/.nvm"
-source-files "${NVM_DIR}/nvm.sh"
-if [[ -n "${tty}" ]]; then
-  source-files "${NVM_DIR}/bash_completion"
-fi
-
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
