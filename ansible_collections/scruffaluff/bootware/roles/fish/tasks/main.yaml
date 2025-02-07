@@ -23,7 +23,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/completions"
+    path: "{{ fish_user_completion }}"
     state: directory
   become: true
   when: ansible_system != "Win32NT"
@@ -64,8 +64,7 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Fisher package manager for Unix
-  # prettier-ignore
-  ansible.builtin.shell:  # noqa command-instead-of-module
+  ansible.builtin.shell: # noqa command-instead-of-module
     cmd: |
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher

@@ -441,18 +441,6 @@ if test $os = Darwin
     prepend-paths $OPENBLAS
 end
 
-# Add Pyenv binaries to system path.
-set --export PYENV_ROOT "$HOME/.pyenv"
-prepend-paths "$PYENV_ROOT/bin" "$PYENV_ROOT/shims"
-
-# Initialize Pyenv if available.
-#
-# Flags:
-#   -q: Only check for exit status by supressing output.
-if type -q pyenv
-    pyenv init - | source
-end
-
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.

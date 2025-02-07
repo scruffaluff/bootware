@@ -96,8 +96,7 @@
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Check if Doas is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v doas  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: gitlab_runner_doas_available
@@ -118,8 +117,7 @@
   when: ansible_system != "Win32NT" and gitlab_runner_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v visudo  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: gitlab_runner_sudo_available

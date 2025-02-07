@@ -118,18 +118,19 @@
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
-- name: Create Deno PowerShell completions directory for Windows
+- name: Create Deno PowerShell user completions directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: >-
-      {{ user_home }}/Documents/WindowsPowerShell/Modules/DenoCompletion
+    path: "{{ powershell_user_modules }}/DenoCompletion"
     state: directory
   when: ansible_system == "Win32NT"
 
-- name: Generate Deno PowerShell completions module for Windows
-  ansible.windows.win_shell: >-
-    deno completions powershell > {{ user_home
-    }}/Documents/WindowsPowerShell/Modules/DenoCompletion/DenoCompletion.psm1
+- name: Generate Deno PowerShell user completions module for Windows
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = deno completions powershell
+    [System.IO.File]::WriteAllLines("{{ powershell_user_modules }}/DenoCompletion/DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
     Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"

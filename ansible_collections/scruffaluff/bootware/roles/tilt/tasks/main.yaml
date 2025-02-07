@@ -52,14 +52,13 @@
 #   when: ansible_system == "Win32NT"
 
 - name: Install Tilt Scoop bucket for Windows
-  ansible.windows.win_shell: >-
+  ansible.windows.win_command: >-
     scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   changed_when: "'bucket was added successfully' in tilt_bucket_add"
   environment:
     Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
-    tilt_bucket_add.rc != 0 and 'bucket already exists' not in
-    tilt_bucket_add.stdout
+    tilt_bucket_add.rc != 0 and 'bucket already exists' not in tilt_bucket_add
   register: tilt_bucket_add
   when: ansible_system == "Win32NT"
 

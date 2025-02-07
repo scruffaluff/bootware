@@ -418,12 +418,6 @@ if $nu.os-info.name == "macos" {
     prepend-paths $env.OPENBLAS
 }
 
-# Add Pyenv binaries to system path for Unix.
-if $nu.os-info.name != "windows" {
-    $env.PYENV_ROOT = $"($env.HOME)/.pyenv"
-    prepend-paths $"($env.PYENV_ROOT)/bin" $"($env.PYENV_ROOT)/shims"
-}
-
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.

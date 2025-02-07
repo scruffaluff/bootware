@@ -1,7 +1,3 @@
 ---
 dependencies:
   - role: variable
-  - role: bash
-    when: bash_role_executed is not defined and ansible_system != "Win32NT"
-  - role: git
-    when: git_role_executed is not defined and ansible_system != "Win32NT"

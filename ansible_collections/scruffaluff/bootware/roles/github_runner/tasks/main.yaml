@@ -27,8 +27,7 @@
   when: ansible_system == "Linux"
 
 - name: Check if Doas is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v doas  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: github_runner_doas_available
@@ -51,8 +50,7 @@
     0
 
 - name: Check if Sudo is available for Unix
-  # prettier-ignore
-  ansible.builtin.shell: command -v visudo  # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
   changed_when: false
   failed_when: false
   register: github_runner_sudo_available

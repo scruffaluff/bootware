@@ -1,13 +1,15 @@
 ---
+python_uv_arch_:
+  amd64: x86_64
+  arm64: aarch64
 python_applications:
   - "jinja2-cli[toml,yaml,xml]"
-  - "python-lsp-server[all]"
   - "black[jupyter]"
   - cookiecutter
   - jupytext
   - name: poetry
-    injections:
+    extras:
       - poetry-plugin-shell
       - poetry-plugin-up
-python_versions:
-  - "3.13"
+  - ruff
+python_uv_arch: "{{ python_uv_arch_[system_architecture] }}"

@@ -96,14 +96,14 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_autoload }}"
+    path: "{{ nushell_user_autoload }}"
     state: directory
   become: true
   when: ansible_system != "Win32NT"
 
 - name: Generate Starship Nushell configuration for Unix
   ansible.builtin.shell: >-
-    starship init nu > {{ nushell_autoload }}/starship.nu
+    starship init nu > {{ nushell_user_autoload }}/starship.nu
   become: true
   changed_when: true
   environment:
@@ -113,7 +113,7 @@
 - name: Create Nushell autoload directories for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ nushell_autoload }}"
+    path: "{{ nushell_user_autoload }}"
     state: directory
   when: ansible_system == "Win32NT"
 
@@ -122,7 +122,7 @@
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = starship init nu
-    [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/starship.nu", $Text)
+    [System.IO.File]::WriteAllLines("{{ nushell_user_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\starship\\current;{{ ansible_env.Path }}"

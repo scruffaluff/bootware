@@ -1,0 +1,112 @@
+---
+- name: Install Uv for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: uv
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Uv version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/uv.json
+  register: python_uv_formula
+  when: ansible_system == "Linux"
+
+- name: Download Uv for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/astral-sh/uv/releases/download/{{
+      python_uv_formula.json.versions.stable }}/uv-{{ python_uv_arch
+      }}-unknown-linux-{{ system_libc }}.tar.gz
+  when: ansible_system == "Linux"
+
+- name: Install Uv for Linux
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.local/bin/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    remote_src: true
+    src: /tmp/uv-{{ python_uv_arch }}-unknown-linux-{{ system_libc }}/{{ item }}
+  become: true
+  loop:
+    - uv
+    - uvx
+  when: ansible_system == "Linux"
+
+- name: Install Uv for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: uv
+  when: ansible_system == "Darwin"
+
+- name: Install Uv for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: uv
+  when: ansible_system == "Win32NT"
+
+- name: Create user shell completion directories for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_user_completion }}"
+    - "{{ fish_user_completion }}"
+    - "{{ nushell_user_autoload }}"
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Generate Uv user shell completions for Unix
+  ansible.builtin.shell:
+    cmd: uv --generate-shell-completion {{ item.shell }} > {{ item.path }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  environment:
+    PATH: >-
+      {{ user_home }}/.local/bin:/opt/homebrew/bin:/usr/local/bin:{{
+      ansible_env.PATH }}
+  loop:
+    - path: "{{ bash_user_completion }}/uv"
+      shell: bash
+    - path: "{{ fish_user_completion }}/uv.fish"
+      shell: fish
+    - path: "{{ nushell_user_autoload }}/uv.nu"
+      shell: nushell
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Create user shell completions directories for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ nushell_user_autoload }}"
+    - "{{ powershell_user_modules }}/UvCompletion"
+  when: ansible_system == "Win32NT"
+
+- name: Generate Uv user shell completions for Windows
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = uv --generate-shell-completion {{ item.shell }}
+    [System.IO.File]::WriteAllLines("{{ item.path }}", $Text)
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
+  loop:
+    - path: "{{ nushell_user_autoload }}/uv.nu"
+      shell: nushell
+    - path: "{{ powershell_user_modules }}/UvCompletion/UvCompletion.psm1"
+      shell: powershell
+  when: ansible_system == "Win32NT"
