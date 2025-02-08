@@ -1,0 +1,11 @@
+# Topgrade configuration file for updating system packages.
+#
+# For more infomation, visit
+# https://github.com/topgrade-rs/topgrade/blob/main/config.example.toml.
+
+[misc]
+assume_yes = true
+disable = ["containers", "git_repos", "ruby_gems"]
+no_retry = true
+notify_each_step = true
+skip_notify = true

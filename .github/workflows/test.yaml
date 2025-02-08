@@ -45,6 +45,8 @@ on:
 jobs:
   alpine:
     name: Test bootstrapping software for Alpine Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'alpine' }}
     runs-on: ubuntu-24.04
@@ -77,6 +79,8 @@ jobs:
 
   arch:
     name: Test bootstrapping software for Arch Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job ==  'arch' }}
     runs-on: ubuntu-24.04
@@ -113,6 +117,8 @@ jobs:
 
   debian:
     name: Test bootstrapping software for Debian Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'debian' }}
     runs-on: ubuntu-24.04
@@ -145,6 +151,8 @@ jobs:
 
   fedora:
     name: Test bootstrapping software for Fedora Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     # Fedora test fails in initial setup as of 01/18/2025 due to a "
     # Authentication service cannot retrieve authentication info" sudo error
     # which does not happen locally.
@@ -282,6 +290,8 @@ jobs:
 
   suse:
     name: Test bootstrapping software for Suse Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name == 'workflow_dispatch' && inputs.job ==  'suse' }}
     runs-on: ubuntu-24.04
@@ -314,6 +324,8 @@ jobs:
 
   ubuntu:
     name: Test Bootware collection on Ubuntu Linux
+    env:
+      DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
     runs-on: ubuntu-24.04

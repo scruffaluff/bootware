@@ -39,7 +39,6 @@
   become: true
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
-# Rust is required for installing some Python standard libraries on FreeBSD.
 - name: Install Python for FreeBSD
   become: true
   community.general.pkgng:
@@ -47,7 +46,6 @@
       - py311-pip
       - py311-pipx
       - python3
-      - rust
   when: ansible_system == "FreeBSD"
 
 - name: Install Python for MacOS
@@ -85,6 +83,23 @@
       - pipx
       - python
   when: ansible_system == "Win32NT"
+
+- name: Make Python symlinks for MacOS
+  ansible.builtin.file:
+    src: "{{ python_brew_prefix }}/bin/{{ item }}3"
+    dest: "{{ python_brew_prefix }}/bin/{{ item }}"
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  loop:
+    - pip
+    - python
+  vars:
+    python_brew_prefix: >-
+      {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+      '/usr/local' }}
+  when: ansible_system == "Darwin"
 
 - name: Remove Microsoft Store links masquerading as Python for Windows
   ansible.windows.win_file:

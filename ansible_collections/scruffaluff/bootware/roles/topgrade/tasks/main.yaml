@@ -60,30 +60,21 @@
     name: topgrade
   when: ansible_system == "Win32NT"
 
-- name: Disable Topgrade interactivity for Unix
-  ansible.builtin.lineinfile:
-    create: true
+- name: Copy Topgrade settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/topgrade.toml"
+    force: true
     group: "{{ group_id }}"
-    line: "{{ item }}"
-    mode: "644"
+    mode: "640"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/topgrade.toml"
-    regex: "^#?\\s*{{ item }}"
+    src: topgrade.toml
   become: true
-  loop:
-    - "assume_yes = true"
-    - "no_retry = true"
-    - "skip_notify = true"
   when: ansible_system != "Win32NT"
 
-- name: Disable Topgrade interactivity for Windows
-  community.windows.win_lineinfile:
-    create: true
-    line: "{{ item }}"
-    path: "{{ user_home }}/AppData/Roaming/topgrade.toml"
-    regex: "^#?\\s*{{ item }}"
-  loop:
-    - "assume_yes = true"
-    - "no_retry = true"
-    - "skip_notify = true"
+- name: Copy Topgrade settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/AppData/Roaming/topgrade.toml"
+    force: true
+    owner: "{{ user_id }}"
+    src: topgrade.toml
   when: ansible_system == "Win32NT"
