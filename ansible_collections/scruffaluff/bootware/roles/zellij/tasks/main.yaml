@@ -66,7 +66,18 @@
     - zellij/layouts
   when: ansible_system != "Win32NT"
 
-- name: Copy Zellij settings files for Unix
+- name: Copy Zellij settings file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/zellij/config.kdl"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: config.kdl.j2
+  become: true
+  when: ansible_system != "Win32NT"
+
+- name: Copy Zellij layout files for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/zellij/{{ item.dest }}"
     force: true
@@ -76,8 +87,6 @@
     src: "{{ item.src }}"
   become: true
   loop:
-    - dest: config.kdl
-      src: config.kdl
     - dest: layouts/layout.kdl
       src: layout.kdl
     - dest: layouts/layout.swap.kdl
