@@ -477,8 +477,10 @@ if test -n $tty
         bind \cw true
         bind \cd backward-kill-path-component
         bind \cj backward-char
+        bind \eb backward-bigword
         bind \ec _paste_cwd
         bind \ed kill-bigword
+        bind \ef forward-bigword
         bind \ep _paste_pager
         bind \ex _delete_commandline_from_history
         bind \eZ redo

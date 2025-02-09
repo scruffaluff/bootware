@@ -553,6 +553,12 @@ $env.config = {
     },
     keybindings: [
         {
+            event: { edit: movebigwordleft }
+            keycode: b
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { cmd: _paste-cwd send: executehostcommand }
             keycode: char_c
             mode: [emacs vi_insert vi_normal]
@@ -561,6 +567,12 @@ $env.config = {
         {
             event: { send: openeditor }
             keycode: char_e
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
+            event: { edit: movebigwordright }
+            keycode: f
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
