@@ -39,6 +39,7 @@
   become: true
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
+# Rust is required for installing many Python applications on FreeBSD.
 - name: Install Python for FreeBSD
   become: true
   community.general.pkgng:
@@ -46,6 +47,7 @@
       - py311-pip
       - py311-pipx
       - python3
+      - rust
   when: ansible_system == "FreeBSD"
 
 - name: Install Python for MacOS
