@@ -33,12 +33,12 @@
   when: ansible_system == "Darwin"
 
 - name: Copy Tmux settings file for Unix
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: "{{ user_home }}/.tmux.conf"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: tmux.conf
+    src: tmux.conf.j2
   become: true
   when: ansible_system != "Win32NT"

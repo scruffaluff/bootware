@@ -313,16 +313,31 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
+    Set-PSReadLineKeyHandler -Chord Alt+b -Function ShellBackwardWord
     Set-PSReadLineKeyHandler -Chord Alt+d -Function DeleteWord
     Set-PSReadLineKeyHandler -Chord Alt+Z -Function Redo
     Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
-    Set-PSReadLineKeyHandler -Chord Ctrl+e -Function EndOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+d -Function BackwardDeleteWord
+    Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
     Set-PSReadLineKeyHandler -Chord Shift+LeftArrow -Function ShellBackwardWord
 
-    # Set shift+rightarrow to jump to end of next suggestion if at the end
-    # of the line else to the end of the next word.
+    # Set alt+f or shift+rightarrow to jump to end of next suggestion if at the
+    # end of the line else to the end of the next word.
+    Set-PSReadLineKeyHandler -Chord Alt+f -ScriptBlock {
+        Param($Key, $Arg)
+
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+
+        If ($Cursor -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
+        }
+        Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Shift+RightArrow -ScriptBlock {
         Param($Key, $Arg)
 
@@ -335,6 +350,22 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         }
         Else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
+        }
+    }
+    # Set Ctrl+eto jump to end of line suggestion if at the end of the line else
+    # to the end of the line.
+    Set-PSReadLineKeyHandler -Chord Ctrl+e -ScriptBlock {
+        Param($Key, $Arg)
+
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+
+        If ($Cursor -LT $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine($Key, $Arg)
+        }
+        Else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion($Key, $Arg)
         }
     }
 
@@ -359,20 +390,6 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         }
     }
     Set-PSReadLineKeyHandler -Chord Alt+e ViEditVisually
-    Set-PSReadLineKeyHandler -Chord Alt+f -ScriptBlock {
-        $Line = $Null
-        $Cursor = $Null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
-        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-
-        $StripLine = $Line -Replace " 2>&1 `\| fzf`$", ''
-        If ($StripLine.Length -LT $Line.Length) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
-        }
-        Else {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line 2>&1 | fzf")
-        }
-    }
     Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
         If ($Env:PAGER) {
             $Pager = $Env:PAGER
@@ -435,6 +452,8 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     # Add history based autocompletion to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
+    Set-PSReadLineKeyHandler -Chord Ctrl+n -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Chord Ctrl+p -Function HistorySearchBackward
     Set-PSReadLineOption -HistorySearchCursorMovesToEnd
 
     # Features are only available for PowerShell 7.0 and later.

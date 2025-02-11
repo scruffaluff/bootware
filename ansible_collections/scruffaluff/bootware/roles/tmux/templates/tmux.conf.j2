@@ -7,6 +7,7 @@
 
 set-option -g base-index 1                       # Make windows numbers start at 1
 set-option -g default-terminal xterm-256color    # Upgrade default terminal.
+set-option -g default-shell {{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}
 set-option -g mouse on                           # Enable pane selection with mouse.
 set-option -g pane-base-index 1                  # Make pane numbers start at 1
 set-option -g renumber-windows on                # Renumber windows when one windows is closed.

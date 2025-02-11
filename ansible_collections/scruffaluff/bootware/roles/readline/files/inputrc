@@ -25,7 +25,9 @@ set visible-stats on
 "\C-k": kill-line
 "\C-l": clear-screen
 "\C-u": backward-kill-line
+"\eb": backward-word
 "\ee": edit-and-execute-command
+"\ef": forward-word
 "\ez": undo
 
 # Use Tab and Shift+Tab to cycle through completions.

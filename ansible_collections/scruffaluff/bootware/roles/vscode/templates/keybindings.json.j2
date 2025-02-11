@@ -125,7 +125,7 @@
     "when": "textInputFocus"
   },
   {
-    "command": "cursorWordPartLeft",
+    "command": "cursorWordLeft",
     "key": "alt+b",
     "when": "textInputFocus"
   },
@@ -135,7 +135,7 @@
     "when": "textInputFocus"
   },
   {
-    "command": "cursorWordPartRight",
+    "command": "cursorWordRight",
     "key": "alt+f",
     "when": "textInputFocus"
   },
@@ -387,7 +387,17 @@
   {
     "command": "workbench.action.quickOpen",
     "key": "ctrl+p",
-    "when": "!panelFocus && !suggestWidgetVisible"
+    "when": "!inQuickOpen && !panelFocus && !suggestWidgetVisible"
+  },
+  { 
+    "command": "workbench.action.quickOpenSelectNext",
+    "key": "ctrl+n",
+    "when": "inQuickOpen"
+  },
+  { 
+    "command": "workbench.action.quickOpenSelectPrevious",
+    "key": "ctrl+p",
+    "when": "inQuickOpen"
   },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
