@@ -52,16 +52,16 @@
 #   ignore_errors: true
 #   register: helix_linux
 #   when: ansible_system == "Linux"
-
-- name: Make Helix command symlink for Arch
-  ansible.builtin.file:
-    src: /usr/sbin/helix
-    dest: /usr/sbin/hx
-    force: true
-    mode: "755"
-    state: link
-  become: true
-  when: ansible_pkg_mgr == "pacman" and helix_linux is success
+#
+# - name: Make Helix command symlink for Arch
+#   ansible.builtin.file:
+#     src: /usr/sbin/helix
+#     dest: /usr/sbin/hx
+#     force: true
+#     mode: "755"
+#     state: link
+#   become: true
+#   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
