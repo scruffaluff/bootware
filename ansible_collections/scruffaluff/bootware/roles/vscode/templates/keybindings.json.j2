@@ -215,16 +215,6 @@
     "when": "textInputFocus"
   },
   {
-    "command": "quickInput.next",
-    "key": "ctrl+n",
-    "when": "inQuickInput"
-  },
-  {
-    "command": "quickInput.previous",
-    "key": "ctrl+p",
-    "when": "inQuickInput"
-  },
-  {
     "command": "selectNextSuggestion",
     "key": "ctrl+n",
     "when": "suggestWidgetVisible"
@@ -397,7 +387,17 @@
   {
     "command": "workbench.action.quickOpen",
     "key": "ctrl+p",
-    "when": "!inQuickInput && !panelFocus && !suggestWidgetVisible"
+    "when": "!inQuickOpen && !panelFocus && !suggestWidgetVisible"
+  },
+  { 
+    "command": "workbench.action.quickOpenSelectNext",
+    "key": "ctrl+n",
+    "when": "inQuickOpen"
+  },
+  { 
+    "command": "workbench.action.quickOpenSelectPrevious",
+    "key": "ctrl+p",
+    "when": "inQuickOpen"
   },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },

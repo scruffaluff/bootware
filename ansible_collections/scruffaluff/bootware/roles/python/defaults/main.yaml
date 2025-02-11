@@ -11,5 +11,6 @@ python_applications:
     extras:
       - poetry-plugin-shell
       - poetry-plugin-up
+  - pyright
   - ruff
 python_uv_arch: "{{ python_uv_arch_[system_architecture] }}"

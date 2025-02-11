@@ -24,9 +24,8 @@ hidden = false
 [editor.indent-guides]
 render = true
 
-# TODO: Enable when Helix reaches version 25.01 on all systems.
-# [editor.inline-diagnostics]
-# cursor-line = "warning"
+[editor.inline-diagnostics]
+cursor-line = "warning"
 
 [editor.smart-tab]
 enable = false

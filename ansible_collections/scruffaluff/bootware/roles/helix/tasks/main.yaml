@@ -19,19 +19,39 @@
       ansible.builtin.version("2.38", ">") }}
   when: ansible_system == "Linux"
 
+# Several Linux Helix packages don't include the runtime files so GitHub release
+# needs to always be downloaded.
+- name: Get latest Helix version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/helix.json
+  register: helix_formula
+  when: ansible_system == "Linux"
+
+- name: Parse Helix download folder name
+  ansible.builtin.set_fact:
+    helix_folder: >-
+      {{ 'helix-' + helix_formula.json.versions.stable + '-' + helix_arch +
+      '-linux' if helix_glibc_support else 'helix-v' +
+      helix_formula.json.versions.stable + '-' + helix_arch + '-unknown-linux-'
+      + system_libc }}
+  when: ansible_system == "Linux"
+
 - name: Install Helix for FreeBSD
   become: true
   community.general.pkgng:
     name: helix
   when: ansible_system == "FreeBSD"
 
-- name: Install Helix for Linux
-  ansible.builtin.package:
-    name: helix
-  become: true
-  ignore_errors: true
-  register: helix_linux
-  when: ansible_system == "Linux"
+# TODO: Renable when Helix package in all distributions reaches version 25.01.
+# - name: Install Helix for Linux
+#   ansible.builtin.package:
+#     name: helix
+#   become: true
+#   ignore_errors: true
+#   register: helix_linux
+#   when: ansible_system == "Linux"
 
 - name: Make Helix command symlink for Arch
   ansible.builtin.file:
@@ -43,16 +63,6 @@
   become: true
   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
-# Several Linux Helix packages don't include the runtime files so GitHub release
-# needs to always be downloaded.
-- name: Get latest Helix version for Linux
-  ansible.builtin.uri:
-    method: GET
-    return_content: true
-    url: https://formulae.brew.sh/api/formula/helix.json
-  register: helix_formula
-  when: ansible_system == "Linux"
-
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
@@ -61,13 +71,10 @@
     remote_src: true
     src: >-
       {{ 'https://github.com/helix-editor/helix/releases/download/' +
-      helix_formula.json.versions.stable + '/helix-' +
-      helix_formula.json.versions.stable + '-' + helix_arch + '-linux.tar.xz' if
+      helix_formula.json.versions.stable + '/' + helix_folder + '.tar.xz' if
       helix_glibc_support else
       'https://github.com/zydou/helix/releases/download/v' +
-      helix_formula.json.versions.stable + '/helix-v' +
-      helix_formula.json.versions.stable + '-' + helix_arch + '-unknown-linux-'
-      + system_libc + '.tar.xz' }}
+      helix_formula.json.versions.stable + '/' + helix_folder + '.tar.xz' }}
   when: ansible_system == "Linux"
 
 - name: Install Helix for Linux
@@ -76,13 +83,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: >-
-      /tmp/{{ 'helix-' + helix_formula.json.versions.stable + '-' + helix_arch +
-      '-linux' if helix_glibc_support else 'helix-v' +
-      helix_formula.json.versions.stable + '-' + helix_arch + '-unknown-linux-'
-      + system_libc }}/hx
+    src: /tmp/{{ helix_folder }}/hx
   become: true
-  when: ansible_system == "Linux" and helix_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Install Helix for MacOS
   become: true
@@ -117,11 +120,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
-    src: >-
-      /tmp/{{ 'helix-' + helix_formula.json.versions.stable + '-' + helix_arch +
-      '-linux' if helix_glibc_support else 'helix-v' +
-      helix_formula.json.versions.stable + '-' + helix_arch + '-unknown-linux-'
-      + system_libc }}/runtime
+    src: /tmp/{{ helix_folder }}/runtime
   become: true
   when: ansible_system == "Linux"
 
