@@ -5,7 +5,7 @@
 
 [misc]
 assume_yes = true
-disable = ["containers", "git_repos", "ruby_gems"]
+disable = ["containers", "gem", "git_repos", "ruby_gems"]
 no_retry = true
-notify_each_step = true
+notify_each_step = false
 skip_notify = true
