@@ -235,8 +235,8 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.docker
       tags:
-        - desktop
         - docker
+        - extras
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -619,10 +619,8 @@
       ansible.builtin.import_role:
         name: scruffaluff.bootware.lazydocker
       tags:
-        - desktop
+        - extras
         - lazydocker
-        - server
-        - wsl
 
     - name: Install Libvirt virtualization API
       ansible.builtin.import_role:
@@ -763,6 +761,13 @@
         - package
         - server
         - wsl
+
+    - name: Install Podman container platform
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.podman
+      tags:
+        - extras
+        - podman
 
     - name: Install PowerShell shell
       ansible.builtin.import_role:

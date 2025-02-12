@@ -1,0 +1,25 @@
+---
+- name: Install Podman for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: podman
+  when: ansible_system == "FreeBSD"
+
+- name: Install Podman for Linux
+  ansible.builtin.package:
+    name: podman
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Install Podman for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: podman
+  when: ansible_system == "Darwin"
+
+- name: Install Podman for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: podman
+  when: ansible_system == "Win32NT"

@@ -201,8 +201,9 @@ dist() {
   version="${1}"
   shift 1
 
+  container="$(find_container)"
   for package in "$@"; do
-    docker build --build-arg "version=${version}" \
+    "${container}" build --build-arg "version=${version}" \
       --file "tests/integration/${package}.dockerfile" \
       --output dist --target dist .
   done
@@ -217,6 +218,22 @@ error() {
   bold_red='\033[1;31m' default='\033[0m'
   printf "${bold_red}error${default}: %s\n" "${1}" >&2
   exit 1
+}
+
+#######################################
+# Find command to manage containers.
+#######################################
+find_container() {
+  # Flags:
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [ -x "$(command -v podman)" ]; then
+    echo 'podman'
+  elif [ -x "$(command -v docker)" ]; then
+    echo 'docker'
+  else
+    error 'Unable to find a command for container management'
+  fi
 }
 
 #######################################
@@ -253,8 +270,9 @@ test() {
   version="${1}"
   shift 1
 
+  container="$(find_container)"
   for package in "$@"; do
-    docker build --build-arg "version=${version}" \
+    "${container}" build --build-arg "version=${version}" \
       --file "tests/integration/${package}.dockerfile" \
       --tag "scruffaluff/bootware:${package}" .
   done
