@@ -5,7 +5,7 @@ ARG version
 RUN apk update && apk add alpine-sdk atools doas gettext perl-utils
 
 RUN cat <<EOF >> /etc/abuild.conf
-MAINTAINER="Alpine <alpine>"
+MAINTAINER="$PACKAGER"
 PACKAGER_PRIVKEY=/bootware/alpine.rsa
 PACKAGER="Alpine <alpine>"
 EOF

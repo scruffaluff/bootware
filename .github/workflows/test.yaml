@@ -30,6 +30,7 @@ on:
           - fedora
           - freebsd
           - macos
+          - package
           - suse
           - ubuntu
           - windows

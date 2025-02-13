@@ -18,8 +18,7 @@
   loop:
     - /usr/bin/gnome-shell
     - /usr/local/bin/gnome-shell
-  register: gnome_desktop_
-  when: ansible_system in ["FreeBSD", "Linux"]
+  register: gnome_desktop_stat
 
 - name: Mark if GNOME desktop is installed
   ansible.builtin.set_fact:
@@ -27,8 +26,7 @@
     # Double braces are needed to evaluate variable as an expression rather than
     # a string.
     gnome_desktop: >-
-      {{ (gnome_desktop_.results | map(attribute='stat.exists')) is any }}
-  when: ansible_system in ["FreeBSD", "Linux"]
+      {{ (gnome_desktop_stat.results | map(attribute='stat.exists')) is any }}
 
 - name: Find GNOME version for GNOME desktops
   ansible.builtin.command:
