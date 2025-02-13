@@ -443,7 +443,7 @@ alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 if $nu.is-interactive {
     $env.PROMPT_COMMAND = {||
         let path = $env.PWD | path basename
-        $"\n($env.USER) at (sys host | get hostname) in ($path)\n\n" 
+        $"\n($env.USER) at (sys host | get hostname) in ($path)\n" 
     }
     $env.PROMPT_COMMAND_RIGHT = ""
     $env.PROMPT_INDICATOR = "❯ "
@@ -554,7 +554,7 @@ $env.config = {
     keybindings: [
         {
             event: { edit: movebigwordleft }
-            keycode: b
+            keycode: char_b
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
@@ -571,8 +571,16 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: movebigwordright }
-            keycode: f
+            event: {
+                until: [
+                    { send: historyhintwordcomplete }
+                    [
+                        { edit: movebigwordrightend }
+                        { edit: moveright }
+                    ]
+                ]
+            }
+            keycode: char_f
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
