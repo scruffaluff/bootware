@@ -751,7 +751,7 @@ $env.STARSHIP_LOG = "error"
 prepend-paths $"($env.HOME)/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend-paths $"($env.HOME)/.npm-global/bin"
+prepend-paths $"($env.HOME)/.npm/global/bin"
 
 # Visual Studio Code settings.
 

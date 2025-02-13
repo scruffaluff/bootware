@@ -1,21 +1,8 @@
 ---
-- name: Query system Glibc version
-  ansible.builtin.command: ldd --version
-  register: helix_glibc_version_text
-  changed_when: false
-  when: ansible_system == "Linux" and system_libc == "gnu"
-
-- name: Parse system Glibc version
-  ansible.builtin.set_fact:
-    helix_glibc_version: >-
-      {{ helix_glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+')
-      }}
-  when: ansible_system == "Linux" and system_libc == "gnu"
-
 - name: Register if Helix supports Glibc version
   ansible.builtin.set_fact:
     helix_glibc_support: >-
-      {{ helix_glibc_version is defined and helix_glibc_version is
+      {{ glibc_version is defined and glibc_version is
       ansible.builtin.version("2.38", ">") }}
   when: ansible_system == "Linux"
 

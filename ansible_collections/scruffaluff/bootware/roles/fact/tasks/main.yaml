@@ -1,4 +1,17 @@
 ---
+- name: Query system Glibc version
+  ansible.builtin.command:
+    cmd: ldd --version
+  register: glibc_version_text
+  changed_when: false
+  when: ansible_system == "Linux" and system_libc == "gnu"
+
+- name: Parse system Glibc version
+  ansible.builtin.set_fact:
+    glibc_version: >-
+      {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
+  when: ansible_system == "Linux" and system_libc == "gnu"
+
 - name: Check if GNOME shell is installed
   ansible.builtin.stat:
     path: "{{ item }}"
@@ -16,6 +29,21 @@
     gnome_desktop: >-
       {{ (gnome_desktop_.results | map(attribute='stat.exists')) is any }}
   when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Find GNOME version for GNOME desktops
+  ansible.builtin.command:
+    cmd: gnome-shell --version
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: false
+  register: gnome_version_text
+  when: gnome_desktop
+
+- name: Parse GNOME version for GNOME desktops
+  ansible.builtin.set_fact:
+    glibc_version: >-
+      {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
+  when: gnome_desktop
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

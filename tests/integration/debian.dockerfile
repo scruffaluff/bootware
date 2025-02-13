@@ -47,16 +47,12 @@ RUN command -v bash > /dev/null \
     && command -v node > /dev/null \
     || sudo apt-get install --quiet --yes nodejs
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 ARG test
 
 # Test installed binaries for roles.
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
+RUN if [ -n "${test}" ]; then \
     node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

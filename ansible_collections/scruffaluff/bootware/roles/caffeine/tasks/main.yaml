@@ -9,21 +9,13 @@
       changed_when: true
       when: ansible_system == "Linux" and gnome_desktop
   rescue:
-    - name: Find GNOME version for GNOME desktops
-      ansible.builtin.shell:
-        cmd: gnome-shell --version | cut -d' ' -f3
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: false
-      register: caffeine_gnome_version
-
     - name: Get latest Caffeine shell extension version for GNOME desktops
       ansible.builtin.uri:
         method: GET
         return_content: true
         url: >-
           https://extensions.gnome.org/extension-info/?uuid=caffeine@patapon.info&shell_version={{
-          caffeine_gnome_version.stdout }}
+          gnome_version }}
       register: caffeine_release
 
     - name: Download Caffeine shell extension for GNOME desktops

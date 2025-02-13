@@ -517,7 +517,7 @@ end
 prepend-paths "$HOME/.deno/bin"
 
 # Add NPM global binaries to system path.
-prepend-paths "$HOME/.npm-global/bin"
+prepend-paths "$HOME/.npm/global/bin"
 
 # Visual Studio Code settings.
 

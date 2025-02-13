@@ -13,21 +13,13 @@
       become: true
       become_user: "{{ user_id }}"
   rescue:
-    - name: Find GNOME version for GNOME desktops
-      ansible.builtin.shell:
-        cmd: gnome-shell --version | cut -d' ' -f3
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: false
-      register: window_manager_forge_gnome_version
-
     - name: Get latest Forge extension version for GNOME desktops
       ansible.builtin.uri:
         method: GET
         return_content: true
         url: >-
           https://extensions.gnome.org/extension-info/?uuid=forge@jmmaranan.com&shell_version={{
-          window_manager_forge_gnome_version.stdout }}
+          gnome_version }}
       register: window_manager_forge_release
 
     - name: Download Forge extension for GNOME desktops
