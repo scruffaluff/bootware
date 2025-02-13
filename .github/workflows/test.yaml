@@ -158,7 +158,7 @@ jobs:
     # Authentication service cannot retrieve authentication info" sudo error
     # which does not happen locally.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'fedora' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'fedora' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
@@ -268,9 +268,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Apk case is removed since Github Docker runner cannot handle EOF build
+        # commands as 02/12/2025.
         package:
           - alpm
-          - apk
           - brew
           - deb
           - rpm

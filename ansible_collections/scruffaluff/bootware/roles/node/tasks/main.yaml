@@ -64,14 +64,19 @@
     state: directory
   when: ansible_system == "Win32NT"
 
+- name: Update user path to include Node applications for Windows
+  ansible.windows.win_path:
+    elements: "{{ user_home }}\\.npm\\global"
+    scope: user
+  when: ansible_system == "Win32NT"
+
 - name: Configure Node applications directory for Windows
-  ansible.windows.win_command: >-
+  ansible.windows.win_shell: >-
     npm config set prefix "{{ user_home }}/.npm/global"
   # Command does not provide stdout information to determine a change.
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
-  loop: "{{ ['pnpm'] + node_applications }}"
   when: ansible_system == "Win32NT"
 
 - name: Install Node applications for Unix
