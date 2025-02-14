@@ -499,7 +499,7 @@ error_usage() {
   else
     printf "error: %s\n" "${1}" >&2
   fi
-  printf "Run \'bootware %s--help\' for usage.\n" "${2:+${2} }" >&2
+  printf "Run 'bootware %s--help' for usage.\n" "${2:+${2} }" >&2
   exit 2
 }
 

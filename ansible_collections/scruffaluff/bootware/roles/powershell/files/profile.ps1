@@ -319,7 +319,6 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
     Set-PSReadLineKeyHandler -Chord Ctrl+d -Function BackwardDeleteWord
-    Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
     Set-PSReadLineKeyHandler -Chord Shift+LeftArrow -Function ShellBackwardWord
 
     # Set alt+f or shift+rightarrow to jump to end of next suggestion if at the
@@ -460,6 +459,9 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     If ($PSVersionTable.PSVersion.Major -GE 7) {
         # Show history based autocompletion for every typed character.
         Set-PSReadLineOption -PredictionSource History
+
+        # Add Unix shell key bindings.
+        Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
 
         # Use solarized light compatible colors for predictions.
         Set-PSReadLineOption -Colors @{
