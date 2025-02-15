@@ -135,7 +135,7 @@ _setup:
     (Get-Command -ErrorAction SilentlyContinue node) -And 
     (Get-Command -ErrorAction SilentlyContinue npm)
   )) {
-    Write-Error 'Error: Unable to find complete NodeJS installation.'
+    Write-Error 'Error: Unable to find NodeJS and NPM.'
     Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
     Exit 1
   }

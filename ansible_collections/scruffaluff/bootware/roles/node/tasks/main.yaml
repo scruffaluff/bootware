@@ -77,11 +77,12 @@
   community.windows.win_lineinfile:
     create: true
     firstmatch: true
-    line: prefix = "{{ user_home }}/.npm/global"
+    line: prefix = "{{ user_home | replace(node_backslash, '/') }}/.npm/global"
     path: "{{ user_home }}/.npmrc"
     regex: "^\\s*prefix\\b"
     state: present
-  become: true
+  vars:
+    node_backslash: "\\"
   when: ansible_system == "Win32NT"
 
 - name: Install Node applications for Unix
