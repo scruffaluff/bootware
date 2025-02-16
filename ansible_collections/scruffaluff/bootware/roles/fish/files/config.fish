@@ -488,7 +488,18 @@ if test -n $tty
         bind \ue000 forward-char
     end
 
+    # Set Fish color theme as documented at
+    # https://fishshell.com/docs/current/interactive.html#syntax-highlighting-variables.
+    #
+    # Based on solarized light theme from
+    # https://ethanschoonover.com/solarized/#the-values.
     fish_config theme choose 'Solarized Light'
+    set --global fish_color_command --bold '#2aa198'
+    set --global fish_color_comment '#93a1a1'
+    set --global fish_color_error '#dc322f'
+    set --global fish_color_keyword '#6c71c4'
+    set --global fish_color_normal '#839496'
+    set --global fish_color_operator '#2aa198'
 end
 
 # Starship settings.

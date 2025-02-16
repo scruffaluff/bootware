@@ -463,15 +463,31 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
 
-        # Use solarized light compatible colors for predictions.
+        # Set PowerShell color theme as documented at
+        # https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.5#-colors.
+        #
+        # Based on solarized light theme from
+        # https://github.com/neilpa/cmd-colors-solarized/blob/master/Set-SolarizedLightColorDefaults.ps1
+        # and https://ethanschoonover.com/solarized/#the-values.
         Set-PSReadLineOption -Colors @{
-            Default          = '#657b83'
-            Emphasis         = '#859900'
-            InlinePrediction = '#268bd2'
-            Member           = '#657b83'
-            Number           = '#657b83'
-            Parameter        = '#657b83'
-            String           = '#657b83'
+            Command = '#2aa198'
+            Comment = '#93a1a1'
+            ContinuationPrompt = '#657b83'
+            Default = '#657b83'
+            Emphasis = '#2aa198'
+            Error = '#dc322f'
+            InlinePrediction = '#93a1a1'
+            Keyword = '#6c71c4'
+            ListPrediction = '#859900'
+            ListPredictionSelected = '#93a1a1'
+            Member = '#586e75'
+            Number = '#586e75'
+            Operator = '#93a1a1'
+            Parameter = '#93a1a1'
+            Selection = '#268bd2'
+            String = '#268bd2'
+            Type = '#839496'
+            Variable = '#859900'
         }
 
         # PSStyle requires ANSI color codes and double quotes.

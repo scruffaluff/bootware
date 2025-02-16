@@ -450,8 +450,12 @@ if $nu.is-interactive {
 }
 
 $env.config = {
+    # Set Nushell color theme as documented at
+    # https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
+    #
     # Based on solarized light theme from
-    # https://github.com/nushell/nu_scripts/tree/main/themes.
+    # https://github.com/nushell/nu_scripts/tree/main/themes and
+    # https://ethanschoonover.com/solarized/#the-values.
     color_config: {
         background: "#fdf6e3"
         binary: "#6c71c4"
@@ -519,7 +523,7 @@ $env.config = {
         shape_filepath: "#2aa198"
         shape_flag: { attr: "b" fg: "#268bd2" }
         shape_float: { attr: "b" fg: "#dc322f" }
-        shape_garbage: { attr: "b" bg: "#FF0000" fg: "#FFFFFF" }
+        shape_garbage: { attr: "b" bg: "#ff0000" fg: "#ffffff" }
         shape_glob_interpolation: { attr: "b" fg: "#2aa198" }
         shape_globpattern: { attr: "b" fg: "#2aa198" }
         shape_int: { attr: "b" fg: "#6c71c4" }
