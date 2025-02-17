@@ -51,13 +51,18 @@
     create: true
     firstmatch: true
     group: "{{ group_id }}"
-    line: prefix = "{{ user_home }}/.npm/global"
+    line: "{{ item.line }}"
     mode: "660"
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.npmrc"
-    regex: "^\\s*prefix\\b"
+    regex: "^\\s*{{ item.key }}\\b"
     state: present
   become: true
+  loop:
+    - key: prefix
+      line: prefix = "{{ user_home }}/.npm/global"
+    - key: update-notifier
+      line: update-notifier = false
   when: ansible_system != "Win32NT"
 
 - name: Create Node applications directory for Windows
@@ -77,10 +82,16 @@
   community.windows.win_lineinfile:
     create: true
     firstmatch: true
-    line: prefix = "{{ user_home | replace(node_backslash, '/') }}/.npm/global"
+    line: "{{ item.line }}"
     path: "{{ user_home }}/.npmrc"
-    regex: "^\\s*prefix\\b"
+    regex: "^\\s*{{ item.key }}\\b"
     state: present
+  loop:
+    - key: prefix
+      line: >-
+        prefix = "{{ user_home | replace(node_backslash, '/') }}/.npm/global"
+    - key: update-notifier
+      line: update-notifier = false
   vars:
     node_backslash: "\\"
   when: ansible_system == "Win32NT"
