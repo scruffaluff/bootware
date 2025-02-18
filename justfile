@@ -159,14 +159,14 @@ _setup:
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are
   # imported.
-  Import-Module -MaximumVersion 1.1.0.0 -MinimumVersion 1.0.0.0 PackageManagement
-  Import-Module -MaximumVersion 1.9.9.9 -MinimumVersion 1.0.0.0 PowerShellGet
+  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
+  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
   Get-PackageProvider -Force Nuget | Out-Null
-  If (-Not (Get-Command -ErrorAction SilentlyContinue Invoke-ScriptAnalyzer)) {
-    Install-Module -Force -Name PSScriptAnalyzer
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="PSScriptAnalyzer";ModuleVersion="1.0.0"})) {
+    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
   }
-  If (-Not (Get-Command -ErrorAction SilentlyContinue Invoke-Pester)) {
-    Install-Module -Force -SkipPublisherCheck -Name Pester
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
+    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
 
 # Run unit test suites.
