@@ -465,19 +465,19 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.
-        $Private:Base03 = '#002b36'
-        $Private:Base02 = '#073642'
+        # $Private:Base03 = '#002b36'
+        # $Private:Base02 = '#073642'
         $Private:Base01 = '#586e75'
         $Private:Base00 = '#657b83'
         $Private:Base0 = '#839496'
         $Private:Base1 = '#93a1a1'
-        $Private:Base2 = '#eee8d5'
-        $Private:Base3 = '#fdf6e3'
-        $Private:Yellow = '#b58900'
-        $Private:Orange = '#cb4b16'
+        # $Private:Base2 = '#eee8d5'
+        # $Private:Base3 = '#fdf6e3'
+        # $Private:Yellow = '#b58900'
+        # $Private:Orange = '#cb4b16'
         $Private:Red = '#dc322f'
-        $Private:Magenta = '#d33682'
-        $Private:Violet = '#6c71c4'
+        # $Private:Magenta = '#d33682'
+        # $Private:Violet = '#6c71c4'
         $Private:Blue = '#268bd2'
         $Private:Cyan = '#2aa198'
         $Private:Green = '#859900'
@@ -499,7 +499,7 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
             Number                 = $Private:Base01
             Operator               = $Private:Base1
             Parameter              = $Private:Base1
-            Selection              = $Private:Base2
+            Selection              = $Private:Green
             String                 = $Private:Blue
             Type                   = $Private:Base0
             Variable               = $Private:Green
