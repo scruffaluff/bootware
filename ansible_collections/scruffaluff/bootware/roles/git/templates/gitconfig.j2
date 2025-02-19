@@ -2,28 +2,38 @@
 #
 # For more information, visit https://git-scm.com/docs/git-config.
 
+[advice]
+detachedHead = false
+
 [core]
-    autocrlf = input
-    editor = hx
+autocrlf = input
+editor = hx
 {% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
-    pager = delta
+pager = delta
 {% endif %}
+
 [delta]
-    line-numbers = true
-    navigate = true
-    syntax-theme = Solarized (light)
+line-numbers = true
+navigate = true
+syntax-theme = Solarized (light)
+
 [diff]
-    colorMoved = default
+colorMoved = default
+
 [init]
-    defaultBranch = main
+defaultBranch = main
+
 {% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
 [interactive]
-    diffFilter = delta --color-only
+diffFilter = delta --color-only
 {% endif %}
+
 [merge]
-    conflictstyle = diff3
+conflictstyle = diff3
+
 [pull]
-    rebase = false
+rebase = false
+
 [user]
-    email = {{ git_user_email }}
-    name = {{ git_user_name }}
+email = {{ git_user_email }}
+name = {{ git_user_name }}

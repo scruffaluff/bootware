@@ -5,10 +5,7 @@ yazi_arch_:
 yazi_arch: "{{ yazi_arch_[system_architecture] }}"
 yazi_plugins:
   - lpnh/fg
-  # Temporarily disabled since they require a nightly version of Yazi as
-  # 02/10/2025. For more information, visit
-  # https://github.com/yazi-rs/plugins/issues/57#issuecomment-2620483275.
-  # - yazi-rs/plugins:chmod
-  # - yazi-rs/plugins:hide-preview
-  # - yazi-rs/plugins:max-preview
-  # - yazi-rs/plugins:smart-filter
+  - yazi-rs/plugins:chmod
+  - yazi-rs/plugins:hide-preview
+  - yazi-rs/plugins:max-preview
+  - yazi-rs/plugins:smart-filter

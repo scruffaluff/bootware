@@ -155,8 +155,19 @@ _setup:
       Exit 1
     }
   }
-  Install-Module -Force -Name PSScriptAnalyzer
-  Install-Module -Force -SkipPublisherCheck -Name Pester
+  # If executing task from PowerShell Core, error such as "'Install-Module'
+  # command was found in the module 'PowerShellGet', but the module could not be
+  # loaded" unless earlier versions of PackageManagement and PowerShellGet are
+  # imported.
+  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
+  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
+  Get-PackageProvider -Force Nuget | Out-Null
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="PSScriptAnalyzer";ModuleVersion="1.0.0"})) {
+    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
+  }
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
+    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
+  }
 
 # Run unit test suites.
 [unix]

@@ -463,19 +463,47 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
 
-        # Use solarized light compatible colors for predictions.
-        Set-PSReadLineOption -Colors @{
-            Default          = '#657b83'
-            Emphasis         = '#859900'
-            InlinePrediction = '#268bd2'
-            Member           = '#657b83'
-            Number           = '#657b83'
-            Parameter        = '#657b83'
-            String           = '#657b83'
-        }
+        # Set solarized light theme variables based on
+        # https://ethanschoonover.com/solarized/#the-values.
+        # $Private:Base03 = '#002b36'
+        # $Private:Base02 = '#073642'
+        $Private:Base01 = '#586e75'
+        $Private:Base00 = '#657b83'
+        $Private:Base0 = '#839496'
+        $Private:Base1 = '#93a1a1'
+        # $Private:Base2 = '#eee8d5'
+        # $Private:Base3 = '#fdf6e3'
+        # $Private:Yellow = '#b58900'
+        # $Private:Orange = '#cb4b16'
+        $Private:Red = '#dc322f'
+        # $Private:Magenta = '#d33682'
+        # $Private:Violet = '#6c71c4'
+        $Private:Blue = '#268bd2'
+        $Private:Cyan = '#2aa198'
+        $Private:Green = '#859900'
 
-        # PSStyle requires ANSI color codes and double quotes.
-        $PSStyle.FileInfo.Directory = "`e[34;1m"
+        # Set PowerShell color theme as documented at
+        # https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.5#-colors.
+        Set-PSReadLineOption -Colors @{
+            Command                = $Private:Cyan
+            Comment                = $Private:Base1
+            ContinuationPrompt     = $Private:Base00
+            Default                = $Private:Base00
+            Emphasis               = $Private:Cyan
+            Error                  = $Private:Red
+            InlinePrediction       = $Private:Base1
+            Keyword                = $Private:Green
+            ListPrediction         = $Private:Green
+            ListPredictionSelected = $Private:Green
+            Member                 = $Private:Base01
+            Number                 = $Private:Base01
+            Operator               = $Private:Base1
+            Parameter              = $Private:Base1
+            Selection              = $Private:Green
+            String                 = $Private:Blue
+            Type                   = $Private:Base0
+            Variable               = $Private:Green
+        }
     }
 }
 

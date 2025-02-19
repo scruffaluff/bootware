@@ -488,7 +488,66 @@ if test -n $tty
         bind \ue000 forward-char
     end
 
-    fish_config theme choose 'Solarized Light'
+    # Set solarized light theme variables based on
+    # https://ethanschoonover.com/solarized/#the-values.
+    set --local base03 '#002b36'
+    set --local base02 '#073642'
+    set --local base01 '#586e75'
+    set --local base00 '#657b83'
+    set --local base0 '#839496'
+    set --local base1 '#93a1a1'
+    set --local base2 '#eee8d5'
+    set --local base3 '#fdf6e3'
+    set --local yellow '#b58900'
+    set --local orange '#cb4b16'
+    set --local red '#dc322f'
+    set --local magenta '#d33682'
+    set --local violet '#6c71c4'
+    set --local blue '#268bd2'
+    set --local cyan '#2aa198'
+    set --local green '#859900'
+
+    # Set Fish color theme as documented at
+    # https://fishshell.com/docs/current/interactive.html#syntax-highlighting-variables.
+    set --global fish_color_autosuggestion $base1
+    set --global fish_color_cancel --reverse
+    set --global fish_color_command --bold $cyan
+    set --global fish_color_comment $base1
+    set --global fish_color_cwd $green
+    set --global fish_color_cwd_root $red
+    set --global fish_color_end $blue
+    set --global fish_color_error $red
+    set --global fish_color_escape $cyan
+    set --global fish_color_history_current --bold
+    set --global fish_color_host $base0
+    set --global fish_color_host_remote $yellow
+    set --global fish_color_keyword $base01
+    set --global fish_color_match --background $base0
+    set --global fish_color_normal $base0
+    set --global fish_color_operator $cyan
+    set --global fish_color_option $base00
+    set --global fish_color_param $base00
+    set --global fish_color_quote $base0
+    set --global fish_color_redirection $violet
+    set --global fish_color_search_match --background $base2 $base00
+    set --global fish_color_selection --bold --background $base03 $base2
+    set --global fish_color_status $red
+    set --global fish_color_user $base01
+    set --global fish_color_valid_path --underline
+
+    set --global fish_pager_color_background
+    set --global fish_pager_color_completion $green
+    set --global fish_pager_color_description $yellow
+    set --global fish_pager_color_prefix cyan --underline
+    set --global fish_pager_color_progress --background $cyan $base3
+    set --global fish_pager_color_secondary_background
+    set --global fish_pager_color_secondary_completion
+    set --global fish_pager_color_secondary_description
+    set --global fish_pager_color_secondary_prefix
+    set --global fish_pager_color_selected_background --background $base2
+    set --global fish_pager_color_selected_completion
+    set --global fish_pager_color_selected_description
+    set --global fish_pager_color_selected_prefix
 end
 
 # Starship settings.

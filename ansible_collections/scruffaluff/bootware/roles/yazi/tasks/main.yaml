@@ -85,7 +85,7 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
+    - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -112,7 +112,7 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
-    - dest: plugins/smart-open.yazi/init.lua
+    - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
   when: ansible_system == "Win32NT"
 
