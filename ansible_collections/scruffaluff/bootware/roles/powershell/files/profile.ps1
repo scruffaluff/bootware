@@ -463,35 +463,47 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
 
+        # Set solarized light theme variables based on
+        # https://ethanschoonover.com/solarized/#the-values.
+        $Private:Base03 = '#002b36'
+        $Private:Base02 = '#073642'
+        $Private:Base01 = '#586e75'
+        $Private:Base00 = '#657b83'
+        $Private:Base0 = '#839496'
+        $Private:Base1 = '#93a1a1'
+        $Private:Base2 = '#eee8d5'
+        $Private:Base3 = '#fdf6e3'
+        $Private:Yellow = '#b58900'
+        $Private:Orange = '#cb4b16'
+        $Private:Red = '#dc322f'
+        $Private:Magenta = '#d33682'
+        $Private:Violet = '#6c71c4'
+        $Private:Blue = '#268bd2'
+        $Private:Cyan = '#2aa198'
+        $Private:Green = '#859900'
+
         # Set PowerShell color theme as documented at
         # https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.5#-colors.
-        #
-        # Based on solarized light theme from
-        # https://github.com/neilpa/cmd-colors-solarized/blob/master/Set-SolarizedLightColorDefaults.ps1
-        # and https://ethanschoonover.com/solarized/#the-values.
         Set-PSReadLineOption -Colors @{
-            Command                = '#2aa198'
-            Comment                = '#93a1a1'
-            ContinuationPrompt     = '#657b83'
-            Default                = '#657b83'
-            Emphasis               = '#2aa198'
-            Error                  = '#dc322f'
-            InlinePrediction       = '#93a1a1'
-            Keyword                = '#6c71c4'
-            ListPrediction         = '#859900'
-            ListPredictionSelected = '#93a1a1'
-            Member                 = '#586e75'
-            Number                 = '#586e75'
-            Operator               = '#93a1a1'
-            Parameter              = '#93a1a1'
-            Selection              = '#268bd2'
-            String                 = '#268bd2'
-            Type                   = '#839496'
-            Variable               = '#859900'
+            Command                = $Private:Cyan
+            Comment                = $Private:Base1
+            ContinuationPrompt     = $Private:Base00
+            Default                = $Private:Base00
+            Emphasis               = $Private:Cyan
+            Error                  = $Private:Red
+            InlinePrediction       = $Private:Base1
+            Keyword                = $Private:Green
+            ListPrediction         = $Private:Green
+            ListPredictionSelected = $Private:Green
+            Member                 = $Private:Base01
+            Number                 = $Private:Base01
+            Operator               = $Private:Base1
+            Parameter              = $Private:Base1
+            Selection              = $Private:Base2
+            String                 = $Private:Blue
+            Type                   = $Private:Base0
+            Variable               = $Private:Green
         }
-
-        # PSStyle requires ANSI color codes and double quotes.
-        $PSStyle.FileInfo.Directory = "`e[34;1m"
     }
 }
 

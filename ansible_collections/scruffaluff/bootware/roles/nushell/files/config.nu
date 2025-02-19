@@ -4,6 +4,127 @@
 
 # Private convenience functions.
 
+# Generate Nushell color theme.
+#
+# Documented at
+# https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
+def _color_theme [] {
+    # Set solarized light theme variables based on
+    # https://ethanschoonover.com/solarized/#the-values.
+    let base03 = "#002b36"
+    let base02 = "#073642"
+    let base01 = "#586e75"
+    let base00 = "#657b83"
+    let base0 = "#839496"
+    let base1 = "#93a1a1"
+    let base2 = "#eee8d5"
+    let base3 = "#fdf6e3"
+    let yellow = "#b58900"
+    let orange = "#cb4b16"
+    let red = "#dc322f"
+    let magenta = "#d33682"
+    let violet = "#6c71c4"
+    let blue = "#268bd2"
+    let cyan = "#2aa198"
+    let green = "#859900"
+
+    # Values based on solarized light theme from
+    # https://github.com/nushell/nu_scripts/blob/main/themes/nu-themes/solarized-light.nu.
+    {
+        background: $base3
+        binary: $violet
+        block: $blue
+        bool: {|| if $in { $cyan } else { $yellow } }
+        "cell-path": $base01
+        closure: $cyan
+        cursor: $base01
+        custom: $base03
+        date: {|| (date now) - $in |
+            if $in < 1hr {
+                { attr: "b" fg: $red }
+            } else if $in < 6hr {
+                $red
+            } else if $in < 1day {
+                $yellow
+            } else if $in < 3day {
+                $green
+            } else if $in < 1wk {
+                { attr: "b" fg: $green }
+            } else if $in < 6wk {
+                $cyan
+            } else if $in < 52wk {
+                $blue
+            } else {
+                $base1
+            }
+        }
+        duration: $yellow
+        empty: $blue
+        filesize: {|element|
+            if $element == 0b {
+                $base01
+            } else if $element < 1mb {
+                $cyan
+            } else {
+                { fg: $blue }
+            }
+        }
+        float: $red
+        foreground: $base01
+        glob: $base03
+        header: { attr: "b" fg: $green }
+        hints: $base0
+        int: $violet
+        leading_trailing_space_bg: { attr: "n" }
+        list: $cyan
+        nothing: $red
+        range: $yellow
+        record: $cyan
+        row_index: { attr: "b" fg: $green }
+        search_result: { bg: $base01 fg: $red }
+        separator: $base01
+        shape_and: { attr: "b" fg: $violet }
+        shape_binary: { attr: "b" fg: $violet }
+        shape_block: { attr: "b" fg: $blue }
+        shape_bool: $cyan
+        shape_closure: { attr: "b" fg: $cyan }
+        shape_custom: $green
+        shape_datetime: { attr: "b" fg: $cyan }
+        shape_directory: $cyan
+        shape_external_resolved: $cyan
+        shape_external: $cyan
+        shape_externalarg: { attr: "b" fg: $green }
+        shape_filepath: $cyan
+        shape_flag: { attr: "b" fg: $blue }
+        shape_float: { attr: "b" fg: $red }
+        shape_garbage: { attr: "b" bg: $red fg: $base3 }
+        shape_glob_interpolation: { attr: "b" fg: $cyan }
+        shape_globpattern: { attr: "b" fg: $cyan }
+        shape_int: { attr: "b" fg: $violet }
+        shape_internalcall: { attr: "b" fg: $cyan }
+        shape_keyword: { attr: "b" fg: $violet }
+        shape_list: { attr: "b" fg: $cyan }
+        shape_literal: $blue
+        shape_match_pattern: $green
+        shape_matching_brackets: { attr: "u" }
+        shape_nothing: $red
+        shape_operator: $yellow
+        shape_or: { attr: "b" fg: $violet }
+        shape_pipe: { attr: "b" fg: $violet }
+        shape_range: { attr: "b" fg: $yellow }
+        shape_raw_string: { attr: "b" fg: $base03 }
+        shape_record: { attr: "b" fg: $cyan }
+        shape_redirection: { attr: "b" fg: $violet }
+        shape_signature: { attr: "b" fg: $green }
+        shape_string_interpolation: { attr: "b" fg: $cyan }
+        shape_string: $green
+        shape_table: { attr: "b" fg: $blue }
+        shape_vardecl: { attr: "u" fg: $blue }
+        shape_variable: $violet
+        string: $green
+    }
+}
+
 # Cut commandline one path component to the left.
 #
 # Based on Fish's backward-kill-path-component from 
@@ -450,105 +571,7 @@ if $nu.is-interactive {
 }
 
 $env.config = {
-    # Set Nushell color theme as documented at
-    # https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
-    #
-    # Based on solarized light theme from
-    # https://github.com/nushell/nu_scripts/tree/main/themes and
-    # https://ethanschoonover.com/solarized/#the-values.
-    color_config: {
-        background: "#fdf6e3"
-        binary: "#6c71c4"
-        block: "#268bd2"
-        bool: {|| if $in { "#2aa198" } else { "#b58900" } }
-        cell-path: "#586e75"
-        closure: "#2aa198"
-        cursor: "#586e75"
-        custom: "#002b36"
-        date: {|| (date now) - $in |
-            if $in < 1hr {
-                { attr: "b" fg: "#dc322f" }
-            } else if $in < 6hr {
-                "#dc322f"
-            } else if $in < 1day {
-                "#b58900"
-            } else if $in < 3day {
-                "#859900"
-            } else if $in < 1wk {
-                { attr: "b" fg: "#859900" }
-            } else if $in < 6wk {
-                "#2aa198"
-            } else if $in < 52wk {
-                "#268bd2"
-            } else {
-                "dark_gray"
-            }
-        }
-        duration: "#b58900"
-        empty: "#268bd2"
-        filesize: {|element|
-            if $element == 0b {
-                "#586e75"
-            } else if $element < 1mb {
-                "#2aa198"
-            } else {
-                { fg: "#268bd2" }
-            }
-        }
-        float: "#dc322f"
-        foreground: "#586e75"
-        glob: "#002b36"
-        header: { attr: "b" fg: "#859900" }
-        hints: "#839496"
-        int: "#6c71c4"
-        leading_trailing_space_bg: { attr: "n" }
-        list: "#2aa198"
-        nothing: "#dc322f"
-        range: "#b58900"
-        record: "#2aa198"
-        row_index: { attr: "b" fg: "#859900" }
-        search_result: { bg: "#586e75" fg: "#dc322f" }
-        separator: "#586e75"
-        shape_and: { attr: "b" fg: "#6c71c4" }
-        shape_binary: { attr: "b" fg: "#6c71c4" }
-        shape_block: { attr: "b" fg: "#268bd2" }
-        shape_bool: "#2aa198"
-        shape_closure: { attr: "b" fg: "#2aa198" }
-        shape_custom: "#859900"
-        shape_datetime: { attr: "b" fg: "#2aa198" }
-        shape_directory: "#2aa198"
-        shape_external_resolved: "#2aa198"
-        shape_external: "#2aa198"
-        shape_externalarg: { attr: "b" fg: "#859900" }
-        shape_filepath: "#2aa198"
-        shape_flag: { attr: "b" fg: "#268bd2" }
-        shape_float: { attr: "b" fg: "#dc322f" }
-        shape_garbage: { attr: "b" bg: "#ff0000" fg: "#ffffff" }
-        shape_glob_interpolation: { attr: "b" fg: "#2aa198" }
-        shape_globpattern: { attr: "b" fg: "#2aa198" }
-        shape_int: { attr: "b" fg: "#6c71c4" }
-        shape_internalcall: { attr: "b" fg: "#2aa198" }
-        shape_keyword: { attr: "b" fg: "#6c71c4" }
-        shape_list: { attr: "b" fg: "#2aa198" }
-        shape_literal: "#268bd2"
-        shape_match_pattern: "#859900"
-        shape_matching_brackets: { attr: "u" }
-        shape_nothing: "#dc322f"
-        shape_operator: "#b58900"
-        shape_or: { attr: "b" fg: "#6c71c4" }
-        shape_pipe: { attr: "b" fg: "#6c71c4" }
-        shape_range: { attr: "b" fg: "#b58900" }
-        shape_raw_string: { attr: "b" fg: "#002b36" }
-        shape_record: { attr: "b" fg: "#2aa198" }
-        shape_redirection: { attr: "b" fg: "#6c71c4" }
-        shape_signature: { attr: "b" fg: "#859900" }
-        shape_string_interpolation: { attr: "b" fg: "#2aa198" }
-        shape_string: "#859900"
-        shape_table: { attr: "b" fg: "#268bd2" }
-        shape_vardecl: { attr: "u" fg: "#268bd2" }
-        shape_variable: "#6c71c4"
-        string: "#859900"
-    }
+    color_config: (_color_theme)
     completions: {
         external: {
             completer: {|spans| fish-complete $spans }
