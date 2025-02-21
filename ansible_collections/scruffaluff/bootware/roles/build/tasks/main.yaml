@@ -59,6 +59,7 @@
       - dotnetcore-sdk
       - visualstudio2022buildtools
       - visualstudio2022-workload-vctools
+      - windows-sdk-10.1
   when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
@@ -71,7 +72,7 @@
       - make
       - openocd
       - pkg-config
-      - vcredist2022
+      - vcredist
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

@@ -66,9 +66,13 @@
   become: true
   when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
 
+# Do not use Scoop for a global installation of VSCode. It ensures that there is
+# only one settings file for all users.
 - name: Install VSCode for Windows
-  community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+  chocolatey.chocolatey.win_chocolatey:
+    choco_args:
+      - --params
+      - "/NoDesktopIcon"
     name: vscode
   when: ansible_system == "Win32NT"
 
@@ -138,41 +142,26 @@
   become: true
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-# User directory can be in multiple locations depending on package installer and
-# Windows version.
 - name: Create VSCode user directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/{{ item }}"
+    path: "{{ user_home }}/AppData/Roaming/Code/User"
     state: directory
-  loop:
-    - AppData/Roaming/Code/User
-    - scoop/apps/vscode/current/data/user-data/User
   when: ansible_system == "Win32NT"
 
-# Keybindings file can be in multiple locations depending on package installer
-# and Windows version.
 - name: Copy VSCode keybindings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/{{ item }}"
+    dest: "{{ user_home }}/AppData/Roaming/Code/User/keybindings.json"
     force: true
     src: keybindings.json.j2
-  loop:
-    - AppData/Roaming/Code/User/keybindings.json
-    - scoop/apps/vscode/current/data/user-data/User/keybindings.json
   when: ansible_system == "Win32NT"
 
-# Settings file can be in multiple locations depending on package installer and
-# Windows version.
 - name: Copy VSCode settings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/{{ item }}"
+    dest: "{{ user_home }}/AppData/Roaming/Code/User/settings.json"
     force: true
     owner: "{{ user_id }}"
     src: settings.json.j2
-  loop:
-    - AppData/Roaming/Code/User/settings.json
-    - scoop/apps/vscode/current/data/user-data/User/settings.json
   when: ansible_system == "Win32NT"
 
 - name: Apply customizations to VSCode
@@ -198,30 +187,7 @@
   ansible.windows.win_shell: code --install-extension {{ item }}
   changed_when: "'successfully installed' in vscode_extension_install"
   environment:
-    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+    Path: "C:\\Program Files\\Microsoft VS Code\\bin;{{ ansible_env.Path }}"
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
-  when: ansible_system == "Win32NT"
-
-- name: Add VSCode Firewall rules for Windows
-  community.windows.win_firewall_rule:
-    action: allow
-    direction: "{{ item['direction'] }}"
-    localport: any
-    name: VSCode
-    profiles:
-      - domain
-      - private
-      - public
-    program: "{{ scoop_apps }}\\vscode\\current\\bin\\code"
-    protocol: "{{ item['protocol'] }}"
-  loop:
-    - direction: in
-      protocol: tcp
-    - direction: in
-      protocol: udp
-    - direction: out
-      protocol: tcp
-    - direction: in
-      protocol: udp
   when: ansible_system == "Win32NT"

@@ -13,17 +13,8 @@
   when: ansible_system == "Darwin"
 
 - name: Install Chocolatey for Windows
-  ansible.windows.win_shell: |
-    $ErrorActionPreference = 'Stop'
-    $PSNativeCommandUseErrorActionPreference = $True
-    If (-Not (Get-Command -ErrorAction SilentlyContinue choco)) {
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest -UseBasicParsing -Uri `
-        'https://chocolatey.org/install.ps1' | Invoke-Expression
-    }
-  changed_when: true
-  failed_when: essential_chocolatey.rc != 0
-  register: essential_chocolatey
+  chocolatey.chocolatey.win_chocolatey:
+    name: chocolatey
   when: ansible_system == "Win32NT"
 
 - name: Install Scoop for Windows

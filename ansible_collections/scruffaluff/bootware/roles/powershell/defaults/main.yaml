@@ -8,3 +8,4 @@ powershell_modules:
   - PSProfiler
   - PSReadLine
   - PSScriptAnalyzer
+  - VSSetup

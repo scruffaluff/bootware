@@ -9,5 +9,6 @@
         'PSAvoidUsingInvokeExpression',
         'PSAvoidUsingPositionalParameters'
         'PSUseApprovedVerbs'
+        'PSUseBOMForUnicodeEncodedFile'
     )
 }
