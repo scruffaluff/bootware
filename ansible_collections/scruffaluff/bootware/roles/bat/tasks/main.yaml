@@ -196,8 +196,11 @@
 
 - name: Copy Bat settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/bat/config"
+    dest: "{{ item }}"
     force: true
     owner: "{{ user_id }}"
     src: config
+  loop:
+    - "{{ user_home }}/AppData/Roaming/bat/config"
+    - "{{ scoop_apps }}/bat/current/confg"
   when: ansible_system == "Win32NT"

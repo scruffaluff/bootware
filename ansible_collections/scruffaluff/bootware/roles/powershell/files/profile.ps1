@@ -462,6 +462,10 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord Ctrl+i -Function SwitchPredictionView
+        Set-PSReadLineKeyHandler -Chord Ctrl+j -Function BackwardChar
+        # In some Powershell configs, "Ctrl+j" is interpreted as "Ctrl+Enter".
+        Set-PSReadLineKeyHandler -Chord Ctrl+Enter -Function BackwardChar
+        Set-PSReadLineKeyHandler -Chord '' -Function ForwardChar
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.

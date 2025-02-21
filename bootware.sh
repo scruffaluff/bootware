@@ -51,7 +51,7 @@ Options:
 
 Ansible Options:
 EOF
-      if [[ ! -x "$(command -v ansible)" ]]; then
+      if [[ -x "$(command -v ansible)" ]]; then
         ansible --help
       fi
       ;;
