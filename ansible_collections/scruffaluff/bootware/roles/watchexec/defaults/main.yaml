@@ -1,12 +1,14 @@
 ---
+watchexec_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.39", ">") else 'musl' }}
+
 watchexec_arch_:
   amd64: x86_64
   arm64: aarch64
 watchexec_env_:
   Darwin: apple-darwin
-  # Watchexec gnu requires at least GLibc version 2.39, which is incompatible
-  # with Debian 12.
-  Linux: unknown-linux-musl
+  Linux: unknown-linux-{{ watchexec_libc }}
   Win32NT: pc-windows-msvc
 watchexec_arch: "{{ watchexec_arch_[system_architecture] }}"
 watchexec_env: "{{ watchexec_env_.get(ansible_system, 'unknown') }}"

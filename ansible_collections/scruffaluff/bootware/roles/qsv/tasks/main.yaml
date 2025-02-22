@@ -7,6 +7,7 @@
   register: qsv_formula
   when: ansible_system == "Linux"
 
+# Do not use GNU build of QSV. It depends on Wayland GUI libraries.
 - name: Download Qsv for Linux
   ansible.builtin.unarchive:
     dest: /tmp

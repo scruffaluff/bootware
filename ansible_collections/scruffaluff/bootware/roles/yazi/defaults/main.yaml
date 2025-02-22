@@ -3,6 +3,9 @@ yazi_arch_:
   amd64: x86_64
   arm64: aarch64
 yazi_arch: "{{ yazi_arch_[system_architecture] }}"
+yazi_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.38", ">") else 'musl' }}
 yazi_plugins:
   - lpnh/fg
   - yazi-rs/plugins:chmod

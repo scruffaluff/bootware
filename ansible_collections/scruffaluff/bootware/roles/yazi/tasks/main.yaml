@@ -15,8 +15,6 @@
   register: yazi_linux
   when: ansible_system == "Linux"
 
-# Prefer MUSL releases of Yazi since it only supports newer Glibc versions, i.e.
-# version 2.38 as 02/11/2025.
 - name: Download Yazi for Linux
   ansible.builtin.unarchive:
     dest: /tmp
@@ -24,8 +22,8 @@
     remote_src: true
     src: >-
       https://github.com/sxyazi/yazi/releases/download/v{{
-      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch
-      }}-unknown-linux-musl.zip
+      yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch }}-unknown-linux-{{
+      yazi_libc }}.zip
   when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
@@ -34,7 +32,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/{{ item }}
+    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{ item }}
   become: true
   loop:
     - ya
@@ -160,8 +158,8 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-musl/completions/yazi.{{
-      item.shell }}
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
+      }}/completions/yazi.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/yazi"

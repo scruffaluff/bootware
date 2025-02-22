@@ -57,7 +57,6 @@ vscode_extensions:
   - james-yu.latex-workshop
   - jroesch.lean
   - mhutchie.git-graph
-  - ms-azuretools.vscode-docker
   - ms-kubernetes-tools.vscode-kubernetes-tools
   - ms-playwright.playwright
   - ms-python.black-formatter

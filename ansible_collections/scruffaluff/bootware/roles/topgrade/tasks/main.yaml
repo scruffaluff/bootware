@@ -30,11 +30,15 @@
       https://github.com/topgrade-rs/topgrade/releases/download/v{{
       topgrade_formula.json.versions.stable }}/topgrade-v{{
       topgrade_formula.json.versions.stable }}-{{
-      topgrade_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+      topgrade_arch[system_architecture] }}-unknown-linux-{{ topgrade_libc
+      }}.tar.gz
   vars:
     topgrade_arch:
       amd64: x86_64
       arm64: aarch64
+    topgrade_libc: >-
+      {{ 'gnu' if glibc_version is defined and glibc_version is
+      ansible.builtin.version("2.32", ">") else 'musl' }}
   when: ansible_system == "Linux" and topgrade_linux is failed
 
 - name: Install Topgrade for Linux

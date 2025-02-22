@@ -21,8 +21,8 @@
     src: >-
       https://github.com/lsd-rs/lsd/releases/download/v{{
       lsd_formula.json.versions.stable }}/lsd-v{{
-      lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-musl.tar.gz
+      lsd_formula.json.versions.stable }}-{{ lsd_arch }}-unknown-linux-{{
+      system_libc }}.tar.gz
   when: ansible_system != "Win32NT"
 
 - name: Install Lsd for Linux
@@ -33,7 +33,7 @@
     remote_src: true
     src: >-
       /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-musl/lsd
+      }}-unknown-linux-{{ system_libc }}/lsd
   become: true
   when: ansible_system == "Linux"
 
@@ -130,7 +130,7 @@
     remote_src: true
     src: >-
       /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-musl/autocomplete/lsd.{{ item.extension }}
+      }}-unknown-linux-{{ system_libc }}/autocomplete/lsd.{{ item.extension }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/lsd"

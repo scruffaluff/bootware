@@ -1,13 +1,4 @@
 ---
-- name: Install Bottom for Alpine
-  become: true
-  community.general.apk:
-    name: bottom
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
-  when: ansible_pkg_mgr == "apk"
-
 - name: Install Bottom for FreeBSD
   become: true
   community.general.pkgng:
@@ -28,9 +19,7 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/bottom.json
   register: bottom_formula
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
-    failed
+  when: ansible_system == "Linux" and bottom_linux is failed
 
 - name: Download Bottom for Linux
   ansible.builtin.unarchive:
@@ -40,14 +29,12 @@
     src: >-
       https://github.com/ClementTsang/bottom/releases/download/{{
       bottom_formula.json.versions.stable }}/bottom_{{
-      bottom_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+      bottom_arch[system_architecture] }}-unknown-linux-{{ system_libc }}.tar.gz
   vars:
     bottom_arch:
       amd64: x86_64
       arm64: aarch64
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
-    failed
+  when: ansible_system == "Linux" and bottom_linux is failed
 
 - name: Install Bottom for Linux
   ansible.builtin.copy:
@@ -57,9 +44,7 @@
     remote_src: true
     src: /tmp/btm
   become: true
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and bottom_linux is
-    failed
+  when: ansible_system == "Linux" and bottom_linux is failed
 
 - name: Install Bottom for MacOS
   become: true
