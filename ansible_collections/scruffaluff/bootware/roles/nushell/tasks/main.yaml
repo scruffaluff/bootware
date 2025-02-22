@@ -30,7 +30,7 @@
       https://github.com/nushell/nushell/releases/download/{{
       nushell_formula_linux.json.versions.stable }}/nu-{{
       nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
-      }}-unknown-linux-{{ system_libc }}.tar.gz
+      }}-unknown-linux-{{ nushell_libc }}.tar.gz
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for Linux
@@ -41,7 +41,7 @@
     remote_src: true
     src: >-
       /tmp/nu-{{ nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
-      }}-unknown-linux-{{ system_libc }}/{{ item }}
+      }}-unknown-linux-{{ nushell_libc }}/{{ item }}
   become: true
   loop:
     - nu

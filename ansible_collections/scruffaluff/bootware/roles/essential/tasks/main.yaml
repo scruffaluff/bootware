@@ -2,7 +2,7 @@
 - name: Create Homebrew user for MacOS
   ansible.builtin.user:
     name: "{{ brew_user }}"
-    create_home: yes
+    create_home: true
   become: true
   when: ansible_system == "Darwin"
 

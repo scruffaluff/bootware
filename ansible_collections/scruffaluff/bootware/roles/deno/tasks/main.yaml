@@ -89,26 +89,12 @@
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
 - name: Generate Deno shell completions for Unix
-  ansible.builtin.shell: deno completions {{ item }} > /tmp/deno.{{ item }}
+  ansible.builtin.shell:
+    cmd: deno completions {{ item.shell }} > {{ item.dest }}
   become: true
   changed_when: true
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  loop:
-    - bash
-    - fish
-  when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
-
-- name: Install Deno shell completions for Unix
-  ansible.builtin.copy:
-    dest: "{{ item.dest }}"
-    force: true
-    mode: "644"
-    remote_src: true
-    src: /tmp/deno.{{ item.shell }}
-  become: true
   loop:
     - dest: "{{ bash_completion }}/deno"
       shell: bash

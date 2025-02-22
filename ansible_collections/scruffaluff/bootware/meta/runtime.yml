@@ -4,4 +4,4 @@
 # https://docs.ansible.com/ansible/3/dev_guide/developing_collections.html#meta-directory.
 
 ---
-requires_ansible: ">=2.13.0"
+requires_ansible: ">=2.10.0"

@@ -245,6 +245,13 @@ If (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
+# Podman settings.
+
+# Load Podman autocompletion if interactice and available.
+If ($Tty) {
+    Import-Module -ErrorAction SilentlyContinue PodmanCompletion
+}
+
 # Procs settings.
 
 # Set light theme since Procs automatic theming fails on some systems.
