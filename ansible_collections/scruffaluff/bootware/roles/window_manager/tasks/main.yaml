@@ -42,13 +42,13 @@
 - name: Create GlazeWM configuration directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.glaze-wm"
+    path: "{{ user_home }}/.glzr/glazewm"
     state: directory
   when: ansible_system == "Win32NT"
 
 - name: Copy GlazeWM configuration file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.glaze-wm/config.yaml"
+    dest: "{{ user_home }}/.glzr/glazewm/config.yaml"
     force: true
     owner: "{{ user_id }}"
     src: glaze.yaml

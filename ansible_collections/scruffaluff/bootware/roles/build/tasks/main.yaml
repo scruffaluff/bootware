@@ -72,7 +72,6 @@
       - make
       - openocd
       - pkg-config
-      - vcredist
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

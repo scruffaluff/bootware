@@ -1,35 +1,9 @@
 # GlazeWM configuration file for tiling windows.
 #
 # For more information, visit
-# https://github.com/glazerdesktop/GlazeWM#configuration.
+# https://github.com/glzr-io/glazewm#config-documentation.
 
 ---
-bar:
-  background: "#eaeaea"
-  border_radius: 0
-  components_center:
-    - time_formatting: ddd MMM d  hh:mm tt
-      type: clock
-  components_left:
-    - focused_workspace_background: "#d3d3d3"
-      type: workspaces
-  components_right:
-    - padding: 6px 8px
-      type: system tray
-    - label_charging: "🔌{battery_level}%"
-      label_draining: "🔋{battery_level}%"
-      label_power_saver: "🔋{battery_level}%"
-      type: battery
-  font_size: 14px
-  font_weight: 500
-  foreground: "#000000"
-  height: 32px
-  offset_x: 0
-  offset_y: 0
-  opacity: 1.0
-  padding: 2px 16px
-  position: top
-
 binding_modes: []
 
 focus_borders:
@@ -40,100 +14,143 @@ focus_borders:
 
 gaps:
   inner_gap: 0px
-  outer_gap: 4px
+  outer_gap:
+    bottom: 4px
+    left: 4px
+    right: 4px
+    top: 4px
 
 general:
-  cursor_follows_focus: true
   focus_follows_cursor: true
-  window_animations: false
 
 keybindings:
   # Change focus to a workspace defined in the workspaces config.
-  - binding: Alt+Control+1
-    command: focus workspace 1
-  - binding: Alt+Control+2
-    command: focus workspace 2
-  - binding: Alt+Control+3
-    command: focus workspace 3
-  - binding: Alt+Control+4
-    command: focus workspace 4
-  - binding: Alt+Control+5
-    command: focus workspace 5
-  - binding: Alt+Control+6
-    command: focus workspace 6
-  - binding: Alt+Control+7
-    command: focus workspace 7
-  - binding: Alt+Control+8
-    command: focus workspace 8
+  - bindings:
+      - alt+control+1
+    commands:
+      - focus --workspace 1
+  - bindings:
+      - alt+control+2
+    commands:
+      - focus --workspace 2
+  - bindings:
+      - alt+control+3
+    commands:
+      - focus --workspace 3
+  - bindings:
+      - alt+control+4
+    commands:
+      - focus --workspace 4
+  - bindings:
+      - alt+control+5
+    commands:
+      - focus --workspace 5
+  - bindings:
+      - alt+control+6
+    commands:
+      - focus --workspace 6
+  - bindings:
+      - alt+control+7
+    commands:
+      - focus --workspace 7
+  - bindings:
+      - alt+control+8
+    commands:
+      - focus --workspace 8
   # Close focused window.
-  - binding: Alt+Shift+Q
-    command: close
+  - bindings:
+      - alt+q
+    commands:
+      - close
   # Kill GlazeWM process safely.
-  - binding: Alt+Control+Shift+Q
-    command: exit wm
+  - bindings:
+      - alt+control+shift+q
+    commands:
+      - wm-exit
   # Re-evaluate configuration file.
-  - binding: Alt+Control+Shift+R
-    command: reload config
+  - bindings:
+      - alt+control+shift+r
+    commands:
+      - wm-reload-config
   # Change tiling direction for next new window.
   - bindings:
-      - Alt+Shift+OemOpenBrackets
-      - Alt+Shift+OemCloseBrackets
-    command: tiling direction toggle
+      - alt+shift+oem_open_brackets
+      - alt+shift+oem_close_brackets
+    commands:
+      - toggle-tiling-direction
   # Change the focused window to be floating or tiling.
-  - binding: Alt+Shift+F
-    command: toggle floating
+  - bindings:
+      - alt+shift+f
+    commands:
+      - toggle-floating --centered
   # Change focused window to be maximized or unmaximized.
-  - binding: Alt+Shift+M
-    command: toggle maximized
+  - bindings:
+      - alt+shift+m
+    commands:
+      - toggle-fullscreen
   # Shift focus in a given direction.
-  - binding: Alt+Shift+K
-    command: focus down
-  - binding: Alt+Shift+J
-    command: focus left
-  - binding: Alt+Shift+OemSemicolon
-    command: focus right
-  - binding: Alt+Shift+L
-    command: focus up
+  - bindings:
+      - alt+shift+k
+    commands:
+      - focus --direction down
+  - bindings:
+      - alt+shift+j
+    commands:
+      - focus --direction left
+  - bindings:
+      - alt+shift+oem_semicolon
+    commands:
+      - focus --direction right
+  - bindings:
+      - alt+shift+l
+    commands:
+      - focus --direction up
   # Move focused window in a given direction.
-  - binding: Alt+Shift+Down
-    command: move down
-  - binding: Alt+Shift+Left
-    command: move left
-  - binding: Alt+Shift+Right
-    command: move right
-  - binding: Alt+Shift+Up
-    command: move up
-  # Shift focus workspace in a give direction.
-  - binding: Alt+Control+OemSemicolon
-    command: focus workspace next
-  - binding: Alt+Control+J
-    command: focus workspace prev
-  # Move focused workspace to a monitor in a given direction.
-  - binding: Alt+Control+Left
+  - bindings:
+      - alt+shift+down
     commands:
-      - move to workspace 1
-      - focus workspace 1
-  - binding: Alt+Control+Right
+      - move --direction down
+  - bindings:
+      - alt+shift+left
     commands:
-      - move to workspace 2
-      - focus workspace 2
+      - move --direction left
+  - bindings:
+      - alt+shift+right
+    commands:
+      - move --direction right
+  - bindings:
+      - alt+shift+up
+    commands:
+      - move --direction up
+  # Shift focus --workspace in a give direction.
+  - bindings:
+      - alt+control+oem_semicolon
+    commands:
+      - focus --next-active-workspace
+  - bindings:
+      - alt+control+j
+    commands:
+      - focus --prev-active-workspace
   # Move focused workspace to a monitor in a given direction.
-  - binding: Alt+Control+Shift+Down
-    command: move workspace down
-  - binding: Alt+Control+Shift+Left
-    command: move workspace left
-  - binding: Alt+Control+Shift+Right
-    command: move workspace right
-  - binding: Alt+Control+Shift+Up
-    command: move workspace up
-
-window_rules:
-  # Task Manager requires admin privileges to manage and should be ignored.
-  - command: ignore
-    match_process_name: /Taskmgr|ScreenClippingHost/
-  # Launches system dialogs as floating windows.
-  - command: set floating
-    match_class_name: "#32770"
+  - bindings:
+      - alt+control+left
+    commands:
+      - move --workspace 1
+      - focus --workspace 1
+  - bindings:
+      - alt+control+right
+    commands:
+      - move --workspace 2
+      - focus --workspace 2
+  # Move focused workspace to a monitor in a given direction.
+  - bindings:
+      - alt+control+shift+left
+    commands:
+      - move-workspace --direction left
+  - bindings:
+      - alt+control+shift+right
+    commands:
+      - move-workspace --direction right
 
 workspaces:
   - name: "1"

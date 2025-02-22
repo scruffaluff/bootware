@@ -1,4 +1,11 @@
 ---
+- name: Create Homebrew user for MacOS
+  ansible.builtin.user:
+    name: "{{ brew_user }}"
+    create_home: yes
+  become: true
+  when: ansible_system == "Darwin"
+
 - name: Install Homebrew for MacOS
   ansible.builtin.shell:
     cmd: |
@@ -6,7 +13,7 @@
         curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
       fi
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   changed_when: true
   failed_when: essential_homebrew.rc != 0
   register: essential_homebrew
@@ -151,6 +158,7 @@
       - gsudo
       - scoop-completion
       - unzip
+      - vcredist
       - xz
       - zip
   when: ansible_system == "Win32NT"
