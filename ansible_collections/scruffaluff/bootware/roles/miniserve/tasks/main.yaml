@@ -38,7 +38,7 @@
       arm64: aarch64
     miniserve_libc: >-
       {{ 'gnu' if glibc_version is defined and glibc_version is
-      ansible.builtin.version("2.32", ">") else 'musl' }}
+      ansible.builtin.version("2.38", ">") else 'musl' }}
   when: ansible_system == "Linux" and miniserve_linux is failed
 
 - name: Install Miniserve for MacOS

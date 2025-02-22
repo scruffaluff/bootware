@@ -5,4 +5,4 @@ nushell_arch_:
 nushell_arch: "{{ nushell_arch_[system_architecture] }}"
 nushell_libc: >-
   {{ 'gnu' if glibc_version is defined and glibc_version is
-  ansible.builtin.version("2.32", ">") else 'musl' }}
+  ansible.builtin.version("2.35", ">") else 'musl' }}

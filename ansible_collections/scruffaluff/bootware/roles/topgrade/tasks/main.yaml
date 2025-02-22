@@ -38,7 +38,7 @@
       arm64: aarch64
     topgrade_libc: >-
       {{ 'gnu' if glibc_version is defined and glibc_version is
-      ansible.builtin.version("2.32", ">") else 'musl' }}
+      ansible.builtin.version("2.34", ">") else 'musl' }}
   when: ansible_system == "Linux" and topgrade_linux is failed
 
 - name: Install Topgrade for Linux

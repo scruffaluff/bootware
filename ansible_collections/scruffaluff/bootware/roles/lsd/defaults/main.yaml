@@ -3,3 +3,6 @@ lsd_arch_:
   amd64: x86_64
   arm64: aarch64
 lsd_arch: "{{ lsd_arch_[system_architecture] }}"
+lsd_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.18", ">") else 'musl' }}
