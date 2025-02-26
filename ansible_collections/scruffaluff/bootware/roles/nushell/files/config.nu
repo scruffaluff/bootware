@@ -132,8 +132,8 @@ def _color_theme [] {
 def _cut-path-left [] {
     let chars = commandline | split chars
     let cursor = commandline get-cursor
-    let first = $chars | range ..<$cursor | str join
-    let second = $chars | range $cursor.. | str join
+    let first = $chars | slice ..<$cursor | str join
+    let second = $chars | slice $cursor.. | str join
 
     let update = $first
     | str replace --regex "[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$" ""
@@ -189,7 +189,7 @@ Enter 'all' to delete all the matching entries.
             let start = try { $parts | get start | get 0 } catch { 0 }
             let end = try { $parts | get end | get 0 } catch { -1 }
             try {
-                $selections = $matches | range $start..$end | append $selections
+                $selections = $matches | slice $start..$end | append $selections
             } catch {
                 print --stderr $"Ignoring invalid history entry ID \"($word)\""
             }
@@ -580,7 +580,7 @@ $env.config = {
     },
     keybindings: [
         {
-            event: { edit: movebigwordleft }
+            event: { edit: movewordleft }
             keycode: char_b
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -602,7 +602,7 @@ $env.config = {
                 until: [
                     { send: historyhintwordcomplete }
                     [
-                        { edit: movebigwordrightend }
+                        { edit: movewordrightend }
                         { edit: moveright }
                     ]
                 ]
@@ -686,6 +686,17 @@ $env.config = {
         {
             event: { edit: moveright }
             keycode: char_ue000
+            mode: [emacs vi_insert vi_normal]
+            modifier: none
+        }
+        {
+            event: {
+                until: [
+                    { name: completion_menu send: menu }
+                    { send: menunext }
+                ]
+            }
+            keycode: char_ue003
             mode: [emacs vi_insert vi_normal]
             modifier: none
         }

@@ -118,7 +118,11 @@ def profiles_paths(module: AnsibleModule, path: Path) -> List[str]:
             paths.append(data["path"])
         elif data.get("locked") and "default" in data:
             paths.append(data["default"])
-    return list(set(paths))
+
+    snap_path = Path.home() / "snap"
+    return [
+        path for path in set(paths) if not Path(path).is_relative_to(snap_path)
+    ]
 
 
 if __name__ == "__main__":

@@ -18,6 +18,14 @@ user_pref("browser.contentblocking.report.lockwise.enabled", false);
 user_pref("browser.contentblocking.report.monitor.enabled", false);
 // Disable saving information entered in web page forms and search bar.
 user_pref("browser.formfill.enable", false);
+// Disable Firefox machine learning chat.
+user_pref("browser.ml.chat.enabled", false);
+// Disable Firefox machine learning chat shortcuts.
+user_pref("browser.ml.chat.shortcuts", false);
+// Disable Firefox machine learning chat sidebar.
+user_pref("browser.ml.chat.sidebar", false);
+// Disable Firefox machine learning.
+user_pref("browser.ml.enabled", false);
 // Remove news stories recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 // Remove weather status recommendations from homepage.

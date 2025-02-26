@@ -30,8 +30,9 @@ set visible-stats on
 "\ef": forward-word
 "\ez": undo
 
-# Use Tab and Shift+Tab to cycle through completions.
+# Use Tab, Shift+I, and Shift+Tab to cycle through completions.
 tab: menu-complete
+"": menu-complete
 "\e[Z": menu-complete-backward
 
 # Add Vim like keybindings for line navigation.

@@ -477,15 +477,16 @@ if test -n $tty
         bind \cw true
         bind \cd backward-kill-path-component
         bind \cj backward-char
-        bind \eb backward-bigword
+        bind \eb backward-word
         bind \ec _paste_cwd
         bind \ed kill-bigword
-        bind \ef forward-bigword
+        bind \ef forward-word
         bind \ep _paste_pager
         bind \ex _delete_commandline_from_history
         bind \eZ redo
         bind \ez undo
         bind \ue000 forward-char
+        bind \ue003 complete
     end
 
     # Set solarized light theme variables based on
@@ -511,7 +512,7 @@ if test -n $tty
     # https://fishshell.com/docs/current/interactive.html#syntax-highlighting-variables.
     set --global fish_color_autosuggestion $base1
     set --global fish_color_cancel --reverse
-    set --global fish_color_command --bold $cyan
+    set --global fish_color_command $cyan
     set --global fish_color_comment $base1
     set --global fish_color_cwd $green
     set --global fish_color_cwd_root $red
