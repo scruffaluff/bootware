@@ -255,7 +255,7 @@ def fish-complete [spans: list<string>] {
     | rename value description
 }
 
-# Search and paste command from history into the commandline.
+# Complete commandline argument with interactive history search.
 def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
     let selection = (
@@ -268,7 +268,7 @@ def fzf-history-widget [] {
     }
 }
 
-# Search and paste files under cursor path into the commandline.
+# Complete commandline argument with interactive path search.
 def fzf-path-widget [] {
     # Set temporary Fzf environment variables in same manner as "fzf --fish".
     $env.FZF_DEFAULT_COMMAND = $"($env.FZF_CTRL_T_COMMAND?)"
@@ -294,9 +294,14 @@ def fzf-path-widget [] {
         }
     }
 
-    # Change Fzf execution directory if current command line token is a folder.
-    let fzf_dir = if ($token | path type) == "dir" { $token } else { "." }
-    cd $fzf_dir
+    # Build Fzf search path from current token.
+    let search_dir = if ($token | is-empty) { "." } else { $token }
+
+    # Exit early if search path is invalid or change Fzf execution directory.
+    if ($token | path type) != "dir" {
+        return
+    }
+    cd $search_dir
     let path = fzf --scheme "path" --walker "file,dir,follow,hidden"
 
     # Exit early if no selection was made, i.e. user sigkilled Fzf.
@@ -524,7 +529,7 @@ alias procs = ^procs --theme light
 # Add Python debugger alias.
 alias pdb = python3 -m pdb
 
-# Make Poetry create virutal environments inside projects.
+# Make Poetry create virtual environments inside projects.
 $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"

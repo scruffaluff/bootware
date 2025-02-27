@@ -102,7 +102,7 @@ function fish_command_not_found
     echo "Error: command '$argv[1]' not found" >&2
 end
 
-# Complete commandline argument with interatice path search.
+# Complete commandline argument with interactive path search.
 #
 # Flags:
 #   -d: Check if path is a directory.
@@ -112,19 +112,25 @@ function fzf-path-widget
     set --export --function FZF_DEFAULT_OPTS \
         "$FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
 
-    set --function fzf_dir '.'
     set --function line (commandline)
-    set --function path ''
+    set --function path
     set --function cwd $PWD
     set --function token (commandline --current-token)
-    set --function full_token \
-        (string replace '~' $HOME (string trim --chars '"\'' $token))
 
-    # Change Fzf execution directory if current command line token is a folder.
-    if test -d $full_token
-        set fzf_dir $full_token
+    # Build Fzf search path from current token.
+    set --function search_dir
+    if test -n $token
+        set search_dir \
+            (string replace '~' $HOME (string trim --chars '"\'' $token))
+    else
+        set search_dir .
     end
-    cd $fzf_dir
+
+    # Exit early if search path is invalid or change Fzf execution directory.
+    if not test -d $search_dir
+        return
+    end
+    cd $search_dir
     set path (fzf --scheme path --walker file,dir,follow,hidden)
     cd $cwd
 
@@ -144,7 +150,7 @@ function fzf-path-widget
             set path (string replace --all ' ' '\\ ' $path)
         end
     end
-    # Prepand path with "/" if necessary and not current directory.
+    # Prepend path with "/" if necessary and not current directory.
     if string match --regex '[^\/.]$' $token
         set path "/$path"
     end
@@ -408,7 +414,7 @@ if test -f "$HOME/.ls_colors"
     set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
 end
 
-# Replace Ls with Lsd if avialable.
+# Replace Ls with Lsd if available.
 #
 # Flags:
 #   -q: Only check for exit status by supressing output.
@@ -426,7 +432,7 @@ alias procs 'procs --theme light'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 
-# Make Poetry create virutal environments inside projects.
+# Make Poetry create virtual environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT true
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
@@ -486,7 +492,9 @@ if test -n $tty
         bind \eZ redo
         bind \ez undo
         bind \ue000 forward-char
-        bind \ue003 complete
+        bind \ue001 'prevd; commandline --function repaint'
+        bind \ue002 'nextd; commandline --function repaint'
+        bind \ue003 complete-and-search
     end
 
     # Set solarized light theme variables based on

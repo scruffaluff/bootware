@@ -176,6 +176,15 @@ def edit(object: Any = None, frame: Any = None) -> None:
             error(exception)
             return
         command = [editor, f"+{line}", file]
+
+    if os.environ.get("ZELLIJ"):
+        command = [
+            "zellij",
+            "action",
+            "new-pane",
+            "--close-on-exit",
+            "--",
+        ] + command
     subprocess.run(command, check=True)
 
 

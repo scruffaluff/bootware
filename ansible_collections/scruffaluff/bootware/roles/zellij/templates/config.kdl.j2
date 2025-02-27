@@ -8,7 +8,7 @@ default_shell "{{ user_shell }}"
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl n" "Ctrl p" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
         bind "Alt j" { MoveFocusOrTab "Left"; }
@@ -21,10 +21,7 @@ keybinds {
         bind "Alt Up" { MovePane "Up"; }
     }
     shared_except "pane" "locked" {
-        bind "Ctrl m" { SwitchToMode "Pane"; }
-    }
-    shared_except "resize" "locked" {
-        bind "Ctrl y" { SwitchToMode "Resize"; }
+        bind "Ctrl y" { SwitchToMode "Pane"; }
     }
     shared_among "renametab" "tab" {
         bind "Alt j" { GoToPreviousTab; }
@@ -44,20 +41,21 @@ keybinds {
         bind "Alt w" { ToggleFloatingPanes; }
     }
     pane {
-        unbind "c" "d"
+        unbind "c" "d" "f"
         bind "Ctrl m" { SwitchToMode "Normal"; }
         bind "j" { MoveFocus "Left"; }
         bind "k" { MoveFocus "Down"; }
         bind "l" { MoveFocus "Up"; }
+        bind "m" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
+        bind "s" { SwitchToMode "Resize"; }
         bind ";" { MoveFocus "Right"; }
         bind "Down" { MovePane "Down"; }
         bind "Left" { MovePane "Left"; }
         bind "Right" { MovePane "Right"; }
         bind "Up" { MovePane "Up"; }
-        bind "r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
     }
     resize {
-        bind "Ctrl y" { SwitchToMode "Normal"; }
         bind "j" "Left" { Resize "Increase Left"; }
         bind "k" "Down" { Resize "Increase Down"; }
         bind "l" "Up" { Resize "Increase Up"; }
@@ -65,6 +63,7 @@ keybinds {
         bind "J" { Resize "Increase Left"; }
         bind "K" { Resize "Increase Down"; }
         bind "L" { Resize "Increase Up"; }
+        bind "y" { SwitchToMode "Normal"; }
         bind ":" { Resize "Increase Right"; }
     }
     search {

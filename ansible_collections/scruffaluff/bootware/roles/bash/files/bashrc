@@ -36,7 +36,7 @@ edit-history() {
 }
 export -f edit-history
 
-# Complete commandline argument with interatice path search.
+# Complete commandline argument with interactive path search.
 fzf-path-widget() {
   local line="${READLINE_LINE}" point
   fzf-file-widget
@@ -273,7 +273,7 @@ if [[ -f "${HOME}/.ls_colors" ]]; then
   export LS_COLORS="$(cat "${HOME}/.ls_colors")"
 fi
 
-# Replace Ls with Lsd if avialable.
+# Replace Ls with Lsd if available.
 #
 # Flags:
 #   -v: Only show file path of command.
@@ -292,7 +292,7 @@ alias procs='procs --theme light'
 # Add Python debugger alias.
 alias pdb='python3 -m pdb'
 
-# Make Poetry create virutal environments inside projects.
+# Make Poetry create virtual environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT='true'
 # Fix Poetry package install issue on headless systems.
 export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'

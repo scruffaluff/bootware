@@ -240,7 +240,7 @@ If (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
     $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
 }
 
-# Replace Ls with Lsd if avialable.
+# Replace Ls with Lsd if available.
 If (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
@@ -266,7 +266,7 @@ Function pdb() {
     python3 -m pdb $Args
 }
 
-# Make Poetry create virutal environments inside projects.
+# Make Poetry create virtual environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
 # Fix Poetry package install issue on headless systems.
 $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
