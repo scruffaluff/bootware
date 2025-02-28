@@ -7,10 +7,13 @@ RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN dnf install --assumeyes curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
+#
+# Disabling TTY requirement is necessary for CI workflows.
 RUN useradd --create-home --no-log-init fedora \
     && groupadd sudo \
     && usermod --append --groups sudo fedora \
-    && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+    && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers \
+    && printf "Defaults !requiretty\n" >> /etc/sudoers
 
 ENV HOME=/home/fedora USER=fedora
 USER fedora

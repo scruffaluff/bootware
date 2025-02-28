@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Nushell, Obsidian, and Podman roles.
+- Fastfetch, Nushell, Obsidian, and Podman roles.
 - Support for Yazi 0.4.
 - Variable to configure default user shell.
 

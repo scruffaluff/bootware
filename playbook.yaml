@@ -288,6 +288,17 @@
         - desktop
         - etcher
 
+    - name: Install Fastfetch system information finder
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.fastfetch
+      tags:
+        - container
+        - desktop
+        - fastfetch
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install FD file searcher
       ansible.builtin.import_role:
         name: scruffaluff.bootware.fd

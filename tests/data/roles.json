@@ -71,10 +71,7 @@
   },
   { "name": "desktop_environment" },
   { "name": "dive", "tests": ["dive --version"] },
-  {
-    "name": "dust",
-    "tests": ["dust --version"]
-  },
+  { "name": "dust", "tests": ["dust --version"] },
   { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version", "docker compose --help"] },
   { "name": "duf", "tests": ["duf --version"] },
@@ -82,6 +79,7 @@
     "name": "etcher",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }]
   },
+  { "name": "fastfetch", "tests": ["fastfetch --version"] },
   { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
