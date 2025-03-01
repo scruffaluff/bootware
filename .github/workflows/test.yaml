@@ -154,11 +154,8 @@ jobs:
     name: Test bootstrapping software for Fedora Linux
     env:
       DOCKER_BUILD_SUMMARY: "false"
-    # Fedora test fails in initial setup as of 01/18/2025 due to a "
-    # Authentication service cannot retrieve authentication info" sudo error
-    # which does not happen locally.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'fedora' }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'fedora' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Free disk space
@@ -172,14 +169,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          build-args: test=true
-          context: .
-          file: tests/integration/fedora.dockerfile
-          platforms: linux/${{ inputs.platform || 'amd64' }}
-          push: false
-          tags: docker.io/scruffaluff/bootware:fedora
+        run: >-
+          docker build --no-cache --build-arg test=true --file
+          tests/integration/fedora.dockerfile --tag
+          docker.io/scruffaluff/bootware:fedora --platform linux/${{
+          inputs.platform || 'amd64' }} .
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -210,15 +204,16 @@ jobs:
             pkg install --yes curl
           release: "14.1"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
-          # require a display connection.
+          # require a display connection. Python is skipped since Poetry fails
+          # during installation as of 02/28/2025.
           #
           # TODO: Create nonadmin user for test since VLC cannot run as root.
           run: |
             set -eou pipefail
             ./install.sh
             ./bootware.sh setup
-            ./bootware.sh bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 --skip audacity,musescore,vlc freebsd'
+            ./bootware.sh bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            bash -c 'source $HOME/.bashrc && tests/integration/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
