@@ -3,7 +3,6 @@ node_applications:
   - "@taplo/cli"
   - "@vue/language-server"
   - bash-language-server
-  - dockerfile-language-server-nodejs
   - lean-language-server
   - live-server
   - playwright

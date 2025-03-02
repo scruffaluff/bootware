@@ -6,14 +6,19 @@ ARG TARGETARCH
 RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN dnf install --assumeyes curl sudo
 
+# Install SQLite to avoid Node symbol lookup errors when building image inside
+# some virtual machines.
+RUN dnf install --assumeyes sqlite
+
 # Create non-priviledged user and grant user passwordless sudo.
 #
-# Disabling TTY requirement is necessary for CI workflows.
+# Changing permissions on "/etc/shadow" avoids PAM authentication errors when
+# building image inside some virtual machines.
 RUN useradd --create-home --no-log-init fedora \
     && groupadd sudo \
     && usermod --append --groups sudo fedora \
     && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers \
-    && printf "Defaults !requiretty\n" >> /etc/sudoers
+    && chmod 640 /etc/shadow
 
 ENV HOME=/home/fedora USER=fedora
 USER fedora
