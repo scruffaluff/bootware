@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: wezterm
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Wez's terminal for Linux
@@ -11,12 +13,16 @@
   become: true
   ignore_errors: true
   register: wezterm_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Wez's terminal for Linux
   become: true
   community.general.flatpak:
     name: org.wezfurlong.wezterm
+  tags:
+    - install
   when: ansible_system == "Linux" and wezterm_linux is failed
 
 - name: Install Wez's terminal for MacOS
@@ -24,12 +30,16 @@
     accept_external_apps: true
     name: wezterm
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: wezterm
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Wez's terminal configuration directory for Unix
@@ -40,6 +50,8 @@
     path: "{{ user_home }}/.config/wezterm"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Create Wez's terminal configuration directory for Windows
@@ -47,6 +59,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/wezterm"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy Wez's terminal configuration file for Unix
@@ -58,6 +72,8 @@
     owner: "{{ user_id }}"
     src: wezterm.lua.j2
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Wez's terminal configuration file for Windows
@@ -66,4 +82,6 @@
     force: true
     owner: "{{ user_id }}"
     src: wezterm.lua.j2
+  tags:
+    - config
   when: ansible_system == "Win32NT"

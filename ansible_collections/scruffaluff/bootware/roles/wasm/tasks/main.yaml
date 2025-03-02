@@ -4,6 +4,8 @@
     dest: /tmp/wasmtime_install.sh
     mode: "755"
     url: https://wasmtime.dev/install.sh
+  tags:
+    - install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Wasmtime for Unix
@@ -12,12 +14,16 @@
   become_user: "{{ user_id }}"
   changed_when: "'Finished installation' in wasm_install"
   register: wasm_install
+  tags:
+    - install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Wasmtime for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: wasmtime
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Download Wasm Pack installer for Unix
@@ -25,6 +31,8 @@
     dest: /tmp/wasm_pack_init.sh
     mode: "755"
     url: https://rustwasm.github.io/wasm-pack/installer/init.sh
+  tags:
+    - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"
@@ -39,6 +47,8 @@
       {{ user_home }}/.wasmtime/bin:{{ user_home }}/.cargo/bin:{{
       ansible_env.PATH }}
   register: wasm_pack_install
+  tags:
+    - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"

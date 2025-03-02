@@ -3,12 +3,16 @@
   become: true
   community.general.apk:
     name: deno
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true
   community.general.pkgng:
     name: deno
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Download Deno for Unix
@@ -19,6 +23,8 @@
     src: >-
       https://github.com/denoland/deno/releases/latest/download/deno-{{
       deno_arch[system_architecture] }}-{{ deno_env[ansible_system] }}.zip
+  tags:
+    - install
   vars:
     deno_arch:
       amd64: x86_64
@@ -38,6 +44,8 @@
     remote_src: true
     src: /tmp/deno
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
     "gnu")
@@ -47,24 +55,32 @@
     dest: "{{ ansible_env.TEMP }}/deno.zip"
     url: >-
       https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Decompress Deno archive for Windows
   community.windows.win_unzip:
     dest: "{{ ansible_env.TEMP }}/deno"
     src: "{{ ansible_env.TEMP }}/deno.zip"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Deno program directory for Windows
   ansible.windows.win_file:
     path: "C:/Program Files/Deno/bin"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
-- name: Update system path to include Deno program directory for Windows
+- name: Add Deno to system path for Windows
   ansible.windows.win_path:
     elements: "C:\\Program Files\\Deno\\bin"
     scope: machine
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Deno for Windows
@@ -73,6 +89,8 @@
     force: true
     remote_src: true
     src: "{{ ansible_env.TEMP }}/deno/deno.exe"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -84,6 +102,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
@@ -100,6 +120,8 @@
       shell: bash
     - dest: "{{ fish_completion }}/deno.fish"
       shell: fish
+  tags:
+    - install
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
@@ -109,6 +131,8 @@
     owner: "{{ user_id }}"
     path: "{{ powershell_user_modules }}/DenoCompletion"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Generate Deno PowerShell user completions module for Windows
@@ -120,4 +144,6 @@
   changed_when: true
   environment:
     Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"
+  tags:
+    - install
   when: ansible_system == "Win32NT"

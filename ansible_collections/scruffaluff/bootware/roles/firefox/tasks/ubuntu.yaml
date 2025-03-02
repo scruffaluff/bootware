@@ -6,6 +6,8 @@
   changed_when: false
   failed_when: false
   register: firefox_snap_list
+  tags:
+    - install
 
 - name: Uninstall Firefox Snap package for Ubuntu
   ansible.builtin.command:
@@ -13,6 +15,8 @@
   become: true
   changed_when: "'firefox removed in firefox_snap_purge.stdout"
   register: firefox_snap_purge
+  tags:
+    - install
   when: "'mozilla' in firefox_snap_list.stdout"
 
 - name: Add Mozilla repository for Ubuntu
@@ -21,6 +25,8 @@
     repo: ppa:mozillateam/ppa
     state: present
   become: true
+  tags:
+    - install
 
 - name: Prioritize Mozilla repository for Ubuntu
   ansible.builtin.copy:
@@ -29,6 +35,8 @@
     mode: "644"
     src: preferences
   become: true
+  tags:
+    - install
 
 - name: Enable Mozilla repository upgrades for Ubuntu
   ansible.builtin.copy:
@@ -37,8 +45,12 @@
     mode: "644"
     src: upgrades
   become: true
+  tags:
+    - install
 
 - name: Install Firefox for Ubuntu
   ansible.builtin.apt:
     name: firefox
   become: true
+  tags:
+    - install

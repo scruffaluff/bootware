@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: rclone
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install RClone for Linux
@@ -10,6 +12,8 @@
     name: rclone
     state: present
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install RClone for MacOS
@@ -17,10 +21,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: rclone
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install RClone for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: rclone
+  tags:
+    - install
   when: ansible_system == "Win32NT"

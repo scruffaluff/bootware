@@ -3,12 +3,16 @@
   become: true
   community.general.pkgng:
     name: wireshark
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Wireshark for Linux
   ansible.builtin.package:
     name: "{{ wireshark_package[ansible_pkg_mgr] }}"
   become: true
+  tags:
+    - install
   vars:
     wireshark_package:
       apk: wireshark
@@ -27,6 +31,8 @@
     accept_external_apps: true
     name: wireshark
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 # Manual install of NPCap is required as a Wireshark dependency. However, only
@@ -36,6 +42,8 @@
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: wireshark
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Configure Wireshark group for Debian
@@ -45,6 +53,8 @@
     value: true
     vtype: boolean
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
@@ -55,6 +65,8 @@
   changed_when: true
   environment:
     DEBIAN_FRONTEND: noninteractive
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
@@ -64,4 +76,6 @@
       - wireshark
     name: "{{ user_id }}"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"

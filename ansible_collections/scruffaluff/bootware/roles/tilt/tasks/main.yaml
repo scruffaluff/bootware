@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/tilt.json
   register: tilt_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Tilt for Linux
@@ -17,6 +19,8 @@
       tilt_formula.json.versions.stable }}/tilt.{{
       tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if ansible_pkg_mgr
       == 'apk' else 'linux' }}.{{ tilt_arch[system_architecture] }}.tar.gz
+  tags:
+    - install
   vars:
     tilt_arch:
       amd64: x86_64
@@ -31,6 +35,8 @@
     remote_src: true
     src: /tmp/tilt
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Tilt for MacOS
@@ -38,6 +44,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: tilt
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 # Replaced temporarily by task below since win_scoop_bucket does not properly
@@ -49,6 +57,8 @@
 #     repo: https://github.com/tilt-dev/scoop-bucket
 # environment:
 #   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
+#   tags:
+#     - install
 #   when: ansible_system == "Win32NT"
 
 - name: Install Tilt Scoop bucket for Windows
@@ -60,10 +70,14 @@
   failed_when: >-
     tilt_bucket_add.rc != 0 and 'bucket already exists' not in tilt_bucket_add
   register: tilt_bucket_add
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Tilt for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: tilt
+  tags:
+    - install
   when: ansible_system == "Win32NT"

@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/k3d.json
   register: k3d_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install K3d for Linux
@@ -16,6 +18,8 @@
       https://github.com/k3d-io/k3d/releases/download/v{{
       k3d_formula.json.versions.stable }}/k3d-linux-{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install K3d for MacOS
@@ -23,10 +27,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k3d
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install K3d for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: k3d
+  tags:
+    - install
   when: ansible_system == "Win32NT"

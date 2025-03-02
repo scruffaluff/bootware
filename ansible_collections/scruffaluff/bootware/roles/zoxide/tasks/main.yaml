@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: zoxide
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # TODO: Renable when Zoxide package in most distributions reaches version 0.9.4.
@@ -12,6 +14,8 @@
 #   become: true
 #   ignore_errors: true
 #   register: zoxide_linux
+#   tags:
+#     - install
 #   when: ansible_system == "Linux"
 
 - name: Get latest Zoxide version for Linux
@@ -20,6 +24,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/zoxide.json
   register: zoxide_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Zoxide for Linux
@@ -32,6 +38,8 @@
       zoxide_formula.json.versions.stable }}/zoxide-{{
       zoxide_formula.json.versions.stable }}-{{ zoxide_arch[system_architecture]
       }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
   vars:
     zoxide_arch:
       amd64: x86_64
@@ -46,6 +54,8 @@
     remote_src: true
     src: /tmp/zoxide
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Zoxide for MacOS
@@ -53,12 +63,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: zoxide
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: zoxide
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Linux
@@ -70,6 +84,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Zoxide shell completions for Linux
@@ -85,6 +101,8 @@
       shell: bash
     - dest: "{{ fish_completion }}/zoxide.fish"
       shell: fish
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Create Nushell autoload directories for Unix
@@ -95,6 +113,8 @@
     path: "{{ nushell_user_autoload }}"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Generate Zoxide Nushell configuration for Unix
@@ -104,6 +124,8 @@
   changed_when: true
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Nushell autoload directories for Windows
@@ -111,6 +133,8 @@
     owner: "{{ user_id }}"
     path: "{{ nushell_user_autoload }}"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Generate Zoxide Nushell configuration for Windows
@@ -122,4 +146,6 @@
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\zoxide\\current;{{ ansible_env.Path }}"
+  tags:
+    - install
   when: ansible_system == "Win32NT"

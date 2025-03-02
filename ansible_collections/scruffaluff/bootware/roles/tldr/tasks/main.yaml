@@ -5,12 +5,16 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/tealdeer.json
   register: tldr_formula
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install TLDR for FreeBSD
   become: true
   community.general.pkgng:
     name: tealdeer
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install TLDR for Linux
@@ -23,6 +27,8 @@
       tldr_formula.json.versions.stable }}/tealdeer-linux-{{
       tldr_arch[system_architecture] }}
   become: true
+  tags:
+    - install
   vars:
     tldr_arch:
       amd64: x86_64-musl
@@ -34,40 +40,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: tealdeer
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install TDLR for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: tealdeer
-  when: ansible_system == "Win32NT"
-
-- name: Create TLDR repository directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.local/share"
-    state: directory
-  become: true
-  when: ansible_system == "Linux"
-
-- name: Update TLDR documentation for Unix
-  ansible.builtin.command: tldr --update
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'Successfully updated' in tldr_update"
-  environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  register: tldr_update
-  when: ansible_system != "Win32NT"
-
-- name: Update TLDR documentation for Windows
-  ansible.windows.win_command: tldr --update
-  changed_when: "'Successfully updated' in tldr_update"
-  environment:
-    Path: "{{ scoop_apps }}\\tealdeer\\current;{{ ansible_env.Path }}"
-  register: tldr_update
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -79,6 +61,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install TLDR shell completions for Unix
@@ -94,4 +78,6 @@
       shell: bash
     - dest: "{{ fish_completion }}/tldr.fish"
       shell: fish
+  tags:
+    - install
   when: ansible_system != "Win32NT"

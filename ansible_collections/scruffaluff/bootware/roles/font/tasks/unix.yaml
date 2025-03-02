@@ -5,6 +5,8 @@
   register: font_check_unix
 
 - name: Install fonts for Unix
+  tags:
+    - install
   when: not font_check_unix.stat.exists
   block:
     - name: Create temporary font directory for Unix

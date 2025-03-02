@@ -3,12 +3,16 @@
   become: true
   community.general.apk:
     name: gitlab-runner
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install GitLab Runner for Arch
   become: true
   community.general.pacman:
     name: gitlab-runner
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman" and system_architecture == "amd64"
 
 - name: Install GitLab Runner for Debian
@@ -19,12 +23,16 @@
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner-helper-images.deb
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner_{{
       system_architecture }}.deb
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add GitLab GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
     key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-49F16C5CC3A0F81F.pub.gpg
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install GitLab Runner for Fedora
@@ -37,12 +45,16 @@
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install GitLab Runner for FreeBSD
   become: true
   community.general.pkgng:
     name: gitlab-runner
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install GitLab Runner for MacOS
@@ -50,6 +62,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitlab-runner
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install GitLab Runner for Suse
@@ -60,12 +74,16 @@
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
     - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
       system_architecture }}.rpm
+  tags:
+    - install
   when: ansible_pkg_mgr == "zypper"
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: gitlab-runner
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Get all groups for Unix
@@ -73,6 +91,8 @@
     database: group
     split: ":"
   become: true
+  tags:
+    - install
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Configure GitLab runner user for MacOS
@@ -83,6 +103,8 @@
     name: gitlab-runner
     shell: /bin/bash
   become: true
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Configure GitLab runner user for Unix
@@ -93,6 +115,8 @@
     name: gitlab-runner
     shell: /bin/bash
   become: true
+  tags:
+    - install
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Check if Doas is available for Unix
@@ -100,6 +124,8 @@
   changed_when: false
   failed_when: false
   register: gitlab_runner_doas_available
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Enable GitHub passwordless doas for Unix
@@ -114,6 +140,8 @@
     path: /etc/doas.d/doas.conf
     validate: doas -C %s
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT" and gitlab_runner_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
@@ -121,6 +149,8 @@
   changed_when: false
   failed_when: false
   register: gitlab_runner_sudo_available
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Enable GitHub Runner passwordless sudo for Unix
@@ -136,4 +166,6 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT" and gitlab_runner_sudo_available.rc == 0

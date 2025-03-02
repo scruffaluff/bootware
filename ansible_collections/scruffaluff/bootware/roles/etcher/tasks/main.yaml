@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/balenaetcher.json
   register: etcher_cask
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Create application directories for Linux
@@ -16,6 +18,8 @@
   loop:
     - /usr/share/applications
     - /usr/share/pixmaps
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Balena Etcher for Linux
@@ -27,6 +31,8 @@
       etcher_cask.json.version }}/balenaEtcher-{{ etcher_cask.json.version
       }}-x64.AppImage
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Balena Etcher for Linux
@@ -35,6 +41,8 @@
     mode: "644"
     url: https://raw.githubusercontent.com/balena-io/etcher/master/assets/icon.png
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Copy Balena Etcher desktop file for Linux
@@ -44,6 +52,8 @@
     mode: "644"
     src: balena-etcher.desktop
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Balena Etcher for MacOS
@@ -51,10 +61,14 @@
     accept_external_apps: true
     name: balenaetcher
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Balena Etcher for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: etcher
+  tags:
+    - install
   when: ansible_system == "Win32NT"

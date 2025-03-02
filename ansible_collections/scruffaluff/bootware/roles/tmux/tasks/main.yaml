@@ -5,6 +5,8 @@
   become: true
   community.general.apk:
     name: tmux
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Tmux for FreeBSD
@@ -13,6 +15,8 @@
     name:
       - tmate
       - tmux
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Tmux for Linux
@@ -21,6 +25,8 @@
       - tmate
       - tmux
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
@@ -30,6 +36,8 @@
     name:
       - tmate
       - tmux
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Copy Tmux settings file for Unix
@@ -41,4 +49,6 @@
     owner: "{{ user_id }}"
     src: tmux.conf.j2
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"

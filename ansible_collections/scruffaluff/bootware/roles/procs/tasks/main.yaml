@@ -6,12 +6,16 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Procs for FreeBSD
   become: true
   community.general.pkgng:
     name: procs
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Procs for Linux
@@ -20,6 +24,8 @@
   become: true
   ignore_errors: true
   register: procs_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Procs version for Linux
@@ -28,6 +34,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/procs.json
   register: procs_formula
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and procs_linux is failed
@@ -41,6 +49,8 @@
       https://github.com/dalance/procs/releases/download/v{{
       procs_formula.json.versions.stable }}/procs-v{{
       procs_formula.json.versions.stable }}-x86_64-linux.zip
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and procs_linux is failed
@@ -53,6 +63,8 @@
     remote_src: true
     src: /tmp/procs
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and procs_linux is failed
@@ -62,12 +74,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: procs
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Procs for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: procs
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -79,6 +95,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"
@@ -96,6 +114,8 @@
   loop:
     - bash
     - fish
+  tags:
+    - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"
@@ -113,6 +133,8 @@
       shell: bash
     - dest: "{{ fish_completion }}/procs.fish"
       shell: fish
+  tags:
+    - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
     "amd64"

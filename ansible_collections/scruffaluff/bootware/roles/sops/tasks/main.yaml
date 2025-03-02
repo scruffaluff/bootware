@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: sops
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Sops for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: sops_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Sops version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/sops.json
   register: sops_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and sops_linux is failed
 
 - name: Install Sops for Linux
@@ -31,6 +37,8 @@
       sops_formula.json.versions.stable }}/sops-v{{
       sops_formula.json.versions.stable }}.linux.{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and sops_linux is failed
 
 - name: Install Sops for MacOS
@@ -38,10 +46,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: sops
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Sops for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: sops
+  tags:
+    - install
   when: ansible_system == "Win32NT"

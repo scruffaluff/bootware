@@ -10,6 +10,8 @@
   loop:
     - "{{ vscode_path }}/product.json"
     - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Backup VSCode internal files for Windows
@@ -22,6 +24,8 @@
   loop:
     - "{{ vscode_path }}/product.json"
     - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Update VSCode styles for Unix
@@ -34,6 +38,8 @@
     path: >-
       {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Update VSCode styles for Windows
@@ -44,6 +50,8 @@
     path: >-
       {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
     state: present
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Read contents of VSCode workbench file
@@ -51,12 +59,16 @@
     src: >-
       {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
   register: vscode_workbench_file
+  tags:
+    - config
 
 - name: Compute checksum of VSCode workbench file
   ansible.builtin.set_fact:
     vscode_workbench_checksum: >-
       {{ vscode_workbench_file['content'] | b64decode |
       scruffaluff.bootware.vscode_checksum }}
+  tags:
+    - config
 
 - name: Write contents of VSCode product file for Unix
   ansible.builtin.lineinfile:
@@ -66,6 +78,8 @@
     regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
     state: present
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Write contents of VSCode product file for Windows
@@ -75,4 +89,6 @@
     path: "{{ vscode_path }}/product.json"
     regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
     state: present
+  tags:
+    - config
   when: ansible_system == "Win32NT"

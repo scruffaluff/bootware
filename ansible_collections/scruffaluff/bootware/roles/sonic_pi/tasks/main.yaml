@@ -3,6 +3,8 @@
   become: true
   community.general.flatpak:
     name: net.sonic_pi.SonicPi
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Sonic Pi for MacOS
@@ -10,10 +12,14 @@
     accept_external_apps: true
     name: sonic-pi
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Sonic Pi for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: sonic-pi
+  tags:
+    - install
   when: ansible_system == "Win32NT"

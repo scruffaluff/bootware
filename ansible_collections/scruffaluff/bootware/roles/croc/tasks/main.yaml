@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: croc
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Croc for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: croc_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 # Temporarily overriden as of 05/31/2024 until Homebrew gets the Croc version
@@ -21,6 +25,8 @@
 #     return_content: true
 #     url: https://formulae.brew.sh/api/formula/croc.json
 #   register: croc_formula
+#   tags:
+#     - install
 #   when: ansible_system == "Linux" and croc_linux is failed
 
 # - name: Download Croc for Linux
@@ -33,6 +39,8 @@
 #       croc_formula.json.versions.stable }}/croc_v{{
 #       croc_formula.json.versions.stable }}_Linux-{{
 #       croc_arch[system_architecture] }}.tar.gz
+#   tags:
+#     - install
 #   vars:
 #     croc_arch:
 #       amd64: 64bit
@@ -46,6 +54,8 @@
     return_content: true
     url: https://api.github.com/repos/schollz/croc/releases/latest
   register: croc_release
+  tags:
+    - install
   when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Download Croc for Linux
@@ -57,6 +67,8 @@
       https://github.com/schollz/croc/releases/download/{{
       croc_release.json.tag_name }}/croc_{{ croc_release.json.tag_name
       }}_Linux-{{ croc_arch[system_architecture] }}.tar.gz
+  tags:
+    - install
   vars:
     croc_arch:
       amd64: 64bit
@@ -71,6 +83,8 @@
     remote_src: true
     src: /tmp/croc
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Install Croc for MacOS
@@ -78,12 +92,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: croc
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: croc
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Add Croc Firewall rules for Windows
@@ -107,4 +125,6 @@
       protocol: tcp
     - direction: out
       protocol: udp
+  tags:
+    - install
   when: ansible_system == "Win32NT"

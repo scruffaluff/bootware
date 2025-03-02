@@ -4,6 +4,8 @@
     database: group
     split: ":"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Create GitHub Runner user for MacOS
@@ -14,6 +16,8 @@
     name: github-runner
     shell: /bin/bash
   become: true
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Create GitHub Runner user for Linux
@@ -24,6 +28,8 @@
     name: github-runner
     shell: /bin/bash
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Check if Doas is available for Unix
@@ -31,6 +37,8 @@
   changed_when: false
   failed_when: false
   register: github_runner_doas_available
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Enable GitHub passwordless doas for Unix
@@ -45,6 +53,8 @@
     path: /etc/doas.d/doas.conf
     validate: doas -C %s
   become: true
+  tags:
+    - install
   when: >-
     ansible_system in ["Darwin", "Linux"] and github_runner_doas_available.rc ==
     0
@@ -54,6 +64,8 @@
   changed_when: false
   failed_when: false
   register: github_runner_sudo_available
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Enable GitHub Runner passwordless sudo for Unix
@@ -69,6 +81,8 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
+  tags:
+    - install
   when: >-
     ansible_system in ["Darwin", "Linux"] and github_runner_sudo_available.rc ==
     0
@@ -80,12 +94,16 @@
     path: "{{ github_runner_folder }}"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create GitHub Runner user for Windows
   ansible.windows.win_user:
     name: github-runner
     state: present
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create GitHub Runner directory for Windows
@@ -93,6 +111,8 @@
     owner: "{{ user_id }}"
     path: "{{ github_runner_folder }}"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Get latest GitHub Runner version for Unix
@@ -102,6 +122,8 @@
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest
   register: github_runner_release_unix
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Download GitHub Runner for Unix
@@ -116,6 +138,8 @@
       github_runner_os[ansible_system] }}-{{ github_runner_arch }}-{{
       github_runner_release_unix.json.tag_name[1:] }}.tar.gz
   become: true
+  tags:
+    - install
   vars:
     github_runner_os:
       Darwin: osx
@@ -129,6 +153,8 @@
     return_content: true
     url: https://api.github.com/repos/actions/runner/releases/latest
   register: github_runner_release_windows
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Download GitHub Runner archive for Windows
@@ -139,10 +165,14 @@
       github_runner_release_windows.json.tag_name }}/actions-runner-win-{{
       github_runner_arch }}-{{ github_runner_release_windows.json.tag_name[1:]
       }}.zip
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Decompress GitHub Runner archive for Windows
   community.windows.win_unzip:
     dest: "{{ github_runner_folder }}"
     src: "{{ ansible_env.TEMP }}/github_runner.zip"
+  tags:
+    - install
   when: ansible_system == "Win32NT"

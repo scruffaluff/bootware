@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: nushell
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Nushell for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: nushell_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Nushell version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/nushell.json
   register: nushell_formula_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Download Nushell for Linux
@@ -31,6 +37,8 @@
       nushell_formula_linux.json.versions.stable }}/nu-{{
       nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
       }}-unknown-linux-{{ nushell_libc }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for Linux
@@ -53,6 +61,8 @@
     - nu_plugin_polars
     - nu_plugin_query
     - nu_plugin_stress_internals
+  tags:
+    - install
   when: ansible_system == "Linux" and nushell_linux is failed
 
 - name: Install Nushell for MacOS
@@ -60,12 +70,16 @@
   become_user: "{{ user_id }}"
   community.general.homebrew:
     name: nushell
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Nushell for Windows
   community.windows.win_scoop:
     global: true
     name: nu
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Register Nushell as a valid login shell for Unix
@@ -73,6 +87,8 @@
     path: /etc/shells
     line: "{{ nushell_executable }}"
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Nushell configuration directory for MacOS
@@ -83,6 +99,8 @@
     path: "{{ user_home }}/Library/Application Support/nushell"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Copy Nushell settings file for MacOS
@@ -96,6 +114,8 @@
   become: true
   loop:
     - config.nu
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Create Nushell configuration directory for Unix
@@ -106,6 +126,8 @@
     path: "{{ user_home }}/.config/nushell"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Copy Nushell settings file for Unix
@@ -119,6 +141,8 @@
   become: true
   loop:
     - config.nu
+  tags:
+    - config
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Create Nushell settings directory for Windows
@@ -126,6 +150,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/nushell"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy Nushell settings file for Windows
@@ -136,25 +162,24 @@
     src: "{{ item }}"
   loop:
     - config.nu
+  tags:
+    - config
   when: ansible_system == "Win32NT"
-
-- name: Register Nushell as a valid login shell
-  ansible.builtin.lineinfile:
-    path: /etc/shells
-    line: "{{ nushell_executable }}"
-  become: true
-  when: ansible_system != "Win32NT"
 
 - name: Install Shadow for Alpine
   become: true
   community.general.apk:
     name: shadow
+  tags:
+    - config
   when: ansible_pkg_mgr == "apk" and user_login == "nushell"
 
 - name: Install Shadow for OpenWrt
   become: true
   community.general.opkg:
     name: shadow-usermod
+  tags:
+    - config
   when: ansible_pkg_mgr == "opkg" and user_login == "nushell"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
@@ -164,6 +189,8 @@
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
   become: true
   changed_when: true
+  tags:
+    - config
   when: ansible_pkg_mgr == "apk" and user_login == "nushell"
 
 - name: Change user default shell to Nushell for Unix
@@ -171,6 +198,8 @@
     name: "{{ user_id }}"
     shell: "{{ nushell_executable }}"
   become: true
+  tags:
+    - config
   when: >-
     ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_login ==
     "nushell"
@@ -181,4 +210,6 @@
     name: DefaultShell
     path: "HKLM:\\SOFTWARE\\OpenSSH"
     type: string
+  tags:
+    - config
   when: ansible_system == "Win32NT" and user_login == "nushell"

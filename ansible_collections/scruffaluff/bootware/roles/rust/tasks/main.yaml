@@ -11,6 +11,8 @@
   become: true
   community.general.pkgng:
     name: rust-analyzer
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Download Rust Analyzer for Linux
@@ -21,6 +23,8 @@
       https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
       rust_analyzer_arch[system_architecture] }}-unknown-linux-{{ system_libc
       }}.gz
+  tags:
+    - install
   vars:
     rust_analyzer_arch:
       amd64: x86_64
@@ -33,6 +37,8 @@
   ansible.builtin.command:
     cmd: gzip --decompress --force /tmp/rust-analyzer.gz
   changed_when: true
+  tags:
+    - install
   when: >-
     (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
     == "apk" and system_architecture == "amd64")
@@ -45,6 +51,8 @@
     path: "{{ user_home }}/.local/bin"
     state: directory
   become: true
+  tags:
+    - install
   when: >-
     (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
     == "apk" and system_architecture == "amd64")
@@ -59,6 +67,8 @@
     remote_src: true
     src: /tmp/rust-analyzer
   become: true
+  tags:
+    - install
   when: >-
     (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
     == "apk" and system_architecture == "amd64")
@@ -68,12 +78,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: rust-analyzer
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: rust-analyzer
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 # The default Rust Analyzer installed by Rustup doesn't work and complains.
@@ -84,10 +98,14 @@
     path: "{{ user_home }}/.cargo/bin/rust-analyzer"
     state: absent
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Remove default Rust Analyzer for Windows
   ansible.windows.win_file:
     path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/rust-analyzer.exe"
     state: absent
+  tags:
+    - install
   when: ansible_system == "Win32NT"

@@ -10,6 +10,8 @@
       - libncurses5
       - libstdc++6
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 # Android Studio dependencies are specified at
@@ -21,6 +23,8 @@
       - ncurses-libs
       - zlib
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install Android Studio dependencies for MacOS
@@ -28,6 +32,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: openjdk@17
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Add OpenJDK to Java virtual machine list for MacOS
@@ -38,12 +44,16 @@
     src: /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk
     state: link
   become: true
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Check if Android Studio is installed for Linux
   ansible.builtin.stat:
     path: /usr/local/share/applications/android_studio.desktop
   register: android_studio_check
+  tags:
+    - install
   when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
@@ -53,6 +63,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/android-studio.json
   register: android_studio_cask
+  tags:
+    - install
   when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
     and not android_studio_check.stat.exists
@@ -67,6 +79,8 @@
       https://redirector.gvt1.com/edgedl/android/studio/ide-zips/{{
       android_studio_cask.json.version }}/android-studio-{{
       android_studio_cask.json.version }}-linux.tar.gz
+  tags:
+    - install
   when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
     and not android_studio_check.stat.exists
@@ -79,6 +93,8 @@
     remote_src: true
     src: /tmp/android-studio
   become: true
+  tags:
+    - install
   when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
     and not android_studio_check.stat.exists
@@ -90,6 +106,8 @@
     mode: "644"
     src: android_studio.desktop
   become: true
+  tags:
+    - install
   when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
@@ -97,6 +115,8 @@
   become: true
   community.general.flatpak:
     name: com.google.AndroidStudio
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf", "dnf5"]
     and system_architecture == "amd64"
@@ -106,10 +126,14 @@
     accept_external_apps: true
     name: android-studio
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Android Studio for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: android-studio
+  tags:
+    - install
   when: ansible_system == "Win32NT"

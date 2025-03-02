@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: kdenlive
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Kdenlive for Linux
@@ -11,12 +13,16 @@
   become: true
   ignore_errors: true
   register: kdenlive_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Kdenlive for Linux
   become: true
   community.general.flatpak:
     name: org.kde.kdenlive
+  tags:
+    - install
   when: ansible_system == "Linux" and kdenlive_linux is failed
 
 - name: Install Kdenlive for MacOS
@@ -24,10 +30,14 @@
     accept_external_apps: true
     name: kdenlive
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Kdenlive for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: kdenlive
+  tags:
+    - install
   when: ansible_system == "Win32NT"

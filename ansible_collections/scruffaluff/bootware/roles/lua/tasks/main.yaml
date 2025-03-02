@@ -3,12 +3,16 @@
   become: true
   community.general.pkgng:
     name: lua54
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Lua for Linux
   ansible.builtin.package:
     name: "{{ lua_package.get(ansible_pkg_mgr, 'lua') }}"
   become: true
+  tags:
+    - install
   vars:
     lua_package:
       apk: lua5.4
@@ -21,10 +25,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lua
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Lua for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: lua
+  tags:
+    - install
   when: ansible_system == "Win32NT"

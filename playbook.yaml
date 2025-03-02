@@ -555,8 +555,10 @@
         name: scruffaluff.bootware.k3d
       tags:
         - desktop
+        - extras
         - k3d
         - kubernetes
+        - never
         - server
         - wsl
 
@@ -592,8 +594,10 @@
         name: scruffaluff.bootware.kind
       tags:
         - desktop
+        - extras
         - kind
         - kubernetes
+        - never
         - server
         - wsl
 

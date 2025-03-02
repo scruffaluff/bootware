@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: usql
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # As of 12/10/2023, Usql is not in the main Homebrew package list.
@@ -13,6 +15,8 @@
     return_content: true
     url: https://api.github.com/repos/xo/usql/releases/latest
   register: usql_release
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 # Use only static binaries of Usql. Dynamic binaries often depend on libicu
@@ -26,6 +30,8 @@
       https://github.com/xo/usql/releases/download/{{ usql_release.json.tag_name
       }}/usql_static-{{ usql_release.json.tag_name[1:] }}-linux-{{
       system_architecture }}.tar.bz2
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Usql for Linux
@@ -36,11 +42,15 @@
     remote_src: true
     src: /tmp/usql_static
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Tap Usql for MacOS
   community.general.homebrew_tap:
     name: xo/xo
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Usql for MacOS
@@ -48,12 +58,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: xo/xo/usql
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Usql for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: usql
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Copy Usql settings file for Unix
@@ -65,6 +79,8 @@
     owner: "{{ user_id }}"
     src: usqlrc
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Usql settings file for Windows
@@ -73,4 +89,6 @@
     force: true
     owner: "{{ user_id }}"
     src: usqlrc
+  tags:
+    - config
   when: ansible_system == "Win32NT"

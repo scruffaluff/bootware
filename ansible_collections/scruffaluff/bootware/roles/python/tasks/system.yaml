@@ -7,6 +7,8 @@
       - py3-pip
       - python3
       - python3-dev
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Python for Arch
@@ -16,6 +18,8 @@
       - python
       - python-pip
       - python-pipx
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Python for Debian
@@ -27,6 +31,8 @@
       - python3-pip
       - python3-venv
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Python for Fedora
@@ -37,6 +43,8 @@
       - python3-devel
       - python3-pip
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 # Rust is required for installing many Python applications on FreeBSD.
@@ -48,6 +56,8 @@
       - py311-pipx
       - python3
       - rust
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Python for MacOS
@@ -57,6 +67,8 @@
     name:
       - pipx
       - python3
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Python for OpenWrt
@@ -67,6 +79,8 @@
       - python3-dev
       - python3-pip
       - python3-venv
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
 - name: Install Python for Suse
@@ -76,6 +90,8 @@
       - python3
       - python3-pip
       - python312-pipx
+  tags:
+    - install
   when: ansible_pkg_mgr == "zypper"
 
 - name: Install Python for Windows
@@ -84,6 +100,8 @@
     name:
       - pipx
       - python
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Make Python symlinks for MacOS
@@ -97,6 +115,8 @@
   loop:
     - pip
     - python
+  tags:
+    - install
   vars:
     python_brew_prefix: >-
       {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
@@ -111,6 +131,8 @@
   loop:
     - python.exe
     - python3.exe
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create user binaries directory for Unix
@@ -121,6 +143,8 @@
     owner: "{{ user_id }}"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create user binaries directory for Windows
@@ -128,12 +152,16 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.local/bin"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
-- name: Update user path to include Python applications for Windows
+- name: Add user binaries to user path for Windows
   ansible.windows.win_path:
     elements: "{{ user_home }}\\.local\\bin"
     scope: user
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Python applications for Unix
@@ -151,6 +179,8 @@
       ansible_env.PATH }}
   loop: "{{ python_applications }}"
   register: python_application_unix
+  tags:
+    - plugin
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
 
 - name: Install Python applications for Windows
@@ -163,4 +193,6 @@
     Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   loop: "{{ python_applications }}"
   register: python_application_windows
+  tags:
+    - plugin
   when: ansible_system == "Win32NT"

@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/lazydocker.json
   register: lazydocker_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Lazydocker for Linux
@@ -17,6 +19,8 @@
       lazydocker_formula.json.versions.stable }}/lazydocker_{{
       lazydocker_formula.json.versions.stable }}_Linux_{{
       lazydocker_arch[system_architecture] }}.tar.gz
+  tags:
+    - install
   vars:
     lazydocker_arch:
       amd64: x86_64
@@ -31,6 +35,8 @@
     remote_src: true
     src: /tmp/lazydocker
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Lazydocker for MacOS
@@ -38,10 +44,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lazydocker
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Lazydocker for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: lazydocker
+  tags:
+    - install
   when: ansible_system == "Win32NT"

@@ -9,6 +9,8 @@
       - mediainfo
       - mpv
       - sox
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install audio packages for Arch
@@ -21,6 +23,8 @@
       - mediainfo
       - mpv
       - sox
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
@@ -33,6 +37,8 @@
       - mpv
       - sox
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora
@@ -44,6 +50,8 @@
       - mpv
       - sox
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install audio packages for FreeBSD
@@ -56,6 +64,8 @@
       - mediainfo
       - mpv
       - sox
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install audio packages for MacOS
@@ -67,6 +77,8 @@
       - media-info
       - mpv
       - sox
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install audio packages for Windows
@@ -77,4 +89,6 @@
       - mediainfo
       - mpv
       - sox
+  tags:
+    - install
   when: ansible_system == "Win32NT"

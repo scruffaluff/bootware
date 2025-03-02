@@ -4,6 +4,8 @@
   loop: "{{ font_families }}"
   loop_control:
     loop_var: font_family
+  tags:
+    - install
   vars:
     font_folder:
       FreeBSD: /usr/local/share/fonts/{{ font_family.name }}
@@ -17,6 +19,8 @@
   become: true
   changed_when: "'new cache contents' in font_cache_unix"
   register: font_cache_unix
+  tags:
+    - install
   when: ansible_system in ["FreeBSD", "Linux"]
 
 - name: Install fonts for Windows
@@ -24,6 +28,8 @@
   loop: "{{ font_families }}"
   loop_control:
     loop_var: font_family
+  tags:
+    - install
   vars:
     font_folder: "C:\\Windows\\Fonts"
   when: ansible_system == "Win32NT"

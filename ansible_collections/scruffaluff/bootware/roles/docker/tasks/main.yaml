@@ -3,12 +3,16 @@
   become: true
   community.general.apk:
     name: docker
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Docker for Arch
   become: true
   community.general.pacman:
     name: docker
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Docker repository dependencies for Debian
@@ -19,6 +23,8 @@
       - curl
       - gnupg
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Download Docker GPG key for Debian
@@ -27,6 +33,8 @@
     mode: "640"
     url: https://download.docker.com/linux/debian/gpg
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker GPG key for Debian
@@ -37,6 +45,8 @@
       /tmp/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Debian
@@ -51,6 +61,8 @@
   become: true
   ignore_errors: true
   register: docker_debian
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Ubuntu
@@ -63,6 +75,8 @@
     state: present
     filename: docker
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt" and docker_debian is failed
 
 - name: Install Docker for Debian
@@ -73,6 +87,8 @@
       - docker-ce-cli
     update_cache: true
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Add Docker repository for Fedora
@@ -81,6 +97,8 @@
     mode: "644"
     url: https://download.docker.com/linux/fedora/docker-ce.repo
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for Fedora
@@ -90,12 +108,16 @@
       - docker-ce
       - docker-ce-cli
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for FreeBSD
   become: true
   community.general.pkgng:
     name: docker
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Docker for MacOS
@@ -103,23 +125,31 @@
     accept_external_apps: true
     name: docker
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Docker for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: docker-desktop
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Check if service manager is available for Alpine
   ansible.builtin.stat:
     path: /sbin/service
   register: docker_service
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Check if systemd is available for Linux
   ansible.builtin.stat:
     path: /usr/bin/systemctl
   register: docker_systemd
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Start Containerd on system boot for Alpine
@@ -128,6 +158,8 @@
     name: containerd
     state: started
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Containerd on system boot for Linux
@@ -135,6 +167,8 @@
     enabled: true
     name: containerd
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Start Docker on system boot for Alpine
@@ -143,6 +177,8 @@
     name: docker
     state: started
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Docker on system boot for Linux
@@ -150,6 +186,8 @@
     enabled: true
     name: docker
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Add user to Docker group for Alpine
@@ -159,6 +197,8 @@
       - docker
     name: "{{ user_id }}"
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
@@ -168,6 +208,8 @@
       - docker
     name: "{{ user_id }}"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
 - name: Create shell completion directories for Unix
@@ -179,6 +221,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Docker shell completions for Unix
@@ -194,9 +238,13 @@
       path: bash/docker
     - dest: "{{ fish_completion }}/docker.fish"
       path: fish/docker.fish
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
     docker_role_executed: true
+  tags:
+    - always

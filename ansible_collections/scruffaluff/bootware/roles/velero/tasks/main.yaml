@@ -5,6 +5,8 @@
   become: true
   ignore_errors: true
   register: velero_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Velero version for Linux
@@ -13,6 +15,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/velero.json
   register: velero_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Download Velero for Linux
@@ -25,6 +29,8 @@
       velero_formula.json.versions.stable }}/velero-v{{
       velero_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Install Velero for Linux
@@ -37,6 +43,8 @@
       /tmp/velero-v{{ velero_formula.json.versions.stable }}-linux-{{
       system_architecture }}/velero
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and velero_linux is failed
 
 - name: Install Velero for MacOS
@@ -44,12 +52,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: velero
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Velero for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: velero
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -61,6 +73,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Velero shell completions for Unix
@@ -73,6 +87,8 @@
   loop:
     - bash
     - fish
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Velero shell completions for Unix
@@ -88,4 +104,6 @@
       shell: bash
     - dest: "{{ fish_completion }}/velero.fish"
       shell: fish
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]

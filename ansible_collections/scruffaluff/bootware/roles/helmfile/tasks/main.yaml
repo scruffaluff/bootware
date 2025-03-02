@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: helmfile
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Helmfile for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: helmfile_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Helmfile version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/helmfile.json
   register: helmfile_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and helmfile_linux is failed
 
 - name: Download Helmfile for Linux
@@ -31,6 +37,8 @@
       helmfile_formula.json.versions.stable }}/helmfile_{{
       helmfile_formula.json.versions.stable }}_linux_{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and helmfile_linux is failed
 
 - name: Install Helmfile for Linux
@@ -41,6 +49,8 @@
     remote_src: true
     src: /tmp/helmfile
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and helmfile_linux is failed
 
 - name: Install Helmfile for MacOS
@@ -48,12 +58,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helmfile
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Helmfile for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: helmfile
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -65,6 +79,8 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Helmfile shell completions for Unix
@@ -77,6 +93,8 @@
   loop:
     - bash
     - fish
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Helmfile shell completions for Unix
@@ -92,4 +110,6 @@
       shell: bash
     - dest: "{{ fish_completion }}/helmfile.fish"
       shell: fish
+  tags:
+    - install
   when: ansible_system != "Win32NT"

@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: musescore
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install MuseScore for Linux
@@ -11,12 +13,16 @@
   become: true
   ignore_errors: true
   register: musescore_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install MuseScore for Linux
   become: true
   community.general.flatpak:
     name: org.musescore.MuseScore
+  tags:
+    - install
   when: ansible_system == "Linux" and musescore_linux is failed
 
 - name: Install MuseScore for MacOS
@@ -24,10 +30,14 @@
     accept_external_apps: true
     name: musescore
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install MuseScore for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: musescore
+  tags:
+    - install
   when: ansible_system == "Win32NT"

@@ -1,110 +1,122 @@
 ---
+- name: Create Cargo home directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.cargo"
+    state: directory
+  become: true
+  tags:
+    - install
+
+- name: Install Rust for Unix
+  ansible.builtin.shell: # noqa command-instead-of-module
+    cmd: >-
+      curl -LSfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s -- -y
+      --no-modify-path
+    creates: "{{ user_home }}/.cargo/bin/rustup"
+  become: true
+  become_user: "{{ user_id }}"
+  tags:
+    - install
+
+- name: Add Rust components for Unix
+  ansible.builtin.command: "rustup component add {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'installing' in rust_component_add"
+  environment:
+    PATH: >-
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
+      }}
+  loop: "{{ rust_components }}"
+  register: rust_component_add
+  tags:
+    - install
+
+- name: Add Rust targets for Unix
+  ansible.builtin.command: "rustup target add {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'installing' in rust_target_add"
+  environment:
+    PATH: >-
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
+      }}
+  loop: "{{ rust_targets }}"
+  register: rust_target_add
+  tags:
+    - install
+
+- name: Create user binaries directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.local/bin"
+    state: directory
+  become: true
+  tags:
+    - plugin
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Get latest Cargo Binstall version for Unix
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/cargo-binstall.json
   register: rust_binstall_formula
+  tags:
+    - plugin
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Install Rust and Cargo applications for Unix
+- name: Download Cargo Binstall for Unix
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/ryankurte/cargo-binstall/releases/download/v{{
+      rust_binstall_formula.json.versions.stable }}/cargo-binstall-{{
+      rust_binstall_arch[system_architecture] }}-{{
+      rust_binstall_suffix[ansible_system] }}
+  vars:
+    rust_binstall_arch:
+      amd64: x86_64
+      arm64: aarch64
+    rust_binstall_suffix:
+      Darwin: apple-darwin.zip
+      Linux: unknown-linux-{{ system_libc }}.tgz
+  tags:
+    - plugin
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Cargo Binstall for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.local/bin/cargo-binstall"
+    force: true
+    group: "{{ group_id }}"
+    mode: "750"
+    owner: "{{ user_id }}"
+    remote_src: true
+    src: /tmp/cargo-binstall
+  become: true
+  tags:
+    - plugin
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Cargo packages for Unix
+  ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'This will install' in rust_binstall_package"
   environment:
     PATH: >-
       {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
       }}
-  block:
-    - name: Install Rust for Unix
-      ansible.builtin.shell: # noqa command-instead-of-module
-        cmd: >-
-          curl -LSfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s --
-          -y --no-modify-path
-        creates: "{{ user_home }}/.cargo/bin/rustup"
-      become: true
-      become_user: "{{ user_id }}"
-
-    - name: Update Rust for Unix
-      ansible.builtin.command: "{{ item }}"
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: "' changed' in rust_update"
-      failed_when: >-
-        rust_update.rc != 0 and 'update is disabled' not in rust_update.stderr
-      loop:
-        - rustup self update
-        - rustup update stable
-      register: rust_update
-
-    - name: Add Rust components for Unix
-      ansible.builtin.command: "rustup component add {{ item }}"
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: "'installing' in rust_component_add"
-      loop: "{{ rust_components }}"
-      register: rust_component_add
-
-    - name: Add Rust targets for Unix
-      ansible.builtin.command: "rustup target add {{ item }}"
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: "'installing' in rust_target_add"
-      loop: "{{ rust_targets }}"
-      register: rust_target_add
-
-    - name: Create Cargo home directory for Unix
-      ansible.builtin.file:
-        group: "{{ group_id }}"
-        mode: "755"
-        owner: "{{ user_id }}"
-        path: "{{ user_home }}/.cargo"
-        state: directory
-      become: true
-
-    - name: Create Cargo Binstall applications directory for Unix
-      ansible.builtin.file:
-        group: "{{ group_id }}"
-        mode: "755"
-        owner: "{{ user_id }}"
-        path: "{{ user_home }}/.local/bin"
-        state: directory
-      become: true
-      when: ansible_system in ["Darwin", "Linux"]
-
-    - name: Download Cargo Binstall for Unix
-      ansible.builtin.unarchive:
-        dest: /tmp
-        mode: "755"
-        remote_src: true
-        src: >-
-          https://github.com/ryankurte/cargo-binstall/releases/download/v{{
-          rust_binstall_formula.json.versions.stable }}/cargo-binstall-{{
-          rust_binstall_arch[system_architecture] }}-{{
-          rust_binstall_suffix[ansible_system] }}
-      vars:
-        rust_binstall_arch:
-          amd64: x86_64
-          arm64: aarch64
-        rust_binstall_suffix:
-          Darwin: apple-darwin.zip
-          Linux: unknown-linux-{{ system_libc }}.tgz
-      when: ansible_system in ["Darwin", "Linux"]
-
-    - name: Install Cargo Binstall for Unix
-      ansible.builtin.copy:
-        dest: "{{ user_home }}/.local/bin/cargo-binstall"
-        force: true
-        group: "{{ group_id }}"
-        mode: "750"
-        owner: "{{ user_id }}"
-        remote_src: true
-        src: /tmp/cargo-binstall
-      become: true
-      when: ansible_system in ["Darwin", "Linux"]
-
-    - name: Update or install Cargo packages for Unix
-      ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
-      become: true
-      become_user: "{{ user_id }}"
-      changed_when: "'This will install' in rust_binstall_package"
-      loop: "{{ rust_applications }}"
-      register: rust_binstall_package
-      when: ansible_system in ["Darwin", "Linux"]
+  loop: "{{ rust_applications }}"
+  register: rust_binstall_package
+  tags:
+    - plugin
+  when: ansible_system in ["Darwin", "Linux"]

@@ -1,6 +1,8 @@
 ---
 - name: Install Forge extension for GNOME desktops
   ansible.builtin.import_tasks: forge.yaml
+  tags:
+    - install
   when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Install Amethyst for MacOS
@@ -8,6 +10,8 @@
     accept_external_apps: true
     name: amethyst
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install GlazeWM for Windows
@@ -16,6 +20,19 @@
     name:
       - glazewm
       - zebar
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Add GlazeWM to startup applications for Windows
+  community.windows.win_shortcut:
+    dest: >-
+      {{ user_home }}\\AppData\\Roaming\\Microsoft\\Windows\\Start
+      Menu\\Programs\\Startup\\GlazeWM.lnk
+    icon: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe,0"
+    src: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Amethyst configuration directory for MacOS
@@ -26,6 +43,8 @@
     owner: "{{ user_id }}"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Copy Amethyst configuration file for MacOS
@@ -37,6 +56,8 @@
     owner: "{{ user_id }}"
     src: amethyst.yaml
   become: true
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Create GlazeWM configuration directory for Windows
@@ -44,6 +65,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.glzr/glazewm"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy GlazeWM configuration file for Windows
@@ -52,13 +75,6 @@
     force: true
     owner: "{{ user_id }}"
     src: glaze.yaml
-  when: ansible_system == "Win32NT"
-
-- name: Add GlazeWM to startup applications for Windows
-  community.windows.win_shortcut:
-    dest: >-
-      {{ user_home }}\\AppData\\Roaming\\Microsoft\\Windows\\Start
-      Menu\\Programs\\Startup\\GlazeWM.lnk
-    icon: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe,0"
-    src: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe"
+  tags:
+    - config
   when: ansible_system == "Win32NT"

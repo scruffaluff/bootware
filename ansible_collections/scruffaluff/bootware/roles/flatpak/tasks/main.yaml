@@ -4,6 +4,8 @@
     name: flatpak
     state: present
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Add Flathub remote repository for Linux
@@ -13,6 +15,8 @@
   become: true
   # Command does not provide stdout information to determine a change.
   changed_when: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Enable Flathub remote repository for Linux
@@ -20,6 +24,8 @@
   become: true
   # Command does not provide stdout information to determine a change.
   changed_when: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Flatpak packages for Linux
@@ -27,9 +33,13 @@
   community.general.flatpak:
     name: "{{ item }}"
   loop: "{{ flatpak_packages }}"
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
     flatpak_role_executed: true
+  tags:
+    - always

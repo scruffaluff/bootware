@@ -7,6 +7,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/powershell.json
   register: powershell_cask
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install PowerShell Core for Windows
@@ -19,6 +21,8 @@
       https://github.com/PowerShell/PowerShell/releases/download/v{{
       powershell_cask.json.version }}/PowerShell-{{ powershell_cask.json.version
       }}-win-{{ powershell_arch[system_architecture] }}.msi
+  tags:
+    - install
   vars:
     powershell_arch:
       amd64: x64
@@ -35,6 +39,8 @@
     - Documents/PowerShell/Modules
     - Documents/WindowsPowerShell
     - Documents/WindowsPowerShell/Modules
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy PowerShell settings files for Windows
@@ -46,9 +52,13 @@
   loop:
     - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
     - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Install local PowerShell modules
+  tags:
+    - config
   vars:
     powershell_module_folders:
       - Documents/PowerShell/Modules
@@ -80,6 +90,8 @@
     level: machine
     name: POWERSHELL_UPDATECHECK
     value: "Off"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Set PowerShell Core as default OpenSSH shell for Windows
@@ -88,9 +100,13 @@
     name: DefaultShell
     path: "HKLM:\\SOFTWARE\\OpenSSH"
     type: string
+  tags:
+    - config
   when: ansible_system == "Win32NT" and user_login == "powershell"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
     powershell_role_executed: true
+  tags:
+    - always

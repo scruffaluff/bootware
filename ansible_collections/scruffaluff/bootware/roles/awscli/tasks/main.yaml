@@ -3,12 +3,16 @@
   become: true
   community.general.pkgng:
     name: py311-awscli
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install AWSCLI for Alpine
   become: true
   community.general.apk:
     name: aws-cli
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Download AWSCLI for Linux
@@ -19,6 +23,8 @@
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{
       awscli_arch[system_architecture] }}.zip
+  tags:
+    - install
   vars:
     awscli_arch:
       amd64: x86_64
@@ -31,6 +37,8 @@
   become: true
   changed_when: "'Found same AWS CLI version' not in aws_install"
   register: aws_install
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install AWSCLI for MacOS
@@ -38,10 +46,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: awscli
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install AWSCLI for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: aws
+  tags:
+    - install
   when: ansible_system == "Win32NT"

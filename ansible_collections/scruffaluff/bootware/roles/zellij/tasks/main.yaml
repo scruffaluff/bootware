@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: zellij
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Zellij for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: zellij_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Zellij version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/zellij.json
   register: zellij_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and zellij_linux is failed
 
 - name: Download Zellij for Linux
@@ -30,6 +36,8 @@
       https://github.com/zellij-org/zellij/releases/download/v{{
       zellij_formula.json.versions.stable }}/zellij-{{
       zellij_arch[system_architecture] }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
   vars:
     zellij_arch:
       amd64: x86_64
@@ -44,6 +52,8 @@
     remote_src: true
     src: /tmp/zellij
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and zellij_linux is failed
 
 - name: Install Zellij for MacOS
@@ -51,7 +61,53 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: zellij
+  tags:
+    - install
   when: ansible_system == "Darwin"
+
+- name: Create shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create Zellij shell completions for Unix
+  ansible.builtin.shell:
+    cmd: zellij setup --generate-completion {{ item }} > /tmp/zellij.{{ item }}
+  become: true
+  changed_when: true
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  loop:
+    - bash
+    - fish
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Install Zellij shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: /tmp/zellij.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/zellij"
+      shell: bash
+    - dest: "{{ fish_completion }}/zellij.fish"
+      shell: fish
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
 
 - name: Create Zellij settings directories for Unix
   ansible.builtin.file:
@@ -64,6 +120,8 @@
   loop:
     - zellij
     - zellij/layouts
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Zellij settings file for Unix
@@ -75,6 +133,8 @@
     owner: "{{ user_id }}"
     src: config.kdl.j2
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Zellij layout files for Unix
@@ -91,42 +151,6 @@
       src: layout.kdl
     - dest: layouts/layout.swap.kdl
       src: layout.swap.kdl
-  when: ansible_system != "Win32NT"
-
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  when: ansible_system != "Win32NT"
-
-- name: Create Zellij shell completions for Unix
-  ansible.builtin.shell:
-    cmd: zellij setup --generate-completion {{ item }} > /tmp/zellij.{{ item }}
-  become: true
-  changed_when: true
-  environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  loop:
-    - bash
-    - fish
-  when: ansible_system != "Win32NT"
-
-- name: Install Zellij shell completions for Unix
-  ansible.builtin.copy:
-    dest: "{{ item.dest }}"
-    force: true
-    mode: "644"
-    remote_src: true
-    src: /tmp/zellij.{{ item.shell }}
-  become: true
-  loop:
-    - dest: "{{ bash_completion }}/zellij"
-      shell: bash
-    - dest: "{{ fish_completion }}/zellij.fish"
-      shell: fish
+  tags:
+    - config
   when: ansible_system != "Win32NT"

@@ -4,6 +4,8 @@
   community.general.pacman:
     name: "{{ item }}"
   loop: "{{ pacman_packages }}"
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Apt packages by name for Debian
@@ -11,6 +13,8 @@
     name: "{{ item }}"
   become: true
   loop: "{{ apt_packages }}"
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt" and "/" not in item
 
 - name: Install Apt packages by path for Debian
@@ -18,6 +22,8 @@
     deb: "{{ item }}"
   become: true
   loop: "{{ apt_packages }}"
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt" and "/" in item
 
 - name: Install DNF packages for Fedora
@@ -25,6 +31,8 @@
     name: "{{ item }}"
   become: true
   loop: "{{ dnf_packages }}"
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Pkg packages for FreeBSD
@@ -32,6 +40,8 @@
   community.general.pkgng:
     name: "{{ item }}"
   loop: "{{ pkg_packages }}"
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Homebrew casks for MacOS
@@ -40,6 +50,8 @@
     name: "{{ item }}"
     state: present
   loop: "{{ homebrew_casks }}"
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew packages for MacOS
@@ -48,12 +60,16 @@
   community.general.homebrew:
     name: "{{ item }}"
   loop: "{{ homebrew_packages }}"
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Chocolatey packages for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: "{{ item }}"
   loop: "{{ chocolatey_packages }}"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Scoop packages for Windows
@@ -61,4 +77,6 @@
     global: "{{ scoop_global }}"
     name: "{{ item }}"
   loop: "{{ scoop_packages }}"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
