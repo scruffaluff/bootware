@@ -151,6 +151,7 @@
     - "{{ bash_user_completion }}"
     - "{{ fish_user_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
@@ -168,6 +169,7 @@
     - path: "{{ fish_user_completion }}/pnpm.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT" and user_id != "root"
 

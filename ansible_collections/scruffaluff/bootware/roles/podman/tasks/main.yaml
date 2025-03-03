@@ -42,6 +42,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 
@@ -58,6 +59,7 @@
     - dest: "{{ fish_completion }}/podman.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 
@@ -67,6 +69,7 @@
     path: "{{ powershell_user_modules }}/PodmanCompletion"
     state: directory
   tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"
 
@@ -78,5 +81,6 @@
   environment:
     Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
   tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"

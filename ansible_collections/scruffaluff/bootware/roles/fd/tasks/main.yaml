@@ -71,6 +71,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system == "Linux"
 
@@ -90,5 +91,6 @@
     - dest: "{{ fish_completion }}/fd.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system == "Linux"

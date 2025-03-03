@@ -96,6 +96,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
@@ -115,6 +116,7 @@
     - bash
     - fish
   tags:
+    - completion
     - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
@@ -134,6 +136,7 @@
     - dest: "{{ fish_completion }}/procs.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: >-
     ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==

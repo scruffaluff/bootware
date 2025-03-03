@@ -93,6 +93,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
@@ -114,6 +115,7 @@
     - dest: "{{ fish_completion }}/bat.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture

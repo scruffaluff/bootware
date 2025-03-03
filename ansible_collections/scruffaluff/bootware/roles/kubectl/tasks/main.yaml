@@ -82,6 +82,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 
@@ -96,6 +97,7 @@
     - bash
     - fish
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 
@@ -113,5 +115,6 @@
     - dest: "{{ fish_completion }}/kubectl.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"

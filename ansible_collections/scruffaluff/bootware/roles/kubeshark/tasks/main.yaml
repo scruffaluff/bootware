@@ -71,6 +71,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -85,6 +86,7 @@
     - bash
     - fish
   tags:
+    - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
@@ -102,5 +104,6 @@
     - dest: "{{ fish_completion }}/kubeshark.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]

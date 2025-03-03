@@ -103,6 +103,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
@@ -121,6 +122,7 @@
     - dest: "{{ fish_completion }}/deno.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: >-
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
@@ -132,6 +134,7 @@
     path: "{{ powershell_user_modules }}/DenoCompletion"
     state: directory
   tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"
 
@@ -145,5 +148,6 @@
   environment:
     Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"
   tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"

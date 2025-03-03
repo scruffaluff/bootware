@@ -82,6 +82,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system == "Linux" and hyperfine_linux is failed
 
@@ -102,5 +103,6 @@
     - dest: "{{ fish_completion }}/hyperfine.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system == "Linux" and hyperfine_linux is failed

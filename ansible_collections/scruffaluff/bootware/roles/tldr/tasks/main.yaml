@@ -62,6 +62,7 @@
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 
@@ -79,5 +80,6 @@
     - dest: "{{ fish_completion }}/tldr.fish"
       shell: fish
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
