@@ -41,5 +41,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     flatpak_role_executed: true
-  tags:
-    - always

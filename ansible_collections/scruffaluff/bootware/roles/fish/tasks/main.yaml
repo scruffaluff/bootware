@@ -33,6 +33,20 @@
     - install
   when: ansible_system != "Win32NT"
 
+- name: Get installed Fish version for Unix
+  ansible.builtin.command: fish --version
+  changed_when: false
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  register: fish_version_text
+  when: ansible_system != "Win32NT"
+
+- name: Parse Fish version
+  ansible.builtin.set_fact:
+    fish_version: >-
+      {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
+  when: ansible_system != "Win32NT"
+
 - name: Create Fish completions directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -66,24 +80,6 @@
     owner: "{{ user_id }}"
     src: config.fish
   become: true
-  tags:
-    - config
-  when: ansible_system != "Win32NT"
-
-- name: Get installed Fish version for Unix
-  ansible.builtin.command: fish --version
-  changed_when: false
-  environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  register: fish_version_text
-  tags:
-    - config
-  when: ansible_system != "Win32NT"
-
-- name: Parse Fish version
-  ansible.builtin.set_fact:
-    fish_version: >-
-      {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   tags:
     - config
   when: ansible_system != "Win32NT"
@@ -163,5 +159,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     fish_role_executed: true
-  tags:
-    - always

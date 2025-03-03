@@ -93,5 +93,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     fzf_role_executed: true
-  tags:
-    - always

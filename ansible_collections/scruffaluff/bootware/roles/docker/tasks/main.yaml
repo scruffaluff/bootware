@@ -246,5 +246,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     docker_role_executed: true
-  tags:
-    - always

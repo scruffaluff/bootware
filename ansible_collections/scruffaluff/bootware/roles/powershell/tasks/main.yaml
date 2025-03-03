@@ -108,5 +108,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     powershell_role_executed: true
-  tags:
-    - always

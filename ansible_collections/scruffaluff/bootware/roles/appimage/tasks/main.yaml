@@ -45,5 +45,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     appimage_role_executed: true
-  tags:
-    - always

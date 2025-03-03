@@ -92,5 +92,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     build_role_executed: true
-  tags:
-    - always

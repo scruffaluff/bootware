@@ -133,5 +133,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     git_role_executed: true
-  tags:
-    - always

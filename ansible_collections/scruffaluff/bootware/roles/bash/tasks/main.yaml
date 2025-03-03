@@ -115,5 +115,3 @@
   ansible.builtin.set_fact:
     cacheable: true
     bash_role_executed: true
-  tags:
-    - always
