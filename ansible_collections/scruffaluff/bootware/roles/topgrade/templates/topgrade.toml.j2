@@ -5,7 +5,11 @@
 
 [misc]
 assume_yes = true
+{% if ansible_system in ["Darwin", "Win32NT"] %}
+disable = ["containers", "gem", "git_repos", "ruby_gems", "system"]
+{% else %}
 disable = ["containers", "gem", "git_repos", "ruby_gems"]
+{% endif %}
 no_retry = true
 notify_each_step = false
 skip_notify = true

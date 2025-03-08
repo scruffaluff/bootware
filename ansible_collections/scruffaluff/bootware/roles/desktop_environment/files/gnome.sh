@@ -47,7 +47,6 @@ gsettings set org.gnome.settings-daemon.plugins.power ambient-enabled false
 
 # Change system keybindings.
 gsettings set org.gnome.desktop.wm.keybindings activate-window-menu []
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down '["<Shift><Control><Alt>Down"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '["<Shift><Control><Alt>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right '["<Shift><Control><Alt>Right"]'
@@ -62,8 +61,12 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-5 '["<Alt><Co
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-6 '["<Alt><Control>6"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-7 '["<Alt><Control>7"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-8 '["<Alt><Control>8"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Alt><Control>K"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Alt><Control>L"]'
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space"]'
+gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
 
 # File extension settings.
 xdg-mime default code.desktop application/json

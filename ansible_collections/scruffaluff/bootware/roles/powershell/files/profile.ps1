@@ -536,6 +536,11 @@ If ($Tty) {
     }
 }
 
+# Typescript settings.
+
+# Disable Deno update messages.
+$Env:DENO_NO_UPDATE_CHECK = 'true'
+
 # Yazi settings.
 
 # Yazi wrapper to change directory on program exit.

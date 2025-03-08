@@ -798,6 +798,8 @@ $env.STARSHIP_LOG = "error"
 
 # TypeScript settings.
 
+# Disable Deno update messages.
+$env.DENO_NO_UPDATE_CHECK = "true"
 # Add Deno binaries to system path.
 prepend-paths $"($env.HOME)/.deno/bin"
 

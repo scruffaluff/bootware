@@ -1,3 +1,8 @@
+<#
+.SYNOPSIS
+    Bootstrap software installations with Ansible.
+#>
+
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 

@@ -3,7 +3,6 @@
     Installs Bootware for Windows systems.
 #>
 
-
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 

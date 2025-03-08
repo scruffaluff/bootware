@@ -79,24 +79,23 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Topgrade settings file for Unix
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: "{{ user_home }}/.config/topgrade.toml"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: topgrade.toml
+    src: topgrade.toml.j2
   become: true
   tags:
     - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Topgrade settings file for Windows
-  ansible.windows.win_copy:
+  ansible.windows.win_template:
     dest: "{{ user_home }}/AppData/Roaming/topgrade.toml"
     force: true
-    owner: "{{ user_id }}"
-    src: topgrade.toml
+    src: topgrade.toml.j2
   tags:
     - config
   when: ansible_system == "Win32NT"
