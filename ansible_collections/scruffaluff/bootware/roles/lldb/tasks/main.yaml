@@ -5,12 +5,16 @@
     name:
       - lldb
       - py3-lldb
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install LLDB for FreeBSD
   become: true
   community.general.pkgng:
     name: llvm
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # TODO: Fix LLDB Python for Debian. LLDB Python works on Ubunut.
@@ -20,12 +24,16 @@
       - lldb
       - python3-lldb
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Install LLDB for Linux
   ansible.builtin.package:
     name: lldb
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "pacman"]
 
 # LLDB is included in LLVM Scoop package.
@@ -33,12 +41,16 @@
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: llvm
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Check if LLDB Python is installed for Windows
   ansible.windows.win_stat:
     path: "{{ scoop_apps }}/llvm/current/bin/python.exe"
   register: lldb_python_check
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 # On Windows LLDB crashes during startup if Python310 is not found in its
@@ -47,6 +59,8 @@
 # comes from
 # https://github.com/llvm/llvm-project/issues/61878#issuecomment-1492960093.
 - name: Install embedded Python 3.10 for Windows
+  tags:
+    - install
   when: ansible_system == "Win32NT" and not lldb_python_check.stat.exists
   block:
     - name: Get latest Python 3.10 version for Windows
@@ -77,6 +91,8 @@
     owner: "{{ user_id }}"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy LLDB settings files for Unix
@@ -93,6 +109,8 @@
       src: lldbinit
     - dest: .config/lldbinit.py
       src: lldbinit.py
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Create user config directory for Windows
@@ -100,6 +118,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy LLDB settings files for Windows
@@ -113,4 +133,6 @@
       src: lldbinit
     - dest: .config/lldbinit.py
       src: lldbinit.py
+  tags:
+    - config
   when: ansible_system == "Win32NT"

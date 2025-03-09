@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: helm
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Helm for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: helm_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Helm version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/helm.json
   register: helm_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Download Helm for Linux
@@ -29,6 +35,8 @@
     src: >-
       https://get.helm.sh/helm-v{{ helm_formula.json.versions.stable }}-linux-{{
       system_architecture }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Install Helm for Linux
@@ -39,6 +47,8 @@
     remote_src: true
     src: /tmp/linux-{{ system_architecture }}/helm
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and helm_linux is failed
 
 - name: Install Helm for MacOS
@@ -46,12 +56,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helm
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: helm
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Helm plugins for Unix
@@ -66,6 +80,8 @@
     helm_plugin_install.stderr
   loop: "{{ helm_plugins }}"
   register: helm_plugin_install
+  tags:
+    - plugin
   when: ansible_system != "Win32NT"
 
 - name: Install Helm plugins for Windows
@@ -78,4 +94,6 @@
     helm_plugin_install.stderr
   loop: "{{ helm_plugins }}"
   register: helm_plugin_install
+  tags:
+    - plugin
   when: ansible_system == "Win32NT"

@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: scc
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Get latest Scc version for Linux
@@ -11,6 +13,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/scc.json
   register: scc_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Scc for Linux
@@ -22,6 +26,8 @@
       https://github.com/boyter/scc/releases/download/v{{
       scc_formula.json.versions.stable }}/scc_Linux_{{
       scc_arch[system_architecture] }}.tar.gz
+  tags:
+    - install
   vars:
     scc_arch:
       amd64: x86_64
@@ -36,6 +42,8 @@
     remote_src: true
     src: /tmp/scc
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Scc for MacOS
@@ -43,10 +51,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: scc
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Scc for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: scc
+  tags:
+    - install
   when: ansible_system == "Win32NT"

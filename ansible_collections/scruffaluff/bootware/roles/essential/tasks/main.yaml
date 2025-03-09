@@ -4,6 +4,8 @@
     name: "{{ brew_user }}"
     create_home: true
   become: true
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Homebrew for MacOS
@@ -17,11 +19,15 @@
   changed_when: true
   failed_when: essential_homebrew.rc != 0
   register: essential_homebrew
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: chocolatey
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Scoop for Windows
@@ -48,18 +54,24 @@
   changed_when: true
   failed_when: essential_scoop.rc != 0
   register: essential_scoop
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Add Scoop global shims to path for Windows
   ansible.windows.win_path:
     elements: "C:\\ProgramData\\scoop\\shims"
     scope: machine
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Add Scoop user shims to path for Windows
   ansible.windows.win_path:
     elements: "{{ user_home }}\\scoop\\shims"
     scope: user
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 # Replaced temporarily by task below since win_scoop_bucket does not properly
@@ -74,12 +86,16 @@
 #     - extras
 #     - main
 #     - versions
+#   tags:
+#     - install
 #   when: ansible_system == "Win32NT"
 
 - name: Install Scoop bucket dependency for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: mingit
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Add essential Scoop buckets for Windows
@@ -97,12 +113,16 @@
     - main
     - versions
   register: essential_scoop_bucket
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Update package list for OpenWrt
   ansible.builtin.command: opkg update
   become: true
   changed_when: false
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
 - name: Install essential packages for FreeBSD
@@ -116,6 +136,8 @@
       - gzip
       - unzip
       - zip
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Remove bloatware packages for Linux
@@ -124,6 +146,8 @@
     state: absent
   become: true
   loop: "{{ bloatware_linux_packages }}"
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install essential packages for Linux
@@ -132,6 +156,8 @@
     state: present
   become: true
   loop: "{{ essential_linux_packages }}"
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install essential packages for MacOS
@@ -146,6 +172,8 @@
       - unzip
       - xz
       - zip
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install essential packages for Windows
@@ -161,6 +189,8 @@
       - vcredist
       - xz
       - zip
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create system binaries directory for Unix
@@ -169,4 +199,6 @@
     mode: "755"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"

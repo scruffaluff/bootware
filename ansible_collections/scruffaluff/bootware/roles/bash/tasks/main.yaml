@@ -5,6 +5,8 @@
     name:
       - bash
       - bash-completion
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Bash for Linux
@@ -13,6 +15,8 @@
       - bash
       - bash-completion
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
@@ -22,19 +26,25 @@
     name:
       - bash
       - bash-completion@2
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Bash for OpenWrt
   ansible.builtin.package:
     name: bash
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
-- name: Register Bash as a valid login shell
+- name: Register Bash as a valid login shell for Unix
   ansible.builtin.lineinfile:
     path: /etc/shells
     line: "{{ bash_executable }}"
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Copy Bash non-login settings file for Unix
@@ -46,6 +56,8 @@
     owner: "{{ user_id }}"
     src: bashrc
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Bash login settings file for Unix
@@ -57,25 +69,24 @@
     owner: "{{ user_id }}"
     src: bash_profile
   become: true
-  when: ansible_system != "Win32NT"
-
-- name: Register Bash as a valid login shell
-  ansible.builtin.lineinfile:
-    path: /etc/shells
-    line: "{{ bash_executable }}"
-  become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Install Shadow for Alpine
   become: true
   community.general.apk:
     name: shadow
+  tags:
+    - config
   when: ansible_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Install Shadow for OpenWrt
   become: true
   community.general.opkg:
     name: shadow-usermod
+  tags:
+    - config
   when: ansible_pkg_mgr == "opkg" and user_login == "bash"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
@@ -85,6 +96,8 @@
     cmd: chsh -s {{ bash_executable }} {{ user_id }}
   become: true
   changed_when: true
+  tags:
+    - config
   when: ansible_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Change user default shell to Bash for Unix
@@ -92,6 +105,8 @@
     name: "{{ user_id }}"
     shell: "{{ bash_executable }}"
   become: true
+  tags:
+    - config
   when: >-
     ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_login ==
     "bash"

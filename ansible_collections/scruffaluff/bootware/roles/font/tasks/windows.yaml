@@ -5,6 +5,8 @@
   register: font_check_windows
 
 - name: Install fonts for Windows
+  tags:
+    - install
   when: not font_check_windows.stat.exists
   block:
     - name: Download font archives for Windows

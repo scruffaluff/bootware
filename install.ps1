@@ -3,12 +3,13 @@
     Installs Bootware for Windows systems.
 #>
 
-
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 # Exit immediately if a PowerShell cmdlet encounters an error.
 $ErrorActionPreference = 'Stop'
+# Disable progress bar for PowerShell cmdlets.
+$ProgressPreference = 'SilentlyContinue'
 # Exit immediately when an native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
@@ -54,19 +55,10 @@ Run this script from an administrator console or execute with the '--user' flag.
     }
 }
 
-# Download file to destination efficiently.
-#
-# Required as a separate function, since the default progress bar updates every
-# byte, making downloads slow. For more information, visit
-# https://stackoverflow.com/a/43477248.
-Function DownloadFile($SrcURL, $DstFile) {
-    $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
-}
-
 # Print error message and exit script with usage error code.
 Function ErrorUsage($Message) {
-    Write-Error "Error: $Message"
+    Write-Output "error: $Message"
+    Write-Output "Run 'install --help' for usage"
     Exit 2
 }
 
@@ -80,7 +72,8 @@ Function InstallCompletion($Version) {
     )
     ForEach ($Path In $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
-        DownloadFile $PowerShellURL "$Path/BootwareCompletion.psm1"
+        Invoke-WebRequest -UseBasicParsing -OutFile `
+            "$Path/BootwareCompletion.psm1" -Uri $PowerShellURL
     }
 }
 
@@ -151,7 +144,7 @@ Function Main() {
     Log 'Installing Bootware...'
 
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
-    DownloadFile $Source $Dest
+    Invoke-WebRequest -UseBasicParsing -OutFile $Dest -Uri $Source
     InstallCompletion $Version
     Log "Installed $(bootware --version)."
 }

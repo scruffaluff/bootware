@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: obs-studio
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install OBS Studio for Linux
@@ -11,12 +13,16 @@
   become: true
   ignore_errors: true
   register: obs_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install OBS Studio for Linux
   become: true
   community.general.flatpak:
     name: com.obsproject.Studio
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and system_architecture == "amd64" and obs_linux
     is failed
@@ -26,10 +32,14 @@
     accept_external_apps: true
     name: obs
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install OBS Studio for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: obs-studio
+  tags:
+    - install
   when: ansible_system == "Win32NT"

@@ -3,7 +3,7 @@ BeforeAll {
     $Bootware = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../bootware.ps1")
     . $Bootware
 
-    Mock DownloadFile { }
+    Mock Invoke-WebRequest { }
     # Mocking Git appears to not work on Windows.
     Function git { Write-Output "git $Args" }
     Mock Test-Path { Write-Output 1 }
@@ -20,12 +20,15 @@ Describe 'Update' {
         $Actual | Should -Match 'Update Bootware to latest version'
     }
 
-    It 'Throw error for nonexistant option at end of call' {
-        { & $Bootware update -v develop notanoption } |
-            Should -Throw "Error: No such option 'notanoption'"
+    It 'Write error for nonexistant option at end of call' {
+        $Actual = & $Bootware update -v develop notanoption
+        $Actual | Should -Be @(
+            "error: No such option 'notanoption'",
+            "Run 'bootware --help' for usage"
+        )
     }
 
-    It 'Subcommand passes args to DownloadFile and Git' {
+    It 'Subcommand passes args to Invoke-WebRequest and Git' {
         If (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
         }
@@ -38,9 +41,9 @@ Describe 'Update' {
         $Expected = "git -C $BootwareDir/repo pull"
 
         $Actual = & $Bootware update --version main
-        Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -Eq "$BootwareDir/bootware.ps1" -And
-            $SrcURL -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.ps1'
+        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+            $OutFile -Eq "$BootwareDir/bootware.ps1" -And
+            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.ps1'
         }
 
         $Actual | Should -Be $Expected

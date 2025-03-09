@@ -12,6 +12,8 @@
       - qemu-system-x86_64
       - qemu-tools
       - qemu-x86_64
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install QEMU packages for Arch
@@ -25,6 +27,8 @@
       - qemu-system-x86
       - qemu-tools
       - qemu-user
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install QEMU for Debian
@@ -34,6 +38,8 @@
       - qemu-user
       - qemu-utils
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Install QEMU for Fedora
@@ -45,6 +51,8 @@
       - qemu-user
       - qemu-tools
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 # FreeBSD "qemu" package is incompatible with "qemu-tools" package.
@@ -54,6 +62,8 @@
     name:
       - qemu
       - qemu-user-static
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install QEMU for MacOS
@@ -61,6 +71,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: qemu
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 # Packages qemu-img and qemu-kvm are not available on Arm64 Suse.
@@ -74,10 +86,14 @@
       - qemu-tools
       - qemu-x86
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "zypper" and system_architecture == "amd64"
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: qemu
+  tags:
+    - install
   when: ansible_system == "Win32NT"

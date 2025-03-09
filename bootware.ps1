@@ -1,8 +1,15 @@
+<#
+.SYNOPSIS
+    Bootstrap software installations with Ansible.
+#>
+
 # If unable to execute due to policy rules, run
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser.
 
 # Exit immediately if a PowerShell cmdlet encounters an error.
 $ErrorActionPreference = 'Stop'
+# Disable progress bar for PowerShell cmdlets.
+$ProgressPreference = 'SilentlyContinue'
 # Exit immediately when an native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
@@ -133,6 +140,10 @@ Options:
   -v, --version <VERSION>   Version override for update
 '@
         }
+        Default {
+            Throw "No such usage option '$($Args[0])'"
+        }
+
     }
 }
 
@@ -383,7 +394,7 @@ Function Config() {
                 Break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                ErrorUsage "No such option '$($Args[0][$ArgIdx])'" 'config'
             }
         }
     }
@@ -402,23 +413,19 @@ Function Config() {
     }
     Else {
         # Log "Downloading configuration file to $DstFile"
-        DownloadFile $SrcURL $DstFile
+        Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
     }
 }
 
-# Download file to destination efficiently.
-#
-# Required as a separate function, since the default progress bar updates every
-# byte, making downloads slow. For more information, visit
-# https://stackoverflow.com/a/43477248.
-Function DownloadFile($SrcURL, $DstFile) {
-    $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
-}
-
 # Print error message and exit script with usage error code.
-Function ErrorUsage($Message) {
-    Write-Error "Error: $Message"
+Function ErrorUsage($Message, $Subcommand) {
+    Write-Output "error: $Message"
+    If ($Subcommand) {
+        Write-Output "Run 'bootware $Subcommand --help' for usage"
+    }
+    Else {
+        Write-Output "Run 'bootware --help' for usage"
+    }
     Exit 2
 }
 
@@ -583,8 +590,10 @@ Function Setup() {
         # more information, visit
         # https://github.com/ScoopInstaller/Install#for-admin.
         If (IsAdministrator) {
-            $ScoopInstaller = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.ps1'
-            DownloadFile 'get.scoop.sh' $ScoopInstaller
+            $ScoopInstaller = [System.IO.Path]::GetTempFileName() `
+                -Replace '.tmp', '.ps1'
+            Invoke-WebRequest -UseBasicParsing -OutFile $ScoopInstaller `
+                -Uri 'get.scoop.sh'
             & $ScoopInstaller -RunAsAdmin
             Remove-Item -Force -Path $ScoopInstaller
         }
@@ -801,9 +810,8 @@ Function SetupWSL($Branch) {
     If (-Not ($DistroCheck -Like $MatchString)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.msi'
         Log 'Downloading WSL update'
-        DownloadFile `
-            'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi' `
-            $TempFile
+        Invoke-WebRequest -UseBasicParsing -OutFile $TempFile -Uri `
+            'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
         Start-Process -Wait $TempFile /Passive
 
         Log 'Installing Debian distribution'
@@ -889,7 +897,8 @@ Function Update() {
     }
 
     $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
-    DownloadFile $SrcURL "$PSScriptRoot/bootware.ps1"
+    Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot/bootware.ps1" `
+        -Uri $SrcURL
     UpdateCompletion $Version
 
     # Update WSL copy of Bootware.
@@ -924,7 +933,8 @@ Function UpdateCompletion($Version) {
     )
     ForEach ($Path In $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
-        DownloadFile $PowerShellURL "$Path/BootwareCompletion.psm1"
+        Invoke-WebRequest -UseBasicParsing -OutFile `
+            "$Path/BootwareCompletion.psm1" -Uri $PowerShellURL
     }
 }
 

@@ -8,6 +8,8 @@
     owner: "{{ user_id }}"
     src: inputrc
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Readline configuration file for Windows
@@ -16,4 +18,6 @@
     force: true
     owner: "{{ user_id }}"
     src: inputrc
+  tags:
+    - config
   when: ansible_system == "Win32NT"

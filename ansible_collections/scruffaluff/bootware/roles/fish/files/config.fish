@@ -581,6 +581,8 @@ end
 
 # TypeScript settings.
 
+# Disable Deno update messages.
+set --export DENO_NO_UPDATE_CHECK true
 # Add Deno binaries to system path.
 prepend-paths "$HOME/.deno/bin"
 

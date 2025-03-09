@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: age
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Age for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: age_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Age version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/age.json
   register: age_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and age_linux is failed
 
 - name: Download Age for Linux
@@ -30,6 +36,8 @@
       https://github.com/FiloSottile/age/releases/download/v{{
       age_formula.json.versions.stable }}//age-v{{
       age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and age_linux is failed
 
 - name: Install Age for Linux
@@ -43,6 +51,8 @@
   loop:
     - age
     - age-keygen
+  tags:
+    - install
   when: ansible_system == "Linux" and age_linux is failed
 
 - name: Install Age for MacOS
@@ -50,10 +60,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: age
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Age for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: age
+  tags:
+    - install
   when: ansible_system == "Win32NT"

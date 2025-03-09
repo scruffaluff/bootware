@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: starship
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Starship for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: starship_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Starship version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/starship.json
   register: starship_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and starship_linux is failed
 
 - name: Download Starship for Linux
@@ -30,6 +36,8 @@
       https://github.com/starship/starship/releases/download/v{{
       starship_formula.json.versions.stable }}/starship-{{ starship_arch
       }}-unknown-linux-{{ starship_libc }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and starship_linux is failed
 
 - name: Install Starship for Linux
@@ -40,6 +48,8 @@
     remote_src: true
     src: /tmp/starship
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and starship_linux is failed
 
 - name: Install Starship for MacOS
@@ -47,48 +57,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: starship
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Starship for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: starship
-  when: ansible_system == "Win32NT"
-
-- name: Create Starship settings directory for Unix
-  ansible.builtin.file:
-    dest: "{{ user_home }}/.config"
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    state: directory
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Copy Starship settings file for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/starship.toml"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: starship.toml
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Create Starship settings directory for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config"
-    state: directory
-  when: ansible_system == "Win32NT"
-
-- name: Copy Starship settings file for Windows
-  ansible.windows.win_copy:
-    dest: "{{ user_home }}/.config/starship.toml"
-    force: true
-    owner: "{{ user_id }}"
-    src: starship.toml
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Nushell autoload directories for Unix
@@ -99,6 +77,8 @@
     path: "{{ nushell_user_autoload }}"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Generate Starship Nushell configuration for Unix
@@ -108,6 +88,8 @@
   changed_when: true
   environment:
     PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Nushell autoload directories for Windows
@@ -115,6 +97,8 @@
     owner: "{{ user_id }}"
     path: "{{ nushell_user_autoload }}"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Generate Starship Nushell configuration for Windows
@@ -126,4 +110,50 @@
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\starship\\current;{{ ansible_env.Path }}"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Starship settings directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Copy Starship settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/starship.toml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: starship.toml
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Create Starship settings directory for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config"
+    state: directory
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy Starship settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.config/starship.toml"
+    force: true
+    owner: "{{ user_id }}"
+    src: starship.toml
+  tags:
+    - config
   when: ansible_system == "Win32NT"

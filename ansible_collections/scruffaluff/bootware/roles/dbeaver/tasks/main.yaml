@@ -3,6 +3,8 @@
   become: true
   community.general.flatpak:
     name: io.dbeaver.DBeaverCommunity
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install DBeaver for MacOS
@@ -10,10 +12,14 @@
     accept_external_apps: true
     name: dbeaver-community
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install DBeaver for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: dbeaver
+  tags:
+    - install
   when: ansible_system == "Win32NT"

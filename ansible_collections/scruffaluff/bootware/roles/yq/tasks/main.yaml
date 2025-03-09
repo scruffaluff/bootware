@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: go-yq
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # TODO: Renable when Yq package in most distributions reaches version 4.0.0.
@@ -12,6 +14,8 @@
 #   become: true
 #   ignore_errors: true
 #   register: yq_linux
+#   tags:
+#     - install
 #   when: ansible_system == "Linux"
 
 - name: Get latest Yq version for Linux
@@ -20,6 +24,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/yq.json
   register: yq_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Yq for Linux
@@ -31,6 +37,8 @@
       https://github.com/mikefarah/yq/releases/download/v{{
       yq_formula.json.versions.stable }}/yq_linux_{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Yq for MacOS
@@ -38,12 +46,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yq
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: yq
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -55,6 +67,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Yq shell completions for Unix
@@ -67,6 +82,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Yq shell completions for Unix
@@ -82,4 +100,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/yq.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"

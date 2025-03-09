@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
   register: compass_cask_linux
+  tags:
+    - install
   when:
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
@@ -14,6 +16,8 @@
       https://downloads.mongodb.com/compass/mongodb-compass_{{
       compass_cask_linux.json.version }}_amd64.deb
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Fedora
@@ -23,6 +27,8 @@
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       compass_cask_linux.json.version }}.x86_64.rpm
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
@@ -30,6 +36,8 @@
     accept_external_apps: true
     name: mongodb-compass
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Get latest MongoDB Compass version for Windows
@@ -38,6 +46,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/cask/mongodb-compass.json
   register: compass_cask_windows
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install MongoDB Compass for Windows
@@ -45,4 +55,6 @@
     path: >-
       https://downloads.mongodb.com/compass/mongodb-compass-{{
       compass_cask_windows.json.version }}-win32-x64.msi
+  tags:
+    - install
   when: ansible_system == "Win32NT"

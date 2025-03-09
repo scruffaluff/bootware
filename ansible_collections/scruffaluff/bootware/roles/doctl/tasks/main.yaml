@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: doctl
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Digital Ocean CLI for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: doctl_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Digital Ocean CLI version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/doctl.json
   register: doctl_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Download Digital Ocean CLI for Linux
@@ -31,6 +37,8 @@
       doctl_formula.json.versions.stable }}/doctl-{{
       doctl_formula.json.versions.stable }}-linux-{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Install Digital Ocean CLI for Linux
@@ -41,6 +49,8 @@
     remote_src: true
     src: /tmp/doctl
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and doctl_linux is failed
 
 - name: Install Digital Ocean CLI for MacOS
@@ -48,12 +58,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: doctl
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Digital Ocean CLI for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: doctl
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -65,6 +79,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Digital Ocean CLI shell completions for Unix
@@ -77,6 +94,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Digital Ocean CLI shell completions for Unix
@@ -92,4 +112,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/doctl.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"

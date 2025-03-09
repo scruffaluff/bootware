@@ -6,6 +6,8 @@
       - git
       - git-delta
       - git-lfs
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Git for Linux
@@ -14,6 +16,8 @@
       - git
       - git-lfs
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Git Delta for Linux
@@ -22,6 +26,8 @@
   become: true
   ignore_errors: true
   register: git_delta_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Git Delta version for Linux
@@ -30,6 +36,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/git-delta.json
   register: git_delta_formula
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == "amd64") and git_delta_linux is failed
@@ -44,6 +52,8 @@
       git_delta_formula.json.versions.stable }}/delta-{{
       git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ system_libc }}.tar.gz
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == "amd64") and git_delta_linux is failed
@@ -58,6 +68,8 @@
       /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
       }}-unknown-linux-{{ system_libc }}/delta
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == "amd64") and git_delta_linux is failed
@@ -70,12 +82,16 @@
       - git
       - git-delta
       - git-lfs
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Git HTTP for OpenWrt
   community.general.opkg:
     name: git-http
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
 - name: Install Git for Windows
@@ -86,6 +102,8 @@
       - git-lfs
       - mingit
       - posh-git
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Copy Git configuration file for Unix
@@ -97,6 +115,8 @@
     owner: "{{ user_id }}"
     src: gitconfig.j2
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Git configuration file for Windows
@@ -105,6 +125,8 @@
     force: true
     owner: "{{ user_id }}"
     src: gitconfig.j2
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

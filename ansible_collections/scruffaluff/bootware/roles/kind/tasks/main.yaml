@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/kind.json
   register: kind_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Kind for Linux
@@ -16,6 +18,8 @@
       https://github.com/kubernetes-sigs/kind/releases/download/v{{
       kind_formula.json.versions.stable }}/kind-linux-{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Kind for MacOS
@@ -23,12 +27,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: kind
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Kind for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: kind
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -40,6 +48,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Generate Kind shell completions for Unix
@@ -51,6 +62,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Kind shell completions for Unix
@@ -66,4 +80,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/kind.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]

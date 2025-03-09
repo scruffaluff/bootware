@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/krew.json
   register: krew_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Krew for Linux
@@ -18,6 +20,8 @@
       https://github.com/kubernetes-sigs/krew/releases/download/v{{
       krew_formula.json.versions.stable }}/krew-linux_{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Krew for Linux
@@ -27,6 +31,8 @@
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_install"
   register: krew_install
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Krew for MacOS
@@ -34,12 +40,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: krew
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 # Krew does not yet work properly on Windows.
 # - name: Install Krew for Windows
 #   community.windows.win_scoop:
 #     name: krew
+#   tags:
+#     - install
 #   when: ansible_system == "Win32NT"
 
 - name: Install Kubectl plugins for Unix
@@ -52,6 +62,8 @@
     PATH: "{{ user_home }}/.krew/bin:{{ ansible_env.PATH }}"
   loop: "{{ krew_plugins }}"
   register: krew_plugin_install
+  tags:
+    - plugin
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 # - name: Install Kubectl plugins for Windows
 #   ansible.windows.win_command: kubectl-krew install {{ item }}
@@ -60,4 +72,6 @@
 #     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_env.Path }}"
 #   loop: "{{ krew_plugins }}"
 #   register: krew_plugin_install
+#   tags:
+#     - plugin
 #   when: ansible_system == "Win32NT"

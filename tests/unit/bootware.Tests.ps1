@@ -4,9 +4,12 @@ BeforeAll {
 }
 
 Describe 'Main' {
-    It 'Throw error for unknown subcommand' {
-        { & $Bootware notasubcommand } |
-            Should -Throw "Error: No such subcommand or option 'notasubcommand'"
+    It 'Write error for unknown subcommand' {
+        $Actual = & $Bootware notasubcommand
+        $Actual | Should -Be @(
+            "error: No such subcommand or option 'notasubcommand'",
+            "Run 'bootware --help' for usage"
+        )
     }
 }
 

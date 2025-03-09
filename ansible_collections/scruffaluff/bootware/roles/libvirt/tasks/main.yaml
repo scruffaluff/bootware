@@ -7,6 +7,8 @@
       - libvirt-client
       - virt-install
       - virt-viewer
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch
@@ -19,6 +21,8 @@
       - spice-gtk
       - virt-install
       - virt-viewer
+  tags:
+    - install
   when: ansible_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian
@@ -34,6 +38,8 @@
       - virt-viewer
       - virtinst
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 - name: Install Libvirt for FreeBSD
@@ -44,6 +50,8 @@
       - spice-gtk
       - virt-manager
       - virt-viewer
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Libvirt for Fedora
@@ -60,6 +68,8 @@
       - virt-top
       - virt-viewer
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Libvirt for MacOS
@@ -70,6 +80,8 @@
       - libvirt
       - spice-gtk
       - virt-manager
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Libvirt for Suse
@@ -85,10 +97,14 @@
       - virt-top
       - virt-viewer
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "zypper"
 
 - name: Install Libvirt for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: virt-viewer
+  tags:
+    - install
   when: ansible_system == "Win32NT"

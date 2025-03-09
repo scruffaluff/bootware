@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/k3sup.json
   register: k3sup_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install K3sup for Linux
@@ -17,6 +19,8 @@
       k3sup_formula.json.versions.stable }}/k3sup{{
       k3sup_arch[system_architecture] }}
   become: true
+  tags:
+    - install
   vars:
     k3sup_arch:
       amd64: ""
@@ -28,12 +32,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k3sup
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install K3sup for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: k3sup
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -45,6 +53,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create K3sup shell completions for Unix
@@ -57,6 +68,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install K3sup shell completions for Unix
@@ -72,4 +86,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/k3sup.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]

@@ -8,6 +8,8 @@
     owner: "{{ user_id }}"
     src: ignore
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy ignore file for Windows
@@ -16,4 +18,6 @@
     force: true
     owner: "{{ user_id }}"
     src: ignore
+  tags:
+    - config
   when: ansible_system == "Win32NT"

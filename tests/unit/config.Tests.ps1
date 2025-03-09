@@ -2,7 +2,7 @@ BeforeAll {
     $Bootware = "$PSScriptRoot/../../bootware.ps1"
     . $Bootware
 
-    Mock DownloadFile { }
+    Mock Invoke-WebRequest { }
 }
 
 Describe 'Config' {
@@ -18,19 +18,19 @@ Describe 'Config' {
         $Env:BOOTWARE_NOLOG = 1
 
         & $Bootware config --source 'https://example.com/config.yaml'
-        Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -Eq "$HOME/.bootware/config.yaml" -And
-            $SrcURL -Eq 'https://example.com/config.yaml'
+        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+            $OutFile -Eq "$HOME/.bootware/config.yaml" -And
+            $Uri -Eq 'https://example.com/config.yaml'
         }
     }
 
-    It 'Subcommand passes source to DownloadFile' {
+    It 'Subcommand passes source to Invoke-WebRequest' {
         $Env:BOOTWARE_NOLOG = 1
 
         & $Bootware config --source https://fakedomain.com
-        Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -Eq "$HOME/.bootware/config.yaml" -And
-            $SrcURL -Eq 'https://fakedomain.com'
+        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+            $OutFile -Eq "$HOME/.bootware/config.yaml" -And
+            $Uri -Eq 'https://fakedomain.com'
         }
     }
 }

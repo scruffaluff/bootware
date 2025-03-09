@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: mdbook
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Mdbook for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: mdbook_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Mdbook version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/mdbook.json
   register: mdbook_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and mdbook_linux is failed
 
 - name: Download Mdbook for Linux
@@ -31,6 +37,8 @@
       mdbook_formula.json.versions.stable }}/mdbook-v{{
       mdbook_formula.json.versions.stable }}-{{ mdbook_arch[system_architecture]
       }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
   vars:
     mdbook_arch:
       amd64: x86_64
@@ -45,6 +53,8 @@
     remote_src: true
     src: /tmp/mdbook
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and mdbook_linux is failed
 
 - name: Install Mdbook for MacOS
@@ -52,10 +62,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: mdbook
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Mdbook for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: mdbook
+  tags:
+    - install
   when: ansible_system == "Win32NT"

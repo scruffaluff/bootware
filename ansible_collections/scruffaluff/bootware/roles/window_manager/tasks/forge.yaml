@@ -7,11 +7,15 @@
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.
       changed_when: true
+      tags:
+        - install
 
     - name: Change Forge settings for GNOME desktops
       ansible.builtin.script: forge.sh
       become: true
       become_user: "{{ user_id }}"
+      tags:
+        - config
   rescue:
     - name: Get latest Forge extension version for GNOME desktops
       ansible.builtin.uri:
@@ -21,6 +25,8 @@
           https://extensions.gnome.org/extension-info/?uuid=forge@jmmaranan.com&shell_version={{
           gnome_version }}
       register: window_manager_forge_release
+      tags:
+        - install
 
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
@@ -29,6 +35,8 @@
         url:
           https://extensions.gnome.org{{
           window_manager_forge_release.json.download_url }}
+      tags:
+        - install
 
     - name: Install Forge extension for GNOME desktops
       ansible.builtin.command: >-
@@ -37,6 +45,8 @@
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.
       changed_when: true
+      tags:
+        - install
 
     - name: Notify user to log and back in
       ansible.builtin.fail:
@@ -44,3 +54,5 @@
           Enabling Forge extension may require a desktop session restart. Please
           log out of your current user session and log back in. Then execute
           this role again.
+      tags:
+        - install

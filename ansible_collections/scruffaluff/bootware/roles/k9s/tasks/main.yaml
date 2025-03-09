@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: k9s
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install K9s for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: k9s_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest K9s version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/k9s.json
   register: k9s_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Download K9s for Linux
@@ -30,6 +36,8 @@
       https://github.com/derailed/k9s/releases/download/v{{
       k9s_formula.json.versions.stable }}/k9s_Linux_{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for Linux
@@ -40,6 +48,8 @@
     remote_src: true
     src: /tmp/k9s
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for MacOS
@@ -47,12 +57,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k9s
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: k9s
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create K9s configuration directory for FreeBSD
@@ -63,6 +77,8 @@
     path: "{{ user_home }}/.k9s"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system == "FreeBSD"
 
 - name: Create K9s configuration directory for Linux
@@ -73,6 +89,8 @@
     path: "{{ user_home }}/.config/k9s"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system == "Linux"
 
 - name: Create K9s configuration directory for MacOS
@@ -83,6 +101,8 @@
     path: "{{ user_home }}/Library/Application Support/k9s"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Create K9s configuration directory for Windows
@@ -90,6 +110,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Local/k9s"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy K9s skin file for FreeBSD
@@ -101,6 +123,8 @@
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
+  tags:
+    - config
   when: ansible_system == "FreeBSD"
 
 - name: Copy K9s skin file for Linux
@@ -112,6 +136,8 @@
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
+  tags:
+    - config
   when: ansible_system == "Linux"
 
 - name: Copy K9s skin file for MacOS
@@ -123,6 +149,8 @@
     owner: "{{ user_id }}"
     src: skin.yml
   become: true
+  tags:
+    - config
   when: ansible_system == "Darwin"
 
 - name: Copy K9s skin file for Windows
@@ -131,4 +159,6 @@
     force: true
     owner: "{{ user_id }}"
     src: skin.yml
+  tags:
+    - config
   when: ansible_system == "Win32NT"

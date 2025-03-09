@@ -6,21 +6,27 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install GitUI for FreeBSD
   become: true
   community.general.pkgng:
     name: gitui
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
-# TODO: Renable when Fzf package in most distributions reaches version 0.25.0.
+# TODO: Renable when GitUI package in most distributions reaches version 0.25.0.
 # - name: Install GitUI for Linux
 #   ansible.builtin.package:
 #     name: gitui
 #   become: true
 #   ignore_errors: true
 #   register: gitui_linux
+#   tags:
+#     - install
 #   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest GitUI version for Linux
@@ -29,6 +35,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/gitui.json
   register: gitui_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 # GitUI cannot download to /tmp after several other roles have been executed.
@@ -36,6 +44,8 @@
   ansible.builtin.tempfile:
     state: directory
   register: gitui_temp
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download GitUI for Linux
@@ -47,6 +57,8 @@
       https://github.com/extrawurst/gitui/releases/download/v{{
       gitui_formula.json.versions.stable }}/gitui-linux-{{
       gitui_arch[system_architecture] }}.tar.gz
+  tags:
+    - install
   vars:
     gitui_arch:
       amd64: x86_64
@@ -61,6 +73,8 @@
     remote_src: true
     src: "{{ gitui_temp.path }}/gitui"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
@@ -68,12 +82,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitui
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install GitUI for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: gitui
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create GitUI configuration directory for Unix
@@ -84,6 +102,8 @@
     path: "{{ user_home }}/.config/gitui"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy GitUI configuration files for Unix
@@ -95,6 +115,8 @@
     owner: "{{ user_id }}"
     src: key_bindings.ron
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Create GitUI configuration directory for Windows
@@ -102,6 +124,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/gitui"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy GitUI configuration files for Windows
@@ -110,4 +134,6 @@
     force: true
     owner: "{{ user_id }}"
     src: key_bindings.ron
+  tags:
+    - config
   when: ansible_system == "Win32NT"

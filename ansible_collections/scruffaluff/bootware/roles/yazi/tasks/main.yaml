@@ -5,6 +5,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/yazi.json
   register: yazi_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
@@ -13,6 +15,8 @@
   become: true
   ignore_errors: true
   register: yazi_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Yazi for Linux
@@ -24,6 +28,8 @@
       https://github.com/sxyazi/yazi/releases/download/v{{
       yazi_formula.json.versions.stable }}/yazi-{{ yazi_arch }}-unknown-linux-{{
       yazi_libc }}.zip
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Yazi for Linux
@@ -37,6 +43,8 @@
   loop:
     - ya
     - yazi
+  tags:
+    - install
   when: ansible_system == "Linux" and yazi_linux is failed
 
 - name: Install Yazi for MacOS
@@ -44,6 +52,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yazi
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Yazi for Windows
@@ -52,6 +62,72 @@
     name:
       - file
       - yazi
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create shell completion directories for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Yazi shell completions for Linux
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
+      }}/completions/yazi.{{ item.shell }}
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/yazi"
+      shell: bash
+    - dest: "{{ fish_completion }}/yazi.fish"
+      shell: fish
+  tags:
+    - completion
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Yazi plugins for Unix
+  ansible.builtin.command: ya pack --add {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  environment:
+    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  tags:
+    - plugin
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Install Yazi plugins for Windows
+  ansible.windows.win_shell: ya pack --add {{ item }}
+  changed_when: "'Deploying package' in yazi_plugin_install"
+  environment:
+    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+  failed_when: >-
+    yazi_plugin_install.rc != 0 and 'already exists' not in
+    yazi_plugin_install.stderr
+  loop: "{{ yazi_plugins }}"
+  register: yazi_plugin_install
+  tags:
+    - plugin
   when: ansible_system == "Win32NT"
 
 - name: Create Yazi configuration directories for Unix
@@ -65,6 +141,8 @@
   loop:
     - yazi
     - yazi/plugins/smart-open.yazi
+  tags:
+    - config
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Copy Yazi configuration files for Unix
@@ -85,6 +163,8 @@
       src: yazi.toml
     - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
+  tags:
+    - config
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Yazi configuration directories for Windows
@@ -95,6 +175,8 @@
   loop:
     - config
     - config/plugins/smart-open.yazi
+  tags:
+    - configconfig
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
@@ -112,58 +194,6 @@
       src: yazi.toml
     - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
+  tags:
+    - config
   when: ansible_system == "Win32NT"
-
-- name: Install Yazi plugins for Unix
-  ansible.builtin.command: ya pack --add {{ item }}
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'Deploying package' in yazi_plugin_install"
-  environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  failed_when: >-
-    yazi_plugin_install.rc != 0 and 'already exists' not in
-    yazi_plugin_install.stderr
-  loop: "{{ yazi_plugins }}"
-  register: yazi_plugin_install
-  when: ansible_system in ["Darwin", "Linux"]
-
-- name: Install Yazi plugins for Windows
-  ansible.windows.win_shell: ya pack --add {{ item }}
-  changed_when: "'Deploying package' in yazi_plugin_install"
-  environment:
-    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
-  failed_when: >-
-    yazi_plugin_install.rc != 0 and 'already exists' not in
-    yazi_plugin_install.stderr
-  loop: "{{ yazi_plugins }}"
-  register: yazi_plugin_install
-  when: ansible_system == "Win32NT"
-
-- name: Create shell completion directories for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  when: ansible_system == "Linux"
-
-- name: Install Yazi shell completions for Linux
-  ansible.builtin.copy:
-    dest: "{{ item.dest }}"
-    force: true
-    mode: "644"
-    remote_src: true
-    src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
-      }}/completions/yazi.{{ item.shell }}
-  become: true
-  loop:
-    - dest: "{{ bash_completion }}/yazi"
-      shell: bash
-    - dest: "{{ fish_completion }}/yazi.fish"
-      shell: fish
-  when: ansible_system == "Linux"

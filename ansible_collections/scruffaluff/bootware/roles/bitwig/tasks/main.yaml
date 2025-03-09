@@ -3,6 +3,8 @@
   become: true
   community.general.flatpak:
     name: com.bitwig.BitwigStudio
+  tags:
+    - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
 - name: Install Bitwig for MacOS
@@ -10,9 +12,13 @@
     accept_external_apps: true
     name: bitwig-studio
     state: present
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Bitwig for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: bitwig
+  tags:
+    - install
   when: ansible_system == "Win32NT"

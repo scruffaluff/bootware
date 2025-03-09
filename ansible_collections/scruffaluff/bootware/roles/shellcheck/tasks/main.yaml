@@ -6,6 +6,8 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 # Ansible pkgng module is case sensitive to package names, but pkg cli is not.
@@ -13,6 +15,8 @@
   become: true
   community.general.pkgng:
     name: hs-ShellCheck
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install ShellCheck for Linux
@@ -21,6 +25,8 @@
       {{ 'ShellCheck' if ansible_pkg_mgr in ['dnf', 'zypper'] else 'shellcheck'
       }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install ShellCheck for MacOS
@@ -28,4 +34,6 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: shellcheck
+  tags:
+    - install
   when: ansible_system == "Darwin"

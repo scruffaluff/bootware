@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: uv
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Get latest Uv version for Linux
@@ -11,6 +13,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/uv.json
   register: python_uv_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download Uv for Linux
@@ -22,6 +26,8 @@
       https://github.com/astral-sh/uv/releases/download/{{
       python_uv_formula.json.versions.stable }}/uv-{{ python_uv_arch
       }}-unknown-linux-{{ system_libc }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Uv for Linux
@@ -37,6 +43,8 @@
   loop:
     - uv
     - uvx
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Uv for MacOS
@@ -44,12 +52,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: uv
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Uv for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: uv
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create user shell completion directories for Unix
@@ -64,6 +76,8 @@
     - "{{ bash_user_completion }}"
     - "{{ fish_user_completion }}"
     - "{{ nushell_user_autoload }}"
+  tags:
+    - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Generate Uv user shell completions for Unix
@@ -83,6 +97,8 @@
       shell: fish
     - path: "{{ nushell_user_autoload }}/uv.nu"
       shell: nushell
+  tags:
+    - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Create user shell completions directories for Windows
@@ -93,6 +109,8 @@
   loop:
     - "{{ nushell_user_autoload }}"
     - "{{ powershell_user_modules }}/UvCompletion"
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Generate Uv user shell completions for Windows
@@ -109,4 +127,6 @@
       shell: nushell
     - path: "{{ powershell_user_modules }}/UvCompletion/UvCompletion.psm1"
       shell: powershell
+  tags:
+    - install
   when: ansible_system == "Win32NT"

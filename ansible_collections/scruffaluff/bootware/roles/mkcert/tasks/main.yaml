@@ -5,6 +5,8 @@
   ansible.builtin.package:
     name: "{{ mkcert_dependencies[ansible_pkg_mgr] }}"
   become: true
+  tags:
+    - install
   vars:
     mkcert_dependencies:
       apk: nss-tools
@@ -22,6 +24,8 @@
   become: true
   ignore_errors: true
   register: mkcert_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Mkcert version for Linux
@@ -30,6 +34,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/mkcert.json
   register: mkcert_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for Linux
@@ -42,6 +48,8 @@
       mkcert_formula.json.versions.stable }}/mkcert-v{{
       mkcert_formula.json.versions.stable }}-linux-{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for MacOS
@@ -51,10 +59,14 @@
     name:
       - mkcert
       - nss
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Mkcert for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: mkcert
+  tags:
+    - install
   when: ansible_system == "Win32NT"

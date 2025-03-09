@@ -6,12 +6,16 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Duf for FreeBSD
   become: true
   community.general.pkgng:
     name: duf
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Duf for Linux
@@ -20,6 +24,8 @@
   become: true
   ignore_errors: true
   register: duf_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Duf version for Linux
@@ -28,6 +34,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/duf.json
   register: duf_formula
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
     failed
@@ -42,6 +50,8 @@
       duf_formula.json.versions.stable }}/duf_{{
       duf_formula.json.versions.stable }}_linux_{{ duf_arch[system_architecture]
       }}.tar.gz
+  tags:
+    - install
   vars:
     duf_arch:
       amd64: x86_64
@@ -58,6 +68,8 @@
     remote_src: true
     src: /tmp/duf
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
     failed
@@ -67,10 +79,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: duf
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Duf for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: duf
+  tags:
+    - install
   when: ansible_system == "Win32NT"

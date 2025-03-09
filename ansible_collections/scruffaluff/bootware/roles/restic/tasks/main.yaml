@@ -3,12 +3,16 @@
   become: true
   community.general.pkgng:
     name: restic
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Restic for Linux
   ansible.builtin.package:
     name: restic
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Restic for MacOS
@@ -16,12 +20,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: restic
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Restic for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: restic
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -33,6 +41,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Restic shell completions for Unix
@@ -45,6 +56,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Restic shell completions for Unix
@@ -60,4 +74,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/restic.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"

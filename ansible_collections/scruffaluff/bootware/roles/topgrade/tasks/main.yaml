@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: topgrade
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Topgrade for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: topgrade_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Topgrade version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/topgrade.json
   register: topgrade_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and topgrade_linux is failed
 
 - name: Download Topgrade for Linux
@@ -32,6 +38,8 @@
       topgrade_formula.json.versions.stable }}-{{
       topgrade_arch[system_architecture] }}-unknown-linux-{{ topgrade_libc
       }}.tar.gz
+  tags:
+    - install
   vars:
     topgrade_arch:
       amd64: x86_64
@@ -49,6 +57,8 @@
     remote_src: true
     src: /tmp/topgrade
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and topgrade_linux is failed
 
 - name: Install Topgrade for MacOS
@@ -56,29 +66,36 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: topgrade
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Topgrade for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: topgrade
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Copy Topgrade settings file for Unix
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: "{{ user_home }}/.config/topgrade.toml"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: topgrade.toml
+    src: topgrade.toml.j2
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Topgrade settings file for Windows
-  ansible.windows.win_copy:
+  ansible.windows.win_template:
     dest: "{{ user_home }}/AppData/Roaming/topgrade.toml"
     force: true
-    owner: "{{ user_id }}"
-    src: topgrade.toml
+    src: topgrade.toml.j2
+  tags:
+    - config
   when: ansible_system == "Win32NT"

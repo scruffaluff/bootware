@@ -7,12 +7,16 @@
   changed_when: false
   ignore_errors: true
   register: bat_less_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Less for Linux
   ansible.builtin.package:
     name: less
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and bat_less_linux is failed
 
 - name: Install Bat for FreeBSD
@@ -21,6 +25,8 @@
     name:
       - bat
       - less
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Bat for Linux
@@ -29,6 +35,8 @@
   become: true
   ignore_errors: true
   register: bat_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Bat version for Linux
@@ -37,6 +45,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/bat.json
   register: bat_formula
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
@@ -51,6 +61,8 @@
       bat_formula.json.versions.stable }}/bat-v{{
       bat_formula.json.versions.stable }}-{{ bat_arch }}-unknown-linux-{{
       system_libc }}.tar.gz
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
@@ -65,6 +77,8 @@
       /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
       }}-unknown-linux-{{ system_libc }}/bat
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
@@ -78,6 +92,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
@@ -97,6 +114,9 @@
       shell: bash
     - dest: "{{ fish_completion }}/bat.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: >-
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
@@ -111,6 +131,8 @@
     mode: "755"
     state: link
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apt"
 
 # Bat uses Less configuration for keybindings. MacOS default version of Less is
@@ -122,6 +144,8 @@
     name:
       - bat
       - less
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Bat for Windows
@@ -130,6 +154,8 @@
     name:
       - bat
       - less
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 # VSCode remote terminals for MacOS automatically prepend folders to the system
@@ -143,6 +169,8 @@
     mode: "755"
     state: link
   become: true
+  tags:
+    - install
   when: ansible_system == "Darwin" and ansible_architecture == "arm64"
 
 - name: Copy Less settings file for Unix
@@ -154,6 +182,8 @@
     owner: "{{ user_id }}"
     src: lesskey
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 # On Windows Less configuration files start with "_" instead of ".". For more
@@ -164,6 +194,8 @@
     force: true
     owner: "{{ user_id }}"
     src: lesskey
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Create Bat settings directory for Unix
@@ -174,6 +206,8 @@
     owner: "{{ user_id }}"
     state: directory
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Bat settings file for Unix
@@ -185,6 +219,8 @@
     owner: "{{ user_id }}"
     src: config
   become: true
+  tags:
+    - config
   when: ansible_system != "Win32NT"
 
 - name: Create Bat settings directory for Windows
@@ -192,6 +228,8 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/AppData/Roaming/bat"
     state: directory
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy Bat settings file for Windows
@@ -203,4 +241,6 @@
   loop:
     - "{{ user_home }}/AppData/Roaming/bat/config"
     - "{{ scoop_apps }}/bat/current/confg"
+  tags:
+    - config
   when: ansible_system == "Win32NT"

@@ -6,12 +6,16 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Htmlq for FreeBSD
   become: true
   community.general.pkgng:
     name: htmlq
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Htmlq for Linux
@@ -20,6 +24,8 @@
   become: true
   ignore_errors: true
   register: htmlq_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Htmlq version for Linux
@@ -28,6 +34,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/htmlq.json
   register: htmlq_formula
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and htmlq_linux is failed
@@ -40,6 +48,8 @@
     src: >-
       https://github.com/mgdm/htmlq/releases/download/v{{
       htmlq_formula.json.versions.stable }}/htmlq-x86_64-linux.tar.gz
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and htmlq_linux is failed
@@ -52,6 +62,8 @@
     remote_src: true
     src: /tmp/htmlq
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and htmlq_linux is failed
@@ -61,10 +73,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: htmlq
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Htmlq for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: htmlq
+  tags:
+    - install
   when: ansible_system == "Win32NT"

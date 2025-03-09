@@ -3,6 +3,8 @@
   become: true
   community.general.apk:
     name: build-base
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install build tools for FreeBSD
@@ -14,6 +16,8 @@
       - gmake
       - llvm
       - openocd
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install build tools for Linux
@@ -28,6 +32,8 @@
       - openocd
       - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
@@ -41,6 +47,8 @@
       - llvm
       - make
       - openocd
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install build tools for OpenWrt
@@ -51,6 +59,8 @@
       - openocd
       - pkg-config
   become: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
 - name: Install build tools with Chocolatey for Windows
@@ -60,6 +70,8 @@
       - visualstudio2022buildtools
       - visualstudio2022-workload-vctools
       - windows-sdk-10.1
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
@@ -72,6 +84,8 @@
       - make
       - openocd
       - pkg-config
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

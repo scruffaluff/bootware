@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: dive
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Dive for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: dive_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Dive version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/dive.json
   register: dive_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and dive_linux is failed
 
 - name: Download Dive for Linux
@@ -31,6 +37,8 @@
       dive_formula.json.versions.stable }}/dive_{{
       dive_formula.json.versions.stable }}_linux_{{ system_architecture
       }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and dive_linux is failed
 
 - name: Install Dive for Linux
@@ -41,6 +49,8 @@
     remote_src: true
     src: /tmp/dive
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and dive_linux is failed
 
 - name: Install Dive for MacOS
@@ -48,10 +58,14 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: dive
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Dive for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: dive
+  tags:
+    - install
   when: ansible_system == "Win32NT"

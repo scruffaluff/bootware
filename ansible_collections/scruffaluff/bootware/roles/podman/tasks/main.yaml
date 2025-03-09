@@ -3,12 +3,16 @@
   become: true
   community.general.pkgng:
     name: podman
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Podman for Linux
   ansible.builtin.package:
     name: podman
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Podman for MacOS
@@ -16,12 +20,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: podman
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Podman for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: podman
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -33,6 +41,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Generate Podman shell completions for Unix
@@ -47,6 +58,9 @@
       shell: bash
     - dest: "{{ fish_completion }}/podman.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Podman PowerShell user completions directory for Windows
@@ -54,6 +68,9 @@
     owner: "{{ user_id }}"
     path: "{{ powershell_user_modules }}/PodmanCompletion"
     state: directory
+  tags:
+    - completion
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Generate Podman PowerShell user completions module for Windows
@@ -63,4 +80,7 @@
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
+  tags:
+    - completion
+    - install
   when: ansible_system == "Win32NT"

@@ -465,7 +465,8 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
         # Show history based autocompletion for every typed character.
-        Set-PSReadLineOption -PredictionSource History
+        Set-PSReadLineOption -CommandValidationHandler $Null
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord Ctrl+j -Function BackwardChar
@@ -535,6 +536,11 @@ If ($Tty) {
         }
     }
 }
+
+# Typescript settings.
+
+# Disable Deno update messages.
+$Env:DENO_NO_UPDATE_CHECK = 'true'
 
 # Yazi settings.
 

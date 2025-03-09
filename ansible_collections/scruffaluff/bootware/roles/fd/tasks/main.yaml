@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: fd-find
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Get latest FD version for Linux
@@ -11,6 +13,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/fd.json
   register: fd_formula
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Download FD for Linux
@@ -22,6 +26,8 @@
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
       }}-{{ fd_arch }}-unknown-linux-{{ system_libc }}.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install FD for Linux
@@ -34,6 +40,8 @@
       /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ system_libc }}/fd
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install FD for MacOS
@@ -41,12 +49,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: fd
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install FD for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: fd
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Linux
@@ -58,6 +70,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Fd shell completions for Linux
@@ -75,4 +90,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/fd.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system == "Linux"

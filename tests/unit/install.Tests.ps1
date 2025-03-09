@@ -4,18 +4,21 @@ BeforeAll {
     . $Install
 
     Mock CheckEnvironment { }
-    Mock DownloadFile { }
+    Mock Invoke-WebRequest { }
     Mock New-Item { }
     Mock Test-Path { Write-Output 1 }
 }
 
 Describe 'Install' {
-    It 'Throw error for nonexistant option at end of call' {
-        { & $Install -v develop notanoption } |
-            Should -Throw "Error: No such option 'notanoption'"
+    It 'Write error for nonexistant option at end of call' {
+        $Actual = & $Install -v develop notanoption
+        $Actual | Should -Be @(
+            "error: No such option 'notanoption'",
+            "Run 'install --help' for usage"
+        )
     }
 
-    It 'Pass local path to DownloadFile' {
+    It 'Pass local path to Invoke-WebRequest' {
         If (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
         }
@@ -26,9 +29,9 @@ Describe 'Install' {
         $Env:BOOTWARE_NOLOG = 1
 
         & $Install --user --version develop
-        Assert-MockCalled DownloadFile -Times 1 -ParameterFilter {
-            $DstFile -Eq "$Env:AppData/Bootware/bootware.ps1" -And
-            $SrcURL -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.ps1'
+        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+            $OutFile -Eq "$Env:AppData/Bootware/bootware.ps1" -And
+            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.ps1'
         }
     }
 }

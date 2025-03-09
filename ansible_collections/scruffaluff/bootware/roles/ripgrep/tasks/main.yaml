@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: ripgrep
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Ripgrep for Linux
@@ -11,6 +13,8 @@
   become: true
   ignore_errors: true
   register: ripgrep_linux
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Get latest Ripgrep version for Linux
@@ -19,6 +23,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/ripgrep.json
   register: ripgrep_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Download Ripgrep for Linux
@@ -31,6 +37,8 @@
       ripgrep_formula.json.versions.stable }}/ripgrep-{{
       ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
       }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for Linux
@@ -43,6 +51,8 @@
       /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
       }}-unknown-linux-musl/rg
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for MacOS
@@ -50,31 +60,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: ripgrep
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Ripgrep for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: ripgrep
-  when: ansible_system == "Win32NT"
-
-- name: Copy Ripgrep settings file for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.ripgreprc"
-    force: true
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    src: ripgreprc
-  become: true
-  when: ansible_system != "Win32NT"
-
-- name: Copy Ripgrep settings file for Windows
-  ansible.windows.win_copy:
-    dest: "{{ user_home }}/.ripgreprc"
-    force: true
-    owner: "{{ user_id }}"
-    src: ripgreprc
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Download Rgi script for Unix
@@ -84,18 +79,24 @@
     mode: "755"
     url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.sh
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create PowerShell scripts directory for Windows
   ansible.windows.win_file:
     path: "C:/Program Files/PowerShell/Scripts"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
-- name: Update system path to include PowerShell scripts directory for Windows
+- name: Add PowerShell scripts to system path for Windows
   ansible.windows.win_path:
     elements: "C:\\Program Files\\PowerShell\\Scripts"
     scope: machine
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Download Rgi script for Windows
@@ -104,6 +105,8 @@
     force: true
     url: >-
       https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.ps1
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -115,6 +118,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep shell completions for Unix
@@ -132,4 +138,30 @@
       shell: bash
     - dest: "{{ fish_completion }}/rg.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
+
+- name: Copy Ripgrep settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: ripgreprc
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Copy Ripgrep settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}/.ripgreprc"
+    force: true
+    owner: "{{ user_id }}"
+    src: ripgreprc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

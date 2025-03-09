@@ -6,12 +6,16 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Just for FreeBSD
   become: true
   community.general.pkgng:
     name: just
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # TODO: Renable when Just package in most distributions reaches version 1.38.
@@ -21,6 +25,8 @@
 #   become: true
 #   ignore_errors: true
 #   register: just_linux
+#   tags:
+#     - install
 #   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Just version for Linux
@@ -29,6 +35,8 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/just.json
   register: just_formula
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Download Just for Linux
@@ -41,6 +49,8 @@
       just_formula.json.versions.stable }}/just-{{
       just_formula.json.versions.stable }}-{{ just_arch
       }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Just for Linux
@@ -51,6 +61,8 @@
     remote_src: true
     src: /tmp/just
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install Just for MacOS
@@ -58,12 +70,16 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: just
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Just for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: just
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -75,6 +91,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Generate Just shell completions for Unix
@@ -86,6 +105,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Just shell completions for Unix
@@ -101,4 +123,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/just.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"

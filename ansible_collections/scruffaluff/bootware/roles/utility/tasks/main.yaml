@@ -5,6 +5,8 @@
     name:
       - htop
       - rsync
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install utilities for Linux
@@ -13,6 +15,8 @@
       - htop
       - rsync
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install utilities for MacOS
@@ -22,4 +26,6 @@
     name:
       - htop
       - rsync
+  tags:
+    - install
   when: ansible_system == "Darwin"

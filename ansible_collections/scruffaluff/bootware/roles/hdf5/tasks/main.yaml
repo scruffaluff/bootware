@@ -3,6 +3,8 @@
   become: true
   community.general.pkgng:
     name: h5utils
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 # Alpine HDF5 package does not contain command line tools. It only contains
@@ -11,6 +13,8 @@
   ansible.builtin.package:
     name: "{{ 'hdf5-tools' if ansible_pkg_mgr == 'apt' else 'hdf5' }}"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Install H5Dump for MacOS
@@ -18,4 +22,6 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: hdf5
+  tags:
+    - install
   when: ansible_system == "Darwin"

@@ -5,6 +5,8 @@
     name:
       - node22
       - npm-node22
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Node for Linux
@@ -13,6 +15,8 @@
       - nodejs
       - "{{ 'nodejs-npm' if ansible_pkg_mgr in ['dnf'] else 'npm' }}"
   become: true
+  tags:
+    - install
   when: ansible_system == "Linux"
 
 - name: Install Node for MacOS
@@ -20,6 +24,8 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: node
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Node for OpenWrt
@@ -28,12 +34,16 @@
     name:
       - node
       - node-npm
+  tags:
+    - install
   when: ansible_pkg_mgr == "opkg"
 
 - name: Install Node for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: nodejs
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Node applications directory for Unix
@@ -44,6 +54,8 @@
     path: "{{ user_home }}/.npm/global"
     state: directory
   become: true
+  tags:
+    - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Configure Node applications directory for Unix
@@ -63,6 +75,8 @@
       line: prefix = "{{ user_home }}/.npm/global"
     - key: update-notifier
       line: update-notifier = false
+  tags:
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Node applications directory for Windows
@@ -70,12 +84,16 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.npm/global"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Update user path to include Node applications for Windows
   ansible.windows.win_path:
     elements: "{{ user_home }}\\.npm\\global"
     scope: user
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Configure Node applications directory for Windows
@@ -92,6 +110,8 @@
         prefix = "{{ user_home | replace(node_backslash, '/') }}/.npm/global"
     - key: update-notifier
       line: update-notifier = false
+  tags:
+    - install
   vars:
     node_backslash: "\\"
   when: ansible_system == "Win32NT"
@@ -104,6 +124,8 @@
   # Command always marks application as changed.
   changed_when: true
   loop: "{{ ['pnpm'] + node_applications }}"
+  tags:
+    - plugin
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Install Node applications for Windows
@@ -113,6 +135,8 @@
   environment:
     Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
   loop: "{{ ['pnpm'] + node_applications }}"
+  tags:
+    - plugin
   when: ansible_system == "Win32NT"
 
 - name: Create user shell completion directories for Unix
@@ -126,6 +150,9 @@
   loop:
     - "{{ bash_user_completion }}"
     - "{{ fish_user_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Generate PNPM user shell completions for Unix
@@ -141,6 +168,9 @@
       shell: bash
     - path: "{{ fish_user_completion }}/pnpm.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT" and user_id != "root"
 
 - name: Mark role as executed to prevent reruns

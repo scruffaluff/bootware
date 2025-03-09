@@ -6,6 +6,8 @@
     return_content: true
     url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
   register: kubeshark_release_unix
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Kubeshark for Unix
@@ -18,6 +20,8 @@
       kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
       lower }}_{{ system_architecture }}
   become: true
+  tags:
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Get latest Kubeshark version for Windows
@@ -27,18 +31,24 @@
     return_content: true
     url: https://api.github.com/repos/kubeshark/kubeshark/releases/latest
   register: kubeshark_release_windows
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
     path: "C:/Program Files/Kubeshark"
     state: directory
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
-- name: Update system path to include Kubeshark program directory for Windows
+- name: Add Kubeshark to system path for Windows
   ansible.windows.win_path:
     elements: "C:\\Program Files\\Kubeshark"
     scope: machine
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Install Kubeshark for Windows
@@ -47,6 +57,8 @@
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
+  tags:
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
@@ -58,6 +70,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Create Kubeshark shell completions for Unix
@@ -70,6 +85,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Kubeshark shell completions for Unix
@@ -85,4 +103,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/kubeshark.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system in ["Darwin", "Linux"]

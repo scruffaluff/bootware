@@ -6,12 +6,16 @@
     repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
     state: latest
     update_cache: true
+  tags:
+    - install
   when: ansible_pkg_mgr == "apk"
 
 - name: Install Kubectl for FreeBSD
   become: true
   community.general.pkgng:
     name: kubectl
+  tags:
+    - install
   when: ansible_system == "FreeBSD"
 
 - name: Install Kubectl for Linux
@@ -20,6 +24,8 @@
   become: true
   ignore_errors: true
   register: kubectl_linux
+  tags:
+    - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
 - name: Get latest Kubectl version for Linux
@@ -28,6 +34,8 @@
     return_content: true
     url: https://dl.k8s.io/release/stable.txt
   register: kubectl_version
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and kubectl_linux is
     failed
@@ -41,6 +49,8 @@
       https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
       system_architecture }}/kubectl
   become: true
+  tags:
+    - install
   when: >-
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and kubectl_linux is
     failed
@@ -50,19 +60,17 @@
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: kubectl
+  tags:
+    - install
   when: ansible_system == "Darwin"
 
 - name: Install Kubectl for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: kubectl
+  tags:
+    - install
   when: ansible_system == "Win32NT"
-
-- name: Check if Fish executable is available
-  ansible.builtin.stat:
-    path: "{{ fish_executable }}"
-  register: kubectl_fish
-  when: ansible_system != "Win32NT"
 
 - name: Create shell completion directories for Unix
   ansible.builtin.file:
@@ -73,6 +81,9 @@
   loop:
     - "{{ bash_completion }}"
     - "{{ fish_completion }}"
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Create Kubectl shell completions for Unix
@@ -85,6 +96,9 @@
   loop:
     - bash
     - fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
 
 - name: Install Kubectl shell completions for Unix
@@ -100,4 +114,7 @@
       shell: bash
     - dest: "{{ fish_completion }}/kubectl.fish"
       shell: fish
+  tags:
+    - completion
+    - install
   when: ansible_system != "Win32NT"
