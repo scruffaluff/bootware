@@ -810,7 +810,7 @@ Function SetupWSL($Branch) {
     If (-Not ($DistroCheck -Like $MatchString)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -Replace '.tmp', '.msi'
         Log 'Downloading WSL update'
-        Invoke-WebRequest -UseBasicParsing -OutFile $TempFile -Uri  
+        Invoke-WebRequest -UseBasicParsing -OutFile $TempFile -Uri `
             'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
         Start-Process -Wait $TempFile /Passive
 

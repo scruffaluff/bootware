@@ -20,9 +20,12 @@ Describe 'Update' {
         $Actual | Should -Match 'Update Bootware to latest version'
     }
 
-    It 'Throw error for nonexistant option at end of call' {
-        { & $Bootware update -v develop notanoption } |
-            Should -Throw "Error: No such option 'notanoption'"
+    It 'Write error for nonexistant option at end of call' {
+        $Actual = & $Bootware update -v develop notanoption
+        $Actual | Should -Be @(
+            "error: No such option 'notanoption'",
+            "Run 'bootware --help' for usage"
+        )
     }
 
     It 'Subcommand passes args to Invoke-WebRequest and Git' {

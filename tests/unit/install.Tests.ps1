@@ -10,9 +10,12 @@ BeforeAll {
 }
 
 Describe 'Install' {
-    It 'Throw error for nonexistant option at end of call' {
-        { & $Install -v develop notanoption } |
-            Should -Throw "Error: No such option 'notanoption'"
+    It 'Write error for nonexistant option at end of call' {
+        $Actual = & $Install -v develop notanoption
+        $Actual | Should -Be @(
+            "error: No such option 'notanoption'",
+            "Run 'install --help' for usage"
+        )
     }
 
     It 'Pass local path to Invoke-WebRequest' {
