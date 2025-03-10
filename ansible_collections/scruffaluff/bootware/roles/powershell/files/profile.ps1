@@ -464,8 +464,9 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 
     # Features are only available for PowerShell 7.0 and later.
     If ($PSVersionTable.PSVersion.Major -GE 7) {
-        # Show history based autocompletion for every typed character.
+        # Disable command not found suggestions.
         Set-PSReadLineOption -CommandValidationHandler $Null
+        # Show history based autocompletion for every typed character.
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
