@@ -98,21 +98,31 @@
     type: string
   loop:
     - data: nufile
-      path: "HKCR:\\.nu"
+      path: "HKLM:\\Software\\Classes\\.nu"
     - data: '"{{ nushell_executable }}" "%1" %*'
-      path: "HKCR:\\nufile\\shell\\open\\command"
+      path: "HKLM:\\Software\\Classes\\nufile\\shell\\open\\command"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
 - name: Add Nushell files to system path for Windows
-  ansible.windows.win_environment:
-    level: machine
-    name: PATHEXT
-    value: "{{ ansible_env.PATHEXT }};.NU"
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.NU*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.NU", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in nushell_pathext"
+  register: nushell_pathext
   tags:
     - install
-  when: ansible_system == "Win32NT" and '.NU' not in ansible_env.PATHEXT
+  when: ansible_system == "Win32NT"
 
 - name: Create Nushell configuration directory for MacOS
   ansible.builtin.file:

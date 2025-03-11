@@ -100,21 +100,31 @@
     type: string
   loop:
     - data: tsfile
-      path: "HKCR:\\.ts"
+      path: "HKLM:\\Software\\Classes\\.ts"
     - data: '"C:\Program Files\Deno\bin\deno.exe" run --allow-all "%1" %*'
-      path: "HKCR:\\tsfile\\shell\\open\\command"
+      path: "HKLM:\\Software\\Classes\\tsfile\\shell\\open\\command"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
 - name: Add TypeScript files to system path for Windows
-  ansible.windows.win_environment:
-    level: machine
-    name: PATHEXT
-    value: "{{ ansible_env.PATHEXT }};.TS"
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.TS*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.TS", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in deno_pathext"
+  register: deno_pathext
   tags:
     - install
-  when: ansible_system == "Win32NT" and '.TS' not in ansible_env.PATHEXT
+  when: ansible_system == "Win32NT"
 
 - name: Create shell completion directories for Unix
   ansible.builtin.file:

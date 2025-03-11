@@ -74,7 +74,7 @@ If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
 }
 
 # Remove Cortana from Windows search.
-$SearchPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
+$SearchPath = 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
 If (Test-Path $SearchPath) {
     Set-ItemProperty -Name AllowCortana -Path $SearchPath -Type DWord -Value 0
 }
@@ -100,20 +100,16 @@ If (Test-Path $ContentPath) {
     Set-ItemProperty -Name 'SystemPaneSuggestionsEnabled' -Path $ContentPath -Type DWord -Value 0
 }
 
-If (-Not (Test-Path 'HKCR:')) {
-    New-PSDrive -Name 'HKCR' -PSProvider Registry -Root HKEY_CLASSES_ROOT
-}
-
 # Remove "Open in" application context keys from File Explorer.
 $ContextKeys = @(
-    'HKCR:\Directory\shell\AnyCode' # Visual Studio
-    'HKCR:\Directory\Background\shell\AnyCode' # Visual Studio
-    'HKCR:\Directory\shell\git_gui' # Git Bash
-    'HKCR:\Directory\Background\shell\git_gui' # Git Bash
-    'HKCR:\Directory\shell\git_shell' # Git Bash
-    'HKCR:\Directory\Background\shell\git_shell' # Git Bash
-    'HKCR:\Directory\shell\PowerShell7x64' # PowerShell 7
-    'HKCR:\Directory\Background\shell\PowerShell7x64' # PowerShell 7
+    'HKCU:\Software\Classes\Directory\shell\AnyCode' # Visual Studio
+    'HKCU:\Software\Classes\Directory\Background\shell\AnyCode' # Visual Studio
+    'HKCU:\Software\Classes\Directory\shell\git_gui' # Git Bash
+    'HKCU:\Software\Classes\Directory\Background\shell\git_gui' # Git Bash
+    'HKCU:\Software\Classes\Directory\shell\git_shell' # Git Bash
+    'HKCU:\Software\Classes\Directory\Background\shell\git_shell' # Git Bash
+    'HKCU:\Software\Classes\Directory\shell\PowerShell7x64' # PowerShell 7
+    'HKCU:\Software\Classes\Directory\Background\shell\PowerShell7x64' # PowerShell 7
 )
 
 ForEach ($ContextKey In $ContextKeys) {

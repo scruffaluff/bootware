@@ -142,21 +142,31 @@
     type: string
   loop:
     - data: pyfile
-      path: "HKCR:\\.py"
+      path: "HKLM:\\Software\\Classes\\.py"
     - data: '"C:\ProgramData\scoop\shims\python3.exe" "%1" %*'
-      path: "HKCR:\\pyfile\\shell\\open\\command"
+      path: "HKLM:\\Software\\Classes\\pyfile\\shell\\open\\command"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
 - name: Add Python files to system path for Windows
-  ansible.windows.win_environment:
-    level: machine
-    name: PATHEXT
-    value: "{{ ansible_env.PATHEXT }};.PY"
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.PY*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.PY", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in python_pathext"
+  register: python_pathext
   tags:
     - install
-  when: ansible_system == "Win32NT" and '.PY' not in ansible_env.PATHEXT
+  when: ansible_system == "Win32NT"
 
 - name: Create user binaries directory for Unix
   ansible.builtin.file:
