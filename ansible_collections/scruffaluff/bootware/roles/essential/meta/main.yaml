@@ -1,4 +1,3 @@
 ---
 dependencies:
-  - role: variable
   - role: path

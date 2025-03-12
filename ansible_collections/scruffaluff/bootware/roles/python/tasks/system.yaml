@@ -168,35 +168,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create user binaries directory for Unix
-  ansible.builtin.file:
-    dest: "{{ user_home }}/.local/bin"
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    state: directory
-  become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
-
-- name: Create user binaries directory for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.local/bin"
-    state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Add user binaries to user path for Windows
-  ansible.windows.win_path:
-    elements: "{{ user_home }}\\.local\\bin"
-    scope: user
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Install Python applications for Unix
   ansible.builtin.shell: # noqa command-instead-of-shell
     cmd: >-

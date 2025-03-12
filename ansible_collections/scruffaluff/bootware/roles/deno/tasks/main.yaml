@@ -93,12 +93,16 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Register TypeScript files as executables for Windows
+- name: Register JavaScript and TypeScript files as executables for Windows
   ansible.windows.win_regedit:
     data: "{{ item.data }}"
     path: "{{ item.path }}"
     type: string
   loop:
+    - data: jsfile
+      path: "HKLM:\\Software\\Classes\\.js"
+    - data: '"C:\Program Files\Deno\bin\deno.exe" run --allow-all "%1" %*'
+      path: "HKLM:\\Software\\Classes\\jsfile\\shell\\open\\command"
     - data: tsfile
       path: "HKLM:\\Software\\Classes\\.ts"
     - data: '"C:\Program Files\Deno\bin\deno.exe" run --allow-all "%1" %*'
@@ -111,16 +115,19 @@
 # ansible.windows.win_environment for PATHEXT in other roles will overwrite
 # changes made here. Thus ansible.windows.win_environment cannot be used to
 # extend PATHEXT.
-- name: Add TypeScript files to system path for Windows
+- name: Add JavaScript and TypeScript files to system path for Windows
   ansible.windows.win_shell: |
     $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
-    If (-Not ($PathExt -Like "*.TS*")) {
+    If (-Not ($PathExt -Like "*.{{ item }}*")) {
       [System.Environment]::SetEnvironmentVariable(
-        'PATHEXT', "$PathExt;.TS", 'Machine'
+        'PATHEXT', "$PathExt;.{{ item }}", 'Machine'
       )
       Write-Output 'PATHEXT updated'
     }
   changed_when: "'PATHEXT updated' in deno_pathext"
+  loop:
+    - JS
+    - TS
   register: deno_pathext
   tags:
     - install

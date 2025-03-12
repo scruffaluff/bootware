@@ -83,25 +83,9 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Create PowerShell scripts directory for Windows
-  ansible.windows.win_file:
-    path: "C:/Program Files/PowerShell/Scripts"
-    state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Add PowerShell scripts to system path for Windows
-  ansible.windows.win_path:
-    elements: "C:\\Program Files\\PowerShell\\Scripts"
-    scope: machine
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Download Rgi script for Windows
   ansible.windows.win_get_url:
-    dest: "C:/Program Files/PowerShell/Scripts/rgi.ps1"
+    dest: "C:/Program Files/Bin/rgi.ps1"
     force: true
     url: >-
       https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.ps1

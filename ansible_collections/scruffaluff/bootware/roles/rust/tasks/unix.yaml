@@ -49,18 +49,6 @@
   tags:
     - install
 
-- name: Create user binaries directory for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.local/bin"
-    state: directory
-  become: true
-  tags:
-    - plugin
-  when: ansible_system in ["Darwin", "Linux"]
-
 - name: Get latest Cargo Binstall version for Unix
   ansible.builtin.uri:
     method: GET

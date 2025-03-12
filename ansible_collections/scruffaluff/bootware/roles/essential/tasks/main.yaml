@@ -58,18 +58,23 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Add Scoop global shims to path for Windows
+- name: Add Scoop shims to path for Windows
   ansible.windows.win_path:
-    elements: "C:\\ProgramData\\scoop\\shims"
-    scope: machine
+    elements: "{{ item.elements }}"
+    scope: "{{ item.scope }}"
+  loop:
+    - elements: "C:\\ProgramData\\scoop\\shims"
+      scope: machine
+    - elements: "{{ user_home }}\\scoop\\shims"
+      scope: user
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Add Scoop user shims to path for Windows
-  ansible.windows.win_path:
-    elements: "{{ user_home }}\\scoop\\shims"
-    scope: user
+- name: Install Scoop bucket dependency for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: mingit
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -89,14 +94,6 @@
 #   tags:
 #     - install
 #   when: ansible_system == "Win32NT"
-
-- name: Install Scoop bucket dependency for Windows
-  community.windows.win_scoop:
-    global: "{{ scoop_global }}"
-    name: mingit
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
 
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: scoop bucket add {{ item }}
@@ -192,13 +189,3 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
-
-- name: Create system binaries directory for Unix
-  ansible.builtin.file:
-    dest: /usr/local/bin
-    mode: "755"
-    state: directory
-  become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
