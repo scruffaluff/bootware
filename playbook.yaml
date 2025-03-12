@@ -777,6 +777,16 @@
         - server
         - wsl
 
+    - name: Create standard operating system paths
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.path
+      tags:
+        - container
+        - desktop
+        - path
+        - server
+        - wsl
+
     - name: Install Podman container platform
       ansible.builtin.import_role:
         name: scruffaluff.bootware.podman

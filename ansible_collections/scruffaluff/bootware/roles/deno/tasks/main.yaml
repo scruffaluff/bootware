@@ -111,6 +111,24 @@
     - install
   when: ansible_system == "Win32NT"
 
+# By default, Windows associates Ts files as video files with Windows Media
+# Player. This issue is unsolved, but manually setting Deno for Ts files with
+# the "Default Apps" setting UI works.
+- name: Fix TypeScript files associations for Windows
+  ansible.windows.win_regedit:
+    data: "{{ item.data }}"
+    name: "{{ item.name }}"
+    path: "HKLM:\\Software\\Classes\\.ts"
+    type: string
+  loop:
+    - data: text/plain
+      name: Content Type
+    - data: text
+      name: PerceivedType
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 # Since ansible_env.Path is fixed on play connection, using
 # ansible.windows.win_environment for PATHEXT in other roles will overwrite
 # changes made here. Thus ansible.windows.win_environment cannot be used to
