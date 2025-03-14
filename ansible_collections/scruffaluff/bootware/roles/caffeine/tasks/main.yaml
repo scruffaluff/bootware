@@ -78,7 +78,7 @@
     dest: /usr/local/bin/caffeinate
     force: true
     mode: "755"
-    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.sh
+    url: https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/caffeinate.sh
   become: true
   tags:
     - install
@@ -89,7 +89,7 @@
     dest: "C:/Program Files/Bin/caffeinate.ps1"
     force: true
     url: >-
-      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.ps1
+      https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/caffeinate.ps1
   tags:
     - install
   when: ansible_system == "Win32NT"

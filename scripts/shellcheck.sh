@@ -11,7 +11,6 @@ set -eu
 
 #######################################
 # Show CLI help information.
-# Cannot use function name help, since help is a pre-existing command.
 # Outputs:
 #   Writes help information to stdout.
 #######################################

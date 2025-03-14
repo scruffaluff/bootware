@@ -77,7 +77,7 @@
     dest: /usr/local/bin/rgi
     force: true
     mode: "755"
-    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.sh
+    url: https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/rgi.sh
   become: true
   tags:
     - install
@@ -88,7 +88,7 @@
     dest: "C:/Program Files/Bin/rgi.ps1"
     force: true
     url: >-
-      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/rgi.ps1
+      https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/rgi.ps1
   tags:
     - install
   when: ansible_system == "Win32NT"
