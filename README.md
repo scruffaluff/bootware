@@ -1,15 +1,7 @@
 # Bootware
 
-![](https://img.shields.io/github/repo-size/scruffaluff/bootware)
 ![](https://img.shields.io/github/license/scruffaluff/bootware)
-
----
-
-**Documentation**: https://scruffaluff.github.io/bootware
-
-**Source Code**: https://github.com/scruffaluff/bootware
-
----
+![](https://img.shields.io/github/repo-size/scruffaluff/bootware)
 
 Bootware is a set of shell scripts for bootstrapping software installations with
 Ansible. Bootware makes it easy to install software, settings, and configuration

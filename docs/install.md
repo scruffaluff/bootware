@@ -5,20 +5,12 @@ command will download the shell scripts and add them to the system path.
 
 ::: code-group
 
-```sh [FreeBSD]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
-```
-
-```sh [Linux]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
-```
-
-```sh [MacOS]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh
+```sh [Unix]
+curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh
 ```
 
 ```powershell [Windows]
-iwr -useb https://raw.githubusercontent.com/scruffaluff/bootware/main/install.ps1 | iex
+iwr -useb https://scruffaluff.github.io/bootware/install.ps1 | iex
 ```
 
 :::
@@ -28,20 +20,12 @@ to the script by replacing the `--help` argument.
 
 ::: code-group
 
-```sh [FreeBSD]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
-```
-
-```sh [Linux]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
-```
-
-```sh [MacOS]
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/main/install.sh | sh -s -- --help
+```sh [Unix]
+curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- --help
 ```
 
 ```powershell [Windows]
-powershell { & ([ScriptBlock]::Create((iwr -useb https://raw.githubusercontent.com/scruffaluff/bootware/main/install.ps1))) "--help" }
+powershell { & ([ScriptBlock]::Create((iwr -useb https://scruffaluff.github.io/bootware/install.ps1))) "--help" }
 ```
 
 :::

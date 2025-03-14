@@ -21,6 +21,7 @@ dist version:
 
 # Build documentation.
 docs:
+  cp install.ps1 install.sh assets/
   npx tsx scripts/build_docs.ts
 
 # Check code formatting.
