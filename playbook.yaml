@@ -121,17 +121,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Bats Bash test framework
-      ansible.builtin.import_role:
-        name: scruffaluff.bootware.bats
-      tags:
-        - bats
-        - container
-        - desktop
-        - server
-        - shell
-        - wsl
-
     - name: Install Beekeeper database client
       ansible.builtin.import_role:
         name: scruffaluff.bootware.beekeeper
@@ -182,7 +171,8 @@
       tags:
         - browser
         - chrome
-        - desktop
+        - extras
+        - never
 
     - name: Install MongoDB Compass database graphical client
       ansible.builtin.import_role:

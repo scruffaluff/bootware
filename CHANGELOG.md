@@ -32,7 +32,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Bun and Datree roles.
+- Bats, Bun, and Datree roles.
 
 ## 0.8.3 - 2024-12-05
 

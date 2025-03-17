@@ -30,11 +30,6 @@
     "tests": ["bash --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  {
-    "name": "bats",
-    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
-    "tests": ["bats --version"]
-  },
   { "name": "beekeeper" },
   {
     "name": "bitwig",
