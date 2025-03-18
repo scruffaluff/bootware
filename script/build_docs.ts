@@ -109,7 +109,7 @@ async function writeSoftware(repoPath: string): Promise<void> {
 
   const templatePath = path.join(
     repoPath,
-    "scripts/templates/software.mustache"
+    "script/templates/software.mustache"
   );
   const template = fs.readFileSync(templatePath, "utf8");
   const softwareText = mustache.render(template, { table });

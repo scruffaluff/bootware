@@ -9,12 +9,12 @@ RUN dnf install --assumeyes gettext perl-Digest-SHA rpm-build
 # # Copy bootware package build files.
 COPY bootware.sh /bootware/
 COPY completions/ /bootware/completions/
-COPY scripts/ /bootware/scripts/
+COPY script/ /bootware/script/
 
 WORKDIR /bootware
 
 # Build Fedora package.
-RUN scripts/package.sh --version "${version?}" build rpm
+RUN script/package.sh --version "${version?}" build rpm
 
 FROM scratch AS dist
 

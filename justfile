@@ -19,13 +19,13 @@ ci: setup format lint doc test
 # Build distribution packages.
 [unix]
 dist version:
-  scripts/package.sh --version {{version}} ansible
-  scripts/package.sh --version {{version}} dist alpm apk deb rpm
+  script/package.sh --version {{version}} ansible
+  script/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
 doc:
   cp install.ps1 install.sh data/public/
-  npx tsx scripts/build_docs.ts
+  npx tsx script/build_docs.ts
 
 # Check code formatting.
 [unix]
@@ -45,7 +45,7 @@ format:
 # Run code analyses.
 [unix]
 lint:
-  scripts/shellcheck.sh
+  script/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
 # Run code analyses.

@@ -24,7 +24,7 @@ USER alpine
 # Copy bootware package build files.
 COPY --chown="${USER}" bootware.sh /bootware/
 COPY --chown="${USER}" completions/ /bootware/completions/
-COPY --chown="${USER}" scripts/ /bootware/scripts/
+COPY --chown="${USER}" script/ /bootware/script/
 
 WORKDIR /bootware
 
@@ -34,7 +34,7 @@ RUN openssl genrsa --out alpine.rsa  \
     && doas cp alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
 
 # Build Alpine package.
-RUN scripts/package.sh --version "${version?}" build apk
+RUN script/package.sh --version "${version?}" build apk
 
 FROM scratch AS dist
 

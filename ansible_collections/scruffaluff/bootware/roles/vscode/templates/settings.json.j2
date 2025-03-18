@@ -48,7 +48,7 @@
   },
   "editor.stickyScroll.enabled": false,
   "editor.suggestOnTriggerCharacters": false,
-  "editor.wordBasedSuggestions": false,
+  "editor.wordBasedSuggestions": "off",
   "editor.tabSize": 4,
   "editor.unicodeHighlight.allowedCharacters": {
     "❯": true
@@ -133,6 +133,7 @@
   "remote.SSH.useLocalServer": false,
   "rust-analyzer.showUnlinkedFileNotification": false,
   "security.workspace.trust.enabled": false,
+  "shellformat.effectLanguages": ["bats", "dotenv", "shellscript"],
   "shellformat.flag": "--case-indent --space-redirects --indent 2",
   "svelte.enable-ts-plugin": true,
   "telemetry.telemetryLevel": "off",
@@ -201,13 +202,20 @@
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": ".github/workflows/build.yaml"
   },
-    "[css]": {
+  "[bats]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
   "[dockercompose]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false
   },
   "[helm]": {
     "editor.tabSize": 2

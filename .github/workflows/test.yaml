@@ -277,7 +277,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Test building package
-        run: scripts/package.sh test ${{ matrix.package }}
+        run: script/package.sh test ${{ matrix.package }}
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

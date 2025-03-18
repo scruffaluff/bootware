@@ -8,12 +8,12 @@ RUN apt-get update --ignore-missing && apt-get install --quiet --yes \
 # Copy bootware package build files.
 COPY bootware.sh /bootware/
 COPY completions/ /bootware/completions/
-COPY scripts/ /bootware/scripts/
+COPY script/ /bootware/script/
 
 WORKDIR /bootware
 
 # Build Debian package.
-RUN scripts/package.sh --version "${version?}" build deb
+RUN script/package.sh --version "${version?}" build deb
 
 FROM scratch AS dist
 

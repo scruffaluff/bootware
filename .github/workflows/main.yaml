@@ -224,7 +224,7 @@ jobs:
       # Homebrew formulas required the checksum of the GitHub release archive
       # and thus cannot be created before the release.
       - name: Build Homebrew formula
-        run: scripts/package.sh --version ${{ github.ref_name }} dist brew
+        run: script/package.sh --version ${{ github.ref_name }} dist brew
       - name: Upload Homebrew formula to release
         env:
           GITHUB_TOKEN: ${{ github.token }}

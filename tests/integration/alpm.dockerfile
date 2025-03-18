@@ -17,12 +17,12 @@ USER arch
 # Copy bootware package build files.
 COPY --chown="${USER}" bootware.sh /bootware/
 COPY --chown="${USER}" completions/ /bootware/completions/
-COPY --chown="${USER}" scripts/ /bootware/scripts/
+COPY --chown="${USER}" script/ /bootware/script/
 
 WORKDIR /bootware
 
 # Build Arch package.
-RUN scripts/package.sh --version "${version?}" build alpm
+RUN script/package.sh --version "${version?}" build alpm
 
 FROM scratch AS dist
 

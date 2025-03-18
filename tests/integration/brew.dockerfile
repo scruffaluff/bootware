@@ -9,14 +9,14 @@ RUN sudo apt-get update
 RUN sudo apt-get --quiet --yes install \
     curl gettext-base libdigest-sha-perl
 
-COPY scripts/ /bootware/scripts/
+COPY script/ /bootware/script/
 
 WORKDIR /bootware
 
 RUN sudo mkdir -p -m 777 dist
 
 # Build Debian package.
-RUN scripts/package.sh --version "${version?}" build brew
+RUN script/package.sh --version "${version?}" build brew
 
 FROM scratch AS dist
 

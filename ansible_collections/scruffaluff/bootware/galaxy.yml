@@ -22,7 +22,7 @@ build_ignore:
   - poetry.lock
   - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
-  - scripts
+  - script
   - tests
   - tmp
 dependencies:
