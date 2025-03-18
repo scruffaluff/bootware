@@ -41,7 +41,7 @@ setup() {
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
 --start-at-task Install Deno for Alpine --connection local playbook.yaml"
 
-  actual="$(bootware.sh bootstrap --dev --start-at-role deno)"
+  actual="$(bootware.sh bootstrap --dev --no-setup --start-at-role deno)"
   assert_equal "${actual}" "${expected}"
 }
 

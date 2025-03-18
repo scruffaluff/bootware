@@ -1,19 +1,17 @@
-FROM alpine:3.21.2
+FROM debian:12.8
 
 ARG TARGETARCH
 
-# Install Bash, Curl, and Doas.
-RUN apk update && apk add bash curl doas
+# Install Curl and Sudo.
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl sudo
 
-# Create non-priviledged user and grant user passwordless doas.
-#
-# Alpine does contain the useradd command.
-RUN adduser --disabled-password alpine \
-    && addgroup alpine wheel \
-    && printf 'permit nopass alpine\n' >> /etc/doas.d/doas.conf
+# Create non-priviledged user and grant user passwordless sudo.
+RUN useradd --create-home --no-log-init debian \
+    && usermod --append --groups sudo debian \
+    && printf "debian ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
-ENV HOME=/home/alpine USER=alpine
-USER alpine
+ENV HOME=/home/debian USER=debian
+USER debian
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -45,12 +43,9 @@ COPY --chown="${USER}" tests/ ./tests/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || doas apk add bash \
+    || sudo apt-get install --quiet --yes bash \
     && command -v node > /dev/null \
-    || doas apk add nodejs
-
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
+    || sudo apt-get install --quiet --yes nodejs
 
 ARG test
 
@@ -58,7 +53,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+RUN if [ -n "${test}" ]; then \
+    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

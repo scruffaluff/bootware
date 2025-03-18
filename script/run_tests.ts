@@ -1,5 +1,5 @@
 /**
- * Run all container integration tests for an architecture.
+ * Run all container end to end tests for an architecture.
  */
 
 import childProcess from "node:child_process";
@@ -44,15 +44,15 @@ function main(): void {
   for (const distro of config.distro) {
     const command =
       `${runner} build ${config.cache ? "" : "--no-cache"}` +
-      ` --file tests/integration/${distro}.dockerfile` +
+      ` --file tests/e2e/${distro}.dockerfile` +
       ` --tag docker.io/scruffaluff/bootware:${distro}` +
       ` --platform linux/${config.arch}`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });
 
-    console.log(`Integration test ${distro} passed.`);
+    console.log(`End to end test ${distro} passed.`);
   }
 
-  console.log(`All integration tests passed.`);
+  console.log(`All end to end tests passed.`);
 }
 
 main();

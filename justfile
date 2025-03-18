@@ -23,8 +23,16 @@ dist version:
   script/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
+[unix]
 doc:
   cp install.ps1 install.sh data/public/
+  npx tsx script/build_docs.ts
+
+# Build documentation.
+[windows]
+doc:
+  Copy-Item -Recurse -Path install.ps1 -Destination data/public/
+  Copy-Item -Recurse -Path install.sh -Destination data/public/
   npx tsx script/build_docs.ts
 
 # Check code formatting.

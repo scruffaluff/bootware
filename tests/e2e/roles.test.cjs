@@ -170,10 +170,10 @@ function main() {
   }
 
   if (error) {
-    console.error("\nIntegration tests failed.");
+    console.error("\nEnd to end tests failed.");
     process.exit(1);
   } else {
-    console.log("\nIntegration tests passed.");
+    console.log("\nEnd to end tests passed.");
   }
 }
 

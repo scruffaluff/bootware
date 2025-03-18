@@ -55,5 +55,5 @@ ARG test
 # Flags:
 #   -n: Check if string is nonempty.
 RUN if [ -n "${test}" ]; then \
-    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
+    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
     fi

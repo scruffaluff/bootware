@@ -1,19 +1,19 @@
-FROM archlinux:base-20250112.0.297543
+FROM alpine:3.21.2
 
 ARG TARGETARCH
 
-# Install Curl and Sudo.
-RUN pacman --noconfirm --refresh --sync --sysupgrade \
-    && pacman --noconfirm --sync curl sudo
+# Install Bash, Curl, and Doas.
+RUN apk update && apk add bash curl doas
 
-# Create non-priviledged user and grant user passwordless sudo.
-RUN useradd --create-home --no-log-init arch \
-    && groupadd sudo \
-    && usermod --append --groups sudo arch \
-    && printf "arch ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+# Create non-priviledged user and grant user passwordless doas.
+#
+# Alpine does contain the useradd command.
+RUN adduser --disabled-password alpine \
+    && addgroup alpine wheel \
+    && printf 'permit nopass alpine\n' >> /etc/doas.d/doas.conf
 
-ENV HOME=/home/arch USER=arch
-USER arch
+ENV HOME=/home/alpine USER=alpine
+USER alpine
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -43,12 +43,11 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
-# Ensure Bash and Deno are installed.
+# Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || sudo pacman --noconfirm --sync bash \
-    && command -v deno > /dev/null \
-    || sudo pacman --noconfirm --sync unzip \
-    && curl -LSfs https://deno.land/install.sh | sh
+    || doas apk add bash \
+    && command -v node > /dev/null \
+    || doas apk add nodejs
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
@@ -61,6 +60,5 @@ ARG test
 #   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    export PATH="${HOME}/.deno/bin:${PATH}"; \
-    tests/integration/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
     fi

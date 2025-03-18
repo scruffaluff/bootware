@@ -1,27 +1,19 @@
-FROM fedora:41
+FROM archlinux:base-20250112.0.297543
 
 ARG TARGETARCH
 
-# Install Curl and Sudo.  
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes curl sudo
-
-# Install SQLite to avoid Node symbol lookup errors when building image inside
-# some virtual machines.
-RUN dnf install --assumeyes sqlite
+# Install Curl and Sudo.
+RUN pacman --noconfirm --refresh --sync --sysupgrade \
+    && pacman --noconfirm --sync curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
-#
-# Changing permissions on "/etc/shadow" avoids PAM authentication errors when
-# building image inside some virtual machines.
-RUN useradd --create-home --no-log-init fedora \
+RUN useradd --create-home --no-log-init arch \
     && groupadd sudo \
-    && usermod --append --groups sudo fedora \
-    && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers \
-    && chmod 640 /etc/shadow
+    && usermod --append --groups sudo arch \
+    && printf "arch ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
-ENV HOME=/home/fedora USER=fedora
-USER fedora
+ENV HOME=/home/arch USER=arch
+USER arch
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -51,11 +43,12 @@ RUN bootware bootstrap --dev --no-passwd \
 # Copy bootware test files for testing.
 COPY --chown="${USER}" tests/ ./tests/
 
-# Ensure Bash and Node are installed.
+# Ensure Bash and Deno are installed.
 RUN command -v bash > /dev/null \
-    || sudo dnf install --assumeyes bash \
-    && command -v node > /dev/null \
-    || sudo dnf install --assumeyes nodejs
+    || sudo pacman --noconfirm --sync bash \
+    && command -v deno > /dev/null \
+    || sudo pacman --noconfirm --sync unzip \
+    && curl -LSfs https://deno.land/install.sh | sh
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
@@ -68,5 +61,6 @@ ARG test
 #   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/integration/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
+    export PATH="${HOME}/.deno/bin:${PATH}"; \
+    tests/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

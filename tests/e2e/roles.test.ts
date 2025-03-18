@@ -165,10 +165,10 @@ async function main(): Promise<void> {
   }
 
   if (error) {
-    console.error("\nIntegration tests failed.");
+    console.error("\nEnd to end tests failed.");
     Deno.exit(1);
   } else {
-    console.log("\nIntegration tests passed.");
+    console.log("\nEnd to end tests passed.");
   }
 }
 
