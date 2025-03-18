@@ -24,7 +24,7 @@ dist version:
 
 # Build documentation.
 doc:
-  cp install.ps1 install.sh assets/
+  cp install.ps1 install.sh data/public/
   npx tsx scripts/build_docs.ts
 
 # Check code formatting.
@@ -175,8 +175,8 @@ _setup:
 
 # Run unit test suites.
 [unix]
-test:
-  npx bats --recursive tests
+test *args:
+  npx bats --recursive tests {{args}}
 
 # Run unit test suites.
 [windows]

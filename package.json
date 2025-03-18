@@ -17,7 +17,7 @@
   "private": true,
   "scripts": {
     "bats": "bats --recursive tests",
-    "docs": "tsx scripts/build_docs.ts",
+    "doc": "tsx scripts/build_docs.ts",
     "lint": "poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml",
     "package": "scripts/package.sh",
     "prettier": "prettier --check .",

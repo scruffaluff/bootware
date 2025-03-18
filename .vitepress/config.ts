@@ -11,8 +11,8 @@ export default defineConfig({
   base: "/bootware/",
   description: "Shell scripts for bootstrapping computers with Ansible.",
   lastUpdated: true,
-  outDir: "site",
-  srcDir: "docs",
+  outDir: "build/site",
+  srcDir: "doc",
   themeConfig: {
     aside: false,
     footer: {
@@ -33,5 +33,5 @@ export default defineConfig({
     ],
   },
   title: "Bootware",
-  vite: { publicDir: "../assets" },
+  vite: { publicDir: "../data/public" },
 });

@@ -15,7 +15,7 @@ build_ignore:
   - .shellcheckrc
   - .venv
   - completions
-  - docs
+  - doc
   - node_modules
   - package-lock.json
   - package.json
