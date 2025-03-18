@@ -1,18 +1,17 @@
-FROM opensuse/leap:15.6
+FROM debian:12.8
 
 ARG TARGETARCH
 
-# Install Curl and Sudo.  
-RUN zypper update --no-confirm && zypper install --no-confirm curl sudo
+# Install Curl and Sudo.
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
-RUN useradd --create-home --no-log-init suse \
-    && groupadd sudo \
-    && usermod --append --groups sudo suse \
-    && printf "suse ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
+RUN useradd --create-home --no-log-init debian \
+    && usermod --append --groups sudo debian \
+    && printf "debian ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
-ENV HOME=/home/suse USER=suse
-USER suse
+ENV HOME=/home/debian USER=debian
+USER debian
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -40,13 +39,13 @@ RUN bootware bootstrap --dev --no-passwd \
     --retries 3 ${skip:+--skip $skip} --tags ${tags:-desktop,extras}
 
 # Copy bootware test files for testing.
-COPY --chown="${USER}" tests/ ./tests/
+COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || sudo zypper install --no-confirm --yes bash \
+    || sudo apt-get install --quiet --yes bash \
     && command -v node > /dev/null \
-    || sudo zypper install --no-confirm nodejs-default
+    || sudo apt-get install --quiet --yes nodejs
 
 ARG test
 
@@ -55,5 +54,5 @@ ARG test
 # Flags:
 #   -n: Check if string is nonempty.
 RUN if [ -n "${test}" ]; then \
-    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "suse"; \
+    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

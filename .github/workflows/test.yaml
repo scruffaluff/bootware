@@ -67,7 +67,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: tests/e2e/alpine.dockerfile
+          file: test/e2e/alpine.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:alpine
@@ -105,7 +105,7 @@ jobs:
             skip=libvirt
             test=true
           context: .
-          file: tests/e2e/arch.dockerfile
+          file: test/e2e/arch.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:arch
@@ -139,7 +139,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: tests/e2e/debian.dockerfile
+          file: test/e2e/debian.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:debian
@@ -171,9 +171,8 @@ jobs:
       - name: Build Docker image
         run: >-
           docker build --no-cache --build-arg test=true --file
-          tests/e2e/fedora.dockerfile --tag
-          docker.io/scruffaluff/bootware:fedora --platform linux/${{
-          inputs.platform || 'amd64' }} .
+          test/e2e/fedora.dockerfile --tag docker.io/scruffaluff/bootware:fedora
+          --platform linux/${{ inputs.platform || 'amd64' }} .
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -213,7 +212,7 @@ jobs:
             ./install.sh
             ./bootware.sh setup
             ./bootware.sh bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && tests/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
+            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -248,7 +247,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node tests/e2e/roles.test.cjs --arch arm64 macos
+          node test/e2e/roles.test.cjs --arch arm64 macos
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&
@@ -308,7 +307,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: tests/e2e/suse.dockerfile
+          file: test/e2e/suse.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:suse
@@ -342,7 +341,7 @@ jobs:
         with:
           build-args: test=true
           context: .
-          file: tests/e2e/ubuntu.dockerfile
+          file: test/e2e/ubuntu.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:ubuntu
@@ -432,7 +431,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node tests/e2e/roles.test.cjs --arch amd64 --skip ffsend,lldb,qemu,rust windows
+          node test/e2e/roles.test.cjs --arch amd64 --skip ffsend,lldb,qemu,rust windows
       - name: Setup Tmate session if debug enabled
         if: >-
           ${{ always() && github.event_name == 'workflow_dispatch' &&

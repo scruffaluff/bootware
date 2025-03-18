@@ -44,7 +44,7 @@ function main(): void {
   for (const distro of config.distro) {
     const command =
       `${runner} build ${config.cache ? "" : "--no-cache"}` +
-      ` --file tests/e2e/${distro}.dockerfile` +
+      ` --file test/e2e/${distro}.dockerfile` +
       ` --tag docker.io/scruffaluff/bootware:${distro}` +
       ` --platform linux/${config.arch}`;
     childProcess.execSync(`${command} . ${args}`, { stdio: "inherit" });

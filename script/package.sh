@@ -203,7 +203,7 @@ dist() {
   container="$(find_container)"
   for package in "$@"; do
     "${container}" build --build-arg "version=${version}" \
-      --file "tests/e2e/${package}.dockerfile" \
+      --file "test/e2e/${package}.dockerfile" \
       --output dist --target dist .
   done
 }
@@ -272,7 +272,7 @@ test() {
   container="$(find_container)"
   for package in "$@"; do
     "${container}" build --build-arg "version=${version}" \
-      --file "tests/e2e/${package}.dockerfile" \
+      --file "test/e2e/${package}.dockerfile" \
       --tag "scruffaluff/bootware:${package}" .
   done
 }

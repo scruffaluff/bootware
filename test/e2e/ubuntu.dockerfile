@@ -44,7 +44,7 @@ RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--s
     done
 
 # Copy bootware test files for testing.
-COPY --chown="${USER}" tests/ ./tests/
+COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
@@ -63,5 +63,5 @@ ARG test
 #   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi
