@@ -1,5 +1,7 @@
 ---
 dependencies:
   - role: variable
+  - role: path
+    when: path_role_executed is not defined
   - role: fact
     when: fact_role_executed is not defined

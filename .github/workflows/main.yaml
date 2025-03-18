@@ -1,0 +1,240 @@
+# GitHub Actions workflow file.
+#
+# For more information, visit
+# https://docs.github.com/actions/learn-github-actions.
+
+---
+name: main
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - "**"
+    tags:
+      - "**"
+  workflow_dispatch:
+    inputs:
+      debug:
+        default: false
+        description: Use Tmate session for debugging
+        type: boolean
+      job:
+        default: test
+        description: CI job to run
+        options:
+          - build
+          - pages
+          - release
+        type: choice
+      os:
+        description: Operating system
+        options:
+          - macos
+          - ubuntu
+          - windows
+        required: true
+        type: choice
+
+env:
+  NPM_CONFIG_CACHE: "${{ github.workspace }}/.cache/npm"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  PIP_DISABLE_PIP_VERSION_CHECK: "true"
+  PIP_ROOT_USER_ACTION: ignore
+  POETRY_CACHE_DIR: "${{ github.workspace }}/.cache/pypoetry"
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
+
+jobs:
+  build:
+    if: >-
+      ${{ github.ref_type == 'branch' && github.event_name !=
+      'workflow_dispatch' || inputs.job == 'lint' }}
+    name: Run code analyses and test suites
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: >-
+          ${{ inputs.os && fromJson(format('["{0}"]',inputs.os)) ||
+          fromJson('["macos","ubuntu","windows"]') }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            .venv
+            node_modules
+          key: >-
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - if: ${{ runner.os == 'Windows' }}
+        name: Install Just for Windows
+        run: >-
+          powershell { iex "& { $(iwr -useb
+          https://scruffaluff.github.io/scripts/install/just.ps1) } --global" }
+      - if: ${{ runner.os != 'Windows' }}
+        name: Install Just for Unix
+        run: >-
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
+      - name: Run CI workflow commands
+        run: just ci
+      - if: ${{ always() && inputs.debug }}
+        name: Setup Tmate session if debug enabled
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  pages:
+    environment:
+      name: github-pages
+    if: >-
+      ${{ github.ref == 'refs/heads/main' && github.event_name !=
+      'workflow_dispatch' || inputs.job == 'pages' }}
+    name: Build and publish documentation
+    permissions:
+      id-token: write
+      pages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            .venv
+            node_modules
+          key: >-
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build documentation
+        run: just setup doc
+      - name: Upload documentation
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: pages
+          path: build/site
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: pages
+      - if: ${{ always() && inputs.debug }}
+        name: Setup Tmate session if debug enabled
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  release:
+    if: >-
+      ${{ github.ref_type == 'tag' && github.event_name != 'workflow_dispatch'
+      || inputs.job == 'release' }}
+    name: Create GitHub release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .cache
+            .venv
+            node_modules
+          key: >-
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Install Just
+        run: >-
+          curl -LSfs https://just.systems/install.sh | sh -s -- --to
+          /usr/local/bin
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install development dependencies
+        run: just setup
+      - name: Build packages
+        run: just dist ${{ github.ref_name }}
+      - name: Build and publish collection
+        env:
+          ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+        run: >-
+          poetry run ansible-galaxy collection publish --token
+          "${ANSIBLE_GALAXY_TOKEN}" "dist/scruffaluff-bootware-${{
+          github.ref_name }}.tar.gz"
+      - name: Create GitHub release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: >-
+            See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
+            github.ref_name }}/CHANGELOG.md) for more information.
+          files: |
+            dist/bootware_${{ github.ref_name }}_all.deb
+            dist/bootware_${{ github.ref_name }}_all.deb.sha512
+            dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst
+            dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha512
+            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm
+            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha512
+            dist/bootware-${{ github.ref_name }}-r0.apk
+            dist/bootware-${{ github.ref_name }}-r0.apk.sha512
+            dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
+            dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha512
+          name: Bootware ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+      # Homebrew formulas required the checksum of the GitHub release archive
+      # and thus cannot be created before the release.
+      - name: Build Homebrew formula
+        run: script/package.sh --version ${{ github.ref_name }} dist brew
+      - name: Upload Homebrew formula to release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        uses: actions/upload-release-asset@v1
+        with:
+          asset_content_type: text/plain
+          asset_name: bootware.rb
+          asset_path: dist/bootware.rb
+          upload_url: ${{ steps.release.outputs.upload_url }}
+      - if: ${{ always() && inputs.debug }}
+        name: Setup Tmate session if debug enabled
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3

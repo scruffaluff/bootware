@@ -11,17 +11,29 @@ list:
   @just --list
 
 # Execute all commands.
-all: setup format lint docs test
+all: setup format lint doc test
+
+# Execute CI workflow commands.
+ci: setup format lint doc test
 
 # Build distribution packages.
 [unix]
 dist version:
-  scripts/package.sh --version {{version}} ansible
-  scripts/package.sh --version {{version}} dist alpm apk deb rpm
+  script/package.sh --version {{version}} ansible
+  script/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
-docs:
-  npx tsx scripts/build_docs.ts
+[unix]
+doc:
+  cp install.ps1 install.sh data/public/
+  npx tsx script/build_docs.ts
+
+# Build documentation.
+[windows]
+doc:
+  Copy-Item -Recurse -Path install.ps1 -Destination data/public/
+  Copy-Item -Recurse -Path install.sh -Destination data/public/
+  npx tsx script/build_docs.ts
 
 # Check code formatting.
 [unix]
@@ -41,7 +53,7 @@ format:
 # Run code analyses.
 [unix]
 lint:
-  scripts/shellcheck.sh
+  script/shellcheck.sh
   poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
 # Run code analyses.
@@ -171,10 +183,12 @@ _setup:
 
 # Run unit test suites.
 [unix]
-test:
-  npx bats --recursive tests
+test *args:
+  npx bats --recursive tests {{args}}
 
 # Run unit test suites.
 [windows]
 test:
-  Invoke-Pester -CI -Output Detailed tests
+  Invoke-Pester -CI -Output Detailed -Path \
+    $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
+

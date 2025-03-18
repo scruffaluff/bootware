@@ -78,34 +78,18 @@
     dest: /usr/local/bin/caffeinate
     force: true
     mode: "755"
-    url: https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.sh
+    url: https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/caffeinate.sh
   become: true
   tags:
     - install
   when: ansible_system == "Linux" and gnome_desktop
 
-- name: Create PowerShell scripts directory for Windows
-  ansible.windows.win_file:
-    path: "C:/Program Files/PowerShell/Scripts"
-    state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Add PowerShell scripts to system path for Windows
-  ansible.windows.win_path:
-    elements: "C:\\Program Files\\PowerShell\\Scripts"
-    scope: machine
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Download Caffeinate script for Windows
   ansible.windows.win_get_url:
-    dest: "C:/Program Files/PowerShell/Scripts/caffeinate.ps1"
+    dest: "C:/Program Files/Bin/caffeinate.ps1"
     force: true
     url: >-
-      https://raw.githubusercontent.com/scruffaluff/shell-scripts/refs/heads/main/src/caffeinate.ps1
+      https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/caffeinate.ps1
   tags:
     - install
   when: ansible_system == "Win32NT"

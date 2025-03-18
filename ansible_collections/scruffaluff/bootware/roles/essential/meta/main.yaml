@@ -1,5 +1,4 @@
 ---
 dependencies:
-  - role: variable
   - role: path
     when: path_role_executed is not defined

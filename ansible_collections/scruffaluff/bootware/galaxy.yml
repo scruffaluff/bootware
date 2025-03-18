@@ -15,14 +15,14 @@ build_ignore:
   - .shellcheckrc
   - .venv
   - completions
-  - docs
+  - doc
   - node_modules
   - package-lock.json
   - package.json
   - poetry.lock
   - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
-  - scripts
+  - script
   - tests
   - tmp
 dependencies:

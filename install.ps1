@@ -137,7 +137,7 @@ Function Main() {
     $Path = [Environment]::GetEnvironmentVariable('Path', $Target)
     If (-Not ($Path -Like "*$DestDir*")) {
         [System.Environment]::SetEnvironmentVariable(
-            'Path', $DestDir + ";$Path", $Target
+            'Path', "$DestDir;$Path", $Target
         )
     }
 

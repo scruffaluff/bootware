@@ -606,14 +606,14 @@ Function Setup() {
         $GlobalShims = 'C:\ProgramData\scoop\shims'
         If (-Not ($Path -Like "*$GlobalShims*")) {
             [System.Environment]::SetEnvironmentVariable(
-                'Path', $GlobalShims + ";$Path", 'Machine'
+                'Path', "$GlobalShims;$Path", 'Machine'
             )
         }
         $Path = [Environment]::GetEnvironmentVariable('Path', 'User')
         $UserShims = "$HOME\scoop\shims"
         If (-Not ($Path -Like "*$UserShims*")) {
             [System.Environment]::SetEnvironmentVariable(
-                'Path', $UserShims + ";$Path", 'User'
+                'Path', "$UserShims;$Path", 'User'
             )
         }
     }

@@ -135,31 +135,35 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create user binaries directory for Unix
-  ansible.builtin.file:
-    dest: "{{ user_home }}/.local/bin"
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    state: directory
-  become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
-
-- name: Create user binaries directory for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.local/bin"
-    state: directory
+- name: Register Python files as executables for Windows
+  ansible.windows.win_regedit:
+    data: "{{ item.data }}"
+    path: "{{ item.path }}"
+    type: string
+  loop:
+    - data: pyfile
+      path: "HKLM:\\Software\\Classes\\.py"
+    - data: '"C:\ProgramData\scoop\shims\python3.exe" "%1" %*'
+      path: "HKLM:\\Software\\Classes\\pyfile\\shell\\open\\command"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Add user binaries to user path for Windows
-  ansible.windows.win_path:
-    elements: "{{ user_home }}\\.local\\bin"
-    scope: user
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
+- name: Add Python files to system path for Windows
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.PY*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.PY", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in python_pathext"
+  register: python_pathext
   tags:
     - install
   when: ansible_system == "Win32NT"

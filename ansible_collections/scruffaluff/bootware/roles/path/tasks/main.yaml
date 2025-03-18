@@ -1,0 +1,54 @@
+---
+- name: Create system binaries directory for Unix
+  ansible.builtin.file:
+    dest: /usr/local/bin
+    mode: "755"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create user binaries directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.local/bin"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create binaries directories for Windows
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "C:/Program Files/Bin"
+    - "{{ user_home }}/.local/bin"
+    - "{{ user_home }}/AppData/Local/Programs/Bin"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Add binaries directories to path for Windows
+  ansible.windows.win_path:
+    elements: "{{ item.elements }}"
+    scope: "{{ item.scope }}"
+  loop:
+    - elements: "C:\\Program Files\\Bin"
+      scope: machine
+    - elements: "{{ user_home }}\\.local\\bin"
+      scope: user
+    - elements: "{{ user_home }}\\AppData\\local\\Programs\\Bin"
+      scope: user
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    path_role_executed: true
