@@ -25,12 +25,17 @@ on:
         default: test
         description: CI job to run
         options:
-          - documenation
-          - lint
+          - build
           - pages
-          - posix
-          - powershell
           - release
+        type: choice
+      os:
+        description: Operating system
+        options:
+          - macos
+          - ubuntu
+          - windows
+        required: true
         type: choice
 
 env:
@@ -43,55 +48,18 @@ env:
   PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
 
 jobs:
-  documenation:
-    if: >-
-      ${{ github.ref_type == 'branch' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'documentation' }}
-    name: Build documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Cache packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            .cache
-            .venv
-            node_modules
-          key: >-
-            node-22_python-3.12_${{ runner.os }}_npm-${{
-            hashFiles('package-lock.json') }}_poetry-${{
-            hashFiles('poetry.lock') }}
-      - name: Install Just
-        run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
-          -s -- --global
-      - name: Install Node interpreter
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install Python interpreter
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install development dependencies
-        run: just setup
-      - name: Build documentation
-        run: just docs
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  lint:
+  build:
     if: >-
       ${{ github.ref_type == 'branch' && github.event_name !=
       'workflow_dispatch' || inputs.job == 'lint' }}
     name: Check code with formatter and linter
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: >-
+          ${{ inputs.os && fromJson(format('["{0}"]',inputs.os)) ||
+          fromJson('["macos","ubuntu","windows"]') }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -106,10 +74,6 @@ jobs:
             node-22_python-3.12_${{ runner.os }}_npm-${{
             hashFiles('package-lock.json') }}_poetry-${{
             hashFiles('poetry.lock') }}
-      - name: Install Just
-        run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
-          -s -- --global
       - name: Install Node interpreter
         uses: actions/setup-node@v4
         with:
@@ -118,16 +82,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install development dependencies
-        run: just setup
-      - name: Check code formatting
-        run: just format
-      - name: Run code analyses
-        run: just lint
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ runner.os == 'Windows' }}
+        name: Install Just for Windows
+        run: >-
+          powershell { iex "& { $(iwr -useb
+          https://scruffaluff.github.io/scripts/install/just.ps1) } --global" }
+      - if: ${{ runner.os != 'Windows' }}
+        name: Install Just for Unix
+        run: >-
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
+      - name: Run CI workflow commands
+        run: just ci
+      - if: ${{ always() && inputs.debug }}
+        name: Setup Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -181,90 +149,6 @@ jobs:
           artifact_name: pages
       - if: ${{ always() && inputs.debug }}
         name: Setup Tmate session if debug enabled
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  posix:
-    if: >-
-      ${{ github.ref_type == 'branch' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'posix' }}
-    name: Run unit tests for POSIX scripts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Cache packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            .cache
-            .venv
-            node_modules
-          key: >-
-            node-22_python-3.12_${{ runner.os }}_npm-${{
-            hashFiles('package-lock.json') }}_poetry-${{
-            hashFiles('poetry.lock') }}
-      - name: Install Just
-        run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
-          -s -- --global
-      - name: Install Node interpreter
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install Python interpreter
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install development dependencies
-        run: just setup
-      - name: Build test suites
-        run: just test
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  powershell:
-    if: >-
-      ${{ github.ref_type == 'branch' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'powershell' }}
-    name: Run linter and unit tests for PowerShell scripts
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Cache packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            .cache
-            node_modules
-          key: >-
-            node-22_${{ runner.os }}_npm-${{ hashFiles('package-lock.json') }}
-      - name: Install Just for Windows
-        run: >-
-          powershell { iex "& { $(iwr -useb
-          https://scruffaluff.github.io/scripts/install/just.ps1) } --global" }
-      - name: Install Node interpreter
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install development dependencies
-        run: just setup
-        shell: powershell
-      - name: Check code formatting
-        run: just format
-      - name: Run code analyses
-        run: just lint
-      - name: Run test suites
-        run: just test
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 

@@ -11,7 +11,7 @@ list:
   @just --list
 
 # Execute all commands.
-all: setup format lint docs test
+all: setup format lint doc test
 
 # Execute CI workflow commands.
 ci: setup format lint doc test
