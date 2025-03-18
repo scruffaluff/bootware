@@ -41,7 +41,7 @@ RUN bootware bootstrap --dev --no-passwd \
     --retries 3 ${skip:+--skip $skip} --tags ${tags:-desktop,extras}
 
 # Copy bootware test files for testing.
-COPY --chown="${USER}" tests/ ./tests/
+COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Deno are installed.
 RUN command -v bash > /dev/null \
@@ -62,5 +62,5 @@ ARG test
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
     export PATH="${HOME}/.deno/bin:${PATH}"; \
-    tests/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+    test/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
     fi

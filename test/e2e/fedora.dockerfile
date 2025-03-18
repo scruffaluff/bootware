@@ -1,19 +1,27 @@
-FROM alpine:3.21.2
+FROM fedora:41
 
 ARG TARGETARCH
 
-# Install Bash, Curl, and Doas.
-RUN apk update && apk add bash curl doas
+# Install Curl and Sudo.  
+RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
+RUN dnf install --assumeyes curl sudo
 
-# Create non-priviledged user and grant user passwordless doas.
+# Install SQLite to avoid Node symbol lookup errors when building image inside
+# some virtual machines.
+RUN dnf install --assumeyes sqlite
+
+# Create non-priviledged user and grant user passwordless sudo.
 #
-# Alpine does contain the useradd command.
-RUN adduser --disabled-password alpine \
-    && addgroup alpine wheel \
-    && printf 'permit nopass alpine\n' >> /etc/doas.d/doas.conf
+# Changing permissions on "/etc/shadow" avoids PAM authentication errors when
+# building image inside some virtual machines.
+RUN useradd --create-home --no-log-init fedora \
+    && groupadd sudo \
+    && usermod --append --groups sudo fedora \
+    && printf "fedora ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers \
+    && chmod 640 /etc/shadow
 
-ENV HOME=/home/alpine USER=alpine
-USER alpine
+ENV HOME=/home/fedora USER=fedora
+USER fedora
 
 # Install Bootware.
 COPY bootware.sh /usr/local/bin/bootware
@@ -41,13 +49,13 @@ RUN bootware bootstrap --dev --no-passwd \
     --retries 3 ${skip:+--skip $skip} --tags ${tags:-desktop,extras}
 
 # Copy bootware test files for testing.
-COPY --chown="${USER}" tests/ ./tests/
+COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || doas apk add bash \
+    || sudo dnf install --assumeyes bash \
     && command -v node > /dev/null \
-    || doas apk add nodejs
+    || sudo dnf install --assumeyes nodejs
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
@@ -60,5 +68,5 @@ ARG test
 #   -n: Check if string is nonempty.
 RUN if [[ -n "${test}" ]]; then \
     source "${HOME}/.bashrc"; \
-    node tests/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
     fi

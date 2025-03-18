@@ -69,7 +69,7 @@ function rolesTable(repoPath: string): string {
     { arch: "amd64", os: "windows" },
   ];
 
-  const rolesPath = path.join(repoPath, "tests/data/roles.json");
+  const rolesPath = path.join(repoPath, "test/data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
   let table = "| |";

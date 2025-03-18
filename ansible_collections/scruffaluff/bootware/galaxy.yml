@@ -23,7 +23,7 @@ build_ignore:
   - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
   - script
-  - tests
+  - test
   - tmp
 dependencies:
   chocolatey.chocolatey: ">=1.1.0"

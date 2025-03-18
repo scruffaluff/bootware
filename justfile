@@ -48,7 +48,7 @@ format:
   Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
 
 # Run code analyses.
 [unix]
@@ -62,7 +62,7 @@ lint:
   Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Settings PSScriptAnalyzerSettings.psd1
   Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Settings PSScriptAnalyzerSettings.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings PSScriptAnalyzerSettings.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path tests -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings PSScriptAnalyzerSettings.psd1
 
 # Install development dependencies.
 setup: _setup
@@ -184,7 +184,7 @@ _setup:
 # Run unit test suites.
 [unix]
 test *args:
-  npx bats --recursive tests {{args}}
+  npx bats --recursive test {{args}}
 
 # Run unit test suites.
 [windows]
