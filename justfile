@@ -13,6 +13,9 @@ list:
 # Execute all commands.
 all: setup format lint docs test
 
+# Execute CI workflow commands.
+ci: setup format lint doc test
+
 # Build distribution packages.
 [unix]
 dist version:
@@ -20,7 +23,7 @@ dist version:
   scripts/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
-docs:
+doc:
   cp install.ps1 install.sh assets/
   npx tsx scripts/build_docs.ts
 
