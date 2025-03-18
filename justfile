@@ -181,4 +181,6 @@ test:
 # Run unit test suites.
 [windows]
 test:
-  Invoke-Pester -CI -Output Detailed tests
+  Invoke-Pester -CI -Output Detailed -Path \
+    $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
+

@@ -52,7 +52,7 @@ jobs:
     if: >-
       ${{ github.ref_type == 'branch' && github.event_name !=
       'workflow_dispatch' || inputs.job == 'lint' }}
-    name: Check code with formatter and linter
+    name: Run code analyses and test suites
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
