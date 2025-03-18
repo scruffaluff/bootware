@@ -86,7 +86,8 @@ jobs:
         name: Install Just for Windows
         run: >-
           powershell { iex "& { $(iwr -useb
-          https://scruffaluff.github.io/scripts/install/just.ps1) } --global" }
+          https://scruffaluff.github.io/scripts/install/just.ps1) } --dest
+          C:/Windows" }
       - if: ${{ runner.os != 'Windows' }}
         name: Install Just for Unix
         run: >-

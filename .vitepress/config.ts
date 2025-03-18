@@ -10,6 +10,7 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   base: "/bootware/",
   description: "Shell scripts for bootstrapping computers with Ansible.",
+  head: [["link", { rel: "icon", href: "/bootware/favicon.ico" }]],
   lastUpdated: true,
   outDir: "build/site",
   srcDir: "doc",
