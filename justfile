@@ -2,9 +2,13 @@
 #
 # For more information, visit https://just.systems.
 
-set ignore-comments := true
 set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
-export PATH := home_dir() / ".local/bin:" + env_var("PATH")
+export PATH := if os() == "windows" {
+  justfile_dir() / ".vendor/bin;" + env_var("Path")
+} else {
+  justfile_dir() / ".vendor/bin:" + justfile_dir() / 
+  ".vendor/lib/bats-core/bin:" + env_var("PATH")
+}
 
 # List all commands available in justfile.
 list:
@@ -84,6 +88,7 @@ _setup-unix:
   set -eu
   arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
   os='{{replace(os(), "macos", "darwin")}}'
+  mkdir -p .vendor/bin .vendor/lib
   if [ ! -x "$(command -v node)" ] || [ ! -x "$(command -v npm)" ]; then
     echo 'Error: Unable to find NodeJS and NPM.' >&2
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
@@ -97,33 +102,38 @@ _setup-unix:
   if [ ! -x "$(command -v poetry)" ]; then
     curl -LSfs https://install.python-poetry.org | python3 -
   fi
+  for spec in 'assert:v2.1.0' 'core:v1.11.1' 'file:v0.4.0' 'support:v0.3.0'; do
+    pkg="${spec%:*}"
+    tag="${spec#*:}"
+    if [ ! -d ".vendor/lib/bats-${pkg}" ]; then
+      git clone -c advice.detachedHead=false --branch "${tag}" --depth 1 \
+        "https://github.com/bats-core/bats-${pkg}.git" ".vendor/lib/bats-${pkg}"
+    fi
+  done
+  bats --version
   if [ ! -x "$(command -v shellcheck)" ]; then
-    if [ -x "$(command -v brew)" ]; then
-      brew install shellcheck
-    else
-      # TODO: Check for installation of curl, jq, and tar.
+    shellcheck_arch="$(uname -m | sed s/amd64/x86_64/ | sed s/x64/x86_64/ |
+      sed s/arm64/aarch64/)"
       shellcheck_version="$(curl  --fail --location --show-error \
         https://formulae.brew.sh/api/formula/shellcheck.json |
         jq --exit-status --raw-output .versions.stable)"
       curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
-        "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.{{arch()}}.tar.xz"
+      https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.${shellcheck_arch}.tar.xz
       tar fx /tmp/shellcheck.tar.xz -C /tmp
-      install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" "${HOME}/.local/bin/shellcheck"
-    fi
+    install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" .vendor/bin/
   fi
+  shellcheck --version
   if [ ! -x "$(command -v shfmt)" ]; then
-    if [ -x "$(command -v brew)" ]; then
-      brew install shfmt
-    else
+    shfmt_arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ |
+      sed s/aarch64/arm64/)"
       shfmt_version="$(curl  --fail --location --show-error \
         https://formulae.brew.sh/api/formula/shfmt.json |
         jq --exit-status --raw-output .versions.stable)"
-      curl --fail --location --show-error --output /tmp/shfmt \
-        "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${arch}"
-      install /tmp/shfmt "${HOME}/.local/bin/shfmt"
-    fi
+    curl --fail --location --show-error --output .vendor/bin/shfmt \
+      "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${shfmt_arch}"
+    chmod 755 .vendor/bin/shfmt
   fi
-  echo "shfmt version $(shfmt --version)"
+  echo "Shfmt version $(shfmt --version)"
   if [ ! -x "$(command -v yq)" ]; then
     if [ -x "$(command -v brew)" ]; then
       brew install yq

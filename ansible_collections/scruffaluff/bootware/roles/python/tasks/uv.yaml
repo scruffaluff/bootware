@@ -32,17 +32,12 @@
 
 - name: Install Uv for Linux
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.local/bin/{{ item }}"
+    dest: /usr/local/bin/uv
     force: true
-    group: "{{ group_id }}"
     mode: "755"
-    owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/uv-{{ python_uv_arch }}-unknown-linux-{{ system_libc }}/{{ item }}
+    src: /tmp/uv-{{ python_uv_arch }}-unknown-linux-{{ system_libc }}/uv
   become: true
-  loop:
-    - uv
-    - uvx
   tags:
     - install
   when: ansible_system == "Linux"
@@ -60,6 +55,40 @@
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: uv
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Register Python files as executables for Windows
+  ansible.windows.win_regedit:
+    data: "{{ item.data }}"
+    path: "{{ item.path }}"
+    type: string
+  loop:
+    - data: pyfile
+      path: "HKLM:\\Software\\Classes\\.py"
+    - data: >-
+        "C:\ProgramData\scoop\shims\uv.exe" --no-config run --script "%1" %*
+      path: "HKLM:\\Software\\Classes\\pyfile\\shell\\open\\command"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
+- name: Add Python files to system path for Windows
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.PY*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.PY", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in python_pathext"
+  register: python_pathext
   tags:
     - install
   when: ansible_system == "Win32NT"
