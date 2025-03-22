@@ -7,6 +7,13 @@
 - name: Install software with Bootware
   hosts: all
   tasks:
+    - name: Set dynamic variables per host
+      ansible.builtin.set_fact:
+        ansible_become_method: >-
+          {{ 'doas' if ansible_pkg_mgr == 'apk' else 'sudo' }}
+      tags:
+        - always
+
     - name: Update system package managers
       ansible.builtin.import_role:
         name: scruffaluff.bootware.update

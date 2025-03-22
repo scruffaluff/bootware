@@ -68,7 +68,7 @@
     - data: pyfile
       path: "HKLM:\\Software\\Classes\\.py"
     - data: >-
-        "C:\ProgramData\scoop\shims\uv.exe" --no-config run --script "%1" %*
+        "C:\Program Files\Bin\uv.exe" --no-config run --script "%1" %*
       path: "HKLM:\\Software\\Classes\\pyfile\\shell\\open\\command"
   tags:
     - install

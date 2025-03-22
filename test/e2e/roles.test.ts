@@ -1,6 +1,4 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
-// Do not use long form --split-string flag for env. It does not work properly
-// on some versions of Arch Linux.
 
 // Execute shell commands to test binaries installed from roles.
 import { Command } from "jsr:@cliffy/command@1.0.0-rc.7";
