@@ -31,7 +31,7 @@ Describe 'Install' {
         & $Install --user --version develop
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
             $OutFile -Eq "$Env:AppData/Bootware/bootware.ps1" -And
-            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.ps1'
+            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.ps1'
         }
     }
 }

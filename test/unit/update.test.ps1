@@ -43,7 +43,7 @@ Describe 'Update' {
         $Actual = & $Bootware update --version main
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
             $OutFile -Eq "$BootwareDir/bootware.ps1" -And
-            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.ps1'
+            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.ps1'
         }
 
         $Actual | Should -Be $Expected

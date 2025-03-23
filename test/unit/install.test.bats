@@ -39,7 +39,7 @@ installer_passes_local_path_to_curl() { # @test
   local actual
   local expected="curl --fail --location --show-error --silent --output \
 ${HOME}/.local/bin/bootware \
-https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh"
+https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.sh"
 
   actual="$(bash src/install.sh --user --version develop)"
   assert_equal "${actual}" "${expected}"

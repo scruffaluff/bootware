@@ -52,6 +52,6 @@ functon_update_uses_sudo_when_destination_is_not_writable() { # @test
   run update
   assert_success
   assert_output "sudo curl -LSfs \
-https://raw.githubusercontent.com/scruffaluff/bootware/main/bootware.sh \
+https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.sh \
 --output /bin/bash"
 }
