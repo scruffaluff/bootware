@@ -101,7 +101,7 @@ _setup-unix:
   fi
   if [ ! -x "$(command -v nu)" ]; then
     curl --fail --location --show-error \
-      httsp://scruffaluff.github.io/scripts/install/nushell.sh | sh -s -- \
+      https://scruffaluff.github.io/scripts/install/nushell.sh | sh -s -- \
       --dest .vendor/bin
   fi
   echo "Nushell $(nu --version)"
@@ -140,12 +140,20 @@ _setup-unix:
     chmod 755 .vendor/bin/shfmt
   fi
   echo "Shfmt version $(shfmt --version)"
+  if [ ! -x "$(command -v yq)" ]; then
+    curl --fail --location --show-error --output .vendor/bin/yq \
+      "https://github.com/mikefarah/yq/releases/latest/download/yq_${os}_${arch}"
+    chmod 755 .vendor/bin/yq
+  fi
+  yq --version
 
 [windows]
 _setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
+  $ProgressPreference = 'SilentlyContinue'
   $PSNativeCommandUseErrorActionPreference = $True
+  $Arch = '{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are
@@ -172,6 +180,11 @@ _setup:
   If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
     Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
+  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
+    Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `
+      "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_$Arch.exe"
+  }
+  yq --version
 
 # Run unit test suites.
 [unix]
