@@ -4,11 +4,10 @@ ARG version
 
 RUN apk update && apk add alpine-sdk atools doas gettext perl-utils
 
-RUN cat <<EOF >> /etc/abuild.conf
-MAINTAINER="$PACKAGER"
-PACKAGER_PRIVKEY=/bootware/alpine.rsa
-PACKAGER="Alpine <alpine>"
-EOF
+# Docker in Github CI does not appear to support the heredoc syntax.
+RUN printf \
+    'MAINTAINER="$PACKAGER"\nPACKAGER_PRIVKEY=/bootware/alpine.rsa\nPACKAGER="Alpine <alpine>"\n' \
+    >> /etc/abuild.conf
 
 # Create non-priviledged user and grant user passwordless doas.
 #
