@@ -194,7 +194,7 @@ _setup:
 # Run unit test suites.
 [unix]
 test *args:
-  npx bats --recursive test {{args}}
+  bats --recursive test {{args}}
 
 # Run unit test suites.
 [windows]

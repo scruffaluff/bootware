@@ -2,9 +2,12 @@
 # shellcheck shell=bash
 
 setup() {
-  export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load '../../node_modules/bats-support/load'
-  load '../../node_modules/bats-assert/load'
+  REPO_PATH="${BATS_TEST_DIRNAME}/../.."
+  cd "${REPO_PATH}" || exit
+  load "${REPO_PATH}/.vendor/lib/bats-assert/load"
+  load "${REPO_PATH}/.vendor/lib/bats-file/load"
+  load "${REPO_PATH}/.vendor/lib/bats-support/load"
+  bats_require_minimum_version 1.5.0
 
   # Disable logging to simplify stdout for testing.
   export INSTALL_NOLOG='true'
@@ -32,7 +35,7 @@ setup() {
   export -f curl
 }
 
-@test 'Installer passes local path to Curl' {
+installer_passes_local_path_to_curl() { # @test
   local actual
   local expected="curl --fail --location --show-error --silent --output \
 ${HOME}/.local/bin/bootware \
@@ -42,7 +45,7 @@ https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh"
   assert_equal "${actual}" "${expected}"
 }
 
-@test 'Installer uses sudo when destination is not writable' {
+installer_uses_sudo_when_destination_is_not_writable() { # @test
   local actual expected
 
   # Mock functions for child processes by printing received arguments.

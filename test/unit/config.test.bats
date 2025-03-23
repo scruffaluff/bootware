@@ -2,9 +2,12 @@
 # shellcheck shell=bash
 
 setup() {
-  export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load '../../node_modules/bats-support/load'
-  load '../../node_modules/bats-assert/load'
+  REPO_PATH="${BATS_TEST_DIRNAME}/../.."
+  cd "${REPO_PATH}" || exit
+  load "${REPO_PATH}/.vendor/lib/bats-assert/load"
+  load "${REPO_PATH}/.vendor/lib/bats-file/load"
+  load "${REPO_PATH}/.vendor/lib/bats-support/load"
+  bats_require_minimum_version 1.5.0
 
   # Mock functions for child processes by printing received arguments.
   #
@@ -23,21 +26,17 @@ setup() {
   export -f curl
 }
 
-@test 'Config subcommand makes empty configuration log' {
-  local actual expected
-
-  expected='Writing empty configuration file to /dev/null'
-  actual="$(bootware.sh config -e --dest /dev/null)"
-  assert_equal "${actual}" "${expected}"
+config_subcommand_makes_empty_configuration_log() { # @test
+  run bash bootware.sh config -e --dest /dev/null
+  assert_success
+  assert_output 'Writing empty configuration file to /dev/null'
 }
 
-@test 'Config subcommand passes source to Curl' {
-  local actual expected
-
+config_subcommand_passes_source_to_curl() { # @test
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'
 
-  expected="curl -LSfs https://fakedomain.com --output ${HOME}/.bootware/config.yaml"
-  actual="$(bootware.sh config --source https://fakedomain.com)"
-  assert_equal "${actual}" "${expected}"
+  run bash bootware.sh config --source https://fakedomain.com
+  assert_success
+  assert_output "curl -LSfs https://fakedomain.com --output ${HOME}/.bootware/config.yaml"
 }

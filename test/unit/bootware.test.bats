@@ -2,41 +2,40 @@
 # shellcheck shell=bash
 
 setup() {
-  export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load '../../node_modules/bats-support/load'
-  load '../../node_modules/bats-assert/load'
-  BATS_SOURCE_ONLY='true' source bootware.sh
+  REPO_PATH="${BATS_TEST_DIRNAME}/../.."
+  cd "${REPO_PATH}" || exit
+  load "${REPO_PATH}/.vendor/lib/bats-assert/load"
+  load "${REPO_PATH}/.vendor/lib/bats-file/load"
+  load "${REPO_PATH}/.vendor/lib/bats-support/load"
+  bats_require_minimum_version 1.5.0
 
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'
 }
 
-@test 'Bootware throws error for unknown subcommand' {
-  run bootware.sh notasubcommand
-  assert_equal "${status}" 2
+bootware_throws_error_for_unknown_subcommand() { # @test
+  run bash bootware.sh notasubcommand
+  assert_failure 2
   assert_output --partial "No such subcommand or option 'notasubcommand'"
 }
 
-@test 'Function find_config_path returns given executable files' {
-  local actual expected='/bin/bash'
-
-  find_config_path "${expected}"
+function_find_config_path_returns_given_executable_files() { # @test
+  BATS_SOURCE_ONLY='true' source bootware.sh
+  find_config_path '/bin/bash'
   actual="${RET_VAL}"
-  assert_equal "${actual}" "${expected}"
+  assert_equal "${actual}" '/bin/bash'
 }
 
-@test 'Function find_config_path returns environment variable' {
-  local actual expected='/usr/bin/cat'
-
-  BOOTWARE_CONFIG="${expected}" find_config_path
+function_find_config_path_returns_environment_variable() { # @test
+  BATS_SOURCE_ONLY='true' source bootware.sh
+  BOOTWARE_CONFIG='/usr/bin/cat' find_config_path
   actual="${RET_VAL}"
-  assert_equal "${actual}" "${expected}"
+  assert_equal "${actual}" '/usr/bin/cat'
 }
 
-@test 'Function find_config_path returns default when given non-executable file' {
-  local actual expected="${HOME}/.bootware/config.yaml"
-
+function_find_config_path_returns_default_when_given_non_executable_file() { # @test
+  BATS_SOURCE_ONLY='true' source bootware.sh
   find_config_path '/dev/null'
   actual="${RET_VAL}"
-  assert_equal "${actual}" "${expected}"
+  assert_equal "${actual}" "${HOME}/.bootware/config.yaml"
 }
