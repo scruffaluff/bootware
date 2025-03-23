@@ -189,10 +189,10 @@ jobs:
         with:
           envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
-            sudo freebsd-update fetch
-            sudo freebsd-update install
-            pkg install --yes curl
-          release: "14.1"
+            freebsd-update fetch
+            freebsd-update install
+            pkg install --yes curl sudo
+          release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
           # during installation as of 02/28/2025.
@@ -324,9 +324,9 @@ jobs:
         id: branch
         uses: tj-actions/branch-names@v8
       - name: Install Bootware
-        run: >-
-          Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path
-          src/bootware.ps1
+        run: |
+          New-Item -Force -ItemType Directory -Path 'C:/Program Files/Bootware' | Out-Null
+          Copy-Item -Destination 'C:/Program Files/Bootware/bootware.ps1' -Path src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older

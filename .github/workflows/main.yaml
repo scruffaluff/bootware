@@ -147,8 +147,9 @@ jobs:
     environment:
       name: github-pages
     if: >-
-      ${{ contains([github.ref, github.base_ref],'refs/heads/main') &&
-      github.event_name != 'workflow_dispatch' || inputs.job == 'pages' }}
+      ${{ (github.base_ref == 'refs/heads/main' || github.ref ==
+      'refs/heads/main') && github.event_name != 'workflow_dispatch' ||
+      inputs.job == 'package' }}
     name: Build and publish documentation
     permissions:
       id-token: write
