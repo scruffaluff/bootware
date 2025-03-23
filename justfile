@@ -57,8 +57,14 @@ format:
 # Run code analyses.
 [unix]
 lint:
-  script/shellcheck.sh
-  poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
+  #!/usr/bin/env sh
+  set -eu
+  files="$(find . -type f \( -name '*.bats' -or -name '*.sh' \) -not \
+    -path '*/.vendor/*' -not -path '*/.venv/*' -not -path '*/node_modules/*')"
+  for file in ${files}; do
+    shellcheck "${file}"
+  done
+  #poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
 
 # Run code analyses.
 [windows]

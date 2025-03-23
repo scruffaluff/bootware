@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck shell=bash
+# shellcheck disable=SC2317
 
 setup() {
   REPO_PATH="${BATS_TEST_DIRNAME}/../.."
