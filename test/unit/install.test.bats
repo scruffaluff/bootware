@@ -41,7 +41,7 @@ installer_passes_local_path_to_curl() { # @test
 ${HOME}/.local/bin/bootware \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh"
 
-  actual="$(bash install.sh --user --version develop)"
+  actual="$(bash src/install.sh --user --version develop)"
   assert_equal "${actual}" "${expected}"
 }
 
@@ -59,6 +59,6 @@ installer_uses_sudo_when_destination_is_not_writable() { # @test
   export -f sudo
 
   expected='sudo mkdir -p /bin'
-  actual="$(bash install.sh --dest /bin/bash)"
+  actual="$(bash src/install.sh --dest /bin/bash)"
   assert_equal "${actual}" "${expected}"
 }

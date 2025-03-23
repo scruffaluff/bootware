@@ -27,19 +27,19 @@ update_subcommand_passes_bootware_executable_path_to_curl() { # @test
   bootware() { :; }
   export -f bootware
 
-  run bash bootware.sh update --version develop
+  run bash src/bootware.sh update --version develop
   assert_success
   assert_output "curl -LSfs \
-https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh \
---output $(realpath "${BATS_TEST_DIRNAME}"/../../bootware.sh)
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.bash \
+https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.sh \
+--output $(realpath "${BATS_TEST_DIRNAME}"/../../src/bootware.sh)
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/completion/bootware.bash \
 --output ${HOME}/.local/share/bash-completion/completions/bootware
-curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/completions/bootware.fish \
+curl -LSfs https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/completion/bootware.fish \
 --output ${HOME}/.config/fish/completions/bootware.fish"
 }
 
 functon_update_uses_sudo_when_destination_is_not_writable() { # @test
-  BATS_SOURCE_ONLY='true' source bootware.sh
+  BATS_SOURCE_ONLY='true' source src/bootware.sh
   fullpath() {
     echo '/bin/bash'
   }

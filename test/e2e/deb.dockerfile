@@ -6,9 +6,9 @@ RUN apt-get update --ignore-missing && apt-get install --quiet --yes \
     gettext-base libdigest-sha-perl
 
 # Copy bootware package build files.
-COPY bootware.sh /bootware/
-COPY completions/ /bootware/completions/
+COPY data/ /bootware/data/
 COPY script/ /bootware/script/
+COPY src/ /bootware/src/
 
 WORKDIR /bootware
 

@@ -1124,7 +1124,7 @@ update() {
   done
 
   dst_file="$(fullpath "$0")"
-  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/src/bootware.sh"
 
   # Use doas or sudo for system installation if user is not root.
   #
@@ -1157,8 +1157,8 @@ update() {
 update_completions() {
   local brew_prefix os_type
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
-  local bash_url="${repo_url}/completions/bootware.bash"
-  local fish_url="${repo_url}/completions/bootware.fish"
+  local bash_url="${repo_url}/src/completion/bootware.bash"
+  local fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
   #  -z: Check if the string is empty.

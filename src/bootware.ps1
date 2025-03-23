@@ -896,7 +896,7 @@ Function Update() {
         }
     }
 
-    $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
+    $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/bootware.ps1"
     Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot/bootware.ps1" `
         -Uri $SrcURL
     UpdateCompletion $Version
@@ -925,7 +925,7 @@ Function Update() {
 
 # Update completion script for Bootware.
 Function UpdateCompletion($Version) {
-    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/bootware.psm1"
+    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"

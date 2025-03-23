@@ -58,9 +58,9 @@ alpm() {
   build="$(mktemp --directory)"
 
   mkdir -p build/dist
-  cp completions/bootware.bash completions/bootware.fish "${build}/"
-  cp completions/bootware.man "${build}/bootware.1"
-  cp bootware.sh "${build}/bootware"
+  cp src/completion/bootware.bash src/completion/bootware.fish "${build}/"
+  cp src/completion/bootware.man "${build}/bootware.1"
+  cp src/bootware.sh "${build}/bootware"
 
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
@@ -85,9 +85,9 @@ apk() {
   build="$(mktemp --directory)"
 
   mkdir -p build/dist "${HOME}/.abuild"
-  cp completions/bootware.bash completions/bootware.fish "${build}/"
-  cp completions/bootware.man "${build}/bootware.1"
-  cp bootware.sh "${build}/bootware"
+  cp src/completion/bootware.bash src/completion/bootware.fish "${build}/"
+  cp src/completion/bootware.man "${build}/bootware.1"
+  cp src/bootware.sh "${build}/bootware"
 
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
@@ -183,10 +183,10 @@ deb() {
     "${build}/etc/fish/completions" "${build}/usr/bin" \
     "${build}/usr/share/man/man1" build/dist
 
-  cp completions/bootware.bash "${build}/usr/share/bash-completion/completions/"
-  cp completions/bootware.fish "${build}/etc/fish/completions/"
-  cp completions/bootware.man "${build}/usr/share/man/man1/bootware.1"
-  cp bootware.sh "${build}/usr/bin/bootware"
+  cp src/completion/bootware.bash "${build}/usr/share/bash-completion/completions/"
+  cp src/completion/bootware.fish "${build}/etc/fish/completions/"
+  cp src/completion/bootware.man "${build}/usr/share/man/man1/bootware.1"
+  cp src/bootware.sh "${build}/usr/bin/bootware"
 
   envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
@@ -249,9 +249,9 @@ rpm() {
 
   mkdir -p "${archive_dir}" "${build}/SOURCES" "${build}/SPECS" build/dist
 
-  cp completions/bootware.bash completions/bootware.fish "${archive_dir}/"
-  cp completions/bootware.man "${archive_dir}/bootware.1"
-  cp bootware.sh "${archive_dir}/bootware"
+  cp src/completion/bootware.bash src/completion/bootware.fish "${archive_dir}/"
+  cp src/completion/bootware.man "${archive_dir}/bootware.1"
+  cp src/bootware.sh "${archive_dir}/bootware"
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 

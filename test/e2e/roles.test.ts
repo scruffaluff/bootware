@@ -134,7 +134,7 @@ async function main(): Promise<void> {
     .parse();
 
   const scriptFolder = path.dirname(path.fromFileUrl(import.meta.url));
-  const rolesPath = path.join(path.dirname(scriptFolder), "data/roles.json");
+  const rolesPath = path.join(path.dirname(scriptFolder), "../data/roles.json");
   let roles = JSON.parse(await Deno.readTextFile(rolesPath));
 
   if (program.options.tags) {

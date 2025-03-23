@@ -1,5 +1,5 @@
 BeforeAll {
-    $Bootware = "$PSScriptRoot/../../bootware.ps1"
+    $Bootware = "$PSScriptRoot/../../src/bootware.ps1"
     . $Bootware
 }
 

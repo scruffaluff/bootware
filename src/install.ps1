@@ -64,7 +64,7 @@ Function ErrorUsage($Message) {
 
 # Install completion script for Bootware.
 Function InstallCompletion($Version) {
-    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/completions/bootware.psm1"
+    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
         "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
@@ -121,7 +121,7 @@ Function Main() {
     }
 
     CheckEnvironment $Target
-    $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/bootware.ps1"
+    $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/bootware.ps1"
     If ($Target -Eq 'User') {
         $Dest = "$Env:AppData/Bootware/bootware.ps1"
     }

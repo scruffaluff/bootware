@@ -27,7 +27,7 @@ setup() {
 }
 
 config_subcommand_makes_empty_configuration_log() { # @test
-  run bash bootware.sh config -e --dest /dev/null
+  run bash src/bootware.sh config -e --dest /dev/null
   assert_success
   assert_output 'Writing empty configuration file to /dev/null'
 }
@@ -36,7 +36,7 @@ config_subcommand_passes_source_to_curl() { # @test
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'
 
-  run bash bootware.sh config --source https://fakedomain.com
+  run bash src/bootware.sh config --source https://fakedomain.com
   assert_success
   assert_output "curl -LSfs https://fakedomain.com --output ${HOME}/.bootware/config.yaml"
 }

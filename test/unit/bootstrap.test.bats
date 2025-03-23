@@ -36,7 +36,7 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash bootware.sh bootstrap --dev --start-at-role deno
+  run bash src/bootware.sh bootstrap --dev --start-at-role deno
   assert_success
   assert_output "ansible-playbook --extra-vars ansible_become_method=sudo \
 --extra-vars ansible_python_interpreter=auto_silent \
@@ -49,7 +49,7 @@ bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash bootware.sh bootstrap
+  run bash src/bootware.sh bootstrap
   assert_success
   assert_output "ansible-pull --extra-vars ansible_become_method=sudo --extra-vars \
 ansible_python_interpreter=auto_silent --extra-vars \
@@ -61,7 +61,7 @@ bootstrap_subcommand_passes_dev_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash bootware.sh bootstrap --dev --tags none
+  run bash src/bootware.sh bootstrap --dev --tags none
   assert_success
   assert_output "ansible-playbook --ask-become-pass --extra-vars \
 ansible_become_method=sudo --extra-vars \
@@ -74,7 +74,7 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash bootware.sh bootstrap --check --dev --tags none --timeout 60
+  run bash src/bootware.sh bootstrap --check --dev --tags none --timeout 60
   assert_success
   assert_output "ansible-playbook --ask-become-pass --extra-vars \
 ansible_become_method=sudo --extra-vars ansible_python_interpreter=auto_silent \
@@ -85,7 +85,7 @@ ansible_become_method=sudo --extra-vars ansible_python_interpreter=auto_silent \
 bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
   export BOOTWARE_TAGS=''
 
-  run bash bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
+  run bash src/bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
     --ssh-key /fake/key/path --playbook main.yaml --user fakeuser
   assert_success
   assert_output "ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
@@ -97,13 +97,13 @@ main.yaml"
 }
 
 bootstrap_subcommand_does_not_set_snsible_environment_variable() { # @test
-  BATS_SOURCE_ONLY='true' source bootware.sh
+  BATS_SOURCE_ONLY='true' source src/bootware.sh
   bootstrap
   assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ''
 }
 
 bootstrap_subcommand_sets_ansible_environment_variable() { # @test
-  BATS_SOURCE_ONLY='true' source bootware.sh
+  BATS_SOURCE_ONLY='true' source src/bootware.sh
   bootstrap --debug
   assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" 'True'
 }
@@ -118,7 +118,7 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  BATS_SOURCE_ONLY='true' source bootware.sh
+  BATS_SOURCE_ONLY='true' source src/bootware.sh
 
   # Mock functions for child processes by printing received arguments.
   #

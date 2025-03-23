@@ -7,9 +7,9 @@ RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN dnf install --assumeyes gettext perl-Digest-SHA rpm-build
 
 # # Copy bootware package build files.
-COPY bootware.sh /bootware/
-COPY completions/ /bootware/completions/
+COPY data/ /bootware/data/
 COPY script/ /bootware/script/
+COPY src/ /bootware/src/
 
 WORKDIR /bootware
 

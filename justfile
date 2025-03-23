@@ -16,10 +16,10 @@ list:
   @just --list
 
 # Execute all commands.
-all: setup format lint doc test dist
+all: setup format lint doc test-unit dist
 
 # Execute CI workflow commands.
-ci: setup format lint doc test
+ci: setup format lint doc test-unit
 
 # Build distribution packages.
 [script("nu")]
@@ -30,7 +30,7 @@ dist version="0.8.3":
 # Build documentation.
 [script("nu")]
 doc:
-  cp install.ps1 install.sh data/public/
+  cp src/install* data/public/
   npx tsx script/build_docs.ts
 
 # Check code formatting.
@@ -183,14 +183,21 @@ _setup:
   }
   yq --version
 
-# Run unit test suites.
+# Run test suites.
+test: test-unit test-e2e
+
+# Run end to end test suite.
+test-e2e *flags:
+  npx tsx script/run_tests.ts {{flags}}
+
+# Run unit test suite.
 [unix]
-test *args:
+test-unit *args:
   bats --recursive test {{args}}
 
-# Run unit test suites.
+# Run unit test suite.
 [windows]
-test:
+test-unit:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
 
