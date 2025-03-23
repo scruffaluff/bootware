@@ -7,13 +7,6 @@
 - name: Install software with Bootware
   hosts: all
   tasks:
-    - name: Set dynamic variables per host
-      ansible.builtin.set_fact:
-        ansible_become_method: >-
-          {{ 'doas' if ansible_pkg_mgr == 'apk' else 'sudo' }}
-      tags:
-        - always
-
     - name: Update system package managers
       ansible.builtin.import_role:
         name: scruffaluff.bootware.update
@@ -134,7 +127,8 @@
       tags:
         - beekeeper
         - database
-        - desktop
+        - extras
+        - never
 
     - name: Install Bitwig Studio audio workstation
       ansible.builtin.import_role:
@@ -234,6 +228,7 @@
       tags:
         - docker
         - extras
+        - never
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -633,6 +628,7 @@
       tags:
         - extras
         - lazydocker
+        - never
 
     - name: Install Libvirt virtualization API
       ansible.builtin.import_role:

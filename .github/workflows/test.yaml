@@ -191,7 +191,7 @@ jobs:
           prepare: |
             freebsd-update fetch
             freebsd-update install
-            pkg install --yes curl sudo
+            pkg install --yes bash curl sudo
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
