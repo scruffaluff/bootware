@@ -26,6 +26,7 @@ on:
         description: CI job to run
         options:
           - build
+          - package
           - pages
           - release
         type: choice
@@ -39,11 +40,11 @@ on:
         type: choice
 
 env:
-  NPM_CONFIG_CACHE: "${{ github.workspace }}/.cache/npm"
-  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  NPM_CONFIG_CACHE: "${{ github.workspace }}/.vendor/lib/npm"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.vendor/lib/pip"
   PIP_DISABLE_PIP_VERSION_CHECK: "true"
   PIP_ROOT_USER_ACTION: ignore
-  POETRY_CACHE_DIR: "${{ github.workspace }}/.cache/pypoetry"
+  POETRY_CACHE_DIR: "${{ github.workspace }}/.vendor/lib/pypoetry"
   POETRY_VIRTUALENVS_IN_PROJECT: "true"
   PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
 
@@ -67,7 +68,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            .cache
+            .vendor
             .venv
             node_modules
           key: >-
@@ -100,6 +101,47 @@ jobs:
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
+  package:
+    if: >-
+      ${{ (github.base_ref == 'main' || github.ref == 'refs/heads/main') &&
+      github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
+    name: Test building packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .vendor
+            .venv
+            node_modules
+          key: >-
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Just
+        run: >-
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
+      - name: Build packages
+        run: just setup dist
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
   pages:
     environment:
       name: github-pages
@@ -118,7 +160,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            .cache
+            .vendor
             .venv
             node_modules
           key: >-
@@ -168,7 +210,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            .cache
+            .vendor
             .venv
             node_modules
           key: >-
@@ -177,8 +219,8 @@ jobs:
             hashFiles('poetry.lock') }}
       - name: Install Just
         run: >-
-          curl -LSfs https://just.systems/install.sh | sh -s -- --to
-          /usr/local/bin
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -210,16 +252,16 @@ jobs:
             See the [changelog](https://github.com/scruffaluff/bootware/blob/${{
             github.ref_name }}/CHANGELOG.md) for more information.
           files: |
-            dist/bootware_${{ github.ref_name }}_all.deb
-            dist/bootware_${{ github.ref_name }}_all.deb.sha512
-            dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst
-            dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha512
-            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm
-            dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha512
-            dist/bootware-${{ github.ref_name }}-r0.apk
-            dist/bootware-${{ github.ref_name }}-r0.apk.sha512
-            dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
-            dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha512
+            build/dist/bootware_${{ github.ref_name }}_all.deb
+            build/dist/bootware_${{ github.ref_name }}_all.deb.sha512
+            build/dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst
+            build/dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha512
+            build/dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm
+            build/dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha512
+            build/dist/bootware-${{ github.ref_name }}-r0.apk
+            build/dist/bootware-${{ github.ref_name }}-r0.apk.sha512
+            build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
+            build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha512
           name: Bootware ${{ github.ref_name }}
           tag_name: ${{ github.ref }}
       # Homebrew formulas required the checksum of the GitHub release archive
@@ -233,7 +275,7 @@ jobs:
         with:
           asset_content_type: text/plain
           asset_name: bootware.rb
-          asset_path: dist/bootware.rb
+          asset_path: build/dist/bootware.rb
           upload_url: ${{ steps.release.outputs.upload_url }}
       - if: ${{ always() && inputs.debug }}
         name: Setup Tmate session if debug enabled

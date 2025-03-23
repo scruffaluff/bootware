@@ -44,6 +44,7 @@ RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--s
     done
 
 # Copy bootware test files for testing.
+COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.

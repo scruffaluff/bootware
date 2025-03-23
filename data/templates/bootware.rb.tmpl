@@ -9,9 +9,9 @@ class Bootware < Formula
 
   def install
     bin.install "bootware.sh" => "bootware"
-    bash_completion.install "completions/bootware.bash"
-    fish_completion.install "completions/bootware.fish"
-    man.install "completions/bootware.man"
+    bash_completion.install "src/completion/bootware.bash"
+    fish_completion.install "src/completion/bootware.fish"
+    man.install "src/completion/bootware.man"
   end
   
   test do

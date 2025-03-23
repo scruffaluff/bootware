@@ -7,7 +7,7 @@ yazi_libc: >-
   {{ 'gnu' if glibc_version is defined and glibc_version is
   ansible.builtin.version("2.38", ">") else 'musl' }}
 yazi_plugins:
-  - lpnh/fg
+  - lpnh/fr
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:hide-preview
   - yazi-rs/plugins:max-preview

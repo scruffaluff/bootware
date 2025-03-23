@@ -15,7 +15,7 @@ ENV HOME=/home/suse USER=suse
 USER suse
 
 # Install Bootware.
-COPY bootware.sh /usr/local/bin/bootware
+COPY src/bootware.sh /usr/local/bin/bootware
 
 # Install dependencies for Bootware.
 RUN bootware setup
@@ -40,6 +40,7 @@ RUN bootware bootstrap --dev --no-passwd \
     --retries 3 ${skip:+--skip $skip} --tags ${tags:-desktop,extras}
 
 # Copy bootware test files for testing.
+COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.

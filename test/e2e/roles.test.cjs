@@ -149,7 +149,7 @@ function testRole(system, role) {
 function main() {
   const config = parseArgs(process.argv.slice(2));
 
-  const rolesPath = path.join(path.dirname(__dirname), "data/roles.json");
+  const rolesPath = path.join(path.dirname(__dirname), "../data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
   if (config.tags) {

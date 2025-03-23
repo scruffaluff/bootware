@@ -127,7 +127,8 @@
       tags:
         - beekeeper
         - database
-        - desktop
+        - extras
+        - never
 
     - name: Install Bitwig Studio audio workstation
       ansible.builtin.import_role:
@@ -227,6 +228,7 @@
       tags:
         - docker
         - extras
+        - never
 
     - name: Install Digital Ocean development tools
       ansible.builtin.import_role:
@@ -626,6 +628,7 @@
       tags:
         - extras
         - lazydocker
+        - never
 
     - name: Install Libvirt virtualization API
       ansible.builtin.import_role:

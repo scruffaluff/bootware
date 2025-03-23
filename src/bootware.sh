@@ -1124,7 +1124,7 @@ update() {
   done
 
   dst_file="$(fullpath "$0")"
-  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/src/bootware.sh"
 
   # Use doas or sudo for system installation if user is not root.
   #
@@ -1157,8 +1157,8 @@ update() {
 update_completions() {
   local brew_prefix os_type
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
-  local bash_url="${repo_url}/completions/bootware.bash"
-  local fish_url="${repo_url}/completions/bootware.fish"
+  local bash_url="${repo_url}/src/completion/bootware.bash"
+  local fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
   #  -z: Check if the string is empty.
@@ -1174,36 +1174,36 @@ update_completions() {
     # MacOS.
     if [[ "${os_type}" == 'Darwin' ]]; then
       ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
-      ${1:+"${1}"} curl -LSfs "${bash_url}" -o "${brew_prefix}/share/bash-completion/completions/bootware"
+      ${1:+"${1}"} curl -LSfs "${bash_url}" --output "${brew_prefix}/share/bash-completion/completions/bootware"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
 
       ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
-      ${1:+"${1}"} curl -LSfs "${fish_url}" -o "${brew_prefix}/etc/fish/completions/bootware.fish"
+      ${1:+"${1}"} curl -LSfs "${fish_url}" --output "${brew_prefix}/etc/fish/completions/bootware.fish"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
     elif [[ "${os_type}" == 'FreeBSD' ]]; then
       ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
-      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/local/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" --output '/usr/local/share/bash-completion/completions/bootware'
       ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
 
       ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
-      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/usr/local/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" --output '/usr/local/etc/fish/completions/bootware.fish'
       ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
     else
       ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
-      ${1:+"${1}"} curl -LSfs "${bash_url}" -o '/usr/share/bash-completion/completions/bootware'
+      ${1:+"${1}"} curl -LSfs "${bash_url}" --output '/usr/share/bash-completion/completions/bootware'
       ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
 
       ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-      ${1:+"${1}"} curl -LSfs "${fish_url}" -o '/etc/fish/completions/bootware.fish'
+      ${1:+"${1}"} curl -LSfs "${fish_url}" --output '/etc/fish/completions/bootware.fish'
       ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
     fi
   else
     mkdir -p "${HOME}/.local/share/bash-completion/completions"
-    curl -LSfs "${bash_url}" -o "${HOME}/.local/share/bash-completion/completions/bootware"
+    curl -LSfs "${bash_url}" --output "${HOME}/.local/share/bash-completion/completions/bootware"
     chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
 
     mkdir -p "${HOME}/.config/fish/completions"
-    curl -LSfs "${fish_url}" -o "${HOME}/.config/fish/completions/bootware.fish"
+    curl -LSfs "${fish_url}" --output "${HOME}/.config/fish/completions/bootware.fish"
     chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
   fi
 }

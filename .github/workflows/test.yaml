@@ -30,7 +30,6 @@ on:
           - fedora
           - freebsd
           - macos
-          - package
           - suse
           - ubuntu
           - windows
@@ -71,10 +70,8 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:alpine
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -109,10 +106,8 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:arch
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -143,10 +138,8 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:debian
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -173,10 +166,8 @@ jobs:
           docker build --no-cache --build-arg test=true --file
           test/e2e/fedora.dockerfile --tag docker.io/scruffaluff/bootware:fedora
           --platform linux/${{ inputs.platform || 'amd64' }} .
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -198,10 +189,10 @@ jobs:
         with:
           envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
-            sudo freebsd-update fetch
-            sudo freebsd-update install
-            pkg install --yes curl
-          release: "14.1"
+            freebsd-update fetch
+            freebsd-update install
+            pkg install --yes bash curl sudo
+          release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
           # during installation as of 02/28/2025.
@@ -209,17 +200,15 @@ jobs:
           # TODO: Create nonadmin user for test since VLC cannot run as root.
           run: |
             set -eou pipefail
-            ./install.sh
-            ./bootware.sh setup
-            ./bootware.sh bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            sudo install src/bootware.sh /usr/local/bin/bootware
+            bootware setup
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -234,9 +223,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Bootware
-        run: |
-          ./install.sh
-          sudo cp bootware.sh $(which bootware)
+        run: sudo install src/bootware.sh /usr/local/bin/bootware
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
@@ -248,39 +235,8 @@ jobs:
         run: |
           source ${HOME}/.bashrc
           node test/e2e/roles.test.cjs --arch arm64 macos
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  package:
-    if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
-    name: Test building a ${{ matrix.package }} package
-    strategy:
-      fail-fast: false
-      matrix:
-        # Apk case is removed since Github Docker runner cannot handle EOF build
-        # commands as 02/12/2025.
-        package:
-          - alpm
-          - brew
-          - deb
-          - rpm
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Test building package
-        run: script/package.sh test ${{ matrix.package }}
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -311,10 +267,8 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:suse
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -345,10 +299,8 @@ jobs:
           platforms: linux/${{ inputs.platform || 'amd64' }}
           push: false
           tags: docker.io/scruffaluff/bootware:ubuntu
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -373,8 +325,8 @@ jobs:
         uses: tj-actions/branch-names@v8
       - name: Install Bootware
         run: |
-          ./install.ps1 --version ${{ steps.branch.outputs.current_branch }}
-          Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path "./bootware.ps1"
+          New-Item -Force -ItemType Directory -Path 'C:/Program Files/Bootware' | Out-Null
+          Copy-Item -Destination 'C:/Program Files/Bootware/bootware.ps1' -Path src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older
@@ -432,9 +384,7 @@ jobs:
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
           node test/e2e/roles.test.cjs --arch amd64 --skip ffsend,lldb,qemu,rust windows
-      - name: Setup Tmate session if debug enabled
-        if: >-
-          ${{ always() && github.event_name == 'workflow_dispatch' &&
-          inputs.debug }}
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3

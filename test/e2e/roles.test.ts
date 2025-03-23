@@ -1,6 +1,4 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
-// Do not use long form --split-string flag for env. It does not work properly
-// on some versions of Arch Linux.
 
 // Execute shell commands to test binaries installed from roles.
 import { Command } from "jsr:@cliffy/command@1.0.0-rc.7";
@@ -136,7 +134,7 @@ async function main(): Promise<void> {
     .parse();
 
   const scriptFolder = path.dirname(path.fromFileUrl(import.meta.url));
-  const rolesPath = path.join(path.dirname(scriptFolder), "data/roles.json");
+  const rolesPath = path.join(path.dirname(scriptFolder), "../data/roles.json");
   let roles = JSON.parse(await Deno.readTextFile(rolesPath));
 
   if (program.options.tags) {

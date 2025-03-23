@@ -1,5 +1,6 @@
 ---
 dependencies:
   - role: variable
+    when: variable_role_executed is not defined
   - role: appimage
     when: appimage_role_executed is not defined and ansible_system == "Linux"

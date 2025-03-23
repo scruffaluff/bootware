@@ -1,10 +1,13 @@
 #!/usr/bin/env bats
-# shellcheck shell=bash
+# shellcheck disable=SC2317
 
 setup() {
-  export PATH="${BATS_TEST_DIRNAME}/../..:${PATH}"
-  load '../../node_modules/bats-support/load'
-  load '../../node_modules/bats-assert/load'
+  REPO_PATH="${BATS_TEST_DIRNAME}/../.."
+  cd "${REPO_PATH}" || exit
+  load "${REPO_PATH}/.vendor/lib/bats-assert/load"
+  load "${REPO_PATH}/.vendor/lib/bats-file/load"
+  load "${REPO_PATH}/.vendor/lib/bats-support/load"
+  bats_require_minimum_version 1.5.0
 
   # Disable logging to simplify stdout for testing.
   export INSTALL_NOLOG='true'
@@ -32,17 +35,17 @@ setup() {
   export -f curl
 }
 
-@test 'Installer passes local path to Curl' {
+installer_passes_local_path_to_curl() { # @test
   local actual
   local expected="curl --fail --location --show-error --silent --output \
 ${HOME}/.local/bin/bootware \
-https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh"
+https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.sh"
 
-  actual="$(bash install.sh --user --version develop)"
+  actual="$(bash src/install.sh --user --version develop)"
   assert_equal "${actual}" "${expected}"
 }
 
-@test 'Installer uses sudo when destination is not writable' {
+installer_uses_sudo_when_destination_is_not_writable() { # @test
   local actual expected
 
   # Mock functions for child processes by printing received arguments.
@@ -56,6 +59,6 @@ https://raw.githubusercontent.com/scruffaluff/bootware/develop/bootware.sh"
   export -f sudo
 
   expected='sudo mkdir -p /bin'
-  actual="$(bash install.sh --dest /bin/bash)"
+  actual="$(bash src/install.sh --dest /bin/bash)"
   assert_equal "${actual}" "${expected}"
 }

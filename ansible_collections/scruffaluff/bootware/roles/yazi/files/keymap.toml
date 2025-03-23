@@ -46,8 +46,7 @@ prepend_keymap = [
     { desc = "Smart filter", on = ["f", "F"], run = "plugin smart-filter" },
     { desc = "Search file name via fd", on = ["f", "s"], run = "search fd" },
     { desc = "Search file content via rg", on = ["f", "S"], run = "search rg" },
-    { desc = "Search file name via fzf", on = ["f", "z"], run = "plugin fg --args=fzf" },
-    { desc = "Search file content via fzf", on = ["f", "Z"], run = "plugin fg" },
+    { desc = "Search file content via fzf", on = ["f", "Z"], run = "plugin fr rg" },
     { desc = "Run a shell command", on = "s", run = "shell --interactive" },
     { desc = "Run a blocking shell command", on = "S", run = "shell --block --interactive" },
 ]

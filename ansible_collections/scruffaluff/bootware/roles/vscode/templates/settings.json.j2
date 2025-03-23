@@ -42,9 +42,9 @@
   "editor.parameterHints.enabled": true,
   "editor.rulers": [80],
   "editor.quickSuggestions": {
-    "comments": false,
-    "other": false,
-    "strings": false
+    "comments": "off",
+    "other": "off",
+    "strings": "off",
   },
   "editor.stickyScroll.enabled": false,
   "editor.suggestOnTriggerCharacters": false,
@@ -90,6 +90,7 @@
     "**/.pytest_cache/**": true,
     "**/.sl/store/**": true,
     "**/.tox/**": true,
+    "**/.vendor/**": true,
     "**/.venv/**": true,
     "**/node_modules/**": true,
     "**/target/**": true,
@@ -215,7 +216,12 @@
   },
   "[dockerfile]": {
     "editor.defaultFormatter": null,
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
   },
   "[helm]": {
     "editor.tabSize": 2
@@ -230,10 +236,20 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
     "editor.tabSize": 2
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
     "editor.tabSize": 2
   },
   "[just]": {
@@ -241,6 +257,11 @@
     "editor.tabSize": 2
   },
   "[markdown]": {
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
     "editor.tabSize": 2
   },
   "[python]": {
@@ -260,6 +281,13 @@
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format",
     "editor.tabSize": 2
+  },
+  "[snippets]": {
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
   },
   "[svelte]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -286,6 +314,11 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "other": "off",
+      "strings": "off",
+    },
     "editor.tabSize": 2
   }
 }

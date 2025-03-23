@@ -181,8 +181,8 @@ install_bash() {
 #######################################
 install_completions() {
   repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
-  bash_url="${repo_url}/completions/bootware.bash"
-  fish_url="${repo_url}/completions/bootware.fish"
+  bash_url="${repo_url}/src/completion/bootware.bash"
+  fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
   #   -z: Check if the string is empty.
@@ -239,7 +239,7 @@ install_completions() {
 #   GitHub version reference.
 #######################################
 install_man() {
-  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/completions/bootware.man"
+  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/src/completion/bootware.man"
 
   # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
   ${1:+"${1}"} mkdir -p '/usr/local/share/man/man1'
@@ -302,7 +302,7 @@ main() {
     esac
   done
 
-  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/bootware.sh"
+  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/src/bootware.sh"
 
   # Use super user command for system installation if user did not give the
   # --user, does not own the file, and is not root. Do not use long form --user

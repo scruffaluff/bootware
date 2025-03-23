@@ -38,12 +38,12 @@ EOF
 #######################################
 ansible_() {
   filename="scruffaluff-bootware-${1}.tar.gz"
-  mkdir -p dist
+  mkdir -p build/dist
 
   cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
-  poetry run ansible-galaxy collection build --force --output-path dist \
+  poetry run ansible-galaxy collection build --force --output-path build/dist \
     ansible_collections/scruffaluff/bootware
-  checksum "dist/${filename}"
+  checksum "build/dist/${filename}"
 }
 
 #######################################
@@ -57,21 +57,21 @@ alpm() {
   export version="${1}"
   build="$(mktemp --directory)"
 
-  mkdir -p dist
-  cp completions/bootware.bash completions/bootware.fish "${build}/"
-  cp completions/bootware.man "${build}/bootware.1"
-  cp bootware.sh "${build}/bootware"
+  mkdir -p build/dist
+  cp src/completion/bootware.bash src/completion/bootware.fish "${build}/"
+  cp src/completion/bootware.man "${build}/bootware.1"
+  cp src/bootware.sh "${build}/bootware"
 
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${version}' < script/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
+  envsubst '${version}' < data/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
 
   (cd "${build}" && updpkgsums)
   (cd "${build}" && makepkg --install --noconfirm --syncdeps)
 
-  mv "${build}/${file}" dist/
-  (cd dist && sha512sum "${file}" > "${file}.sha512")
+  mv "${build}/${file}" build/dist/
+  (cd build/dist && sha512sum "${file}" > "${file}.sha512")
 }
 
 #######################################
@@ -84,19 +84,19 @@ apk() {
   export version="${1}"
   build="$(mktemp --directory)"
 
-  mkdir -p dist "${HOME}/.abuild"
-  cp completions/bootware.bash completions/bootware.fish "${build}/"
-  cp completions/bootware.man "${build}/bootware.1"
-  cp bootware.sh "${build}/bootware"
+  mkdir -p build/dist "${HOME}/.abuild"
+  cp src/completion/bootware.bash src/completion/bootware.fish "${build}/"
+  cp src/completion/bootware.man "${build}/bootware.1"
+  cp src/bootware.sh "${build}/bootware"
 
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${version}' < script/templates/APKBUILD.tmpl > "${build}/APKBUILD"
+  envsubst '${version}' < data/templates/APKBUILD.tmpl > "${build}/APKBUILD"
 
   (cd "${build}" && abuild checksum && abuild -r)
-  mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" dist/
-  checksum "dist/bootware-${version}-r0.apk"
+  mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" build/dist/
+  checksum "build/dist/bootware-${version}-r0.apk"
 }
 
 #######################################
@@ -111,14 +111,14 @@ brew() {
   curl -LSfs --output /tmp/bootware.tar.gz "${url}"
   shasum="$(sha256sum /tmp/bootware.tar.gz | cut -d ' ' -f 1)"
 
-  mkdir -p dist
+  mkdir -p build/dist
   export shasum="${shasum}" version="${version}" url="${url}"
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${shasum} ${url} ${version}' < script/templates/bootware.rb.tmpl \
-    > dist/bootware.rb
-  checksum "dist/bootware.rb"
+  envsubst '${shasum} ${url} ${version}' < data/templates/bootware.rb.tmpl \
+    > build/dist/bootware.rb
+  checksum build/dist/bootware.rb
 }
 
 #######################################
@@ -181,16 +181,16 @@ deb() {
 
   mkdir -p "${build}/DEBIAN" "${build}/usr/share/bash-completion/completions" \
     "${build}/etc/fish/completions" "${build}/usr/bin" \
-    "${build}/usr/share/man/man1" dist
+    "${build}/usr/share/man/man1" build/dist
 
-  cp completions/bootware.bash "${build}/usr/share/bash-completion/completions/"
-  cp completions/bootware.fish "${build}/etc/fish/completions/"
-  cp completions/bootware.man "${build}/usr/share/man/man1/bootware.1"
-  cp bootware.sh "${build}/usr/bin/bootware"
+  cp src/completion/bootware.bash "${build}/usr/share/bash-completion/completions/"
+  cp src/completion/bootware.fish "${build}/etc/fish/completions/"
+  cp src/completion/bootware.man "${build}/usr/share/man/man1/bootware.1"
+  cp src/bootware.sh "${build}/usr/bin/bootware"
 
-  envsubst < script/templates/control.tmpl > "${build}/DEBIAN/control"
-  dpkg-deb --build "${build}" "dist/bootware_${version}_all.deb"
-  checksum "dist/bootware_${version}_all.deb"
+  envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
+  dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
+  checksum "build/dist/bootware_${version}_all.deb"
 }
 
 #######################################
@@ -204,7 +204,7 @@ dist() {
   for package in "$@"; do
     "${container}" build --build-arg "version=${version}" \
       --file "test/e2e/${package}.dockerfile" \
-      --output dist --target dist .
+      --output build/dist --target dist .
   done
 }
 
@@ -247,18 +247,18 @@ rpm() {
   tmp_dir="$(mktemp --directory)"
   archive_dir="${tmp_dir}/bootware-${version}"
 
-  mkdir -p "${archive_dir}" "${build}/SOURCES" "${build}/SPECS" dist
+  mkdir -p "${archive_dir}" "${build}/SOURCES" "${build}/SPECS" build/dist
 
-  cp completions/bootware.bash completions/bootware.fish "${archive_dir}/"
-  cp completions/bootware.man "${archive_dir}/bootware.1"
-  cp bootware.sh "${archive_dir}/bootware"
+  cp src/completion/bootware.bash src/completion/bootware.fish "${archive_dir}/"
+  cp src/completion/bootware.man "${archive_dir}/bootware.1"
+  cp src/bootware.sh "${archive_dir}/bootware"
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 
-  envsubst < script/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
+  envsubst < data/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
-  mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" dist/
-  checksum "dist/bootware-${version}-0.fc33.noarch.rpm"
+  mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" build/dist/
+  checksum "build/dist/bootware-${version}-0.fc33.noarch.rpm"
   rm -fr "${build}" "${tmp_dir}"
 }
 
