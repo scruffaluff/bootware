@@ -1,4 +1,4 @@
 ---
 dependencies:
   - role: variable
-    when: fish_role_executed is not defined and ansible_system != "Win32NT"
+    when: variable_role_executed is not defined

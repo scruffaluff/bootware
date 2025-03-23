@@ -1,4 +1,9 @@
 ---
+- name: Set become method for Alpine
+  ansible.builtin.set_fact:
+    ansible_become_method: doas
+  when: ansible_system == "Linux" and ansible_pkg_mgr == "apk"
+
 - name: Query system Glibc version
   ansible.builtin.command:
     cmd: ldd --version
@@ -49,4 +54,4 @@
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
-    fact_role_executed: true
+    variable_role_executed: true

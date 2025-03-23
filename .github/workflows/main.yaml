@@ -94,11 +94,6 @@ jobs:
         run: >-
           curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
           -s -- --global
-      - if: ${{ runner.os != 'Windows' }}
-        name: Log variables
-        run: |
-          echo "github.base_ref: '${{ github.base_ref }}'"
-          echo "github.ref: '${{ github.ref }}'"
       - name: Run CI workflow commands
         run: just ci
       - if: ${{ always() && inputs.debug }}
@@ -108,9 +103,8 @@ jobs:
 
   package:
     if: >-
-      ${{ (github.base_ref == 'refs/heads/main' || github.ref ==
-      'refs/heads/main') && github.event_name != 'workflow_dispatch' ||
-      inputs.job == 'package' }}
+      ${{ (github.base_ref == 'main' || github.ref == 'refs/heads/main') &&
+      github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
     name: Test building packages
     runs-on: ubuntu-latest
     steps:
@@ -152,9 +146,8 @@ jobs:
     environment:
       name: github-pages
     if: >-
-      ${{ (github.base_ref == 'refs/heads/main' || github.ref ==
-      'refs/heads/main') && github.event_name != 'workflow_dispatch' ||
-      inputs.job == 'package' }}
+      ${{ (github.base_ref == 'main' || github.ref == 'refs/heads/main') &&
+      github.event_name != 'workflow_dispatch' || inputs.job == 'package' }}
     name: Build and publish documentation
     permissions:
       id-token: write
