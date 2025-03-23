@@ -103,8 +103,9 @@ jobs:
 
   package:
     if: >-
-      ${{ github.ref == 'refs/heads/main' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'package' }}
+      ${{ (github.base_ref == 'refs/heads/main' || github.ref ==
+      'refs/heads/main') && github.event_name != 'workflow_dispatch' ||
+      inputs.job == 'package' }}
     name: Test building packages
     runs-on: ubuntu-latest
     steps:
@@ -146,8 +147,8 @@ jobs:
     environment:
       name: github-pages
     if: >-
-      ${{ github.ref == 'refs/heads/main' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'pages' }}
+      ${{ contains([github.ref, github.base_ref],'refs/heads/main') &&
+      github.event_name != 'workflow_dispatch' || inputs.job == 'pages' }}
     name: Build and publish documentation
     permissions:
       id-token: write
@@ -219,8 +220,8 @@ jobs:
             hashFiles('poetry.lock') }}
       - name: Install Just
         run: >-
-          curl -LSfs https://just.systems/install.sh | sh -s -- --to
-          /usr/local/bin
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx

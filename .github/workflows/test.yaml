@@ -200,9 +200,9 @@ jobs:
           # TODO: Create nonadmin user for test since VLC cannot run as root.
           run: |
             set -eou pipefail
-            src/install.sh
-            src/bootware.sh setup
-            src/bootware.sh bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            sudo install src/bootware.sh /usr/local/bin/bootware
+            bootware setup
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -223,9 +223,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Bootware
-        run: |
-          src/install.sh
-          sudo cp bootware.sh $(which bootware)
+        run: sudo install src/bootware.sh /usr/local/bin/bootware
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
@@ -326,9 +324,9 @@ jobs:
         id: branch
         uses: tj-actions/branch-names@v8
       - name: Install Bootware
-        run: |
-          src/install.ps1 --version ${{ steps.branch.outputs.current_branch }}
-          Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path "./src/bootware.ps1"
+        run: >-
+          Copy-Item -Destination "C:/Program Files/Bootware/bootware.ps1" -Path
+          src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older
