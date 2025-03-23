@@ -65,7 +65,7 @@ alpm() {
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${version}' < script/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
+  envsubst '${version}' < data/templates/PKGBUILD.tmpl > "${build}/PKGBUILD"
 
   (cd "${build}" && updpkgsums)
   (cd "${build}" && makepkg --install --noconfirm --syncdeps)
@@ -92,7 +92,7 @@ apk() {
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${version}' < script/templates/APKBUILD.tmpl > "${build}/APKBUILD"
+  envsubst '${version}' < data/templates/APKBUILD.tmpl > "${build}/APKBUILD"
 
   (cd "${build}" && abuild checksum && abuild -r)
   mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" build/dist/
@@ -116,7 +116,7 @@ brew() {
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
-  envsubst '${shasum} ${url} ${version}' < script/templates/bootware.rb.tmpl \
+  envsubst '${shasum} ${url} ${version}' < data/templates/bootware.rb.tmpl \
     > build/dist/bootware.rb
   checksum build/dist/bootware.rb
 }
@@ -188,7 +188,7 @@ deb() {
   cp completions/bootware.man "${build}/usr/share/man/man1/bootware.1"
   cp bootware.sh "${build}/usr/bin/bootware"
 
-  envsubst < script/templates/control.tmpl > "${build}/DEBIAN/control"
+  envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
   checksum "build/dist/bootware_${version}_all.deb"
 }
@@ -255,7 +255,7 @@ rpm() {
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 
-  envsubst < script/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
+  envsubst < data/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
   mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" build/dist/
   checksum "build/dist/bootware-${version}-0.fc33.noarch.rpm"

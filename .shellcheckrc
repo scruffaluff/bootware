@@ -3,6 +3,6 @@
 # For more information, visit 
 # https://github.com/koalaman/shellcheck/blob/master/shellcheck.1.md#rc-files.
 
-disable=SC1091
+disable=SC1091,SC3043
 enable=add-default-case,avoid-nullary-conditions,quote-safe-variables,require-variable-braces
 severity=style

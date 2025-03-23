@@ -69,7 +69,7 @@ function rolesTable(repoPath: string): string {
     { arch: "amd64", os: "windows" },
   ];
 
-  const rolesPath = path.join(repoPath, "test/data/roles.json");
+  const rolesPath = path.join(repoPath, "data/roles.json");
   let roles = JSON.parse(fs.readFileSync(rolesPath, "utf8"));
 
   let table = "| |";
@@ -107,10 +107,7 @@ function rolesTable(repoPath: string): string {
 async function writeSoftware(repoPath: string): Promise<void> {
   const table = rolesTable(repoPath);
 
-  const templatePath = path.join(
-    repoPath,
-    "script/templates/software.mustache"
-  );
+  const templatePath = path.join(repoPath, "data/templates/software.mustache");
   const template = fs.readFileSync(templatePath, "utf8");
   const softwareText = mustache.render(template, { table });
 

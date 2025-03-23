@@ -11,14 +11,5 @@
     "vue": "^3.5.0"
   },
   "private": true,
-  "scripts": {
-    "doc": "tsx script/build_docs.ts",
-    "lint": "poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml",
-    "package": "script/package.sh",
-    "prettier": "prettier --check .",
-    "shellcheck": "script/shellcheck.sh",
-    "shfmt": "shfmt --diff bootware.sh install.sh completions ansible_collections/scruffaluff",
-    "test": "tsx script/run_tests.ts"
-  },
   "type": "module"
 }

@@ -37,15 +37,14 @@ doc:
 [unix]
 format:
   npx prettier --check .
-  shfmt --diff bootware.sh install.sh completions ansible_collections/scruffaluff
+  shfmt --diff ansible_collections script src test
 
 # Check code formatting.
 [windows]
 format:
   npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
 
 # Run code analyses.
@@ -53,20 +52,18 @@ format:
 lint:
   #!/usr/bin/env sh
   set -eu
-  files="$(find . -type f \( -name '*.bats' -or -name '*.sh' \) -not \
-    -path '*/.vendor/*' -not -path '*/.venv/*' -not -path '*/node_modules/*')"
+  files="$(find ansible_collections script src test -name '*.bats' -or -name '*.sh')"
   for file in ${files}; do
     shellcheck "${file}"
   done
-  #poetry run ansible-lint ansible_collections/scruffaluff playbook.yaml
+  poetry run ansible-lint ansible_collections playbook.yaml
 
 # Run code analyses.
 [windows]
 lint:
-  Invoke-ScriptAnalyzer -EnableExit -Path bootware.ps1 -Settings PSScriptAnalyzerSettings.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Path install.ps1 -Settings PSScriptAnalyzerSettings.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings PSScriptAnalyzerSettings.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings PSScriptAnalyzerSettings.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings data/config/script_analyzer.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings data/config/script_analyzer.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings data/config/script_analyzer.psd1
 
 # Install development dependencies.
 setup: _setup

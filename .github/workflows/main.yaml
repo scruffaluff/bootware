@@ -26,6 +26,7 @@ on:
         description: CI job to run
         options:
           - build
+          - package
           - pages
           - release
         type: choice
@@ -97,6 +98,47 @@ jobs:
         run: just ci
       - if: ${{ always() && inputs.debug }}
         name: Setup Tmate session if debug enabled
+        timeout-minutes: 60
+        uses: mxschmitt/action-tmate@v3
+
+  package:
+    if: >-
+      ${{ github.ref == 'refs/heads/main' && github.event_name !=
+      'workflow_dispatch' || inputs.job == 'package' }}
+    name: Test building packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .vendor
+            .venv
+            node_modules
+          key: >-
+            node-22_python-3.12_${{ runner.os }}_npm-${{
+            hashFiles('package-lock.json') }}_poetry-${{
+            hashFiles('poetry.lock') }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Install Node interpreter
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python interpreter
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Just
+        run: >-
+          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          -s -- --global
+      - name: Build packages
+        run: just setup dist
+      - if: ${{ always() && inputs.debug }}
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
