@@ -20,7 +20,7 @@ RUN script/package.sh --version "${version?}" build brew
 
 FROM scratch AS dist
 
-COPY --from=build "/bootware/dist/" /
+COPY --from=build /bootware/build/dist/ /
 
 FROM homebrew/brew:4.4.15
 
@@ -34,7 +34,7 @@ RUN DEBIAN_FRONTEND="noninteractive" sudo apt-get --quiet --yes install \
     libdigest-sha-perl tzdata
 
 # Pull Homebrew package from previous Docker stage.
-COPY --from=build "/bootware/dist/" .
+COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Homebrew package.
 RUN shasum --check --algorithm 512 bootware.rb.sha512

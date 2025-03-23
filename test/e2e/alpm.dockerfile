@@ -26,7 +26,7 @@ RUN script/package.sh --version "${version?}" build alpm
 
 FROM scratch AS dist
 
-COPY --from=build "/bootware/dist/" /
+COPY --from=build /bootware/build/dist/ /
 
 FROM archlinux:base-20250112.0.297543
 
@@ -36,7 +36,7 @@ RUN pacman --noconfirm --refresh --sync --sysupgrade \
     && pacman --noconfirm --sync perl
 
 # Pull Arch package from previous Docker stage.
-COPY --from=build "/bootware/dist/" .
+COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Arch package.
 RUN sha512sum --check "bootware-${version}-0-any.pkg.tar.zst.sha512"

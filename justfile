@@ -15,14 +15,14 @@ list:
   @just --list
 
 # Execute all commands.
-all: setup format lint doc test
+all: setup format lint doc test dist
 
 # Execute CI workflow commands.
 ci: setup format lint doc test
 
 # Build distribution packages.
 [unix]
-dist version:
+dist version='0.8.3':
   script/package.sh --version {{version}} ansible
   script/package.sh --version {{version}} dist alpm apk deb rpm
 
@@ -105,6 +105,12 @@ _setup-unix:
     echo 'Install Python, https://python.org, manually before continuing.' >&2
     exit 1
   fi
+  if [ ! -x "$(command -v nu)" ]; then
+    curl --fail --location --show-error \
+      httsp://scruffaluff.github.io/scripts/install/nushell.sh | sh -s -- \
+      --dest .vendor/bin
+  fi
+  echo "Nushell $(nu --version)"
   if [ ! -x "$(command -v poetry)" ]; then
     curl -LSfs https://install.python-poetry.org | python3 -
   fi
@@ -159,6 +165,13 @@ _setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
   $PSNativeCommandUseErrorActionPreference = $True
+  # If executing task from PowerShell Core, error such as "'Install-Module'
+  # command was found in the module 'PowerShellGet', but the module could not be
+  # loaded" unless earlier versions of PackageManagement and PowerShellGet are
+  # imported.
+  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
+  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
+  Get-PackageProvider -Force Nuget | Out-Null
   If (-Not (
     (Get-Command -ErrorAction SilentlyContinue node) -And 
     (Get-Command -ErrorAction SilentlyContinue npm)
@@ -166,6 +179,17 @@ _setup:
     Write-Error 'Error: Unable to find NodeJS and NPM.'
     Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
     Exit 1
+  }
+  If (-Not (Get-Command -ErrorAction SilentlyContinue nu)) {
+    powershell {
+      iex "& { $(iwr -useb https://scruffaluff.github.io/scripts/install/nushell.ps1) } --dest .vendor/bin"
+    }
+  }
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="PSScriptAnalyzer";ModuleVersion="1.0.0"})) {
+    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
+  }
+  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
+    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
   If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
     If (Get-Command -ErrorAction SilentlyContinue choco) {
@@ -182,19 +206,6 @@ _setup:
       Write-Error 'Install Yq, https://mikefarah.gitbook.io/yq, manually before continuing.'
       Exit 1
     }
-  }
-  # If executing task from PowerShell Core, error such as "'Install-Module'
-  # command was found in the module 'PowerShellGet', but the module could not be
-  # loaded" unless earlier versions of PackageManagement and PowerShellGet are
-  # imported.
-  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
-  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
-  Get-PackageProvider -Force Nuget | Out-Null
-  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="PSScriptAnalyzer";ModuleVersion="1.0.0"})) {
-    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
-  }
-  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
-    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
 
 # Run unit test suites.

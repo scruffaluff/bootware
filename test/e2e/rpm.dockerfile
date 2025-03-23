@@ -18,7 +18,7 @@ RUN script/package.sh --version "${version?}" build rpm
 
 FROM scratch AS dist
 
-COPY --from=build "/bootware/dist/" /
+COPY --from=build /bootware/build/dist/ /
 
 FROM fedora:41
 
@@ -29,7 +29,7 @@ RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN dnf install --assumeyes perl-Digest-SHA
 
 # Pull Fedora package from previous Docker stage.
-COPY --from=build "/bootware/dist/" .
+COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Fedora package.
 RUN shasum --check --algorithm 512 "bootware-${version?}-0.fc33.noarch.rpm.sha512"

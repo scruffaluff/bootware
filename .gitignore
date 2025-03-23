@@ -8,7 +8,6 @@ __pycache__/
 .hypothesis/
 .local/
 .vagrant/
-.vendor/
 .venv/
 .vscode/
 *.bak
@@ -16,6 +15,7 @@ __pycache__/
 *.log
 *.tar.gz
 *.xml
+/.vendor/
 /.vitepress/cache/
 /.vitepress/dist/
 /ansible_collections/*

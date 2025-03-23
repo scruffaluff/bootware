@@ -38,7 +38,7 @@ RUN script/package.sh --version "${version?}" build apk
 
 FROM scratch AS dist
 
-COPY --from=build "/bootware/dist/" /
+COPY --from=build /bootware/build/dist/ /
 
 FROM alpine:3.21.2
 
@@ -50,7 +50,7 @@ RUN apk update && apk add perl-utils
 COPY --from=build /bootware/alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
 
 # Pull Alpine package from previous Docker stage.
-COPY --from=build "/bootware/dist/" .
+COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Alpine package.
 RUN shasum --check --algorithm 512 "bootware-${version?}-r0.apk.sha512"
