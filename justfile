@@ -2,6 +2,7 @@
 #
 # For more information, visit https://just.systems.
 
+set unstable := true
 set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
 export PATH := if os() == "windows" {
   justfile_dir() / ".vendor/bin;" + env_var("Path")
@@ -21,22 +22,15 @@ all: setup format lint doc test dist
 ci: setup format lint doc test
 
 # Build distribution packages.
-[unix]
-dist version='0.8.3':
+[script("nu")]
+dist version="0.8.3":
   script/package.sh --version {{version}} ansible
   script/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
-[unix]
+[script("nu")]
 doc:
   cp install.ps1 install.sh data/public/
-  npx tsx script/build_docs.ts
-
-# Build documentation.
-[windows]
-doc:
-  Copy-Item -Recurse -Path install.ps1 -Destination data/public/
-  Copy-Item -Recurse -Path install.sh -Destination data/public/
   npx tsx script/build_docs.ts
 
 # Check code formatting.
@@ -146,19 +140,6 @@ _setup-unix:
     chmod 755 .vendor/bin/shfmt
   fi
   echo "Shfmt version $(shfmt --version)"
-  if [ ! -x "$(command -v yq)" ]; then
-    if [ -x "$(command -v brew)" ]; then
-      brew install yq
-    else
-      yq_version="$(curl  --fail --location --show-error \
-        https://formulae.brew.sh/api/formula/yq.json |
-        jq --exit-status --raw-output .versions.stable)"
-      curl --fail --location --show-error --output /tmp/yq \
-        "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_${os}_${arch}"
-      install /tmp/yq "${HOME}/.local/bin/yq"
-    fi
-  fi
-  yq --version
 
 [windows]
 _setup:
@@ -190,22 +171,6 @@ _setup:
   }
   If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
     Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
-  }
-  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
-    If (Get-Command -ErrorAction SilentlyContinue choco) {
-      choco install --yes yq
-    }
-    ElseIf (Get-Command -ErrorAction SilentlyContinue scoop) {
-      scoop install yq
-    }
-    ElseIf (Get-Command -ErrorAction SilentlyContinue winget) {
-      winget install --disable-interactivity --exact --id mikefarah.yq
-    } 
-    Else {
-      Write-Error 'Error: Unable to install Yq with system package managers.'
-      Write-Error 'Install Yq, https://mikefarah.gitbook.io/yq, manually before continuing.'
-      Exit 1
-    }
   }
 
 # Run unit test suites.
