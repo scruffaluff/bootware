@@ -12,36 +12,21 @@ setup() {
   # Disable logging to simplify stdout for testing.
   export BOOTWARE_NOLOG='true'
 
-  # Mock functions for child processes by printing received arguments.
-  #
-  # Args:
-  #   -f: Use override as a function instead of a variable.
   command() {
-    # shellcheck disable=SC2317
     echo '/bin/bash'
   }
-  export -f command
-
-  chmod() {
-    # shellcheck disable=SC2317
-    :
-  }
-  export -f chmod
-
+  chmod() { :; }
   curl() {
-    # shellcheck disable=SC2317
     echo "curl $*"
   }
-  export -f curl
-
-  mkdir() {
-    # shellcheck disable=SC2317
-    :
-  }
-  export -f mkdir
+  mkdir() { :; }
+  export -f command chmod curl mkdir
 }
 
 update_subcommand_passes_bootware_executable_path_to_curl() { # @test
+  bootware() { :; }
+  export -f bootware
+
   run bash bootware.sh update --version develop
   assert_success
   assert_output "curl -LSfs \
