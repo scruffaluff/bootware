@@ -28,10 +28,8 @@ dist version="0.8.3":
   script/package.sh --version {{version}} dist alpm apk deb rpm
 
 # Build documentation.
-[script("nu")]
 doc:
-  cp src/install* data/public/
-  npx tsx script/build_docs.ts
+  npx tsx script/doc.ts
 
 # Check code formatting.
 [unix]
