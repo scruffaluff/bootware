@@ -188,7 +188,7 @@ test: test-unit test-e2e
 
 # Run end to end test suite.
 test-e2e *flags:
-  npx tsx script/run_tests.ts {{flags}}
+  nu script/test_e2e.nu {{flags}}
 
 # Run unit test suite.
 [unix]
