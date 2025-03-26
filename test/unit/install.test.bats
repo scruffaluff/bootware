@@ -8,6 +8,12 @@ setup() {
   load "${REPO_PATH}/.vendor/lib/bats-file/load"
   load "${REPO_PATH}/.vendor/lib/bats-support/load"
   bats_require_minimum_version 1.5.0
+
+  # Avoid mutating user shell configuration during testing.
+  install_completions() {
+    echo "$@"
+  }
+  export -f install_completions
 }
 
 global_owner_is_root() { # @test

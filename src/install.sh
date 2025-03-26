@@ -81,7 +81,7 @@ configure_shell() {
 # Perform network request.
 #######################################
 fetch() {
-  local url='' dst_dir='' dst_file='-' mode='' super=''
+  local dst_file='-' mode='' super='' url=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -110,7 +110,7 @@ fetch() {
   # Flags:
   #   -p: Make parent directories if necessary.
   if [ "${dst_file}" != '-' ]; then
-    ${super:+"${super}"} mkdir -p "$(dirname "${dst_dir}")"
+    ${super:+"${super}"} mkdir -p "$(dirname "${dst_file}")"
   fi
 
   # Download with Curl or Wget.
