@@ -52,7 +52,7 @@ jobs:
   build:
     if: >-
       ${{ github.ref_type == 'branch' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'lint' }}
+      'workflow_dispatch' || inputs.job == 'build' }}
     name: Run code analyses and test suites
     runs-on: ${{ matrix.os }}-latest
     strategy:
