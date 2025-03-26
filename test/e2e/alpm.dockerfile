@@ -1,4 +1,4 @@
-FROM archlinux:base-20250112.0.297543 AS build
+FROM docker.io/archlinux:base-20250112.0.297543 AS build
 
 ARG version
 
@@ -24,11 +24,11 @@ WORKDIR /bootware
 # Build Arch package.
 RUN script/pkg.sh --version "${version?}" alpm
 
-FROM scratch AS dist
+FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM archlinux:base-20250112.0.297543
+FROM docker.io/archlinux:base-20250112.0.297543
 
 ARG version
 

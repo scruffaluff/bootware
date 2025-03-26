@@ -1,4 +1,4 @@
-FROM fedora:41 AS build
+FROM docker.io/fedora:41 AS build
 
 ARG version
 
@@ -16,11 +16,11 @@ WORKDIR /bootware
 # Build Fedora package.
 RUN script/pkg.sh --version "${version?}" rpm
 
-FROM scratch AS dist
+FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM fedora:41
+FROM docker.io/fedora:41
 
 ARG version
 

@@ -1,4 +1,4 @@
-FROM alpine:3.21.2 AS build
+FROM docker.io/alpine:3.21.2 AS build
 
 ARG version
 
@@ -35,11 +35,11 @@ RUN openssl genrsa --out alpine.rsa  \
 # Build Alpine package.
 RUN script/pkg.sh --version "${version?}" apk
 
-FROM scratch AS dist
+FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM alpine:3.21.2
+FROM docker.io/alpine:3.21.2
 
 ARG version
 
