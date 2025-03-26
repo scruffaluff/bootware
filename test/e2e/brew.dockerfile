@@ -16,7 +16,7 @@ WORKDIR /bootware
 RUN sudo mkdir -p -m 777 dist
 
 # Build Debian package.
-RUN script/package.sh --version "${version?}" build brew
+RUN script/pkg.sh --version "${version?}" brew
 
 FROM scratch AS dist
 

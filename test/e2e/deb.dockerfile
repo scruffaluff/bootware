@@ -13,7 +13,7 @@ COPY src/ /bootware/src/
 WORKDIR /bootware
 
 # Build Debian package.
-RUN script/package.sh --version "${version?}" build deb
+RUN script/pkg.sh --version "${version?}" deb
 
 FROM scratch AS dist
 

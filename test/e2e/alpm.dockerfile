@@ -22,7 +22,7 @@ COPY --chown="${USER}" src/ /bootware/src/
 WORKDIR /bootware
 
 # Build Arch package.
-RUN script/package.sh --version "${version?}" build alpm
+RUN script/pkg.sh --version "${version?}" alpm
 
 FROM scratch AS dist
 

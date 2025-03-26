@@ -182,11 +182,14 @@ _setup:
   yq --version
 
 # Run test suites.
-test: test-unit test-e2e
+test: test-unit test-pkg test-e2e
 
 # Run end to end test suite.
 test-e2e *flags:
   nu script/test_e2e.nu {{flags}}
+
+test-pkg *flags:
+  nu script/pkg.nu test {{flags}}
 
 # Run unit test suite.
 [unix]

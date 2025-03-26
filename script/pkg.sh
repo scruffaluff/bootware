@@ -18,32 +18,13 @@ usage() {
   cat 1>&2 << EOF
 Distribute Bootware in package formats.
 
-Usage: package [OPTIONS] [SUBCOMMAND] PACKAGES
+Usage: pkg [OPTIONS] PACKAGES...
 
 Options:
       --debug               Enable shell debug traces
   -h, --help                Print help information
   -v, --version <VERSION>   Version of Bootware package
-
-Subcommands:
-  ansible   Build Bootware Ansible collection
-  build     Build Bootware packages
-  dist      Build Bootware packages for distribution
-  test      Run Bootware package tests in Docker
 EOF
-}
-
-#######################################
-# Build Ansible Galaxy collection.
-#######################################
-ansible_() {
-  filename="scruffaluff-bootware-${1}.tar.gz"
-  mkdir -p build/dist
-
-  cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
-  poetry run ansible-galaxy collection build --force --output-path build/dist \
-    ansible_collections/scruffaluff/bootware
-  checksum "build/dist/${filename}"
 }
 
 #######################################
@@ -122,38 +103,6 @@ brew() {
 }
 
 #######################################
-# Build subcommand.
-#######################################
-build() {
-  version="${1}"
-  shift 1
-
-  for package in "$@"; do
-    case "${package}" in
-      alpm)
-        alpm "${version}"
-        ;;
-      apk)
-        apk "${version}"
-        ;;
-      brew)
-        brew "${version}"
-        ;;
-      deb)
-        deb "${version}"
-        ;;
-      rpm)
-        rpm "${version}"
-        ;;
-      *)
-        echo "error: Unsupported package type '${package}'."
-        exit 2
-        ;;
-    esac
-  done
-}
-
-#######################################
 # Compute checksum for file.
 #######################################
 checksum() {
@@ -194,44 +143,41 @@ deb() {
 }
 
 #######################################
-# Dist subcommand.
-#######################################
-dist() {
-  version="${1}"
-  shift 1
-
-  container="$(find_container)"
-  for package in "$@"; do
-    "${container}" build --build-arg "version=${version}" \
-      --file "test/e2e/${package}.dockerfile" \
-      --output build/dist --target dist .
-  done
-}
-
-#######################################
-# Print error message and exit script with error code.
+# Print message if error or logging is enabled.
+# Arguments:
+#   Message to print.
+# Globals:
+#   SCRIPTS_NOLOG
 # Outputs:
-#   Writes error message to stderr.
+#   Message argument.
 #######################################
-error() {
-  bold_red='\033[1;31m' default='\033[0m'
-  printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  exit 1
-}
+log() {
+  local file='1' newline="\n" text=''
 
-#######################################
-# Find command to manage containers.
-#######################################
-find_container() {
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -e | --stderr)
+        file='2'
+        shift 1
+        ;;
+      -n | --no-newline)
+        newline=''
+        shift 1
+        ;;
+      *)
+        text="${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Print if error or using quiet configuration.
+  #
   # Flags:
-  #   -v: Only show file path of command.
-  #   -x: Check if file exists and execute permission is granted.
-  if [ -x "$(command -v podman)" ]; then
-    echo 'podman'
-  elif [ -x "$(command -v docker)" ]; then
-    echo 'docker'
-  else
-    error 'Unable to find a command for container management'
+  #   -z: Check if string has zero length.
+  if [ -z "${BOOTWARE_NOLOG:-}" ] || [ "${file}" = '2' ]; then
+    printf "%s${newline}" "${text}" >&"${file}"
   fi
 }
 
@@ -263,21 +209,6 @@ rpm() {
 }
 
 #######################################
-# Test subcommand.
-#######################################
-test() {
-  version="${1}"
-  shift 1
-
-  container="$(find_container)"
-  for package in "$@"; do
-    "${container}" build --build-arg "version=${version}" \
-      --file "test/e2e/${package}.dockerfile" \
-      --tag "scruffaluff/bootware:${package}" .
-  done
-}
-
-#######################################
 # Script entrypoint.
 #######################################
 main() {
@@ -298,34 +229,33 @@ main() {
         version="${2}"
         shift 2
         ;;
-      ansible)
+      alpm)
+        alpm "${version}"
         shift 1
-        ansible_ "${version}" "$@"
-        exit 0
         ;;
-      build)
+      apk)
+        apk "${version}"
         shift 1
-        build "${version}" "$@"
-        exit 0
         ;;
-      dist)
+      brew)
+        brew "${version}"
         shift 1
-        dist "${version}" "$@"
-        exit 0
         ;;
-      test)
+      deb)
+        deb "${version}"
         shift 1
-        test "${version}" "$@"
-        exit 0
+        ;;
+      rpm)
+        rpm "${version}"
+        shift 1
         ;;
       *)
-        echo "error: No such subcommand or option '${1}'"
+        log --stderr "error: No such option or package '${1}'."
+        log --stderr "Run 'pkg --help' for usage."
         exit 2
         ;;
     esac
   done
-
-  usage
 }
 
 main "$@"

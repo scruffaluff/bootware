@@ -33,7 +33,7 @@ RUN openssl genrsa --out alpine.rsa  \
     && doas cp alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
 
 # Build Alpine package.
-RUN script/package.sh --version "${version?}" build apk
+RUN script/pkg.sh --version "${version?}" apk
 
 FROM scratch AS dist
 
