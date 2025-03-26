@@ -18,123 +18,148 @@ usage() {
   cat 1>&2 << EOF
 Installer script for Bootware.
 
-Usage: install [OPTIONS]
+Usage: install-bootware [OPTIONS]
 
 Options:
-      --debug               Enable shell debug traces
-  -d, --dest <PATH>         Path to install bootware
+      --debug               Show shell debug traces
+  -d, --dest <PATH>         Directory to install Bootware
+  -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -u, --user                Install bootware for current user
+  -m, --modify-env          Update system environment
+  -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 EOF
 }
 
 #######################################
-# Add Bootware to system path in user's shell profile.
-# Globals:
-#   HOME
-#   PATH
-#   SHELL
+# Add Bootware to system path in shell profile.
 # Arguments:
-#   Parent directory of Bootware script.
+#   Parent directory of Scripts script.
+# Globals:
+#   SHELL
 #######################################
 configure_shell() {
-  export_cmd="export PATH=\"${1}:\$PATH\""
-  shell_name="$(basename "${SHELL}")"
+  local dst_dir="${1}"
+  export_cmd="export PATH=\"${dst_dir}:\${PATH}\""
+  shell_name="$(basename "${SHELL:-}")"
 
   case "${shell_name}" in
     bash)
       profile="${HOME}/.bashrc"
       ;;
+    fish)
+      export_cmd="set --export PATH \"${dst_dir}\" \$PATH"
+      profile="${HOME}/.config/fish/config.fish"
+      ;;
+    nu)
+      export_cmd="\$env.PATH = [\"${dst_dir}\" ...\$env.PATH]"
+      if [ "$(uname -s)" = 'Darwin' ]; then
+        profile="${HOME}/Library/Application Support/nushell/config.nu"
+      else
+        profile="${HOME}/.config/nushell/config.nu"
+      fi
+      ;;
     zsh)
       profile="${HOME}/.zshrc"
       ;;
-    ksh)
-      profile="${HOME}/.profile"
-      ;;
-    fish)
-      export_cmd="set --export PATH \"${1}\" \$PATH"
-      profile="${HOME}/.config/fish/config.fish"
-      ;;
     *)
-      echo "Shell ${shell_name} is not supported for configuration."
-      return 0
+      profile="${HOME}/.profile"
       ;;
   esac
 
-  printf "\n# Added by Bootware installer.\n%s\n" "${export_cmd}" \
-    >> "${profile}"
+  # Create profile parent directory and add export command to profile
+  #
+  # Flags:
+  #   -p: Make parent directories if necessary.
+  mkdir -p "$(dirname "${profile}")"
+  printf '\n# Added by Bootware installer.\n%s\n' "${export_cmd}" >> "${profile}"
+  log "Added '${export_cmd}' to the '${profile}' shell profile."
+  log 'Source shell profile or restart shell after installation.'
 }
 
 #######################################
-# Download file to local path.
-# Arguments:
-#   Super user command for installation.
-#   Remote source URL.
-#   Local destination path.
+# Perform network request.
 #######################################
-download() {
+fetch() {
+  local url='' dst_dir='' dst_file='-' mode='' super=''
+
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -d | --dest)
+        dst_file="${2}"
+        shift 2
+        ;;
+      -m | --mode)
+        mode="${2}"
+        shift 2
+        ;;
+      -s | --super)
+        super="${2}"
+        shift 2
+        ;;
+      *)
+        url="${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Create parent directory if it does not exist.
+  #
+  # Flags:
+  #   -p: Make parent directories if necessary.
+  if [ "${dst_file}" != '-' ]; then
+    ${super:+"${super}"} mkdir -p "$(dirname "${dst_dir}")"
+  fi
+
+  # Download with Curl or Wget.
+  #
   # Flags:
   #   -O <PATH>: Save download to path.
   #   -q: Hide log output.
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ -x "$(command -v curl)" ]; then
-    ${1:+"${1}"} curl --fail --location --show-error --silent --output "${3}" \
-      "${2}"
+    ${super:+"${super}"} curl --fail --location --show-error --silent --output \
+      "${dst_file}" "${url}"
+  elif [ -x "$(command -v wget)" ]; then
+    ${super:+"${super}"} wget -q -O "${dst_file}" "${url}"
   else
-    ${1:+"${1}"} wget -q -O "${3}" "${2}"
+    log --stderr 'error: Unable to find a network file downloader.'
+    log --stderr 'Install curl, https://curl.se, manually before continuing.'
+    exit 1
   fi
-}
 
-#######################################
-# Print error message and exit script with error code.
-# Outputs:
-#   Writes error message to stderr.
-#######################################
-error() {
-  bold_red='\033[1;31m' default='\033[0m'
+  # Change file permissions if chmod parameter was passed.
+  #
   # Flags:
-  #   -t <FD>: Check if file descriptor is a terminal.
-  if [ -t 2 ]; then
-    printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  else
-    printf "error: %s\n" "${1}" >&2
+  #   -n: Check if string has nonzero length.
+  if [ -n "${mode:-}" ]; then
+    ${super:+"${super}"} chmod "${mode}" "${dst_file}"
   fi
-  exit 1
-}
-
-#######################################
-# Print error message and exit script with usage error code.
-# Outputs:
-#   Writes error message to stderr.
-#######################################
-error_usage() {
-  bold_red='\033[1;31m' default='\033[0m'
-  # Flags:
-  #   -t <FD>: Check if file descriptor is a terminal.
-  if [ -t 2 ]; then
-    printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  else
-    printf "error: %s\n" "${1}" >&2
-  fi
-  printf "Run 'install --help' for usage.\n" >&2
-  exit 2
 }
 
 #######################################
 # Find command to elevate as super user.
+# Outputs:
+#   Super user command.
 #######################################
 find_super() {
+  # Do not use long form flags for id. They are not supported on some systems.
+  #
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [ -x "$(command -v sudo)" ]; then
+  if [ "$(id -u)" -eq 0 ]; then
+    echo ''
+  elif [ -x "$(command -v sudo)" ]; then
     echo 'sudo'
   elif [ -x "$(command -v doas)" ]; then
     echo 'doas'
   else
-    error 'Unable to find a command for super user elevation'
+    log --stderr 'error: Unable to find a command for super user elevation.'
+    exit 1
   fi
 }
 
@@ -144,123 +169,163 @@ find_super() {
 #   Super user command for installation.
 #######################################
 install_bash() {
+  local super="${1}"
+
   # Do not quote the outer super parameter expansion. Shell will error due to be
   # being unable to find the "" command.
   if [ -x "$(command -v apk)" ]; then
-    ${1:+"${1}"} apk update
-    ${1:+"${1}"} apk add bash
+    ${super:+"${super}"} apk update
+    ${super:+"${super}"} apk add bash
   elif [ -x "$(command -v apt-get)" ]; then
-    ${1:+"${1}"} apt-get update
-    ${1:+"${1}"} apt-get install --quiet --yes bash
+    ${super:+"${super}"} apt-get update
+    ${super:+"${super}"} apt-get install --quiet --yes bash
   elif [ -x "$(command -v dnf)" ]; then
-    ${1:+"${1}"} dnf check-update || {
+    ${super:+"${super}"} dnf check-update || {
       code="$?"
       [ "${code}" -ne 100 ] && exit "${code}"
     }
-    ${1:+"${1}"} dnf install --assumeyes bash
+    ${super:+"${super}"} dnf install --assumeyes bash
   elif [ -x "$(command -v pacman)" ]; then
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync bash
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync bash
   elif [ -x "$(command -v pkg)" ]; then
-    ${1:+"${1}"} pkg update
-    ${1:+"${1}"} pkg install --yes bash
+    ${super:+"${super}"} pkg update
+    ${super:+"${super}"} pkg install --yes bash
   elif [ -x "$(command -v zypper)" ]; then
-    ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm bash
+    ${super:+"${super}"} zypper update --no-confirm
+    ${super:+"${super}"} zypper install --no-confirm bash
   else
-    error 'No supported package manager found to install Bash.'
+    log --stderr 'error: Unable to find a supported package manager for ' \
+      'installing Bash.'
+    exit 1
   fi
+}
+
+#######################################
+# Download and install Bootware.
+# Arguments:
+#   Super user command for installation.
+#   Whethter to install for all users.
+#   Bootware version.
+#   Destination path.
+#   Whether to update system environment.
+#######################################
+install_bootware() {
+  local super="${1}" global_="${2}" version="${3}" dst_dir="${4}" \
+    modify_env="${5}"
+  local repo="https://raw.githubusercontent.com/scruffaluff/bootware/${version}"
+
+  log "Installing Bootware to '${dst_dir}/bootware'."
+  fetch --dest "${dst_dir}/bootware" --mode 755 --super "${super}" \
+    "${repo}/src/bootware.sh"
+
+  install_completions "${super}" "${global_}" "${repo}"
+
+  # Update shell profile if destination is not in system path.
+  #
+  # Flags:
+  #   -n: Check if string has nonzero length.
+  if [ -n "${modify_env}" ]; then
+    case ":${PATH:-}:" in
+      *:${dst_dir}:*) ;;
+      *)
+        configure_shell "${dst_dir}"
+        ;;
+    esac
+  fi
+
+  export PATH="${dst_dir}:${PATH}"
+  log "Installed $(bootware --version)."
 }
 
 #######################################
 # Install completion scripts for Bootware.
 # Arguments:
-#   Super user elevation command.
+#   Super user command for installation.
 #   Whether to install for entire system.
-#   GitHub version reference.
+#   Bootware repository.
 #######################################
 install_completions() {
-  repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
-  bash_url="${repo_url}/src/completion/bootware.bash"
-  fish_url="${repo_url}/src/completion/bootware.fish"
+  local super="${1}" global_="${2}" repo="${3}"
+  local arch='' brew_prefix='' os=''
+  local bash_url="${repo}/src/completion/bootware.bash"
+  local fish_url="${repo}/src/completion/bootware.fish"
 
   # Flags:
-  #   -z: Check if the string is empty.
-  if [ -z "${2:-}" ]; then
-    if [ "$(uname -m)" = 'arm64' ]; then
-      brew_prefix='/opt/homebrew'
+  #   -n: Check if string has nonzero length.
+  if [ -n "${global_}" ]; then
+    os="$(uname -s)"
+
+    if [ "${os}" = 'Darwin' ]; then
+      arch="$(uname -m | sed s/aarch64/arm64/)"
+      if [ "${arch}" = 'arm64' ]; then
+        brew_prefix='/opt/homebrew'
+      else
+        brew_prefix='/usr/local'
+      fi
+
+      fetch --dest "${brew_prefix}/share/bash-completion/completions/bootware" \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest "${brew_prefix}/etc/fish/completions/bootware.fish" \
+        --mode 644 --super "${super}" "${fish_url}"
+    elif [ "${os}" = 'FreeBSD' ]; then
+      fetch --dest '/usr/local/share/bash-completion/completions/bootware' \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest '/usr/local/etc/fish/completions/bootware.fish' \
+        --mode 644 --super "${super}" "${fish_url}"
     else
-      brew_prefix='/usr/local'
+      fetch --dest '/usr/share/bash-completion/completions/bootware' \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest '/etc/fish/completions/bootware.fish' --mode 644 \
+        --super "${super}" "${fish_url}"
     fi
-    os_type="$(uname -s)"
 
-    # Do not use long form --parents flag for mkdir. It is not supported on
-    # MacOS.
-    if [ "${os_type}" = 'Darwin' ]; then
-      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
-      download "${1}" "${bash_url}" "${brew_prefix}/share/bash-completion/completions/bootware"
-      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
-
-      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
-      download "${1}" "${fish_url}" "${brew_prefix}/etc/fish/completions/bootware.fish"
-      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
-    elif [ "${os_type}" = 'FreeBSD' ]; then
-      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
-      download "${1}" "${bash_url}" '/usr/local/share/bash-completion/completions/bootware'
-      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
-
-      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
-      download "${1}" "${fish_url}" '/usr/local/etc/fish/completions/bootware.fish'
-      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
-    else
-      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
-      download "${1}" "${bash_url}" '/usr/share/bash-completion/completions/bootware'
-      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
-
-      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-      download "${1}" "${fish_url}" '/etc/fish/completions/bootware.fish'
-      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
-    fi
+    fetch --dest '/usr/local/share/man/man1/bootware.1' --mode 644 \
+      --super "${super}" "${repo}/src/completion/bootware.man"
   else
-    mkdir -p "${HOME}/.local/share/bash-completion/completions"
-    download "" "${bash_url}" "${HOME}/.local/share/bash-completion/completions/bootware"
-    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
-
-    mkdir -p "${HOME}/.config/fish/completions"
-    download "" "${fish_url}" "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
+    fetch --dest "${HOME}/.local/share/bash-completion/completions/bootware" \
+      --mode 644 "${bash_url}"
+    fetch --dest "${HOME}/.config/fish/completions/bootware.fish" \
+      --mode 644 "${fish_url}"
   fi
 }
 
 #######################################
-# Install Man pages for Bootware.
+# Print message if error or logging is enabled.
 # Arguments:
-#   Super user command for installation.
-#   GitHub version reference.
-#######################################
-install_man() {
-  man_url="https://raw.githubusercontent.com/scruffaluff/bootware/${2}/src/completion/bootware.man"
-
-  # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
-  ${1:+"${1}"} mkdir -p '/usr/local/share/man/man1'
-  download "${1}" "${man_url}" '/usr/local/share/man/man1/bootware.1'
-  ${1:+"${1}"} chmod 664 '/usr/local/share/man/man1/bootware.1'
-}
-
-#######################################
-# Print log message to stdout if logging is enabled.
+#   Message to print.
 # Globals:
-#   INSTALL_NOLOG
+#   BOOTWARE_NOLOG
 # Outputs:
-#   Log message to stdout.
+#   Message argument.
 #######################################
 log() {
-  # Log if environment variable is not set.
+  local file='1' newline="\n" text=''
+
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -e | --stderr)
+        file='2'
+        shift 1
+        ;;
+      -n | --no-newline)
+        newline=''
+        shift 1
+        ;;
+      *)
+        text="${text}${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Print if error or using quiet configuration.
   #
   # Flags:
-  #   -z: Check if the string is empty.
-  if [ -z "${INSTALL_NOLOG:-}" ]; then
-    echo "$@"
+  #   -z: Check if string has zero length.
+  if [ -z "${BOOTWARE_NOLOG:-}" ] || [ "${file}" = '2' ]; then
+    printf "%s${newline}" "${text}" >&"${file}"
   fi
 }
 
@@ -268,9 +333,7 @@ log() {
 # Script entrypoint.
 #######################################
 main() {
-  dst_file='/usr/local/bin/bootware'
-  super=''
-  version='main'
+  local dst_dir='' global_='' modify_env='' super='' version='main'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -280,16 +343,24 @@ main() {
         shift 1
         ;;
       -d | --dest)
-        dst_file="${2}"
+        dst_dir="${2}"
         shift 2
+        ;;
+      -g | --global)
+        dst_dir="${dst_dir:-/usr/local/bin}"
+        global_='true'
+        shift 1
         ;;
       -h | --help)
         usage
         exit 0
         ;;
-      -u | --user)
-        dst_file="${HOME}/.local/bin/bootware"
-        user_install='true'
+      -m | --modify-env)
+        modify_env='true'
+        shift 1
+        ;;
+      -q | --quiet)
+        export BOOTWARE_NOLOG='true'
         shift 1
         ;;
       -v | --version)
@@ -297,27 +368,23 @@ main() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'."
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'install-bootware --help' for usage."
+        exit 2
         ;;
     esac
   done
 
-  src_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}/src/bootware.sh"
-
-  # Use super user command for system installation if user did not give the
-  # --user, does not own the file, and is not root. Do not use long form --user
-  # flag for id command. It is not supported on MacOS.
+  # Find super user command if destination is not writable.
   #
   # Flags:
-  #   -u: Print only the user id.
+  #   -n: Check if string has nonzero length.
+  #   -p: Make parent directories if necessary.
   #   -w: Check if file exists and is writable.
-  #   -z: Check if the string is empty.
-  if [ -z "${user_install:-}" ] && [ ! -w "${dst_file}" ] &&
-    [ "$(id -u)" -ne 0 ]; then
+  dst_dir="${dst_dir:-"${HOME}/.local/bin"}"
+  if [ -n "${global_}" ] || ! mkdir -p "${dst_dir}" > /dev/null 2>&1 ||
+    [ ! -w "${dst_dir}" ]; then
     super="$(find_super)"
-    if [ -z "${super:-}" ]; then
-      error 'No command found to elevate user.'
-    fi
   fi
 
   # Install Bash shell if necessary.
@@ -325,40 +392,18 @@ main() {
   # Flags:
   #   -v: Only show file path of command.
   if [ ! -x "$(command -v bash)" ]; then
-    install_bash "${super}"
+    if [ -n "${global_}" ]; then
+      install_bash "${super}"
+    else
+      log --stderr 'error: Unable to find Bash shell.'
+      log --stderr 'Use --global flag or install Bash, ' \
+        'https://www.gnu.org/software/bash, manually before continuing.'
+      exit 1
+    fi
   fi
 
-  dst_dir="$(dirname "${dst_file}")"
-  log 'Installing Bootware...'
-
-  # Do not quote the outer super parameter expansion. Shell will error due to be
-  # being unable to find the "" command. Do not use long form --parents flag for
-  # mkdir. It is not supported on MacOS.
-  ${super:+"${super}"} mkdir -p "${dst_dir}"
-  download "${super}" "${src_url}" "${dst_file}"
-  ${super:+"${super}"} chmod 755 "${dst_file}"
-
-  # Add Bootware to shell profile if not in system path.
-  #
-  # Flags:
-  #   -e: Check if file exists.
-  #   -v: Only show file path of command.
-  if [ ! -e "$(command -v bootware)" ]; then
-    configure_shell "${dst_dir}"
-    export PATH="${dst_dir}:${PATH}"
-  fi
-
-  install_completions "${super}" "${user_install:-}" "${version}"
-
-  # Install man pages if a system install.
-  #
-  # Flags:
-  #   -z: Check if the string is empty.
-  if [ -z "${user_install:-}" ]; then
-    install_man "${super}" "${version}"
-  fi
-
-  log "Installed $(bootware --version)."
+  install_bootware "${super}" "${global_}" "${version}" "${dst_dir}" \
+    "${modify_env}"
 }
 
 # Add ability to selectively skip main function during test suite.

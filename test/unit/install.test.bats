@@ -8,57 +8,57 @@ setup() {
   load "${REPO_PATH}/.vendor/lib/bats-file/load"
   load "${REPO_PATH}/.vendor/lib/bats-support/load"
   bats_require_minimum_version 1.5.0
+}
 
-  # Disable logging to simplify stdout for testing.
-  export INSTALL_NOLOG='true'
+global_owner_is_root() { # @test
+  local dst_dir
+  dst_dir="$(mktemp -d)"
 
-  # Mock functions for child processes by printing received arguments.
-  #
-  # Args:
-  #   -f: Use override as a function instead of a variable.
+  run bash src/install.sh --quiet --global --dest "${dst_dir}"
+  assert_success
+  assert_file_owner root "${dst_dir}/bootware"
+}
+
+prints_version() { # @test
+  run bash src/install.sh --dest "$(mktemp -d)"
+  assert_success
+  assert_output --partial 'Installed Bootware 0.'
+}
+
+quiet_is_silent() { # @test
+  run bash src/install.sh --quiet --dest "$(mktemp -d)"
+  assert_success
+  assert_output ''
+}
+
+shows_error_usage_for_bad_argument() { # @test
+  run bash src/install.sh --dst
+  assert_failure
+  assert_output "$(
+    cat << EOF
+error: No such option '--dst'.
+Run 'install-bootware --help' for usage.
+EOF
+  )"
+}
+
+shows_error_if_bash_missing() { # @test
+  # Ensure that local Bash binary is not found.
   command() {
-    # shellcheck disable=SC2317
-    if [[ "${2}" == 'doas' ]]; then
-      echo ''
+    if [ "$*" = '-v bash' ]; then
+      echo ""
     else
-      echo '/bin/bash'
+      which "${2}"
     fi
   }
   export -f command
 
-  curl() {
-    # shellcheck disable=SC2317
-    echo "curl $*"
-    # shellcheck disable=SC2317
-    exit 0
-  }
-  export -f curl
-}
-
-installer_passes_local_path_to_curl() { # @test
-  local actual
-  local expected="curl --fail --location --show-error --silent --output \
-${HOME}/.local/bin/bootware \
-https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.sh"
-
-  actual="$(bash src/install.sh --user --version develop)"
-  assert_equal "${actual}" "${expected}"
-}
-
-installer_uses_sudo_when_destination_is_not_writable() { # @test
-  local actual expected
-
-  # Mock functions for child processes by printing received arguments.
-  #
-  # Args:
-  #   -f: Use override as a function instead of a variable.
-  sudo() {
-    echo "sudo $*"
-    exit 0
-  }
-  export -f sudo
-
-  expected='sudo mkdir -p /bin'
-  actual="$(bash src/install.sh --dest /bin/bash)"
-  assert_equal "${actual}" "${expected}"
+  run bash src/install.sh --dest "$(mktemp -d)"
+  assert_failure
+  assert_output "$(
+    cat << EOF
+error: Unable to find Bash shell.
+Use --global flag or install Bash, https://www.gnu.org/software/bash, manually before continuing.
+EOF
+  )"
 }

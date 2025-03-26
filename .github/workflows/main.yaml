@@ -136,7 +136,7 @@ jobs:
           curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
           -s -- --global
       - name: Build packages
-        run: just setup dist
+        run: just setup test-pkg
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
