@@ -5,16 +5,16 @@
 
     Mock CheckEnvironment { }
     Mock Invoke-WebRequest { }
-    Mock New-Item { }
     Mock Test-Path { Write-Output 1 }
 }
 
 Describe 'Install' {
     It 'Write error for nonexistant option at end of call' {
+        $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Install -v develop notanoption
         $Actual | Should -Be @(
-            "error: No such option 'notanoption'",
-            "Run 'install --help' for usage"
+            "error: No such option 'notanoption'.",
+            "Run 'install-bootware --help' for usage."
         )
     }
 
@@ -26,11 +26,11 @@ Describe 'Install' {
             function bootware() { Write-Output '' }
         }
 
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
 
-        & $Install --user --version develop
+        & $Install --version develop
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -eq "$Env:AppData/Bootware/bootware.ps1" -and
+            $OutFile -eq "$Env:LocalAppData\Programs\Bootware\bootware.ps1" -and
             $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.ps1'
         }
     }
