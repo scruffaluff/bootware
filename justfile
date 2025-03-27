@@ -54,10 +54,19 @@ format-fix:
 # Fix code formatting.
 [windows]
 format-fix:
+  #!powershell.exe
+  $ErrorActionPreference = 'Stop'
+  $ProgressPreference = 'SilentlyContinue'
+  $PSNativeCommandUseErrorActionPreference = $True
   npx prettier --write .
   Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting CodeFormatting
   Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Setting CodeFormatting
   Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Setting CodeFormatting
+  $Scripts = Get-ChildItem -Recurse -Filter *.ps1 -Path ansible_collections, src, test
+  foreach ($Script in $Scripts) {
+    $Text = Get-Content -Raw $Script.FullName
+    [System.IO.File]::WriteAllText($Script.FullName, $Text)
+  }
 
 # Run code analyses.
 [unix]
@@ -84,15 +93,7 @@ setup: _setup
   npm ci
 
 [unix]
-_setup: _setup-unix
-  python3 --version
-  python3 -m venv .venv
-  poetry --version
-  poetry check --lock
-  poetry install
-
-[unix]
-_setup-unix:
+_setup:
   #!/usr/bin/env sh
   set -eu
   arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
@@ -155,6 +156,11 @@ _setup-unix:
     chmod 755 .vendor/bin/yq
   fi
   yq --version
+  python3 --version
+  python3 -m venv .venv
+  poetry --version
+  poetry check --lock
+  poetry install
 
 [windows]
 _setup:
@@ -170,7 +176,7 @@ _setup:
   Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
   Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
   Get-PackageProvider -Force Nuget | Out-Null
-  If (-Not (
+  if (-not (
     (Get-Command -ErrorAction SilentlyContinue node) -And 
     (Get-Command -ErrorAction SilentlyContinue npm)
   )) {
@@ -178,18 +184,18 @@ _setup:
     Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
     Exit 1
   }
-  If (-Not (Get-Command -ErrorAction SilentlyContinue nu)) {
+  if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
     powershell {
       iex "& { $(iwr -useb https://scruffaluff.github.io/scripts/install/nushell.ps1) } --dest .vendor/bin"
     }
   }
-  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="PSScriptAnalyzer";ModuleVersion="1.0.0"})) {
+  if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.0.0" })) {
     Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
   }
-  If (-Not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName="Pester";ModuleVersion="5.0.0"})) {
+  if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "Pester"; ModuleVersion = "5.0.0" })) {
     Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
-  If (-Not (Get-Command -ErrorAction SilentlyContinue yq)) {
+  if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
     Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `
       "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_$Arch.exe"
   }
