@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     $Bootware = "$PSScriptRoot/../../src/bootware.ps1"
     . $Bootware
 

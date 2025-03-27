@@ -1,4 +1,4 @@
-﻿# PowerShell settings file.
+# PowerShell settings file.
 #
 # To profile PowerShell profile startup time, install PSProfiler,
 # https://github.com/IISResetMe/PSProfiler, with command

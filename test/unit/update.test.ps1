@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     # Path normalization required for Assert-MockCalled parameter filters.
     $Bootware = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../src/bootware.ps1")
     . $Bootware

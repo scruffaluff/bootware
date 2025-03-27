@@ -30,9 +30,6 @@ RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/b
     && cp $HOME/repo/playbook.yaml . \
     && rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 # Test Bootware collection with 3 retries on failure.
 ENV retries=3
 RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--skip-tags $skip} --tags ${tags:-desktop,extras} playbook.yaml; do \
@@ -54,16 +51,12 @@ RUN command -v bash > /dev/null \
     || sudo apt-get install --quiet --yes unzip \
     && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 ARG test
 
 # Test installed binaries for roles.
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    test/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l =c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} debian"; \
     fi

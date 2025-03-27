@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     # Path normalization required for Assert-MockCalled parameter filters.
     $Install = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../src/install.ps1")
     . $Install

@@ -51,17 +51,12 @@ RUN command -v bash > /dev/null \
     || sudo pacman --noconfirm --sync unzip \
     && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 ARG test
 
 # Test installed binaries for roles.
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    export PATH="${HOME}/.deno/bin:${PATH}"; \
-    test/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l -c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} arch"; \
     fi

@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Bootstrap software installations with Ansible.
 #>

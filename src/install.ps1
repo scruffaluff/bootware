@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Installs Bootware for Windows systems.
 #>

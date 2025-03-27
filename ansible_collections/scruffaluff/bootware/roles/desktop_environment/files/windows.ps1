@@ -1,4 +1,4 @@
-﻿# Configure Windows desktop.
+# Configure Windows desktop.
 #
 # Most commands are taken from
 # https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1 and

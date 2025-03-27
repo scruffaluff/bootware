@@ -50,9 +50,6 @@ RUN command -v bash > /dev/null \
     && command -v deno > /dev/null \
     || doas apk add deno
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 ARG test
 
 # Test installed binaries for roles.
@@ -60,5 +57,5 @@ ARG test
 # Flags:
 #   -n: Check if string is nonempty.
 RUN if [ -n "${test}" ]; then \
-    deno run --allow-read --allow-run test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} alpine; \
+    bash -l -c "deno run --allow-read --allow-run test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} alpine"; \
     fi
