@@ -1,4 +1,4 @@
-# PowerShell settings file.
+﻿# PowerShell settings file.
 #
 # To profile PowerShell profile startup time, install PSProfiler,
 # https://github.com/IISResetMe/PSProfiler, with command
@@ -10,43 +10,43 @@
 # Public convenience functions.
 
 # Open PowerShell history file with default editor.
-Function edit-history() {
-    If ($Env:EDITOR) {
+function edit-history() {
+    if ($Env:EDITOR) {
         & $Env:EDITOR $(Get-PSReadLineOption).HistorySavePath
     }
-    Else {
+    else {
         vim  $(Get-PSReadLineOption).HistorySavePath
     }
 }
 
-Function export($Key, $Value) {
+function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
-Function pkill() {
+function pkill() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         Stop-Process -Force -Name $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
 
-Function pgrep() {
+function pgrep() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         Get-Process $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
 
 # Prepend existing directories that are not in the system path.
-Function prepend-paths() {
+function prepend-paths() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         $Folder = $Args[$ArgIdx]
-        If (
-            (Test-Path -Path $Folder -PathType Container) -And `
-            (-Not ($Env:Path -Like "*$Folder*"))
+        if (
+            (Test-Path -Path $Folder -PathType Container) -and `
+            (-not ($Env:Path -like "*$Folder*"))
         ) {
             Set-Content Env:Path "$Folder;$Env:Path"
         }
@@ -54,33 +54,33 @@ Function prepend-paths() {
     }
 }
 
-Function rmf() {
+function rmf() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         Remove-Item -Force -Recurse $Args[$ArgIdx]
         $ArgIdx += 1
     }
 }
 
 # Check if current shell is within a remote SSH session.
-Function ssh-session() {
+function ssh-session() {
     !!"$Env:SSH_CLIENT$Env:SSH_CONNECTION$Env:SSH_TTY"
 }
 
-Function touch() {
+function touch() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         $Path = $Args[$ArgIdx]
-        If (-Not (Test-Path -Path $Path)) {
+        if (-not (Test-Path -Path $Path)) {
             New-Item $Path | Out-Null
         }
         $ArgIdx += 1
     }
 }
 
-Function which() {
+function which() {
     $ArgIdx = 0
-    While ($ArgIdx -LT $Args.Count) {
+    while ($ArgIdx -lt $Args.Count) {
         Get-Command $Args[$ArgIdx] |
             Select-Object -ExpandProperty Definition
         $ArgIdx += 1
@@ -89,7 +89,7 @@ Function which() {
 
 # Private convenience variables.
 
-$Tty = -Not [System.Console]::IsOutputRedirected
+$Tty = -not [System.Console]::IsOutputRedirected
 
 # System settings.
 
@@ -107,15 +107,15 @@ $Env:USER = $Env:USERNAME
 
 # Alacritty settings.
 
-If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
+if ($Tty -and ($Env:TERM -eq 'alacritty') -and (-not ($TERM_PROGRAM))) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal.
     #
     # For more information, visit
     # https://zellij.dev/documentation/integration.html.
-    If (
-        (Get-Command -ErrorAction SilentlyContinue zellij) -And
-        (-Not $(ssh-session))
+    if (
+        (Get-Command -ErrorAction SilentlyContinue zellij) -and
+        (-not $(ssh-session))
     ) {
         # Attach to a default session if it exists.
         $Env:ZELLIJ_AUTO_ATTACH = 'true'
@@ -136,14 +136,14 @@ If ($Tty -And ($Env:TERM -Eq 'alacritty') -And (-Not ($TERM_PROGRAM))) {
 # Bat settings.
 
 # Set default pager to Bat.
-If (Get-Command -ErrorAction SilentlyContinue bat) {
+if (Get-Command -ErrorAction SilentlyContinue bat) {
     $Env:PAGER = 'bat'
 }
 
 # Bootware settings.
 
 # Load Bootware autocompletion if available.
-If ($Tty) {
+if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue BootwareCompletion
 }
 
@@ -161,27 +161,27 @@ $Env:DOCKER_BUILDKIT = 'true'
 $Env:DOCKER_CLI_HINTS = 'false'
 
 # Load Docker autocompletion if interactice and available.
-If ($Tty) {
+if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
 
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
-Function ffmpeg() {
+function ffmpeg() {
     ffmpeg.exe -hide_banner $Args
 }
-Function ffplay() {
+function ffplay() {
     ffplay.exe -hide_banner $Args
 }
-Function ffprobe() {
+function ffprobe() {
     ffprobe.exe -hide_banner $Args
 }
 
 # Fzf settings.
 
 # Setup Fzf PowerShell integration if interactive and available.
-If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
+if (($Tty) -and (Get-Module -ListAvailable -Name PsFzf)) {
     # Disable Fzf Alt-C command.
     $Env:FZF_ALT_C_COMMAND = ''
     # Set Fzf solarized light theme.
@@ -192,8 +192,8 @@ If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
     Remove-Variable -Name FzfHighlights
 
     Import-Module PsFzf
-    If (
-        (Get-Command -ErrorAction SilentlyContinue bat) -And `
+    if (
+        (Get-Command -ErrorAction SilentlyContinue bat) -and `
         (Get-Command -ErrorAction SilentlyContinue lsd)
     ) {
         # PSFzf requires inline code since it cannot lookup profile defined
@@ -212,21 +212,21 @@ If (($Tty) -And (Get-Module -ListAvailable -Name PsFzf)) {
 # Git settings.
 
 # Load Git autocompletion if interactive and available.
-If ($Tty) {
+if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue posh-git
 }
 
 # Helix settings.
 
 # Set default editor to Helix if available.
-If (Get-Command -ErrorAction SilentlyContinue hx) {
+if (Get-Command -ErrorAction SilentlyContinue hx) {
     $Env:EDITOR = 'hx'
 }
 
 # Just settings.
 
 # Add alias for account wide Just recipes.
-Function jt() {
+function jt() {
     just --justfile "$HOME/.justfile" --working-directory . $Args
 }
 
@@ -236,33 +236,33 @@ Function jt() {
 #
 # Uses output of command "vivid generate solarized-light" from
 # https://github.com/sharkdp/vivid.
-If (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
+if (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
     $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
 }
 
 # Replace Ls with Lsd if available.
-If (Get-Command -ErrorAction SilentlyContinue lsd) {
+if (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
 # Podman settings.
 
 # Load Podman autocompletion if interactice and available.
-If ($Tty) {
+if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue PodmanCompletion
 }
 
 # Procs settings.
 
 # Set light theme since Procs automatic theming fails on some systems.
-Function procs() {
+function procs() {
     procs.exe --theme light $Args
 }
 
 # Python settings.
 
 # Add Python debugger alias.
-Function pdb() {
+function pdb() {
     python3 -m pdb $Args
 }
 
@@ -279,17 +279,17 @@ $Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
 # Rust settings.
 
 # Add Rust debugger aliases.
-Function rgd() {
+function rgd() {
     rust-gdb --quiet $Args
 }
-Function rld() {
+function rld() {
     rust-lldb --source-quietly $Args
 }
 
 # Secure Shell settings.
 
 # Load SSH autocompletion if interactive and available.
-If ($Tty) {
+if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue SSHCompletion
 }
 
@@ -297,17 +297,17 @@ If ($Tty) {
 
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
-Function poweroff() {
+function poweroff() {
     Stop-Computer -Force
 }
-Function reboot() {
+function reboot() {
     Restart-Computer -Force
 }
 
 # Configure PSReadLine settings if interactive and available.
 #
 # Do not enable Vi mode command line edits. Will disable functionality.
-If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
+if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
     Import-Module PSReadLine
 
     # Remove shell key bindings.
@@ -331,46 +331,46 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     # Set alt+f or shift+rightarrow to jump to end of next suggestion if at the
     # end of the line else to the end of the next word.
     Set-PSReadLineKeyHandler -Chord Alt+f -ScriptBlock {
-        Param($Key, $Arg)
+        param($Key, $Arg)
 
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
 
-        If ($Cursor -LT $Line.Length) {
+        if ($Cursor -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
         }
     }
     Set-PSReadLineKeyHandler -Chord Shift+RightArrow -ScriptBlock {
-        Param($Key, $Arg)
+        param($Key, $Arg)
 
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
 
-        If ($Cursor -LT $Line.Length) {
+        if ($Cursor -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::ShellNextWord($Key, $Arg)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($Key, $Arg)
         }
     }
     # Set Ctrl+eto jump to end of line suggestion if at the end of the line else
     # to the end of the line.
     Set-PSReadLineKeyHandler -Chord Ctrl+e -ScriptBlock {
-        Param($Key, $Arg)
+        param($Key, $Arg)
 
         $Line = $Null
         $Cursor = $Null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
 
-        If ($Cursor -LT $Line.Length) {
+        if ($Cursor -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine($Key, $Arg)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion($Key, $Arg)
         }
     }
@@ -388,19 +388,19 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         # expression features as explained at
         # https://stackoverflow.com/a/24287874.
         $StripLine = $Line.Replace("$WorkingDir", '')
-        If ($StripLine.Length -LT $Line.Length) {
+        if ($StripLine.Length -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line$WorkingDir")
         }
     }
     Set-PSReadLineKeyHandler -Chord Alt+e ViEditVisually
     Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
-        If ($Env:PAGER) {
+        if ($Env:PAGER) {
             $Pager = $Env:PAGER
         }
-        Else {
+        else {
             $PAGER = 'less'
         }
 
@@ -409,11 +409,11 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
 
-        $StripLine = $Line -Replace " 2>&1 `\| $Pager`$", ''
-        If ($StripLine.Length -LT $Line.Length) {
+        $StripLine = $Line -replace " 2>&1 `\| $Pager`$", ''
+        if ($StripLine.Length -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line 2>&1 | $Pager")
         }
     }
@@ -423,11 +423,11 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
 
-        $StripLine = $Line -Replace '^sudo ', ''
-        If ($StripLine.Length -LT $Line.Length) {
+        $StripLine = $Line -replace '^sudo ', ''
+        if ($StripLine.Length -lt $Line.Length) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
         }
-        Else {
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::Insert("sudo $Line")
         }
     }
@@ -463,7 +463,7 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -HistorySearchCursorMovesToEnd
 
     # Features are only available for PowerShell 7.0 and later.
-    If ($PSVersionTable.PSVersion.Major -GE 7) {
+    if ($PSVersionTable.PSVersion.Major -ge 7) {
         # Disable command not found suggestions.
         Set-PSReadLineOption -CommandValidationHandler $Null
         # Show history based autocompletion for every typed character.
@@ -526,13 +526,13 @@ If ($Tty -And (Get-Module -ListAvailable -Name PSReadLine)) {
 $Env:STARSHIP_LOG = 'error'
 
 # Initialize Starship if interactive and available.
-If ($Tty) {
-    If (Get-Command -ErrorAction SilentlyContinue starship) {
+if ($Tty) {
+    if (Get-Command -ErrorAction SilentlyContinue starship) {
         Invoke-Expression (&starship init powershell)
     }
-    Else {
+    else {
         # Warning: PowerShell 5 does not support writing unicode characters.
-        Function Prompt {
+        function Prompt {
             "`r`n$Env:USER at $Env:COMPUTERNAME in $(Get-Location)`r`n> "
         }
     }
@@ -546,11 +546,11 @@ $Env:DENO_NO_UPDATE_CHECK = 'true'
 # Yazi settings.
 
 # Yazi wrapper to change directory on program exit.
-Function yz() {
+function yz() {
     $Tmp = [System.IO.Path]::GetTempFileName()
     yazi --cwd-file $Tmp $Args
     $Cwd = Get-Content -Path $Tmp
-    If (($Cwd) -And ($Cwd -NE $PWD.Path)) {
+    if (($Cwd) -and ($Cwd -ne $PWD.Path)) {
         Set-Location $Cwd
     }
     Remove-Item $Tmp
@@ -559,7 +559,7 @@ Function yz() {
 # Zoxide settings.
 
 # Initialize Zoxide if interactive and available.
-If ($Tty -And (Get-Command -ErrorAction SilentlyContinue zoxide)) {
+if ($Tty -and (Get-Command -ErrorAction SilentlyContinue zoxide)) {
     Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
 }
 
@@ -570,9 +570,9 @@ Remove-Variable -Name Tty
 # User settings.
 
 # Load user aliases, secrets, and variables.
-If (Test-Path "$HOME/.env.ps1") {
+if (Test-Path "$HOME/.env.ps1") {
     . "$HOME/.env.ps1"
 }
-If (Test-Path "$HOME/.secrets.ps1") {
+if (Test-Path "$HOME/.secrets.ps1") {
     . "$HOME/.secrets.ps1"
 }

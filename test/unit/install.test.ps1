@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     # Path normalization required for Assert-MockCalled parameter filters.
     $Install = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../src/install.ps1")
     . $Install
@@ -19,19 +19,19 @@ Describe 'Install' {
     }
 
     It 'Pass local path to Invoke-WebRequest' {
-        If (Get-Command -ErrorAction SilentlyContinue bootware) {
+        if (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
         }
-        Else {
-            Function bootware() { Write-Output '' }
+        else {
+            function bootware() { Write-Output '' }
         }
 
         $Env:BOOTWARE_NOLOG = 1
 
         & $Install --user --version develop
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -Eq "$Env:AppData/Bootware/bootware.ps1" -And
-            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.ps1'
+            $OutFile -eq "$Env:AppData/Bootware/bootware.ps1" -and
+            $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.ps1'
         }
     }
 }

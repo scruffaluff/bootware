@@ -7,25 +7,25 @@ using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
 
 Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
-    Param($WordToComplete, $CommandAst)
+    param($WordToComplete, $CommandAst)
 
     $CommandElements = $CommandAst.CommandElements
     $Command = @(
         'bootware'
-        For ($Index = 1; $Index -LT $CommandElements.Count; $Index++) {
+        for ($Index = 1; $Index -lt $CommandElements.Count; $Index++) {
             $Element = $CommandElements[$Index]
-            If ($Element -IsNot [StringConstantExpressionAst] -Or
-                $Element.StringConstantType -NE [StringConstantType]::BareWord -Or
-                $Element.Value.StartsWith('-') -Or
-                $Element.Value -EQ $WordToComplete) {
-                Break
+            if ($Element -isnot [StringConstantExpressionAst] -or
+                $Element.StringConstantType -ne [StringConstantType]::BareWord -or
+                $Element.Value.StartsWith('-') -or
+                $Element.Value -eq $WordToComplete) {
+                break
             }
             $Element.Value
         }
-    ) -Join ';'
+    ) -join ';'
 
     $Completions = @(
-        Switch ($Command) {
+        switch ($Command) {
             'bootware' {
                 [CompletionResult]::new('--debug', '--debug', [CompletionResultType]::ParameterName, 'Enable shell debug traces')
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
@@ -36,7 +36,7 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
                 [CompletionResult]::new('setup', 'setup', [CompletionResultType]::ParameterValue, 'Install dependencies for Bootware')
                 [CompletionResult]::new('uninstall', 'uninstall', [CompletionResultType]::ParameterValue, 'Remove Bootware files')
                 [CompletionResult]::new('update', 'update', [CompletionResultType]::ParameterValue, 'Update Bootware to latest version')
-                Break
+                break
             }
             'bootware;bootstrap' {
                 [CompletionResult]::new('--check', '--check', [CompletionResultType]::ParameterName, 'Perform dry run and show possible changes')
@@ -59,38 +59,38 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
                 [CompletionResult]::new('--temp-key', '--temp-key', [CompletionResultType]::ParameterName, 'Path to SSH private key for one time connection')
                 [CompletionResult]::new('--url', '--url', [CompletionResultType]::ParameterName, 'URL of playbook repository')
                 [CompletionResult]::new('--user', '--user', [CompletionResultType]::ParameterName, 'Remote user login name')
-                Break
+                break
             }
             'bootware;config' {
                 [CompletionResult]::new('--dest', '--dest', [CompletionResultType]::ParameterName, 'Path to alternate download destination')
                 [CompletionResult]::new('--empty', '--empty', [CompletionResultType]::ParameterName, 'Write empty configuration file')
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
                 [CompletionResult]::new('--source', '--source', [CompletionResultType]::ParameterName, 'URL to configuration file')
-                Break
+                break
             }
             'bootware;roles' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
                 [CompletionResult]::new('--tags', '--tags', [CompletionResultType]::ParameterName, 'Ansible playbook tags to select in quotes')
-                Break
+                break
             }
             'bootware;setup' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
                 [CompletionResult]::new('--checkout', '--checkout', [CompletionResultType]::ParameterName, 'Git reference to run against')
                 [CompletionResult]::new('--no-wsl', '--no-wsl', [CompletionResultType]::ParameterName, 'Do not configure WSL')
                 [CompletionResult]::new('--url', '--url', [CompletionResultType]::ParameterName, 'URL of playbook repository')
-                Break
+                break
             }
             'bootware;uninstall' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
-                Break
+                break
             }
             'bootware;update' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
                 [CompletionResult]::new('--version', '--version', [CompletionResultType]::ParameterName, 'Version override for update')
-                Break
+                break
             }
         }
     )
 
-    $Completions | Where-Object { $_.CompletionText -Like "$WordToComplete*" }
+    $Completions | Where-Object { $_.CompletionText -like "$WordToComplete*" }
 }

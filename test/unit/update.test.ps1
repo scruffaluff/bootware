@@ -1,15 +1,15 @@
-BeforeAll {
+﻿BeforeAll {
     # Path normalization required for Assert-MockCalled parameter filters.
     $Bootware = [System.IO.Path]::GetFullPath("$PSScriptRoot/../../src/bootware.ps1")
     . $Bootware
 
     Mock Invoke-WebRequest { }
     # Mocking Git appears to not work on Windows.
-    Function git { Write-Output "git $Args" }
+    function git { Write-Output "git $Args" }
     Mock Test-Path { Write-Output 1 }
 
     # Avoid overwriting WSL copy of Bootware during tests if installed.
-    If (Get-Command -ErrorAction SilentlyContinue wsl) {
+    if (Get-Command -ErrorAction SilentlyContinue wsl) {
         Mock wsl { }
     }
 }
@@ -29,11 +29,11 @@ Describe 'Update' {
     }
 
     It 'Subcommand passes args to Invoke-WebRequest and Git' {
-        If (Get-Command -ErrorAction SilentlyContinue bootware) {
+        if (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { Write-Output '' }
         }
-        Else {
-            Function bootware() { Write-Output '' }
+        else {
+            function bootware() { Write-Output '' }
         }
 
         $Env:BOOTWARE_NOLOG = 1
@@ -42,8 +42,8 @@ Describe 'Update' {
 
         $Actual = & $Bootware update --version main
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -Eq "$BootwareDir/bootware.ps1" -And
-            $Uri -Eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.ps1'
+            $OutFile -eq "$BootwareDir/bootware.ps1" -and
+            $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.ps1'
         }
 
         $Actual | Should -Be $Expected

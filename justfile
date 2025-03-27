@@ -45,6 +45,20 @@ format:
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
 
+# Fix code formatting.
+[unix]
+format-fix:
+  npx prettier --write .
+  shfmt --write ansible_collections script src test
+
+# Fix code formatting.
+[windows]
+format-fix:
+  npx prettier --write .
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Setting CodeFormatting
+
 # Run code analyses.
 [unix]
 lint:
