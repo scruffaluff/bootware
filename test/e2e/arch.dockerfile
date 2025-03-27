@@ -49,7 +49,7 @@ RUN command -v bash > /dev/null \
     || sudo pacman --noconfirm --sync bash \
     && command -v deno > /dev/null \
     || sudo pacman --noconfirm --sync unzip \
-    && curl -LSfs https://deno.land/install.sh | sh
+    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]

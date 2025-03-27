@@ -45,8 +45,9 @@ COPY --chown="${USER}" test/ ./test/
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
     || sudo apt-get install --quiet --yes bash \
-    && command -v node > /dev/null \
-    || sudo apt-get install --quiet --yes nodejs
+    && command -v deno > /dev/null \
+    || sudo apt-get install --quiet --yes unzip \
+    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test
 
@@ -55,5 +56,5 @@ ARG test
 # Flags:
 #   -n: Check if string is nonempty.
 RUN if [ -n "${test}" ]; then \
-    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+    test/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
     fi

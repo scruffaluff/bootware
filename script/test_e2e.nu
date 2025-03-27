@@ -4,7 +4,7 @@
 def main [
     --arch (-a): string = "" # Chip architecture
     --cache (-c) # Use container cache
-    --dists (-d): list<string> = ["alpine" "arch" "debian" "fedora" "suse" "ubuntu"] # Linux distributions list
+    --dists (-d): list<string> = ["alpine" "arch" "debian" "fedora" "ubuntu"] # Linux distributions list
     --skip (-s): string = "none" # Ansible roles to skip
     --tags (-t): string = "desktop,extras" # Ansible roles to keep
 ] {

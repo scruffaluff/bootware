@@ -47,8 +47,8 @@ COPY --chown="${USER}" test/ ./test/
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
     || doas apk add bash \
-    && command -v node > /dev/null \
-    || doas apk add nodejs
+    && command -v deno > /dev/null \
+    || doas apk add deno
 
 # Set Bash as default shell.
 SHELL ["/bin/bash", "-c"]
@@ -59,7 +59,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+RUN if [ -n "${test}" ]; then \
+    deno run --allow-read --allow-run test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} alpine; \
     fi

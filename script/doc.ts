@@ -29,7 +29,7 @@ function shouldSkip(system: System, conditions: Array<Condition>): boolean {
   if (!conditions) {
     return false;
   }
-  const distros = ["alpine", "arch", "fedora", "debian", "suse", "ubuntu"];
+  const distros = ["alpine", "arch", "fedora", "debian", "ubuntu"];
   const systemDistro = distros.includes(system.os);
 
   for (const condition of conditions) {
