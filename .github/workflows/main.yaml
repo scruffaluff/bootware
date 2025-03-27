@@ -52,7 +52,7 @@ jobs:
   build:
     if: >-
       ${{ github.ref_type == 'branch' && github.event_name !=
-      'workflow_dispatch' || inputs.job == 'lint' }}
+      'workflow_dispatch' || inputs.job == 'build' }}
     name: Run code analyses and test suites
     runs-on: ${{ matrix.os }}-latest
     strategy:
@@ -136,7 +136,7 @@ jobs:
           curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
           -s -- --global
       - name: Build packages
-        run: just setup dist
+        run: just setup test-pkg
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

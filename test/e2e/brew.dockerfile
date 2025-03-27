@@ -1,4 +1,4 @@
-FROM homebrew/brew:4.4.15 AS build
+FROM docker.io/homebrew/brew:4.4.15 AS build
 
 ARG version
 
@@ -9,20 +9,22 @@ RUN sudo apt-get update
 RUN sudo apt-get --quiet --yes install \
     curl gettext-base libdigest-sha-perl
 
+COPY data/ /bootware/data/
 COPY script/ /bootware/script/
+COPY src/ /bootware/src/
 
 WORKDIR /bootware
 
-RUN sudo mkdir -p -m 777 dist
+RUN sudo mkdir -p -m 777 build
 
-# Build Debian package.
-RUN script/package.sh --version "${version?}" build brew
+# Build Homebrew package.
+RUN script/pkg.sh --version "${version?}" brew
 
-FROM scratch AS dist
+FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM homebrew/brew:4.4.15
+FROM docker.io/homebrew/brew:4.4.15
 
 ARG version
 

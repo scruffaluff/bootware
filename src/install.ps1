@@ -14,142 +14,174 @@ $ProgressPreference = 'SilentlyContinue'
 $PSNativeCommandUseErrorActionPreference = $True
 
 # Show CLI help information.
-Function Usage() {
+function Usage() {
     Write-Output @'
 Installer script for Bootware.
 
-Usage: install [OPTIONS]
+Usage: install-bootware [OPTIONS]
 
 Options:
+  -d, --dest <PATH>         Directory to install Bootware
+  -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -u, --user                Install bootware for current user
+  -m, --modify-env          Update system environment
+  -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 '@
 }
 
-Function CheckEnvironment($Target) {
-    If (($PSVersionTable.PSVersion.Major) -LT 5) {
+function CheckEnvironment($TargetEnv) {
+    if (($PSVersionTable.PSVersion.Major) -lt 5) {
         Write-Output @'
 PowerShell 5 or later is required to run Bootware.
 Upgrade PowerShell: https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell
 '@
-        Exit 1
+        exit 1
     }
 
     $AllowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
-    If ((Get-ExecutionPolicy).ToString() -NotIn $AllowedExecutionPolicy) {
+    if ((Get-ExecutionPolicy).ToString() -notin $AllowedExecutionPolicy) {
         Write-Output @"
 PowerShell requires an execution policy [$($AllowedExecutionPolicy -Join ', ')] to run Bootware.
 To set the execution policy to the recommended 'RemoteSigned' run:
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 "@
-        Exit 1
+        exit 1
     }
 
-    If (($Target -Eq 'Machine') -And (-Not (IsAdministrator))) {
+    if (($Target -eq 'Machine') -and (-not (IsAdministrator))) {
         Write-Output @"
 System level installation requires an administrator console.
-Run this script from an administrator console or execute with the '--user' flag.
+Run this script from an administrator console or install to a user directory.
 "@
-        Exit 1
+        exit 1
     }
 }
 
-# Print error message and exit script with usage error code.
-Function ErrorUsage($Message) {
-    Write-Output "error: $Message"
-    Write-Output "Run 'install --help' for usage"
-    Exit 2
+# Download and install Bootware.
+function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $ModifyEnv) {
+    $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version"
+
+    Log "Installing Bootware to '$DestDir\bootware.ps1'."
+    Invoke-WebRequest -UseBasicParsing -OutFile "$DestDir\bootware.ps1" `
+        -Uri "$URL/src/bootware.ps1"
+    InstallCompletion $Version
+
+    if ($ModifyEnv) {
+        $Path = [Environment]::GetEnvironmentVariable('Path', "$Target")
+        if (-not ($Path -like "*$DestDir*")) {
+            $PrependedPath = "$DestDir;$Path"
+            [System.Environment]::SetEnvironmentVariable(
+                'Path', "$PrependedPath", "$Target"
+            )
+            Log "Added '$DestDir' to the system path."
+            Log 'Source shell profile or restart shell after installation.'
+        }
+    }
+
+    $Env:Path = "$DestDir;$Env:Path"
+    Log "Installed $(bootware --version)."
 }
 
 # Install completion script for Bootware.
-Function InstallCompletion($Version) {
-    $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
+function InstallCompletion($Version) {
+    $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
-        "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
-        "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
+        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
+        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
     )
-    ForEach ($Path In $Paths) {
+    foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
         Invoke-WebRequest -UseBasicParsing -OutFile `
-            "$Path/BootwareCompletion.psm1" -Uri $PowerShellURL
+            "$Path\BootwareCompletion.psm1" -Uri $URL
     }
 }
 
-
 # Check if script is run from an admin console.
-Function IsAdministrator {
-    Return ([Security.Principal.WindowsPrincipal]`
+function IsAdministrator {
+    return ([Security.Principal.WindowsPrincipal]`
             [Security.Principal.WindowsIdentity]::GetCurrent()`
     ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-# Print log message to stdout if logging is enabled.
-Function Log($Message) {
-    If (-Not "$Env:INSTALL_NOLOG") {
-        Write-Output $Message
+# Print message if logging is enabled.
+function Log($Text) {
+    if (!"$Env:BOOTWARE_NOLOG") {
+        Write-Output $Text
     }
 }
 
 # Script entrypoint.
-Function Main() {
+function Main() {
     $ArgIdx = 0
-    $Target = 'Machine'
+    $DestDir = ''
+    $ModifyEnv = $False
     $Version = 'main'
 
-    While ($ArgIdx -LT $Args[0].Count) {
-        Switch ($Args[0][$ArgIdx]) {
-            { $_ -In '-h', '--help' } {
-                Usage
-                Exit 0
+    while ($ArgIdx -lt $Args[0].Count) {
+        switch ($Args[0][$ArgIdx]) {
+            { $_ -in '-d', '--dest' } {
+                $DestDir = $Args[0][$ArgIdx + 1]
+                $ArgIdx += 2
+                break
             }
-            { $_ -In '-v', '--version' } {
+            { $_ -in '-g', '--global' } {
+                if (-not $DestDir) {
+                    $DestDir = 'C:\Program Files\Bootware'
+                }
+                $ArgIdx += 1
+                break
+            }
+            { $_ -in '-h', '--help' } {
+                Usage
+                exit 0
+            }
+            { $_ -in '-m', '--modify-env' } {
+                $ModifyEnv = $True
+                $ArgIdx += 1
+                break
+            }
+            { $_ -in '-q', '--quiet' } {
+                $Env:SCRIPTS_NOLOG = 'true'
+                $ArgIdx += 1
+                break
+            }
+            { $_ -in '-v', '--version' } {
                 $Version = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
-                Break
+                break
             }
-            '--user' {
-                $Target = 'User'
-                $ArgIdx += 1
-                Break
+            default {
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'install-bootware --help' for usage."
+                exit 2
             }
-            Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
-            }
+
         }
     }
 
-    CheckEnvironment $Target
-    $Source = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/bootware.ps1"
-    If ($Target -Eq 'User') {
-        $Dest = "$Env:AppData/Bootware/bootware.ps1"
+    # Create destination folder if it does not exist for Resolve-Path.
+    if (-not $DestDir) {
+        $DestDir = "$Env:LocalAppData\Programs\Bootware"
     }
-    Else {
-        $Dest = 'C:/Program Files/Bootware/bootware.ps1'
-    }
-
-    $DestDir = Split-Path -Parent -Path $Dest
-    # Explicit path update needed, since SetEnvironmentVariable does not seem to
-    # instantly take effect.
-    $Env:Path = $DestDir + ";$Env:Path"
-
-    $Path = [Environment]::GetEnvironmentVariable('Path', $Target)
-    If (-Not ($Path -Like "*$DestDir*")) {
-        [System.Environment]::SetEnvironmentVariable(
-            'Path', "$DestDir;$Path", $Target
-        )
-    }
-
-    Log 'Installing Bootware...'
-
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
-    Invoke-WebRequest -UseBasicParsing -OutFile $Dest -Uri $Source
-    InstallCompletion $Version
-    Log "Installed $(bootware --version)."
+
+    # Set environment target on whether destination is inside user home folder.
+    $DestDir = $(Resolve-Path -Path $DestDir).Path
+    $HomeDir = $(Resolve-Path -Path $HOME).Path
+    if ($DestDir.StartsWith($HomeDir)) {
+        $TargetEnv = 'User'
+    }
+    else {
+        $TargetEnv = 'Machine'
+    }
+
+    CheckEnvironment $TargetEnv
+    InstallBootware $TargetEnv $Version $DestDir $Script $ModifyEnv
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.
-If ($MyInvocation.InvocationName -NE '.') {
+if ($MyInvocation.InvocationName -ne '.') {
     Main $Args
 }

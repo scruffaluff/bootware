@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM docker.io/ubuntu:24.04
 
 ARG TARGETARCH
 ARG version=0.8.3
@@ -30,9 +30,6 @@ RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/b
     && cp $HOME/repo/playbook.yaml . \
     && rm --force --recursive "scruffaluff-bootware-${version}.tar.gz" $HOME/repo
 
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
-
 # Test Bootware collection with 3 retries on failure.
 ENV retries=3
 RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--skip-tags $skip} --tags ${tags:-desktop,extras} playbook.yaml; do \
@@ -50,11 +47,9 @@ COPY --chown="${USER}" test/ ./test/
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
     || sudo apt-get install --quiet --yes bash \
-    && command -v node > /dev/null \
-    || sudo apt-get install --quiet --yes nodejs
-
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
+    && command -v deno > /dev/null \
+    || sudo apt-get install --quiet --yes unzip \
+    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test
 
@@ -62,7 +57,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "debian"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l -c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} debian"; \
     fi

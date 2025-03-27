@@ -1,4 +1,4 @@
-FROM archlinux:base-20250112.0.297543
+FROM docker.io/archlinux:base-20250112.0.297543
 
 ARG TARGETARCH
 
@@ -49,10 +49,7 @@ RUN command -v bash > /dev/null \
     || sudo pacman --noconfirm --sync bash \
     && command -v deno > /dev/null \
     || sudo pacman --noconfirm --sync unzip \
-    && curl -LSfs https://deno.land/install.sh | sh
-
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
+    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test
 
@@ -60,8 +57,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    export PATH="${HOME}/.deno/bin:${PATH}"; \
-    test/e2e/roles.test.ts --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "arch"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l -c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} arch"; \
     fi

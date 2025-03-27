@@ -1,4 +1,4 @@
-FROM alpine:3.21.2
+FROM docker.io/alpine:3.21.2
 
 ARG TARGETARCH
 
@@ -47,11 +47,8 @@ COPY --chown="${USER}" test/ ./test/
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
     || doas apk add bash \
-    && command -v node > /dev/null \
-    || doas apk add nodejs
-
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
+    && command -v deno > /dev/null \
+    || doas apk add deno
 
 ARG test
 
@@ -59,7 +56,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "alpine"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l -c "deno run --allow-read --allow-run test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} alpine"; \
     fi

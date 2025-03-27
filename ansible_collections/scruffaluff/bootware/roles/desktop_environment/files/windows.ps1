@@ -1,4 +1,4 @@
-﻿# Configure Windows desktop.
+# Configure Windows desktop.
 #
 # Most commands are taken from
 # https://github.com/ChrisTitusTech/winutil/blob/main/winutil.ps1 and
@@ -23,7 +23,7 @@ $Applications = @(
     'Microsoft.BingWeather'
 )
 
-ForEach ($Application In $Applications) {
+foreach ($Application in $Applications) {
     Get-AppxPackage -AllUsers -Name $Application | Remove-AppxPackage -AllUsers
 
     Get-AppxProvisionedPackage -Online |
@@ -40,13 +40,13 @@ $Services = @(
     'XboxNetApiSvc' # Xbox live networking service.
 )
 
-ForEach ($Service In $Services) {
+foreach ($Service in $Services) {
     Get-Service -ErrorAction SilentlyContinue -Name $Service |
         Set-Service -StartupType Manual
 }
 
 # Show hidden files in File Explorer.
-If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced') {
+if (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced') {
     Set-ItemProperty `
         -Name 'HideFileExt' `
         -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' `
@@ -56,7 +56,7 @@ If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
 }
 
 # Change Windows error beep sound to nothing.
-If (Test-Path 'HKCU:\Control Panel\Sound') {
+if (Test-Path 'HKCU:\Control Panel\Sound') {
     Set-ItemProperty `
         -Name 'Beep' `
         -Path 'HKCU:\Control Panel\Sound' `
@@ -65,7 +65,7 @@ If (Test-Path 'HKCU:\Control Panel\Sound') {
 }
 
 # Disable Bing search in startup menu.
-If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
+if (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
     Set-ItemProperty `
         -Name 'BingSearchEnabled' `
         -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search' `
@@ -75,13 +75,13 @@ If (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Search') {
 
 # Remove Cortana from Windows search.
 $SearchPath = 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
-If (Test-Path $SearchPath) {
+if (Test-Path $SearchPath) {
     Set-ItemProperty -Name AllowCortana -Path $SearchPath -Type DWord -Value 0
 }
 
 # Remove news and interests from task bar.
 $WindowsFeedsPath = 'HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds'
-If (Test-Path $WindowsFeedsPath) {
+if (Test-Path $WindowsFeedsPath) {
     Set-ItemProperty `
         -Name 'EnableFeeds' `
         -Path $WindowsFeedsPath `
@@ -91,7 +91,7 @@ If (Test-Path $WindowsFeedsPath) {
 
 # Remove application recommendations.
 $ContentPath = 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager'
-If (Test-Path $ContentPath) {
+if (Test-Path $ContentPath) {
     Set-ItemProperty -Name 'ContentDeliveryAllowed' -Path $ContentPath -Type DWord -Value 0
     Set-ItemProperty -Name 'OemPreInstalledAppsEnabled' -Path $ContentPath -Type DWord -Value 0
     Set-ItemProperty -Name 'PreInstalledAppsEnabled' -Path $ContentPath -Type DWord -Value 0
@@ -112,8 +112,8 @@ $ContextKeys = @(
     'HKCU:\Software\Classes\Directory\Background\shell\PowerShell7x64' # PowerShell 7
 )
 
-ForEach ($ContextKey In $ContextKeys) {
-    If (Test-Path $ContextKey) {
+foreach ($ContextKey in $ContextKeys) {
+    if (Test-Path $ContextKey) {
         Remove-Item -Force -Recurse -Path $ContextKey
     }
 }

@@ -1,4 +1,4 @@
-FROM debian:12.8 AS build
+FROM docker.io/debian:12.8 AS build
 
 ARG version
 
@@ -13,13 +13,13 @@ COPY src/ /bootware/src/
 WORKDIR /bootware
 
 # Build Debian package.
-RUN script/package.sh --version "${version?}" build deb
+RUN script/pkg.sh --version "${version?}" deb
 
-FROM scratch AS dist
+FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM debian:12.8
+FROM docker.io/debian:12.8
 
 ARG version
 

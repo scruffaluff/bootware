@@ -30,7 +30,6 @@ on:
           - fedora
           - freebsd
           - macos
-          - suse
           - ubuntu
           - windows
         type: choice
@@ -234,39 +233,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          node test/e2e/roles.test.cjs --arch arm64 macos
-      - if: ${{ always() && inputs.debug }}
-        name: Launch Tmate session if debug enabled
-        timeout-minutes: 60
-        uses: mxschmitt/action-tmate@v3
-
-  suse:
-    name: Test bootstrapping software for Suse Linux
-    env:
-      DOCKER_BUILD_SUMMARY: "false"
-    if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job ==  'suse' }}
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Free disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          build-args: test=true
-          context: .
-          file: test/e2e/suse.dockerfile
-          platforms: linux/${{ inputs.platform || 'amd64' }}
-          push: false
-          tags: docker.io/scruffaluff/bootware:suse
+          test/e2e/roles.test.ts --arch arm64 macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
@@ -383,7 +350,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          node test/e2e/roles.test.cjs --arch amd64 --skip ffsend,lldb,qemu,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,qemu,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

@@ -1,4 +1,4 @@
-FROM fedora:41
+FROM docker.io/fedora:41
 
 ARG TARGETARCH
 
@@ -55,11 +55,9 @@ COPY --chown="${USER}" test/ ./test/
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
     || sudo dnf install --assumeyes bash \
-    && command -v node > /dev/null \
-    || sudo dnf install --assumeyes nodejs
-
-# Set Bash as default shell.
-SHELL ["/bin/bash", "-c"]
+    && command -v deno > /dev/null \
+    || sudo dnf install --assumeyes unzip \
+    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test
 
@@ -67,7 +65,6 @@ ARG test
 #
 # Flags:
 #   -n: Check if string is nonempty.
-RUN if [[ -n "${test}" ]]; then \
-    source "${HOME}/.bashrc"; \
-    node test/e2e/roles.test.cjs --arch "${TARGETARCH}" ${skip:+--skip $skip} ${tags:+--tags $tags} "fedora"; \
+RUN if [ -n "${test}" ]; then \
+    bash -l -c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} fedora"; \
     fi
