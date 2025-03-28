@@ -1,0 +1,5 @@
+---
+uv_arch_:
+  amd64: x86_64
+  arm64: aarch64
+uv_arch: "{{ uv_arch_[system_architecture] }}"

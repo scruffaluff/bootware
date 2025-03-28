@@ -2,8 +2,5 @@
 - name: Setup Python system installations
   ansible.builtin.import_tasks: system.yaml
 
-- name: Install Uv and Python applications
-  ansible.builtin.import_tasks: uv.yaml
-
 - name: Configure Python user settings
   ansible.builtin.import_tasks: settings.yaml

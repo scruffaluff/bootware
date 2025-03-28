@@ -828,7 +828,7 @@ function SetupWSL($Branch) {
         wsl sudo apt-get --quiet install --yes curl
         wsl curl -LSfs `
             https://scruffaluff.github.io/bootware/install.sh `
-            `| sh -s -- --version $Branch
+            `| sh -s -- --global --version $Branch
 
         if ($Debug) {
             wsl bootware --debug setup

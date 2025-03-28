@@ -275,8 +275,8 @@
   {
     "name": "python",
     "tests": {
-      "default": ["pipx --version", "python --version", "uv --version"],
-      "openwrt": ["python --version", "uv --version"]
+      "default": ["pipx --version", "python --version"],
+      "openwrt": ["python --version"]
     }
   },
   {
@@ -364,6 +364,7 @@
   { "name": "topgrade", "tests": ["topgrade --version"] },
   { "name": "usql", "tests": ["usql --version"] },
   { "name": "utility" },
+  { "name": "uv", "tests": ["uv --version"] },
   {
     "name": "velero",
     "skip": [{ "os": "freebsd" }],

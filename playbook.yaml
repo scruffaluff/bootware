@@ -1075,6 +1075,18 @@
         - utility
         - wsl
 
+    - name: Install Uv Python package manager
+      ansible.builtin.import_role:
+        name: scruffaluff.bootware.uv
+      tags:
+        - container
+        - desktop
+        - language
+        - server
+        - sysadmin
+        - uv
+        - wsl
+
     - name: Install Velero backup manager for Kubernetes
       ansible.builtin.import_role:
         name: scruffaluff.bootware.velero

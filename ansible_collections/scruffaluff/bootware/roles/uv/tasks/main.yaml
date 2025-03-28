@@ -12,7 +12,7 @@
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/uv.json
-  register: python_uv_formula
+  register: uv_formula
   tags:
     - install
   when: ansible_system == "Linux"
@@ -24,8 +24,8 @@
     remote_src: true
     src: >-
       https://github.com/astral-sh/uv/releases/download/{{
-      python_uv_formula.json.versions.stable }}/uv-{{ python_uv_arch
-      }}-unknown-linux-{{ system_libc }}.tar.gz
+      uv_formula.json.versions.stable }}/uv-{{ uv_arch }}-unknown-linux-{{
+      system_libc }}.tar.gz
   tags:
     - install
   when: ansible_system == "Linux"
@@ -36,7 +36,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/uv-{{ python_uv_arch }}-unknown-linux-{{ system_libc }}/uv
+    src: /tmp/uv-{{ uv_arch }}-unknown-linux-{{ system_libc }}/uv
   become: true
   tags:
     - install

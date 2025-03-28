@@ -9,8 +9,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- completion, config, install tags to tasks.
-- Fastfetch, Nushell, Obsidian, and Podman roles.
+- Tags completion, config, install to tasks.
+- Fastfetch, Nushell, Obsidian, Podman, and Uv roles.
 - Support for Yazi 0.4.
 - Variable to configure default user shell.
 
