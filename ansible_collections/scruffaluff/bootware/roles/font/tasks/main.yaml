@@ -33,3 +33,8 @@
   vars:
     font_folder: "C:\\Windows\\Fonts"
   when: ansible_system == "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    font_role_executed: true

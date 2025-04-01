@@ -169,13 +169,13 @@ if ($Tty) {
 
 # Disable verbose FFmpeg banners.
 function ffmpeg() {
-    ffmpeg.exe -hide_banner $Args
+    ffmpeg.exe -hide_banner -loglevel quiet $Args
 }
 function ffplay() {
-    ffplay.exe -hide_banner $Args
+    ffplay.exe -hide_banner -loglevel quiet $Args
 }
 function ffprobe() {
-    ffprobe.exe -hide_banner $Args
+    ffprobe.exe -hide_banner -loglevel quiet $Args
 }
 
 # Fzf settings.

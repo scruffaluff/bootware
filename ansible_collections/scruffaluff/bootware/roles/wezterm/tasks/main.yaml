@@ -7,23 +7,63 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Download Wezterm GPG key for Debian
+  ansible.builtin.get_url:
+    dest: /tmp/wezterm.key
+    mode: "640"
+    url: https://apt.fury.io/wez/gpg.key
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Wezterm GPG key for Debian
+  ansible.builtin.command:
+    cmd: >-
+      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg
+      /tmp/wezterm.key
+    creates: /usr/share/keyrings/wezterm.gpg
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Wezterm repository for Debian
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/wezterm.gpg] https://apt.fury.io/wez/ *
+      *
+    state: present
+    filename: wezterm
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install Wezterm for Debian
+  ansible.builtin.apt:
+    name: wezterm
+    update_cache: true
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add Wezterm repository for Fedora
+  become: true
+  community.general.copr:
+    name: wezfurlong/wezterm-nightly
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+
 - name: Install Wez's terminal for Linux
   ansible.builtin.package:
     name: wezterm
   become: true
-  ignore_errors: true
-  register: wezterm_linux
   tags:
     - install
-  when: ansible_system == "Linux"
-
-- name: Install Wez's terminal for Linux
-  become: true
-  community.general.flatpak:
-    name: org.wezfurlong.wezterm
-  tags:
-    - install
-  when: ansible_system == "Linux" and wezterm_linux is failed
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt"]
 
 - name: Install Wez's terminal for MacOS
   community.general.homebrew_cask:
