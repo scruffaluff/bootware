@@ -393,13 +393,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["watchexec --version"]
   },
-  {
-    "name": "wezterm",
-    "tests": {
-      "default": ["wezterm --version"],
-      "linux": ["wezterm --version || flatpak info org.wezfurlong.wezterm"]
-    }
-  },
+  { "name": "wezterm", "tests": ["wezterm --version"] },
   { "name": "window_manager" },
   {
     "name": "wireshark",

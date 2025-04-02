@@ -13,16 +13,6 @@
       Linux: /usr/share/fonts/{{ font_family.name }}
   when: ansible_system != "Win32NT"
 
-- name: Update font cache for Unix
-  ansible.builtin.command:
-    cmd: fc-cache --verbose
-  become: true
-  changed_when: "'new cache contents' in font_cache_unix"
-  register: font_cache_unix
-  tags:
-    - install
-  when: ansible_system in ["FreeBSD", "Linux"]
-
 - name: Install fonts for Windows
   ansible.builtin.include_tasks: windows.yaml
   loop: "{{ font_families }}"
@@ -33,3 +23,8 @@
   vars:
     font_folder: "C:\\Windows\\Fonts"
   when: ansible_system == "Win32NT"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    font_role_executed: true

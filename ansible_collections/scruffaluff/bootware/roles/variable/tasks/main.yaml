@@ -42,7 +42,6 @@
   become_user: "{{ user_id }}"
   changed_when: false
   register: gnome_version_text
-
   when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Parse GNOME version for GNOME desktops

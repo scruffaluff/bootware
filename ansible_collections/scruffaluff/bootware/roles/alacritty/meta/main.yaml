@@ -2,3 +2,5 @@
 dependencies:
   - role: variable
     when: variable_role_executed is not defined
+  - role: font
+    when: font_role_executed is not defined
