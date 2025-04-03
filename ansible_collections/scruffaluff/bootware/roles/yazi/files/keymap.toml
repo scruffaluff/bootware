@@ -18,6 +18,7 @@ prepend_keymap = [
     { on = "<C-w>", run = "noop" },
     { desc = "Move backward a character", on = "<C-j>", run = "move -1" },
     { desc = "Move forward a character", on = "\ue000", run = "move 1" },
+    { desc = "Move forward a character", on = "\ue004", run = "move -1" },
     { desc = "Move backward a word", on = "<C-Left>", run = "backward" },
     { desc = "Move backward a word", on = "<S-Left>", run = "backward" },
     { desc = "Move forward a word", on = "<C-Right>", run = "forward" },

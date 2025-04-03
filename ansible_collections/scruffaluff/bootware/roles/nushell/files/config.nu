@@ -706,6 +706,12 @@ $env.config = {
             modifier: none
         }
         {
+            event: { edit: moveleft }
+            keycode: char_ue004
+            mode: [emacs vi_insert vi_normal]
+            modifier: none
+        }
+        {
             event: { edit: movebigwordleft }
             keycode: left
             mode: [emacs vi_insert vi_normal]

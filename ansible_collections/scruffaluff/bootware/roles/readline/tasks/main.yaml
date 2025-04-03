@@ -1,23 +1,29 @@
 ---
 - name: Copy Readline configuration file for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.inputrc"
+    dest: "{{ user_home }}/.{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: inputrc
+    src: "{{ item }}"
   become: true
+  loop:
+    - editrc
+    - inputrc
   tags:
     - config
   when: ansible_system != "Win32NT"
 
 - name: Copy Readline configuration file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.inputrc"
+    dest: "{{ user_home }}/.{{ item }}"
     force: true
     owner: "{{ user_id }}"
-    src: inputrc
+    src: "{{ item }}"
+  loop:
+    - editrc
+    - inputrc
   tags:
     - config
   when: ansible_system == "Win32NT"
