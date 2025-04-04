@@ -84,8 +84,10 @@
 
 - name: Register Nushell as a valid login shell for Unix
   ansible.builtin.lineinfile:
-    path: /etc/shells
+    create: true
     line: "{{ nushell_executable }}"
+    mode: "644"
+    path: /etc/shells
   become: true
   tags:
     - install

@@ -11,31 +11,27 @@ bind -r "^w"
 
 # Use common shell keybindings.
 bind "^a" ed-move-to-beg
-bind "\C-e": end-of-line
-bind "\C-k": kill-line
-bind "\C-l": clear-screen
-bind "\C-u": backward-kill-line
+bind "^e" ed-move-to-end
+bind "^k" ed-kill-line
+bind "^l" ed-clear-screen
+bind "^r" em-inc-search-prev
+bind "^u" em-kill-line
 bind "^[b" ed-prev-word
-bind "\ee": edit-and-execute-command
-bind "\ef": forward-word
-bind "\ez": undo
-
-# Use Tab, Shift+I, and Shift+Tab to cycle through completions.
-bind tab: menu-complete
-bind "\e[Z": menu-complete-backward
+bind "^[f" em-next-word
+bind "^[z" vi-undo
 
 # Use Up and Down to search history for commands matching text before cursor.
-bind "\e[A": history-search-backward
-bind "\e[B": history-search-forward
+bind "^[[a" ed-prev-history
+bind "^[[b" ed-next-history
 
 # Use Shift+Left and Shift+Right to jump backwards and forwards.
-bind "\e[1;2D": backward-word
-bind "\e[1;2C": forward-word
+bind "^[[1;2D" ed-prev-word
+bind "^[[1;2C" em-next-word
 
 # Use Control+Left and Control+Right to jump backwards and forwards.
-bind "\e[1;5D": backward-word
-bind "\e[1;5C": forward-word
+bind "^[[1;5D" ed-prev-word
+bind "^[[1;5C" em-next-word
 
-# Use Control+D and Alt+D to delete words backwards and forwards
+# Use Control+D and Alt+D to delete words backwards and forwards.
 bind "^d" ed-delete-prev-word
-bind "\ed": kill-word
+bind "^[d" em-delete-next-word

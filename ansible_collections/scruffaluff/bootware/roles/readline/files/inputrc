@@ -26,6 +26,7 @@ set visible-stats on
 "\C-e": end-of-line
 "\C-k": kill-line
 "\C-l": clear-screen
+"\C-r": reverse-search-history
 "\C-u": backward-kill-line
 "\eb": backward-word
 "\ee": edit-and-execute-command
@@ -53,12 +54,6 @@ tab: menu-complete
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
 
-# Use Control+D and Alt+D to delete words backwards and forwards
+# Use Control+D and Alt+D to delete words backwards and forwards.
 "\C-d": backward-kill-word
 "\ed": kill-word
-
-# Use common Fish keybindings when in Bash.
-$if bash
-"\ep": "\C-e &| less"
-"\es": "\C-asudo \C-e"
-$endif
