@@ -34,8 +34,8 @@ RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/b
 ENV retries=3
 RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--skip-tags $skip} --tags ${tags:-desktop,extras} playbook.yaml; do \
     status=$?; \
-    retries="$((retries - 1))" \
-    if [ "${retries}" -eq 0 ]; then exit "${status}"; fi \
+    retries="$((retries - 1))"; \
+    if [ "${retries}" -eq 0 ]; then exit "${status}"; fi; \
     printf "\nCollection run failed with exit code %s." "${status}"; \
     printf "\nRetrying playbook with %s attempts left.\n" "${retries}"; \
     sleep 4; \

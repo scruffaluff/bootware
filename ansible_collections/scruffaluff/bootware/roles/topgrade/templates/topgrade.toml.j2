@@ -6,9 +6,9 @@
 [misc]
 assume_yes = true
 {% if ansible_system in ["Darwin", "Win32NT"] %}
-disable = ["containers", "gem", "git_repos", "helm", "ruby_gems", "system"]
+disable = ["containers", "gem", "git_repos", "helm", "ruby_gems", "system", "uv"]
 {% else %}
-disable = ["containers", "gem", "git_repos", "helm", "ruby_gems"]
+disable = ["containers", "gem", "git_repos", "helm", "ruby_gems", "uv"]
 {% endif %}
 no_retry = true
 notify_each_step = false
