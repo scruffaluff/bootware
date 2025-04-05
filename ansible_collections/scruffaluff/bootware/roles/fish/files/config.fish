@@ -482,7 +482,6 @@ if test -n $tty
     function fish_user_key_bindings
         bind \cw true
         bind \cd backward-kill-path-component
-        bind \cj backward-char
         bind \eb backward-word
         bind \ec _paste_cwd
         bind \ed kill-bigword

@@ -330,13 +330,14 @@ jobs:
         shell: powershell
       # Scoop FFSend installer fails as of 12/19/2023 since Windows Defender
       # considers the program to be a virus. As of 09/08/2024, QEMU installer
-      # experiences timeout issues.
+      # experiences timeout issues. Scoop Sops installer fails as of 04/04/2025
+      # due to issues removing a previously installed version.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
@@ -350,7 +351,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,qemu,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,qemu,rust,sops windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

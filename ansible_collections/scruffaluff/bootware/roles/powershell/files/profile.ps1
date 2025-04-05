@@ -470,9 +470,6 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
-        Set-PSReadLineKeyHandler -Chord Ctrl+j -Function BackwardChar
-        # In some Powershell configs, "Ctrl+j" is interpreted as "Ctrl+Enter".
-        Set-PSReadLineKeyHandler -Chord Ctrl+Enter -Function BackwardChar
         Set-PSReadLineKeyHandler -Chord "`u{e000}" -Function ForwardChar
         Set-PSReadLineKeyHandler -Chord "`u{e003}" -Function MenuComplete
         Set-PSReadLineKeyHandler -Chord "`u{e004}" -Function BackwardChar

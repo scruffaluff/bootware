@@ -659,12 +659,6 @@ $env.config = {
             modifier: control
         }
         {
-            event: { edit: moveleft }
-            keycode: char_j
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
             event: null
             keycode: char_o
             mode: [emacs vi_insert vi_normal]

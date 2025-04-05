@@ -261,7 +261,7 @@ if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   # Change Fzf file search keybinding to Ctrl+F.
   bind -r "\C-t"
   bind -r "\ec"
-  bind -x '"\C-f":fzf-path-widget'
+  bind -x '"\C-f": fzf-path-widget'
 fi
 
 # Helix settings.
@@ -385,8 +385,8 @@ if [[ -n "${tty}" ]]; then
   fi
 
   # Add common Fish keybindings to Bash.
-  bind -x '"\ep":_paste_pager'
-  bind -x '"\es":_paste_sudo'
+  bind -x '"\ep": _paste_pager'
+  bind -x '"\es": _paste_sudo'
 fi
 
 # Starship settings.
