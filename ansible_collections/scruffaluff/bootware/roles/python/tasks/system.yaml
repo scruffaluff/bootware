@@ -123,11 +123,19 @@
       '/usr/local' }}
   when: ansible_system == "Darwin"
 
+# While Python Microsoft Store links are listed app execution aliases in Windows
+# settings, they are actually reparse point and require fsutil for permanent
+# deletion.
+#
+# For more information, visit
+# https://michielvoo.net/2023/02/12/windows-11-app-execution-aliases.html.
 - name: Remove Microsoft Store links masquerading as Python for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
-    state: absent
+  ansible.windows.win_shell: |
+    $Path = "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    if (Test-Path $Path) {
+      fsutil reparsepoint delete $Path
+      Remove-Item -Force $Path
+    }
   loop:
     - python.exe
     - python3.exe

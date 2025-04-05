@@ -40,8 +40,10 @@
 
 - name: Register Bash as a valid login shell for Unix
   ansible.builtin.lineinfile:
-    path: /etc/shells
+    create: true
     line: "{{ bash_executable }}"
+    mode: "644"
+    path: /etc/shells
   become: true
   tags:
     - install

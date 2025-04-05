@@ -18,6 +18,39 @@ _fzf_path_preview() {
   fi
 }
 
+# Paste pipe to system pager command into the commandline.
+_paste_pager() {
+  local program="${PAGER:-less}"
+  local command=" &| ${program}"
+  if [[ "${READLINE_LINE}" == *"${command}" ]]; then
+    READLINE_LINE="${READLINE_LINE/%${command}/}"
+  else
+    READLINE_LINE="${READLINE_LINE}${command}"
+  fi
+}
+
+# Prepend command line with system super user elevation command.
+_paste_sudo() {
+  local program point
+  if [[ -x "$(command -v doas)" ]]; then
+    program='doas'
+  elif [ -x "$(command -v sudo)" ]; then
+    program='sudo'
+  else
+    return
+  fi
+
+  if [[ "${READLINE_LINE}" == "${program} "* ]]; then
+    point="${READLINE_POINT}"
+    READLINE_LINE="${READLINE_LINE/#${program} /}"
+    READLINE_POINT="$((point - 5))"
+  else
+    point="${READLINE_POINT}"
+    READLINE_LINE="${program} ${READLINE_LINE}"
+    READLINE_POINT="$((point + 5))"
+  fi
+}
+
 # Public convenience functions.
 
 # Override system implementation of command not found.
@@ -330,7 +363,7 @@ alias rsync='rsync --partial --progress --filter ":- .gitignore"'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# Configure completions if interactive.
+# Configure completions and keybindings if interactive.
 #
 # Custom Bash keybindings are loaded from ~/.inputrc with readline.
 #
@@ -350,6 +383,10 @@ if [[ -n "${tty}" ]]; then
   else
     source-files '/usr/share/bash-completion/bash_completion'
   fi
+
+  # Add common Fish keybindings to Bash.
+  bind -x '"\ep": _paste_pager'
+  bind -x '"\es": _paste_sudo'
 fi
 
 # Starship settings.

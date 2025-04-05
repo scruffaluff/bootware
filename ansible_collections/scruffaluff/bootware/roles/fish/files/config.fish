@@ -482,7 +482,6 @@ if test -n $tty
     function fish_user_key_bindings
         bind \cw true
         bind \cd backward-kill-path-component
-        bind \cj backward-char
         bind \eb backward-word
         bind \ec _paste_cwd
         bind \ed kill-bigword
@@ -495,6 +494,7 @@ if test -n $tty
         bind \ue001 'prevd; commandline --function repaint'
         bind \ue002 'nextd; commandline --function repaint'
         bind \ue003 complete
+        bind \ue004 backward-char
     end
 
     # Set solarized light theme variables based on

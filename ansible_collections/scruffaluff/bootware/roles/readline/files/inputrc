@@ -9,6 +9,8 @@ set bell-style none
 set bind-tty-special-chars off
 # Ignore case during completions.
 set completion-ignore-case on
+# Disable history changes during previous command search.
+set revert-all-at-newline on
 # Show all options if there are multiple options.
 set show-all-if-ambiguous on
 # Show all options if a partial completion cannot be made.
@@ -24,6 +26,7 @@ set visible-stats on
 "\C-e": end-of-line
 "\C-k": kill-line
 "\C-l": clear-screen
+"\C-r": reverse-search-history
 "\C-u": backward-kill-line
 "\eb": backward-word
 "\ee": edit-and-execute-command
@@ -32,12 +35,12 @@ set visible-stats on
 
 # Use Tab, Shift+I, and Shift+Tab to cycle through completions.
 tab: menu-complete
-"": menu-complete
+"\xee\x80\x83": menu-complete
 "\e[Z": menu-complete-backward
 
 # Add Vim like keybindings for line navigation.
-"\C-j": backward-char
-"": forward-char
+"\xee\x80\x84": backward-char
+"\xee\x80\x80": forward-char
 
 # Use Up and Down to search history for commands matching text before cursor.
 "\e[A": history-search-backward
@@ -51,12 +54,6 @@ tab: menu-complete
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
 
-# Use Control+D and Alt+D to delete words backwards and forwards
+# Use Control+D and Alt+D to delete words backwards and forwards.
 "\C-d": backward-kill-word
 "\ed": kill-word
-
-# Use common Fish keybindings when in Bash.
-$if bash
-"\ep": "\C-e &| less"
-"\es": "\C-asudo \C-e"
-$endif

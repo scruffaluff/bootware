@@ -1,0 +1,37 @@
+# Editline configuration file.
+#
+# For more information, visit
+# https://linux.die.net/man/5/editrc.
+
+# Enable Editline.
+edit on
+
+# Undefine keybindings.
+bind -r "^w"
+
+# Use common shell keybindings.
+bind "^a" ed-move-to-beg
+bind "^e" ed-move-to-end
+bind "^k" ed-kill-line
+bind "^l" ed-clear-screen
+bind "^r" em-inc-search-prev
+bind "^u" em-kill-line
+bind "^[b" ed-prev-word
+bind "^[f" em-next-word
+bind "^[z" vi-undo
+
+# Use Up and Down to search history for commands matching text before cursor.
+bind "^[[a" ed-prev-history
+bind "^[[b" ed-next-history
+
+# Use Shift+Left and Shift+Right to jump backwards and forwards.
+bind "^[[1;2D" ed-prev-word
+bind "^[[1;2C" em-next-word
+
+# Use Control+Left and Control+Right to jump backwards and forwards.
+bind "^[[1;5D" ed-prev-word
+bind "^[[1;5C" em-next-word
+
+# Use Control+D and Alt+D to delete words backwards and forwards.
+bind "^d" ed-delete-prev-word
+bind "^[d" em-delete-next-word
