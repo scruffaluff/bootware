@@ -164,44 +164,6 @@ find_super() {
 }
 
 #######################################
-# Install Bash shell.
-# Arguments:
-#   Super user command for installation.
-#######################################
-install_bash() {
-  local super="${1}"
-
-  # Do not quote the outer super parameter expansion. Shell will error due to be
-  # being unable to find the "" command.
-  if [ -x "$(command -v apk)" ]; then
-    ${super:+"${super}"} apk update
-    ${super:+"${super}"} apk add bash
-  elif [ -x "$(command -v apt-get)" ]; then
-    ${super:+"${super}"} apt-get update
-    ${super:+"${super}"} apt-get install --quiet --yes bash
-  elif [ -x "$(command -v dnf)" ]; then
-    ${super:+"${super}"} dnf check-update || {
-      code="$?"
-      [ "${code}" -ne 100 ] && exit "${code}"
-    }
-    ${super:+"${super}"} dnf install --assumeyes bash
-  elif [ -x "$(command -v pacman)" ]; then
-    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${super:+"${super}"} pacman --noconfirm --sync bash
-  elif [ -x "$(command -v pkg)" ]; then
-    ${super:+"${super}"} pkg update
-    ${super:+"${super}"} pkg install --yes bash
-  elif [ -x "$(command -v zypper)" ]; then
-    ${super:+"${super}"} zypper update --no-confirm
-    ${super:+"${super}"} zypper install --no-confirm bash
-  else
-    log --stderr 'error: Unable to find a supported package manager for ' \
-      'installing Bash.'
-    exit 1
-  fi
-}
-
-#######################################
 # Download and install Bootware.
 # Arguments:
 #   Super user command for installation.
@@ -385,21 +347,6 @@ main() {
   if [ -n "${global_}" ] || ! mkdir -p "${dst_dir}" > /dev/null 2>&1 ||
     [ ! -w "${dst_dir}" ]; then
     super="$(find_super)"
-  fi
-
-  # Install Bash shell if necessary.
-  #
-  # Flags:
-  #   -v: Only show file path of command.
-  if [ ! -x "$(command -v bash)" ]; then
-    if [ -n "${global_}" ]; then
-      install_bash "${super}"
-    else
-      log --stderr 'error: Unable to find Bash shell.'
-      log --stderr 'Use --global flag or install Bash, ' \
-        'https://www.gnu.org/software/bash, manually before continuing.'
-      exit 1
-    fi
   fi
 
   install_bootware "${super}" "${global_}" "${version}" "${dst_dir}" \

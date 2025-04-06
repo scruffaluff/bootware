@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 #
 # Bootstrap software installations with Ansible.
 
@@ -50,7 +50,7 @@ Options:
 
 Ansible Options:
 EOF
-      if [[ -x "$(command -v ansible)" ]]; then
+      if [ -x "$(command -v ansible)" ]; then
         ansible --help
       fi
       ;;
@@ -194,12 +194,12 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if the string is empty.
-  if [[ -z "${BOOTWARE_NOPASSWD:-}" ]]; then
+  if [ -z "${BOOTWARE_NOPASSWD:-}" ]; then
     ask_passwd='true'
   fi
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       --ansible-config)
         export ANSIBLE_CONFIG="${2}"
@@ -308,7 +308,7 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if the string is empty.
-  if [[ -z "${no_setup:-}" ]]; then
+  if [ -z "${no_setup:-}" ]; then
     setup
   fi
 
@@ -316,10 +316,10 @@ bootstrap() {
   #
   # Flags:
   #   -z: Check if the string is empty.
-  if [[ "${cmd}" == 'playbook' && -z "${playbook:-}" ]]; then
+  if [ "${cmd}" = 'playbook' ] && [ -z "${playbook:-}" ]; then
     # Do not use long form --dry-run flag. It is not supported on MacOS.
     tmp_dir="$(mktemp -u)"
-    git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
+    git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
     playbook="${tmp_dir}/playbook.yaml"
   fi
 
@@ -327,7 +327,7 @@ bootstrap() {
   #
   # Flags:
   #   -n: Check if string is nonempty.
-  if [[ -n "${start_role:-}" ]]; then
+  if [ -n "${start_role:-}" ]; then
     repo_dir="$(dirname "${playbook}")"
     start_task="$(
       yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
@@ -336,26 +336,26 @@ bootstrap() {
   fi
 
   # Convenience logic for using a single host without a trailing comma.
-  if [[ ! "${inventory}" =~ .*','.* ]]; then
+  if [ ! "${inventory}" =~ .*','.* ]; then
     inventory="${inventory},"
   fi
 
-  if [[ "${cmd}" == 'playbook' ]]; then
+  if [ "${cmd}" = 'playbook' ]; then
     ansible_config_path="$(dirname "${playbook}")/ansible.cfg"
-    if [[ -z "${ANSIBLE_CONFIG:-}" && -f "${ansible_config_path}" ]]; then
+    if [ -z "${ANSIBLE_CONFIG:-}" ] && [ -f "${ansible_config_path}" ]; then
       export ANSIBLE_CONFIG="${ansible_config_path}"
     fi
     extra_args+=('--connection' "${connection}")
-  elif [[ "${cmd}" == 'pull' ]]; then
+  elif [ "${cmd}" = 'pull' ]; then
     playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
     extra_args+=('--url' "${url}")
   fi
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  if [[ "${EUID}" -ne 0 &&
-    -z "${become_method:-}" &&
-    "${inventory}" == '127.0.0.1,' ]]; then
+  if [ "$(id -u)" -ne 0 ] &&
+    [ -z "${become_method:-}" ] &&
+    [ "${inventory}" = '127.0.0.1,' ]; then
     become_method="$(find_super)"
   fi
 
@@ -381,7 +381,10 @@ bootstrap() {
     "${playbook}"; do
 
     status=$?
-    ((retries--)) && ((retries == 0)) && exit "${status}"
+    retries="$((retries - 1))"
+    if [ "${retries}" -eq 0 ]; then
+      exit "${status}"
+    fi
     printf "\nBootstrapping attempt failed with exit code %s." "${status}"
     printf "\nRetrying bootstrapping with %s attempts left.\n" "${retries}"
     sleep 4
@@ -401,7 +404,7 @@ config() {
   local src_url dst_file="${HOME}/.bootware/config.yaml" empty_cfg
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       -d | --dest)
         dst_file="${2}"
@@ -432,7 +435,7 @@ config() {
   #
   # Flags:
   #   -z: Check if the string is empty.
-  if [[ "${empty_cfg:-}" == 'true' || -z "${src_url:-}" ]]; then
+  if [ "${empty_cfg:-}" = 'true' ] || [ -z "${src_url:-}" ]; then
     log "Writing empty configuration file to ${dst_file}"
     printf 'super_passwordless: false' > "${dst_file}"
   else
@@ -462,7 +465,7 @@ dnf_check_update() {
   local code
   ${1:+"${1}"} dnf check-update || {
     code="$?"
-    [[ "${code}" -eq 100 ]] && return 0
+    [ "${code}" -eq 100 ] && return 0
     return "${code}"
   }
 }
@@ -476,7 +479,7 @@ error() {
   local bold_red='\033[1;31m' default='\033[0m'
   # Flags:
   #   -t <FD>: Check if file descriptor is a terminal.
-  if [[ -t 2 ]]; then
+  if [ -t 2 ]; then
     printf "${bold_red}error${default}: %s\n" "${1}" >&2
   else
     printf "error: %s\n" "${1}" >&2
@@ -493,7 +496,7 @@ error_usage() {
   local bold_red='\033[1;31m' default='\033[0m'
   # Flags:
   #   -t <FD>: Check if file descriptor is a terminal.
-  if [[ -t 2 ]]; then
+  if [ -t 2 ]; then
     printf "${bold_red}error${default}: %s\n" "${1}" >&2
   else
     printf "error: %s\n" "${1}" >&2
@@ -518,11 +521,11 @@ find_config_path() {
   #   -f: Check if file exists and is a regular file.
   #   -n: Check if string is nonempty.
   #   -v: Only show file path of command.
-  if [[ -f "${1:-}" ]]; then
+  if [ -f "${1:-}" ]; then
     RET_VAL="${1}"
-  elif [[ -n "${BOOTWARE_CONFIG:-}" ]]; then
+  elif [ -n "${BOOTWARE_CONFIG:-}" ]; then
     RET_VAL="${BOOTWARE_CONFIG}"
-  elif [[ -f "${HOME}/.bootware/config.yaml" ]]; then
+  elif [ -f "${HOME}/.bootware/config.yaml" ]; then
     RET_VAL="${HOME}/.bootware/config.yaml"
   else
     log 'Unable to find Bootware configuration file.'
@@ -540,9 +543,9 @@ find_super() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ -x "$(command -v sudo)" ]]; then
+  if [ -x "$(command -v sudo)" ]; then
     echo 'sudo'
-  elif [[ -x "$(command -v doas)" ]]; then
+  elif [ -x "$(command -v doas)" ]; then
     echo 'doas'
   else
     error 'Unable to find a command for super user elevation'
@@ -571,14 +574,11 @@ fullpath() {
 install_yq() {
   local arch os_type url version
 
-  # Do not use long form --kernel-name or --machine flags for uname. They are
-  # not supported on MacOS.
-  arch="$(uname -m)"
-  arch="${arch/#x86_64/amd64}"
-  arch="${arch/%x64/amd64}"
-  arch="${arch/#aarch64/arm64}"
-  arch="${arch/%arm/arm64}"
-  os_type="$(uname -s)"
+  # Do not use long form flags for uname. They are not supported on some
+  # systems.
+  arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ |
+    sed s/aarch64/arm64/)"
+  os="$(uname -s)"
 
   # Get latest YQ version.
   #
@@ -592,7 +592,7 @@ install_yq() {
     curl -LSfs https://formulae.brew.sh/api/formula/yq.json |
       jq --exit-status --raw-output .versions.stable
   )"
-  url="https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os_type}_${arch}"
+  url="https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os}_${arch}"
 
   # Do not quote the outer super parameter expansion. Shell will error due to be
   # being unable to find the "" command.
@@ -610,7 +610,7 @@ install_yq() {
 log() {
   # Flags:
   #   -z: Check if the string is empty.
-  if [[ -z "${BOOTWARE_NOLOG:-}" ]]; then
+  if [ -z "${BOOTWARE_NOLOG:-}" ]; then
     echo "$@"
   fi
 }
@@ -624,7 +624,7 @@ roles() {
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       -h | --help)
         usage 'roles'
@@ -647,12 +647,12 @@ roles() {
   # Do not use long form --dry-run flag for mktemp. It is not supported on
   # MacOS.
   tmp_dir="$(mktemp -u)"
-  git clone --depth 1 "${url}" "${tmp_dir}" &> /dev/null
+  git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
 
   # Flags:
   #   -n: Check if string is nonempty.
-  if [[ -n "${tags:-}" ]]; then
-    contains="(map(. == \"${tags//,/\") | any) or (map(. == \"}\") | any)"
+  if [ -n "${tags:-}" ]; then
+    contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
     filter=".[0].tasks[] | select(.tags | (${contains}))"
   else
     filter='.[0].tasks[]'
@@ -669,7 +669,7 @@ setup() {
   local collections collection_status os_type tmp_dir super=''
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       -h | --help)
         usage 'setup'
@@ -682,7 +682,7 @@ setup() {
   done
 
   # Check if user is not root.
-  if [[ "${EUID}" -ne 0 ]]; then
+  if [ "$(id -u)" -ne 0 ]; then
     super="$(find_super)"
   fi
 
@@ -704,12 +704,15 @@ setup() {
       ;;
   esac
 
-  collections=('chocolatey.chocolatey' 'community.general' 'community.windows')
-  for collection in "${collections[@]}"; do
+  collections='chocolatey.chocolatey community.general community.windows'
+  for collection in ${collections}; do
     collection_status="$(ansible-galaxy collection list "${collection}" 2>&1)"
-    if [[ "${collection_status}" =~ 'unable to find' ]]; then
-      ansible-galaxy collection install "${collection}"
-    fi
+    case "${collection_status}" in
+      *'unable to find'*)
+        ansible-galaxy collection install "${collection}"
+        ;;
+      *) ;;
+    esac
   done
 }
 
@@ -724,31 +727,31 @@ setup_alpine() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     ${1:+"${1}"} apk update
     ${1:+"${1}"} apk add ansible
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     ${1:+"${1}"} apk update
     ${1:+"${1}"} apk add curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     ${1:+"${1}"} apk update
     ${1:+"${1}"} apk add git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     ${1:+"${1}"} apk update
     ${1:+"${1}"} apk add jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -767,32 +770,32 @@ setup_arch() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
     ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${1:+"${1}"} pacman --noconfirm --sync ansible
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${1:+"${1}"} pacman --noconfirm --sync curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${1:+"${1}"} pacman --noconfirm --sync git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${1:+"${1}"} pacman --noconfirm --sync jq
   fi
 
-  if [[ ! -x "$(command -v yay)" ]]; then
+  if [ ! -x "$(command -v yay)" ]; then
     log 'Installing Yay package manager'
     ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${1:+"${1}"} pacman --noconfirm --sync base-devel
@@ -803,7 +806,7 @@ setup_arch() {
     yay --noconfirm --refresh --sync --sysupgrade
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -823,7 +826,7 @@ setup_debian() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible'
@@ -831,25 +834,25 @@ setup_debian() {
     ${1:+"${1}"} apt-get --quiet install --yes ansible
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     ${1:+"${1}"} apt-get --quiet update
     ${1:+"${1}"} apt-get --quiet install --yes curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     ${1:+"${1}"} apt-get --quiet update
     ${1:+"${1}"} apt-get --quiet install --yes git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     ${1:+"${1}"} apt-get --quiet update
     ${1:+"${1}"} apt-get --quiet install --yes jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -866,7 +869,7 @@ setup_fedora() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
@@ -874,25 +877,25 @@ setup_fedora() {
     ${1:+"${1}"} dnf install --assumeyes ansible
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     dnf_check_update "${1}"
     ${1:+"${1}"} dnf install --assumeyes curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     dnf_check_update "${1}"
     ${1:+"${1}"} dnf install --assumeyes git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     dnf_check_update "${1}"
     ${1:+"${1}"} dnf install --assumeyes jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -905,7 +908,7 @@ setup_fedora() {
 #######################################
 setup_freebsd() {
   local ansible_package
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     ${1:+"${1}"} pkg update
 
@@ -915,25 +918,25 @@ setup_freebsd() {
     ${1:+"${1}"} pkg install --yes "${ansible_package}"
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     ${1:+"${1}"} pkg update
     ${1:+"${1}"} pkg install --yes curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     ${1:+"${1}"} pkg update
     ${1:+"${1}"} pkg install --yes git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     ${1:+"${1}"} pkg update
     ${1:+"${1}"} pkg install --yes jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -950,15 +953,15 @@ setup_linux() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ -x "$(command -v apk)" ]]; then
+  if [ -x "$(command -v apk)" ]; then
     setup_alpine "${1}"
-  elif [[ -x "$(command -v pacman)" ]]; then
+  elif [ -x "$(command -v pacman)" ]; then
     setup_arch "${1}"
-  elif [[ -x "$(command -v apt-get)" ]]; then
+  elif [ -x "$(command -v apt-get)" ]; then
     setup_debian "${1}"
-  elif [[ -x "$(command -v dnf)" ]]; then
+  elif [ -x "$(command -v dnf)" ]; then
     setup_fedora "${1}"
-  elif [[ -x "$(command -v zypper)" ]]; then
+  elif [ -x "$(command -v zypper)" ]; then
     setup_suse "${1}"
   else
     error 'Unable to find supported package manager'
@@ -977,7 +980,7 @@ setup_macos() {
   # Homebrew depends on the XCode command line tools.
   # Flags:
   #   -p: Print path to active developer directory.
-  if ! xcode-select -p &> /dev/null; then
+  if ! xcode-select -p > /dev/null 2>&1; then
     log 'Installing command line tools for XCode'
     sudo xcode-select --install
   fi
@@ -990,28 +993,28 @@ setup_macos() {
   #   -f: Fail silently on server errors.
   #   -s: Disable progress bars.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v brew)" ]]; then
+  if [ ! -x "$(command -v brew)" ]; then
     log 'Installing Homebrew'
     curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
     brew analytics off
   fi
 
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     brew install ansible
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     brew install git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     brew install jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     brew install yq
   fi
@@ -1028,31 +1031,31 @@ setup_suse() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [[ ! -x "$(command -v ansible)" ]]; then
+  if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     ${1:+"${1}"} zypper update --no-confirm
     ${1:+"${1}"} zypper install --no-confirm ansible
   fi
 
-  if [[ ! -x "$(command -v curl)" ]]; then
+  if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     ${1:+"${1}"} zypper update --no-confirm
     ${1:+"${1}"} zypper install --no-confirm curl
   fi
 
-  if [[ ! -x "$(command -v git)" ]]; then
+  if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     ${1:+"${1}"} zypper update --no-confirm
     ${1:+"${1}"} zypper install --no-confirm git
   fi
 
-  if [[ ! -x "$(command -v jq)" ]]; then
+  if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     ${1:+"${1}"} zypper update --no-confirm
     ${1:+"${1}"} zypper install --no-confirm jq
   fi
 
-  if [[ ! -x "$(command -v yq)" ]]; then
+  if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
     install_yq "${1}"
   fi
@@ -1067,7 +1070,7 @@ uninstall() {
   local dst_file super=''
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       -h | --help)
         usage 'uninstall'
@@ -1085,7 +1088,7 @@ uninstall() {
   #
   # Flags:
   #   -w: Check if file exists and it writable.
-  if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+  if [ ! -w "${dst_file}" ] && [ "$(id -u)" -ne 0 ]; then
     super="$(find_super)"
   fi
 
@@ -1107,7 +1110,7 @@ update() {
   local dst_file src_url super='' user_install version='main'
 
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       -h | --help)
         usage 'update'
@@ -1130,9 +1133,9 @@ update() {
   #
   # Flags:
   #   -w: Check if file exists and it writable.
-  if [[ ! -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+  if [ ! -w "${dst_file}" ] && [ "$(id -u)" -ne 0 ]; then
     super="$(find_super)"
-  elif [[ -w "${dst_file}" && "${EUID}" -ne 0 ]]; then
+  elif [ -w "${dst_file}" ] && [ "$(id -u)" -ne 0 ]; then
     user_install='true'
   fi
 
@@ -1162,8 +1165,8 @@ update_completions() {
 
   # Flags:
   #  -z: Check if the string is empty.
-  if [[ -z "${2:-}" ]]; then
-    if [[ "$(uname -m)" == 'arm64' ]]; then
+  if [ -z "${2:-}" ]; then
+    if [ "$(uname -m)" = 'arm64' ]; then
       brew_prefix='/opt/homebrew'
     else
       brew_prefix='/usr/local'
@@ -1172,7 +1175,7 @@ update_completions() {
 
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    if [[ "${os_type}" == 'Darwin' ]]; then
+    if [ "${os_type}" = 'Darwin' ]; then
       ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
       ${1:+"${1}"} curl -LSfs "${bash_url}" --output "${brew_prefix}/share/bash-completion/completions/bootware"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
@@ -1180,7 +1183,7 @@ update_completions() {
       ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
       ${1:+"${1}"} curl -LSfs "${fish_url}" --output "${brew_prefix}/etc/fish/completions/bootware.fish"
       ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
-    elif [[ "${os_type}" == 'FreeBSD' ]]; then
+    elif [ "${os_type}" = 'FreeBSD' ]; then
       ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
       ${1:+"${1}"} curl -LSfs "${bash_url}" --output '/usr/local/share/bash-completion/completions/bootware'
       ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
@@ -1222,7 +1225,7 @@ version() {
 #######################################
 main() {
   # Parse command line arguments.
-  while [[ "${#}" -gt 0 ]]; do
+  while [ "${#}" -gt 0 ]; do
     case "${1}" in
       --debug)
         set -o xtrace
@@ -1276,6 +1279,6 @@ main() {
 }
 
 # Add ability to selectively skip main function during test suite.
-if [[ -z "${BATS_SOURCE_ONLY:-}" ]]; then
+if [ -z "${BATS_SOURCE_ONLY:-}" ]; then
   main "$@"
 fi
