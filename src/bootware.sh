@@ -167,7 +167,7 @@ bootstrap() {
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
-  local extra_args=()
+  local extra_args=''
   local install_group
   local install_user
   local inventory='127.0.0.1,'
@@ -180,13 +180,10 @@ bootstrap() {
   local start_role
   local status
   local tags="${BOOTWARE_TAGS:-}"
-  local temp_ssh_args=(
-    "-o IdentitiesOnly=yes"
-    "-o LogLevel=ERROR"
-    "-o PreferredAuthentications=publickey,password"
-    "-o StrictHostKeyChecking=no"
-    "-o UserKnownHostsFile=/dev/null"
-  )
+  local temp_ssh_args='-o IdentitiesOnly=yes -o LogLevel=ERROR \
+-o PreferredAuthentications=publickey,password \
+-o StrictHostKeyChecking=no \
+-o UserKnownHostsFile=/dev/null'
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
   local windows
 
@@ -278,12 +275,8 @@ bootstrap() {
         shift 2
         ;;
       --temp-key)
-        extra_args+=(
-          "--private-key"
-          "${2}"
-          "--ssh-extra-args"
-          "${temp_ssh_args[*]}"
-        )
+        extra_args="${extra_args:+"${extra_args}" }\
+--private-key ${2} --ssh-extra-args ${temp_ssh_args}"
         shift 2
         ;;
       -u | --url)
@@ -298,7 +291,7 @@ bootstrap() {
         shift 1
         ;;
       *)
-        extra_args+=("${1}")
+        extra_args="${extra_args:+"${extra_args}" }${1}"
         shift 1
         ;;
     esac
@@ -332,23 +325,26 @@ bootstrap() {
     start_task="$(
       yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
     )"
-    extra_args+=('--start-at-task' "${start_task}")
+    extra_args="${extra_args:+"${extra_args}" }--start-at-task ${start_task}"
   fi
 
   # Convenience logic for using a single host without a trailing comma.
-  if [ ! "${inventory}" =~ .*','.* ]; then
-    inventory="${inventory},"
-  fi
+  case "${inventory}" in
+    *,*) ;;
+    *)
+      inventory="${inventory},"
+      ;;
+  esac
 
   if [ "${cmd}" = 'playbook' ]; then
     ansible_config_path="$(dirname "${playbook}")/ansible.cfg"
     if [ -z "${ANSIBLE_CONFIG:-}" ] && [ -f "${ansible_config_path}" ]; then
       export ANSIBLE_CONFIG="${ansible_config_path}"
     fi
-    extra_args+=('--connection' "${connection}")
+    extra_args="${extra_args:+"${extra_args}" }--connection ${connection}"
   elif [ "${cmd}" = 'pull' ]; then
     playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
-    extra_args+=('--url' "${url}")
+    extra_args="${extra_args:+"${extra_args}" }--url ${url}"
   fi
 
   find_config_path "${config_path}"
@@ -362,6 +358,9 @@ bootstrap() {
   log "Executing Ansible ${cmd}"
   log 'Enter your user account password if prompted'
 
+  # Do not quote extra_args. Otherwise extra_args will be interpreted as a
+  # single argument.
+  # shellcheck disable=SC2086
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
@@ -377,7 +376,7 @@ bootstrap() {
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
-    ${extra_args:+"${extra_args[@]}"} \
+    ${extra_args} \
     "${playbook}"; do
 
     status=$?

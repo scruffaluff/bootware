@@ -15,11 +15,8 @@ export PATH := if os() == "windows" {
 list:
   @just --list
 
-# Execute all commands.
-all: setup format lint doc test-unit dist
-
 # Execute CI workflow commands.
-ci: setup format lint doc test-unit
+ci: setup lint doc test-unit
 
 # Build distribution packages.
 [script("nu")]
@@ -31,29 +28,15 @@ dist version="0.8.3":
 doc:
   npx tsx script/doc.ts
 
-# Check code formatting.
-[unix]
-format:
-  npx prettier --check .
-  shfmt --diff ansible_collections script src test
-
-# Check code formatting.
-[windows]
-format:
-  npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
-
 # Fix code formatting.
 [unix]
-format-fix:
+format:
   npx prettier --write .
   shfmt --write ansible_collections script src test
 
 # Fix code formatting.
 [windows]
-format-fix:
+format:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
   $ProgressPreference = 'SilentlyContinue'
@@ -73,6 +56,8 @@ format-fix:
 lint:
   #!/usr/bin/env sh
   set -eu
+  npx prettier --check .
+  shfmt --diff ansible_collections script src test
   files="$(find ansible_collections script src test -name '*.bats' -or -name '*.sh')"
   for file in ${files}; do
     shellcheck "${file}"
@@ -82,6 +67,10 @@ lint:
 # Run code analyses.
 [windows]
 lint:
+  npx prettier --check .
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings data/config/script_analyzer.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings data/config/script_analyzer.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings data/config/script_analyzer.psd1
