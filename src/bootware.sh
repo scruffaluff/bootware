@@ -6,9 +6,8 @@
 #
 # Flags:
 #   -e: Exit immediately when a command pipeline fails.
-#   -o: Persist nonzero exit codes through a Bash pipe.
 #   -u: Throw an error when an unset variable is encountered.
-set -eou pipefail
+set -eu
 
 #######################################
 # Show CLI help information.
@@ -143,7 +142,8 @@ Options:
 EOF
       ;;
     *)
-      error "No such usage option '${1}'"
+      log --stderr "No such usage option '${1}'."
+      exit 1
       ;;
   esac
 }
@@ -310,7 +310,8 @@ bootstrap() {
   # Flags:
   #   -z: Check if the string is empty.
   if [ "${cmd}" = 'playbook' ] && [ -z "${playbook:-}" ]; then
-    # Do not use long form --dry-run flag. It is not supported on MacOS.
+    # Do not use long form flags for mktemp. They are not supported on some
+    # systems.
     tmp_dir="$(mktemp -u)"
     git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
     playbook="${tmp_dir}/playbook.yaml"
@@ -392,10 +393,6 @@ bootstrap() {
 
 #######################################
 # Subcommand to generate or download Bootware configuration file.
-# Globals:
-#   HOME
-# Arguments:
-#   Parent directory of Bootware script.
 # Outputs:
 #   Writes status information to stdout.
 #######################################
@@ -422,12 +419,15 @@ config() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" 'config'
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'bootware config --help' for usage."
+        exit 2
         ;;
     esac
   done
 
-  # Do not use long form --parents flag for mkdir. It is not supported on MacOS.
+  # Do not use long form flags for mkdir. They are not supported on some
+  # systems.
   mkdir -p "$(dirname "${dst_file}")"
 
   # Check if empty configuration file should be generated.
@@ -439,14 +439,7 @@ config() {
     printf 'super_passwordless: false' > "${dst_file}"
   else
     log "Downloading configuration file to ${dst_file}"
-
-    # Download configuration file.
-    #
-    # Flags:
-    #   -L: Follow redirect request.
-    #   -S: Show errors.
-    #   -f: Use archive file. Must be third flag.
-    curl -LSfs "${src_url}" --output "${dst_file}"
+    fetch --dest "${dst_file}" "${src_url}"
   fi
 }
 
@@ -461,8 +454,8 @@ config() {
 #   Super user elevation command.
 #######################################
 dnf_check_update() {
-  local code
-  ${1:+"${1}"} dnf check-update || {
+  local code super="${1:-}"
+  ${super:+"${super}"} dnf check-update || {
     code="$?"
     [ "${code}" -eq 100 ] && return 0
     return "${code}"
@@ -470,44 +463,70 @@ dnf_check_update() {
 }
 
 #######################################
-# Print error message and exit script with error code.
-# Outputs:
-#   Writes error message to stderr.
+# Perform network request.
 #######################################
-error() {
-  local bold_red='\033[1;31m' default='\033[0m'
-  # Flags:
-  #   -t <FD>: Check if file descriptor is a terminal.
-  if [ -t 2 ]; then
-    printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  else
-    printf "error: %s\n" "${1}" >&2
-  fi
-  exit 1
-}
+fetch() {
+  local dst_file='-' mode='' super='' url=''
 
-#######################################
-# Print error message and exit script with usage error code.
-# Outputs:
-#   Writes error message to stderr.
-#######################################
-error_usage() {
-  local bold_red='\033[1;31m' default='\033[0m'
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -d | --dest)
+        dst_file="${2}"
+        shift 2
+        ;;
+      -m | --mode)
+        mode="${2}"
+        shift 2
+        ;;
+      -s | --super)
+        super="${2}"
+        shift 2
+        ;;
+      *)
+        url="${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Create parent directory if it does not exist.
+  #
   # Flags:
-  #   -t <FD>: Check if file descriptor is a terminal.
-  if [ -t 2 ]; then
-    printf "${bold_red}error${default}: %s\n" "${1}" >&2
-  else
-    printf "error: %s\n" "${1}" >&2
+  #   -p: Make parent directories if necessary.
+  if [ "${dst_file}" != '-' ]; then
+    ${super:+"${super}"} mkdir -p "$(dirname "${dst_file}")"
   fi
-  printf "Run 'bootware %s--help' for usage.\n" "${2:+${2} }" >&2
-  exit 2
+
+  # Download with Curl or Wget.
+  #
+  # Flags:
+  #   -O <PATH>: Save download to path.
+  #   -q: Hide log output.
+  #   -v: Only show file path of command.
+  #   -x: Check if file exists and execute permission is granted.
+  if [ -x "$(command -v curl)" ]; then
+    ${super:+"${super}"} curl --fail --location --show-error --silent --output \
+      "${dst_file}" "${url}"
+  elif [ -x "$(command -v wget)" ]; then
+    ${super:+"${super}"} wget -q -O "${dst_file}" "${url}"
+  else
+    log --stderr 'error: Unable to find a network file downloader.'
+    log --stderr 'Install curl, https://curl.se, manually before continuing.'
+    exit 1
+  fi
+
+  # Change file permissions if chmod parameter was passed.
+  #
+  # Flags:
+  #   -n: Check if string has nonzero length.
+  if [ -n "${mode:-}" ]; then
+    ${super:+"${super}"} chmod "${mode}" "${dst_file}"
+  fi
 }
 
 #######################################
 # Find path of Bootware configuration file.
-# Globals:
-#   HOME
 # Arguments:
 #   User supplied configuration path.
 # Outputs:
@@ -516,12 +535,14 @@ error_usage() {
 #   Configuration file path.
 #######################################
 find_config_path() {
+  local path="${1:-}"
+
   # Flags:
   #   -f: Check if file exists and is a regular file.
   #   -n: Check if string is nonempty.
   #   -v: Only show file path of command.
-  if [ -f "${1:-}" ]; then
-    RET_VAL="${1}"
+  if [ -f "${path}" ]; then
+    RET_VAL="${path}"
   elif [ -n "${BOOTWARE_CONFIG:-}" ]; then
     RET_VAL="${BOOTWARE_CONFIG}"
   elif [ -f "${HOME}/.bootware/config.yaml" ]; then
@@ -542,21 +563,28 @@ find_super() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if [ -x "$(command -v sudo)" ]; then
-    echo 'sudo'
-  elif [ -x "$(command -v doas)" ]; then
+  if [ -x "$(command -v doas)" ]; then
     echo 'doas'
+  elif [ -x "$(command -v sudo)" ]; then
+    echo 'sudo'
   else
-    error 'Unable to find a command for super user elevation'
+    log --stderr 'Unable to find a command for super user elevation.'
+    exit 1
   fi
 }
 
 #######################################
 # Get full normalized path for file.
+#
 # Alternative to realpath command, since it is not built into MacOS.
+#
+# Arguments:
+#   File system path.
+# Outputs:
+#   Full file system path.
 #######################################
 fullpath() {
-  local working_dir
+  local path="${1}" working_dir
 
   # Flags:
   #   -P: Resolve any symbolic links in the path.
@@ -571,7 +599,7 @@ fullpath() {
 #   Super user elevation command.
 #######################################
 install_yq() {
-  local arch os_type url version
+  local arch os url super="${1:-}" version
 
   # Do not use long form flags for uname. They are not supported on some
   # systems.
@@ -588,29 +616,49 @@ install_yq() {
   #   -o <FILE>: Save output to file.
   #   -s: Disable progress bars.
   version="$(
-    curl -LSfs https://formulae.brew.sh/api/formula/yq.json |
+    fetch https://formulae.brew.sh/api/formula/yq.json |
       jq --exit-status --raw-output .versions.stable
   )"
   url="https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os}_${arch}"
-
-  # Do not quote the outer super parameter expansion. Shell will error due to be
-  # being unable to find the "" command.
-  ${1:+"${1}"} curl -LSfs "${url}" --output /usr/local/bin/yq
-  ${1:+"${1}"} chmod 755 /usr/local/bin/yq
+  fetch --dest /usr/local/bin/yq --mode 755 --super "${super}" "${url}"
 }
 
 #######################################
-# Print log message to stdout if logging is enabled.
+# Print message if error or logging is enabled.
+# Arguments:
+#   Message to print.
 # Globals:
 #   BOOTWARE_NOLOG
 # Outputs:
-#   Log message to stdout.
+#   Message argument.
 #######################################
 log() {
+  local file='1' newline="\n" text=''
+
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -e | --stderr)
+        file='2'
+        shift 1
+        ;;
+      -n | --no-newline)
+        newline=''
+        shift 1
+        ;;
+      *)
+        text="${text}${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Print if error or using quiet configuration.
+  #
   # Flags:
-  #   -z: Check if the string is empty.
-  if [ -z "${BOOTWARE_NOLOG:-}" ]; then
-    echo "$@"
+  #   -z: Check if string has zero length.
+  if [ -z "${BOOTWARE_NOLOG:-}" ] || [ "${file}" = '2' ]; then
+    printf "%s${newline}" "${text}" >&"${file}"
   fi
 }
 
@@ -638,7 +686,9 @@ roles() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" 'roles'
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'bootware roles --help' for usage."
+        exit 2
         ;;
     esac
   done
@@ -665,7 +715,7 @@ roles() {
 # Subcommand to configure bootstrapping services and utilities.
 #######################################
 setup() {
-  local collections collection_status os_type tmp_dir super=''
+  local collections collection_status os tmp_dir super=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -675,7 +725,9 @@ setup() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" 'setup'
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'bootware setup --help' for usage."
+        exit 2
         ;;
     esac
   done
@@ -687,8 +739,8 @@ setup() {
 
   # Do not use long form --kernel-name flag for uname. It is not supported on
   # MacOS.
-  os_type="$(uname -s)"
-  case "${os_type}" in
+  os="$(uname -s)"
+  case "${os}" in
     Darwin)
       setup_macos
       ;;
@@ -699,7 +751,8 @@ setup() {
       setup_linux "${super}"
       ;;
     *)
-      error "Operating system ${os_type} is not supported"
+      log --stderr "Operating system '${os}' is not supported."
+      exit 1
       ;;
   esac
 
@@ -721,6 +774,8 @@ setup() {
 #   Super user elevation command.
 #######################################
 setup_alpine() {
+  local super="${1:-}"
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -728,26 +783,26 @@ setup_alpine() {
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
-    ${1:+"${1}"} apk update
-    ${1:+"${1}"} apk add ansible
+    ${super:+"${super}"} apk update
+    ${super:+"${super}"} apk add ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
-    ${1:+"${1}"} apk update
-    ${1:+"${1}"} apk add curl
+    ${super:+"${super}"} apk update
+    ${super:+"${super}"} apk add curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
-    ${1:+"${1}"} apk update
-    ${1:+"${1}"} apk add git
+    ${super:+"${super}"} apk update
+    ${super:+"${super}"} apk add git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
-    ${1:+"${1}"} apk update
-    ${1:+"${1}"} apk add jq
+    ${super:+"${super}"} apk update
+    ${super:+"${super}"} apk add jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
@@ -762,7 +817,7 @@ setup_alpine() {
 #   Super user elevation command.
 #######################################
 setup_arch() {
-  local tmp_dir
+  local super="${1:-}" tmp_dir
 
   # Install dependencies for Bootware.
   #
@@ -772,32 +827,32 @@ setup_arch() {
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
     # Installing Ansible via Python causes pacman conflicts with AWSCLI.
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync ansible
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync curl
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync git
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync jq
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync jq
   fi
 
   if [ ! -x "$(command -v yay)" ]; then
     log 'Installing Yay package manager'
-    ${1:+"${1}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${1:+"${1}"} pacman --noconfirm --sync base-devel
+    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
+    ${super:+"${super}"} pacman --noconfirm --sync base-devel
 
     tmp_dir="$(mktemp --dry-run)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
@@ -817,6 +872,8 @@ setup_arch() {
 #   Super user elevation command.
 #######################################
 setup_debian() {
+  local super="${1:-}"
+
   # Avoid APT interactively requesting to configure tzdata.
   export DEBIAN_FRONTEND='noninteractive'
 
@@ -829,26 +886,26 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible'
-    ${1:+"${1}"} apt-get --quiet update
-    ${1:+"${1}"} apt-get --quiet install --yes ansible
+    ${super:+"${super}"} apt-get --quiet update
+    ${super:+"${super}"} apt-get --quiet install --yes ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
-    ${1:+"${1}"} apt-get --quiet update
-    ${1:+"${1}"} apt-get --quiet install --yes curl
+    ${super:+"${super}"} apt-get --quiet update
+    ${super:+"${super}"} apt-get --quiet install --yes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
-    ${1:+"${1}"} apt-get --quiet update
-    ${1:+"${1}"} apt-get --quiet install --yes git
+    ${super:+"${super}"} apt-get --quiet update
+    ${super:+"${super}"} apt-get --quiet install --yes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
-    ${1:+"${1}"} apt-get --quiet update
-    ${1:+"${1}"} apt-get --quiet install --yes jq
+    ${super:+"${super}"} apt-get --quiet update
+    ${super:+"${super}"} apt-get --quiet install --yes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
@@ -863,6 +920,8 @@ setup_debian() {
 #   Super user elevation command.
 #######################################
 setup_fedora() {
+  local super="${1:-}"
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -873,25 +932,25 @@ setup_fedora() {
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "${1}"
-    ${1:+"${1}"} dnf install --assumeyes ansible
+    ${super:+"${super}"} dnf install --assumeyes ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
     dnf_check_update "${1}"
-    ${1:+"${1}"} dnf install --assumeyes curl
+    ${super:+"${super}"} dnf install --assumeyes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
     dnf_check_update "${1}"
-    ${1:+"${1}"} dnf install --assumeyes git
+    ${super:+"${super}"} dnf install --assumeyes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
     dnf_check_update "${1}"
-    ${1:+"${1}"} dnf install --assumeyes jq
+    ${super:+"${super}"} dnf install --assumeyes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
@@ -906,33 +965,34 @@ setup_fedora() {
 #   Super user elevation command.
 #######################################
 setup_freebsd() {
-  local ansible_package
+  local ansible_package super="${1:-}"
+
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
-    ${1:+"${1}"} pkg update
+    ${super:+"${super}"} pkg update
 
     ansible_package="$(
       pkg search --quiet --regex 'py[0-9]+-ansible-[^A-Za-z]'
     )"
-    ${1:+"${1}"} pkg install --yes "${ansible_package}"
+    ${super:+"${super}"} pkg install --yes "${ansible_package}"
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
-    ${1:+"${1}"} pkg update
-    ${1:+"${1}"} pkg install --yes curl
+    ${super:+"${super}"} pkg update
+    ${super:+"${super}"} pkg install --yes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
-    ${1:+"${1}"} pkg update
-    ${1:+"${1}"} pkg install --yes git
+    ${super:+"${super}"} pkg update
+    ${super:+"${super}"} pkg install --yes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
-    ${1:+"${1}"} pkg update
-    ${1:+"${1}"} pkg install --yes jq
+    ${super:+"${super}"} pkg update
+    ${super:+"${super}"} pkg install --yes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
@@ -947,23 +1007,26 @@ setup_freebsd() {
 #   Super user elevation command.
 #######################################
 setup_linux() {
+  local super="${1:-}"
+
   # Install dependencies for Bootware base on available package manager.
   #
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ -x "$(command -v apk)" ]; then
-    setup_alpine "${1}"
+    setup_alpine "${super}"
   elif [ -x "$(command -v pacman)" ]; then
-    setup_arch "${1}"
+    setup_arch "${super}"
   elif [ -x "$(command -v apt-get)" ]; then
-    setup_debian "${1}"
+    setup_debian "${super}"
   elif [ -x "$(command -v dnf)" ]; then
-    setup_fedora "${1}"
+    setup_fedora "${super}"
   elif [ -x "$(command -v zypper)" ]; then
-    setup_suse "${1}"
+    setup_suse "${super}"
   else
-    error 'Unable to find supported package manager'
+    log --stderr 'Unable to find supported package manager.'
+    exit 1
   fi
 }
 
@@ -994,7 +1057,8 @@ setup_macos() {
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v brew)" ]; then
     log 'Installing Homebrew'
-    curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
+    fetch 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' |
+      bash
     brew analytics off
   fi
 
@@ -1025,6 +1089,8 @@ setup_macos() {
 #   Super user elevation command.
 #######################################
 setup_suse() {
+  local super="${1:-}"
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -1032,31 +1098,31 @@ setup_suse() {
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
-    ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm ansible
+    ${super:+"${super}"} zypper update --no-confirm
+    ${super:+"${super}"} zypper install --no-confirm ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl'
-    ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm curl
+    ${super:+"${super}"} zypper update --no-confirm
+    ${super:+"${super}"} zypper install --no-confirm curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git'
-    ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm git
+    ${super:+"${super}"} zypper update --no-confirm
+    ${super:+"${super}"} zypper install --no-confirm git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing JQ'
-    ${1:+"${1}"} zypper update --no-confirm
-    ${1:+"${1}"} zypper install --no-confirm jq
+    ${super:+"${super}"} zypper update --no-confirm
+    ${super:+"${super}"} zypper install --no-confirm jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing YQ'
-    install_yq "${1}"
+    install_yq "${super}"
   fi
 }
 
@@ -1076,7 +1142,9 @@ uninstall() {
         exit 0
         ;;
       *)
-        error_usage "No such option '${1}'" 'uninstall'
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'bootware uninstall --help' for usage."
+        exit 2
         ;;
     esac
   done
@@ -1120,7 +1188,9 @@ update() {
         shift 2
         ;;
       *)
-        error_usage "No such option '${1}'" 'update'
+        log --stderr "error: No such option '${1}'."
+        log --stderr "Run 'bootware update --help' for usage."
+        exit 2
         ;;
     esac
   done
@@ -1139,12 +1209,7 @@ update() {
   fi
 
   log 'Updating Bootware'
-
-  # Do not quote the outer super parameter expansion. Shell will error due to be
-  # being unable to find the "" command.
-  ${super:+"${super}"} curl -LSfs "${src_url}" --output "${dst_file}"
-  ${super:+"${super}"} chmod 755 "${dst_file}"
-
+  fetch --dest "${dst_file}" --mode 755 --super "${super}" "${src_url}"
   update_completions "${super}" "${user_install:-}" "${version}"
   log "Updated to version $(bootware --version)"
 }
@@ -1157,56 +1222,44 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
-  local brew_prefix os_type
-  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${3}"
+  local brew_prefix global_="${2}" os super="${1}" version="${3}"
+  local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}"
   local bash_url="${repo_url}/src/completion/bootware.bash"
   local fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
   #  -z: Check if the string is empty.
-  if [ -z "${2:-}" ]; then
+  if [ -z "${global_}" ]; then
     if [ "$(uname -m)" = 'arm64' ]; then
       brew_prefix='/opt/homebrew'
     else
       brew_prefix='/usr/local'
     fi
-    os_type="$(uname -s)"
+    os="$(uname -s)"
 
     # Do not use long form --parents flag for mkdir. It is not supported on
     # MacOS.
-    if [ "${os_type}" = 'Darwin' ]; then
-      ${1:+"${1}"} mkdir -p "${brew_prefix}/share/bash-completion/completions"
-      ${1:+"${1}"} curl -LSfs "${bash_url}" --output "${brew_prefix}/share/bash-completion/completions/bootware"
-      ${1:+"${1}"} chmod 644 "${brew_prefix}/share/bash-completion/completions/bootware"
-
-      ${1:+"${1}"} mkdir -p "${brew_prefix}/etc/fish/completions"
-      ${1:+"${1}"} curl -LSfs "${fish_url}" --output "${brew_prefix}/etc/fish/completions/bootware.fish"
-      ${1:+"${1}"} chmod 644 "${brew_prefix}/etc/fish/completions/bootware.fish"
-    elif [ "${os_type}" = 'FreeBSD' ]; then
-      ${1:+"${1}"} mkdir -p '/usr/local/share/bash-completion/completions'
-      ${1:+"${1}"} curl -LSfs "${bash_url}" --output '/usr/local/share/bash-completion/completions/bootware'
-      ${1:+"${1}"} chmod 644 '/usr/local/share/bash-completion/completions/bootware'
-
-      ${1:+"${1}"} mkdir -p '/usr/local/etc/fish/completions'
-      ${1:+"${1}"} curl -LSfs "${fish_url}" --output '/usr/local/etc/fish/completions/bootware.fish'
-      ${1:+"${1}"} chmod 644 '/usr/local/etc/fish/completions/bootware.fish'
+    if [ "${os}" = 'Darwin' ]; then
+      fetch --dest "${brew_prefix}/share/bash-completion/completions/bootware" \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest "${brew_prefix}/etc/fish/completions/bootware.fish" \
+        --mode 644 --super "${super}" "${fish_url}"
+    elif [ "${os}" = 'FreeBSD' ]; then
+      fetch --dest '/usr/local/share/bash-completion/completions/bootware' \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest '/usr/local/etc/fish/completions/bootware.fish' \
+        --mode 644 --super "${super}" "${fish_url}"
     else
-      ${1:+"${1}"} mkdir -p '/usr/share/bash-completion/completions'
-      ${1:+"${1}"} curl -LSfs "${bash_url}" --output '/usr/share/bash-completion/completions/bootware'
-      ${1:+"${1}"} chmod 644 '/usr/share/bash-completion/completions/bootware'
-
-      ${1:+"${1}"} mkdir -p '/etc/fish/completions'
-      ${1:+"${1}"} curl -LSfs "${fish_url}" --output '/etc/fish/completions/bootware.fish'
-      ${1:+"${1}"} chmod 644 '/etc/fish/completions/bootware.fish'
+      fetch --dest '/usr/share/bash-completion/completions/bootware' \
+        --mode 644 --super "${super}" "${bash_url}"
+      fetch --dest '/etc/fish/completions/bootware.fish' \
+        --mode 644 --super "${super}" "${fish_url}"
     fi
   else
-    mkdir -p "${HOME}/.local/share/bash-completion/completions"
-    curl -LSfs "${bash_url}" --output "${HOME}/.local/share/bash-completion/completions/bootware"
-    chmod 644 "${HOME}/.local/share/bash-completion/completions/bootware"
-
-    mkdir -p "${HOME}/.config/fish/completions"
-    curl -LSfs "${fish_url}" --output "${HOME}/.config/fish/completions/bootware.fish"
-    chmod 644 "${HOME}/.config/fish/completions/bootware.fish"
+    fetch --dest "${HOME}/.local/share/bash-completion/completions/bootware" \
+      --mode 644 "${bash_url}"
+    fetch --dest "${HOME}/.config/fish/completions/bootware.fish" \
+      --mode 644 "${fish_url}"
   fi
 }
 
@@ -1269,7 +1322,9 @@ main() {
         exit 0
         ;;
       *)
-        error_usage "No such subcommand or option '${1}'"
+        log --stderr "error: No such subcommand or option '${1}'."
+        log --stderr "Run 'bootware --help' for usage."
+        exit 2
         ;;
     esac
   done
