@@ -291,7 +291,7 @@ bootstrap() {
         shift 1
         ;;
       *)
-        extra_args="${extra_args:+"${extra_args}" }${1}"
+        extra_args="${extra_args:+"${extra_args}" }'$(echo "${1}" | sed s/\'/\\\\\'/g)'"
         shift 1
         ;;
     esac
@@ -599,8 +599,7 @@ install_yq() {
 
   # Do not use long form flags for uname. They are not supported on some
   # systems.
-  arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ |
-    sed s/aarch64/arm64/)"
+  arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
   os="$(uname -s)"
 
   # Get latest YQ version.

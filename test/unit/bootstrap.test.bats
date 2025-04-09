@@ -74,7 +74,7 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
---check --timeout 60 --connection local playbook.yaml"
+'--check' '--timeout' '60' --connection local playbook.yaml"
 }
 
 bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
@@ -86,8 +86,8 @@ bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
   assert_output "ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
 --extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
---skip-tags sometag --ssh-key /fake/key/path --user fakeuser --connection ssh \
-main.yaml"
+--skip-tags sometag '--ssh-key' '/fake/key/path' '--user' 'fakeuser' \
+--connection ssh main.yaml"
 }
 
 bootstrap_subcommand_does_not_set_snsible_environment_variable() { # @test

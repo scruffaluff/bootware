@@ -117,23 +117,21 @@ _setup:
   done
   bats --version
   if [ ! -x "$(command -v shellcheck)" ]; then
-    shellcheck_arch="$(uname -m | sed s/amd64/x86_64/ | sed s/x64/x86_64/ |
-      sed s/arm64/aarch64/)"
-      shellcheck_version="$(curl  --fail --location --show-error \
-        https://formulae.brew.sh/api/formula/shellcheck.json |
-        jq --exit-status --raw-output .versions.stable)"
-      curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
-      https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.${shellcheck_arch}.tar.xz
-      tar fx /tmp/shellcheck.tar.xz -C /tmp
+    shellcheck_arch="$(uname -m | sed 's/amd64/x86_64/;s/x64/x86_64/;s/arm64/aarch64/')"
+    shellcheck_version="$(curl  --fail --location --show-error \
+      https://formulae.brew.sh/api/formula/shellcheck.json |
+      jq --exit-status --raw-output .versions.stable)"
+    curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
+    https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.${shellcheck_arch}.tar.xz
+    tar fx /tmp/shellcheck.tar.xz -C /tmp
     install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" .vendor/bin/
   fi
   shellcheck --version
   if [ ! -x "$(command -v shfmt)" ]; then
-    shfmt_arch="$(uname -m | sed s/x86_64/amd64/ | sed s/x64/amd64/ |
-      sed s/aarch64/arm64/)"
-      shfmt_version="$(curl  --fail --location --show-error \
-        https://formulae.brew.sh/api/formula/shfmt.json |
-        jq --exit-status --raw-output .versions.stable)"
+    shfmt_arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
+    shfmt_version="$(curl  --fail --location --show-error \
+      https://formulae.brew.sh/api/formula/shfmt.json |
+      jq --exit-status --raw-output .versions.stable)"
     curl --fail --location --show-error --output .vendor/bin/shfmt \
       "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${shfmt_arch}"
     chmod 755 .vendor/bin/shfmt
