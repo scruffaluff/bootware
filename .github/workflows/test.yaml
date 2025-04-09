@@ -188,21 +188,22 @@ jobs:
         with:
           envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
-            freebsd-update fetch
-            freebsd-update install
+            pkg update -f
             pkg install --yes sudo
+            pw useradd -m -G wheel -n freebsd -w no
+            echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/bootware
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
           # during installation as of 02/28/2025.
-          #
-          # TODO: Create nonadmin user for test since VLC cannot run as root.
           run: |
-            set -eou pipefail
-            sudo install src/bootware.sh /usr/local/bin/bootware
-            bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
-            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
+            su freebsd -c ' \
+            set -eu; \
+            sudo install src/bootware.sh /usr/local/bin/bootware; \
+            bootware setup; \
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras; \
+            bash -c "source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python freebsd"; \
+            '
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -337,7 +338,7 @@ jobs:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
+          bootware --debug bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
