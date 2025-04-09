@@ -350,14 +350,11 @@ bootstrap() {
 
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
-  if [ "$(id -u)" -ne 0 ] &&
-    [ -z "${become_method:-}" ] &&
-    [ "${inventory}" = '127.0.0.1,' ]; then
-    become_method="$(find_super)"
-  fi
 
   log "Executing Ansible ${cmd}"
-  log 'Enter your user account password if prompted'
+  if [ -n "${ask_passwd:-}" ]; then
+    log 'Enter your user account password when prompted'
+  fi
 
   # Do not quote extra_args. Otherwise extra_args will be interpreted as a
   # single argument.
@@ -371,13 +368,12 @@ bootstrap() {
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
-    --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
-    ${extra_args} \
+    ${extra_args:+${extra_args}} \
     "${playbook}"; do
 
     status=$?
