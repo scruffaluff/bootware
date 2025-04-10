@@ -195,16 +195,14 @@ jobs:
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
-          # during installation as of 02/28/2025.
+          # during installation as of 02/28/2025. VLC is skipped since it cannot
+          # run as root.
           run: |
-            su freebsd -c ' \
-            set -eu; \
-            echo "home: ${HOME}, user: ${USER}"
-            sudo install src/bootware.sh /usr/local/bin/bootware; \
-            bootware setup; \
-            bootware bootstrap --dev --no-passwd --extra-vars ansible_remote_tmp=/tmp --retries 3 --skip python --tags desktop,extras; \
-            bash -c "source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python freebsd"; \
-            '
+            set -eu
+            sudo install src/bootware.sh /usr/local/bin/bootware
+            bootware setup
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.

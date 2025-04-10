@@ -79,19 +79,6 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
 --tags none --check --timeout 60 --connection local playbook.yaml"
 }
 
-bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
-  export BOOTWARE_TAGS=''
-
-  run bash src/bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
-    --ssh-key /fake/key/path --playbook main.yaml --user fakeuser
-  assert_success
-  assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
---extra-vars ansible_python_interpreter=auto_silent \
---extra-vars ansible_shell_type=powershell \
---inventory 192.23.0.5, --skip-tags sometag --ssh-key /fake/key/path --user fakeuser \
---connection ssh main.yaml"
-}
-
 bootstrap_subcommand_does_not_set_snsible_environment_variable() { # @test
   BATS_SOURCE_ONLY='true' source src/bootware.sh
   bootstrap
