@@ -45,7 +45,6 @@ Options:
       --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER>               Remote user login name
-      --windows                   Connect to a Windows host with SSH
 
 Ansible Options:
 EOF
@@ -185,7 +184,6 @@ bootstrap() {
 -o StrictHostKeyChecking=no \
 -o UserKnownHostsFile=/dev/null'
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
-  local windows
 
   # Check if Ansible should ask for user password.
   #
@@ -283,13 +281,6 @@ bootstrap() {
         url="${2}"
         shift 2
         ;;
-      --windows)
-        ask_passwd=''
-        cmd='playbook'
-        connection='ssh'
-        windows='true'
-        shift 1
-        ;;
       *)
         set -- "$@" "${1}"
         shift 1
@@ -367,7 +358,6 @@ bootstrap() {
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
-    ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \

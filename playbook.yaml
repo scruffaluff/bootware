@@ -4,6 +4,25 @@
 # https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
 ---
+- name: Setup system connection information
+  hosts: all
+  gather_facts: false
+  tags:
+    - always
+  tasks:
+    - name: Query host for PowerShell information
+      ansible.builtin.raw: echo $PSVersionTable
+      changed_when: false
+      ignore_errors: true
+      register: powershell_version
+
+    - name: Set connection variables if system is Windows
+      ansible.builtin.set_fact:
+        ansible_pkg_mgr: none
+        ansible_shell_type: powershell
+      when: >-
+        powershell_version is success and 'Windows' in powershell_version.stdout
+
 - name: Install software with Bootware
   hosts: all
   tasks:

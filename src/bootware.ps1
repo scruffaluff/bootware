@@ -318,7 +318,7 @@ function Bootstrap() {
             --user $User
     }
     elseif ($Debug -and $ExtraArgs.Count -gt 0) {
-        wsl bootware --debug bootstrap --windows `
+        wsl bootware --debug bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
             --playbook $PlaybookPath `
@@ -330,7 +330,7 @@ function Bootstrap() {
             $ExtraArgs
     }
     elseif ($Debug) {
-        wsl bootware --debug bootstrap --windows `
+        wsl bootware --debug bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
             --playbook $PlaybookPath `
@@ -341,7 +341,7 @@ function Bootstrap() {
             --user $User
     }
     elseif ($ExtraArgs.Count -gt 0) {
-        wsl bootware bootstrap --windows `
+        wsl bootware bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
             --playbook $PlaybookPath `
@@ -353,7 +353,7 @@ function Bootstrap() {
             $ExtraArgs
     }
     else {
-        wsl bootware bootstrap --windows `
+        wsl bootware bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
             --playbook $PlaybookPath `
