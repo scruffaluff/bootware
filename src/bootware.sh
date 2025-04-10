@@ -363,14 +363,14 @@ bootstrap() {
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     ${checkout:+--checkout "${checkout}"} \
-    ${install_group:+--extra-vars "group_id=${install_group}"} \
-    ${install_user:+--extra-vars "user_id=${install_user}"} \
+    --extra-vars "@${config_path}" \
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
-    ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
-    --extra-vars "@${config_path}" \
+    ${port:+--extra-vars "ansible_ssh_port=${port}"} \
+    ${install_group:+--extra-vars "group_id=${install_group}"} \
+    ${install_user:+--extra-vars "user_id=${install_user}"} \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \

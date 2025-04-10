@@ -199,9 +199,10 @@ jobs:
           run: |
             su freebsd -c ' \
             set -eu; \
+            cd /home/freebsd; \
             sudo install src/bootware.sh /usr/local/bin/bootware; \
             bootware setup; \
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras; \
+            bootware bootstrap --dev --no-passwd --extra-vars ansible_remote_tmp=/tmp --retries 3 --skip python --tags desktop,extras; \
             bash -c "source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python freebsd"; \
             '
           usesh: true
