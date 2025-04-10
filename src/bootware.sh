@@ -167,7 +167,7 @@ bootstrap() {
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
-  local extra_args=''
+  local extras=0
   local install_group
   local install_user
   local inventory='127.0.0.1,'
@@ -196,7 +196,7 @@ bootstrap() {
   fi
 
   # Parse command line arguments.
-  while [ "${#}" -gt 0 ]; do
+  while [ "${#}" -gt 0 ] && [ "${extras}" -lt "${#}" ]; do
     case "${1}" in
       --ansible-config)
         export ANSIBLE_CONFIG="${2}"
@@ -275,9 +275,9 @@ bootstrap() {
         shift 2
         ;;
       --temp-key)
-        extra_args="${extra_args:+"${extra_args}" }\
---private-key ${2} --ssh-extra-args ${temp_ssh_args}"
+        set -- "$@" --private-key "${2}" --ssh-extra-args "${temp_ssh_args}"
         shift 2
+        extras="$((extras + 4))"
         ;;
       -u | --url)
         url="${2}"
@@ -291,8 +291,9 @@ bootstrap() {
         shift 1
         ;;
       *)
-        extra_args="${extra_args:+"${extra_args}" }'$(echo "${1}" | sed s/\'/\\\\\'/g)'"
+        set -- "$@" "${1}"
         shift 1
+        extras="$((extras + 1))"
         ;;
     esac
   done
@@ -326,7 +327,7 @@ bootstrap() {
     start_task="$(
       yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
     )"
-    extra_args="${extra_args:+"${extra_args}" }--start-at-task ${start_task}"
+    set -- "$@" '--start-at-task' "${start_task}"
   fi
 
   # Convenience logic for using a single host without a trailing comma.
@@ -342,10 +343,10 @@ bootstrap() {
     if [ -z "${ANSIBLE_CONFIG:-}" ] && [ -f "${ansible_config_path}" ]; then
       export ANSIBLE_CONFIG="${ansible_config_path}"
     fi
-    extra_args="${extra_args:+"${extra_args}" }--connection ${connection}"
+    set -- "$@" '--connection' "${connection}"
   elif [ "${cmd}" = 'pull' ]; then
     playbook="${BOOTWARE_PLAYBOOK:-playbook.yaml}"
-    extra_args="${extra_args:+"${extra_args}" }--url ${url}"
+    set -- "$@" '--url' "${url}"
   fi
 
   find_config_path "${config_path}"
@@ -367,13 +368,13 @@ bootstrap() {
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
-    ${windows:+--extra-vars 'ansible_pkg_mgr=scoop'} \
+    --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${windows:+--extra-vars 'ansible_shell_type=powershell'} \
     --extra-vars "@${config_path}" \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \
-    ${extra_args:+${extra_args}} \
+    "$@" \
     "${playbook}"; do
 
     status=$?

@@ -38,9 +38,10 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
 
   run bash src/bootware.sh bootstrap --dev --start-at-role deno
   assert_success
-  assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
---inventory 127.0.0.1, --start-at-task Install Deno for Alpine \
---connection local playbook.yaml"
+  assert_output "ansible-playbook \
+--extra-vars ansible_python_interpreter=auto_silent \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+--start-at-task Install Deno for Alpine --connection local playbook.yaml"
 }
 
 bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
@@ -50,9 +51,10 @@ bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
 
   run bash src/bootware.sh bootstrap
   assert_success
-  assert_output "ansible-pull --extra-vars @${HOME}/.bootware/config.yaml \
---inventory 127.0.0.1, --url https://github.com/scruffaluff/bootware.git \
-playbook.yaml"
+  assert_output "ansible-pull \
+--extra-vars ansible_python_interpreter=auto_silent \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+--url https://github.com/scruffaluff/bootware.git playbook.yaml"
 }
 
 bootstrap_subcommand_passes_dev_arguments_to_ansible() { # @test
@@ -61,7 +63,8 @@ bootstrap_subcommand_passes_dev_arguments_to_ansible() { # @test
 
   run bash src/bootware.sh bootstrap --dev --tags none
   assert_success
-  assert_output "ansible-playbook --ask-become-pass --extra-vars \
+  assert_output "ansible-playbook --ask-become-pass \
+--extra-vars ansible_python_interpreter=auto_silent --extra-vars \
 @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
 --connection local playbook.yaml"
 }
@@ -73,8 +76,9 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
   run bash src/bootware.sh bootstrap --check --dev --tags none --timeout 60
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
+--extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
-'--check' '--timeout' '60' --connection local playbook.yaml"
+--check --timeout 60 --connection local playbook.yaml"
 }
 
 bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
@@ -83,10 +87,11 @@ bootstrap_subcommand_passes_windows_ssh_arguments_to_ansible() { # @test
   run bash src/bootware.sh bootstrap --windows -i 192.23.0.5, --skip sometag \
     --ssh-key /fake/key/path --playbook main.yaml --user fakeuser
   assert_success
-  assert_output "ansible-playbook --extra-vars ansible_pkg_mgr=scoop \
+  assert_output "ansible-playbook \
+--extra-vars ansible_python_interpreter=auto_silent \
 --extra-vars ansible_shell_type=powershell \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 192.23.0.5, \
---skip-tags sometag '--ssh-key' '/fake/key/path' '--user' 'fakeuser' \
+--skip-tags sometag --ssh-key /fake/key/path --user fakeuser \
 --connection ssh main.yaml"
 }
 
@@ -125,7 +130,9 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
 
   run bootstrap --start-at-role deno
   assert_success
-  assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
---inventory 127.0.0.1, --start-at-task Install Deno for Alpine \
---connection local ${tmp_dir}/playbook.yaml"
+  assert_output "ansible-playbook \
+--extra-vars ansible_python_interpreter=auto_silent \
+--extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, \
+--start-at-task Install Deno for Alpine --connection local \
+${tmp_dir}/playbook.yaml"
 }
