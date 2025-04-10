@@ -63,8 +63,6 @@ system_architecture_:
   riscv64: riscv64
   x64: amd64
   x86_64: amd64
-# Provide ansible_pkg_mgr a default value for Windows systems.
-ansible_pkg_mgr: none
 bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}

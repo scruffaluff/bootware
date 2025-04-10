@@ -172,11 +172,10 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
-    # Removed from default test suite until
-    # https://github.com/vmactions/freebsd-vm supports MacOS and CPU
-    # acceleration again to avoid action timeouts.
+    # Removed from default test suite as of 04/10/2025 since many packages are
+    # mysteriously missing from its package lists.
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository

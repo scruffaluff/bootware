@@ -18,7 +18,7 @@
 
     - name: Set connection variables if system is Windows
       ansible.builtin.set_fact:
-        ansible_pkg_mgr: none
+        ansible_pkg_mgr: scoop
         ansible_shell_type: powershell
       when: >-
         powershell_version is success and 'Windows' in powershell_version.stdout
