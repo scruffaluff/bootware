@@ -199,7 +199,7 @@ jobs:
           run: |
             su freebsd -c ' \
             set -eu; \
-            cd /home/freebsd; \
+            echo "home: ${HOME}, user: ${USER}"
             sudo install src/bootware.sh /usr/local/bin/bootware; \
             bootware setup; \
             bootware bootstrap --dev --no-passwd --extra-vars ansible_remote_tmp=/tmp --retries 3 --skip python --tags desktop,extras; \
@@ -339,7 +339,7 @@ jobs:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware --debug bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
