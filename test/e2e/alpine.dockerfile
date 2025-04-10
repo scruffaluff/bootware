@@ -3,7 +3,7 @@ FROM docker.io/alpine:3.21.2
 ARG TARGETARCH
 
 # Install Bash, Curl, and Doas.
-RUN apk update && apk add bash curl doas
+RUN apk update && apk add curl doas
 
 # Create non-priviledged user and grant user passwordless doas.
 #

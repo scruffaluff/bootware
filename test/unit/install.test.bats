@@ -47,24 +47,3 @@ Run 'install-bootware --help' for usage.
 EOF
   )"
 }
-
-shows_error_if_bash_missing() { # @test
-  # Ensure that local Bash binary is not found.
-  command() {
-    if [ "$*" = '-v bash' ]; then
-      echo ""
-    else
-      which "${2}"
-    fi
-  }
-  export -f command
-
-  run bash src/install.sh --dest "$(mktemp -d)"
-  assert_failure
-  assert_output "$(
-    cat << EOF
-error: Unable to find Bash shell.
-Use --global flag or install Bash, https://www.gnu.org/software/bash, manually before continuing.
-EOF
-  )"
-}

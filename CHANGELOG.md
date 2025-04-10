@@ -9,6 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Automatic Windows connections without additional flags.
 - Tags completion, config, install to tasks.
 - Fastfetch, Nushell, Obsidian, Podman, and Uv roles.
 - Support for Yazi 0.4.

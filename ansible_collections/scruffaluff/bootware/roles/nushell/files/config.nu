@@ -445,9 +445,9 @@ alias fd = ^fd --no-require-git
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
-alias ffmpeg = ^ffmpeg -hide_banner -loglevel quiet
+alias ffmpeg = ^ffmpeg -hide_banner -stats -loglevel quiet
 alias ffplay = ^ffplay -hide_banner -loglevel quiet
-alias ffprobe = ^ffprobe -hide_banner -loglevel quiet
+alias ffprobe = ^ffprobe -hide_banner
 
 # Fzf settings.
 

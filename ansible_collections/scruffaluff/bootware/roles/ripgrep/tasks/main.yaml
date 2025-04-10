@@ -72,27 +72,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Download Rgi script for Unix
-  ansible.builtin.get_url:
-    dest: /usr/local/bin/rgi
-    force: true
-    mode: "755"
-    url: https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/rgi.sh
-  become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
-
-- name: Download Rgi script for Windows
-  ansible.windows.win_get_url:
-    dest: "C:/Program Files/Bin/rgi.ps1"
-    force: true
-    url: >-
-      https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/rgi.ps1
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Create shell completion directories for Unix
   ansible.builtin.file:
     mode: "755"

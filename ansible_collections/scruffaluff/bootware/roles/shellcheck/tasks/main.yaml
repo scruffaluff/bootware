@@ -37,3 +37,16 @@
   tags:
     - install
   when: ansible_system == "Darwin"
+
+- name: Copy Shellcheck settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.shellcheckrc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: shellcheckrc
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
