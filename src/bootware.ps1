@@ -248,10 +248,13 @@ function Bootstrap() {
     }
 
     # Configure run to find task associated with start role.
+    #
+    # Special quoting is required for the filter due to PowerShell shenanigans.
+    # For more information, visit https://github.com/mikefarah/yq/issues/747.
     if ($StartRole) {
-        $StartTask = yq `
-            ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name" `
-            $Playbook
+        $PSNativeCommandArgumentPassing = 'Legacy'
+        $Filter = ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name"
+        $StartTask = yq --exit-status $($Filter -replace '"', '\"') $Playbook
         $ExtraArgs += @("--start-at-task", $StartTask)
     }
 
