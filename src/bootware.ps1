@@ -10,6 +10,9 @@
 $ErrorActionPreference = 'Stop'
 # Disable progress bar for PowerShell cmdlets.
 $ProgressPreference = 'SilentlyContinue'
+# Keep native executable arguments consistent between PowerShell versions.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
+$PSNativeCommandArgumentPassing = 'Legacy'
 # Exit immediately when an native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
@@ -252,7 +255,6 @@ function Bootstrap() {
     # Special quoting is required for the filter due to PowerShell shenanigans.
     # For more information, visit https://github.com/mikefarah/yq/issues/747.
     if ($StartRole) {
-        $PSNativeCommandArgumentPassing = 'Legacy'
         $Filter = ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name"
         $StartTask = yq --exit-status $($Filter -replace '"', '\"') $Playbook
         $ExtraArgs += @("--start-at-task", $StartTask)
