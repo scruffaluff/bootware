@@ -45,10 +45,9 @@ Options:
       --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER>               Remote user login name
-
-Ansible Options:
 EOF
       if [ -x "$(command -v ansible)" ]; then
+        printf '\nAnsible Options:\n'
         ansible --help
       fi
       ;;
@@ -69,7 +68,7 @@ EOF
       cat 1>&2 << EOF
 Bootstrapping software installer.
 
-Usage: bootware [OPTIONS] [SUBCOMMAND]
+Usage: bootware [OPTIONS] <SUBCOMMAND>
 
 Options:
       --debug     Enable shell debug traces
@@ -94,7 +93,7 @@ Environment Variables:
   BOOTWARE_TAGS           Set tags for Ansible roles
   BOOTWARE_URL            Set location of Ansible repository
 
-See 'bootware <subcommand> --help' for more information on a specific command.
+Run 'bootware <subcommand> --help' for usage on a subcommand.
 EOF
       ;;
     roles)
@@ -166,7 +165,7 @@ bootstrap() {
   local cmd='pull'
   local config_path="${BOOTWARE_CONFIG:-'/dev/null'}"
   local connection='local'
-  local extras=0
+  local arg_idx=0
   local install_group
   local install_user
   local inventory='127.0.0.1,'
@@ -194,7 +193,7 @@ bootstrap() {
   fi
 
   # Parse command line arguments.
-  while [ "${#}" -gt 0 ] && [ "${extras}" -lt "${#}" ]; do
+  while [ "${#}" -gt 0 ] && [ "${arg_idx}" -lt "${#}" ]; do
     case "${1}" in
       --ansible-config)
         export ANSIBLE_CONFIG="${2}"
@@ -275,7 +274,7 @@ bootstrap() {
       --temp-key)
         set -- "$@" --private-key "${2}" --ssh-extra-args "${temp_ssh_args}"
         shift 2
-        extras="$((extras + 4))"
+        arg_idx="$((arg_idx + 4))"
         ;;
       -u | --url)
         url="${2}"
@@ -284,7 +283,7 @@ bootstrap() {
       *)
         set -- "$@" "${1}"
         shift 1
-        extras="$((extras + 1))"
+        arg_idx="$((arg_idx + 1))"
         ;;
     esac
   done
@@ -688,9 +687,9 @@ roles() {
   #   -n: Check if string is nonempty.
   if [ -n "${tags:-}" ]; then
     contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
-    filter=".[0].tasks[] | select(.tags | (${contains}))"
+    filter=".[1].tasks[] | select(.tags | (${contains}))"
   else
-    filter='.[0].tasks[]'
+    filter='.[1].tasks[]'
   fi
 
   format='."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
@@ -1255,7 +1254,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.8.3'
+  echo 'Bootware 0.9.0'
 }
 
 #######################################

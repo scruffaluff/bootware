@@ -44,10 +44,8 @@ Options:
       --temp-key <FILE>           Path to SSH private key for one time connection
   -u, --url <URL>                 URL of playbook repository
       --user <USER>               Remote user login name
-
-Ansible Options:
 '@
-            wsl ansible --help
+            wsl sh -c 'if [ -x "$(command -v ansible)" ]; printf "\nAnsible Options:\n"; ansible --help; fi'
         }
         'config' {
             Write-Output @'
@@ -66,7 +64,7 @@ Options:
             Write-Output @'
 Bootstrapping software installer.
 
-Usage: bootware [OPTIONS] [SUBCOMMAND]
+Usage: bootware [OPTIONS] <SUBCOMMAND>
 
 Options:
       --debug     Enable shell debug traces
@@ -91,7 +89,7 @@ Environment Variables:
   BOOTWARE_TAGS           Set tags for Ansible roles
   BOOTWARE_URL            Set location of Ansible repository
 
-See 'bootware <subcommand> --help' for more information on a specific command.
+Run 'bootware <subcommand> --help' for usage on a subcommand.
 '@
         }
         'roles' {
@@ -538,7 +536,7 @@ function Roles() {
     }
 
     $TagList = "[`"$($Tags.Replace(',', '`", `"'))`"]"
-    $Filter = ".[0].tasks[] | select(.tags | contains($TagList))"
+    $Filter = ".[1].tasks[] | select(.tags | contains($TagList))"
     $Format = '."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
     yq "$Filter | $Format" "$PSScriptRoot/repo/playbook.yaml"
 }
@@ -940,7 +938,7 @@ function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 function Version() {
-    Write-Output 'Bootware 0.8.3'
+    Write-Output 'Bootware 0.9.0'
 }
 
 # Convert path to WSL relative path.
