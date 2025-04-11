@@ -313,9 +313,10 @@ bootstrap() {
   # Flags:
   #   -n: Check if string is nonempty.
   if [ -n "${start_role:-}" ]; then
-    repo_dir="$(dirname "${playbook}")"
     start_task="$(
-      yq --exit-status '.[0].name' "${repo_dir}/ansible_collections/scruffaluff/bootware/roles/${start_role}/tasks/main.yaml"
+      yq --exit-status \
+        ".[0].tasks[] | select(.\"ansible.builtin.include_role\".name == \"scruffaluff.bootware.${start_role}\") | .name" \
+        "${playbook}"
     )"
     set -- "$@" '--start-at-task' "${start_task}"
   fi
@@ -678,8 +679,8 @@ roles() {
     esac
   done
 
-  # Do not use long form --dry-run flag for mktemp. It is not supported on
-  # MacOS.
+  # Do not use long form flags for mktemp. They are not supported on some
+  # systems.
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
 
@@ -687,12 +688,12 @@ roles() {
   #   -n: Check if string is nonempty.
   if [ -n "${tags:-}" ]; then
     contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
-    filter=".[1].tasks[] | select(.tags | (${contains}))"
+    filter=".[0].tasks[] | select(.tags | (${contains}))"
   else
-    filter='.[1].tasks[]'
+    filter='.[0].tasks[]'
   fi
 
-  format='."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
+  format='."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
   yq "${filter} | ${format}" "${tmp_dir}/playbook.yaml"
 }
 
@@ -722,8 +723,8 @@ setup() {
     super="$(find_super)"
   fi
 
-  # Do not use long form --kernel-name flag for uname. It is not supported on
-  # MacOS.
+  # Do not use long form flags for uname. They are not supported on some
+  # systems.
   os="$(uname -s)"
   case "${os}" in
     Darwin)
@@ -1222,8 +1223,6 @@ update_completions() {
     fi
     os="$(uname -s)"
 
-    # Do not use long form --parents flag for mkdir. It is not supported on
-    # MacOS.
     if [ "${os}" = 'Darwin' ]; then
       fetch --dest "${brew_prefix}/share/bash-completion/completions/bootware" \
         --mode 644 --super "${super}" "${bash_url}"

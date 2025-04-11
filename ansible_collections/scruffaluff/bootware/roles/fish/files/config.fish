@@ -218,7 +218,7 @@ end
 
 # Private convenience variables.
 #
-# Do not use long form flags for uname. They are not supported on MacOS.
+# Do not use long form flags for uname. They are not supported on some systems.
 #
 # Flags:
 #   -s: Show operating system kernel name.

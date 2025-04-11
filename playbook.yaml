@@ -4,30 +4,19 @@
 # https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
 ---
-- name: Setup system connection information
-  hosts: all
-  gather_facts: false
-  tags:
-    - always
-  tasks:
-    - name: Query host for PowerShell information
-      ansible.builtin.raw: echo $PSVersionTable
-      changed_when: false
-      ignore_errors: true
-      register: powershell_version
-
-    - name: Set connection variables if system is Windows
-      ansible.builtin.set_fact:
-        ansible_pkg_mgr: scoop
-        ansible_shell_type: powershell
-      when: >-
-        powershell_version is success and 'Windows' in powershell_version.stdout
-
 - name: Install software with Bootware
+  gather_facts: false
   hosts: all
   tasks:
     - name: Update system package managers
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - update
+            - wsl
         name: scruffaluff.bootware.update
       tags:
         - container
@@ -37,7 +26,15 @@
         - wsl
 
     - name: Install essential packages
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - essential
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.essential
       tags:
         - container
@@ -48,7 +45,15 @@
         - wsl
 
     - name: Install Age encryption tool
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - age
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.age
       tags:
         - age
@@ -59,7 +64,12 @@
         - wsl
 
     - name: Install Alacritty terminal
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - alacritty
+            - desktop
+            - terminal
         name: scruffaluff.bootware.alacritty
       tags:
         - alacritty
@@ -67,14 +77,23 @@
         - terminal
 
     - name: Install Android Studio
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - android_studio
+            - never
         name: scruffaluff.bootware.android_studio
       tags:
         - android_studio
         - never
 
     - name: Install Android platform tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - android_tools
+            - extras
+            - never
         name: scruffaluff.bootware.android_tools
       tags:
         - android_tools
@@ -82,14 +101,23 @@
         - never
 
     - name: Install AppImage dependencies
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - appimage
+            - desktop
         name: scruffaluff.bootware.appimage
       tags:
         - appimage
         - desktop
 
     - name: Install Audacity audio editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - audacity
+            - desktop
+            - music
         name: scruffaluff.bootware.audacity
       tags:
         - audacity
@@ -97,7 +125,12 @@
         - music
 
     - name: Install audio tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - audio
+            - desktop
+            - music
         name: scruffaluff.bootware.audio
       tags:
         - audio
@@ -105,7 +138,16 @@
         - music
 
     - name: Install Amazon Web Services development tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - awscli
+            - cloud
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.awscli
       tags:
         - awscli
@@ -117,7 +159,16 @@
         - wsl
 
     - name: Install Bash shell
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - bash
+            - container
+            - desktop
+            - server
+            - shell
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.bash
       tags:
         - bash
@@ -129,7 +180,16 @@
         - wsl
 
     - name: Install Bat file reader
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - bat
+            - container
+            - desktop
+            - server
+            - shell
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.bat
       tags:
         - bat
@@ -141,7 +201,13 @@
         - wsl
 
     - name: Install Beekeeper database client
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - beekeeper
+            - database
+            - extras
+            - never
         name: scruffaluff.bootware.beekeeper
       tags:
         - beekeeper
@@ -150,7 +216,12 @@
         - never
 
     - name: Install Bitwig Studio audio workstation
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - bitwig
+            - desktop
+            - music
         name: scruffaluff.bootware.bitwig
       tags:
         - bitwig
@@ -158,7 +229,14 @@
         - music
 
     - name: Install build tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - build
+            - container
+            - desktop
+            - server
+            - wsl
         name: scruffaluff.bootware.build
       tags:
         - build
@@ -168,7 +246,15 @@
         - wsl
 
     - name: Install Bottom process monitor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - bottom
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.bottom
       tags:
         - bottom
@@ -179,14 +265,24 @@
         - wsl
 
     - name: Install Caffeine
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - caffeine
+            - desktop
         name: scruffaluff.bootware.caffeine
       tags:
         - caffeine
         - desktop
 
     - name: Install Google Chrome web browser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - browser
+            - chrome
+            - extras
+            - never
         name: scruffaluff.bootware.chrome
       tags:
         - browser
@@ -195,7 +291,13 @@
         - never
 
     - name: Install MongoDB Compass database graphical client
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - compass
+            - database
+            - extras
+            - never
         name: scruffaluff.bootware.compass
       tags:
         - compass
@@ -204,7 +306,14 @@
         - never
 
     - name: Install Croc secure file transfer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - croc
+            - desktop
+            - server
+            - wsl
         name: scruffaluff.bootware.croc
       tags:
         - container
@@ -214,7 +323,13 @@
         - wsl
 
     - name: Install DBeaver database client
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - database
+            - dbeaver
+            - extras
+            - never
         name: scruffaluff.bootware.dbeaver
       tags:
         - database
@@ -223,7 +338,16 @@
         - never
 
     - name: Install Deno JavaScript and TypeScript runtime
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - deno
+            - desktop
+            - language
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.deno
       tags:
         - container
@@ -235,14 +359,23 @@
         - wsl
 
     - name: Configure system desktop environment
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop_environment
+            - desktop
         name: scruffaluff.bootware.desktop_environment
       tags:
         - desktop_environment
         - desktop
 
     - name: Install Docker container platform
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - docker
+            - extras
+            - never
         name: scruffaluff.bootware.docker
       tags:
         - docker
@@ -250,7 +383,15 @@
         - never
 
     - name: Install Digital Ocean development tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - cloud
+            - container
+            - desktop
+            - doctl
+            - server
+            - wsl
         name: scruffaluff.bootware.doctl
       tags:
         - cloud
@@ -261,7 +402,14 @@
         - wsl
 
     - name: Install Dive container image explorer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - dive
+            - server
+            - wsl
         name: scruffaluff.bootware.dive
       tags:
         - container
@@ -271,7 +419,15 @@
         - wsl
 
     - name: Install Duf device usage analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - duf
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.duf
       tags:
         - container
@@ -282,7 +438,15 @@
         - wsl
 
     - name: Install Dust disk space analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - dust
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.dust
       tags:
         - container
@@ -293,14 +457,26 @@
         - wsl
 
     - name: Install Balena Etcher ISO flasher
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - etcher
         name: scruffaluff.bootware.etcher
       tags:
         - desktop
         - etcher
 
     - name: Install Fastfetch system information finder
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - fastfetch
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.fastfetch
       tags:
         - container
@@ -311,7 +487,15 @@
         - wsl
 
     - name: Install FD file searcher
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - fd
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.fd
       tags:
         - container
@@ -322,7 +506,14 @@
         - wsl
 
     - name: Install FFSend secure file sharer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - ffsend
+            - server
+            - wsl
         name: scruffaluff.bootware.ffsend
       tags:
         - container
@@ -332,7 +523,12 @@
         - wsl
 
     - name: Install Firefox web browser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - browser
+            - desktop
+            - firefox
         name: scruffaluff.bootware.firefox
       tags:
         - browser
@@ -340,7 +536,16 @@
         - firefox
 
     - name: Install Fish shell
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - fish
+            - server
+            - shell
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.fish
       tags:
         - container
@@ -352,14 +557,26 @@
         - wsl
 
     - name: Install Flatpak packages
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - flatpak
         name: scruffaluff.bootware.flatpak
       tags:
         - desktop
         - flatpak
 
     - name: Install FlyIO development tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - cloud
+            - container
+            - desktop
+            - flyctl
+            - server
+            - wsl
         name: scruffaluff.bootware.flyctl
       tags:
         - cloud
@@ -370,14 +587,26 @@
         - wsl
 
     - name: Install fonts
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - font
         name: scruffaluff.bootware.font
       tags:
         - desktop
         - font
 
     - name: Install FzF fuzzy searcher
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - fzf
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.fzf
       tags:
         - container
@@ -388,7 +617,15 @@
         - wsl
 
     - name: Install GDB debugger
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - debug
+            - desktop
+            - gdb
+            - server
+            - wsl
         name: scruffaluff.bootware.gdb
       tags:
         - container
@@ -399,7 +636,15 @@
         - wsl
 
     - name: Install GDU disk space analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - gdu
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.gdu
       tags:
         - container
@@ -410,7 +655,15 @@
         - wsl
 
     - name: Install Git version control
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - git
+            - server
+            - vcs
+            - wsl
         name: scruffaluff.bootware.git
       tags:
         - container
@@ -421,7 +674,12 @@
         - wsl
 
     - name: Install GitHub Runner
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - github_runner
+            - never
         name: scruffaluff.bootware.github_runner
       tags:
         - extras
@@ -429,7 +687,12 @@
         - never
 
     - name: Install GitLab runner
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - gitlab_runner
+            - never
         name: scruffaluff.bootware.gitlab_runner
       tags:
         - extras
@@ -437,7 +700,15 @@
         - never
 
     - name: Install GitUI Git manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - gitui
+            - server
+            - vcs
+            - wsl
         name: scruffaluff.bootware.gitui
       tags:
         - container
@@ -448,7 +719,15 @@
         - wsl
 
     - name: Install Glow
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - glow
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.glow
       tags:
         - container
@@ -459,7 +738,14 @@
         - wsl
 
     - name: Install Hadolint linter
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - hadolint
+            - server
+            - vm
+            - wsl
         name: scruffaluff.bootware.hadolint
       tags:
         - desktop
@@ -469,7 +755,12 @@
         - wsl
 
     - name: Install HDF5 file serialization tools
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - hdf5
+            - never
         name: scruffaluff.bootware.hdf5
       tags:
         - extras
@@ -477,7 +768,16 @@
         - never
 
     - name: Install Helix terminal text editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - editor
+            - helix
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.helix
       tags:
         - container
@@ -489,7 +789,14 @@
         - wsl
 
     - name: Install Helm Kubernetes manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - helm
+            - kubernetes
+            - server
+            - wsl
         name: scruffaluff.bootware.helm
       tags:
         - desktop
@@ -499,7 +806,14 @@
         - wsl
 
     - name: Install Helmfile Kubernetes Helm deployment tool
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - helmfile
+            - kubernetes
+            - server
+            - wsl
         name: scruffaluff.bootware.helmfile
       tags:
         - desktop
@@ -509,7 +823,14 @@
         - wsl
 
     - name: Install Htmlq HTML parser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - htmlq
+            - server
+            - wsl
         name: scruffaluff.bootware.htmlq
       tags:
         - container
@@ -519,7 +840,14 @@
         - wsl
 
     - name: Install Hyperfine benchmarking tool
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - hyperfine
+            - server
+            - wsl
         name: scruffaluff.bootware.hyperfine
       tags:
         - container
@@ -529,7 +857,15 @@
         - wsl
 
     - name: Install ignore file
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - ignore
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.ignore
       tags:
         - container
@@ -540,7 +876,15 @@
         - wsl
 
     - name: Install Jq JSON parser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - jq
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.jq
       tags:
         - container
@@ -551,7 +895,15 @@
         - wsl
 
     - name: Install Just command runner
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - just
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.just
       tags:
         - container
@@ -562,7 +914,16 @@
         - wsl
 
     - name: Install K3d Kubernetes development cluster manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - extras
+            - k3d
+            - kubernetes
+            - never
+            - server
+            - wsl
         name: scruffaluff.bootware.k3d
       tags:
         - desktop
@@ -574,7 +935,13 @@
         - wsl
 
     - name: Install K3sup SSH installer for K3s
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - k3sup
+            - kubernetes
+            - never
         name: scruffaluff.bootware.k3sup
       tags:
         - extras
@@ -583,7 +950,14 @@
         - never
 
     - name: Install K9s Kubernetes manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - k9s
+            - kubernetes
+            - server
+            - wsl
         name: scruffaluff.bootware.k9s
       tags:
         - desktop
@@ -593,7 +967,12 @@
         - wsl
 
     - name: Install Kdenlive video editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - kdenlive
+            - video
         name: scruffaluff.bootware.kdenlive
       tags:
         - desktop
@@ -601,7 +980,16 @@
         - video
 
     - name: Install Kind Kubernetes development cluster manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - extras
+            - kind
+            - kubernetes
+            - never
+            - server
+            - wsl
         name: scruffaluff.bootware.kind
       tags:
         - desktop
@@ -613,7 +1001,14 @@
         - wsl
 
     - name: Install Krew Kubectl plugin package manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - krew
+            - kubernetes
+            - server
+            - wsl
         name: scruffaluff.bootware.krew
       tags:
         - desktop
@@ -623,7 +1018,14 @@
         - wsl
 
     - name: Install Kubectl Kubernetes manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - kubectl
+            - kubernetes
+            - server
+            - wsl
         name: scruffaluff.bootware.kubectl
       tags:
         - desktop
@@ -633,7 +1035,13 @@
         - wsl
 
     - name: Install Kubeshark Kubernetes network analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - kubernetes
+            - kubeshark
+            - never
         name: scruffaluff.bootware.kubeshark
       tags:
         - extras
@@ -642,7 +1050,12 @@
         - never
 
     - name: Install Lazydocker Docker manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - lazydocker
+            - never
         name: scruffaluff.bootware.lazydocker
       tags:
         - extras
@@ -650,7 +1063,13 @@
         - never
 
     - name: Install Libvirt virtualization API
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - libvirt
+            - never
+            - vm
         name: scruffaluff.bootware.libvirt
       tags:
         - extras
@@ -659,7 +1078,15 @@
         - vm
 
     - name: Install LLDB debugger
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - debug
+            - desktop
+            - lldb
+            - server
+            - wsl
         name: scruffaluff.bootware.lldb
       tags:
         - container
@@ -670,7 +1097,15 @@
         - wsl
 
     - name: Install Lsd file lister
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - lsd
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.lsd
       tags:
         - container
@@ -681,7 +1116,15 @@
         - wsl
 
     - name: Install Lua language
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - language
+            - lua
+            - server
+            - wsl
         name: scruffaluff.bootware.lua
       tags:
         - container
@@ -692,7 +1135,14 @@
         - wsl
 
     - name: Install Mdbook static website generator
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - mdbook
+            - server
+            - wsl
         name: scruffaluff.bootware.mdbook
       tags:
         - container
@@ -702,7 +1152,14 @@
         - wsl
 
     - name: Install Miniserve HTTP server
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - miniserve
+            - server
+            - wsl
         name: scruffaluff.bootware.miniserve
       tags:
         - container
@@ -712,7 +1169,15 @@
         - wsl
 
     - name: Install Mkcert web certificate generator
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - mkcert
+            - network
+            - server
+            - wsl
         name: scruffaluff.bootware.mkcert
       tags:
         - container
@@ -723,7 +1188,15 @@
         - wsl
 
     - name: Install MongoDB database client
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - database
+            - desktop
+            - mongosh
+            - server
+            - wsl
         name: scruffaluff.bootware.mongosh
       tags:
         - container
@@ -734,7 +1207,12 @@
         - wsl
 
     - name: Install MuseScore music writer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - musescore
+            - music
         name: scruffaluff.bootware.musescore
       tags:
         - desktop
@@ -742,7 +1220,15 @@
         - music
 
     - name: Install Node JavaScript runtime
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - language
+            - node
+            - server
+            - wsl
         name: scruffaluff.bootware.node
       tags:
         - container
@@ -753,7 +1239,16 @@
         - wsl
 
     - name: Install Nushell shell
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - nushell
+            - server
+            - shell
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.nushell
       tags:
         - container
@@ -765,7 +1260,12 @@
         - wsl
 
     - name: Install OBS Studio video recorder
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - obs
+            - video
         name: scruffaluff.bootware.obs
       tags:
         - desktop
@@ -773,14 +1273,25 @@
         - video
 
     - name: Install Obsidian note taking application
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - obsidian
         name: scruffaluff.bootware.obsidian
       tags:
         - desktop
         - obsidian
 
     - name: Install optional packages
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - package
+            - server
+            - wsl
         name: scruffaluff.bootware.package
       tags:
         - container
@@ -790,7 +1301,14 @@
         - wsl
 
     - name: Create standard operating system paths
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - path
+            - server
+            - wsl
         name: scruffaluff.bootware.path
       tags:
         - container
@@ -800,14 +1318,26 @@
         - wsl
 
     - name: Install Podman container platform
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - podman
         name: scruffaluff.bootware.podman
       tags:
         - extras
         - podman
 
     - name: Install PowerShell shell
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - powershell
+            - server
+            - shell
+            - sysadmin
         name: scruffaluff.bootware.powershell
       tags:
         - container
@@ -818,7 +1348,15 @@
         - sysadmin
 
     - name: Install Procs process viewer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - procs
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.procs
       tags:
         - container
@@ -829,7 +1367,15 @@
         - wsl
 
     - name: Install Python language
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - language
+            - python
+            - server
+            - wsl
         name: scruffaluff.bootware.python
       tags:
         - container
@@ -840,7 +1386,13 @@
         - wsl
 
     - name: Install QEMU hardware virtualizer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - never
+            - qemu
+            - vm
         name: scruffaluff.bootware.qemu
       tags:
         - extras
@@ -849,7 +1401,15 @@
         - vm
 
     - name: Install Qsv CSV parser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - qsv
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.qsv
       tags:
         - container
@@ -860,7 +1420,12 @@
         - wsl
 
     - name: Install RClone cloud storage utility
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - never
+            - rclone
         name: scruffaluff.bootware.rclone
       tags:
         - extras
@@ -868,7 +1433,15 @@
         - rclone
 
     - name: Install Readline configuration
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - readline
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.readline
       tags:
         - container
@@ -879,7 +1452,15 @@
         - wsl
 
     - name: Install Restic backup tool
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - restic
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.restic
       tags:
         - container
@@ -890,7 +1471,15 @@
         - wsl
 
     - name: Install Ripgrep text searcher
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - ripgrep
+            - server
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.ripgrep
       tags:
         - container
@@ -901,7 +1490,15 @@
         - wsl
 
     - name: Install Rust language
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - language
+            - rust
+            - server
+            - wsl
         name: scruffaluff.bootware.rust
       tags:
         - container
@@ -912,7 +1509,14 @@
         - wsl
 
     - name: Install Scc code line counter
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - scc
+            - server
+            - wsl
         name: scruffaluff.bootware.scc
       tags:
         - container
@@ -922,7 +1526,15 @@
         - wsl
 
     - name: Install SD find and replace tool
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sd
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.sd
       tags:
         - container
@@ -933,14 +1545,26 @@
         - wsl
 
     - name: Configure system security settings
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - never
+            - security
         name: scruffaluff.bootware.security
       tags:
         - never
         - security
 
     - name: Install Shellcheck shell linter
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - shell
+            - shellcheck
+            - wsl
         name: scruffaluff.bootware.shellcheck
       tags:
         - container
@@ -951,7 +1575,15 @@
         - wsl
 
     - name: Install Shfmt shell formatter
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - shell
+            - shfmt
+            - wsl
         name: scruffaluff.bootware.shfmt
       tags:
         - container
@@ -962,7 +1594,12 @@
         - wsl
 
     - name: Install Sonic Pi music coding environment
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - music
+            - sonic_pi
         name: scruffaluff.bootware.sonic_pi
       tags:
         - desktop
@@ -970,7 +1607,16 @@
         - sonic_pi
 
     - name: Install Sops secrets editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - secrets
+            - server
+            - sops
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.sops
       tags:
         - container
@@ -982,7 +1628,15 @@
         - wsl
 
     - name: Install SQLite database
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - database
+            - desktop
+            - server
+            - sqlite
+            - wsl
         name: scruffaluff.bootware.sqlite
       tags:
         - container
@@ -993,7 +1647,15 @@
         - wsl
 
     - name: Install Starship shell prompt
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - starship
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.starship
       tags:
         - container
@@ -1004,7 +1666,14 @@
         - wsl
 
     - name: Configure super user settings
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - super
+            - wsl
         name: scruffaluff.bootware.super
       tags:
         - container
@@ -1014,7 +1683,13 @@
         - wsl
 
     - name: Install Termshark network analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - network
+            - never
+            - termshark
         name: scruffaluff.bootware.termshark
       tags:
         - extras
@@ -1023,7 +1698,14 @@
         - termshark
 
     - name: Install Terraform infrastructure as code software
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - terraform
+            - wsl
         name: scruffaluff.bootware.terraform
       tags:
         - container
@@ -1033,7 +1715,14 @@
         - wsl
 
     - name: Install Tilt Kubernetes development suite
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - kubernetes
+            - server
+            - tilt
+            - wsl
         name: scruffaluff.bootware.tilt
       tags:
         - desktop
@@ -1043,7 +1732,15 @@
         - wsl
 
     - name: Install TLDR documentation collection
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - tldr
+            - wsl
         name: scruffaluff.bootware.tldr
       tags:
         - container
@@ -1054,7 +1751,12 @@
         - wsl
 
     - name: Install Tmux terminal multiplexer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - never
+            - tmux
         name: scruffaluff.bootware.tmux
       tags:
         - extras
@@ -1062,7 +1764,15 @@
         - tmux
 
     - name: Install Topgrade package updater
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - topgrade
+            - wsl
         name: scruffaluff.bootware.topgrade
       tags:
         - container
@@ -1073,7 +1783,15 @@
         - wsl
 
     - name: Install USQL
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - usql
+            - wsl
         name: scruffaluff.bootware.usql
       tags:
         - container
@@ -1084,7 +1802,15 @@
         - wsl
 
     - name: Install general utilities
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - utility
+            - wsl
         name: scruffaluff.bootware.utility
       tags:
         - container
@@ -1095,7 +1821,16 @@
         - wsl
 
     - name: Install Uv Python package manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - language
+            - server
+            - sysadmin
+            - uv
+            - wsl
         name: scruffaluff.bootware.uv
       tags:
         - container
@@ -1107,7 +1842,13 @@
         - wsl
 
     - name: Install Velero backup manager for Kubernetes
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - kubernetes
+            - never
+            - velero
         name: scruffaluff.bootware.velero
       tags:
         - extras
@@ -1116,7 +1857,12 @@
         - velero
 
     - name: Install Vim text editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - never
+            - vim
         name: scruffaluff.bootware.vim
       tags:
         - extras
@@ -1124,14 +1870,23 @@
         - vim
 
     - name: Install VLC video player
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - vlc
         name: scruffaluff.bootware.vlc
       tags:
         - desktop
         - vlc
 
     - name: Install VSCode text editor
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - editor
+            - vscode
         name: scruffaluff.bootware.vscode
       tags:
         - desktop
@@ -1139,7 +1894,15 @@
         - vscode
 
     - name: Install Watchexec file watcher
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - watchexec
+            - wsl
         name: scruffaluff.bootware.watchexec
       tags:
         - container
@@ -1150,7 +1913,15 @@
         - wsl
 
     - name: Install Web Assembly runtime
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - vm
+            - wasm
+            - wsl
         name: scruffaluff.bootware.wasm
       tags:
         - container
@@ -1161,7 +1932,12 @@
         - wsl
 
     - name: Install Wez's terminal
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - terminal
+            - wezterm
         name: scruffaluff.bootware.wezterm
       tags:
         - desktop
@@ -1169,14 +1945,24 @@
         - wezterm
 
     - name: Install desktop window managers
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - window_manager
         name: scruffaluff.bootware.window_manager
       tags:
         - desktop
         - window_manager
 
     - name: Install Wireshark network analyzer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - extras
+            - network
+            - never
+            - wireshark
         name: scruffaluff.bootware.wireshark
       tags:
         - extras
@@ -1185,7 +1971,15 @@
         - wireshark
 
     - name: Install Xh HTTP client
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+            - xh
         name: scruffaluff.bootware.xh
       tags:
         - container
@@ -1196,7 +1990,15 @@
         - xh
 
     - name: Install Yazi terminal file manager
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+            - yazi
         name: scruffaluff.bootware.yazi
       tags:
         - container
@@ -1207,7 +2009,15 @@
         - yazi
 
     - name: Install Yq YAML parser
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+            - yq
         name: scruffaluff.bootware.yq
       tags:
         - container
@@ -1218,7 +2028,16 @@
         - yq
 
     - name: Install Zellij terminal multiplexer
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - terminal
+            - wsl
+            - zellij
         name: scruffaluff.bootware.zellij
       tags:
         - container
@@ -1230,7 +2049,15 @@
         - zellij
 
     - name: Install Zoxide directory jumper
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+            - zoxide
         name: scruffaluff.bootware.zoxide
       tags:
         - container

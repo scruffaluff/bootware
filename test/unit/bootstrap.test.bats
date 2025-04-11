@@ -40,7 +40,7 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
---start-at-task Install Deno for Alpine --connection local playbook.yaml"
+--start-at-task Install Deno JavaScript and TypeScript runtime --connection local playbook.yaml"
 }
 
 bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
@@ -93,8 +93,8 @@ bootstrap_subcommand_sets_ansible_environment_variable() { # @test
 
 bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   local tmp_dir
-  # Do not use long form --dry-run flag for mktemp. It is not supported on
-  # MacOS.
+  # Do not use long form flags for mktemp. They are not supported on some
+  # systems.
   tmp_dir="$(mktemp -u)"
 
   export BOOTWARE_NOPASSWD='true'
@@ -116,6 +116,6 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
---start-at-task Install Deno for Alpine --connection local \
+--start-at-task Install Deno JavaScript and TypeScript runtime --connection local \
 ${tmp_dir}/playbook.yaml"
 }

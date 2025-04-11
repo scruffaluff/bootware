@@ -249,8 +249,9 @@ function Bootstrap() {
 
     # Configure run to find task associated with start role.
     if ($StartRole) {
-        $RepoPath = Split-Path -Parent -Path $Playbook
-        $StartTask = yq '.[0].name' "$RepoPath/ansible_collections/scruffaluff/bootware/roles/$StartRole/tasks/main.yaml"
+        $StartTask = yq `
+            ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name" `
+            $Playbook
         $ExtraArgs += @("--start-at-task", $StartTask)
     }
 
@@ -536,8 +537,8 @@ function Roles() {
     }
 
     $TagList = "[`"$($Tags.Replace(',', '`", `"'))`"]"
-    $Filter = ".[1].tasks[] | select(.tags | contains($TagList))"
-    $Format = '."ansible.builtin.import_role".name  | sub("scruffaluff.bootware.", "")'
+    $Filter = ".[0].tasks[] | select(.tags | contains($TagList))"
+    $Format = '."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
     yq "$Filter | $Format" "$PSScriptRoot/repo/playbook.yaml"
 }
 
