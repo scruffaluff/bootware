@@ -493,8 +493,8 @@ if test -n $tty
         bind \ue000 forward-char
         bind \ue001 'prevd; commandline --function repaint'
         bind \ue002 'nextd; commandline --function repaint'
-        bind \ue003 complete
-        bind \ue004 backward-char
+        bind \ue004 complete
+        bind \ue005 backward-char
     end
 
     # Set solarized light theme variables based on

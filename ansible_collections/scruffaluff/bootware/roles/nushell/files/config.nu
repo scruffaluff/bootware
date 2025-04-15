@@ -695,13 +695,13 @@ $env.config = {
                     { send: menunext }
                 ]
             }
-            keycode: char_ue003
+            keycode: char_ue004
             mode: [emacs vi_insert vi_normal]
             modifier: none
         }
         {
             event: { edit: moveleft }
-            keycode: char_ue004
+            keycode: char_ue005
             mode: [emacs vi_insert vi_normal]
             modifier: none
         }

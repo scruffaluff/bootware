@@ -471,8 +471,8 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
 
         # Add Unix shell key bindings.
         Set-PSReadLineKeyHandler -Chord "`u{e000}" -Function ForwardChar
-        Set-PSReadLineKeyHandler -Chord "`u{e003}" -Function MenuComplete
-        Set-PSReadLineKeyHandler -Chord "`u{e004}" -Function BackwardChar
+        Set-PSReadLineKeyHandler -Chord "`u{e004}" -Function MenuComplete
+        Set-PSReadLineKeyHandler -Chord "`u{e005}" -Function BackwardChar
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.
