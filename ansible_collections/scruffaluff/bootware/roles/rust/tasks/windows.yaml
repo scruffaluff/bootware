@@ -15,6 +15,17 @@
   tags:
     - install
 
+- name: Set Rust default toolchain
+  ansible.windows.win_command: rustup default {{ rust_toolchain }}
+  changed_when: "'installing' in rust_toolchain_set"
+  environment:
+    CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
+    Path: >-
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
+  register: rust_toolchain_set
+  tags:
+    - install
+
 - name: Add Rust components for Windows
   ansible.windows.win_command: rustup component add {{ item }}
   changed_when: "'installing' in rust_component_add"

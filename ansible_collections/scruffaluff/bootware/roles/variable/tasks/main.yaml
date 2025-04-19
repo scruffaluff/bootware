@@ -10,7 +10,7 @@
     ansible_pkg_mgr: scoop
     ansible_shell_type: powershell
   when: >-
-    powershell_version is success and 'Windows' in powershell_version.stdout
+    powershell_version is success and 'PSEdition' in powershell_version.stdout
 
 - name: Gather facts about system
   ansible.builtin.gather_facts: {}

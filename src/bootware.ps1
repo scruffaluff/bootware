@@ -470,7 +470,7 @@ function FindRelativeIP {
         return '127.0.0.1'
     }
     else {
-        return wsl grep -Po "'nameserver\s+\K([0-9]{1,3}\.){3}[0-9]{1,3}'" /etc/resolv.conf `| head -1
+        return wsl sh -c 'ip route show | grep -i default | awk ''{print \$3}'''
     }
 }
 

@@ -177,10 +177,10 @@ _setup:
     }
   }
   if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.0.0" })) {
-    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
+    Install-Module -Scope CurrentUser -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
   }
   if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "Pester"; ModuleVersion = "5.0.0" })) {
-    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
+    Install-Module -Scope CurrentUser -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
   }
   if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
     Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `

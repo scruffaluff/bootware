@@ -26,9 +26,9 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "C:/Program Files/Bin"
-    - "{{ user_home }}/.local/bin"
-    - "{{ user_home }}/AppData/Local/Programs/Bin"
+    - "C:\\Program Files\\Bin"
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
   tags:
     - install
   when: ansible_system == "Win32NT"
