@@ -200,7 +200,7 @@ jobs:
             set -eu
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -228,7 +228,7 @@ jobs:
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
+          bootware bootstrap --dev --no-passwd --retries 3 --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
@@ -336,7 +336,7 @@ jobs:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB is already installed on
