@@ -328,6 +328,9 @@ set --export COMPOSE_DOCKER_CLI_BUILD true
 set --export DOCKER_BUILDKIT true
 set --export DOCKER_CLI_HINTS false
 
+# Add LazyDocker convenience alias.
+alias lzd 'lazydocker'
+
 # Fd settings.
 
 # Always have Fd read available gitignore files.

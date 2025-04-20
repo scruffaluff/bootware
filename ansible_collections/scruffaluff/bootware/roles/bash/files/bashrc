@@ -214,6 +214,9 @@ fi
 export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
   DOCKER_CLI_HINTS='false'
 
+# Add LazyDocker convenience alias.
+alias lzd='lazydocker'
+
 # Fd settings.
 
 # Always have Fd read available gitignore files.
@@ -387,6 +390,11 @@ if [[ -n "${tty}" ]]; then
   # Add common Fish keybindings to Bash.
   bind -x '"\ep": _paste_pager'
   bind -x '"\es": _paste_sudo'
+
+  if [[ -x "$(command -v carapace)" ]]; then
+    export CARAPACE_BRIDGES='fish,bash'
+    carapace _carapace | source
+  fi
 fi
 
 # Starship settings.

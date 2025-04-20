@@ -437,6 +437,9 @@ $env.COMPOSE_DOCKER_CLI_BUILD = "true"
 $env.DOCKER_BUILDKIT = "true"
 $env.DOCKER_CLI_HINTS = "false"
 
+# Add LazyDocker convenience alias.
+alias lzd = ^lazydocker
+
 # Fd settings.
 
 # Always have Fd read available gitignore files.

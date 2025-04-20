@@ -160,6 +160,9 @@ $Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
 $Env:DOCKER_BUILDKIT = 'true'
 $Env:DOCKER_CLI_HINTS = 'false'
 
+# Add LazyDocker convenience alias.
+Set-Alias -Name lzd -Value lazydocker
+
 # Load Docker autocompletion if interactice and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
@@ -519,7 +522,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
 
         # Load Carapace completions if available.
         if (Get-Command -ErrorAction SilentlyContinue carapace) {
-            $Env:CARAPACE_BRIDGES = 'fish,bash,inshellisense'
+            $Env:CARAPACE_BRIDGES = 'fish,bash'
             carapace _carapace | Out-String | Invoke-Expression
         }
     }
