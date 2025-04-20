@@ -492,6 +492,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         $Private:Blue = '#268bd2'
         $Private:Cyan = '#2aa198'
         $Private:Green = '#859900'
+        $Private:Inverse = "`e[7m"
 
         # Set PowerShell color theme as documented at
         # https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.5#-colors.
@@ -510,10 +511,16 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
             Number                 = $Private:Base01
             Operator               = $Private:Base1
             Parameter              = $Private:Base1
-            Selection              = $Private:Green
+            Selection              = $Private:Inverse
             String                 = $Private:Blue
             Type                   = $Private:Base0
             Variable               = $Private:Green
+        }
+
+        # Load Carapace completions if available.
+        if (Get-Command -ErrorAction SilentlyContinue carapace) {
+            $Env:CARAPACE_BRIDGES = 'fish,bash,inshellisense'
+            carapace _carapace | Out-String | Invoke-Expression
         }
     }
 }

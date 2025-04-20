@@ -271,6 +271,25 @@
         - caffeine
         - desktop
 
+    - name: Install Carapace command line completer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - carapace
+            - container
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.carapace
+      tags:
+        - carapace
+        - container
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Google Chrome web browser
       ansible.builtin.include_role:
         apply:
