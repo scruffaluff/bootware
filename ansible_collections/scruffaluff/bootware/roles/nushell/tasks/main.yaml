@@ -1,4 +1,7 @@
 ---
+- name: Install Carapace commmand line completer
+  ansible.builtin.import_tasks: carapace.yaml
+
 - name: Install Nushell for FreeBSD
   become: true
   community.general.pkgng:

@@ -1,0 +1,30 @@
+---
+- name: Install Carapace for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: extras/carapace-bin
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Nushell autoload directories for Windows
+  ansible.windows.win_file:
+    owner: "{{ user_id }}"
+    path: "{{ nushell_user_autoload }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Generate Carapace Nushell configuration for Windows
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = carapace _carapace nushell
+    [System.IO.File]::WriteAllLines("{{ nushell_user_autoload }}/carapace.nu", $Text)
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\carapace-bin\\current;{{ ansible_env.Path }}"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

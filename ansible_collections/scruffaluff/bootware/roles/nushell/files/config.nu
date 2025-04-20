@@ -577,12 +577,6 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color_theme)
-    completions: {
-        external: {
-            completer: {|spans| fish-complete $spans }
-            enable: true
-        }
-    },
     keybindings: [
         {
             event: { edit: movewordleft }
@@ -789,6 +783,18 @@ $env.config = {
     # https://github.com/nushell/nushell/issues/5585.
     shell_integration: { osc133: ($nu.os-info.name != "windows") }
     show_banner: false
+}
+
+# Enable Fish completions if on Unix.
+$env.config.completions = if $nu.os-info == "windows" {
+    {}
+} else {
+    {
+        external: {
+            completer: {|spans| fish-complete $spans }
+            enable: true
+        }
+    }
 }
 
 # Starship settings.
