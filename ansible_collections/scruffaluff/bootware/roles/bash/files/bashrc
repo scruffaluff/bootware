@@ -393,7 +393,7 @@ if [[ -n "${tty}" ]]; then
 
   if [[ -x "$(command -v carapace)" ]]; then
     export CARAPACE_BRIDGES='fish,bash'
-    carapace _carapace | source
+    eval "$(carapace _carapace)"
   fi
 fi
 

@@ -9,6 +9,10 @@ set bell-style none
 set bind-tty-special-chars off
 # Ignore case during completions.
 set completion-ignore-case on
+# Disable prompt to show all completion possibilities.
+set completion-query-items 1000000
+# Disable builtin pager override for completions.
+set page-completions off
 # Disable history changes during previous command search.
 set revert-all-at-newline on
 # Show all options if there are multiple options.
