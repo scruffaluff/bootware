@@ -522,6 +522,7 @@ function RemoteScript($URL) {
 # Subcommand to list all Bootware roles.
 function Roles() {
     $ArgIdx = 0
+    $Playbook = ''
     $Tags = ''
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -544,7 +545,21 @@ function Roles() {
     $TagList = "[`"$($Tags.Replace(',', '`", `"'))`"]"
     $Filter = ".[0].tasks[] | select(.tags | contains($TagList))"
     $Format = '."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
-    yq "$Filter | $Format" "$PSScriptRoot/repo/playbook.yaml"
+    $Command = "$Filter | $Format"
+
+    if (Test-Path -Path "$PSScriptRoot/repo/playbook.yaml" -PathType Leaf) {
+        $Playbook = "$PSScriptRoot/repo/playbook.yaml"
+    }
+    elseif (Test-Path -Path 'playbook.yaml' -PathType Leaf) {
+        $Playbook = 'playbook.yaml'
+    }
+    else {
+        throw 'Unable to find Bootware playbook.'
+    }
+
+    # Special quoting is required for the command due to PowerShell shenanigans.
+    # For more information, visit https://github.com/mikefarah/yq/issues/747.
+    Get-Content "$Playbook" | yq --exit-status $($Command -replace '"', '\"')
 }
 
 # Subcommand to configure bootstrapping services and utilities.
