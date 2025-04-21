@@ -422,7 +422,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Byte order marker for configuration files generated on Windows.
-- USQL libicu depenency for Fedora.
+- USQL libicu dependency for Fedora.
 
 ## 0.3.4 - 2021-10-20
 
@@ -449,7 +449,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Commmand assertions to occur after argument parsing.
+- Command assertions to occur after argument parsing.
 
 ### Removed
 
@@ -473,7 +473,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Removed unnecessary HTTP requests to formulae.brew.sh for MacOS.
-- Reduced repeated roles with conditional depedencies.
+- Reduced repeated roles with conditional dependencies.
 
 ### Removed
 
@@ -487,7 +487,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Ansible check command line flag.
 - Arm Linux support.
 - Bass package manager for Fish.
-- Digitial Ocean Bash and Fish completion.
+- Digital Ocean Bash and Fish completion.
 - Fish completion script.
 - Linux Snap and AppImage support.
 - VSCode keybindings to change terminal tabs.
@@ -539,14 +539,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Caffeine installation role.
 - Chocolatey package support for Windows.
 - Experimental bootstrapping via WinRM for remote Windows hosts.
-- Experimental WSL boostrapping for Windows.
+- Experimental WSL bootstrapping for Windows.
 - GNOME desktop UI customizations.
 - Pop Shell extension for all GNOME desktops.
 - Separate Debian and Ubuntu testing.
 
 ### Changed
 
-- Made setup depenency checking more flexible.
+- Made setup dependency checking more flexible.
 - Upgraded Ansible version for Debian.
 - Upgraded Docker installation version.
 
@@ -558,7 +558,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Generate of empty configuration files for Windows.
 - Missing Pip system installation for Fedora.
 - Passwordless sudo configuration for MacOS.
-- Pipx package upgrades for updated Python interperter.
+- Pipx package upgrades for updated Python interpreter.
 - Scoop bucket additions for Windows.
 
 ## 0.2.3 - 2021-03-15
@@ -584,7 +584,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Several software installations for Fedora ibutions.
+- Several software installations for Fedora distributions.
 
 ### Fixed
 

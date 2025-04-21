@@ -142,9 +142,21 @@ if (Get-Command -ErrorAction SilentlyContinue bat) {
 
 # Bootware settings.
 
-# Load Bootware autocompletion if available.
+# Load Bootware completions if available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue BootwareCompletion
+}
+
+# Carapace settings.
+
+# Load Carapace completions if available.
+if (
+    ($Tty) -and
+    ($PSVersionTable.PSVersion.Major -ge 7) -and
+    (Get-Command -ErrorAction SilentlyContinue carapace)
+) {
+    $Env:CARAPACE_BRIDGES = 'fish,zsh,bash,inshellisense'
+    carapace _carapace | Out-String | Invoke-Expression
 }
 
 # Clipboard settings.
@@ -163,7 +175,7 @@ $Env:DOCKER_CLI_HINTS = 'false'
 # Add LazyDocker convenience alias.
 Set-Alias -Name lzd -Value lazydocker
 
-# Load Docker autocompletion if interactice and available.
+# Load Docker completions if interactice and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
@@ -214,7 +226,7 @@ if (($Tty) -and (Get-Module -ListAvailable -Name PsFzf)) {
 
 # Git settings.
 
-# Load Git autocompletion if interactive and available.
+# Load Git completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue posh-git
 }
@@ -250,7 +262,7 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
 
 # Podman settings.
 
-# Load Podman autocompletion if interactice and available.
+# Load Podman completions if interactice and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue PodmanCompletion
 }
@@ -291,7 +303,7 @@ function rld() {
 
 # Secure Shell settings.
 
-# Load SSH autocompletion if interactive and available.
+# Load SSH completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue SSHCompletion
 }
@@ -458,7 +470,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-Clipboard $Line
     }
 
-    # Add history based autocompletion to arrow keys.
+    # Add history based completions to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Chord Ctrl+n -Function HistorySearchForward
@@ -469,7 +481,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
     if ($PSVersionTable.PSVersion.Major -ge 7) {
         # Disable command not found suggestions.
         Set-PSReadLineOption -CommandValidationHandler $Null
-        # Show history based autocompletion for every typed character.
+        # Show history based completions for every typed character.
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
@@ -518,12 +530,6 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
             String                 = $Private:Blue
             Type                   = $Private:Base0
             Variable               = $Private:Green
-        }
-
-        # Load Carapace completions if available.
-        if (Get-Command -ErrorAction SilentlyContinue carapace) {
-            $Env:CARAPACE_BRIDGES = 'fish,bash'
-            carapace _carapace | Out-String | Invoke-Expression
         }
     }
 }

@@ -402,6 +402,10 @@ if (which "bat" | is-not-empty) {
     $env.PAGER = "bat"
 }
 
+# Carapace settings.
+
+$env.CARAPACE_BRIDGES = "fish,zsh,bash,inshellisense"
+
 # Clipboard settings.
 
 # Add unified clipboard commands.
@@ -454,7 +458,7 @@ alias ffprobe = ^ffprobe -hide_banner
 
 # Fzf settings.
 
-# Load Fzf settings if interactive and available.
+# Load Fzf if interactive and available.
 if $nu.is-interactive and (which fzf | is-not-empty) {
     # Disable Fzf Alt-C command.
     $env.FZF_ALT_C_COMMAND = ""

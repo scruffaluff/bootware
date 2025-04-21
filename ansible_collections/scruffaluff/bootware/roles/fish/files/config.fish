@@ -280,6 +280,14 @@ if type -q bat
     set --export PAGER bat
 end
 
+# Carapace settings.
+
+# Load Carapace completions if available.
+if test -n $tty; and type -q carapace
+    set --export CARAPACE_BRIDGES 'fish,zsh,bash,inshellisense'
+    carapace _carapace | source
+end
+
 # Clipboard settings.
 
 # Add unified clipboard aliases.
@@ -329,7 +337,7 @@ set --export DOCKER_BUILDKIT true
 set --export DOCKER_CLI_HINTS false
 
 # Add LazyDocker convenience alias.
-alias lzd 'lazydocker'
+alias lzd lazydocker
 
 # Fd settings.
 
@@ -345,7 +353,7 @@ alias ffprobe 'ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Load Fzf settings if interactive and available.
+# Load Fzf if interactive and available.
 #
 # Flags:
 #   -c: Run commands in Fish shell.

@@ -186,6 +186,14 @@ if [[ -x "$(command -v bat)" ]]; then
   export PAGER='bat'
 fi
 
+# Carapace settings.
+
+# Load Carapace completions if available.
+if [[ -x "$(command -v carapace)" ]]; then
+  export CARAPACE_BRIDGES='fish,zsh,bash,inshellisense'
+  eval "$(carapace _carapace)"
+fi
+
 # Clipboard settings.
 
 # Add unified clipboard aliases.
@@ -231,7 +239,7 @@ alias ffprobe='ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Load Fzf settings if interactive and available.
+# Load Fzf if interactive and available.
 #
 # Flags:
 #   -c: Run commands in Bash shell.
@@ -390,11 +398,6 @@ if [[ -n "${tty}" ]]; then
   # Add common Fish keybindings to Bash.
   bind -x '"\ep": _paste_pager'
   bind -x '"\es": _paste_sudo'
-
-  if [[ -x "$(command -v carapace)" ]]; then
-    export CARAPACE_BRIDGES='fish,bash'
-    eval "$(carapace _carapace)"
-  fi
 fi
 
 # Starship settings.

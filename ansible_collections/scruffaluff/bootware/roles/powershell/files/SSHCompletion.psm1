@@ -1,4 +1,4 @@
-﻿# PowerShell module to enable SSH autocompletion from SSH config file.
+﻿# PowerShell module to enable SSH completions from SSH config file.
 #
 # Forked from
 # https://gist.github.com/backerman/2c91d31d7a805460f93fe10bdfa0ffb0?permalink_comment_id=4131763#gistcomment-4131763.
