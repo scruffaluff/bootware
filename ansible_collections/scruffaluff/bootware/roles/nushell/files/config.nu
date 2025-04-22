@@ -4,11 +4,27 @@
 
 # Private convenience functions.
 
+# Symlink scripts to user autoload directory.
+def _autoload-scripts [...scripts: string] {
+    let autoload_dir = $nu.user-autoload-dirs.0
+    mkdir $autoload_dir
+    for script in $scripts {
+        let dest = $autoload_dir | path join ($script | path basename)
+        if ($script | path exists) and not ($dest | path exists) {
+            if $nu.os-info.name == "windows" {
+                mklink $dest $script
+            } else {
+                ln -s $script $dest
+            }
+        }
+    }
+}
+
 # Generate Nushell color theme.
 #
 # Documented at
 # https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
-def _color_theme [] {
+def _color-theme [] {
     # Set solarized light theme variables based on
     # https://ethanschoonover.com/solarized/#the-values.
     let base03 = "#002b36"
@@ -41,7 +57,7 @@ def _color_theme [] {
         custom: $base03
         date: {|| (date now) - $in |
             if $in < 1hr {
-                { attr: "b" fg: $red }
+                $red
             } else if $in < 6hr {
                 $red
             } else if $in < 1day {
@@ -49,7 +65,7 @@ def _color_theme [] {
             } else if $in < 3day {
                 $green
             } else if $in < 1wk {
-                { attr: "b" fg: $green }
+                $green
             } else if $in < 6wk {
                 $cyan
             } else if $in < 52wk {
@@ -66,13 +82,13 @@ def _color_theme [] {
             } else if $element < 1mb {
                 $cyan
             } else {
-                { fg: $blue }
+                $blue
             }
         }
         float: $red
         foreground: $base01
         glob: $base03
-        header: { attr: "b" fg: $green }
+        header: $green
         hints: $base0
         int: $violet
         leading_trailing_space_bg: { attr: "n" }
@@ -80,45 +96,45 @@ def _color_theme [] {
         nothing: $red
         range: $yellow
         record: $cyan
-        row_index: { attr: "b" fg: $green }
+        row_index: $green
         search_result: { bg: $base01 fg: $red }
         separator: $base01
-        shape_and: { attr: "b" fg: $violet }
-        shape_binary: { attr: "b" fg: $violet }
-        shape_block: { attr: "b" fg: $blue }
+        shape_and: $violet
+        shape_binary: $violet
+        shape_block: $blue
         shape_bool: $cyan
-        shape_closure: { attr: "b" fg: $cyan }
+        shape_closure: $cyan
         shape_custom: $green
-        shape_datetime: { attr: "b" fg: $cyan }
+        shape_datetime: $cyan
         shape_directory: $cyan
         shape_external_resolved: $cyan
         shape_external: $cyan
-        shape_externalarg: { attr: "b" fg: $green }
+        shape_externalarg: $green
         shape_filepath: $cyan
-        shape_flag: { attr: "b" fg: $blue }
-        shape_float: { attr: "b" fg: $red }
-        shape_garbage: { attr: "b" bg: $red fg: $base3 }
-        shape_glob_interpolation: { attr: "b" fg: $cyan }
-        shape_globpattern: { attr: "b" fg: $cyan }
-        shape_int: { attr: "b" fg: $violet }
-        shape_internalcall: { attr: "b" fg: $cyan }
-        shape_keyword: { attr: "b" fg: $violet }
-        shape_list: { attr: "b" fg: $cyan }
+        shape_flag: $blue
+        shape_float: $red
+        shape_garbage: { bg: $red fg: $base3 }
+        shape_glob_interpolation: $cyan
+        shape_globpattern: $cyan
+        shape_int: $violet
+        shape_internalcall: $cyan
+        shape_keyword: $violet
+        shape_list: $cyan
         shape_literal: $blue
         shape_match_pattern: $green
         shape_matching_brackets: { attr: "u" }
         shape_nothing: $red
         shape_operator: $yellow
-        shape_or: { attr: "b" fg: $violet }
-        shape_pipe: { attr: "b" fg: $violet }
-        shape_range: { attr: "b" fg: $yellow }
-        shape_raw_string: { attr: "b" fg: $base03 }
-        shape_record: { attr: "b" fg: $cyan }
-        shape_redirection: { attr: "b" fg: $violet }
-        shape_signature: { attr: "b" fg: $green }
-        shape_string_interpolation: { attr: "b" fg: $cyan }
+        shape_or: $violet
+        shape_pipe: $violet
+        shape_range: $yellow
+        shape_raw_string: $base03
+        shape_record: $cyan
+        shape_redirection: $violet
+        shape_signature: $green
+        shape_string_interpolation: $cyan
         shape_string: $green
-        shape_table: { attr: "b" fg: $blue }
+        shape_table: $blue
         shape_vardecl: { attr: "u" fg: $blue }
         shape_variable: $violet
         string: $green
@@ -442,7 +458,7 @@ $env.DOCKER_BUILDKIT = "true"
 $env.DOCKER_CLI_HINTS = "false"
 
 # Add LazyDocker convenience alias.
-alias lzd = ^lazydocker
+alias lzd = lazydocker
 
 # Fd settings.
 
@@ -583,7 +599,7 @@ if $nu.is-interactive {
 }
 
 $env.config = {
-    color_config: (_color_theme)
+    color_config: (_color-theme)
     keybindings: [
         {
             event: { edit: movewordleft }
@@ -792,8 +808,8 @@ $env.config = {
     show_banner: false
 }
 
-# Enable Fish completions if on Unix.
-$env.config.completions = if $nu.os-info == "windows" {
+# Enable Fish completions if available.
+$env.config.completions = if (which "fish" | is-empty) {
     {}
 } else {
     {
@@ -848,3 +864,8 @@ def --env --wrapped yz [...args] {
 
 # Disable fickle Zoxide directory preview.
 $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS?)"
+
+# User settings.
+
+# Move user aliases, secrets, and variables to the user autoload folder.
+_autoload-scripts $"($env.HOME)/.env.nu" $"($env.HOME)/.secrets.nu"

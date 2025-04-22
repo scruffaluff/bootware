@@ -60,7 +60,7 @@ keybindings:
       - focus --workspace 8
   # Close focused window.
   - bindings:
-      - alt+q
+      - alt+shift+q
     commands:
       - close
   # Kill GlazeWM process safely.

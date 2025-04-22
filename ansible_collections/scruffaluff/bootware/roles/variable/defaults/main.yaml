@@ -48,7 +48,7 @@ nushell_executable_:
   Linux: /usr/bin/nu
   Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
 nushell_user_autoload_:
-  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
+  Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
