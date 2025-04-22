@@ -9,12 +9,14 @@ def _autoload-scripts [...scripts: string] {
     let autoload_dir = $nu.user-autoload-dirs.0
     mkdir $autoload_dir
     for script in $scripts {
-        let dest = $autoload_dir | path join ($script | path basename)
-        if ($script | path exists) and not ($dest | path exists) {
+        let source = $script | path expand
+        let dest = $"($autoload_dir)/($script | path basename)" | path expand
+        if ($source | path exists) and not ($dest | path exists) {
             if $nu.os-info.name == "windows" {
-                mklink $dest $script
+                # Soft links require admin permissions unlike hard links.
+                mklink /H $dest $source | ignore
             } else {
-                ln -s $script $dest
+                ln -s $source $dest
             }
         }
     }

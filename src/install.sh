@@ -25,7 +25,7 @@ Options:
   -d, --dest <PATH>         Directory to install Bootware
   -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -m, --modify-env          Update system environment
+  -p, --preserve-env        Do not update system environment
   -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 EOF
@@ -295,7 +295,7 @@ log() {
 # Script entrypoint.
 #######################################
 main() {
-  local dst_dir='' global_='' modify_env='' super='' version='main'
+  local dst_dir='' global_='' modify_env='true' super='' version='main'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -317,8 +317,8 @@ main() {
         usage
         exit 0
         ;;
-      -m | --modify-env)
-        modify_env='true'
+      -p | --preserve-env)
+        modify_env=''
         shift 1
         ;;
       -q | --quiet)

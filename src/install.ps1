@@ -24,7 +24,7 @@ Options:
   -d, --dest <PATH>         Directory to install Bootware
   -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -m, --modify-env          Update system environment
+  -p, --preserve-env        Do not update system environment
   -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 '@
@@ -49,7 +49,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         exit 1
     }
 
-    if (($Target -eq 'Machine') -and (-not (IsAdministrator))) {
+    if (($TargetEnv -eq 'Machine') -and (-not (IsAdministrator))) {
         Write-Output @"
 System level installation requires an administrator console.
 Run this script from an administrator console or install to a user directory.
@@ -65,14 +65,19 @@ function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $ModifyEnv) {
     Log "Installing Bootware to '$DestDir\bootware.ps1'."
     Invoke-WebRequest -UseBasicParsing -OutFile "$DestDir\bootware.ps1" `
         -Uri "$URL/src/bootware.ps1"
+    Set-Content -Path "$DestDir\bootware.bat" -Value @"
+@echo off
+powershell -NoProfile -ExecutionPolicy Bypass -File "$DestDir\bootware.ps1" %*
+exit /b %errorlevel%
+"@
     InstallCompletion $Version
 
     if ($ModifyEnv) {
-        $Path = [Environment]::GetEnvironmentVariable('Path', "$Target")
+        $Path = [Environment]::GetEnvironmentVariable('Path', "$TargetEnv")
         if (-not ($Path -like "*$DestDir*")) {
             $PrependedPath = "$DestDir;$Path"
             [System.Environment]::SetEnvironmentVariable(
-                'Path', "$PrependedPath", "$Target"
+                'Path', "$PrependedPath", "$TargetEnv"
             )
             Log "Added '$DestDir' to the system path."
             Log 'Source shell profile or restart shell after installation.'
@@ -116,7 +121,7 @@ function Log($Text) {
 function Main() {
     $ArgIdx = 0
     $DestDir = ''
-    $ModifyEnv = $False
+    $ModifyEnv = $True
     $Version = 'main'
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -137,8 +142,8 @@ function Main() {
                 Usage
                 exit 0
             }
-            { $_ -in '-m', '--modify-env' } {
-                $ModifyEnv = $True
+            { $_ -in '-p', '--preserve-env' } {
+                $ModifyEnv = $False
                 $ArgIdx += 1
                 break
             }
