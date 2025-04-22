@@ -74,7 +74,7 @@
 
 - name: Generate Carapace Nushell configuration for Unix
   ansible.builtin.shell: >-
-    carapace _carapace nushell > "{{ nushell_vendor_autoload }}/carapace.nu"
+    carapace _carapace nushell > '{{ nushell_vendor_autoload }}/carapace.nu'
   become: true
   changed_when: true
   environment:

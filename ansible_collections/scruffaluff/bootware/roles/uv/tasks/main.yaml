@@ -77,7 +77,7 @@
 
 - name: Generate Uv user shell completions for Unix
   ansible.builtin.shell:
-    cmd: uv --generate-shell-completion {{ item.shell }} > {{ item.path }}
+    cmd: uv --generate-shell-completion {{ item.shell }} > '{{ item.path }}'
   become: true
   become_user: "{{ user_id }}"
   changed_when: true

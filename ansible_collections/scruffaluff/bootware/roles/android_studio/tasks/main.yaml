@@ -7,7 +7,6 @@
       - lib32z1
       - libbz2-1.0
       - libc6
-      - libncurses5
       - libstdc++6
   become: true
   tags:

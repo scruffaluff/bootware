@@ -83,7 +83,7 @@
 
 - name: Generate Starship Nushell configuration for Unix
   ansible.builtin.shell: >-
-    starship init nu > "{{ nushell_vendor_autoload }}/starship.nu"
+    starship init nu > '{{ nushell_vendor_autoload }}/starship.nu'
   become: true
   changed_when: true
   environment:

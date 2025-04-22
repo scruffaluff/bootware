@@ -12,6 +12,7 @@
     # SSH daemon uses the first matching setting pair.
     firstmatch: true
     line: "{{ item.key }} {{ item.value }}"
+    mode: "644"
     path: /etc/ssh/sshd_config
     regex: "^#?\\s*{{ item.key }}"
     state: present

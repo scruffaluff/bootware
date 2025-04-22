@@ -121,7 +121,7 @@
 
 - name: Generate Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
-    zoxide init --cmd cd nushell > "{{ nushell_vendor_autoload }}/zoxide.nu"
+    zoxide init --cmd cd nushell > '{{ nushell_vendor_autoload }}/zoxide.nu'
   become: true
   changed_when: true
   environment:
