@@ -59,7 +59,7 @@ Run this script from an administrator console or install to a user directory.
 }
 
 # Download and install Bootware.
-function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $ModifyEnv) {
+function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) {
     $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version"
 
     Log "Installing Bootware to '$DestDir\bootware.ps1'."
@@ -72,7 +72,7 @@ exit /b %errorlevel%
 "@
     InstallCompletion $Version
 
-    if ($ModifyEnv) {
+    if (-not $PreserveEnv) {
         $Path = [Environment]::GetEnvironmentVariable('Path', "$TargetEnv")
         if (-not ($Path -like "*$DestDir*")) {
             $PrependedPath = "$DestDir;$Path"
@@ -121,7 +121,7 @@ function Log($Text) {
 function Main() {
     $ArgIdx = 0
     $DestDir = ''
-    $ModifyEnv = $True
+    $PreserveEnv = $False
     $Version = 'main'
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -143,7 +143,7 @@ function Main() {
                 exit 0
             }
             { $_ -in '-p', '--preserve-env' } {
-                $ModifyEnv = $False
+                $PreserveEnv = $True
                 $ArgIdx += 1
                 break
             }
@@ -183,7 +183,7 @@ function Main() {
     }
 
     CheckEnvironment $TargetEnv
-    InstallBootware $TargetEnv $Version $DestDir $Script $ModifyEnv
+    InstallBootware $TargetEnv $Version $DestDir $Script $PreserveEnv
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.

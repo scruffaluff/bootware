@@ -8,7 +8,7 @@
 
 - name: Disable SSH password login for Unix
   ansible.builtin.lineinfile:
-    create: false
+    create: true
     # SSH daemon uses the first matching setting pair.
     firstmatch: true
     line: "{{ item.key }} {{ item.value }}"
@@ -25,7 +25,7 @@
 
 - name: Disable SSH password login for Windows
   community.windows.win_lineinfile:
-    create: false
+    create: true
     # SSH daemon uses the first matching setting pair.
     firstmatch: true
     line: "{{ item.key }} {{ item.value }}"

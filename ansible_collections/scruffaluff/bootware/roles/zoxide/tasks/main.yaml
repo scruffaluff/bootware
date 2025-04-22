@@ -112,7 +112,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_vendor_autoload }}"
     state: directory
   become: true
   tags:
@@ -121,7 +121,7 @@
 
 - name: Generate Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
-    zoxide init --cmd cd nushell > {{ nushell_user_autoload }}/zoxide.nu
+    zoxide init --cmd cd nushell > "{{ nushell_vendor_autoload }}/zoxide.nu"
   become: true
   changed_when: true
   environment:
@@ -133,7 +133,7 @@
 - name: Create Nushell autoload directories for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_vendor_autoload }}"
     state: directory
   tags:
     - install
@@ -144,7 +144,7 @@
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = zoxide init --cmd cd nushell
-    [System.IO.File]::WriteAllLines("{{ nushell_user_autoload }}/zoxide.nu", $Text)
+    [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/zoxide.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\zoxide\\current;{{ ansible_env.Path }}"

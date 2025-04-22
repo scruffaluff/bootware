@@ -20,19 +20,19 @@ global_owner_is_root() { # @test
   local dst_dir
   dst_dir="$(mktemp -d)"
 
-  run bash src/install.sh --quiet --global --dest "${dst_dir}"
+  run bash src/install.sh --preserve-env --quiet --global --dest "${dst_dir}"
   assert_success
   assert_file_owner root "${dst_dir}/bootware"
 }
 
 prints_version() { # @test
-  run bash src/install.sh --dest "$(mktemp -d)"
+  run bash src/install.sh --preserve-env --dest "$(mktemp -d)"
   assert_success
   assert_output --partial 'Installed Bootware 0.'
 }
 
 quiet_is_silent() { # @test
-  run bash src/install.sh --quiet --dest "$(mktemp -d)"
+  run bash src/install.sh --preserve-env --quiet --dest "$(mktemp -d)"
   assert_success
   assert_output ''
 }

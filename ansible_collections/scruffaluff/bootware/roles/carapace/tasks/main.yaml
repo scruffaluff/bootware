@@ -65,7 +65,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_vendor_autoload }}"
     state: directory
   become: true
   tags:
@@ -74,7 +74,7 @@
 
 - name: Generate Carapace Nushell configuration for Unix
   ansible.builtin.shell: >-
-    carapace _carapace nushell > {{ nushell_user_autoload }}/carapace.nu
+    carapace _carapace nushell > "{{ nushell_vendor_autoload }}/carapace.nu"
   become: true
   changed_when: true
   environment:
@@ -86,7 +86,7 @@
 - name: Create Nushell autoload directories for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_vendor_autoload }}"
     state: directory
   tags:
     - install
@@ -97,7 +97,7 @@
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = carapace _carapace nushell
-    [System.IO.File]::WriteAllLines("{{ nushell_user_autoload }}/carapace.nu", $Text)
+    [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/carapace.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\carapace-bin\\current;{{ ansible_env.Path }}"
