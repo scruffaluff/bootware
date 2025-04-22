@@ -270,10 +270,13 @@ function Bootstrap() {
         $ConfigPath = "$HOME/.bootware/config.yaml"
     }
 
-    Log "Using $ConfigPath as configuration file"
+    Log "Using $ConfigPath as configuration file."
     $WSLConfigPath = WSLPath $ConfigPath
     if (-not $Remote) {
         $Inventory = FindRelativeIP
+        if ($(Get-Service -Name sshd).Status -ne "Running") {
+            Setup
+        }
     }
     $PlaybookPath = WSLPath $Playbook
 
@@ -398,7 +401,9 @@ function Config() {
                 break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'" 'config'
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware config --help' for usage."
+                exit 2
             }
         }
     }
@@ -409,28 +414,16 @@ function Config() {
     }
 
     if ($EmptyCfg -or (-not $SrcURL)) {
-        Log "Writing empty configuration file to $DstFile"
+        Log "Writing empty configuration file to '$DstFile'."
         # Do not use Write-Output. On PowerShell 5, it will add a byte order
         # marker to the file, which makes WSL Ansible throw UTF-8 errors.
         # Solution was taken from https://stackoverflow.com/a/32951824.
         [System.IO.File]::WriteAllLines($DstFile, 'font_size: 14')
     }
     else {
-        # Log "Downloading configuration file to $DstFile"
+        Log "Downloading configuration file to '$DstFile'."
         Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
     }
-}
-
-# Print error message and exit script with usage error code.
-function ErrorUsage($Message, $Subcommand) {
-    Write-Output "error: $Message"
-    if ($Subcommand) {
-        Write-Output "Run 'bootware $Subcommand --help' for usage"
-    }
-    else {
-        Write-Output "Run 'bootware --help' for usage"
-    }
-    exit 2
 }
 
 # Find path of Bootware configuration file.
@@ -537,7 +530,9 @@ function Roles() {
                 break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware roles --help' for usage."
+                exit 2
             }
         }
     }
@@ -591,20 +586,29 @@ function Setup() {
                 break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware setup --help' for usage."
+                exit 2
             }
         }
     }
 
+    if (-not (IsAdministrator)) {
+        Log @'
+Setup requires an administrator console.
+Restart this script from an administrator console to continue.
+'@
+    }
+
     # Install Chocolatey package manager.
     if (-not (Get-Command -ErrorAction SilentlyContinue choco)) {
-        Log 'Downloading Chocolatey package manager'
+        Log 'Downloading Chocolatey package manager.'
         RemoteScript 'https://chocolatey.org/install.ps1'
     }
 
     # Install Scoop package manager.
     if (-not (Get-Command -ErrorAction SilentlyContinue scoop)) {
-        Log 'Downloading Scoop package manager'
+        Log 'Downloading Scoop package manager.'
         # Scoop disallows installation from an admin console by default. For
         # more information, visit
         # https://github.com/ScoopInstaller/Install#for-admin.
@@ -639,12 +643,12 @@ function Setup() {
 
     # Git is required for adding Scoop buckets.
     if (-not (Get-Command -ErrorAction SilentlyContinue git)) {
-        Log 'Installing Git'
+        Log 'Installing Git.'
         scoop install mingit
     }
 
     if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
-        Log 'Installing YQ'
+        Log 'Installing YQ.'
         scoop install yq
     }
 
@@ -680,7 +684,7 @@ function Setup() {
 function SetupSSHKeys {
     $SetupSSHKeysComplete = "$PSScriptRoot/.setup_ssh_keys"
     if (-not (Test-Path -Path $SetupSSHKeysComplete -PathType Leaf)) {
-        Log 'Generating SSH keys'
+        Log 'Generating SSH keys.'
 
         # GetTempFileName creates a 0 byte file, so it has to be deleted to work
         # with ssh-keygen.
@@ -700,7 +704,7 @@ function SetupSSHKeys {
             -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `
             -Value $PublicKey
 
-        Log 'Moving SSH keys to WSL'
+        Log 'Moving SSH keys to WSL.'
 
         # Home variable cannot be wrapped in brackets in case the default WSL
         # shell is Fish.
@@ -714,7 +718,7 @@ function SetupSSHKeys {
         wsl sudo apt-get --quiet install --yes openssh-client
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
-        Log 'Disabling SSH password authentication'
+        Log 'Disabling SSH password authentication.'
 
         # Disable password based logins for SSH.
         Add-Content `
@@ -722,7 +726,7 @@ function SetupSSHKeys {
             -Value 'PasswordAuthentication no'
 
         New-Item -ItemType File -Path $SetupSSHKeysComplete | Out-Null
-        Log 'Completed SSH key configuration'
+        Log 'Completed SSH key configuration.'
     }
 }
 
@@ -733,7 +737,7 @@ function SetupSSHKeys {
 function SetupSSHServer() {
     $SetupSSHServerComplete = "$PSScriptRoot/.setup_ssh_server"
     if (-not (Test-Path -Path $SetupSSHServerComplete -PathType Leaf)) {
-        Log 'Setting up OpenSSH server'
+        Log 'Setting up OpenSSH server.'
 
         # Turn on Windows Update and TrustedInstaller services.
         Start-Service -ErrorAction SilentlyContinue -Name wuauserv
@@ -817,8 +821,8 @@ function SetupWSL($Branch) {
             /All `
             /NoRestart
 
-        Log 'Restart your system to finish WSL installation'
-        Log "Then run 'bootware setup' again to install Debian"
+        Log 'Restart your system to finish WSL installation.'
+        Log "Then run 'bootware setup' again to install Debian."
         exit 0
     }
 
@@ -828,20 +832,20 @@ function SetupWSL($Branch) {
     $DistroCheck = wsl echo $MatchString
     if (-not ($DistroCheck -like $MatchString)) {
         $TempFile = [System.IO.Path]::GetTempFileName() -replace '.tmp', '.msi'
-        Log 'Downloading WSL update'
+        Log 'Downloading WSL update.'
         Invoke-WebRequest -UseBasicParsing -OutFile $TempFile -Uri `
             'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
         Start-Process -Wait $TempFile /Passive
 
-        Log 'Installing Debian distribution'
-        Log "Complete pop up window and then run 'bootware setup' again"
+        Log 'Installing Debian distribution.'
+        Log "Complete pop up window and then run 'bootware setup' again."
         wsl --set-default-version 2
         wsl --install --distribution Debian
         exit 0
     }
 
     if (-not (wsl command -v bootware)) {
-        Log 'Installing a WSL copy of Bootware'
+        Log 'Installing a WSL copy of Bootware.'
 
         wsl sudo apt-get --quiet update
         wsl sudo apt-get --quiet install --yes curl
@@ -870,7 +874,9 @@ function Uninstall() {
                 exit 0
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware uninstall --help' for usage."
+                exit 2
             }
         }
     }
@@ -889,7 +895,7 @@ function Uninstall() {
     }
 
     Remove-Item -Force -Recurse -Path $PSScriptRoot
-    Log 'Uninstalled Bootware'
+    Log 'Uninstalled Bootware.'
 }
 
 # Subcommand to update Bootware script.
@@ -910,7 +916,9 @@ function Update() {
                 break
             }
             Default {
-                ErrorUsage "No such option '$($Args[0][$ArgIdx])'"
+                Log "error: No such option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware update --help' for usage."
+                exit 2
             }
         }
     }
@@ -939,7 +947,7 @@ function Update() {
         git -C $RepoPath pull
     }
 
-    Log "Updated to version $(bootware --version)"
+    Log "Updated to version $(bootware --version)."
 }
 
 # Update completion script for Bootware.
@@ -1022,7 +1030,9 @@ function Main() {
                 exit 0
             }
             Default {
-                ErrorUsage "No such subcommand or option '$($Args[0][0])'"
+                Log "error: No such subcommand or option '$($Args[0][$ArgIdx])'."
+                Log "Run 'bootware --help' for usage."
+                exit 2
             }
         }
     }

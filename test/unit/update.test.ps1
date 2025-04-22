@@ -21,10 +21,11 @@ Describe 'Update' {
     }
 
     It 'Write error for nonexistant option at end of call' {
+        $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware update -v develop notanoption
         $Actual | Should -Be @(
-            "error: No such option 'notanoption'",
-            "Run 'bootware --help' for usage"
+            "error: No such option 'notanoption'.",
+            "Run 'bootware update --help' for usage."
         )
     }
 
@@ -36,7 +37,7 @@ Describe 'Update' {
             function bootware() { Write-Output '' }
         }
 
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $BootwareDir = Split-Path -Parent $Bootware
         $Expected = "git -C $BootwareDir/repo pull"
 

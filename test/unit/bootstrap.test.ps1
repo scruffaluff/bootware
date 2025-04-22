@@ -21,7 +21,7 @@ BeforeAll {
 
 Describe 'Bootstrap' {
     It 'Subcommand finds first task associated with role' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $Playbook = "$(Get-Location)\playbook.yaml"
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
@@ -36,7 +36,7 @@ Describe 'Bootstrap' {
     }
 
     It 'Subcommand passes default arguments to WSL copy of Bootware' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
@@ -49,7 +49,7 @@ Describe 'Bootstrap' {
     }
 
     It 'Subcommand passes debug argument to WSL copy of Bootware' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
@@ -63,7 +63,7 @@ Describe 'Bootstrap' {
     }
 
     It 'Subcommand passes list arguments to WSL copy of Bootware' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
@@ -77,7 +77,7 @@ Describe 'Bootstrap' {
     }
 
     It 'Subcommand passes extra arguments to WSL copy of Bootware' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
             + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `

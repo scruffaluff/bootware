@@ -337,15 +337,17 @@ jobs:
           bootware bootstrap --dev --no-setup --retries 3 --skip ffsend --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
-      # Appears to work on other Windows servers. LLDB is already installed on
-      # Github hosted runner and is broken.
+      # Appears to work on other Windows servers. LLDB test is skipped since it
+      # is already installed on Github hosted runner and is broken. Rust tests
+      # is skipped since a second and incorrect Rust Analyzer binary is
+      # sometimes created after the Rust role completes.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Kubeshark;C:\Program Files\Microsoft VS Code\bin;$Env:Path"
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Installs Bootware for Windows systems.
+    Install Bootware for Windows systems.
 #>
 
 # If unable to execute due to policy rules, run
@@ -28,34 +28,6 @@ Options:
   -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 '@
-}
-
-function CheckEnvironment($TargetEnv) {
-    if (($PSVersionTable.PSVersion.Major) -lt 5) {
-        Write-Output @'
-PowerShell 5 or later is required to run Bootware.
-Upgrade PowerShell: https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell
-'@
-        exit 1
-    }
-
-    $AllowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
-    if ((Get-ExecutionPolicy).ToString() -notin $AllowedExecutionPolicy) {
-        Write-Output @"
-PowerShell requires an execution policy [$($AllowedExecutionPolicy -Join ', ')] to run Bootware.
-To set the execution policy to the recommended 'RemoteSigned' run:
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-"@
-        exit 1
-    }
-
-    if (($TargetEnv -eq 'Machine') -and (-not (IsAdministrator))) {
-        Write-Output @"
-System level installation requires an administrator console.
-Run this script from an administrator console or install to a user directory.
-"@
-        exit 1
-    }
 }
 
 # Download and install Bootware.
@@ -181,8 +153,14 @@ function Main() {
     else {
         $TargetEnv = 'Machine'
     }
+    if (($TargetEnv -eq 'Machine') -and (-not (IsAdministrator))) {
+        Log @'
+System level installation requires an administrator console.
+Restart this script from an administrator console or install to a user directory.
+'@
+        exit 1
+    }
 
-    CheckEnvironment $TargetEnv
     InstallBootware $TargetEnv $Version $DestDir $Script $PreserveEnv
 }
 
