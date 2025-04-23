@@ -22,14 +22,16 @@
     - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
+# Balena Etcher version 2.1.0 Github release is missing its Appimage asset.
 - name: Install Balena Etcher for Linux
   ansible.builtin.get_url:
     dest: /usr/local/bin/balena-etcher
     mode: "755"
     url: >-
       https://github.com/balena-io/etcher/releases/download/v{{
-      etcher_cask.json.version }}/balenaEtcher-{{ etcher_cask.json.version
-      }}-x64.AppImage
+      etcher_cask.json.version | regex_replace('^2\.1\.0$', '2.0.0')
+      }}/balenaEtcher-{{ etcher_cask.json.version  | regex_replace('^2\.1\.0$',
+      '2.0.0') }}-x64.AppImage
   become: true
   tags:
     - install

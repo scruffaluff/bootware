@@ -48,6 +48,11 @@ nushell_executable_:
   Linux: /usr/bin/nu
   Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
 nushell_vendor_autoload_:
+  Darwin: /Library/Application Support/nushell/vendor/autoload
+  FreeBSD: /usr/local/share/nushell/vendor/autoload
+  Linux: /usr/local/share/nushell/vendor/autoload
+  Win32NT: C:\\ProgramData\\nushell\\vendor\\autoload
+nushell_user_vendor_autoload_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
@@ -81,9 +86,13 @@ group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
 nushell_vendor_autoload: >-
-  {{  nushell_vendor_autoload_.get(ansible_system, user_home +
+  {{  nushell_vendor_autoload_.get(ansible_system,
+  '/usr/local/share/nushell/vendor/autoload') }}
+nushell_user_vendor_autoload: >-
+  {{  nushell_user_vendor_autoload_.get(ansible_system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
+powershell_modules: C:\\Program Files\\PowerShell\\Modules
 powershell_user_modules: >-
   {{ user_home }}\\Documents\\WindowsPowerShell\\Modules
 # Backslashes are required for Windows Defender firewall rules.

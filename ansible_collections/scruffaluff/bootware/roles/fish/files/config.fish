@@ -280,14 +280,6 @@ if type -q bat
     set --export PAGER bat
 end
 
-# Carapace settings.
-
-# Load Carapace completions if available.
-if test -n $tty; and type -q carapace
-    set --export CARAPACE_BRIDGES 'fish,zsh,bash,inshellisense'
-    carapace _carapace | source
-end
-
 # Clipboard settings.
 
 # Add unified clipboard aliases.

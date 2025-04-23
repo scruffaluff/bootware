@@ -4,7 +4,7 @@
 // https://zellij.dev/documentation/configuration.
 
 default_layout "layout"
-default_shell "{{ user_shell }}"
+default_shell "{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"
 
 keybinds {
     tmux clear-defaults=true {}
