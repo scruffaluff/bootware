@@ -89,7 +89,7 @@
   loop:
     - path: "{{ nushell_vendor_autoload }}/uv.nu"
       shell: nushell
-    - path: "{{ powershell_user_modules }}/UvCompletion.psm1"
+    - path: "{{ powershell_modules }}/UvCompletion.psm1"
       shell: powershell
   tags:
     - install
