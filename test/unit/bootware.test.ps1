@@ -5,10 +5,11 @@ BeforeAll {
 
 Describe 'Main' {
     It 'Write error for unknown subcommand' {
+        $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware notasubcommand
         $Actual | Should -Be @(
-            "error: No such subcommand or option 'notasubcommand'",
-            "Run 'bootware --help' for usage"
+            "error: No such subcommand or option 'notasubcommand'.",
+            "Run 'bootware --help' for usage."
         )
     }
 }

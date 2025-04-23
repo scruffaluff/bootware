@@ -12,14 +12,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - update
             - wsl
         name: scruffaluff.bootware.update
       tags:
-        - container
         - desktop
         - server
         - update
@@ -29,7 +27,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - essential
             - server
@@ -37,7 +34,6 @@
             - wsl
         name: scruffaluff.bootware.essential
       tags:
-        - container
         - desktop
         - essential
         - server
@@ -49,7 +45,6 @@
         apply:
           tags:
             - age
-            - container
             - desktop
             - server
             - sysadmin
@@ -57,7 +52,6 @@
         name: scruffaluff.bootware.age
       tags:
         - age
-        - container
         - desktop
         - server
         - sysadmin
@@ -92,12 +86,10 @@
         apply:
           tags:
             - android_tools
-            - extras
             - never
         name: scruffaluff.bootware.android_tools
       tags:
         - android_tools
-        - extras
         - never
 
     - name: Install AppImage dependencies
@@ -143,7 +135,6 @@
           tags:
             - awscli
             - cloud
-            - container
             - desktop
             - server
             - sysadmin
@@ -152,7 +143,6 @@
       tags:
         - awscli
         - cloud
-        - container
         - desktop
         - server
         - sysadmin
@@ -163,7 +153,6 @@
         apply:
           tags:
             - bash
-            - container
             - desktop
             - server
             - shell
@@ -172,7 +161,6 @@
         name: scruffaluff.bootware.bash
       tags:
         - bash
-        - container
         - desktop
         - server
         - shell
@@ -184,7 +172,6 @@
         apply:
           tags:
             - bat
-            - container
             - desktop
             - server
             - shell
@@ -193,7 +180,6 @@
         name: scruffaluff.bootware.bat
       tags:
         - bat
-        - container
         - desktop
         - server
         - shell
@@ -206,13 +192,11 @@
           tags:
             - beekeeper
             - database
-            - extras
             - never
         name: scruffaluff.bootware.beekeeper
       tags:
         - beekeeper
         - database
-        - extras
         - never
 
     - name: Install Bitwig Studio audio workstation
@@ -233,14 +217,12 @@
         apply:
           tags:
             - build
-            - container
             - desktop
             - server
             - wsl
         name: scruffaluff.bootware.build
       tags:
         - build
-        - container
         - desktop
         - server
         - wsl
@@ -250,7 +232,6 @@
         apply:
           tags:
             - bottom
-            - container
             - desktop
             - server
             - sysadmin
@@ -258,7 +239,6 @@
         name: scruffaluff.bootware.bottom
       tags:
         - bottom
-        - container
         - desktop
         - server
         - sysadmin
@@ -275,19 +255,34 @@
         - caffeine
         - desktop
 
+    - name: Install Carapace command line completer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - carapace
+            - desktop
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.carapace
+      tags:
+        - carapace
+        - desktop
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Google Chrome web browser
       ansible.builtin.include_role:
         apply:
           tags:
             - browser
             - chrome
-            - extras
             - never
         name: scruffaluff.bootware.chrome
       tags:
         - browser
         - chrome
-        - extras
         - never
 
     - name: Install MongoDB Compass database graphical client
@@ -296,27 +291,23 @@
           tags:
             - compass
             - database
-            - extras
             - never
         name: scruffaluff.bootware.compass
       tags:
         - compass
         - database
-        - extras
         - never
 
     - name: Install Croc secure file transfer
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - croc
             - desktop
             - server
             - wsl
         name: scruffaluff.bootware.croc
       tags:
-        - container
         - croc
         - desktop
         - server
@@ -326,22 +317,19 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - desktop
             - database
             - dbeaver
-            - extras
-            - never
         name: scruffaluff.bootware.dbeaver
       tags:
+        - desktop
         - database
         - dbeaver
-        - extras
-        - never
 
     - name: Install Deno JavaScript and TypeScript runtime
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - deno
             - desktop
             - language
@@ -350,7 +338,6 @@
             - wsl
         name: scruffaluff.bootware.deno
       tags:
-        - container
         - deno
         - desktop
         - language
@@ -373,13 +360,13 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - container
             - docker
-            - extras
             - never
         name: scruffaluff.bootware.docker
       tags:
+        - container
         - docker
-        - extras
         - never
 
     - name: Install Digital Ocean development tools
@@ -387,7 +374,6 @@
         apply:
           tags:
             - cloud
-            - container
             - desktop
             - doctl
             - server
@@ -395,7 +381,6 @@
         name: scruffaluff.bootware.doctl
       tags:
         - cloud
-        - container
         - desktop
         - doctl
         - server
@@ -405,14 +390,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - dive
             - server
             - wsl
         name: scruffaluff.bootware.dive
       tags:
-        - container
         - desktop
         - dive
         - server
@@ -422,7 +405,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - duf
             - server
@@ -430,7 +412,6 @@
             - wsl
         name: scruffaluff.bootware.duf
       tags:
-        - container
         - desktop
         - duf
         - server
@@ -441,7 +422,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - dust
             - server
@@ -449,7 +429,6 @@
             - wsl
         name: scruffaluff.bootware.dust
       tags:
-        - container
         - desktop
         - dust
         - server
@@ -471,7 +450,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - fastfetch
             - server
@@ -479,7 +457,6 @@
             - wsl
         name: scruffaluff.bootware.fastfetch
       tags:
-        - container
         - desktop
         - fastfetch
         - server
@@ -490,7 +467,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - fd
             - server
@@ -498,7 +474,6 @@
             - wsl
         name: scruffaluff.bootware.fd
       tags:
-        - container
         - desktop
         - fd
         - server
@@ -509,14 +484,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - ffsend
             - server
             - wsl
         name: scruffaluff.bootware.ffsend
       tags:
-        - container
         - desktop
         - ffsend
         - server
@@ -539,7 +512,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - fish
             - server
@@ -548,7 +520,6 @@
             - wsl
         name: scruffaluff.bootware.fish
       tags:
-        - container
         - desktop
         - fish
         - server
@@ -572,7 +543,6 @@
         apply:
           tags:
             - cloud
-            - container
             - desktop
             - flyctl
             - server
@@ -580,7 +550,6 @@
         name: scruffaluff.bootware.flyctl
       tags:
         - cloud
-        - container
         - desktop
         - flyctl
         - server
@@ -601,7 +570,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - fzf
             - server
@@ -609,7 +577,6 @@
             - wsl
         name: scruffaluff.bootware.fzf
       tags:
-        - container
         - desktop
         - fzf
         - server
@@ -620,7 +587,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - debug
             - desktop
             - gdb
@@ -628,7 +594,6 @@
             - wsl
         name: scruffaluff.bootware.gdb
       tags:
-        - container
         - debug
         - desktop
         - gdb
@@ -639,7 +604,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - gdu
             - server
@@ -647,7 +611,6 @@
             - wsl
         name: scruffaluff.bootware.gdu
       tags:
-        - container
         - desktop
         - gdu
         - server
@@ -658,7 +621,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - git
             - server
@@ -666,7 +628,6 @@
             - wsl
         name: scruffaluff.bootware.git
       tags:
-        - container
         - desktop
         - git
         - server
@@ -677,12 +638,10 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - github_runner
             - never
         name: scruffaluff.bootware.github_runner
       tags:
-        - extras
         - github_runner
         - never
 
@@ -690,12 +649,10 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - gitlab_runner
             - never
         name: scruffaluff.bootware.gitlab_runner
       tags:
-        - extras
         - gitlab_runner
         - never
 
@@ -703,7 +660,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - gitui
             - server
@@ -711,7 +667,6 @@
             - wsl
         name: scruffaluff.bootware.gitui
       tags:
-        - container
         - desktop
         - gitui
         - server
@@ -722,7 +677,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - glow
             - server
@@ -730,7 +684,6 @@
             - wsl
         name: scruffaluff.bootware.glow
       tags:
-        - container
         - desktop
         - glow
         - server
@@ -741,37 +694,38 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - container
             - desktop
             - hadolint
             - server
-            - vm
             - wsl
         name: scruffaluff.bootware.hadolint
       tags:
+        - container
         - desktop
         - hadolint
         - server
-        - vm
         - wsl
 
     - name: Install HDF5 file serialization tools
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
+            - desktop
             - hdf5
-            - never
+            - server
+            - wsl
         name: scruffaluff.bootware.hdf5
       tags:
-        - extras
+        - desktop
         - hdf5
-        - never
+        - server
+        - wsl
 
     - name: Install Helix terminal text editor
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - editor
             - helix
@@ -780,7 +734,6 @@
             - wsl
         name: scruffaluff.bootware.helix
       tags:
-        - container
         - desktop
         - editor
         - helix
@@ -826,14 +779,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - htmlq
             - server
             - wsl
         name: scruffaluff.bootware.htmlq
       tags:
-        - container
         - desktop
         - htmlq
         - server
@@ -843,14 +794,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - hyperfine
             - server
             - wsl
         name: scruffaluff.bootware.hyperfine
       tags:
-        - container
         - desktop
         - hyperfine
         - server
@@ -860,7 +809,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - ignore
             - server
@@ -868,7 +816,6 @@
             - wsl
         name: scruffaluff.bootware.ignore
       tags:
-        - container
         - desktop
         - ignore
         - server
@@ -879,7 +826,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - jq
             - server
@@ -887,7 +833,6 @@
             - wsl
         name: scruffaluff.bootware.jq
       tags:
-        - container
         - desktop
         - jq
         - server
@@ -898,7 +843,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - just
             - server
@@ -906,7 +850,6 @@
             - wsl
         name: scruffaluff.bootware.just
       tags:
-        - container
         - desktop
         - just
         - server
@@ -917,20 +860,18 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - container
             - desktop
-            - extras
             - k3d
             - kubernetes
-            - never
             - server
             - wsl
         name: scruffaluff.bootware.k3d
       tags:
+        - container
         - desktop
-        - extras
         - k3d
         - kubernetes
-        - never
         - server
         - wsl
 
@@ -938,13 +879,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - k3sup
             - kubernetes
             - never
         name: scruffaluff.bootware.k3sup
       tags:
-        - extras
         - k3sup
         - kubernetes
         - never
@@ -984,19 +923,17 @@
         apply:
           tags:
             - desktop
-            - extras
+            - container
             - kind
             - kubernetes
-            - never
             - server
             - wsl
         name: scruffaluff.bootware.kind
       tags:
-        - desktop
-        - extras
+        - destkop
+        - container
         - kind
         - kubernetes
-        - never
         - server
         - wsl
 
@@ -1038,13 +975,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - kubernetes
             - kubeshark
             - never
         name: scruffaluff.bootware.kubeshark
       tags:
-        - extras
         - kubernetes
         - kubeshark
         - never
@@ -1053,26 +988,28 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
+            - container
+            - desktop
             - lazydocker
-            - never
+            - server
+            - wsl
         name: scruffaluff.bootware.lazydocker
       tags:
-        - extras
+        - container
+        - desktop
         - lazydocker
-        - never
+        - server
+        - wsl
 
     - name: Install Libvirt virtualization API
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - libvirt
             - never
             - vm
         name: scruffaluff.bootware.libvirt
       tags:
-        - extras
         - libvirt
         - never
         - vm
@@ -1081,7 +1018,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - debug
             - desktop
             - lldb
@@ -1089,7 +1025,6 @@
             - wsl
         name: scruffaluff.bootware.lldb
       tags:
-        - container
         - debug
         - desktop
         - lldb
@@ -1100,7 +1035,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - lsd
             - server
@@ -1108,7 +1042,6 @@
             - wsl
         name: scruffaluff.bootware.lsd
       tags:
-        - container
         - desktop
         - lsd
         - server
@@ -1119,7 +1052,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - language
             - lua
@@ -1127,7 +1059,6 @@
             - wsl
         name: scruffaluff.bootware.lua
       tags:
-        - container
         - desktop
         - language
         - lua
@@ -1138,14 +1069,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - mdbook
             - server
             - wsl
         name: scruffaluff.bootware.mdbook
       tags:
-        - container
         - desktop
         - mdbook
         - server
@@ -1155,14 +1084,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - miniserve
             - server
             - wsl
         name: scruffaluff.bootware.miniserve
       tags:
-        - container
         - desktop
         - miniserve
         - server
@@ -1172,7 +1099,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - mkcert
             - network
@@ -1180,7 +1106,6 @@
             - wsl
         name: scruffaluff.bootware.mkcert
       tags:
-        - container
         - desktop
         - mkcert
         - network
@@ -1191,7 +1116,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - database
             - desktop
             - mongosh
@@ -1199,7 +1123,6 @@
             - wsl
         name: scruffaluff.bootware.mongosh
       tags:
-        - container
         - database
         - desktop
         - mongosh
@@ -1223,7 +1146,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - language
             - node
@@ -1231,7 +1153,6 @@
             - wsl
         name: scruffaluff.bootware.node
       tags:
-        - container
         - desktop
         - language
         - node
@@ -1242,7 +1163,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - nushell
             - server
@@ -1251,7 +1171,6 @@
             - wsl
         name: scruffaluff.bootware.nushell
       tags:
-        - container
         - desktop
         - nushell
         - server
@@ -1287,14 +1206,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - package
             - server
             - wsl
         name: scruffaluff.bootware.package
       tags:
-        - container
         - desktop
         - package
         - server
@@ -1304,14 +1221,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - path
             - server
             - wsl
         name: scruffaluff.bootware.path
       tags:
-        - container
         - desktop
         - path
         - server
@@ -1321,18 +1236,19 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
+            - container
             - podman
+            - never
         name: scruffaluff.bootware.podman
       tags:
-        - extras
+        - container
         - podman
+        - never
 
     - name: Install PowerShell shell
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - powershell
             - server
@@ -1340,7 +1256,6 @@
             - sysadmin
         name: scruffaluff.bootware.powershell
       tags:
-        - container
         - desktop
         - powershell
         - server
@@ -1351,7 +1266,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - procs
             - server
@@ -1359,7 +1273,6 @@
             - wsl
         name: scruffaluff.bootware.procs
       tags:
-        - container
         - desktop
         - procs
         - server
@@ -1370,7 +1283,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - language
             - python
@@ -1378,7 +1290,6 @@
             - wsl
         name: scruffaluff.bootware.python
       tags:
-        - container
         - desktop
         - language
         - python
@@ -1389,13 +1300,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - never
             - qemu
             - vm
         name: scruffaluff.bootware.qemu
       tags:
-        - extras
         - never
         - qemu
         - vm
@@ -1404,7 +1313,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - qsv
             - server
@@ -1412,7 +1320,6 @@
             - wsl
         name: scruffaluff.bootware.qsv
       tags:
-        - container
         - desktop
         - qsv
         - server
@@ -1423,20 +1330,21 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
-            - never
+            - desktop
             - rclone
+            - server
+            - wsl
         name: scruffaluff.bootware.rclone
       tags:
-        - extras
-        - never
+        - desktop
         - rclone
+        - server
+        - wsl
 
     - name: Install Readline configuration
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - readline
             - server
@@ -1444,7 +1352,6 @@
             - wsl
         name: scruffaluff.bootware.readline
       tags:
-        - container
         - desktop
         - readline
         - server
@@ -1455,7 +1362,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - restic
             - server
@@ -1463,7 +1369,6 @@
             - wsl
         name: scruffaluff.bootware.restic
       tags:
-        - container
         - desktop
         - restic
         - server
@@ -1474,7 +1379,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - ripgrep
             - server
@@ -1482,7 +1386,6 @@
             - wsl
         name: scruffaluff.bootware.ripgrep
       tags:
-        - container
         - desktop
         - ripgrep
         - server
@@ -1493,7 +1396,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - language
             - rust
@@ -1501,7 +1403,6 @@
             - wsl
         name: scruffaluff.bootware.rust
       tags:
-        - container
         - desktop
         - language
         - rust
@@ -1512,14 +1413,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - scc
             - server
             - wsl
         name: scruffaluff.bootware.scc
       tags:
-        - container
         - desktop
         - scc
         - server
@@ -1529,7 +1428,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sd
@@ -1537,7 +1435,6 @@
             - wsl
         name: scruffaluff.bootware.sd
       tags:
-        - container
         - desktop
         - server
         - sd
@@ -1559,7 +1456,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - shell
@@ -1567,7 +1463,6 @@
             - wsl
         name: scruffaluff.bootware.shellcheck
       tags:
-        - container
         - desktop
         - server
         - shell
@@ -1578,7 +1473,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - shell
@@ -1586,7 +1480,6 @@
             - wsl
         name: scruffaluff.bootware.shfmt
       tags:
-        - container
         - desktop
         - server
         - shell
@@ -1610,7 +1503,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - secrets
             - server
@@ -1619,7 +1511,6 @@
             - wsl
         name: scruffaluff.bootware.sops
       tags:
-        - container
         - desktop
         - secrets
         - server
@@ -1631,7 +1522,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - database
             - desktop
             - server
@@ -1639,7 +1529,6 @@
             - wsl
         name: scruffaluff.bootware.sqlite
       tags:
-        - container
         - database
         - desktop
         - server
@@ -1650,7 +1539,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - starship
@@ -1658,7 +1546,6 @@
             - wsl
         name: scruffaluff.bootware.starship
       tags:
-        - container
         - desktop
         - server
         - starship
@@ -1669,14 +1556,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - super
             - wsl
         name: scruffaluff.bootware.super
       tags:
-        - container
         - desktop
         - server
         - super
@@ -1686,13 +1571,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - network
             - never
             - termshark
         name: scruffaluff.bootware.termshark
       tags:
-        - extras
         - network
         - never
         - termshark
@@ -1701,14 +1584,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - terraform
             - wsl
         name: scruffaluff.bootware.terraform
       tags:
-        - container
         - desktop
         - server
         - terraform
@@ -1735,7 +1616,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1743,7 +1623,6 @@
             - wsl
         name: scruffaluff.bootware.tldr
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1754,12 +1633,10 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - never
             - tmux
         name: scruffaluff.bootware.tmux
       tags:
-        - extras
         - never
         - tmux
 
@@ -1767,7 +1644,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1775,7 +1651,6 @@
             - wsl
         name: scruffaluff.bootware.topgrade
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1786,7 +1661,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1794,7 +1668,6 @@
             - wsl
         name: scruffaluff.bootware.usql
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1805,7 +1678,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1813,7 +1685,6 @@
             - wsl
         name: scruffaluff.bootware.utility
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1824,7 +1695,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - language
             - server
@@ -1833,7 +1703,6 @@
             - wsl
         name: scruffaluff.bootware.uv
       tags:
-        - container
         - desktop
         - language
         - server
@@ -1845,13 +1714,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - kubernetes
             - never
             - velero
         name: scruffaluff.bootware.velero
       tags:
-        - extras
         - kubernetes
         - never
         - velero
@@ -1860,12 +1727,10 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - never
             - vim
         name: scruffaluff.bootware.vim
       tags:
-        - extras
         - never
         - vim
 
@@ -1897,7 +1762,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1905,7 +1769,6 @@
             - wsl
         name: scruffaluff.bootware.watchexec
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1916,7 +1779,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - vm
@@ -1924,7 +1786,6 @@
             - wsl
         name: scruffaluff.bootware.wasm
       tags:
-        - container
         - desktop
         - server
         - vm
@@ -1959,13 +1820,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - extras
             - network
             - never
             - wireshark
         name: scruffaluff.bootware.wireshark
       tags:
-        - extras
         - network
         - never
         - wireshark
@@ -1974,7 +1833,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -1982,7 +1840,6 @@
             - xh
         name: scruffaluff.bootware.xh
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -1993,7 +1850,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -2001,7 +1857,6 @@
             - yazi
         name: scruffaluff.bootware.yazi
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -2012,7 +1867,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -2020,7 +1874,6 @@
             - yq
         name: scruffaluff.bootware.yq
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -2031,7 +1884,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -2040,7 +1892,6 @@
             - zellij
         name: scruffaluff.bootware.zellij
       tags:
-        - container
         - desktop
         - server
         - sysadmin
@@ -2052,7 +1903,6 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - container
             - desktop
             - server
             - sysadmin
@@ -2060,7 +1910,6 @@
             - zoxide
         name: scruffaluff.bootware.zoxide
       tags:
-        - container
         - desktop
         - server
         - sysadmin

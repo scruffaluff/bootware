@@ -142,9 +142,21 @@ if (Get-Command -ErrorAction SilentlyContinue bat) {
 
 # Bootware settings.
 
-# Load Bootware autocompletion if available.
+# Load Bootware completions if available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue BootwareCompletion
+}
+
+# Carapace settings.
+
+# Load Carapace completions if available.
+if (
+    ($Tty) -and
+    ($PSVersionTable.PSVersion.Major -ge 7) -and
+    (Get-Command -ErrorAction SilentlyContinue carapace)
+) {
+    $Env:CARAPACE_BRIDGES = 'fish,zsh,bash,inshellisense'
+    carapace _carapace | Out-String | Invoke-Expression
 }
 
 # Clipboard settings.
@@ -160,7 +172,10 @@ $Env:COMPOSE_DOCKER_CLI_BUILD = 'true'
 $Env:DOCKER_BUILDKIT = 'true'
 $Env:DOCKER_CLI_HINTS = 'false'
 
-# Load Docker autocompletion if interactice and available.
+# Add LazyDocker convenience alias.
+Set-Alias -Name lzd -Value lazydocker
+
+# Load Docker completions if interactice and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
@@ -211,7 +226,7 @@ if (($Tty) -and (Get-Module -ListAvailable -Name PsFzf)) {
 
 # Git settings.
 
-# Load Git autocompletion if interactive and available.
+# Load Git completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue posh-git
 }
@@ -247,7 +262,7 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
 
 # Podman settings.
 
-# Load Podman autocompletion if interactice and available.
+# Load Podman completions if interactice and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue PodmanCompletion
 }
@@ -288,7 +303,7 @@ function rld() {
 
 # Secure Shell settings.
 
-# Load SSH autocompletion if interactive and available.
+# Load SSH completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue SSHCompletion
 }
@@ -312,10 +327,10 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
 
     # Remove shell key bindings.
     Remove-PSReadLineKeyHandler -Chord Ctrl+w
-
+    # Disable prompt to show all completion possibilities.
+    Set-PSReadLineOption -CompletionQueryItems 1000000
     # Disable sounds for errors.
     Set-PSReadLineOption -BellStyle None
-
     # Use only spaces as word boundaries.
     Set-PSReadLineOption -WordDelimiters ' /\'
 
@@ -455,7 +470,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-Clipboard $Line
     }
 
-    # Add history based autocompletion to arrow keys.
+    # Add history based completions to arrow keys.
     Set-PSReadLineKeyHandler -Chord DownArrow -Function HistorySearchForward
     Set-PSReadLineKeyHandler -Chord UpArrow -Function HistorySearchBackward
     Set-PSReadLineKeyHandler -Chord Ctrl+n -Function HistorySearchForward
@@ -466,7 +481,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
     if ($PSVersionTable.PSVersion.Major -ge 7) {
         # Disable command not found suggestions.
         Set-PSReadLineOption -CommandValidationHandler $Null
-        # Show history based autocompletion for every typed character.
+        # Show history based completions for every typed character.
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
@@ -492,6 +507,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         $Private:Blue = '#268bd2'
         $Private:Cyan = '#2aa198'
         $Private:Green = '#859900'
+        $Private:Inverse = "`e[7m"
 
         # Set PowerShell color theme as documented at
         # https://learn.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.5#-colors.
@@ -510,7 +526,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
             Number                 = $Private:Base01
             Operator               = $Private:Base1
             Parameter              = $Private:Base1
-            Selection              = $Private:Green
+            Selection              = $Private:Inverse
             String                 = $Private:Blue
             Type                   = $Private:Base0
             Variable               = $Private:Green

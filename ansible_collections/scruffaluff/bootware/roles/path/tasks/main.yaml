@@ -26,9 +26,9 @@
     path: "{{ item }}"
     state: directory
   loop:
-    - "C:/Program Files/Bin"
-    - "{{ user_home }}/.local/bin"
-    - "{{ user_home }}/AppData/Local/Programs/Bin"
+    - "C:\\Program Files\\Bin"
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -45,6 +45,70 @@
     - elements: "{{ user_home }}\\AppData\\local\\Programs\\Bin"
       scope: user
   tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create user configuration directory for Unix
+  ansible.builtin.file:
+    dest: "{{ user_home }}/.config"
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create user configuration directory for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}/.config"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create system shell completion directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_completion }}"
+    - "{{ fish_completion }}"
+    - "{{ nushell_vendor_autoload }}"
+  tags:
+    - completion
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create user shell completion directories for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop:
+    - "{{ bash_user_completion }}"
+    - "{{ fish_user_completion }}"
+    - "{{ nushell_user_vendor_autoload }}"
+  tags:
+    - completion
+    - install
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Create shell completion directories for Windows
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: directory
+  loop: >-
+    {{ [nushell_vendor_autoload, nushell_user_vendor_autoload] +
+    powershell_module_paths + powershell_user_module_paths }}
+  tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"
 

@@ -39,3 +39,4 @@ rust_components:
   - rust-src
   - rustfmt
 rust_targets: []
+rust_toolchain: stable

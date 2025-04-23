@@ -6,7 +6,7 @@ def main [
     --cache (-c) # Use container cache
     --dists (-d): string = "alpine,arch,debian,fedora,ubuntu" # Linux distributions list
     --skip (-s): string = "none" # Ansible roles to skip
-    --tags (-t): string = "desktop,extras" # Ansible roles to keep
+    --tags (-t): string = "all,never" # Ansible roles to keep
 ] {
     let args = if $cache { [] } else { ["--no-cache"] }
     let dists_ = $dists | split row ","

@@ -43,6 +43,7 @@
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
   { "name": "caffeine" },
+  { "name": "carapace", "tests": ["carapace --version"] },
   {
     "name": "chrome",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],

@@ -7,7 +7,6 @@
       - lib32z1
       - libbz2-1.0
       - libc6
-      - libncurses5
       - libstdc++6
   become: true
   tags:
@@ -47,6 +46,17 @@
   tags:
     - install
   when: ansible_system == "Darwin"
+
+- name: Create system applications directory for Linux
+  ansible.builtin.file:
+    dest: /usr/local/share/applications
+    mode: "755"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Check if Android Studio is installed for Linux
   ansible.builtin.stat:

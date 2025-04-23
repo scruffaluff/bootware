@@ -22,6 +22,7 @@ gaps:
 
 general:
   focus_follows_cursor: true
+  show_all_in_taskbar: true
 
 keybindings:
   # Change focus to a workspace defined in the workspaces config.
@@ -59,7 +60,7 @@ keybindings:
       - focus --workspace 8
   # Close focused window.
   - bindings:
-      - alt+q
+      - alt+shift+q
     commands:
       - close
   # Kill GlazeWM process safely.
@@ -153,10 +154,14 @@ keybindings:
       - move-workspace --direction right
 
 workspaces:
-  - name: "1"
-  - name: "2"
-  - name: "3"
-  - name: "4"
+  - keep_alive: true
+    name: "1"
+  - keep_alive: true
+    name: "2"
+  - keep_alive: true
+    name: "3"
+  - keep_alive: true
+    name: "4"
   - name: "5"
   - name: "6"
   - name: "7"

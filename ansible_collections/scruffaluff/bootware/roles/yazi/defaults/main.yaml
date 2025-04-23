@@ -9,6 +9,6 @@ yazi_libc: >-
 yazi_plugins:
   - lpnh/fr
   - yazi-rs/plugins:chmod
-  - yazi-rs/plugins:hide-preview
-  - yazi-rs/plugins:max-preview
+  - yazi-rs/plugins:toggle-pane
   - yazi-rs/plugins:smart-filter
+  - yazi-rs/plugins:vcs-files

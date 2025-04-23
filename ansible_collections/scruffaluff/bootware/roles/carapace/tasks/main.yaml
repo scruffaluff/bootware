@@ -1,0 +1,61 @@
+---
+- name: Install Carapace for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: carapace
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Carapace version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/carapace.json
+  register: carapace_formula
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Download Carapace for Linux
+  ansible.builtin.unarchive:
+    dest: /tmp
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/carapace-sh/carapace-bin/releases/download/v{{
+      carapace_formula.json.versions.stable }}/carapace-bin_{{
+      carapace_formula.json.versions.stable }}_linux_{{ system_architecture
+      }}.tar.gz
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Carapace for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/carapace
+    force: true
+    mode: "755"
+    remote_src: true
+    src: /tmp/carapace
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Carapace for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: carapace
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Carapace for Windows
+  community.windows.win_scoop:
+    global: "{{ scoop_global }}"
+    name: extras/carapace-bin
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

@@ -47,8 +47,13 @@ nushell_executable_:
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
   Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
-nushell_user_autoload_:
-  Darwin: "{{ user_home }}/Library/ApplicationSupport/nushell/vendor/autoload"
+nushell_vendor_autoload_:
+  Darwin: /Library/Application Support/nushell/vendor/autoload
+  FreeBSD: /usr/local/share/nushell/vendor/autoload
+  Linux: /usr/local/share/nushell/vendor/autoload
+  Win32NT: C:\\ProgramData\\nushell\\vendor\\autoload
+nushell_user_vendor_autoload_:
+  Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
@@ -80,12 +85,19 @@ github_api_headers: >-
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
-nushell_user_autoload: >-
-  {{  nushell_user_autoload_.get(ansible_system, user_home +
+nushell_vendor_autoload: >-
+  {{  nushell_vendor_autoload_.get(ansible_system,
+  '/usr/local/share/nushell/vendor/autoload') }}
+nushell_user_vendor_autoload: >-
+  {{  nushell_user_vendor_autoload_.get(ansible_system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
-powershell_user_modules: >-
-  {{ user_home }}\\Documents\\WindowsPowerShell\\Modules
+powershell_module_paths:
+  - C:\\Program Files\\PowerShell\\Modules
+  - C:\\Program Files\\WindowsPowerShell\\Modules
+powershell_user_module_paths:
+  - "{{ user_home }}\\Documents\\PowerShell\\Modules"
+  - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps

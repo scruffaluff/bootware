@@ -8,14 +8,14 @@ BeforeAll {
 Describe 'Config' {
     It 'Subcommand makes empty configuration log' {
         $Env:BOOTWARE_NOLOG = ''
-        $Expected = 'Writing empty configuration file to /dev/null'
+        $Expected = "Writing empty configuration file to '/dev/null'."
 
         $Actual = & $Bootware config -e --dest /dev/null
         $Actual | Should -Be $Expected
     }
 
     It 'Subcommand parses no parameters correctly' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
 
         & $Bootware config --source 'https://example.com/config.yaml'
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
@@ -25,7 +25,7 @@ Describe 'Config' {
     }
 
     It 'Subcommand passes source to Invoke-WebRequest' {
-        $Env:BOOTWARE_NOLOG = 1
+        $Env:BOOTWARE_NOLOG = 'true'
 
         & $Bootware config --source https://fakedomain.com
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {

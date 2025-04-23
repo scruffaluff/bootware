@@ -68,7 +68,8 @@
   environment:
     Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
   failed_when: >-
-    tilt_bucket_add.rc != 0 and 'bucket already exists' not in tilt_bucket_add
+    tilt_bucket_add.rc != 0 and 'bucket already exists' not in
+    tilt_bucket_add.stdout
   register: tilt_bucket_add
   tags:
     - install

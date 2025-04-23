@@ -5,11 +5,15 @@
 set unstable := true
 set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
 export PATH := if os() == "windows" {
-  justfile_dir() / ".vendor/bin;" + env_var("Path")
+  join(justfile_dir(), ".vendor\\bin;") + env("Path")
 } else {
   justfile_dir() / ".vendor/bin:" + justfile_dir() / 
-  ".vendor/lib/bats-core/bin:" + env_var("PATH")
+  ".vendor/lib/bats-core/bin:" + env("PATH")
 }
+export PSModulePath := if os() == "windows" {
+  join(justfile_dir(), ".vendor\\lib\\powershell\\modules;") + 
+  env("PSModulePath", "")
+} else { "" }
 
 # List all commands available in justfile.
 list:
@@ -42,10 +46,12 @@ format:
   $ProgressPreference = 'SilentlyContinue'
   $PSNativeCommandUseErrorActionPreference = $True
   npx prettier --write .
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting `
+    CodeFormatting
   Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Setting CodeFormatting
   Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Setting CodeFormatting
-  $Scripts = Get-ChildItem -Recurse -Filter *.ps1 -Path ansible_collections, src, test
+  $Scripts = Get-ChildItem -Recurse -Filter *.ps1 -Path `
+    ansible_collections, src, test
   foreach ($Script in $Scripts) {
     $Text = Get-Content -Raw $Script.FullName
     [System.IO.File]::WriteAllText($Script.FullName, $Text)
@@ -68,12 +74,16 @@ lint:
 [windows]
 lint:
   npx prettier --check .
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
+    -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections -Settings data/config/script_analyzer.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings data/config/script_analyzer.psd1
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings data/config/script_analyzer.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
+    -Settings data/config/script_analyzer.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings \
+    data/config/script_analyzer.psd1
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings \
+    data/config/script_analyzer.psd1
 
 # Install development dependencies.
 setup: _setup
@@ -156,13 +166,8 @@ _setup:
   $ProgressPreference = 'SilentlyContinue'
   $PSNativeCommandUseErrorActionPreference = $True
   $Arch = '{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
-  # If executing task from PowerShell Core, error such as "'Install-Module'
-  # command was found in the module 'PowerShellGet', but the module could not be
-  # loaded" unless earlier versions of PackageManagement and PowerShellGet are
-  # imported.
-  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
-  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
-  Get-PackageProvider -Force Nuget | Out-Null
+  $ModulePath = '.vendor\lib\powershell\modules'
+  New-Item -Force -ItemType Directory -Path $ModulePath | Out-Null
   if (-not (
     (Get-Command -ErrorAction SilentlyContinue node) -And 
     (Get-Command -ErrorAction SilentlyContinue npm)
@@ -172,15 +177,30 @@ _setup:
     Exit 1
   }
   if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
-    powershell {
-      iex "& { $(iwr -useb https://scruffaluff.github.io/scripts/install/nushell.ps1) } --dest .vendor/bin"
-    }
+    $NushellScript = Invoke-WebRequest -UseBasicParsing -Uri `
+      https://scruffaluff.github.io/scripts/install/nushell.ps1
+    Invoke-Expression "& { $NushellScript } --dest .vendor/bin"
   }
-  if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.0.0" })) {
-    Install-Module -Force -MinimumVersion 1.0.0 -Name PSScriptAnalyzer
+  # If executing task from PowerShell Core, error such as "'Install-Module'
+  # command was found in the module 'PowerShellGet', but the module could not be
+  # loaded" unless earlier versions of PackageManagement and PowerShellGet are
+  # imported.
+  Import-Module -MaximumVersion 1.1.0 -MinimumVersion 1.0.0 PackageManagement
+  Import-Module -MaximumVersion 1.9.9 -MinimumVersion 1.0.0 PowerShellGet
+  Get-PackageProvider -Force Nuget | Out-Null
+  if (
+    -not (Get-Module -ListAvailable -FullyQualifiedName `
+    @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.0.0" })
+  ) {
+    Find-Module -MinimumVersion 1.0.0 -Name PSScriptAnalyzer | Save-Module `
+      -Force -Path $ModulePath
   }
-  if (-not (Get-Module -ListAvailable -FullyQualifiedName @{ModuleName = "Pester"; ModuleVersion = "5.0.0" })) {
-    Install-Module -Force -SkipPublisherCheck -MinimumVersion 5.0.0 -Name Pester
+  if (
+    -not (Get-Module -ListAvailable -FullyQualifiedName `
+    @{ModuleName = "Pester"; ModuleVersion = "5.0.0" })
+  ) {
+    Find-Module -MinimumVersion 5.0.0 -Name Pester | Save-Module -Force -Path `
+      $ModulePath
   }
   if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
     Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `

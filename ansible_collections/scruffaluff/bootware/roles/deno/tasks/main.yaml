@@ -93,80 +93,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Register JavaScript and TypeScript files as executables for Windows
-  ansible.windows.win_regedit:
-    data: "{{ item.data }}"
-    path: "{{ item.path }}"
-    type: string
-  loop:
-    - data: jsfile
-      path: "HKLM:\\Software\\Classes\\.js"
-    - data: '"C:\Program Files\Deno\bin\deno.exe" run --allow-all "%1" %*'
-      path: "HKLM:\\Software\\Classes\\jsfile\\shell\\open\\command"
-    - data: tsfile
-      path: "HKLM:\\Software\\Classes\\.ts"
-    - data: '"C:\Program Files\Deno\bin\deno.exe" run --allow-all "%1" %*'
-      path: "HKLM:\\Software\\Classes\\tsfile\\shell\\open\\command"
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-# By default, Windows associates Ts files as video files with Windows Media
-# Player. This issue is unsolved, but manually setting Deno for Ts files with
-# the "Default Apps" setting UI works.
-- name: Fix TypeScript files associations for Windows
-  ansible.windows.win_regedit:
-    data: "{{ item.data }}"
-    name: "{{ item.name }}"
-    path: "HKLM:\\Software\\Classes\\.ts"
-    type: string
-  loop:
-    - data: text/plain
-      name: Content Type
-    - data: text
-      name: PerceivedType
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-# Since ansible_env.Path is fixed on play connection, using
-# ansible.windows.win_environment for PATHEXT in other roles will overwrite
-# changes made here. Thus ansible.windows.win_environment cannot be used to
-# extend PATHEXT.
-- name: Add JavaScript and TypeScript files to system path for Windows
-  ansible.windows.win_shell: |
-    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
-    If (-Not ($PathExt -Like "*.{{ item }}*")) {
-      [System.Environment]::SetEnvironmentVariable(
-        'PATHEXT', "$PathExt;.{{ item }}", 'Machine'
-      )
-      Write-Output 'PATHEXT updated'
-    }
-  changed_when: "'PATHEXT updated' in deno_pathext"
-  loop:
-    - JS
-    - TS
-  register: deno_pathext
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
-
 - name: Generate Deno shell completions for Unix
   ansible.builtin.shell:
     cmd: deno completions {{ item.shell }} > {{ item.dest }}
@@ -186,25 +112,16 @@
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
-- name: Create Deno PowerShell user completions directory for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ powershell_user_modules }}/DenoCompletion"
-    state: directory
-  tags:
-    - completion
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Generate Deno PowerShell user completions module for Windows
+- name: Generate Deno PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = deno completions powershell
-    [System.IO.File]::WriteAllLines("{{ powershell_user_modules }}/DenoCompletion/DenoCompletion.psm1", $Text)
+    [System.IO.File]::WriteAllLines("{{ item }}/DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
     Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"
+  loop: "{{ powershell_module_paths }}"
   tags:
     - completion
     - install

@@ -186,6 +186,14 @@ if [[ -x "$(command -v bat)" ]]; then
   export PAGER='bat'
 fi
 
+# Carapace settings.
+
+# Load Carapace completions if available.
+if [[ -x "$(command -v carapace)" ]]; then
+  export CARAPACE_BRIDGES='fish,zsh,bash,inshellisense'
+  eval "$(carapace _carapace)"
+fi
+
 # Clipboard settings.
 
 # Add unified clipboard aliases.
@@ -214,6 +222,9 @@ fi
 export COMPOSE_DOCKER_CLI_BUILD='true' DOCKER_BUILDKIT='true' \
   DOCKER_CLI_HINTS='false'
 
+# Add LazyDocker convenience alias.
+alias lzd='lazydocker'
+
 # Fd settings.
 
 # Always have Fd read available gitignore files.
@@ -228,7 +239,7 @@ alias ffprobe='ffprobe -hide_banner'
 
 # Fzf settings.
 
-# Load Fzf settings if interactive and available.
+# Load Fzf if interactive and available.
 #
 # Flags:
 #   -c: Run commands in Bash shell.

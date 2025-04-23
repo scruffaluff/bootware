@@ -75,20 +75,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system == "Linux"
-
 - name: Install Zoxide shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
@@ -107,21 +93,9 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create Nushell autoload directories for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
-    state: directory
-  become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
-
 - name: Generate Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
-    zoxide init --cmd cd nushell > {{ nushell_user_autoload }}/zoxide.nu
+    zoxide init --cmd cd nushell > '{{ nushell_vendor_autoload }}/zoxide.nu'
   become: true
   changed_when: true
   environment:
@@ -130,21 +104,12 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Create Nushell autoload directories for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
-    state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Generate Zoxide Nushell configuration for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = zoxide init --cmd cd nushell
-    [System.IO.File]::WriteAllLines("{{ nushell_user_autoload }}/zoxide.nu", $Text)
+    [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/zoxide.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\zoxide\\current;{{ ansible_env.Path }}"

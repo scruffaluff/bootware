@@ -32,7 +32,7 @@ RUN ansible-galaxy collection build $HOME/repo/ansible_collections/scruffaluff/b
 
 # Test Bootware collection with 3 retries on failure.
 ENV retries=3
-RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--skip-tags $skip} --tags ${tags:-desktop,extras} playbook.yaml; do \
+RUN until ansible-playbook --connection local --inventory localhost, ${skip:+--skip-tags $skip} --tags ${tags:-all,never} playbook.yaml; do \
     status=$?; \
     retries="$((retries - 1))"; \
     if [ "${retries}" -eq 0 ]; then exit "${status}"; fi; \

@@ -25,7 +25,7 @@ Options:
   -d, --dest <PATH>         Directory to install Bootware
   -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -m, --modify-env          Update system environment
+  -p, --preserve-env        Do not update system environment
   -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 EOF
@@ -174,7 +174,7 @@ find_super() {
 #######################################
 install_bootware() {
   local super="${1}" global_="${2}" version="${3}" dst_dir="${4}" \
-    modify_env="${5}"
+    preserve_env="${5}"
   local repo="https://raw.githubusercontent.com/scruffaluff/bootware/${version}"
 
   log "Installing Bootware to '${dst_dir}/bootware'."
@@ -186,8 +186,8 @@ install_bootware() {
   # Update shell profile if destination is not in system path.
   #
   # Flags:
-  #   -n: Check if string has nonzero length.
-  if [ -n "${modify_env}" ]; then
+  #   -z: Check if string has zero length.
+  if [ -z "${preserve_env}" ]; then
     case ":${PATH:-}:" in
       *:${dst_dir}:*) ;;
       *)
@@ -295,7 +295,7 @@ log() {
 # Script entrypoint.
 #######################################
 main() {
-  local dst_dir='' global_='' modify_env='' super='' version='main'
+  local dst_dir='' global_='' preserve_env='' super='' version='main'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -317,8 +317,8 @@ main() {
         usage
         exit 0
         ;;
-      -m | --modify-env)
-        modify_env='true'
+      -p | --preserve-env)
+        preserve_env='true'
         shift 1
         ;;
       -q | --quiet)
@@ -350,7 +350,7 @@ main() {
   fi
 
   install_bootware "${super}" "${global_}" "${version}" "${dst_dir}" \
-    "${modify_env}"
+    "${preserve_env}"
 }
 
 # Add ability to selectively skip main function during test suite.

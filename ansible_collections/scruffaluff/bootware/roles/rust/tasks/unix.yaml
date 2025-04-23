@@ -21,6 +21,19 @@
   tags:
     - install
 
+- name: Set Rust default toolchain
+  ansible.builtin.command: rustup default {{ rust_toolchain }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'installing' in rust_toolchain_set"
+  environment:
+    PATH: >-
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
+      }}
+  register: rust_toolchain_set
+  tags:
+    - install
+
 - name: Add Rust components for Unix
   ansible.builtin.command: "rustup component add {{ item }}"
   become: true

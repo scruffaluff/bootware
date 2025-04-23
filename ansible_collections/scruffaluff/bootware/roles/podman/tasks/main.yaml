@@ -32,20 +32,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system != "Win32NT"
-
 - name: Generate Podman shell completions for Unix
   ansible.builtin.command:
     cmd: podman completion {{ item.shell }} --file {{ item.dest }}
@@ -63,23 +49,13 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Create Podman PowerShell user completions directory for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ powershell_user_modules }}/PodmanCompletion"
-    state: directory
-  tags:
-    - completion
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Generate Podman PowerShell user completions module for Windows
   ansible.windows.win_command: >-
-    podman completion powershell --file {{ powershell_user_modules
-    }}/PodmanCompletion/PodmanCompletion.psm1
+    podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
+  loop: "{{ powershell_module_paths }}"
   tags:
     - completion
     - install

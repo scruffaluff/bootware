@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Installs Bootware for Windows systems.
+    Install Bootware for Windows systems.
 #>
 
 # If unable to execute due to policy rules, run
@@ -24,55 +24,31 @@ Options:
   -d, --dest <PATH>         Directory to install Bootware
   -g, --global              Install Bootware for all users
   -h, --help                Print help information
-  -m, --modify-env          Update system environment
+  -p, --preserve-env        Do not update system environment
   -q, --quiet               Print only error messages
   -v, --version <VERSION>   Version of Bootware to install
 '@
 }
 
-function CheckEnvironment($TargetEnv) {
-    if (($PSVersionTable.PSVersion.Major) -lt 5) {
-        Write-Output @'
-PowerShell 5 or later is required to run Bootware.
-Upgrade PowerShell: https://docs.microsoft.com/powershell/scripting/windows-powershell/install/installing-windows-powershell
-'@
-        exit 1
-    }
-
-    $AllowedExecutionPolicy = @('Unrestricted', 'RemoteSigned', 'ByPass')
-    if ((Get-ExecutionPolicy).ToString() -notin $AllowedExecutionPolicy) {
-        Write-Output @"
-PowerShell requires an execution policy [$($AllowedExecutionPolicy -Join ', ')] to run Bootware.
-To set the execution policy to the recommended 'RemoteSigned' run:
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-"@
-        exit 1
-    }
-
-    if (($Target -eq 'Machine') -and (-not (IsAdministrator))) {
-        Write-Output @"
-System level installation requires an administrator console.
-Run this script from an administrator console or install to a user directory.
-"@
-        exit 1
-    }
-}
-
 # Download and install Bootware.
-function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $ModifyEnv) {
+function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) {
     $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version"
 
     Log "Installing Bootware to '$DestDir\bootware.ps1'."
     Invoke-WebRequest -UseBasicParsing -OutFile "$DestDir\bootware.ps1" `
         -Uri "$URL/src/bootware.ps1"
-    InstallCompletion $Version
+    Set-Content -Path "$DestDir\bootware.cmd" -Value @"
+@echo off
+powershell -NoProfile -ExecutionPolicy Bypass -File "$DestDir\bootware.ps1" %*
+"@
+    InstallCompletion $TargetEnv $Version
 
-    if ($ModifyEnv) {
-        $Path = [Environment]::GetEnvironmentVariable('Path', "$Target")
+    if (-not $PreserveEnv) {
+        $Path = [Environment]::GetEnvironmentVariable('Path', "$TargetEnv")
         if (-not ($Path -like "*$DestDir*")) {
             $PrependedPath = "$DestDir;$Path"
             [System.Environment]::SetEnvironmentVariable(
-                'Path', "$PrependedPath", "$Target"
+                'Path', "$PrependedPath", "$TargetEnv"
             )
             Log "Added '$DestDir' to the system path."
             Log 'Source shell profile or restart shell after installation.'
@@ -84,13 +60,21 @@ function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $ModifyEnv) {
 }
 
 # Install completion script for Bootware.
-function InstallCompletion($Version) {
+function InstallCompletion($TargetEnv, $Version) {
     $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
-    $Paths = @(
-        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
-        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
-    )
+    if ($TargetEnv -eq 'Machine') {
+        $Paths = @(
+            'C:\Program Files\PowerShell\Modules'
+            'C:\Program Files\WindowsPowerShell\Modules'
+        )
+    }
+    else {
+        $Paths = @(
+            "$HOME\Documents\PowerShell\Modules"
+            "$HOME\Documents\WindowsPowerShell\Modules"
+        )
+    }
     foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
         Invoke-WebRequest -UseBasicParsing -OutFile `
@@ -116,7 +100,7 @@ function Log($Text) {
 function Main() {
     $ArgIdx = 0
     $DestDir = ''
-    $ModifyEnv = $False
+    $PreserveEnv = $False
     $Version = 'main'
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -137,8 +121,8 @@ function Main() {
                 Usage
                 exit 0
             }
-            { $_ -in '-m', '--modify-env' } {
-                $ModifyEnv = $True
+            { $_ -in '-p', '--preserve-env' } {
+                $PreserveEnv = $True
                 $ArgIdx += 1
                 break
             }
@@ -168,17 +152,23 @@ function Main() {
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
 
     # Set environment target on whether destination is inside user home folder.
-    $DestDir = $(Resolve-Path -Path $DestDir).Path
-    $HomeDir = $(Resolve-Path -Path $HOME).Path
+    $DestDir = [System.IO.Path]::GetFullPath($DestDir)
+    $HomeDir = [System.IO.Path]::GetFullPath($HOME)
     if ($DestDir.StartsWith($HomeDir)) {
         $TargetEnv = 'User'
     }
     else {
         $TargetEnv = 'Machine'
     }
+    if (($TargetEnv -eq 'Machine') -and (-not (IsAdministrator))) {
+        Log @'
+System level installation requires an administrator console.
+Restart this script from an administrator console or install to a user directory.
+'@
+        exit 1
+    }
 
-    CheckEnvironment $TargetEnv
-    InstallBootware $TargetEnv $Version $DestDir $Script $ModifyEnv
+    InstallBootware $TargetEnv $Version $DestDir $Script $PreserveEnv
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.

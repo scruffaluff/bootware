@@ -172,10 +172,9 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
-    # Removed from default test suite as of 04/10/2025 since many packages are
-    # mysteriously missing from its package lists.
+    # Disabled temporarily due to Rsync compatibility bug in freebsd-vm action.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -194,13 +193,13 @@ jobs:
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
-          # during installation as of 02/28/2025. VLC is skipped since it cannot
-          # run as root.
+          # during installation as of 02/28/2025. VLC is skipped
+          # since it cannot run as root.
           run: |
             set -eu
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags desktop,extras
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -228,7 +227,7 @@ jobs:
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --tags desktop,extras
+          bootware bootstrap --dev --no-passwd --retries 3 --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
@@ -328,29 +327,26 @@ jobs:
           bootware config --empty
         shell: powershell
       # Scoop FFSend installer fails as of 12/19/2023 since Windows Defender
-      # considers the program to be a virus. As of 09/08/2024, QEMU installer
-      # experiences timeout issues. Scoop Sops installer fails as of 04/04/2025
-      # due to issues removing a previously installed version.
+      # considers the program to be a virus.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend,qemu,sops --tags desktop,extras
+          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
-      # Appears to work on other Windows servers. LLDB is already installed on
-      # Github hosted runner and is broken.
-      #
-      # TODO: Fix "Unknown binary 'rust-analyzer.exe' in official toolchain
-      # 'stable-x86_64-pc-windows-msvc'" error for Rust.
+      # Appears to work on other Windows servers. LLDB test is skipped since it
+      # is already installed on Github hosted runner and is broken. Rust tests
+      # is skipped since a second and incorrect Rust Analyzer binary is
+      # sometimes created after the Rust role completes.
       - name: Test installed binaries for roles
         run: |
           $Env:Path = "C:\Program Files\Kubeshark;C:\Program Files\Microsoft VS Code\bin;$Env:Path"
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,qemu,rust,sops windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
