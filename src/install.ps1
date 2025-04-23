@@ -37,10 +37,9 @@ function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) 
     Log "Installing Bootware to '$DestDir\bootware.ps1'."
     Invoke-WebRequest -UseBasicParsing -OutFile "$DestDir\bootware.ps1" `
         -Uri "$URL/src/bootware.ps1"
-    Set-Content -Path "$DestDir\bootware.bat" -Value @"
+    Set-Content -Path "$DestDir\bootware.cmd" -Value @"
 @echo off
 powershell -NoProfile -ExecutionPolicy Bypass -File "$DestDir\bootware.ps1" %*
-exit /b %errorlevel%
 "@
     InstallCompletion $TargetEnv $Version
 
@@ -153,8 +152,8 @@ function Main() {
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
 
     # Set environment target on whether destination is inside user home folder.
-    $DestDir = $(Resolve-Path -Path $DestDir).Path
-    $HomeDir = $(Resolve-Path -Path $HOME).Path
+    $DestDir = [System.IO.Path]::GetFullPath($DestDir)
+    $HomeDir = [System.IO.Path]::GetFullPath($HOME)
     if ($DestDir.StartsWith($HomeDir)) {
         $TargetEnv = 'User'
     }

@@ -257,6 +257,22 @@ def _paste-super [] {
 
 # Public convenience functions.
 
+# Complete commandline argument with Carapace.
+def carapace-complete [spans: list<string>] {
+    let expanded_alias = scope aliases
+    | where name == $spans.0
+    | get --ignore-errors 0
+    | get --ignore-errors expansion
+
+    let spans = if $expanded_alias != null  {
+        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
+    } else {
+        $spans | skip 1 | prepend ($spans.0)
+    }
+
+    carapace $spans.0 nushell ...$spans | from json
+}
+
 # Open Nushell history file with default editor.
 def edit-history [] {
     if "EDITOR" in $env {
@@ -810,13 +826,32 @@ $env.config = {
     show_banner: false
 }
 
-# Enable Fish completions if available.
-$env.config.completions = if (which "fish" | is-empty) {
-    {}
-} else {
-    {
+# Enable external completions if available.
+if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
+    $env.config.completions = {
+        external: {
+            completer: {|spans|
+                let completions = fish-complete $spans
+                if ($completions | is-empty) {
+                    carapace-complete $spans
+                } else {
+                    $completions
+                }
+            }
+            enable: true
+        }
+    }
+} else if (which "fish" | is-not-empty) {
+    $env.config.completions = {
         external: {
             completer: {|spans| fish-complete $spans }
+            enable: true
+        }
+    }
+} else if (which "carapace" | is-not-empty) {
+    $env.config.completions = {
+        external: {
+            completer: {|spans| carapace-complete $spans }
             enable: true
         }
     }
