@@ -274,9 +274,6 @@ function Bootstrap() {
     $WSLConfigPath = WSLPath $ConfigPath
     if (-not $Remote) {
         $Inventory = FindRelativeIP
-        if ($(Get-Service -Name sshd).Status -ne "Running") {
-            Setup
-        }
     }
     $PlaybookPath = WSLPath $Playbook
 
