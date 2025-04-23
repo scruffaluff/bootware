@@ -172,8 +172,9 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
+    # Disabled temporarily due to Rsync compatibility bug in freebsd-vm action.
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -192,14 +193,13 @@ jobs:
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
-          # during installation as of 02/28/2025. Utility is skipped to avoid
-          # rsync compatibility issues the freebsd-vm action. VLC is skipped
+          # during installation as of 02/28/2025. VLC is skipped
           # since it cannot run as root.
           run: |
             set -eu
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python,utility --tags all,never
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t

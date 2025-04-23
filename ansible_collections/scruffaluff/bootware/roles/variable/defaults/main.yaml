@@ -92,9 +92,12 @@ nushell_user_vendor_autoload: >-
   {{  nushell_user_vendor_autoload_.get(ansible_system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
-powershell_modules: C:\\Program Files\\PowerShell\\Modules
-powershell_user_modules: >-
-  {{ user_home }}\\Documents\\WindowsPowerShell\\Modules
+powershell_module_paths:
+  - C:\\Program Files\\PowerShell\\Modules
+  - C:\\Program Files\\WindowsPowerShell\\Modules
+powershell_user_module_paths:
+  - "{{ user_home }}\\Documents\\PowerShell\\Modules"
+  - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
 # Backslashes are required for Windows Defender firewall rules.
 scoop_apps: >-
   {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps

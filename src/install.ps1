@@ -42,7 +42,7 @@ function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) 
 powershell -NoProfile -ExecutionPolicy Bypass -File "$DestDir\bootware.ps1" %*
 exit /b %errorlevel%
 "@
-    InstallCompletion $Version
+    InstallCompletion $TargetEnv $Version
 
     if (-not $PreserveEnv) {
         $Path = [Environment]::GetEnvironmentVariable('Path', "$TargetEnv")
@@ -61,13 +61,21 @@ exit /b %errorlevel%
 }
 
 # Install completion script for Bootware.
-function InstallCompletion($Version) {
+function InstallCompletion($TargetEnv, $Version) {
     $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
-    $Paths = @(
-        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
-        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
-    )
+    if ($TargetEnv -eq 'Machine') {
+        $Paths = @(
+            'C:\Program Files\PowerShell\Modules'
+            'C:\Program Files\WindowsPowerShell\Modules'
+        )
+    }
+    else {
+        $Paths = @(
+            "$HOME\Documents\PowerShell\Modules"
+            "$HOME\Documents\WindowsPowerShell\Modules"
+        )
+    }
     foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
         Invoke-WebRequest -UseBasicParsing -OutFile `

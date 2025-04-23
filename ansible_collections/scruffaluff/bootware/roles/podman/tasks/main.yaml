@@ -51,11 +51,11 @@
 
 - name: Generate Podman PowerShell user completions module for Windows
   ansible.windows.win_command: >-
-    podman completion powershell --file {{ powershell_modules
-    }}/PodmanCompletion.psm1
+    podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
+  loop: "{{ powershell_module_paths }}"
   tags:
     - completion
     - install

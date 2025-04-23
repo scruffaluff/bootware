@@ -104,11 +104,9 @@
   ansible.windows.win_file:
     path: "{{ item }}"
     state: directory
-  loop:
-    - "{{ nushell_vendor_autoload }}"
-    - "{{ nushell_user_vendor_autoload }}"
-    - "{{ powershell_modules }}"
-    - "{{ powershell_user_modules }}"
+  loop: >-
+    {{ [nushell_vendor_autoload, nushell_user_vendor_autoload] +
+    powershell_module_paths + powershell_user_module_paths }}
   tags:
     - completion
     - install

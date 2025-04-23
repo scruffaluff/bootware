@@ -62,20 +62,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create PowerShell settings directories for Windows
-  ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/{{ item }}"
-    state: directory
-  loop:
-    - Documents/PowerShell
-    - Documents/PowerShell/Modules
-    - Documents/WindowsPowerShell
-    - Documents/WindowsPowerShell/Modules
-  tags:
-    - config
-  when: ansible_system == "Win32NT"
-
 - name: Copy PowerShell settings files for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}/{{ item }}"
@@ -89,34 +75,20 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Install local PowerShell modules
+- name: Copy PowerShell user modules for Windows
+  ansible.windows.win_copy:
+    dest: "{{ item[0] }}/{{ item[1] }}.psm1"
+    force: true
+    owner: "{{ user_id }}"
+    src: "{{ item[1] }}.psm1"
+  loop: >-
+    {{ powershell_user_module_paths | product(powershell_modules) | list }}
   tags:
     - config
   vars:
-    powershell_module_folders:
-      - Documents/PowerShell/Modules
-      - Documents/WindowsPowerShell/Modules
     powershell_modules:
       - SSHCompletion
   when: ansible_system == "Win32NT"
-  block:
-    - name: Create PowerShell module directories for Windows
-      ansible.windows.win_file:
-        owner: "{{ user_id }}"
-        path: "{{ user_home }}/{{ item[0] }}/{{ item[1] }}"
-        state: directory
-      loop:
-        "{{ powershell_module_folders | product(powershell_modules) | list }}"
-
-    - name: Copy PowerShell modules for Windows
-      ansible.windows.win_copy:
-        dest: >-
-          {{ user_home }}/{{ item[0] }}/{{ item[1] }}/{{ item[1] }}.psm1
-        force: true
-        owner: "{{ user_id }}"
-        src: "{{ item[1] }}.psm1"
-      loop:
-        "{{ powershell_module_folders | product(powershell_modules) | list }}"
 
 - name: Disable PowerShell update check during startup for Windows
   ansible.windows.win_environment:

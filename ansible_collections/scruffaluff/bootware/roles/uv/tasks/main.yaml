@@ -77,20 +77,31 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Generate Uv user shell completions for Windows
+- name: Generate Uv Nushell shell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
-    $Text = uv --generate-shell-completion {{ item.shell }}
-    [System.IO.File]::WriteAllLines("{{ item.path }}", $Text)
+    $Text = uv --generate-shell-completion nushell
+    [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/uv.nu", $Text)
   changed_when: true
   environment:
     Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
-  loop:
-    - path: "{{ nushell_vendor_autoload }}/uv.nu"
-      shell: nushell
-    - path: "{{ powershell_modules }}/UvCompletion.psm1"
-      shell: powershell
   tags:
+    - completion
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Generate Uv PowerShell completions for Windows
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = uv --generate-shell-completion powershell
+    [System.IO.File]::WriteAllLines("{{ item }}/UvCompletion.psm1", $Text)
+  changed_when: true
+  environment:
+    Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
+  loop: "{{ powershell_module_paths }}"
+  tags:
+    - completion
     - install
   when: ansible_system == "Win32NT"
