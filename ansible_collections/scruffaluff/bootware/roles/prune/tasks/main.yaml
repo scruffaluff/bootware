@@ -1,0 +1,10 @@
+---
+- name: Remove bloatware packages for Linux
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ bloatware_linux_packages }}"
+  tags:
+    - install
+  when: ansible_system == "Linux"

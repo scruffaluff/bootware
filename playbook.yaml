@@ -8,37 +8,42 @@
   gather_facts: false
   hosts: all
   tasks:
-    - name: Update system package managers
+    - name: Collect facts about system
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
-            - server
-            - update
-            - wsl
-        name: scruffaluff.bootware.update
+            - always
+            - fact
+        name: scruffaluff.bootware.fact
       tags:
-        - desktop
-        - server
-        - update
-        - wsl
+        - always
+        - fact
+
+    - name: Create standard operating system paths
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - always
+            - path
+            - setup
+        name: scruffaluff.bootware.path
+      tags:
+        - always
+        - path
+        - setup
 
     - name: Install essential packages
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
+            - always
             - essential
-            - server
-            - sysadmin
-            - wsl
+            - setup
         name: scruffaluff.bootware.essential
       tags:
-        - desktop
+        - always
         - essential
-        - server
-        - sysadmin
-        - wsl
+        - setup
 
     - name: Install Age encryption tool
       ansible.builtin.include_role:
@@ -291,12 +296,12 @@
           tags:
             - compass
             - database
-            - never
+            - desktop
         name: scruffaluff.bootware.compass
       tags:
         - compass
         - database
-        - never
+        - desktop
 
     - name: Install Croc secure file transfer
       ansible.builtin.include_role:
@@ -790,6 +795,23 @@
         - server
         - wsl
 
+    - name: Install Htop process monitor
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - htop
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.htop
+      tags:
+        - desktop
+        - htop
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Hyperfine benchmarking tool
       ansible.builtin.include_role:
         apply:
@@ -879,14 +901,18 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - desktop
             - k3sup
             - kubernetes
-            - never
+            - server
+            - wsl
         name: scruffaluff.bootware.k3sup
       tags:
+        - desktop
         - k3sup
         - kubernetes
-        - never
+        - server
+        - wsl
 
     - name: Install K9s Kubernetes manager
       ansible.builtin.include_role:
@@ -1202,36 +1228,6 @@
         - desktop
         - obsidian
 
-    - name: Install optional packages
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - package
-            - server
-            - wsl
-        name: scruffaluff.bootware.package
-      tags:
-        - desktop
-        - package
-        - server
-        - wsl
-
-    - name: Create standard operating system paths
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - path
-            - server
-            - wsl
-        name: scruffaluff.bootware.path
-      tags:
-        - desktop
-        - path
-        - server
-        - wsl
-
     - name: Install Podman container platform
       ansible.builtin.include_role:
         apply:
@@ -1275,6 +1271,23 @@
       tags:
         - desktop
         - procs
+        - server
+        - sysadmin
+        - wsl
+
+    - name: Prune bloatware from system
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - prune
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.prune
+      tags:
+        - desktop
+        - prune
         - server
         - sysadmin
         - wsl
@@ -1535,6 +1548,23 @@
         - sqlite
         - wsl
 
+    - name: Install SSH utilities
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - server
+            - ssh
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.ssh
+      tags:
+        - desktop
+        - server
+        - ssh
+        - sysadmin
+        - wsl
+
     - name: Install Starship shell prompt
       ansible.builtin.include_role:
         apply:
@@ -1674,23 +1704,6 @@
         - usql
         - wsl
 
-    - name: Install general utilities
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - server
-            - sysadmin
-            - utility
-            - wsl
-        name: scruffaluff.bootware.utility
-      tags:
-        - desktop
-        - server
-        - sysadmin
-        - utility
-        - wsl
-
     - name: Install Uv Python package manager
       ansible.builtin.include_role:
         apply:
@@ -1714,14 +1727,18 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - desktop
             - kubernetes
-            - never
+            - server
             - velero
+            - wsl
         name: scruffaluff.bootware.velero
       tags:
+        - desktop
         - kubernetes
-        - never
+        - server
         - velero
+        - wsl
 
     - name: Install Vim text editor
       ansible.builtin.include_role:

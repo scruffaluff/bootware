@@ -1,9 +1,0 @@
----
-apt_packages: []
-chocolatey_packages: []
-dnf_packages: []
-homebrew_casks: []
-homebrew_packages: []
-pacman_packages: []
-pkg_packages: []
-scoop_packages: []

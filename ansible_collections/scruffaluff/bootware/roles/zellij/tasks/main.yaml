@@ -65,20 +65,6 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system != "Win32NT"
-
 - name: Create Zellij shell completions for Unix
   ansible.builtin.shell:
     cmd: zellij setup --generate-completion {{ item }} > /tmp/zellij.{{ item }}

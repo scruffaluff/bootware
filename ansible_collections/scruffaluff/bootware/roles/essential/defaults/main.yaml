@@ -1,12 +1,4 @@
 ---
-bloatware_linux_packages_:
-  always: []
-  apk:
-    - command-not-found
-  apt:
-    - command-not-found
-  dnf:
-    - PackageKit-command-not-found
 essential_linux_packages_:
   always:
     - acl
@@ -71,9 +63,6 @@ essential_linux_packages_:
     - which
     - xz
     - zip
-bloatware_linux_packages: >-
-  {{ bloatware_linux_packages_.always +
-  bloatware_linux_packages_.get(ansible_pkg_mgr, []) }}
 essential_linux_packages: >-
   {{ essential_linux_packages_.always +
   essential_linux_packages_.get(ansible_pkg_mgr, []) }}

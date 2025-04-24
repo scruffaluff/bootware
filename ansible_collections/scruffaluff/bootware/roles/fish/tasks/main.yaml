@@ -49,26 +49,17 @@
       {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   when: ansible_system != "Win32NT"
 
-- name: Create Fish completions directory for Unix
+- name: Create Fish user directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ fish_user_completion }}"
+    path: "{{ item }}"
     state: directory
   become: true
-  tags:
-    - install
-  when: ansible_system != "Win32NT"
-
-- name: Create Fish functions directory for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/fish/functions"
-    state: directory
-  become: true
+  loop:
+    - "{{ fish_user_completion }}"
+    - "{{ user_home }}/.config/fish/functions"
   tags:
     - install
   when: ansible_system != "Win32NT"

@@ -1,9 +1,6 @@
 ---
 dependencies:
-  - role: fact
-    when: fact_role_executed is not defined
-  - role: path
-    when: path_role_executed is not defined
+  - role: variable
   # Wireshark GUI cask needs to be installed first on MacOS due to conflict with
   # Wireshark CLI formula, which Termshark depends on.
   - role: wireshark

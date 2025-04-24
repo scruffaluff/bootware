@@ -139,22 +139,6 @@
     - plugin
   when: ansible_system == "Win32NT"
 
-- name: Create user shell completion directories for Unix
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_user_completion }}"
-    - "{{ fish_user_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system != "Win32NT" and user_id != "root"
-
 - name: Generate PNPM user shell completions for Unix
   ansible.builtin.shell:
     cmd: pnpm completion {{ item.shell }} > {{ item.path }}
