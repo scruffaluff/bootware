@@ -1,0 +1,12 @@
+---
+bloatware_linux_packages_:
+  always: []
+  apk:
+    - command-not-found
+  apt:
+    - command-not-found
+  dnf:
+    - PackageKit-command-not-found
+bloatware_linux_packages: >-
+  {{ bloatware_linux_packages_.always +
+  bloatware_linux_packages_.get(ansible_pkg_mgr, []) }}

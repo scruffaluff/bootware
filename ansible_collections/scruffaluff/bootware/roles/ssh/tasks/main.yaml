@@ -1,0 +1,29 @@
+---
+- name: Install SSH for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: rsync
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install SSH for Linux
+  ansible.builtin.package:
+    name:
+      - openssh
+      - rsync
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install SSH for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name:
+      - openssh
+      - rsync
+  tags:
+    - install
+  when: ansible_system == "Darwin"

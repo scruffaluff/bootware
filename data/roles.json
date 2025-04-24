@@ -148,6 +148,11 @@
     "skip": [{ "arch": "arm64", "os": "linux" }],
     "tests": ["htmlq --version"]
   },
+  {
+    "name": "htop",
+    "skip": [{ "os": "windows" }],
+    "tests": ["htop --version"]
+  },
   { "name": "hyperfine", "tests": ["hyperfine --version"] },
   { "name": "ignore" },
   { "name": "jq", "tests": ["jq --version"] },
@@ -261,7 +266,6 @@
     }
   },
   { "name": "obsidian" },
-  { "name": "package" },
   { "name": "podman", "tests": ["podman --version"] },
   {
     "name": "powershell",
@@ -273,6 +277,7 @@
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["procs --version"]
   },
+  { "name": "prune" },
   {
     "name": "python",
     "tests": {
@@ -344,6 +349,13 @@
     }
   },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
+  {
+    "name": "ssh",
+    "tests": {
+      "default": ["ssh -V", "rsync -V"],
+      "windows": ["ssh -V"]
+    }
+  },
   { "name": "starship", "tests": ["starship --version"] },
   { "name": "super" },
   { "name": "system" },
@@ -364,7 +376,6 @@
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   { "name": "topgrade", "tests": ["topgrade --version"] },
   { "name": "usql", "tests": ["usql --version"] },
-  { "name": "utility" },
   { "name": "uv", "tests": ["uv --version"] },
   {
     "name": "velero",

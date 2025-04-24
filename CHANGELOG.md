@@ -11,7 +11,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Automatic Windows connections without additional flags.
 - Tags completion, config, install to tasks.
-- Carapace, Fastfetch, Nushell, Obsidian, Podman, and Uv roles.
+- Carapace, Fastfetch, Htop, Nushell, Obsidian, Podman, Prune, SSH, and Uv
+  roles.
 - Support for Yazi 0.4.
 - Variable to configure default user shell.
 
@@ -33,7 +34,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Bats, Bun, and Datree roles.
+- Bats, Bun, Datree, Package, Update, and Utility roles.
 
 ## 0.8.3 - 2024-12-05
 

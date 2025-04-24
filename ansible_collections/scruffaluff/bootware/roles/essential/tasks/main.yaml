@@ -79,22 +79,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-# Replaced temporarily by task below since win_scoop_bucket does not properly
-# capture output and "scoop bucket add" now fails if the bucket is already
-# added.
-# - name: Add essential Scoop buckets for Windows
-#   community.windows.win_scoop_bucket:
-#     name: "{{ item }}"
-# environment:
-#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
-#   loop:
-#     - extras
-#     - main
-#     - versions
-#   tags:
-#     - install
-#   when: ansible_system == "Win32NT"
-
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: scoop bucket add {{ item }}
   changed_when: "'bucket was added successfully' in essential_scoop_bucket"
@@ -136,16 +120,6 @@
   tags:
     - install
   when: ansible_system == "FreeBSD"
-
-- name: Remove bloatware packages for Linux
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: absent
-  become: true
-  loop: "{{ bloatware_linux_packages }}"
-  tags:
-    - install
-  when: ansible_system == "Linux"
 
 - name: Install essential packages for Linux
   ansible.builtin.package:

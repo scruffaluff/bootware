@@ -1,0 +1,25 @@
+---
+- name: Install Htop for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: htop
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install Htop for Linux
+  ansible.builtin.package:
+    name: htop
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Htop for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: htop
+  tags:
+    - install
+  when: ansible_system == "Darwin"
