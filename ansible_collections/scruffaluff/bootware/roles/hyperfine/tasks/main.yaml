@@ -72,8 +72,6 @@
     - install
   when: ansible_system == "Win32NT"
 
- and hyperfine_linux is failed
-
 - name: Install Hyperfine shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
