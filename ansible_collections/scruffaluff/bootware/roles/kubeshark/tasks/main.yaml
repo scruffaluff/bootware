@@ -61,20 +61,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system in ["Darwin", "Linux"]
-
 - name: Create Kubeshark shell completions for Unix
   ansible.builtin.shell:
     cmd: kubeshark completion {{ item }} > /tmp/kubeshark.{{ item }}

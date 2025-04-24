@@ -16,7 +16,7 @@
         name: scruffaluff.bootware.fact
       tags:
         - always
-  
+
     - name: Create standard operating system paths
       ansible.builtin.include_role:
         apply:

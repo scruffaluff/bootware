@@ -83,22 +83,6 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
 
-- name: Create shell completion directories for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == 'amd64') and bat_linux is failed
-
 - name: Install Bat shell completions for Linux
   ansible.builtin.copy:
     dest: "{{ item.dest }}"

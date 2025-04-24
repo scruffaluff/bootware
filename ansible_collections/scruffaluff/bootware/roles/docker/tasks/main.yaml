@@ -212,20 +212,6 @@
     - install
   when: ansible_system == "Linux" and docker_systemd.stat.exists
 
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system != "Win32NT"
-
 - name: Install Docker shell completions for Unix
   ansible.builtin.get_url:
     dest: "{{ item.dest }}"

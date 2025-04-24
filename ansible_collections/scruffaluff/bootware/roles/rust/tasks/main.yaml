@@ -43,20 +43,6 @@
     (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
     == "apk" and system_architecture == "amd64")
 
-- name: Create user bin directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.local/bin"
-    state: directory
-  become: true
-  tags:
-    - install
-  when: >-
-    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
-    == "apk" and system_architecture == "amd64")
-
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
     dest: "{{ user_home }}/.local/bin/rust-analyzer"

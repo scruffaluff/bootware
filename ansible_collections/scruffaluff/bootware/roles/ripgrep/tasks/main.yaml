@@ -72,20 +72,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create shell completion directories for Unix
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-  tags:
-    - completion
-    - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
-
 - name: Install Ripgrep shell completions for Unix
   ansible.builtin.copy:
     dest: "{{ item.dest }}"
