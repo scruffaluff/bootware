@@ -62,8 +62,8 @@
 
 - name: Parse GNOME version for GNOME desktops
   ansible.builtin.set_fact:
-    glibc_version: >-
-      {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
+    gnome_version: >-
+      {{ gnome_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
   when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Mark role as executed to prevent reruns

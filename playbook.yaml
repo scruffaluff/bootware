@@ -13,43 +13,37 @@
         apply:
           tags:
             - always
+            - fact
         name: scruffaluff.bootware.fact
       tags:
         - always
+        - fact
 
     - name: Create standard operating system paths
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
+            - always
             - path
-            - server
-            - sysadmin
-            - wsl
+            - setup
         name: scruffaluff.bootware.path
       tags:
-        - desktop
+        - always
         - path
-        - server
-        - sysadmin
-        - wsl
+        - setup
 
     - name: Install essential packages
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
+            - always
             - essential
-            - server
-            - sysadmin
-            - wsl
+            - setup
         name: scruffaluff.bootware.essential
       tags:
-        - desktop
+        - always
         - essential
-        - server
-        - sysadmin
-        - wsl
+        - setup
 
     - name: Install Age encryption tool
       ansible.builtin.include_role:
