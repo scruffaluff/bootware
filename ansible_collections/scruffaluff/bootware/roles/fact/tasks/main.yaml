@@ -69,4 +69,4 @@
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true
-    variable_role_executed: true
+    fact_role_executed: true

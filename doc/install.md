@@ -25,7 +25,7 @@ curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- --help
 ```
 
 ```powershell [Windows]
-powershell { & ([ScriptBlock]::Create((iwr -useb https://scruffaluff.github.io/bootware/install.ps1))) "--help" }
+powershell { iex "& { $(iwr -useb https://scruffaluff.github.io/bootware/install.ps1) } --help" }
 ```
 
 :::

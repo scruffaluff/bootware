@@ -313,9 +313,11 @@ def fzf-path-widget [] {
 
     # Split command line arguments while considering quotes.
     let parts = $line
-    | parse --regex '(".*?"|\'.*?\'|[^\s]+|\s+)' 
+    | parse --regex '(".*?"|\'.*?\'|`.*?`|[^\s]+|\s+)' 
     | get capture0
+
     # Find argument under the cursor.
+    mut index = 0
     mut token = ""
     mut sum = 0
     for part in $parts {
@@ -326,6 +328,7 @@ def fzf-path-widget [] {
             }
             break
         }
+        $index += 1
     }
 
     # Build Fzf search path from current token.
@@ -354,8 +357,9 @@ def fzf-path-widget [] {
         commandline edit --insert $path
         commandline set-cursor --end
     } else {
-        commandline edit --replace ($line | str replace $token $full_path)
         let diff = ($full_path | str length) - ($token | str length)
+        let edit = $parts | update $index $full_path | str join
+        commandline edit --replace $edit
         commandline set-cursor ($sum + $diff)
     }
 }
