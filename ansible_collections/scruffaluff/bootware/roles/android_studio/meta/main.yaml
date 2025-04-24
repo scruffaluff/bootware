@@ -2,8 +2,6 @@
 dependencies:
   - role: fact
     when: fact_role_executed is not defined
-  - role: path
-    when: path_role_executed is not defined
   - role: flatpak
     when: >-
       flatpak_role_executed is not defined and ansible_system == "Linux" and

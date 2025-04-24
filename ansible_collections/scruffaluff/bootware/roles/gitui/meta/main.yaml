@@ -2,7 +2,5 @@
 dependencies:
   - role: fact
     when: fact_role_executed is not defined
-  - role: path
-    when: path_role_executed is not defined
   - role: git
     when: git_role_executed is not defined
