@@ -812,7 +812,7 @@ setup_arch() {
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible'
-    # Installing Ansible via Python causes pacman conflicts with AWSCLI.
+    # Installing Ansible via Python causes pacman conflicts with AWS CLI.
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync ansible
   fi

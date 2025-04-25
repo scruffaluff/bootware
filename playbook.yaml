@@ -8,16 +8,16 @@
   gather_facts: false
   hosts: all
   tasks:
-    - name: Collect facts about system
+    - name: Establish connection to host
       ansible.builtin.include_role:
         apply:
           tags:
             - always
-            - fact
-        name: scruffaluff.bootware.fact
+            - connect
+        name: scruffaluff.bootware.connect
       tags:
         - always
-        - fact
+        - connect
 
     - name: Create standard operating system paths
       ansible.builtin.include_role:
@@ -138,15 +138,15 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - awscli
+            - aws
             - cloud
             - desktop
             - server
             - sysadmin
             - wsl
-        name: scruffaluff.bootware.awscli
+        name: scruffaluff.bootware.aws
       tags:
-        - awscli
+        - aws
         - cloud
         - desktop
         - server

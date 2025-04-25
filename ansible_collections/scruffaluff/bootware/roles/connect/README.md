@@ -1,6 +1,6 @@
-# Awscli
+# Connect
 
-Awscli is an Ansible role
+Connect is an Ansible role
 
 ## Requirements
 

@@ -595,6 +595,7 @@ function Setup() {
 Setup requires an administrator console.
 Restart this script from an administrator console to continue.
 '@
+        exit 1
     }
 
     # Install Chocolatey package manager.

@@ -51,9 +51,19 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: bat_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed
+
 - name: Download Bat for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ bat_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -74,8 +84,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
-      }}-unknown-linux-{{ system_libc }}/bat
+      {{ bat_temp.path }}/bat-v{{ bat_formula.json.versions.stable }}-{{
+      bat_arch }}-unknown-linux-{{ system_libc }}/bat
   become: true
   tags:
     - install
@@ -90,8 +100,9 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/bat-v{{ bat_formula.json.versions.stable }}-{{ bat_arch
-      }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell }}
+      {{ bat_temp.path }}/bat-v{{ bat_formula.json.versions.stable }}-{{
+      bat_arch }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell
+      }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/bat"

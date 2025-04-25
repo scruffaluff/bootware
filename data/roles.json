@@ -23,7 +23,7 @@
     }
   },
   { "name": "audio", "tests": ["play --version"] },
-  { "name": "awscli", "tests": ["aws --version"] },
+  { "name": "aws", "tests": ["aws --version"] },
   {
     "name": "bash",
     "skip": [{ "os": "windows" }],

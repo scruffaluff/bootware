@@ -17,9 +17,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: carapace_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Carapace for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ carapace_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -37,7 +45,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/carapace
+    src: "{{ carapace_temp.path }}/carapace"
   become: true
   tags:
     - install

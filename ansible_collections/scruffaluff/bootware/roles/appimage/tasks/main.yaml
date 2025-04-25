@@ -1,5 +1,5 @@
 ---
-- name: Install AWSCLI for Alpine
+- name: Install FUSE for Alpine
   become: true
   community.general.apk:
     name: fuse

@@ -17,56 +17,34 @@
     - install
   when: ansible_system == "Linux"
 
-# Temporarily overriden as of 05/31/2024 until Homebrew gets the Croc version
-# correct.
-# - name: Get latest Croc version for Linux
-#   ansible.builtin.uri:
-#     method: GET
-#     return_content: true
-#     url: https://formulae.brew.sh/api/formula/croc.json
-#   register: croc_formula
-#   tags:
-#     - install
-#   when: ansible_system == "Linux" and croc_linux is failed
-
-# - name: Download Croc for Linux
-#   ansible.builtin.unarchive:
-#     dest: /tmp
-#     mode: "777"
-#     remote_src: true
-#     src: >-
-#       https://github.com/schollz/croc/releases/download/v{{
-#       croc_formula.json.versions.stable }}/croc_v{{
-#       croc_formula.json.versions.stable }}_Linux-{{
-#       croc_arch[system_architecture] }}.tar.gz
-#   tags:
-#     - install
-#   vars:
-#     croc_arch:
-#       amd64: 64bit
-#       arm64: ARM64
-#   when: ansible_system == "Linux" and croc_linux is failed
-
 - name: Get latest Croc version for Linux
   ansible.builtin.uri:
-    headers: "{{ github_api_headers }}"
     method: GET
     return_content: true
-    url: https://api.github.com/repos/schollz/croc/releases/latest
-  register: croc_release
+    url: https://formulae.brew.sh/api/formula/croc.json
+  register: croc_formula
+  tags:
+    - install
+  when: ansible_system == "Linux" and croc_linux is failed
+
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: croc_temp
   tags:
     - install
   when: ansible_system == "Linux" and croc_linux is failed
 
 - name: Download Croc for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ croc_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/schollz/croc/releases/download/{{
-      croc_release.json.tag_name }}/croc_{{ croc_release.json.tag_name
-      }}_Linux-{{ croc_arch[system_architecture] }}.tar.gz
+      https://github.com/schollz/croc/releases/download/v{{
+      croc_formula.json.versions.stable }}/croc_v{{
+      croc_formula.json.versions.stable }}_Linux-{{
+      croc_arch[system_architecture] }}.tar.gz
   tags:
     - install
   vars:
@@ -81,7 +59,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/croc
+    src: "{{ croc_temp.path }}/croc"
   become: true
   tags:
     - install

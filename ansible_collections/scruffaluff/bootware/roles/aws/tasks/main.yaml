@@ -1,5 +1,5 @@
 ---
-- name: Install AWSCLI for FreeBSD
+- name: Install AWS CLI for FreeBSD
   become: true
   community.general.pkgng:
     name: py311-awscli
@@ -7,7 +7,7 @@
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Install AWSCLI for Alpine
+- name: Install AWS CLI for Alpine
   become: true
   community.general.apk:
     name: aws-cli
@@ -15,25 +15,33 @@
     - install
   when: ansible_pkg_mgr == "apk"
 
-- name: Download AWSCLI for Linux
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: aws_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Download AWS CLI for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ aws_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
       https://awscli.amazonaws.com/awscli-exe-linux-{{
-      awscli_arch[system_architecture] }}.zip
+      aws_arch[system_architecture] }}.zip
   tags:
     - install
   vars:
-    awscli_arch:
+    aws_arch:
       amd64: x86_64
       arm64: aarch64
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Install AWSCLI for Linux
+- name: Install AWS CLI for Linux
   ansible.builtin.command:
-    cmd: /tmp/aws/install --update
+    cmd: "{{ aws_temp.path }}/aws/install --update"
   become: true
   changed_when: "'Found same AWS CLI version' not in aws_install"
   register: aws_install
@@ -41,7 +49,7 @@
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Install AWSCLI for MacOS
+- name: Install AWS CLI for MacOS
   become: true
   become_user: "{{ brew_user }}"
   community.general.homebrew:
@@ -50,7 +58,7 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Install AWSCLI for Windows
+- name: Install AWS CLI for Windows
   community.windows.win_scoop:
     global: "{{ scoop_global }}"
     name: aws

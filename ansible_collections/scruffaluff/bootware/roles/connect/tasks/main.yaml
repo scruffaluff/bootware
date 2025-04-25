@@ -1,0 +1,22 @@
+---
+- name: Query host for PowerShell information
+  ansible.builtin.raw: echo $PSVersionTable
+  changed_when: false
+  ignore_errors: true
+  register: connect_powershell_version
+
+- name: Set connection variables if system is Windows
+  ansible.builtin.set_fact:
+    ansible_pkg_mgr: scoop
+    ansible_shell_type: powershell
+  when: >-
+    connect_powershell_version is success and 'PSEdition' in
+    connect_powershell_version.stdout
+
+- name: Gather facts about system
+  ansible.builtin.gather_facts: {}
+
+- name: Set become method for Alpine
+  ansible.builtin.set_fact:
+    ansible_become_method: doas
+  when: ansible_system == "Linux" and ansible_pkg_mgr == "apk"

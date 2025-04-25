@@ -79,10 +79,20 @@
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
     and not android_studio_check.stat.exists
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: android_studio_temp
+  tags:
+    - install
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    and not android_studio_check.stat.exists
+
 # Using source build since virtual devices fail onFlatpak build.
 - name: Download Android Studio for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ android_studio_temp.path }}"
     mode: "755"
     remote_src: true
     src: >-
@@ -101,7 +111,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/android-studio
+    src: "{{ android_studio_temp.path }}/android-studio"
   become: true
   tags:
     - install
