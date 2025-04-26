@@ -40,9 +40,19 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
     failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: glow_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and glow_linux is
+    failed
+
 - name: Download Glow for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ glow_temp.path }}"
     mode: "755"
     remote_src: true
     src: >-
@@ -62,8 +72,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/glow_{{ glow_formula.json.versions.stable }}_Linux_{{ glow_arch
-      }}/glow
+      {{ glow_temp.path }}/glow_{{ glow_formula.json.versions.stable }}_Linux_{{
+      glow_arch }}/glow
   become: true
   tags:
     - install

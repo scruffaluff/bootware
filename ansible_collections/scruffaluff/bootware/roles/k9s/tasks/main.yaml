@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: k9s_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and k9s_linux is failed
+
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ k9s_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -46,7 +54,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/k9s
+    src: "{{ k9s_temp.path }}/k9s"
   become: true
   tags:
     - install

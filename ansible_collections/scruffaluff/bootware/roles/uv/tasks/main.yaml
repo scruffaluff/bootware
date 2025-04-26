@@ -17,9 +17,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: uv_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Uv for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ uv_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -36,7 +44,8 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/uv-{{ uv_arch }}-unknown-linux-{{ system_libc }}/uv
+    src: >-
+      {{ uv_temp.path }}/uv-{{ uv_arch }}-unknown-linux-{{ system_libc }}/uv
   become: true
   tags:
     - install
@@ -65,7 +74,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - path: "{{ bash_completion }}/uv"
       shell: bash
@@ -85,7 +94,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/uv.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
+    Path: '{{ scoop_apps }}\uv\current;{{ ansible_env.Path }}'
   tags:
     - completion
     - install
@@ -99,7 +108,7 @@
     [System.IO.File]::WriteAllLines("{{ item }}/UvCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\uv\\current;{{ ansible_env.Path }}"
+    Path: '{{ scoop_apps }}\uv\current;{{ ansible_env.Path }}'
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion

@@ -19,9 +19,17 @@
     - install
   when: ansible_system == "Linux" and velero_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: velero_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and velero_linux is failed
+
 - name: Download Velero for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ velero_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -40,8 +48,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/velero-v{{ velero_formula.json.versions.stable }}-linux-{{
-      system_architecture }}/velero
+      {{ velero_temp.path }}/velero-v{{ velero_formula.json.versions.stable
+      }}-linux-{{ system_architecture }}/velero
   become: true
   tags:
     - install
@@ -66,11 +74,11 @@
 
 - name: Create Velero shell completions for Unix
   ansible.builtin.shell:
-    cmd: velero completion {{ item }} > /tmp/velero.{{ item }}
+    cmd: velero completion {{ item }} > {{ velero_temp.path }}/velero.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -85,7 +93,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/velero.{{ item.shell }}
+    src: "{{ velero_temp.path }}/velero.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/velero"

@@ -15,9 +15,19 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: rust_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64")
+
 - name: Download Rust Analyzer for Linux
   ansible.builtin.get_url:
-    dest: /tmp/rust-analyzer.gz
+    dest: "{{ rust_temp.path }}/rust-analyzer.gz"
     mode: "755"
     url: >-
       https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-{{
@@ -35,7 +45,7 @@
 
 - name: Decompress Rust Analyzer for Linux
   ansible.builtin.command:
-    cmd: gzip --decompress --force /tmp/rust-analyzer.gz
+    cmd: gzip --decompress --force {{ rust_temp.path }}/rust-analyzer.gz
   changed_when: true
   tags:
     - install
@@ -51,7 +61,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/rust-analyzer
+    src: "{{ rust_temp.path }}/rust-analyzer"
   become: true
   tags:
     - install

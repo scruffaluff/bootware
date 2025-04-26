@@ -17,9 +17,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: fd_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download FD for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ fd_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -37,7 +45,7 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
+      {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ system_libc }}/fd
   become: true
   tags:
@@ -68,7 +76,7 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
+      {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ system_libc }}/autocomplete/fd.{{ item.shell }}
   become: true
   loop:

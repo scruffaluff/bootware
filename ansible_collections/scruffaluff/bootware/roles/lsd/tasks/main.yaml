@@ -17,9 +17,17 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: lsd_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Download Lsd for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ lsd_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -38,8 +46,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-{{ lsd_libc }}/lsd
+      {{ lsd_temp.path }}/lsd-v{{ lsd_formula.json.versions.stable }}-{{
+      lsd_arch }}-unknown-linux-{{ lsd_libc }}/lsd
   become: true
   tags:
     - install
@@ -69,8 +77,9 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/lsd-v{{ lsd_formula.json.versions.stable }}-{{ lsd_arch
-      }}-unknown-linux-{{ lsd_libc }}/autocomplete/lsd.{{ item.extension }}
+      {{ lsd_temp.path }}/lsd-v{{ lsd_formula.json.versions.stable }}-{{
+      lsd_arch }}-unknown-linux-{{ lsd_libc }}/autocomplete/lsd.{{
+      item.extension }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/lsd"

@@ -72,13 +72,22 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: kubectl_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Create Kubectl shell completions for Unix
   ansible.builtin.shell:
-    cmd: kubectl completion {{ item }} > /tmp/kubectl.{{ item }}
+    cmd: >-
+      kubectl completion {{ item }} > {{ kubectl_temp.path }}/kubectl.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -93,7 +102,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/kubectl.{{ item.shell }}
+    src: "{{ kubectl_temp.path }}/kubectl.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/kubectl"

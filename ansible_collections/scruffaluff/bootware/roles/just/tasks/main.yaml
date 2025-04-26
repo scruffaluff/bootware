@@ -39,9 +39,17 @@
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: just_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
 - name: Download Just for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ just_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -59,7 +67,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/just
+    src: "{{ just_temp.path }}/just"
   become: true
   tags:
     - install
@@ -83,11 +91,12 @@
   when: ansible_system == "Win32NT"
 
 - name: Generate Just shell completions for Unix
-  ansible.builtin.shell: just --completions {{ item }} > /tmp/just.{{ item }}
+  ansible.builtin.shell: >-
+    just --completions {{ item }} > {{ just_temp.path }}/just.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -102,7 +111,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/just.{{ item.shell }}
+    src: "{{ just_temp.path }}/just.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/just"

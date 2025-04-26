@@ -32,13 +32,23 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: restic_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Create Restic shell completions for Unix
   ansible.builtin.command:
-    cmd: restic generate --{{ item }}-completion /tmp/restic.{{ item }}
+    cmd: >-
+      restic generate --{{ item }}-completion {{ restic_temp.path }}/restic.{{
+      item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -53,7 +63,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/restic.{{ item.shell }}
+    src: "{{ restic_temp.path }}/restic.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/restic"

@@ -39,12 +39,21 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: kind_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Generate Kind shell completions for Unix
-  ansible.builtin.shell: kind completion {{ item }} > /tmp/kind.{{ item }}
+  ansible.builtin.shell: >-
+    kind completion {{ item }} > {{ kind_temp.path }}/kind.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -59,7 +68,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/kind.{{ item.shell }}
+    src: "{{ kind_temp.path }}/kind.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/kind"

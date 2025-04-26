@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and mdbook_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: mdbook_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and mdbook_linux is failed
+
 - name: Download Mdbook for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ mdbook_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -51,7 +59,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/mdbook
+    src: "{{ mdbook_temp.path }}/mdbook"
   become: true
   tags:
     - install

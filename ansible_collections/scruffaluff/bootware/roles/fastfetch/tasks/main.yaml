@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and fastfetch_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: fastfetch_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and fastfetch_linux is failed
+
 - name: Download Fastfetch for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ fastfetch_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -46,7 +54,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/fastfetch-linux-{{ system_architecture }}/usr/bin/fastfetch
+    src: >-
+      {{ fastfetch_temp.path }}/fastfetch-linux-{{ system_architecture
+      }}/usr/bin/fastfetch
   become: true
   tags:
     - install

@@ -40,9 +40,19 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
     failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: gdu_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
+    failed
+
 - name: Download GDU for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ gdu_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -61,7 +71,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/gdu_linux_{{ system_architecture }}
+    src: "{{ gdu_temp.path }}/gdu_linux_{{ system_architecture }}"
   become: true
   tags:
     - install

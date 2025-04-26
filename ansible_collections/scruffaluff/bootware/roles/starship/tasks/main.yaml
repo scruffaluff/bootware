@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and starship_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: starship_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and starship_linux is failed
+
 - name: Download Starship for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ starship_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -46,7 +54,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/starship
+    src: "{{ starship_temp.path }}/starship"
   become: true
   tags:
     - install
@@ -75,7 +83,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   tags:
     - install
   when: ansible_system != "Win32NT"
@@ -88,7 +96,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\starship\\current;{{ ansible_env.Path }}"
+    Path: '{{ scoop_apps }}\starship\current;{{ ansible_env.Path }}'
   tags:
     - install
   when: ansible_system == "Win32NT"

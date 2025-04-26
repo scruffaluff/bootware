@@ -40,9 +40,19 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and procs_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: procs_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64" and procs_linux is failed
+
 - name: Download Procs for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ procs_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -61,7 +71,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/procs
+    src: "{{ procs_temp.path }}/procs"
   become: true
   tags:
     - install
@@ -90,12 +100,13 @@
 - name: Create Procs shell completions for Unix
   ansible.builtin.shell:
     cmd: >-
-      (procs --gen-completion-out {{ item }} > /tmp/procs.{{ item }}) || (procs
-      --completion-out {{ item }} > /tmp/procs.{{ item }})
+      (procs --gen-completion-out {{ item }} > {{ procs_temp.path }}/procs.{{
+      item }}) || (procs --completion-out {{ item }} > {{ procs_temp.path
+      }}/procs.{{ item }})
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -112,7 +123,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/procs.{{ item.shell }}
+    src: "{{ procs_temp.path }}/procs.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/procs"

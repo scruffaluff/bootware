@@ -37,7 +37,7 @@
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
-    path: "C:/Program Files/Kubeshark"
+    path: C:/Program Files/Kubeshark
     state: directory
   tags:
     - install
@@ -45,7 +45,7 @@
 
 - name: Add Kubeshark to system path for Windows
   ansible.windows.win_path:
-    elements: "C:\\Program Files\\Kubeshark"
+    elements: C:\Program Files\Kubeshark
     scope: machine
   tags:
     - install
@@ -53,7 +53,7 @@
 
 - name: Install Kubeshark for Windows
   ansible.windows.win_get_url:
-    dest: "C:/Program Files/Kubeshark/kubeshark.exe"
+    dest: C:/Program Files/Kubeshark/kubeshark.exe
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
@@ -61,13 +61,23 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: kubeshark_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Create Kubeshark shell completions for Unix
   ansible.builtin.shell:
-    cmd: kubeshark completion {{ item }} > /tmp/kubeshark.{{ item }}
+    cmd: >-
+      kubeshark completion {{ item }} > {{ kubeshark_temp.path }}/kubeshark.{{
+      item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -82,7 +92,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/kubeshark.{{ item.shell }}
+    src: "{{ kubeshark_temp.path }}/kubeshark.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/kubeshark"

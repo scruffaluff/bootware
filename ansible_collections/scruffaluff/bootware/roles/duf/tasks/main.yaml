@@ -40,9 +40,19 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
     failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: duf_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    failed
+
 - name: Download Duf for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ duf_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -66,7 +76,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/duf
+    src: "{{ duf_temp.path }}/duf"
   become: true
   tags:
     - install

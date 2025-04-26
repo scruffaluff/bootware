@@ -28,14 +28,22 @@
     - install
   when: ansible_system in ["FreeBSD", "Linux"]
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: fzf_temp
+  tags:
+    - install
+  when: ansible_system in ["FreeBSD", "Linux"]
+
 # Some of the Fzf releases have a "v" in the name while others do not.
 #
 # The ignore_errors, loop, and vars allow for trying mutliple URLs and breaking
 # the loop if a URL succeeds. Since ignore_errors is false on the last loop
 # item, the task will fail if none of the URLs work.
-- name: Install Fzf for Unix
+- name: Download Fzf for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ fzf_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -62,7 +70,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/fzf
+    src: "{{ fzf_temp.path }}/fzf"
   become: true
   tags:
     - install

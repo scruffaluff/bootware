@@ -62,10 +62,18 @@
 #     - install
 #   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: helix_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ helix_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -84,7 +92,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/{{ helix_folder }}/hx
+    src: "{{ helix_temp.path }}/{{ helix_folder }}/hx"
   become: true
   tags:
     - install
@@ -127,7 +135,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/{{ helix_folder }}/runtime
+    src: "{{ helix_temp.path }}/{{ helix_folder }}/runtime"
   become: true
   tags:
     - install

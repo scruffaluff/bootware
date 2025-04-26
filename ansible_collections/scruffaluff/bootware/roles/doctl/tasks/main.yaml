@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and doctl_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: doctl_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and doctl_linux is failed
+
 - name: Download Digital Ocean CLI for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ doctl_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -47,7 +55,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/doctl
+    src: "{{ doctl_temp.path }}/doctl"
   become: true
   tags:
     - install
@@ -72,7 +80,7 @@
 
 - name: Create Digital Ocean CLI shell completions for Unix
   ansible.builtin.shell:
-    cmd: doctl completion {{ item }} > /tmp/doctl.{{ item }}
+    cmd: doctl completion {{ item }} > {{ doctl_temp.path }}/doctl.{{ item }}
   become: true
   changed_when: true
   environment:
@@ -91,7 +99,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/doctl.{{ item.shell }}
+    src: "{{ doctl_temp.path }}/doctl.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/doctl"

@@ -17,9 +17,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: dust_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ dust_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -38,8 +46,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/dust-v{{ dust_formula.json.versions.stable }}-{{ dust_arch
-      }}-unknown-linux-{{ system_libc }}/dust
+      {{ dust_temp.path }}/dust-v{{ dust_formula.json.versions.stable }}-{{
+      dust_arch }}-unknown-linux-{{ system_libc }}/dust
   become: true
   tags:
     - install

@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and ripgrep_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: ripgrep_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and ripgrep_linux is failed
+
 - name: Download Ripgrep for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ ripgrep_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -48,8 +56,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
-      }}-unknown-linux-musl/rg
+      {{ ripgrep_temp.path }}/ripgrep-{{ ripgrep_formula.json.versions.stable
+      }}-{{ ripgrep_arch }}-unknown-linux-musl/rg
   become: true
   tags:
     - install
@@ -79,8 +87,8 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/ripgrep-{{ ripgrep_formula.json.versions.stable }}-{{ ripgrep_arch
-      }}-unknown-linux-musl/complete/rg.{{ item.shell }}
+      {{ ripgrep_temp.path }}/ripgrep-{{ ripgrep_formula.json.versions.stable
+      }}-{{ ripgrep_arch }}-unknown-linux-musl/complete/rg.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/rg"

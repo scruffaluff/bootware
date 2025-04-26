@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and topgrade_linux is failed
 
+- name: Create temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: topgrade_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and topgrade_linux is failed
+
 - name: Download Topgrade for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ topgrade_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -55,7 +63,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/topgrade
+    src: "{{ topgrade_temp.path }}/topgrade"
   become: true
   tags:
     - install

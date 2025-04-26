@@ -15,9 +15,19 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Create temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: deno_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
+    "gnu")
+
 - name: Download Deno for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ deno_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -42,7 +52,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/deno
+    src: "{{ deno_temp.path }}/deno"
   become: true
   tags:
     - install
