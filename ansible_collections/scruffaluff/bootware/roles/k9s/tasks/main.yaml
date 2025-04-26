@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create K9s temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: k9s_temp

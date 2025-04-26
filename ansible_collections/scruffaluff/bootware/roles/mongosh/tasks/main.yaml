@@ -9,7 +9,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Mongo Shell temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: mongosh_temp

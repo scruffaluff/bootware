@@ -19,9 +19,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Yazi temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: yazi_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Yazi for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ yazi_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -38,7 +46,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{ item }}
+    src: >-
+      {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{
+      item }}
   become: true
   loop:
     - ya
@@ -73,7 +83,7 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
+      {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
       }}/completions/yazi.{{ item.shell }}
   become: true
   loop:

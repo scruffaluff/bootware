@@ -79,7 +79,7 @@
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
     and not android_studio_check.stat.exists
 
-- name: Create temporary directory for Linux
+- name: Create Android Studio temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: android_studio_temp

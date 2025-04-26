@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Create temporary directory for Unix
+- name: Create Lsd temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: lsd_temp

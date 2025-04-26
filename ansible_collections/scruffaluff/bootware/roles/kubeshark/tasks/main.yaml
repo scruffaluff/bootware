@@ -37,7 +37,7 @@
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
-    path: C:/Program Files/Kubeshark
+    path: C:\Program Files\Kubeshark
     state: directory
   tags:
     - install
@@ -53,7 +53,7 @@
 
 - name: Install Kubeshark for Windows
   ansible.windows.win_get_url:
-    dest: C:/Program Files/Kubeshark/kubeshark.exe
+    dest: C:\Program Files\Kubeshark\kubeshark.exe
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
@@ -61,7 +61,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create temporary directory for Unix
+- name: Create Kubeshark temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: kubeshark_temp

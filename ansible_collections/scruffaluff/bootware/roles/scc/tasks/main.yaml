@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Scc temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: scc_temp

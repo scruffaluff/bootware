@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Uv temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: uv_temp
@@ -68,7 +68,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Uv shell completions for Unix
+- name: Create Uv shell completions for Unix
   ansible.builtin.shell:
     cmd: uv --generate-shell-completion {{ item.shell }} > '{{ item.path }}'
   become: true
@@ -86,7 +86,7 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Generate Uv Nushell shell completions for Windows
+- name: Create Uv Nushell shell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
@@ -100,7 +100,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Uv PowerShell completions for Windows
+- name: Create Uv PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |

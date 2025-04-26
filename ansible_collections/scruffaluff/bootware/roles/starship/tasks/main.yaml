@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and starship_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Starship temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: starship_temp
@@ -77,7 +77,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Starship Nushell configuration for Unix
+- name: Create Starship Nushell configuration for Unix
   ansible.builtin.shell: >-
     starship init nu > '{{ nushell_vendor_autoload }}/starship.nu'
   become: true
@@ -88,7 +88,7 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Generate Starship Nushell configuration for Windows
+- name: Create Starship Nushell configuration for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |

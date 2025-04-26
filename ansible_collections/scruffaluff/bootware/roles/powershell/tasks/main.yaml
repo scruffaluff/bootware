@@ -68,9 +68,9 @@
 
 - name: Set PowerShell Core as default OpenSSH shell for Windows
   ansible.windows.win_regedit:
-    data: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    data: C:\Program Files\PowerShell\7\pwsh.exe
     name: DefaultShell
-    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    path: HKLM:\SOFTWARE\OpenSSH
     type: string
   tags:
     - config

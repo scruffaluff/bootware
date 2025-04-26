@@ -39,7 +39,7 @@
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
 
-- name: Create temporary directory for Linux
+- name: Create Just temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: just_temp
@@ -90,7 +90,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Just shell completions for Unix
+- name: Create Just shell completions for Unix
   ansible.builtin.shell: >-
     just --completions {{ item }} > {{ just_temp.path }}/just.{{ item }}
   become: true

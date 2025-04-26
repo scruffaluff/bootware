@@ -290,8 +290,8 @@ jobs:
         uses: tj-actions/branch-names@v8
       - name: Install Bootware
         run: |
-          New-Item -Force -ItemType Directory -Path 'C:/Program Files/Bootware' | Out-Null
-          Copy-Item -Destination 'C:/Program Files/Bootware/bootware.ps1' -Path src/bootware.ps1
+          New-Item -Force -ItemType Directory -Path 'C:\Program Files\Bootware' | Out-Null
+          Copy-Item -Destination 'C:\Program Files\Bootware\bootware.ps1' -Path src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older

@@ -38,7 +38,7 @@
     elements: "{{ item.elements }}"
     scope: "{{ item.scope }}"
   loop:
-    - elements: "C:\\Program Files\\Bin"
+    - elements: C:\Program Files\Bin
       scope: machine
     - elements: "{{ user_home }}\\.local\\bin"
       scope: user

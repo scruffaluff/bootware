@@ -72,7 +72,7 @@
     - plugin
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Create temporary directory for Unix
+- name: Create Rust temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: rust_temp

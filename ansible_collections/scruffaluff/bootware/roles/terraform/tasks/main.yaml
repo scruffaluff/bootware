@@ -30,7 +30,7 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
     is failed)
 
-- name: Create temporary directory for Unix
+- name: Create Terraform temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: terraform_temp

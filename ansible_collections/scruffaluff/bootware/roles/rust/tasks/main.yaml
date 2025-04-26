@@ -15,7 +15,7 @@
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Create temporary directory for Linux
+- name: Create Rust temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: rust_temp

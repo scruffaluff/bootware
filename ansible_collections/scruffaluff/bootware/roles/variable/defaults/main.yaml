@@ -6,7 +6,7 @@ user_home_:
   FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   # Backslashes are required for Windows Defender firewall rules.
-  Win32NT: "C:\\Users\\{{ user_id }}"
+  Win32NT: C:\Users\{{ user_id }}
 user_home: "{{ user_home_.get(ansible_system, '/home/' + user_id) }}"
 
 bash_completion_:

@@ -27,7 +27,7 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Create temporary directory for Debian
+- name: Create Docker temporary directory for Debian
   ansible.builtin.tempfile:
     state: directory
   register: docker_temp

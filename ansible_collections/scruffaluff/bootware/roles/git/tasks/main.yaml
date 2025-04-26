@@ -42,7 +42,7 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == "amd64") and git_delta_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Git temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: git_temp

@@ -66,7 +66,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create temporary directory for Unix
+- name: Create Miniserve temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: miniserve_temp

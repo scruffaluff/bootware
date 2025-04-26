@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and helmfile_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Helmfile temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: helmfile_temp

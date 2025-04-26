@@ -40,7 +40,7 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and htmlq_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Htmlq temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: htmlq_temp

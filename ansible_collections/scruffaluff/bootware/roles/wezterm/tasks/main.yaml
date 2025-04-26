@@ -7,9 +7,17 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Create Wezterm temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: wezterm_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download Wezterm GPG key for Debian
   ansible.builtin.get_url:
-    dest: /tmp/wezterm.key
+    dest: "{{ wezterm_temp.path }}/wezterm.key"
     mode: "640"
     url: https://apt.fury.io/wez/gpg.key
   become: true
@@ -20,8 +28,8 @@
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg
-      /tmp/wezterm.key
+      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg {{
+      wezterm_temp.path }}/wezterm.key
     creates: /usr/share/keyrings/wezterm.gpg
   become: true
   tags:

@@ -139,7 +139,7 @@
     - plugin
   when: ansible_system == "Win32NT"
 
-- name: Generate PNPM user shell completions for Unix
+- name: Create PNPM user shell completions for Unix
   ansible.builtin.shell:
     cmd: pnpm completion {{ item.shell }} > {{ item.path }}
   become: true

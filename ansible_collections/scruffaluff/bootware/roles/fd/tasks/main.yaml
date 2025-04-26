@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create FD temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: fd_temp

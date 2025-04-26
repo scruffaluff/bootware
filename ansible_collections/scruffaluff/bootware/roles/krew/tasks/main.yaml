@@ -9,7 +9,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Krew temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: krew_temp
@@ -18,9 +18,6 @@
   when: ansible_system == "Linux"
 
 - name: Download Krew for Linux
-  # Do not add a mode specifier here. On Arch Linux it will change the
-  # permissions of the /tmp folder to be user uneditable as of 06/14/2022. As
-  # result, Krew will fail installation.
   ansible.builtin.unarchive:
     dest: "{{ krew_temp.path }}"
     remote_src: true

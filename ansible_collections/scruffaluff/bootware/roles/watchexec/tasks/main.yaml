@@ -9,9 +9,17 @@
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Create Watchexec temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: watchexec_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ watchexec_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -40,8 +48,9 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-{{ watchexec_env }}/watchexec
+      {{ watchexec_temp.path }}/watchexec-{{
+      watchexec_formula.json.versions.stable }}-{{ watchexec_arch }}-{{
+      watchexec_env }}/watchexec
   become: true
   tags:
     - install
@@ -71,8 +80,9 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/watchexec-{{ watchexec_formula.json.versions.stable }}-{{
-      watchexec_arch }}-{{ watchexec_env }}/completions/{{ item.shell }}
+      {{ watchexec_temp.path }}/watchexec-{{
+      watchexec_formula.json.versions.stable }}-{{ watchexec_arch }}-{{
+      watchexec_env }}/completions/{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/watchexec"

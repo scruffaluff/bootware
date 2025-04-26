@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and sd_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create SD temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: sd_temp

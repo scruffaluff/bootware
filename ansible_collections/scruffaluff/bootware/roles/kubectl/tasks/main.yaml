@@ -72,7 +72,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create temporary directory for Unix
+- name: Create Kubectl temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: kubectl_temp

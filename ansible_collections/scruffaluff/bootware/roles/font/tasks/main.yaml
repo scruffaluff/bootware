@@ -21,7 +21,7 @@
   tags:
     - install
   vars:
-    font_folder: "C:\\Windows\\Fonts"
+    font_folder: C:\Windows\Fonts
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

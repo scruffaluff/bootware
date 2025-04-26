@@ -28,7 +28,7 @@
     - install
   when: ansible_system in ["FreeBSD", "Linux"]
 
-- name: Create temporary directory for Unix
+- name: Create Fzf temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: fzf_temp

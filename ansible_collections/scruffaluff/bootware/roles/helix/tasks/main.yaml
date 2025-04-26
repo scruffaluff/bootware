@@ -62,7 +62,7 @@
 #     - install
 #   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
-- name: Create temporary directory for Linux
+- name: Create Helix temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: helix_temp

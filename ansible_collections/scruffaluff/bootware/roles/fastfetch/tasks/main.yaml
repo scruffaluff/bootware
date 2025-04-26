@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and fastfetch_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Fastfetch temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: fastfetch_temp

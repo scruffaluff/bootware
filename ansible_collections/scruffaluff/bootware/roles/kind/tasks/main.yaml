@@ -39,7 +39,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create temporary directory for Unix
+- name: Create Kind temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: kind_temp
@@ -47,7 +47,7 @@
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
-- name: Generate Kind shell completions for Unix
+- name: Create Kind shell completions for Unix
   ansible.builtin.shell: >-
     kind completion {{ item }} > {{ kind_temp.path }}/kind.{{ item }}
   become: true

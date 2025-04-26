@@ -40,7 +40,7 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
     failed
 
-- name: Create temporary directory for Linux
+- name: Create Duf temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: duf_temp

@@ -32,7 +32,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Podman shell completions for Unix
+- name: Create Podman shell completions for Unix
   ansible.builtin.command:
     cmd: podman completion {{ item.shell }} --file {{ item.dest }}
   become: true
@@ -49,7 +49,7 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Generate Podman PowerShell user completions module for Windows
+- name: Create Podman PowerShell user completions module for Windows
   ansible.windows.win_command: >-
     podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true

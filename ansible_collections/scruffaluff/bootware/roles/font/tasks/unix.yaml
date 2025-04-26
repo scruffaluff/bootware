@@ -20,7 +20,7 @@
     path: "{{ font_folder[ansible_system] }}/{{ font_family.check }}"
   register: font_check_unix
 
-- name: Create temporary directory for Unix
+- name: Create font temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: font_temp

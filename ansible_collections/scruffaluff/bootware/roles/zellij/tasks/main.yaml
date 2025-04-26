@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and zellij_linux is failed
 
+- name: Create Zellij temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: zellij_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and zellij_linux is failed
+
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ zellij_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -50,7 +58,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/zellij
+    src: "{{ zellij_temp.path }}/zellij"
   become: true
   tags:
     - install
@@ -67,7 +75,9 @@
 
 - name: Create Zellij shell completions for Unix
   ansible.builtin.shell:
-    cmd: zellij setup --generate-completion {{ item }} > /tmp/zellij.{{ item }}
+    cmd: >-
+      zellij setup --generate-completion {{ item }} > {{ zellij_temp.path
+      }}/zellij.{{ item }}
   become: true
   changed_when: true
   environment:
@@ -86,7 +96,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/zellij.{{ item.shell }}
+    src: "{{ zellij_temp.path }}/zellij.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/zellij"

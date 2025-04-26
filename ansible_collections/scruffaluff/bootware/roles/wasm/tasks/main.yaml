@@ -1,7 +1,15 @@
 ---
+- name: Create Wasmtime temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: wasmtime_temp
+  tags:
+    - install
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
 - name: Download Wastime installer for Unix
   ansible.builtin.get_url:
-    dest: /tmp/wasmtime_install.sh
+    dest: "{{ wasmtime_temp.path }}/wasmtime_install.sh"
     mode: "755"
     url: https://wasmtime.dev/install.sh
   tags:
@@ -9,7 +17,7 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Wasmtime for Unix
-  ansible.builtin.command: /tmp/wasmtime_install.sh
+  ansible.builtin.command: "{{ wasmtime_temp.path }}/wasmtime_install.sh"
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Finished installation' in wasm_install"
@@ -28,7 +36,7 @@
 
 - name: Download Wasm Pack installer for Unix
   ansible.builtin.get_url:
-    dest: /tmp/wasm_pack_init.sh
+    dest: "{{ wasmtime_temp.path }}/wasm_pack_init.sh"
     mode: "755"
     url: https://rustwasm.github.io/wasm-pack/installer/init.sh
   tags:
@@ -38,7 +46,7 @@
     "amd64"
 
 - name: Install Wasm Pack for Unix
-  ansible.builtin.command: /tmp/wasm_pack_init.sh
+  ansible.builtin.command: "{{ wasmtime_temp.path }}/wasm_pack_init.sh"
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in wasm_pack_install"

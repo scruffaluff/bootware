@@ -63,7 +63,7 @@
     elements: "{{ item.elements }}"
     scope: "{{ item.scope }}"
   loop:
-    - elements: "C:\\ProgramData\\scoop\\shims"
+    - elements: C:\ProgramData\scoop\shims
       scope: machine
     - elements: "{{ user_home }}\\scoop\\shims"
       scope: user

@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Carapace temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: carapace_temp

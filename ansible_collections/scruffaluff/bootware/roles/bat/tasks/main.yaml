@@ -51,7 +51,7 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Bat temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: bat_temp
