@@ -23,6 +23,10 @@ function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
+function lsown($Path) {
+    Get-ChildItem $Path | Select Name, @{N="Owner";E={ (Get-Acl $_.FullName).Owner }}
+}
+
 function pkill() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
