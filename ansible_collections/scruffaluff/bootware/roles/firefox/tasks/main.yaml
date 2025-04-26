@@ -52,7 +52,7 @@
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: firefox
   tags:
     - install

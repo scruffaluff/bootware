@@ -42,7 +42,7 @@
     - "{{ user_home }}\\.local\\bin"
     - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
   tags:
-    - config
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Add binaries directories to path for Windows
@@ -86,7 +86,7 @@
     recurse: true
     user: "{{ user_id }}"
   tags:
-    - config
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Create system shell completion directories for Unix
@@ -140,7 +140,7 @@
     user: "{{ user_id }}"
   loop: "{{ [nushell_user_vendor_autoload] + powershell_user_module_paths }}"
   tags:
-    - config
+    - install
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

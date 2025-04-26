@@ -80,7 +80,7 @@
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: rust-analyzer
   tags:
     - install
@@ -101,7 +101,7 @@
 - name: Remove default Rust Analyzer for Windows
   ansible.windows.win_file:
     path: >-
-      {{ scoop_apps }}\rustup-msvc\current\.cargo\bin\rust-analyzer.exe
+      {{ scoop_path }}\apps\rustup-msvc\current\.cargo\bin\rust-analyzer.exe
     state: absent
   tags:
     - install

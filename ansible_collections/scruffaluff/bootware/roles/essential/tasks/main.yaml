@@ -73,7 +73,7 @@
 
 - name: Install Scoop bucket dependency for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: mingit
   tags:
     - install
@@ -94,6 +94,15 @@
     - main
     - versions
   register: essential_scoop_bucket
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Scoop user folder for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\scoop"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -149,7 +158,7 @@
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - 7zip
       - bzip2

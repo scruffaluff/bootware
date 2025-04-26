@@ -70,7 +70,7 @@
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: helm
   tags:
     - install
@@ -96,7 +96,7 @@
   ansible.windows.win_command: helm plugin install {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install"
   environment:
-    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     helm_plugin_install.rc != 0 and 'plugin already exists' not in
     helm_plugin_install.stderr

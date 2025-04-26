@@ -40,7 +40,8 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
---start-at-task Install Deno JavaScript and TypeScript runtime --connection local playbook.yaml"
+--extra-vars connect_role_executed=false --start-at-task \
+Install Deno JavaScript and TypeScript runtime --connection local playbook.yaml"
 }
 
 bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
@@ -116,6 +117,7 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
---start-at-task Install Deno JavaScript and TypeScript runtime --connection local \
+--extra-vars connect_role_executed=false --start-at-task \
+Install Deno JavaScript and TypeScript runtime --connection local \
 ${tmp_dir}/playbook.yaml"
 }

@@ -33,7 +33,7 @@
 
 - name: Install Kind for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: kind
   tags:
     - install

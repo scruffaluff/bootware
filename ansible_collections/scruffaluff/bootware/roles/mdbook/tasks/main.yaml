@@ -76,7 +76,7 @@
 
 - name: Install Mdbook for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: mdbook
   tags:
     - install

@@ -58,7 +58,7 @@
 
 - name: Install Lazydocker for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: lazydocker
   tags:
     - install

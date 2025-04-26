@@ -30,7 +30,7 @@
 
 - name: Install SQLite for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: sqlite
   tags:
     - install
@@ -58,7 +58,7 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Set owner of SQLite files for Windows
+- name: Set owner of SQLite file for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\.sqliterc"
     user: "{{ user_id }}"

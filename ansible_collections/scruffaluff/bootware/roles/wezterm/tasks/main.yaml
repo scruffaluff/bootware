@@ -84,7 +84,7 @@
 
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: wezterm
   tags:
     - install

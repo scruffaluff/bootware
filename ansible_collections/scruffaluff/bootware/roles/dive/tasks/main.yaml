@@ -72,7 +72,7 @@
 
 - name: Install Dive for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: dive
   tags:
     - install

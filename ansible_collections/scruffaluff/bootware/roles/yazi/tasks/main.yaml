@@ -68,7 +68,7 @@
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - file
       - yazi
@@ -116,7 +116,7 @@
   ansible.windows.win_shell: ya pack --add {{ item }}
   changed_when: "'Deploying package' in yazi_plugin_install"
   environment:
-    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     yazi_plugin_install.rc != 0 and 'already exists' not in
     yazi_plugin_install.stderr

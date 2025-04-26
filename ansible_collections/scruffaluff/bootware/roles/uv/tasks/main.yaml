@@ -62,7 +62,7 @@
 
 - name: Install Uv for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: uv
   tags:
     - install
@@ -94,7 +94,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/uv.nu", $Text)
   changed_when: true
   environment:
-    Path: '{{ scoop_apps }}\uv\current;{{ ansible_env.Path }}'
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   tags:
     - completion
     - install
@@ -108,7 +108,7 @@
     [System.IO.File]::WriteAllLines("{{ item }}/UvCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: '{{ scoop_apps }}\uv\current;{{ ansible_env.Path }}'
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion

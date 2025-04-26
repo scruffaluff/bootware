@@ -109,7 +109,7 @@
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: helix
   tags:
     - install

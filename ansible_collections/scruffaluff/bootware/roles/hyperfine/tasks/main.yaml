@@ -75,7 +75,7 @@
 
 - name: Install Hyperfine for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: hyperfine
   tags:
     - install

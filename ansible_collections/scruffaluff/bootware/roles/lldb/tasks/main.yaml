@@ -39,7 +39,7 @@
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: llvm
   tags:
     - install
@@ -47,7 +47,7 @@
 
 - name: Check if LLDB Python is installed for Windows
   ansible.windows.win_stat:
-    path: "{{ scoop_apps }}\\llvm\\current\\bin\\python.exe"
+    path: "{{ scoop_path }}\\apps\\llvm\\current\\bin\\python.exe"
   register: lldb_python_check
   tags:
     - install
@@ -80,7 +80,7 @@
 
     - name: Decompress embedded Python 3.10 for Windows
       community.windows.win_unzip:
-        dest: "{{ scoop_apps }}\\llvm\\current\\bin"
+        dest: "{{ scoop_path }}\\apps\\llvm\\current\\bin"
         src: "{{ ansible_env.TEMP }}\\python_embed.zip"
 
 - name: Copy LLDB settings files for Unix

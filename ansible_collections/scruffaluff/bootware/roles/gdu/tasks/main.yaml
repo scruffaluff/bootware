@@ -90,7 +90,7 @@
 
 - name: Install GDU for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: gdu
   tags:
     - install

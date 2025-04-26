@@ -60,7 +60,7 @@
 
 - name: Install Miniserve for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: miniserve
   tags:
     - install

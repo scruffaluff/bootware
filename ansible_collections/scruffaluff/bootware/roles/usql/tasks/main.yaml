@@ -72,7 +72,7 @@
 
 - name: Install Usql for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: usql
   tags:
     - install
@@ -96,6 +96,14 @@
     dest: "{{ user_home }}\\.usqlrc"
     force: true
     src: usqlrc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Usql file for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.usqlrc"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

@@ -62,7 +62,7 @@
 
 - name: Install Carapace for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: extras/carapace-bin
   tags:
     - install

@@ -60,7 +60,7 @@
 # because Windows Defener considers the program to be a virus.
 # - name: Install FFSend for Windows
 # community.windows.win_scoop:
-#   global: "{{ scoop_global }}"
+#   global: true
 #   name: ffsend
 # tags:
 #   - install

@@ -26,7 +26,7 @@
 
 - name: Install Podman for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: podman
   tags:
     - install
@@ -54,7 +54,7 @@
     podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion

@@ -73,7 +73,7 @@
 
 - name: Install Fastfetch for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: fastfetch
   tags:
     - install

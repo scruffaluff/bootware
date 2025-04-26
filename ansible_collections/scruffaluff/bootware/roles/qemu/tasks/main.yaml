@@ -92,7 +92,7 @@
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: qemu
   tags:
     - install

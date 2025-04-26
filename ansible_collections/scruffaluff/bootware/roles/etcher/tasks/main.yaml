@@ -69,7 +69,7 @@
 
 - name: Install Balena Etcher for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: etcher
   tags:
     - install

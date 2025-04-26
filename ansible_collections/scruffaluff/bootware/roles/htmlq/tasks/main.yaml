@@ -89,7 +89,7 @@
 
 - name: Install Htmlq for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: htmlq
   tags:
     - install

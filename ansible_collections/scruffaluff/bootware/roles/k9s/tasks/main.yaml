@@ -71,7 +71,7 @@
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: k9s
   tags:
     - install

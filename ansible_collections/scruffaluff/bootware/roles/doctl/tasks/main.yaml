@@ -72,7 +72,7 @@
 
 - name: Install Digital Ocean CLI for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: doctl
   tags:
     - install

@@ -24,7 +24,8 @@ function export($Key, $Value) {
 }
 
 function lsown($Path) {
-    Get-ChildItem $Path | Select Name, @{N="Owner";E={ (Get-Acl $_.FullName).Owner }}
+    Get-ChildItem $Path | Select-Object `
+        Name, @{N = "Owner"; E = { (Get-Acl $_.FullName).Owner } }
 }
 
 function pkill() {

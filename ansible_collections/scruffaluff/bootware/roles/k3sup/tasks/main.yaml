@@ -38,7 +38,7 @@
 
 - name: Install K3sup for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: k3sup
   tags:
     - install

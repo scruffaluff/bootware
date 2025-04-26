@@ -40,7 +40,7 @@
 # information, visit https://npcap.com/oem/internal.html.
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: wireshark
   tags:
     - install

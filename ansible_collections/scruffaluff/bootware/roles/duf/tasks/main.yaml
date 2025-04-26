@@ -95,7 +95,7 @@
 
 - name: Install Duf for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: duf
   tags:
     - install

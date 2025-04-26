@@ -76,7 +76,7 @@
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: croc
   tags:
     - install
@@ -92,7 +92,7 @@
       - domain
       - private
       - public
-    program: "{{ scoop_apps }}\\croc\\current\\croc.exe"
+    program: "{{ scoop_path }}\\shims\\croc.exe"
     protocol: "{{ item['protocol'] }}"
   loop:
     - direction: in

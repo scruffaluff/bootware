@@ -45,7 +45,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and ansible_architecture == "arm64"
 
 - name: Create system applications directory for Linux
   ansible.builtin.file:
@@ -152,7 +152,7 @@
 
 - name: Install Android Studio for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: android-studio
   tags:
     - install

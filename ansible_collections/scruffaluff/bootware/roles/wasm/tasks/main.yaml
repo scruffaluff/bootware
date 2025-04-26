@@ -28,7 +28,7 @@
 
 - name: Install Wasmtime for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: wasmtime
   tags:
     - install

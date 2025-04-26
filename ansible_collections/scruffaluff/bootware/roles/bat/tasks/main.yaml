@@ -145,7 +145,7 @@
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - bat
       - less
@@ -236,9 +236,12 @@
 
 - name: Set owner of Bat files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Roaming\\bat"
+    path: "{{ user_home }}\\{{ item }}"
     recurse: true
     user: "{{ user_id }}"
+  loop:
+    - _lesskey
+    - AppData\Roaming\bat
   tags:
     - config
   when: ansible_system == "Win32NT"

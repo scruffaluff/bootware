@@ -71,7 +71,7 @@
 
 - name: Install Starship for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: starship
   tags:
     - install
@@ -96,7 +96,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
-    Path: '{{ scoop_apps }}\starship\current;{{ ansible_env.Path }}'
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   tags:
     - install
   when: ansible_system == "Win32NT"

@@ -26,7 +26,7 @@
 
 - name: Install Restic for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: restic
   tags:
     - install
