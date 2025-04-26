@@ -33,6 +33,18 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Set owner of user binaries directories for Windows
+  ansible.windows.win_owner:
+    path: "{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
 - name: Add binaries directories to path for Windows
   ansible.windows.win_path:
     elements: "{{ item.elements }}"
@@ -62,10 +74,19 @@
 
 - name: Create user configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}/.config"
+    path: "{{ user_home }}\\.config"
     state: directory
   tags:
     - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of user configuration directory for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Create system shell completion directories for Unix
@@ -110,6 +131,18 @@
   tags:
     - completion
     - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of user shell completion directories for Windows
+  ansible.windows.win_owner:
+    path: "{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - "{{ nushell_user_vendor_autoload }}"
+    - "{{ powershell_user_module_paths }}"
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

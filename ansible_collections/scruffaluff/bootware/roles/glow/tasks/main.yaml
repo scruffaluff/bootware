@@ -151,7 +151,7 @@
 - name: Create Glow settings directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Local/glow/config"
+    path: "{{ user_home }}\\AppData\\Local\\glow\\config"
     state: directory
   tags:
     - config
@@ -159,10 +159,19 @@
 
 - name: Copy Glow settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Local/glow/config/glow.yaml"
+    dest: "{{ user_home }}/AppData\\Local\\glow\\config\\glow.yaml"
     force: true
     owner: "{{ user_id }}"
     src: glow.yaml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Glow files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Local\\glow"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

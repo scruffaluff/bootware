@@ -105,7 +105,7 @@
 - name: Create Wez's terminal configuration directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/wezterm"
+    path: "{{ user_home }}\\.config\\wezterm"
     state: directory
   tags:
     - config
@@ -126,10 +126,19 @@
 
 - name: Copy Wez's terminal configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
+    dest: "{{ user_home }}\\.config\\wezterm\\wezterm.lua"
     force: true
     owner: "{{ user_id }}"
     src: wezterm.lua.j2
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Wez's terminal files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config\\wezterm"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

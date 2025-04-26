@@ -62,7 +62,7 @@
 
 - name: Download Deno archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno.zip"
     url: >-
       https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip
   tags:
@@ -71,8 +71,8 @@
 
 - name: Decompress Deno archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}/deno"
-    src: "{{ ansible_env.TEMP }}/deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno"
+    src: "{{ ansible_env.TEMP }}\\deno.zip"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -109,7 +109,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - dest: "{{ bash_completion }}/deno"
       shell: bash
@@ -127,7 +127,7 @@
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = deno completions powershell
-    [System.IO.File]::WriteAllLines("{{ item }}/DenoCompletion.psm1", $Text)
+    [System.IO.File]::WriteAllLines("{{ item }}\DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
     Path: C:\Program Files\Deno\bin;{{ ansible_env.Path }}

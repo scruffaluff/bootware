@@ -30,7 +30,7 @@
     url: >-
       https://github.com/balena-io/etcher/releases/download/v{{
       etcher_cask.json.version | regex_replace('^2\.1\.0$', '2.0.0')
-      }}/balenaEtcher-{{ etcher_cask.json.version  | regex_replace('^2\.1\.0$',
+      }}/balenaEtcher-{{ etcher_cask.json.version | regex_replace('^2\.1\.0$',
       '2.0.0') }}-x64.AppImage
   become: true
   tags:

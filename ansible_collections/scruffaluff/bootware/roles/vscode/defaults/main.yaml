@@ -23,7 +23,7 @@ vscode_path_:
   Linux: >-
     {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
     }}
-  Win32NT: C:\Program Files\Microsoft VS Code\resources\app"
+  Win32NT: C:\Program Files\Microsoft VS Code\resources\app
 vscode_system_:
   Darwin: osx
   Linux: linux

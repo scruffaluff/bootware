@@ -158,7 +158,7 @@
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/nushell"
+    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
     state: directory
   tags:
     - config
@@ -166,12 +166,21 @@
 
 - name: Copy Nushell settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/nushell/{{ item }}"
+    dest: "{{ user_home }}\\AppData\\Roaming\\nushell\\{{ item }}"
     force: true
     owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - config.nu
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Nushell files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

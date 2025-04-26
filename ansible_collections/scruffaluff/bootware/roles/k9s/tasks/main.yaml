@@ -116,7 +116,7 @@
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Local/k9s"
+    path: "{{ user_home }}\\AppData\\Local\\k9s"
     state: directory
   tags:
     - config
@@ -163,10 +163,19 @@
 
 - name: Copy K9s skin file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Local/k9s/skin.yml"
+    dest: "{{ user_home }}\\AppData\\Local\\k9s\\skin.yml"
     force: true
     owner: "{{ user_id }}"
     src: skin.yml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of K9s files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Local\\k9s"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

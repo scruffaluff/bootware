@@ -101,9 +101,17 @@
 
 - name: Copy Topgrade settings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/AppData/Roaming/topgrade.toml"
+    dest: "{{ user_home }}\\AppData\\Roaming\\topgrade.toml"
     force: true
     src: topgrade.toml.j2
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Topgrade files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\topgrade.toml"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

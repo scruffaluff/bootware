@@ -144,3 +144,12 @@
   tags:
     - config
   when: ansible_system == "Win32NT" and obsidian_vault is defined
+
+- name: Set owner of Obsidian files for Windows
+  ansible.windows.win_owner:
+    path: "{{ obsidian_vault }}"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
