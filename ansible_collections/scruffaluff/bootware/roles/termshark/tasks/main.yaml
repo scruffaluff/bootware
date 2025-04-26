@@ -148,7 +148,6 @@
 
 - name: Create Termshark configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\termshark"
     state: directory
   tags:
@@ -185,7 +184,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\AppData\\Roaming\\termshark\\termshark.toml"
     force: true
-    owner: "{{ user_id }}"
     src: termshark.toml
   tags:
     - config

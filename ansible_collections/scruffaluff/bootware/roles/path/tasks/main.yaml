@@ -138,9 +138,7 @@
     path: "{{ item }}"
     recurse: true
     user: "{{ user_id }}"
-  loop:
-    - "{{ nushell_user_vendor_autoload }}"
-    - "{{ powershell_user_module_paths }}"
+  loop: "{{ [nushell_user_vendor_autoload] + powershell_user_module_paths }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

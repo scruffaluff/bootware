@@ -208,7 +208,6 @@
 
 - name: Create VSCode user directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\Code\\User"
     state: directory
   tags:

@@ -106,9 +106,8 @@
 
 - name: Copy Ls colors file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.ls_colors"
+    dest: "{{ user_home }}\\.ls_colors"
     force: true
-    owner: "{{ user_id }}"
     src: ls_colors
   tags:
     - config
@@ -144,7 +143,6 @@
 
 - name: Create Lsd configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\lsd"
     state: directory
   tags:
@@ -155,7 +153,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\AppData\\Roaming\\lsd\\{{ item }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - colors.yaml
@@ -164,11 +161,14 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Set owner of Bat files for Windows
+- name: Set owner of Lsd files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Roaming\\lsd"
+    path: "{{ user_home }}\\{{ item }}"
     recurse: true
     user: "{{ user_id }}"
+  loop:
+    - .ls_colors
+    - AppData\\Roaming\\lsd
   tags:
     - config
   when: ansible_system == "Win32NT"

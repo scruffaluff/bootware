@@ -46,12 +46,12 @@ nushell_executable_:
     '/usr/local' }}/bin/nu
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
-  Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
+  Win32NT: C:\ProgramData\scoop\shims\nu.exe
 nushell_vendor_autoload_:
   Darwin: /Library/Application Support/nushell/vendor/autoload
   FreeBSD: /usr/local/share/nushell/vendor/autoload
   Linux: /usr/local/share/nushell/vendor/autoload
-  Win32NT: C:\\ProgramData\\nushell\\vendor\\autoload
+  Win32NT: C:\ProgramData\nushell\vendor\autoload
 nushell_user_vendor_autoload_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"

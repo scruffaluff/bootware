@@ -13,7 +13,6 @@
 
 - name: Create Jupyter settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\.jupyter"
     state: directory
   tags:
@@ -37,7 +36,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\.jupyter\\jupyter_notebook_config.py"
     force: true
-    owner: "{{ user_id }}"
     src: jupyter_notebook_config.py
   tags:
     - config
@@ -74,7 +72,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: .pdbrc

@@ -108,7 +108,6 @@
 
 - name: Create GitHub Runner directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ github_runner_folder }}"
     state: directory
   tags:

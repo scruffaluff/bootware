@@ -100,7 +100,8 @@
 
 - name: Remove default Rust Analyzer for Windows
   ansible.windows.win_file:
-    path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/rust-analyzer.exe"
+    path: >-
+      {{ scoop_apps }}\rustup-msvc\current\.cargo\bin\rust-analyzer.exe
     state: absent
   tags:
     - install

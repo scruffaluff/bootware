@@ -51,10 +51,17 @@
 
 - name: Copy SQLite settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.sqliterc"
+    dest: "{{ user_home }}\\.sqliterc"
     force: true
-    owner: "{{ user_id }}"
     src: sqliterc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of SQLite files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.sqliterc"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

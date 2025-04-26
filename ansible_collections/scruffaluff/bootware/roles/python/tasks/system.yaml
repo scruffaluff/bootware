@@ -131,7 +131,7 @@
 # https://michielvoo.net/2023/02/12/windows-11-app-execution-aliases.html.
 - name: Remove Microsoft Store links masquerading as Python for Windows
   ansible.windows.win_shell: |
-    $Path = "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    $Path = "{{ user_home }}\AppData\Local\Microsoft\WindowsApps\{{ item }}"
     if (Test-Path $Path) {
       fsutil reparsepoint delete $Path
       Remove-Item -Force $Path

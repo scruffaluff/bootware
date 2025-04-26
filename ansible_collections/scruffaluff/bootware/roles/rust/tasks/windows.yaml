@@ -52,7 +52,7 @@
 
 - name: Download Cargo Binstall archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
+    dest: "{{ ansible_env.TEMP }}\\cargo_binstall.zip"
     url: >-
       https://github.com/ryankurte/cargo-binstall/releases/download/v{{
       rust_binstall_formula.json.versions.stable
@@ -62,26 +62,25 @@
 
 - name: Decompress Cargo Binstall archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}/cargo_binstall"
-    src: "{{ ansible_env.TEMP }}/cargo_binstall.zip"
+    dest: "{{ ansible_env.TEMP }}\\cargo_binstall"
+    src: "{{ ansible_env.TEMP }}\\cargo_binstall.zip"
   tags:
     - plugin
 
 - name: Create Cargo Binstall directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin"
+    path: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin"
     state: directory
   tags:
     - plugin
 
 - name: Install Cargo Binstall for Windows
   ansible.windows.win_copy:
-    dest: "{{ scoop_apps }}/rustup-msvc/current/.cargo/bin/cargo-binstall.exe"
+    dest: >-
+      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin\\cargo-binstall.exe
     force: true
-    owner: "{{ user_id }}"
     remote_src: true
-    src: "{{ ansible_env.TEMP }}/cargo_binstall/cargo-binstall.exe"
+    src: "{{ ansible_env.TEMP }}\\cargo_binstall\\cargo-binstall.exe"
   tags:
     - plugin
 
@@ -91,7 +90,7 @@
   environment:
     CARGO_HOME: "{{ scoop_apps }}\\rustup-msvc\\current\\.cargo"
     Path: >-
-      {{ scoop_apps }}\\rustup-msvc\\current\\.cargo\\bin;{{ ansible_env.Path }}
+      {{ scoop_apps }}\rustup-msvc\current\.cargo\bin;{{ ansible_env.Path }}
   loop: "{{ rust_applications }}"
   register: rust_binstall_package
   tags:

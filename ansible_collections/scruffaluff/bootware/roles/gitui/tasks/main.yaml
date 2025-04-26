@@ -120,7 +120,6 @@
 
 - name: Create GitUI configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\gitui"
     state: directory
   tags:
@@ -131,7 +130,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\AppData\\Roaming\\gitui\\key_bindings.ron"
     force: true
-    owner: "{{ user_id }}"
     src: key_bindings.ron
   tags:
     - config

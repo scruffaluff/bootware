@@ -47,7 +47,7 @@
 
 - name: Check if LLDB Python is installed for Windows
   ansible.windows.win_stat:
-    path: "{{ scoop_apps }}/llvm/current/bin/python.exe"
+    path: "{{ scoop_apps }}\\llvm\\current\\bin\\python.exe"
   register: lldb_python_check
   tags:
     - install
@@ -72,7 +72,7 @@
 
     - name: Download embedded Python 3.10 for Windows
       ansible.windows.win_get_url:
-        dest: "{{ ansible_env.TEMP }}/python_embed.zip"
+        dest: "{{ ansible_env.TEMP }}\\python_embed.zip"
         url: >-
           https://www.python.org/ftp/python/{{
           debug_embed_python_bucket.json.version }}/python-{{
@@ -80,8 +80,8 @@
 
     - name: Decompress embedded Python 3.10 for Windows
       community.windows.win_unzip:
-        dest: "{{ scoop_apps }}/llvm/current/bin"
-        src: "{{ ansible_env.TEMP }}/python_embed.zip"
+        dest: "{{ scoop_apps }}\\llvm\\current\\bin"
+        src: "{{ ansible_env.TEMP }}\\python_embed.zip"
 
 - name: Copy LLDB settings files for Unix
   ansible.builtin.copy:
@@ -103,15 +103,25 @@
 
 - name: Copy LLDB settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item.dest }}"
+    dest: "{{ user_home }}\\{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: .lldbinit
       src: lldbinit
-    - dest: .config/lldbinit.py
+    - dest: .config\lldbinit.py
       src: lldbinit.py
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of LLDB files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    user: "{{ user_id }}"
+  loop:
+    - .lldbinit
+    - .config\lldbinit.py
   tags:
     - config
   when: ansible_system == "Win32NT"

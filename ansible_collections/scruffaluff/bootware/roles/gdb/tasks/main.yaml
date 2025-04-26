@@ -45,7 +45,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}/{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: .gdbinit

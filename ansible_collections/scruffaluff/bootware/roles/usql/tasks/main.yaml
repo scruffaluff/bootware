@@ -93,9 +93,8 @@
 
 - name: Copy Usql settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.usqlrc"
+    dest: "{{ user_home }}\\.usqlrc"
     force: true
-    owner: "{{ user_id }}"
     src: usqlrc
   tags:
     - config

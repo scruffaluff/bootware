@@ -116,10 +116,17 @@
 
 - name: Copy Starship settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.config/starship.toml"
+    dest: "{{ user_home }}\\.config\\starship.toml"
     force: true
-    owner: "{{ user_id }}"
     src: starship.toml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Starship file for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config\\starship.toml"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

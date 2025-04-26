@@ -108,7 +108,6 @@
 
 - name: Create Bottom settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\bottom"
     state: directory
   tags:
@@ -119,7 +118,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\AppData\\Roaming\\bottom\\bottom.toml"
     force: true
-    owner: "{{ user_id }}"
     src: bottom.toml
   tags:
     - config

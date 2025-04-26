@@ -31,22 +31,20 @@
 
 - name: Copy PowerShell settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item }}"
+    dest: "{{ user_home }}\\{{ item }}"
     force: true
-    owner: "{{ user_id }}"
     src: profile.ps1
   loop:
-    - Documents/PowerShell/Microsoft.PowerShell_profile.ps1
-    - Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+    - Documents\PowerShell\Microsoft.PowerShell_profile.ps1
+    - Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
   tags:
     - config
   when: ansible_system == "Win32NT"
 
 - name: Copy PowerShell user modules for Windows
   ansible.windows.win_copy:
-    dest: "{{ item[0] }}/{{ item[1] }}.psm1"
+    dest: "{{ item[0] }}\\{{ item[1] }}.psm1"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item[1] }}.psm1"
   loop: >-
     {{ powershell_user_module_paths | product(powershell_modules) | list }}
@@ -55,6 +53,18 @@
   vars:
     powershell_modules:
       - SSHCompletion
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of PowerShell files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - Documents\PowerShell
+    - Documents\WindowsPowerShell
+  tags:
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Disable PowerShell update check during startup for Windows

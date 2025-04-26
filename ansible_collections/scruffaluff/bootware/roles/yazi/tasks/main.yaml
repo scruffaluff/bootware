@@ -165,12 +165,11 @@
 
 - name: Create Yazi configuration directories for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\yazi\\{{ item }}"
     state: directory
   loop:
     - config
-    - config/plugins/smart-open.yazi
+    - config\plugins\smart-open.yazi
   tags:
     - configconfig
   when: ansible_system == "Win32NT"
@@ -179,7 +178,6 @@
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\AppData\\Roaming\\yazi\\config\\{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: keymap.toml

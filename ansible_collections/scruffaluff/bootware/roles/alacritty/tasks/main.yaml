@@ -46,7 +46,6 @@
 
 - name: Create Alacritty configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\AppData\\Roaming\\alacritty"
     state: directory
   tags:

@@ -115,10 +115,17 @@
 
 - name: Copy Ripgrep settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.ripgreprc"
+    dest: "{{ user_home }}\\.ripgreprc"
     force: true
-    owner: "{{ user_id }}"
     src: ripgreprc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Ripgrep file for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.ripgreprc"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

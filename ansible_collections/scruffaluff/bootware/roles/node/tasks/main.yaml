@@ -81,7 +81,6 @@
 
 - name: Create Node applications directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\.npm\\global"
     state: directory
   tags:

@@ -104,7 +104,6 @@
 
 - name: Create Wez's terminal configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ user_home }}\\.config\\wezterm"
     state: directory
   tags:
