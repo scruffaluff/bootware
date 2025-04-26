@@ -257,7 +257,10 @@ function Bootstrap() {
     if ($StartRole) {
         $Filter = ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name"
         $StartTask = yq --exit-status $($Filter -replace '"', '\"') $Playbook
-        $ExtraArgs += @("--start-at-task", $StartTask)
+        $ExtraArgs += @(
+            '--extra-vars', 'connect_role_executed=false', '--start-at-task',
+            $StartTask
+        )
     }
 
     try {

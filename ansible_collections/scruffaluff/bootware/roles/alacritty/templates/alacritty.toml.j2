@@ -85,8 +85,8 @@ key = "j"
 mods = "Control"
 
 [terminal.shell]
-args = ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"]
-program = "{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"
+args = ['{{ "-NoLogo" if user_shell == "powershell" else "--login" }}']
+program = '{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}'
 {% if ansible_system == "Darwin" %}
 
 [window]

@@ -20,3 +20,8 @@
   ansible.builtin.set_fact:
     ansible_become_method: doas
   when: ansible_system == "Linux" and ansible_pkg_mgr == "apk"
+
+- name: Mark role as executed to prevent reruns
+  ansible.builtin.set_fact:
+    cacheable: true
+    connect_role_executed: true

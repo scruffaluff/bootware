@@ -318,7 +318,8 @@ bootstrap() {
         ".[0].tasks[] | select(.\"ansible.builtin.include_role\".name == \"scruffaluff.bootware.${start_role}\") | .name" \
         "${playbook}"
     )"
-    set -- "$@" '--start-at-task' "${start_task}"
+    set -- "$@" '--extra-vars' 'connect_role_executed=false' '--start-at-task' \
+      "${start_task}"
   fi
 
   # Convenience logic for using a single host without a trailing comma.

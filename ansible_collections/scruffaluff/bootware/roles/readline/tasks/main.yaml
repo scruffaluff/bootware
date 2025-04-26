@@ -27,13 +27,13 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Set owner of Realine files for Windows
+- name: Set owner of Readline files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\{{ item }}"
     user: "{{ user_id }}"
   loop:
-    - editrc
-    - inputrc
+    - .editrc
+    - .inputrc
   tags:
     - config
   when: ansible_system == "Win32NT"

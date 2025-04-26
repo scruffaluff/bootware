@@ -149,4 +149,4 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and obsidian_vault is defined

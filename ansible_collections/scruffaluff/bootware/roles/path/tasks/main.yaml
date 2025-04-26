@@ -54,7 +54,7 @@
       scope: machine
     - elements: "{{ user_home }}\\.local\\bin"
       scope: user
-    - elements: "{{ user_home }}\\AppData\\local\\Programs\\Bin"
+    - elements: "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
       scope: user
   tags:
     - install

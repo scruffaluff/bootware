@@ -60,9 +60,17 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
     "gnu")
 
+- name: Create Deno temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\deno"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Download Deno archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}\\deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno\\deno.zip"
     url: >-
       https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip
   tags:
@@ -71,24 +79,16 @@
 
 - name: Decompress Deno archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}\\deno"
-    src: "{{ ansible_env.TEMP }}\\deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno\\deno"
+    src: "{{ ansible_env.TEMP }}\\deno\\deno.zip"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create Deno program directory for Windows
+- name: Create Deno binary directory for Windows
   ansible.windows.win_file:
     path: C:\Program Files\Deno\bin
     state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Add Deno to system path for Windows
-  ansible.windows.win_path:
-    elements: C:\Program Files\Deno\bin
-    scope: machine
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -98,7 +98,15 @@
     dest: C:\Program Files\Deno\bin\deno.exe
     force: true
     remote_src: true
-    src: "{{ ansible_env.TEMP }}\\deno\\deno.exe"
+    src: "{{ ansible_env.TEMP }}\\deno\\deno\\deno.exe"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Add Deno to system path for Windows
+  ansible.windows.win_path:
+    elements: C:\Program Files\Deno\bin
+    scope: machine
   tags:
     - install
   when: ansible_system == "Win32NT"
