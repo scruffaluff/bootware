@@ -1,4 +1,12 @@
 ---
+- name: Create Just temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: just_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Just for Alpine
   become: true
   community.general.apk:
@@ -35,14 +43,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/just.json
   register: just_formula
-  tags:
-    - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
-
-- name: Create Just temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: just_temp
   tags:
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

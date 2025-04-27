@@ -1,4 +1,12 @@
 ---
+- name: Create Zellij temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: zellij_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Zellij for FreeBSD
   become: true
   community.general.pkgng:
@@ -23,14 +31,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/zellij.json
   register: zellij_formula
-  tags:
-    - install
-  when: ansible_system == "Linux" and zellij_linux is failed
-
-- name: Create Zellij temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: zellij_temp
   tags:
     - install
   when: ansible_system == "Linux" and zellij_linux is failed

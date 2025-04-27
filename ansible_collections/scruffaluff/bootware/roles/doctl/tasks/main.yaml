@@ -1,4 +1,12 @@
 ---
+- name: Create Doctl temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: doctl_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Digital Ocean CLI for FreeBSD
   become: true
   community.general.pkgng:
@@ -23,14 +31,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/doctl.json
   register: doctl_formula
-  tags:
-    - install
-  when: ansible_system == "Linux" and doctl_linux is failed
-
-- name: Create Doctl temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: doctl_temp
   tags:
     - install
   when: ansible_system == "Linux" and doctl_linux is failed

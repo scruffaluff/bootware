@@ -24,6 +24,8 @@
     - install
   when: ansible_system == "Win32NT"
 
+# Do not use GlazeWM Scoop shims for startup application registration. They will
+# create a brief command prompt flash on system start.
 - name: Add GlazeWM to startup applications for Windows
   community.windows.win_shortcut:
     dest: >-

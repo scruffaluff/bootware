@@ -173,13 +173,14 @@
   when: ansible_system == "Win32NT"
 
 - name: Set owner of Python files for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\{{ item }}"
-    recurse: true
-    user: "{{ user_id }}"
+  ansible.builtin.include_tasks:
+    file: owner.yaml
   loop:
-    - .local\bin
-    - .shiv
-    - pipx
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\.shiv"
+    - "{{ user_home }}\\pipx"
+  loop_control:
+    loop_var: python_file
   tags:
     - install
+  when: ansible_system == "Win32NT"

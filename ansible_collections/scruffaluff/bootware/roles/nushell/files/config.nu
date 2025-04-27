@@ -366,13 +366,17 @@ def fzf-path-widget [] {
 
 # List Windows ACL properties for files.
 def lsacl [path: string = "."] {
-    powershell -command $"
+    if $nu.os-info.name == "windows" {
+        powershell -command $"
 Get-ChildItem ($path) | ForEach-Object {
     $ACL = Get-Acl $_.FullName
     [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
 } | ConvertTo-Csv -NoTypeInformation
 "
-    | from csv
+        | from csv
+    } else {
+        error make { msg: "lsacl is only defined for Windows" }
+    }
 }
 
 # Prepend existing directories that are not in the system path.

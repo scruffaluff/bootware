@@ -246,7 +246,7 @@ if (Get-Command -ErrorAction SilentlyContinue hx) {
 
 # Add alias for account wide Just recipes.
 function jt() {
-    just --justfile "$HOME/.justfile" --working-directory . $Args
+    just --justfile "$HOME\.justfile" --working-directory . $Args
 }
 
 # Lsd settings.
@@ -255,8 +255,8 @@ function jt() {
 #
 # Uses output of command "vivid generate solarized-light" from
 # https://github.com/sharkdp/vivid.
-if (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
-    $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
+if (Test-Path -Path "$HOME\.ls_colors" -PathType Leaf) {
+    $Env:LS_COLORS = Get-Content "$HOME\.ls_colors"
 }
 
 # Replace Ls with Lsd if available.
@@ -293,7 +293,7 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
-$Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
+$Env:RIPGREP_CONFIG_PATH = "$HOME\.ripgreprc"
 
 # Rust settings.
 
@@ -588,9 +588,9 @@ Remove-Variable -Name Tty
 # User settings.
 
 # Load user aliases, secrets, and variables.
-if (Test-Path "$HOME/.env.ps1") {
-    . "$HOME/.env.ps1"
+if (Test-Path "$HOME\.env.ps1") {
+    . "$HOME\.env.ps1"
 }
-if (Test-Path "$HOME/.secrets.ps1") {
-    . "$HOME/.secrets.ps1"
+if (Test-Path "$HOME\.secrets.ps1") {
+    . "$HOME\.secrets.ps1"
 }

@@ -1,4 +1,12 @@
 ---
+- name: Create Helmfile temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: helmfile_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Helmfile for FreeBSD
   become: true
   community.general.pkgng:
@@ -23,14 +31,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/helmfile.json
   register: helmfile_formula
-  tags:
-    - install
-  when: ansible_system == "Linux" and helmfile_linux is failed
-
-- name: Create Helmfile temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: helmfile_temp
   tags:
     - install
   when: ansible_system == "Linux" and helmfile_linux is failed

@@ -1,18 +1,18 @@
 ---
+- name: Create Flyctl temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: flyctl_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Get latest Flyctl version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
     url: https://formulae.brew.sh/api/formula/flyctl.json
   register: flyctl_formula
-  tags:
-    - install
-  when: ansible_system == "Linux"
-
-- name: Create Flyctl temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: flyctl_temp
   tags:
     - install
   when: ansible_system == "Linux"

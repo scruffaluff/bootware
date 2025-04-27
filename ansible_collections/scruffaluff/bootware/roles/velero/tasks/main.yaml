@@ -1,4 +1,12 @@
 ---
+- name: Create Velero temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: velero_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install Velero for Linux
   ansible.builtin.package:
     name: velero
@@ -15,14 +23,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/velero.json
   register: velero_formula
-  tags:
-    - install
-  when: ansible_system == "Linux" and velero_linux is failed
-
-- name: Create Velero temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: velero_temp
   tags:
     - install
   when: ansible_system == "Linux" and velero_linux is failed

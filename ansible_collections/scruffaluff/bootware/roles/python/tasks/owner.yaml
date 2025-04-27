@@ -1,0 +1,11 @@
+- name: Check if Python files exist for Windows
+  ansible.windows.win_stat:
+    path: "{{ python_file }}"
+  register: python_files_check
+
+- name: Set owner of Python files for Windows
+  ansible.windows.win_owner:
+    path: "{{ python_file }}"
+    recurse: true
+    user: "{{ user_id }}"
+  when: python_files_check.stat.exists
