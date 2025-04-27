@@ -19,7 +19,7 @@ Describe 'Config' {
 
         & $Bootware config --source 'https://example.com/config.yaml'
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -eq "$HOME/.bootware/config.yaml" -and
+            $OutFile -eq "$HOME\.bootware\config.yaml" -and
             $Uri -eq 'https://example.com/config.yaml'
         }
     }
@@ -29,7 +29,7 @@ Describe 'Config' {
 
         & $Bootware config --source https://fakedomain.com
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -eq "$HOME/.bootware/config.yaml" -and
+            $OutFile -eq "$HOME\.bootware\config.yaml" -and
             $Uri -eq 'https://fakedomain.com'
         }
     }

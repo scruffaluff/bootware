@@ -364,21 +364,6 @@ def fzf-path-widget [] {
     }
 }
 
-# List Windows ACL properties for files.
-def lsacl [path: string = "."] {
-    if $nu.os-info.name == "windows" {
-        powershell -command $"
-Get-ChildItem ($path) | ForEach-Object {
-    $ACL = Get-Acl $_.FullName
-    [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
-} | ConvertTo-Csv -NoTypeInformation
-"
-        | from csv
-    } else {
-        error make { msg: "lsacl is only defined for Windows" }
-    }
-}
-
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
@@ -390,6 +375,52 @@ def --env prepend-paths [...paths: directory] {
 # Check if current shell is within a remote SSH session.
 def ssh-session [] {
     "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
+}
+
+# List Windows ACL properties for files.
+def wacls [
+    path: string = "." # File or directory
+] {
+    if $nu.os-info.name == "windows" {
+        powershell -command $"
+Get-ChildItem ($path) | ForEach-Object {
+    $ACL = Get-Acl $_.FullName
+    [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
+} | ConvertTo-Csv -NoTypeInformation
+"
+        | from csv
+    } else {
+        error make { msg: "wacls is only defined for Windows" }
+    }
+}
+
+# Change the owner of each file for Windows.
+def wchown [
+    --recursive (-R) # Operate on files and directories recursively
+    owner: string # User account to give ownership
+    ...files: string # File or directory to modify
+] {
+    if $nu.os-info.name == "windows" {
+        for file in $files {
+            powershell -command $"
+$Account = New-Object -TypeName System.Security.Principal.NTAccount `
+    -ArgumentList '($owner)'
+
+$Paths = @\(Get-Item -Path '($file)'\)
+if \('($recursive)' -eq 'true'\) {
+    $Paths += Get-ChildItem -Recurse -Path ($file)
+}
+
+foreach \($Path in $Paths\) {
+    $ACL = Get-Acl -Path $Path
+    $ACL.SetOwner\($Account\)
+    Set-Acl -AclObject $ACL -Path $Path
+}
+"
+        }
+    } else {
+        error make { msg: "wchown is only defined for Windows" }
+    }
 }
 
 # System settings.

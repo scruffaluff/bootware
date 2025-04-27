@@ -1,4 +1,14 @@
 ---
+- name: Create Procs temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: procs_temp
+  tags:
+    - install
+  when: >-
+    ansible_system not in ["FreeBSD", "Win32NT"] and system_architecture ==
+    "amd64"
+
 - name: Install Procs for Alpine
   become: true
   community.general.apk:
@@ -34,16 +44,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/procs.json
   register: procs_formula
-  tags:
-    - install
-  when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
-    system_architecture == "amd64" and procs_linux is failed
-
-- name: Create Procs temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: procs_temp
   tags:
     - install
   when: >-

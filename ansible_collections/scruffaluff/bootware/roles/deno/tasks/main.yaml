@@ -1,4 +1,14 @@
 ---
+- name: Create Deno temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: deno_temp
+  tags:
+    - install
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+
 - name: Install Deno for Alpine
   become: true
   community.general.apk:
@@ -14,16 +24,6 @@
   tags:
     - install
   when: ansible_system == "FreeBSD"
-
-- name: Create Deno temporary directory for Unix
-  ansible.builtin.tempfile:
-    state: directory
-  register: deno_temp
-  tags:
-    - install
-  when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
-    "gnu")
 
 - name: Download Deno for Unix
   ansible.builtin.unarchive:
@@ -113,11 +113,29 @@
 
 - name: Create Deno shell completions for Unix
   ansible.builtin.shell:
-    cmd: deno completions {{ item.shell }} > {{ item.dest }}
+    cmd: deno completions {{ item }} > {{ deno_temp.path }}/deno.{{ item }}
   become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+  loop:
+    - bash
+    - fish
+  tags:
+    - completion
+    - install
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+
+- name: Install Deno shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: "{{ deno_temp.path }}/deno.{{ item.shell }}"
+  become: true
   loop:
     - dest: "{{ bash_completion }}/deno"
       shell: bash

@@ -23,10 +23,6 @@ function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
-function lsacl($Path) {
-    Get-ChildItem $Path | Get-Acl
-}
-
 function pkill() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
@@ -74,11 +70,82 @@ function ssh-session() {
 function touch() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
-        $Path = $Args[$ArgIdx]
-        if (-not (Test-Path -Path $Path)) {
-            New-Item $Path | Out-Null
+        switch ($Args[$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Write-Output @'
+Create file if does not exist.
+
+Usage: touch [OPTIONS] <FILES>...
+
+Options:
+  -h, --help        Print help information
+'@
+                exit 0
+            }
+            default {
+                if (-not (Test-Path -Path $Args[$ArgIdx])) {
+                    New-Item $Args[$ArgIdx] | Out-Null
+                }
+                $ArgIdx += 1
+                break
+            }
         }
-        $ArgIdx += 1
+    }
+}
+
+function wacls($Path) {
+    Get-ChildItem $Path | Get-Acl
+}
+
+function wchown() {
+    $ArgIdx = 0
+    $File = ''
+    $Owner = ''
+    $Recursive = $False
+
+    while ($ArgIdx -lt $Args.Count) {
+        switch ($Args[$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Write-Output @'
+Change file owner.
+
+Usage: wchown [OPTIONS] <OWNER> <FILE>
+
+Options:
+  -h, --help        Print help information
+  -R, --recursive   Operate on files and directories recursively
+'@
+                exit 0
+            }
+            { $_ -in '-R', '--recursive' } {
+                $Recursive = $True
+                $ArgIdx += 1
+                break
+            }
+            default {
+                if (-not $Owner) {
+                    $Owner = $Args[$ArgIdx]
+                }
+                elseif (-not $File) {
+                    $File = $Args[$ArgIdx]
+                }
+                $ArgIdx += 1
+                break
+            }
+        }
+    }
+
+    $Account = New-Object -TypeName System.Security.Principal.NTAccount `
+        -ArgumentList $Owner
+    $Paths = @(Get-Item -Path $File)
+    if ($Recursive) {
+        $Paths += Get-ChildItem -Recurse -Path $File
+    }
+
+    foreach ($Path in $Paths) {
+        $ACL = Get-Acl -Path $Path
+        $ACL.SetOwner($Account)
+        Set-Acl -AclObject $ACL -Path $Path
     }
 }
 

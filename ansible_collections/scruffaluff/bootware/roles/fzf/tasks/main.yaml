@@ -1,4 +1,12 @@
 ---
+- name: Create Fzf temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: fzf_temp
+  tags:
+    - install
+  when: ansible_system in ["FreeBSD", "Linux"]
+
 # TODO: Renable when Fzf package in most distributions reaches version 0.48.0.
 # - name: Install FzF for FreeBSD
 #   become: true
@@ -24,14 +32,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/fzf.json
   register: fzf_formula
-  tags:
-    - install
-  when: ansible_system in ["FreeBSD", "Linux"]
-
-- name: Create Fzf temporary directory for Unix
-  ansible.builtin.tempfile:
-    state: directory
-  register: fzf_temp
   tags:
     - install
   when: ansible_system in ["FreeBSD", "Linux"]
