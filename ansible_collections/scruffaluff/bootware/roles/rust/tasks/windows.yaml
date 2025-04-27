@@ -110,11 +110,8 @@
 
 - name: Set owner of Rust files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\{{ item }}"
+    path: "{{ user_home }}\\.rustup"
     recurse: true
     user: "{{ user_id }}"
-  loop:
-    - .rustup
-    - apps\rustup-msvc
   tags:
     - install

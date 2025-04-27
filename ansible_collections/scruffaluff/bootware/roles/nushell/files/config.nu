@@ -255,7 +255,49 @@ def _paste-super [] {
     }
 }
 
+# Change the owner of each file for Windows.
+def _wchown [
+    --recursive (-R) # Operate on files and directories recursively
+    owner: string # User account to give ownership
+    ...files: string # File or directory to modify
+] {
+    for file in $files {
+        powershell -command $"
+$Account = New-Object -TypeName System.Security.Principal.NTAccount `
+    -ArgumentList '($owner)'
+
+$Paths = @\(Get-Item -Path '($file)'\)
+if \('($recursive)' -eq 'true'\) {
+    $Paths += Get-ChildItem -Recurse -Path ($file)
+}
+
+foreach \($Path in $Paths\) {
+    $ACL = Get-Acl -Path $Path.FullName
+    $ACL.SetOwner\($Account\)
+    Set-Acl -AclObject $ACL -Path $Path.FullName
+}
+"
+    }
+}
+
 # Public convenience functions.
+
+# List Windows ACL properties for files.
+def acls [
+    path: string = "." # File or directory
+] {
+    if $nu.os-info.name == "windows" {
+        powershell -command $"
+Get-ChildItem ($path) | ForEach-Object {
+    $ACL = Get-Acl $_.FullName
+    [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
+} | ConvertTo-Csv -NoTypeInformation
+"
+        | from csv
+    } else {
+        error make { msg: "wacls is only defined for Windows" }
+    }
+}
 
 # Complete commandline argument with Carapace.
 def carapace-complete [spans: list<string>] {
@@ -271,6 +313,33 @@ def carapace-complete [spans: list<string>] {
     }
 
     carapace $spans.0 nushell ...$spans | from json
+}
+
+# Wrapper for cat command with Windows support.
+def --wrapped cat [...args] {
+    match $nu.os-info.name {
+        "windows" => { open --raw ...$args },
+        _ => { ^cat ...$args },
+    }
+}
+
+# Wrapper for chown command with Windows support.
+def --wrapped chown [...args: string] {
+    match $nu.os-info.name {
+        "windows" => {
+            let args_ = $args | filter {|arg| not ($arg in ["-R", "--recursive"]) }
+            let length = $args_ | length
+
+            if $length < 2 {
+                _wchown --help
+            } else if $length < ($args | length) {
+                _wchown --recursive $args_.0 ...($args_ | skip 1)
+            } else {
+                _wchown $args_.0 ...($args_ | skip 1)
+            }
+        },
+        _ => { ^chown ...$args },
+    }
 }
 
 # Open Nushell history file with default editor.
@@ -375,52 +444,6 @@ def --env prepend-paths [...paths: directory] {
 # Check if current shell is within a remote SSH session.
 def ssh-session [] {
     "SSH_CLIENT" in $env or "SSH_CONNECTION" in $env or "SSH_TTY" in $env
-}
-
-# List Windows ACL properties for files.
-def wacls [
-    path: string = "." # File or directory
-] {
-    if $nu.os-info.name == "windows" {
-        powershell -command $"
-Get-ChildItem ($path) | ForEach-Object {
-    $ACL = Get-Acl $_.FullName
-    [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
-} | ConvertTo-Csv -NoTypeInformation
-"
-        | from csv
-    } else {
-        error make { msg: "wacls is only defined for Windows" }
-    }
-}
-
-# Change the owner of each file for Windows.
-def wchown [
-    --recursive (-R) # Operate on files and directories recursively
-    owner: string # User account to give ownership
-    ...files: string # File or directory to modify
-] {
-    if $nu.os-info.name == "windows" {
-        for file in $files {
-            powershell -command $"
-$Account = New-Object -TypeName System.Security.Principal.NTAccount `
-    -ArgumentList '($owner)'
-
-$Paths = @\(Get-Item -Path '($file)'\)
-if \('($recursive)' -eq 'true'\) {
-    $Paths += Get-ChildItem -Recurse -Path ($file)
-}
-
-foreach \($Path in $Paths\) {
-    $ACL = Get-Acl -Path $Path
-    $ACL.SetOwner\($Account\)
-    Set-Acl -AclObject $ACL -Path $Path
-}
-"
-        }
-    } else {
-        error make { msg: "wchown is only defined for Windows" }
-    }
 }
 
 # System settings.

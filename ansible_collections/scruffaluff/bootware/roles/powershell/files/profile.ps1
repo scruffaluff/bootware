@@ -9,6 +9,62 @@
 
 # Public convenience functions.
 
+function acls($Path) {
+    Get-ChildItem $Path | Get-Acl
+}
+
+function chown() {
+    $ArgIdx = 0
+    $File = ''
+    $Owner = ''
+    $Recursive = $False
+
+    while ($ArgIdx -lt $Args.Count) {
+        switch ($Args[$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Write-Output @'
+Change file owner.
+
+Usage: wchown [OPTIONS] <OWNER> <FILE>
+
+Options:
+  -h, --help        Print help information
+  -R, --recursive   Operate on files and directories recursively
+'@
+                exit 0
+            }
+            { $_ -in '-R', '--recursive' } {
+                $Recursive = $True
+                $ArgIdx += 1
+                break
+            }
+            default {
+                if (-not $Owner) {
+                    $Owner = $Args[$ArgIdx]
+                }
+                elseif (-not $File) {
+                    $File = $Args[$ArgIdx]
+                }
+                $ArgIdx += 1
+                break
+            }
+        }
+    }
+
+    $Account = New-Object -TypeName System.Security.Principal.NTAccount `
+        -ArgumentList $Owner
+    $Paths = @(Get-Item -Path $File)
+    if ($Recursive) {
+        $Paths += Get-ChildItem -Recurse -Path $File
+    }
+
+    foreach ($Path in $Paths) {
+        $ACL = Get-Acl -Path $Path.FullName
+        $ACL.SetOwner($Account)
+        Set-Acl -AclObject $ACL -Path $Path.FullName
+    }
+}
+
 # Open PowerShell history file with default editor.
 function edit-history() {
     if ($Env:EDITOR) {
@@ -90,62 +146,6 @@ Options:
                 break
             }
         }
-    }
-}
-
-function wacls($Path) {
-    Get-ChildItem $Path | Get-Acl
-}
-
-function wchown() {
-    $ArgIdx = 0
-    $File = ''
-    $Owner = ''
-    $Recursive = $False
-
-    while ($ArgIdx -lt $Args.Count) {
-        switch ($Args[$ArgIdx]) {
-            { $_ -in '-h', '--help' } {
-                Write-Output @'
-Change file owner.
-
-Usage: wchown [OPTIONS] <OWNER> <FILE>
-
-Options:
-  -h, --help        Print help information
-  -R, --recursive   Operate on files and directories recursively
-'@
-                exit 0
-            }
-            { $_ -in '-R', '--recursive' } {
-                $Recursive = $True
-                $ArgIdx += 1
-                break
-            }
-            default {
-                if (-not $Owner) {
-                    $Owner = $Args[$ArgIdx]
-                }
-                elseif (-not $File) {
-                    $File = $Args[$ArgIdx]
-                }
-                $ArgIdx += 1
-                break
-            }
-        }
-    }
-
-    $Account = New-Object -TypeName System.Security.Principal.NTAccount `
-        -ArgumentList $Owner
-    $Paths = @(Get-Item -Path $File)
-    if ($Recursive) {
-        $Paths += Get-ChildItem -Recurse -Path $File
-    }
-
-    foreach ($Path in $Paths) {
-        $ACL = Get-Acl -Path $Path
-        $ACL.SetOwner($Account)
-        Set-Acl -AclObject $ACL -Path $Path
     }
 }
 
