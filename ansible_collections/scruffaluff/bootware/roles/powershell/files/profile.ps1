@@ -23,9 +23,8 @@ function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
-function lsown($Path) {
-    Get-ChildItem $Path | Select-Object `
-        Name, @{N = "Owner"; E = { (Get-Acl $_.FullName).Owner } }
+function lsacl($Path) {
+    Get-ChildItem $Path | Get-Acl
 }
 
 function pkill() {

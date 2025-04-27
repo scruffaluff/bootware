@@ -29,8 +29,8 @@
     dest: >-
       {{ user_home }}\\AppData\\Roaming\\Microsoft\\Windows\\Start
       Menu\\Programs\\Startup\\GlazeWM.lnk
-    icon: "{{ scoop_path }}\\shims\\glazewm.exe,0"
-    src: "{{ scoop_path }}\\shims\\glazewm.exe"
+    icon: "{{ scoop_path }}\\apps\\glazewm\\current\\GlazeWM.exe,0"
+    src: "{{ scoop_path }}\\apps\\glazewm\\current\\GlazeWM.exe"
   tags:
     - install
   when: ansible_system == "Win32NT"

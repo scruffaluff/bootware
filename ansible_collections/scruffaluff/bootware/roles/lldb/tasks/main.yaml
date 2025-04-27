@@ -70,9 +70,14 @@
         url: https://raw.githubusercontent.com/ScoopInstaller/Versions/master/bucket/python310.json
       register: debug_embed_python_bucket
 
+    - name: Create LLDB temporary directory for Windows
+      ansible.windows.win_file:
+        path: "{{ ansible_env.TEMP }}\\lldb"
+        state: directory
+
     - name: Download embedded Python 3.10 for Windows
       ansible.windows.win_get_url:
-        dest: "{{ ansible_env.TEMP }}\\python_embed.zip"
+        dest: "{{ ansible_env.TEMP }}\\lldb\\python_embed.zip"
         url: >-
           https://www.python.org/ftp/python/{{
           debug_embed_python_bucket.json.version }}/python-{{
@@ -81,7 +86,7 @@
     - name: Decompress embedded Python 3.10 for Windows
       community.windows.win_unzip:
         dest: "{{ scoop_path }}\\apps\\llvm\\current\\bin"
-        src: "{{ ansible_env.TEMP }}\\python_embed.zip"
+        src: "{{ ansible_env.TEMP }}\\lldb\\python_embed.zip"
 
 - name: Copy LLDB settings files for Unix
   ansible.builtin.copy:

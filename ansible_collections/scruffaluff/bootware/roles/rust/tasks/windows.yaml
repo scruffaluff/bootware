@@ -53,9 +53,16 @@
   tags:
     - install
 
+- name: Create Rust temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\rust"
+    state: directory
+  tags:
+    - install
+
 - name: Download Cargo Binstall archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}\\cargo_binstall.zip"
+    dest: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall.zip"
     url: >-
       https://github.com/ryankurte/cargo-binstall/releases/download/v{{
       rust_binstall_formula.json.versions.stable
@@ -65,8 +72,8 @@
 
 - name: Decompress Cargo Binstall archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}\\cargo_binstall"
-    src: "{{ ansible_env.TEMP }}\\cargo_binstall.zip"
+    dest: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall"
+    src: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall.zip"
   tags:
     - plugin
 
@@ -84,7 +91,7 @@
       }}\apps\rustup-msvc\current\.cargo\bin\cargo-binstall.exe
     force: true
     remote_src: true
-    src: "{{ ansible_env.TEMP }}\\cargo_binstall\\cargo-binstall.exe"
+    src: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall\\cargo-binstall.exe"
   tags:
     - plugin
 
@@ -100,3 +107,14 @@
   register: rust_binstall_package
   tags:
     - plugin
+
+- name: Set owner of Rust files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - .rustup
+    - apps\rustup-msvc
+  tags:
+    - install

@@ -364,6 +364,17 @@ def fzf-path-widget [] {
     }
 }
 
+# List Windows ACL properties for files.
+def lsacl [path: string = "."] {
+    powershell -command $"
+Get-ChildItem ($path) | ForEach-Object {
+    $ACL = Get-Acl $_.FullName
+    [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
+} | ConvertTo-Csv -NoTypeInformation
+"
+    | from csv
+}
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 

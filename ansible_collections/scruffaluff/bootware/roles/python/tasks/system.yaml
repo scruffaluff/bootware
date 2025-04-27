@@ -171,3 +171,15 @@
   tags:
     - plugin
   when: ansible_system == "Win32NT"
+
+- name: Set owner of Python files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - .local\bin
+    - .shiv
+    - pipx
+  tags:
+    - install
