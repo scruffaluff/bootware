@@ -42,9 +42,19 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == "amd64") and git_delta_linux is failed
 
+- name: Create Git temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: git_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64") and git_delta_linux is failed
+
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ git_temp.path }}"
     mode: "755"
     remote_src: true
     src: >-
@@ -65,8 +75,8 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/delta-{{ git_delta_formula.json.versions.stable }}-{{ git_delta_arch
-      }}-unknown-linux-{{ system_libc }}/delta
+      {{ git_temp.path }}/delta-{{ git_delta_formula.json.versions.stable }}-{{
+      git_delta_arch }}-unknown-linux-{{ system_libc }}/delta
   become: true
   tags:
     - install
@@ -96,7 +106,7 @@
 
 - name: Install Git for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - delta
       - git-lfs

@@ -80,7 +80,7 @@
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: gitlab-runner
   tags:
     - install

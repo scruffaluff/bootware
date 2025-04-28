@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and age_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Age temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: age_temp
@@ -54,7 +54,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: "{{ gitui_temp.path }}/age/{{ item }}"
+    src: "{{ age_temp.path }}/age/{{ item }}"
   become: true
   loop:
     - age
@@ -74,7 +74,7 @@
 
 - name: Install Age for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: age
   tags:
     - install

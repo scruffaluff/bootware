@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and sd_linux is failed
 
+- name: Create SD temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: sd_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and sd_linux is failed
+
 - name: Download SD for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ sd_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -47,7 +55,7 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/sd-v{{ sd_formula.json.versions.stable }}-{{ sd_arch
+      {{ sd_temp.path }}/sd-v{{ sd_formula.json.versions.stable }}-{{ sd_arch
       }}-unknown-linux-musl/sd
   become: true
   tags:
@@ -65,7 +73,7 @@
 
 - name: Install SD for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: sd
   tags:
     - install

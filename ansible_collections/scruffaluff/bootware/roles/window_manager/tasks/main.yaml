@@ -16,7 +16,7 @@
 
 - name: Install GlazeWM for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - glazewm
       - zebar
@@ -24,13 +24,15 @@
     - install
   when: ansible_system == "Win32NT"
 
+# Do not use GlazeWM Scoop shims for startup application registration. They will
+# create a brief command prompt flash on system start.
 - name: Add GlazeWM to startup applications for Windows
   community.windows.win_shortcut:
     dest: >-
       {{ user_home }}\\AppData\\Roaming\\Microsoft\\Windows\\Start
       Menu\\Programs\\Startup\\GlazeWM.lnk
-    icon: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe,0"
-    src: "{{ scoop_apps }}\\glazewm\\current\\GlazeWM.exe"
+    icon: "{{ scoop_path }}\\apps\\glazewm\\current\\GlazeWM.exe,0"
+    src: "{{ scoop_path }}\\apps\\glazewm\\current\\GlazeWM.exe"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -62,8 +64,7 @@
 
 - name: Create GlazeWM configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.glzr/glazewm"
+    path: "{{ user_home }}\\.glzr\\glazewm"
     state: directory
   tags:
     - config
@@ -71,10 +72,18 @@
 
 - name: Copy GlazeWM configuration file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.glzr/glazewm/config.yaml"
+    dest: "{{ user_home }}\\.glzr\\glazewm\\config.yaml"
     force: true
-    owner: "{{ user_id }}"
     src: glaze.yaml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of GlazeWM files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.glzr"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

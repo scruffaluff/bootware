@@ -1,7 +1,7 @@
 ---
 - name: Check if font is installed for Windows
   ansible.windows.win_stat:
-    path: "{{ font_folder }}/{{ font_family.check }}"
+    path: "{{ font_folder }}\\{{ font_family.check }}"
   register: font_check_windows
 
 - name: Install fonts for Windows
@@ -9,15 +9,20 @@
     - install
   when: not font_check_windows.stat.exists
   block:
+    - name: Create font temporary directory for Windows
+      ansible.windows.win_file:
+        path: "{{ ansible_env.TEMP }}\\font"
+        state: directory
+
     - name: Download font archives for Windows
       ansible.windows.win_get_url:
-        dest: "{{ ansible_env.TEMP }}/{{ font_family.name }}.zip"
+        dest: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}.zip"
         url: "{{ font_family.url }}"
 
     - name: Decompress font archives for Windows
       community.windows.win_unzip:
-        dest: "{{ ansible_env.TEMP }}/{{ font_family.name }}"
-        src: "{{ ansible_env.TEMP }}/{{ font_family.name }}.zip"
+        dest: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}"
+        src: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}.zip"
 
     # Based on logic from
     # https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
@@ -29,7 +34,7 @@
         $PSNativeCommandUseErrorActionPreference = $True
         [System.Reflection.Assembly]::LoadWithPartialName('PresentationFramework')
         Add-Type -PassThru -AssemblyName PresentationFramework | Out-Null
-        $Folder = '{{ ansible_env.TEMP }}/{{ font_family.name }}'
+        $Folder = '{{ ansible_env.TEMP }}\font\{{ font_family.name }}'
         $Patterns = {{ font_family.patterns | map('quote') | join(',') }}
         ForEach ($File in Get-ChildItem -Recurse -Include $Patterns -Path $Folder) {
           $Glyph = [System.Windows.Media.GlyphTypeface]::new($File.FullName)

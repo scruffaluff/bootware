@@ -1,37 +1,30 @@
 ---
-scoop_global: true
+brew_prefix: >-
+  {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+  '/usr/local' }}
 user_id: "{{ ansible_user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
   FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   # Backslashes are required for Windows Defender firewall rules.
-  Win32NT: "C:\\Users\\{{ user_id }}"
+  Win32NT: C:\Users\{{ user_id }}
 user_home: "{{ user_home_.get(ansible_system, '/home/' + user_id) }}"
 
 bash_completion_:
-  Darwin: >-
-    {{ '/opt/homebrew/share/bash-completion/completions' if ansible_architecture
-    in ['aarch64', 'arm64'] else '/usr/local/share/bash-completion/completions'
-    }}
+  Darwin: "{{ brew_prefix }}/share/bash-completion/completions"
   FreeBSD: /usr/local/share/bash-completion/completions
   Linux: /usr/share/bash-completion/completions
 bash_executable_:
-  Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-    '/usr/local' }}/bin/bash
+  Darwin: "{{ brew_prefix }}/bin/bash"
   FreeBSD: /usr/local/bin/bash
   Linux: /bin/bash
 fish_completion_:
-  Darwin: >-
-    {{ '/opt/homebrew/etc/fish/completions' if ansible_architecture in
-    ['aarch64', 'arm64'] else '/usr/local/etc/fish/completions' }}
+  Darwin: "{{ brew_prefix }}/etc/fish/completions"
   FreeBSD: /usr/local/etc/fish/completions
   Linux: /etc/fish/completions
 fish_executable_:
-  Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-    '/usr/local' }}/bin/fish
+  Darwin: "{{ brew_prefix }}/bin/fish"
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
 github_api_token_: >-
@@ -41,17 +34,15 @@ group_id_:
   FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
   Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
 nushell_executable_:
-  Darwin: >-
-    {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-    '/usr/local' }}/bin/nu
+  Darwin: "{{ brew_prefix }}/bin/nu"
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
-  Win32NT: C:\\ProgramData\\scoop\\shims\\nu.exe
+  Win32NT: C:\ProgramData\scoop\shims\nu.exe
 nushell_vendor_autoload_:
   Darwin: /Library/Application Support/nushell/vendor/autoload
   FreeBSD: /usr/local/share/nushell/vendor/autoload
   Linux: /usr/local/share/nushell/vendor/autoload
-  Win32NT: C:\\ProgramData\\nushell\\vendor\\autoload
+  Win32NT: C:\ProgramData\nushell\vendor\autoload
 nushell_user_vendor_autoload_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
@@ -98,11 +89,8 @@ powershell_module_paths:
 powershell_user_module_paths:
   - "{{ user_home }}\\Documents\\PowerShell\\Modules"
   - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
-# Backslashes are required for Windows Defender firewall rules.
-scoop_apps: >-
-  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\apps
-scoop_shims: >-
-  {{ 'C:\\ProgramData' if scoop_global else user_home }}\\scoop\\shims
+scoop_path: C:\ProgramData\scoop
+scoop_user_path: "{{ user_home }}\\scoop"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_login: "{{ 'powershell' if ansible_system == 'Win32NT' else 'bash' }}"

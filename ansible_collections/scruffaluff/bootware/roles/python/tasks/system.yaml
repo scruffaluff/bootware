@@ -96,7 +96,7 @@
 
 - name: Install Python for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - pipx
       - python
@@ -106,8 +106,8 @@
 
 - name: Make Python symlinks for MacOS
   ansible.builtin.file:
-    src: "{{ python_brew_prefix }}/bin/{{ item }}3"
-    dest: "{{ python_brew_prefix }}/bin/{{ item }}"
+    src: "{{ brew_prefix }}/bin/{{ item }}3"
+    dest: "{{ brew_prefix }}/bin/{{ item }}"
     force: true
     mode: "755"
     state: link
@@ -117,10 +117,6 @@
     - python
   tags:
     - install
-  vars:
-    python_brew_prefix: >-
-      {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
-      '/usr/local' }}
   when: ansible_system == "Darwin"
 
 # While Python Microsoft Store links are listed app execution aliases in Windows
@@ -131,7 +127,7 @@
 # https://michielvoo.net/2023/02/12/windows-11-app-execution-aliases.html.
 - name: Remove Microsoft Store links masquerading as Python for Windows
   ansible.windows.win_shell: |
-    $Path = "{{ user_home }}/AppData/Local/Microsoft/WindowsApps/{{ item }}"
+    $Path = "{{ user_home }}\AppData\Local\Microsoft\WindowsApps\{{ item }}"
     if (Test-Path $Path) {
       fsutil reparsepoint delete $Path
       Remove-Item -Force $Path
@@ -169,9 +165,22 @@
     is defined else '? .' }})
   changed_when: "'already installed' not in python_application_windows"
   environment:
-    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ python_applications }}"
   register: python_application_windows
   tags:
     - plugin
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Python files for Windows
+  ansible.builtin.include_tasks:
+    file: owner.yaml
+  loop:
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\.shiv"
+    - "{{ user_home }}\\pipx"
+  loop_control:
+    loop_var: python_file
+  tags:
+    - install
   when: ansible_system == "Win32NT"

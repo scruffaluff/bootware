@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and nushell_linux is failed
 
+- name: Create Nushell temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: nushell_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and nushell_linux is failed
+
 - name: Download Nushell for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ nushell_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -43,13 +51,13 @@
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
-    dest: "/usr/bin/{{ item }}"
+    dest: /usr/bin/{{ item }}
     force: true
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/nu-{{ nushell_formula_linux.json.versions.stable }}-{{ nushell_arch
-      }}-unknown-linux-{{ nushell_libc }}/{{ item }}
+      {{ nushell_temp.path }}/nu-{{ nushell_formula_linux.json.versions.stable
+      }}-{{ nushell_arch }}-unknown-linux-{{ nushell_libc }}/{{ item }}
   become: true
   loop:
     - nu
@@ -149,8 +157,7 @@
 
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/nushell"
+    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
     state: directory
   tags:
     - config
@@ -158,12 +165,20 @@
 
 - name: Copy Nushell settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/nushell/{{ item }}"
+    dest: "{{ user_home }}\\AppData\\Roaming\\nushell\\{{ item }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - config.nu
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Nushell files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"
@@ -210,7 +225,7 @@
   ansible.windows.win_regedit:
     data: "{{ nushell_executable }}"
     name: DefaultShell
-    path: "HKLM:\\SOFTWARE\\OpenSSH"
+    path: HKLM:\SOFTWARE\OpenSSH
     type: string
   tags:
     - config

@@ -27,9 +27,17 @@
     - install
   when: ansible_system == "Linux" and k9s_linux is failed
 
+- name: Create K9s temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: k9s_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and k9s_linux is failed
+
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ k9s_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -46,7 +54,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/k9s
+    src: "{{ k9s_temp.path }}/k9s"
   become: true
   tags:
     - install
@@ -63,7 +71,7 @@
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: k9s
   tags:
     - install
@@ -107,8 +115,7 @@
 
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Local/k9s"
+    path: "{{ user_home }}\\AppData\\Local\\k9s"
     state: directory
   tags:
     - config
@@ -155,10 +162,18 @@
 
 - name: Copy K9s skin file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Local/k9s/skin.yml"
+    dest: "{{ user_home }}\\AppData\\Local\\k9s\\skin.yml"
     force: true
-    owner: "{{ user_id }}"
     src: skin.yml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of K9s files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Local\\k9s"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

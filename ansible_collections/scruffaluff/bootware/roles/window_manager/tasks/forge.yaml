@@ -28,9 +28,16 @@
       tags:
         - install
 
+    - name: Create Forge temporary directory for GNOME desktops
+      ansible.builtin.tempfile:
+        state: directory
+      register: window_manager_forge_temp
+      tags:
+        - install
+
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
-        dest: /tmp/forge_extension.zip
+        dest: "{{ window_manager_forge_temp.path }}/forge_extension.zip"
         mode: "644"
         url:
           https://extensions.gnome.org{{
@@ -40,7 +47,8 @@
 
     - name: Install Forge extension for GNOME desktops
       ansible.builtin.command: >-
-        gnome-extensions install /tmp/forge_extension.zip
+        gnome-extensions install {{ window_manager_forge_temp.path
+        }}/forge_extension.zip
       become: true
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.

@@ -40,7 +40,7 @@
 
 - name: Install Node for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: nodejs
   tags:
     - install
@@ -81,8 +81,7 @@
 
 - name: Create Node applications directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.npm/global"
+    path: "{{ user_home }}\\.npm\\global"
     state: directory
   tags:
     - install
@@ -101,7 +100,7 @@
     create: true
     firstmatch: true
     line: "{{ item.line }}"
-    path: "{{ user_home }}/.npmrc"
+    path: "{{ user_home }}\\.npmrc"
     regex: "^\\s*{{ item.key }}\\b"
     state: present
   loop:
@@ -133,13 +132,13 @@
   # Command always marks application as changed.
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\nodejs\\current;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ ['pnpm'] + node_applications }}"
   tags:
     - plugin
   when: ansible_system == "Win32NT"
 
-- name: Generate PNPM user shell completions for Unix
+- name: Create PNPM user shell completions for Unix
   ansible.builtin.shell:
     cmd: pnpm completion {{ item.shell }} > {{ item.path }}
   become: true
@@ -156,6 +155,18 @@
     - completion
     - install
   when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Set owner of Node files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - .npm
+    - .npmrc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

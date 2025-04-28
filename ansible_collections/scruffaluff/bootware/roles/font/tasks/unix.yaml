@@ -20,6 +20,14 @@
     path: "{{ font_folder[ansible_system] }}/{{ font_family.check }}"
   register: font_check_unix
 
+- name: Create font temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: font_temp
+  tags:
+    - install
+  when: not font_check_unix.stat.exists
+
 - name: Install fonts for Unix
   tags:
     - install
@@ -28,14 +36,11 @@
     - name: Create temporary font directory for Unix
       ansible.builtin.file:
         mode: "777"
-        path: /tmp/{{ font_family.name }}
+        path: "{{ font_temp.path }}/{{ font_family.name }}"
         state: directory
-
-    # TODO: Figure out way to avoid "failed to retrieve selinux context" error
-    # on Fedora without becoming root.
     - name: Download fonts for Unix
       ansible.builtin.unarchive:
-        dest: /tmp/{{ font_family.name }}
+        dest: "{{ font_temp.path }}/{{ font_family.name }}"
         mode: "777"
         remote_src: true
         src: "{{ font_family.url }}"
@@ -43,7 +48,7 @@
 
     - name: Find font files for Unix
       ansible.builtin.find:
-        paths: /tmp/{{ font_family.name }}
+        paths: "{{ font_temp.path }}/{{ font_family.name }}"
         patterns: "{{ font_family.patterns }}"
         recurse: true
       register: font_paths

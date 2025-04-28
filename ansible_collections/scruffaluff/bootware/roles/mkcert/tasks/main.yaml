@@ -65,7 +65,7 @@
 
 - name: Install Mkcert for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: mkcert
   tags:
     - install

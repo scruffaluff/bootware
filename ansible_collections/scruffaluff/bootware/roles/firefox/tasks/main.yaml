@@ -52,7 +52,7 @@
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: firefox
   tags:
     - install
@@ -95,7 +95,6 @@
   ansible.windows.win_copy:
     dest: "{{ item }}/user.js"
     force: true
-    owner: "{{ user_id }}"
     src: user.js
   loop: "{{ firefox_profiles_windows['paths'] }}"
   tags:

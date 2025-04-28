@@ -9,14 +9,18 @@
     - install
   when: ansible_system == "Linux"
 
-# TODO: Add back support for DNF when Mongosh works with newer OpenSSL versions.
-#
-# As of 10/3/2023, Mongosh is not compatible with Fedora 38's OpenSSL version.
-# For more information, visit
-# https://www.mongodb.com/community/forums/t/openssl-error-when-starting-mongosh/243323.
+- name: Create Mongo Shell temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: mongosh_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
+
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ mongosh_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -34,8 +38,9 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/mongosh-{{ mongosh_formula_linux.json.versions.stable }}-linux-{{
-      mongosh_arch }}/bin/mongosh
+      {{ mongosh_temp.path }}/mongosh-{{
+      mongosh_formula_linux.json.versions.stable }}-linux-{{ mongosh_arch
+      }}/bin/mongosh
   become: true
   tags:
     - install

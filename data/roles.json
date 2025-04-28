@@ -79,7 +79,7 @@
   { "name": "fd", "tests": ["fd --version"] },
   {
     "name": "ffsend",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
     "tests": ["ffsend --version"]
   },
   {

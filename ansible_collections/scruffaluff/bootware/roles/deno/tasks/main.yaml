@@ -1,4 +1,14 @@
 ---
+- name: Create Deno temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: deno_temp
+  tags:
+    - install
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+
 - name: Install Deno for Alpine
   become: true
   community.general.apk:
@@ -17,7 +27,7 @@
 
 - name: Download Deno for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ deno_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -42,7 +52,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/deno
+    src: "{{ deno_temp.path }}/deno"
   become: true
   tags:
     - install
@@ -50,9 +60,17 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
     "gnu")
 
+- name: Create Deno temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\deno"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Download Deno archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno\\deno.zip"
     url: >-
       https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip
   tags:
@@ -61,45 +79,63 @@
 
 - name: Decompress Deno archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}/deno"
-    src: "{{ ansible_env.TEMP }}/deno.zip"
+    dest: "{{ ansible_env.TEMP }}\\deno\\deno"
+    src: "{{ ansible_env.TEMP }}\\deno\\deno.zip"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create Deno program directory for Windows
+- name: Create Deno binary directory for Windows
   ansible.windows.win_file:
-    path: "C:/Program Files/Deno/bin"
+    path: C:\Program Files\Deno\bin
     state: directory
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
-- name: Add Deno to system path for Windows
-  ansible.windows.win_path:
-    elements: "C:\\Program Files\\Deno\\bin"
-    scope: machine
   tags:
     - install
   when: ansible_system == "Win32NT"
 
 - name: Install Deno for Windows
   ansible.windows.win_copy:
-    dest: "C:/Program Files/Deno/bin/deno.exe"
+    dest: C:\Program Files\Deno\bin\deno.exe
     force: true
     remote_src: true
-    src: "{{ ansible_env.TEMP }}/deno/deno.exe"
+    src: "{{ ansible_env.TEMP }}\\deno\\deno\\deno.exe"
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Deno shell completions for Unix
+- name: Add Deno to system path for Windows
+  ansible.windows.win_path:
+    elements: C:\Program Files\Deno\bin
+    scope: machine
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Deno shell completions for Unix
   ansible.builtin.shell:
-    cmd: deno completions {{ item.shell }} > {{ item.dest }}
+    cmd: deno completions {{ item }} > {{ deno_temp.path }}/deno.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+  loop:
+    - bash
+    - fish
+  tags:
+    - completion
+    - install
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+
+- name: Install Deno shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: "{{ deno_temp.path }}/deno.{{ item.shell }}"
+  become: true
   loop:
     - dest: "{{ bash_completion }}/deno"
       shell: bash
@@ -112,15 +148,15 @@
     ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
     system_libc == "gnu") or ansible_pkg_mgr == "apk"
 
-- name: Generate Deno PowerShell completions for Windows
+- name: Create Deno PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
   # prepends to outputs redirected to files.
   ansible.windows.win_shell: |
     $Text = deno completions powershell
-    [System.IO.File]::WriteAllLines("{{ item }}/DenoCompletion.psm1", $Text)
+    [System.IO.File]::WriteAllLines("{{ item }}\DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: "C:\\Program Files\\Deno\\bin;{{ ansible_env.Path }}"
+    Path: C:\Program Files\Deno\bin;{{ ansible_env.Path }}
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion

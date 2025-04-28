@@ -14,10 +14,17 @@
 
 - name: Copy ignore file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.ignore"
+    dest: "{{ user_home }}\\.ignore"
     force: true
-    owner: "{{ user_id }}"
     src: ignore
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of ignore file for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.ignore"
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

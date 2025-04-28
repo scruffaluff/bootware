@@ -27,9 +27,17 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
+- name: Create Docker temporary directory for Debian
+  ansible.builtin.tempfile:
+    state: directory
+  register: docker_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download Docker GPG key for Debian
   ansible.builtin.get_url:
-    dest: /tmp/docker-archive-keyring.gpg
+    dest: "{{ docker_temp.path }}/docker-archive-keyring.gpg"
     mode: "640"
     url: https://download.docker.com/linux/debian/gpg
   become: true
@@ -41,8 +49,8 @@
   ansible.builtin.command:
     cmd: >-
       gpg --batch --dearmor --yes --output
-      /usr/share/keyrings/docker-archive-keyring.gpg
-      /tmp/docker-archive-keyring.gpg
+      /usr/share/keyrings/docker-archive-keyring.gpg {{ docker_temp.path
+      }}/docker-archive-keyring.gpg
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
   become: true
   tags:

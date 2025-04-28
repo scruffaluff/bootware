@@ -18,12 +18,12 @@
   ansible.windows.win_copy:
     dest: "{{ item }}.bak"
     force: false
-    owner: "{{ user_id }}"
     remote_src: true
     src: "{{ item }}"
   loop:
-    - "{{ vscode_path }}/product.json"
-    - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+    - "{{ vscode_path }}\\product.json"
+    - >-
+      {{ vscode_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
   tags:
     - config
   when: ansible_system == "Win32NT"
@@ -48,7 +48,7 @@
     insertbefore: </html>
     line: "{{ vscode_custom_html | replace('\n', '') }}"
     path: >-
-      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+      {{ vscode_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
     state: present
   tags:
     - config

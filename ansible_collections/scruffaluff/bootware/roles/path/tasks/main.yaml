@@ -33,16 +33,28 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Set owner of user binaries directories for Windows
+  ansible.windows.win_owner:
+    path: "{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Add binaries directories to path for Windows
   ansible.windows.win_path:
     elements: "{{ item.elements }}"
     scope: "{{ item.scope }}"
   loop:
-    - elements: "C:\\Program Files\\Bin"
+    - elements: C:\Program Files\Bin
       scope: machine
     - elements: "{{ user_home }}\\.local\\bin"
       scope: user
-    - elements: "{{ user_home }}\\AppData\\local\\Programs\\Bin"
+    - elements: "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
       scope: user
   tags:
     - install
@@ -62,8 +74,17 @@
 
 - name: Create user configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}/.config"
+    path: "{{ user_home }}\\.config"
     state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of user configuration directory for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -109,6 +130,16 @@
     powershell_module_paths + powershell_user_module_paths }}
   tags:
     - completion
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of user shell completion directories for Windows
+  ansible.windows.win_owner:
+    path: "{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop: "{{ [nushell_user_vendor_autoload] + powershell_user_module_paths }}"
+  tags:
     - install
   when: ansible_system == "Win32NT"
 

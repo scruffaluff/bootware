@@ -7,9 +7,17 @@
     - install
   when: ansible_system == "FreeBSD"
 
+- name: Create Wezterm temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: wezterm_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download Wezterm GPG key for Debian
   ansible.builtin.get_url:
-    dest: /tmp/wezterm.key
+    dest: "{{ wezterm_temp.path }}/wezterm.key"
     mode: "640"
     url: https://apt.fury.io/wez/gpg.key
   become: true
@@ -20,8 +28,8 @@
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg
-      /tmp/wezterm.key
+      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg {{
+      wezterm_temp.path }}/wezterm.key
     creates: /usr/share/keyrings/wezterm.gpg
   become: true
   tags:
@@ -76,7 +84,7 @@
 
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: wezterm
   tags:
     - install
@@ -96,8 +104,7 @@
 
 - name: Create Wez's terminal configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/wezterm"
+    path: "{{ user_home }}\\.config\\wezterm"
     state: directory
   tags:
     - config
@@ -118,10 +125,19 @@
 
 - name: Copy Wez's terminal configuration file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
+    dest: "{{ user_home }}\\.config\\wezterm\\wezterm.lua"
     force: true
     owner: "{{ user_id }}"
     src: wezterm.lua.j2
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Wez's terminal files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config\\wezterm"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

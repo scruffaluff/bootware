@@ -108,7 +108,6 @@
 
 - name: Create GitHub Runner directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ github_runner_folder }}"
     state: directory
   tags:
@@ -157,9 +156,17 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create GitHub Runner temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\github-runner"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Download GitHub Runner archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}/github_runner.zip"
+    dest: "{{ ansible_env.TEMP }}\\github-runner\\github_runner.zip"
     url: >-
       https://github.com/actions/runner/releases/download/{{
       github_runner_release_windows.json.tag_name }}/actions-runner-win-{{
@@ -172,7 +179,7 @@
 - name: Decompress GitHub Runner archive for Windows
   community.windows.win_unzip:
     dest: "{{ github_runner_folder }}"
-    src: "{{ ansible_env.TEMP }}/github_runner.zip"
+    src: "{{ ansible_env.TEMP }}\\github-runner\\github_runner.zip"
   tags:
     - install
   when: ansible_system == "Win32NT"

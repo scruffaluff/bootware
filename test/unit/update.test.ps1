@@ -39,11 +39,11 @@ Describe 'Update' {
 
         $Env:BOOTWARE_NOLOG = 'true'
         $BootwareDir = Split-Path -Parent $Bootware
-        $Expected = "git -C $BootwareDir/repo pull"
+        $Expected = "git -C $BootwareDir\repo pull"
 
         $Actual = & $Bootware update --version main
         Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
-            $OutFile -eq "$BootwareDir/bootware.ps1" -and
+            $OutFile -eq "$BootwareDir\bootware.ps1" -and
             $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.ps1'
         }
 

@@ -9,9 +9,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Tilt temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: tilt_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Tilt for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ tilt_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -33,7 +41,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/tilt
+    src: "{{ tilt_temp.path }}/tilt"
   become: true
   tags:
     - install
@@ -48,25 +56,14 @@
     - install
   when: ansible_system == "Darwin"
 
-# Replaced temporarily by task below since win_scoop_bucket does not properly
-# capture output and "scoop bucket add" now fails if the bucket is already
-# added.
-# - name: Install Tilt Scoop bucket for Windows
-#   community.windows.win_scoop_bucket:
-#     name: tilt-dev
-#     repo: https://github.com/tilt-dev/scoop-bucket
-# environment:
-#   Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
-#   tags:
-#     - install
-#   when: ansible_system == "Win32NT"
-
+# Do not use module win_scoop_bucket, since it does not properly capture output
+# and "scoop bucket add" fails if the bucket is already added.
 - name: Install Tilt Scoop bucket for Windows
   ansible.windows.win_shell: >-
     scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   changed_when: "'bucket was added successfully' in tilt_bucket_add"
   environment:
-    Path: "{{ scoop_shims }};{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     tilt_bucket_add.rc != 0 and 'bucket already exists' not in
     tilt_bucket_add.stdout
@@ -77,7 +74,7 @@
 
 - name: Install Tilt for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: tilt
   tags:
     - install

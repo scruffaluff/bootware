@@ -62,10 +62,18 @@
 #     - install
 #   when: ansible_pkg_mgr == "pacman" and helix_linux is success
 
+- name: Create Helix temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: helix_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ helix_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -84,7 +92,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/{{ helix_folder }}/hx
+    src: "{{ helix_temp.path }}/{{ helix_folder }}/hx"
   become: true
   tags:
     - install
@@ -101,7 +109,7 @@
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: helix
   tags:
     - install
@@ -127,7 +135,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/{{ helix_folder }}/runtime
+    src: "{{ helix_temp.path }}/{{ helix_folder }}/runtime"
   become: true
   tags:
     - install
@@ -151,31 +159,38 @@
 
 - name: Create Helix configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/{{ item }}/helix"
+    path: "{{ user_home }}\\{{ item }}\\helix"
     state: directory
   loop:
-    - AppData/Roaming
-    - scoop/persist
+    - AppData\Roaming
+    - scoop\persist
   tags:
     - config
   when: ansible_system == "Win32NT"
 
 - name: Copy Helix configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item.subpath }}/helix/{{ item.file }}"
+    dest: "{{ user_home }}\\{{ item.subpath }}\\helix\\{{ item.file }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.file }}"
   loop:
     - file: config.toml
-      subpath: AppData/Roaming
+      subpath: AppData\Roaming
     - file: languages.toml
-      subpath: AppData/Roaming
+      subpath: AppData\Roaming
     - file: config.toml
-      subpath: scoop/persist
+      subpath: scoop\persist
     - file: languages.toml
-      subpath: scoop/persist
+      subpath: scoop\persist
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Helix files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\helix"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

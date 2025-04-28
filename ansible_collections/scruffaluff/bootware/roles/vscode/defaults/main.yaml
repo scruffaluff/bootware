@@ -13,7 +13,7 @@ vscode_chrome_path_:
   Linux: >-
     {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
     }}
-  Win32NT: "{{ scoop_apps }}/googlechrome/current/chrome.exe"
+  Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
 vscode_path_linux_:
   apk: /usr/lib/code-oss/resources/app
   pacman: /opt/visual-studio-code/resources/app
@@ -23,7 +23,7 @@ vscode_path_:
   Linux: >-
     {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
     }}
-  Win32NT: "C:/Program Files/Microsoft VS Code/resources/app"
+  Win32NT: C:\Program Files\Microsoft VS Code\resources\app
 vscode_system_:
   Darwin: osx
   Linux: linux

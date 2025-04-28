@@ -155,7 +155,7 @@ function Bootstrap() {
     $Debug = $Global:Debug
     $ExtraArgs = @()
     $Inventory = ''
-    $Playbook = "$PSScriptRoot/repo/playbook.yaml"
+    $Playbook = "$PSScriptRoot\repo\playbook.yaml"
     $Remote = $False
     $Skip = 'none'
     $Tags = 'desktop'
@@ -171,7 +171,7 @@ function Bootstrap() {
                 break
             }
             { $_ -in '-d', '--dev' } {
-                $Playbook = "$(Get-Location)/playbook.yaml"
+                $Playbook = "$(Get-Location)\playbook.yaml"
                 $UseSetup = $False
                 $ArgIdx += 1
                 break
@@ -257,7 +257,10 @@ function Bootstrap() {
     if ($StartRole) {
         $Filter = ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name"
         $StartTask = yq --exit-status $($Filter -replace '"', '\"') $Playbook
-        $ExtraArgs += @("--start-at-task", $StartTask)
+        $ExtraArgs += @(
+            '--extra-vars', 'connect_role_executed=false', '--start-at-task',
+            $StartTask
+        )
     }
 
     try {
@@ -267,7 +270,7 @@ function Bootstrap() {
         $Params = @()
         $Params += @('--empty')
         Config $Params
-        $ConfigPath = "$HOME/.bootware/config.yaml"
+        $ConfigPath = "$HOME\.bootware\config.yaml"
     }
 
     Log "Using $ConfigPath as configuration file."
@@ -373,7 +376,7 @@ function Bootstrap() {
 function Config() {
     $ArgIdx = 0
     $SrcURL = ''
-    $DstFile = "$HOME/.bootware/config.yaml"
+    $DstFile = "$HOME\.bootware\config.yaml"
     $EmptyCfg = $False
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -433,8 +436,8 @@ function FindConfigPath($FilePath) {
     elseif (($Env:BOOTWARE_CONFIG) -and (Test-Path -Path "$Env:BOOTWARE_CONFIG")) {
         $ConfigPath = "$Env:BOOTWARE_CONFIG"
     }
-    elseif (Test-Path -Path "$HOME/.bootware/config.yaml" -PathType Leaf) {
-        $ConfigPath = "$HOME/.bootware/config.yaml"
+    elseif (Test-Path -Path "$HOME\.bootware\config.yaml" -PathType Leaf) {
+        $ConfigPath = "$HOME\.bootware\config.yaml"
     }
     else {
         throw [System.IO.FileNotFoundException] `
@@ -539,8 +542,8 @@ function Roles() {
     $Format = '."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
     $Command = "$Filter | $Format"
 
-    if (Test-Path -Path "$PSScriptRoot/repo/playbook.yaml" -PathType Leaf) {
-        $Playbook = "$PSScriptRoot/repo/playbook.yaml"
+    if (Test-Path -Path "$PSScriptRoot\repo\playbook.yaml" -PathType Leaf) {
+        $Playbook = "$PSScriptRoot\repo\playbook.yaml"
     }
     elseif (Test-Path -Path 'playbook.yaml' -PathType Leaf) {
         $Playbook = 'playbook.yaml'
@@ -657,7 +660,7 @@ Restart this script from an administrator console to continue.
         }
     }
 
-    $RepoPath = "$PSScriptRoot/repo"
+    $RepoPath = "$PSScriptRoot\repo"
     if (-not (Test-Path -Path $RepoPath -PathType Any)) {
         git clone `
             --single-branch `
@@ -680,7 +683,7 @@ Restart this script from an administrator console to continue.
 
 # Create SSH keys to connect to Windows host and scan for fingerprints.
 function SetupSSHKeys {
-    $SetupSSHKeysComplete = "$PSScriptRoot/.setup_ssh_keys"
+    $SetupSSHKeysComplete = "$PSScriptRoot\.setup_ssh_keys"
     if (-not (Test-Path -Path $SetupSSHKeysComplete -PathType Leaf)) {
         Log 'Generating SSH keys.'
 
@@ -699,7 +702,7 @@ function SetupSSHKeys {
         }
         $PublicKey = Get-Content -Path "$WindowsKeyPath.pub"
         Add-Content `
-            -Path 'C:/ProgramData/ssh/administrators_authorized_keys' `
+            -Path 'C:\ProgramData\ssh\administrators_authorized_keys' `
             -Value $PublicKey
 
         Log 'Moving SSH keys to WSL.'
@@ -720,7 +723,7 @@ function SetupSSHKeys {
 
         # Disable password based logins for SSH.
         Add-Content `
-            -Path "$Env:ProgramData/ssh/sshd_config" `
+            -Path "$Env:ProgramData\ssh\sshd_config" `
             -Value 'PasswordAuthentication no'
 
         New-Item -ItemType File -Path $SetupSSHKeysComplete | Out-Null
@@ -733,7 +736,7 @@ function SetupSSHKeys {
 # Based on documentation from
 # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse.
 function SetupSSHServer() {
-    $SetupSSHServerComplete = "$PSScriptRoot/.setup_ssh_server"
+    $SetupSSHServerComplete = "$PSScriptRoot\.setup_ssh_server"
     if (-not (Test-Path -Path $SetupSSHServerComplete -PathType Leaf)) {
         Log 'Setting up OpenSSH server.'
 
@@ -779,7 +782,7 @@ function SetupSSHServer() {
         # stored in C:/ProgramData/ssh/administrators_authorized_keys with
         # specific permissions. For more information, visit
         # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#administrative-user.
-        $AuthKeys = 'C:/ProgramData/ssh/administrators_authorized_keys'
+        $AuthKeys = 'C:\ProgramData\ssh\administrators_authorized_keys'
         if (-not (Test-Path -Path $AuthKeys -PathType Leaf)) {
             New-Item -ItemType File -Path $AuthKeys | Out-Null
         }
@@ -922,7 +925,7 @@ function Update() {
     }
 
     $SrcURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/bootware.ps1"
-    Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot/bootware.ps1" `
+    Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot\bootware.ps1" `
         -Uri $SrcURL
     UpdateCompletion $Version
 
@@ -940,7 +943,7 @@ function Update() {
     }
 
     # Update playbook repository.
-    $RepoPath = "$PSScriptRoot/repo"
+    $RepoPath = "$PSScriptRoot\repo"
     if (Test-Path -Path $RepoPath -PathType Container) {
         git -C $RepoPath pull
     }
@@ -953,13 +956,13 @@ function UpdateCompletion($Version) {
     $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
-        "$HOME/Documents/PowerShell/Modules/BootwareCompletion"
-        "$HOME/Documents/WindowsPowerShell/Modules/BootwareCompletion"
+        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
+        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
     )
     foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
         Invoke-WebRequest -UseBasicParsing -OutFile `
-            "$Path/BootwareCompletion.psm1" -Uri $PowerShellURL
+            "$Path\BootwareCompletion.psm1" -Uri $PowerShellURL
     }
 }
 

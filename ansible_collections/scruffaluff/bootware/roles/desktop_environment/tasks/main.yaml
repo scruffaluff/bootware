@@ -39,7 +39,7 @@
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: powertoys
   tags:
     - install

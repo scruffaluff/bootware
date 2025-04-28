@@ -28,7 +28,7 @@
 # to be separately installed.
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - adb
       - android-clt

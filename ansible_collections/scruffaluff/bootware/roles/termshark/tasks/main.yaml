@@ -33,9 +33,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Termshark temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: termshark_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Termshark for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ termshark_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -54,8 +62,9 @@
     mode: "755"
     remote_src: true
     src: >-
-      /tmp/termshark_{{ termshark_formula.json.versions.stable }}_linux_{{
-      termshark_arch }}/termshark
+      {{ termshark_temp.path }}/termshark_{{
+      termshark_formula.json.versions.stable }}_linux_{{ termshark_arch
+      }}/termshark
   become: true
   tags:
     - install
@@ -73,7 +82,7 @@
 
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: termshark
   tags:
     - install
@@ -139,8 +148,7 @@
 
 - name: Create Termshark configuration directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/termshark"
+    path: "{{ user_home }}\\AppData\\Roaming\\termshark"
     state: directory
   tags:
     - config
@@ -161,8 +169,7 @@
 
 - name: Copy Termshark configuration file for MacOS
   ansible.builtin.copy:
-    dest: >-
-      {{ user_home }}/Library/Application Support/termshark/termshark.toml
+    dest: "{{ user_home }}/Library/Application Support/termshark/termshark.toml"
     force: true
     group: "{{ group_id }}"
     mode: "644"
@@ -175,10 +182,18 @@
 
 - name: Copy Termshark configuration file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/termshark/termshark.toml"
+    dest: "{{ user_home }}\\AppData\\Roaming\\termshark\\termshark.toml"
     force: true
-    owner: "{{ user_id }}"
     src: termshark.toml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Termshark files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\termshark"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

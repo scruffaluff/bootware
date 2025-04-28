@@ -9,10 +9,18 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Qsv temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: qsv_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
 # Do not use GNU build of QSV. It depends on Wayland GUI libraries.
 - name: Download Qsv for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ qsv_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -29,7 +37,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/qsv
+    src: "{{ qsv_temp.path }}/qsv"
   become: true
   tags:
     - install
@@ -46,7 +54,7 @@
 
 - name: Install Qsv for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: qsv
   tags:
     - install

@@ -17,7 +17,7 @@
 
 - name: Install GDB for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: gdb
   tags:
     - install
@@ -43,15 +43,25 @@
 
 - name: Copy GDB settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/{{ item.dest }}"
+    dest: "{{ user_home }}\\{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: .gdbinit
       src: gdbinit
-    - dest: .config/gdbinit.py
+    - dest: .config\gdbinit.py
       src: gdbinit.py
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of GDB files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    user: "{{ user_id }}"
+  loop:
+    - .gdbinit
+    - .config\gdbinit.py
   tags:
     - config
   when: ansible_system == "Win32NT"

@@ -9,9 +9,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Lazydocker temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: lazydocker_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Lazydocker for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ lazydocker_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -33,7 +41,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/lazydocker
+    src: "{{ lazydocker_temp.path }}/lazydocker"
   become: true
   tags:
     - install
@@ -50,7 +58,7 @@
 
 - name: Install Lazydocker for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: lazydocker
   tags:
     - install

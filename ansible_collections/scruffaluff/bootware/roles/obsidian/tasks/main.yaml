@@ -37,7 +37,6 @@
 
 - name: Create Obsidian user settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ obsidian_user }}"
     state: directory
   tags:
@@ -103,7 +102,6 @@
 
 - name: Create Obsidian vault settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
     path: "{{ obsidian_vault }}/.obsidian"
     state: directory
   tags:
@@ -133,7 +131,6 @@
   ansible.windows.win_copy:
     dest: "{{ obsidian_vault }}/.obsidian/{{ item }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - app.json
@@ -141,6 +138,15 @@
     - community-plugins.json
     - core-plugins.json
     - hotkeys.json
+  tags:
+    - config
+  when: ansible_system == "Win32NT" and obsidian_vault is defined
+
+- name: Set owner of Obsidian files for Windows
+  ansible.windows.win_owner:
+    path: "{{ obsidian_vault }}"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT" and obsidian_vault is defined

@@ -172,9 +172,8 @@ jobs:
 
   freebsd:
     name: Test bootstrapping software for FreeBSD
-    # Disabled temporarily due to Rsync compatibility bug in freebsd-vm action.
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -187,19 +186,19 @@ jobs:
           envs: BOOTWARE_GITHUB_TOKEN
           prepare: |
             pkg update -f
-            pkg install --yes sudo
-            pw useradd -m -G wheel -n freebsd -w no
-            echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/bootware
+            pkg install --yes curl
           release: "14.2"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
-          # during installation as of 02/28/2025. VLC is skipped
-          # since it cannot run as root.
+          # during installation as of 02/28/2025. Security role is skipped since
+          # it breaks the freebsd-vm action's Rsync connection by enforcing
+          # stricter SSH rules. VLC is skipped since it cannot run as root.
           run: |
             set -eu
-            sudo install src/bootware.sh /usr/local/bin/bootware
+            src/install.sh --global
+            install src/bootware.sh $(which bootware)
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip python --tags all,never
+            bootware bootstrap --dev --no-passwd --retries 3 --skip python,security --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,python,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -220,7 +219,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Bootware
-        run: sudo install src/bootware.sh /usr/local/bin/bootware
+        run: |
+          src/install.sh --global
+          sudo install src/bootware.sh $(which bootware)
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
@@ -290,8 +291,8 @@ jobs:
         uses: tj-actions/branch-names@v8
       - name: Install Bootware
         run: |
-          New-Item -Force -ItemType Directory -Path 'C:/Program Files/Bootware' | Out-Null
-          Copy-Item -Destination 'C:/Program Files/Bootware/bootware.ps1' -Path src/bootware.ps1
+          src\install.ps1 --global --version ${{ steps.branch.outputs.current_branch }}
+          Copy-Item -Destination 'C:\Program Files\Bootware\bootware.ps1' -Path src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older
@@ -326,14 +327,12 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Scoop FFSend installer fails as of 12/19/2023 since Windows Defender
-      # considers the program to be a virus.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip ffsend --tags all,never
+          bootware bootstrap --dev --no-setup --retries 3 --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
@@ -346,7 +345,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip ffsend,lldb,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip lldb,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

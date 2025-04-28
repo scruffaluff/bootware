@@ -22,7 +22,7 @@
       tags:
         - install
 
-    - name: Create temporary directory for Linux
+    - name: Create Caffeine temporary directory for Linux
       ansible.builtin.tempfile:
         state: directory
       register: caffeine_temp
@@ -59,7 +59,7 @@
 
 - name: Install Caffeine for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: caffeine
   tags:
     - install
@@ -93,7 +93,7 @@
 
 - name: Download Caffeinate script for Windows
   ansible.windows.win_get_url:
-    dest: "C:/Program Files/Bin/caffeinate.ps1"
+    dest: C:\Program Files\Bin\caffeinate.ps1
     force: true
     url: >-
       https://raw.githubusercontent.com/scruffaluff/scripts/refs/heads/main/src/script/caffeinate.ps1

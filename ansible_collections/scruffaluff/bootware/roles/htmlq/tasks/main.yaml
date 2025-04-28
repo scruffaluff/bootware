@@ -40,9 +40,19 @@
     ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
     system_architecture == "amd64" and htmlq_linux is failed
 
+- name: Create Htmlq temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: htmlq_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    system_architecture == "amd64" and htmlq_linux is failed
+
 - name: Download Htmlq for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ htmlq_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -60,7 +70,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/htmlq
+    src: "{{ htmlq_temp.path }}/htmlq"
   become: true
   tags:
     - install
@@ -79,7 +89,7 @@
 
 - name: Install Htmlq for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: htmlq
   tags:
     - install

@@ -30,7 +30,7 @@
     # SSH daemon uses the first matching setting pair.
     firstmatch: true
     line: "{{ item.key }} {{ item.value }}"
-    path: C:/ProgramData/ssh/sshd_config
+    path: C:\ProgramData\ssh\sshd_config
     regex: "^#?\\s*{{ item.key }}"
     state: present
   loop:

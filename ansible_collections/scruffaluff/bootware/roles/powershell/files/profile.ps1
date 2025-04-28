@@ -9,6 +9,62 @@
 
 # Public convenience functions.
 
+function acls($Path) {
+    Get-ChildItem $Path | Get-Acl
+}
+
+function chown() {
+    $ArgIdx = 0
+    $File = ''
+    $Owner = ''
+    $Recursive = $False
+
+    while ($ArgIdx -lt $Args.Count) {
+        switch ($Args[$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Write-Output @'
+Change file owner.
+
+Usage: wchown [OPTIONS] <OWNER> <FILE>
+
+Options:
+  -h, --help        Print help information
+  -R, --recursive   Operate on files and directories recursively
+'@
+                exit 0
+            }
+            { $_ -in '-R', '--recursive' } {
+                $Recursive = $True
+                $ArgIdx += 1
+                break
+            }
+            default {
+                if (-not $Owner) {
+                    $Owner = $Args[$ArgIdx]
+                }
+                elseif (-not $File) {
+                    $File = $Args[$ArgIdx]
+                }
+                $ArgIdx += 1
+                break
+            }
+        }
+    }
+
+    $Account = New-Object -TypeName System.Security.Principal.NTAccount `
+        -ArgumentList $Owner
+    $Paths = @(Get-Item -Path $File)
+    if ($Recursive) {
+        $Paths += Get-ChildItem -Recurse -Path $File
+    }
+
+    foreach ($Path in $Paths) {
+        $ACL = Get-Acl -Path $Path.FullName
+        $ACL.SetOwner($Account)
+        Set-Acl -AclObject $ACL -Path $Path.FullName
+    }
+}
+
 # Open PowerShell history file with default editor.
 function edit-history() {
     if ($Env:EDITOR) {
@@ -70,11 +126,26 @@ function ssh-session() {
 function touch() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
-        $Path = $Args[$ArgIdx]
-        if (-not (Test-Path -Path $Path)) {
-            New-Item $Path | Out-Null
+        switch ($Args[$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Write-Output @'
+Create file if does not exist.
+
+Usage: touch [OPTIONS] <FILES>...
+
+Options:
+  -h, --help        Print help information
+'@
+                exit 0
+            }
+            default {
+                if (-not (Test-Path -Path $Args[$ArgIdx])) {
+                    New-Item $Args[$ArgIdx] | Out-Null
+                }
+                $ArgIdx += 1
+                break
+            }
         }
-        $ArgIdx += 1
     }
 }
 
@@ -242,7 +313,7 @@ if (Get-Command -ErrorAction SilentlyContinue hx) {
 
 # Add alias for account wide Just recipes.
 function jt() {
-    just --justfile "$HOME/.justfile" --working-directory . $Args
+    just --justfile "$HOME\.justfile" --working-directory . $Args
 }
 
 # Lsd settings.
@@ -251,8 +322,8 @@ function jt() {
 #
 # Uses output of command "vivid generate solarized-light" from
 # https://github.com/sharkdp/vivid.
-if (Test-Path -Path "$HOME/.ls_colors" -PathType Leaf) {
-    $Env:LS_COLORS = Get-Content "$HOME/.ls_colors"
+if (Test-Path -Path "$HOME\.ls_colors" -PathType Leaf) {
+    $Env:LS_COLORS = Get-Content "$HOME\.ls_colors"
 }
 
 # Replace Ls with Lsd if available.
@@ -289,7 +360,7 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
-$Env:RIPGREP_CONFIG_PATH = "$HOME/.ripgreprc"
+$Env:RIPGREP_CONFIG_PATH = "$HOME\.ripgreprc"
 
 # Rust settings.
 
@@ -584,9 +655,9 @@ Remove-Variable -Name Tty
 # User settings.
 
 # Load user aliases, secrets, and variables.
-if (Test-Path "$HOME/.env.ps1") {
-    . "$HOME/.env.ps1"
+if (Test-Path "$HOME\.env.ps1") {
+    . "$HOME\.env.ps1"
 }
-if (Test-Path "$HOME/.secrets.ps1") {
-    . "$HOME/.secrets.ps1"
+if (Test-Path "$HOME\.secrets.ps1") {
+    . "$HOME\.secrets.ps1"
 }

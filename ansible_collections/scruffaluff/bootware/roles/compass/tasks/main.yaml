@@ -7,7 +7,7 @@
   register: compass_cask_linux
   tags:
     - install
-  when:
+  when: >-
     ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Debian

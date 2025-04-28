@@ -52,19 +52,27 @@
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: yq
   tags:
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create Yq temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: yq_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Create Yq shell completions for Unix
   ansible.builtin.shell:
-    cmd: yq shell-completion {{ item }} > /tmp/yq.{{ item }}
+    cmd: yq shell-completion {{ item }} > {{ yq_temp.path }}/yq.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -79,7 +87,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/yq.{{ item.shell }}
+    src: "{{ yq_temp.path }}/yq.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/yq"

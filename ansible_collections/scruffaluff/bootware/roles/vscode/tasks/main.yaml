@@ -44,11 +44,19 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
+- name: Create VSCode temporary directory for Fedora
+  ansible.builtin.tempfile:
+    state: directory
+  register: vscode_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
-- name: Download VSCode for Fedora and Suse
+- name: Download VSCode for Fedora
   ansible.builtin.get_url:
-    dest: /tmp/vscode.rpm
+    dest: "{{ vscode_temp.path }}/vscode.rpm"
     mode: "644"
     url: >-
       https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
@@ -59,7 +67,7 @@
 
 - name: Install VSCode for Fedora
   ansible.builtin.dnf:
-    name: /tmp/vscode.rpm
+    name: "{{ vscode_temp.path }}/vscode.rpm"
   become: true
   tags:
     - install
@@ -113,7 +121,7 @@
   ansible.windows.win_shell: code --install-extension {{ item }}
   changed_when: "'successfully installed' in vscode_extension_install"
   environment:
-    Path: "C:\\Program Files\\Microsoft VS Code\\bin;{{ ansible_env.Path }}"
+    Path: C:\Program Files\Microsoft VS Code\bin;{{ ansible_env.Path }}
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
   tags:
@@ -200,8 +208,7 @@
 
 - name: Create VSCode user directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/Code/User"
+    path: "{{ user_home }}\\AppData\\Roaming\\Code\\User"
     state: directory
   tags:
     - config
@@ -209,7 +216,7 @@
 
 - name: Copy VSCode keybindings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/AppData/Roaming/Code/User/keybindings.json"
+    dest: "{{ user_home }}\\AppData\\Roaming\\Code\\User\\keybindings.json"
     force: true
     src: keybindings.json.j2
   tags:
@@ -218,7 +225,7 @@
 
 - name: Copy VSCode settings file for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}/AppData/Roaming/Code/User/settings.json"
+    dest: "{{ user_home }}\\AppData\\Roaming\\Code\\User\\settings.json"
     force: true
     owner: "{{ user_id }}"
     src: settings.json.j2
@@ -233,3 +240,15 @@
   when: >-
     vscode_install_customizations and ansible_system in ["Darwin", "Linux",
     "Win32NT"] and ansible_pkg_mgr != "apk"
+
+- name: Set owner of VSCode files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - .vscode
+    - AppData\Roaming\Code
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

@@ -1,6 +1,7 @@
 ---
 - name: Install fonts for Unix
-  ansible.builtin.include_tasks: unix.yaml
+  ansible.builtin.include_tasks:
+    file: unix.yaml
   loop: "{{ font_families }}"
   loop_control:
     loop_var: font_family
@@ -14,14 +15,15 @@
   when: ansible_system != "Win32NT"
 
 - name: Install fonts for Windows
-  ansible.builtin.include_tasks: windows.yaml
+  ansible.builtin.include_tasks:
+    file: windows.yaml
   loop: "{{ font_families }}"
   loop_control:
     loop_var: font_family
   tags:
     - install
   vars:
-    font_folder: "C:\\Windows\\Fonts"
+    font_folder: C:\Windows\Fonts
   when: ansible_system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns

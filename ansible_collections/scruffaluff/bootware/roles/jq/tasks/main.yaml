@@ -26,7 +26,7 @@
 
 - name: Install JQ for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: jq
   tags:
     - install

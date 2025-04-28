@@ -30,9 +30,19 @@
     ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
     is failed)
 
+- name: Create Terraform temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: terraform_temp
+  tags:
+    - install
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
+    is failed)
+
 - name: Download Terraform for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ terraform_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -52,7 +62,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/terraform
+    src: "{{ terraform_temp.path }}/terraform"
   become: true
   tags:
     - install
@@ -62,7 +72,7 @@
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: terraform
   tags:
     - install

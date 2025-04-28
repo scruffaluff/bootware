@@ -35,7 +35,7 @@
     - install
 
 - name: Add Rust components for Unix
-  ansible.builtin.command: "rustup component add {{ item }}"
+  ansible.builtin.command: rustup component add {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_component_add"
@@ -49,7 +49,7 @@
     - install
 
 - name: Add Rust targets for Unix
-  ansible.builtin.command: "rustup target add {{ item }}"
+  ansible.builtin.command: rustup target add {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_target_add"
@@ -72,9 +72,17 @@
     - plugin
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Create Rust temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: rust_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Download Cargo Binstall for Unix
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ rust_temp.path }}"
     mode: "755"
     remote_src: true
     src: >-
@@ -101,14 +109,14 @@
     mode: "750"
     owner: "{{ user_id }}"
     remote_src: true
-    src: /tmp/cargo-binstall
+    src: "{{ rust_temp.path }}/cargo-binstall"
   become: true
   tags:
     - plugin
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Cargo packages for Unix
-  ansible.builtin.command: "cargo binstall --no-confirm {{ item }}"
+  ansible.builtin.command: cargo binstall --no-confirm {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'This will install' in rust_binstall_package"

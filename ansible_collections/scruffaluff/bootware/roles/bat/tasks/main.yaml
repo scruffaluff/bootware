@@ -51,7 +51,7 @@
     ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
     == 'amd64') and bat_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Bat temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: bat_temp
@@ -145,7 +145,7 @@
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - bat
       - less
@@ -185,9 +185,8 @@
 # information, visit https://linux.die.net/man/1/less.
 - name: Copy Less settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/_lesskey"
+    dest: "{{ user_home }}\\_lesskey"
     force: true
-    owner: "{{ user_id }}"
     src: lesskey
   tags:
     - config
@@ -220,8 +219,7 @@
 
 - name: Create Bat settings directory for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/bat"
+    path: "{{ user_home }}\\AppData\\Roaming\\bat"
     state: directory
   tags:
     - config
@@ -229,13 +227,21 @@
 
 - name: Copy Bat settings file for Windows
   ansible.windows.win_copy:
-    dest: "{{ item }}"
+    dest: "{{ user_home }}\\AppData\\Roaming\\bat\\config"
     force: true
-    owner: "{{ user_id }}"
     src: config
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Bat files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
   loop:
-    - "{{ user_home }}/AppData/Roaming/bat/config"
-    - "{{ scoop_apps }}/bat/current/confg"
+    - _lesskey
+    - AppData\Roaming\bat
   tags:
     - config
   when: ansible_system == "Win32NT"

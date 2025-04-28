@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create temporary directory for Linux
+- name: Create Carapace temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: carapace_temp
@@ -62,7 +62,7 @@
 
 - name: Install Carapace for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: extras/carapace-bin
   tags:
     - install

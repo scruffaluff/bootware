@@ -15,15 +15,25 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Readline configuration file for Windows
+- name: Copy Readline configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/.{{ item }}"
+    dest: "{{ user_home }}\\.{{ item }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item }}"
   loop:
     - editrc
     - inputrc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Readline files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    user: "{{ user_id }}"
+  loop:
+    - .editrc
+    - .inputrc
   tags:
     - config
   when: ansible_system == "Win32NT"

@@ -19,9 +19,17 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Create Yazi temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: yazi_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Yazi for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ yazi_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -38,7 +46,9 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{ item }}
+    src: >-
+      {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{
+      item }}
   become: true
   loop:
     - ya
@@ -58,7 +68,7 @@
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name:
       - file
       - yazi
@@ -73,7 +83,7 @@
     mode: "644"
     remote_src: true
     src: >-
-      /tmp/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
+      {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
       }}/completions/yazi.{{ item.shell }}
   become: true
   loop:
@@ -92,7 +102,7 @@
   become_user: "{{ user_id }}"
   changed_when: "'Deploying package' in yazi_plugin_install"
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   failed_when: >-
     yazi_plugin_install.rc != 0 and 'already exists' not in
     yazi_plugin_install.stderr
@@ -106,7 +116,7 @@
   ansible.windows.win_shell: ya pack --add {{ item }}
   changed_when: "'Deploying package' in yazi_plugin_install"
   environment:
-    Path: "{{ scoop_apps }}\\vscode\\current\\bin;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   failed_when: >-
     yazi_plugin_install.rc != 0 and 'already exists' not in
     yazi_plugin_install.stderr
@@ -155,21 +165,19 @@
 
 - name: Create Yazi configuration directories for Windows
   ansible.windows.win_file:
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/AppData/Roaming/yazi/{{ item }}"
+    path: "{{ user_home }}\\AppData\\Roaming\\yazi\\{{ item }}"
     state: directory
   loop:
     - config
-    - config/plugins/smart-open.yazi
+    - config\plugins\smart-open.yazi
   tags:
     - configconfig
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}/AppData/Roaming/yazi/config/{{ item.dest }}"
+    dest: "{{ user_home }}\\AppData\\Roaming\\yazi\\config\\{{ item.dest }}"
     force: true
-    owner: "{{ user_id }}"
     src: "{{ item.src }}"
   loop:
     - dest: keymap.toml
@@ -180,6 +188,15 @@
       src: yazi.toml
     - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Yazi files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\yazi"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"

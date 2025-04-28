@@ -1,4 +1,12 @@
 ---
+- name: Create Helmfile temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: helmfile_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Helmfile for FreeBSD
   become: true
   community.general.pkgng:
@@ -29,7 +37,7 @@
 
 - name: Download Helmfile for Linux
   ansible.builtin.unarchive:
-    dest: /tmp
+    dest: "{{ helmfile_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
@@ -47,7 +55,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: /tmp/helmfile
+    src: "{{ helmfile_temp.path }}/helmfile"
   become: true
   tags:
     - install
@@ -64,7 +72,7 @@
 
 - name: Install Helmfile for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: helmfile
   tags:
     - install
@@ -72,11 +80,13 @@
 
 - name: Create Helmfile shell completions for Unix
   ansible.builtin.shell:
-    cmd: helmfile completion {{ item }} > /tmp/helmfile.{{ item }}
+    cmd: >-
+      helmfile completion {{ item }} > {{ helmfile_temp.path }}/helmfile.{{ item
+      }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -91,7 +101,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/helmfile.{{ item.shell }}
+    src: "{{ helmfile_temp.path }}/helmfile.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/helmfile"

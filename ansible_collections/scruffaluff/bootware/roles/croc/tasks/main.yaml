@@ -27,7 +27,7 @@
     - install
   when: ansible_system == "Linux" and croc_linux is failed
 
-- name: Create temporary directory for Linux
+- name: Create Croc temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: croc_temp
@@ -76,7 +76,7 @@
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: croc
   tags:
     - install
@@ -92,7 +92,7 @@
       - domain
       - private
       - public
-    program: "{{ scoop_apps }}\\croc\\current\\croc.exe"
+    program: "{{ scoop_path }}\\shims\\croc.exe"
     protocol: "{{ item['protocol'] }}"
   loop:
     - direction: in

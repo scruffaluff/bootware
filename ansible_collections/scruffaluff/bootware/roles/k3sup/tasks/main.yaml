@@ -38,19 +38,27 @@
 
 - name: Install K3sup for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: k3sup
   tags:
     - install
   when: ansible_system == "Win32NT"
 
+- name: Create K3sup temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: k3sup_temp
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Create K3sup shell completions for Unix
   ansible.builtin.shell:
-    cmd: k3sup completion {{ item }} > /tmp/k3sup.{{ item }}
+    cmd: k3sup completion {{ item }} > {{ k3sup_temp.path }}/k3sup.{{ item }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - bash
     - fish
@@ -65,7 +73,7 @@
     force: true
     mode: "644"
     remote_src: true
-    src: /tmp/k3sup.{{ item.shell }}
+    src: "{{ k3sup_temp.path }}/k3sup.{{ item.shell }}"
   become: true
   loop:
     - dest: "{{ bash_completion }}/k3sup"

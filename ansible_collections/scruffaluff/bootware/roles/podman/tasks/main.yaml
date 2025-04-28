@@ -26,19 +26,19 @@
 
 - name: Install Podman for Windows
   community.windows.win_scoop:
-    global: "{{ scoop_global }}"
+    global: true
     name: podman
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Generate Podman shell completions for Unix
+- name: Create Podman shell completions for Unix
   ansible.builtin.command:
     cmd: podman completion {{ item.shell }} --file {{ item.dest }}
   become: true
   changed_when: true
   environment:
-    PATH: "/opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   loop:
     - dest: "{{ bash_completion }}/podman"
       shell: bash
@@ -49,12 +49,12 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Generate Podman PowerShell user completions module for Windows
+- name: Create Podman PowerShell user completions module for Windows
   ansible.windows.win_command: >-
     podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true
   environment:
-    Path: "{{ scoop_apps }}\\podman\\current;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion
