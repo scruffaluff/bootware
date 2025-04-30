@@ -174,7 +174,7 @@ function prepend-paths
     for inode in $argv
         if test -d $inode
             # Expand folder to its full path.
-            set --local folder "$(realpath --no-symlinks $inode)"
+            set --local folder "$(builtin realpath --no-symlinks $inode)"
             if not contains $folder $PATH
                 set --export PATH $folder $PATH
             end
