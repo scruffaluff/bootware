@@ -436,6 +436,7 @@ def fzf-path-widget [] {
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
+    | each {|path| $path | path expand }
     | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]

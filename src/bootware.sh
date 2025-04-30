@@ -573,12 +573,8 @@ find_super() {
 #######################################
 fullpath() {
   local path="${1}" working_dir
-
-  # Flags:
-  #   -P: Resolve any symbolic links in the path.
-  working_dir="$(cd "$(dirname "${1}")" && pwd -P)"
-
-  echo "${working_dir}/$(basename "${1}")"
+  working_dir="$(cd "$(dirname "${path}")" && pwd)"
+  echo "${working_dir}/$(basename "${path}")"
 }
 
 #######################################

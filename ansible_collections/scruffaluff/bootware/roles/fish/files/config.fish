@@ -172,8 +172,12 @@ end
 #   -d: Check if path is a directory.
 function prepend-paths
     for inode in $argv
-        if test -d $inode; and not contains $inode $PATH
-            set --export PATH $inode $PATH
+        if test -d $inode
+            # Expand folder to its full path.
+            set --local folder "$(realpath --no-symlinks $inode)"
+            if not contains $folder $PATH
+                set --export PATH $folder $PATH
+            end
         end
     end
 end

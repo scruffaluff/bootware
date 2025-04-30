@@ -99,7 +99,7 @@ function pgrep() {
 function prepend-paths() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
-        $Folder = $Args[$ArgIdx]
+        $Folder = [System.IO.Path]::GetFullPath($Args[$ArgIdx])
         if (
             (Test-Path -Path $Folder -PathType Container) -and `
             (-not ($Env:Path -like "*$Folder*"))
