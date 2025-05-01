@@ -4,7 +4,7 @@ BeforeAll {
     . $Install
 
     Mock Invoke-WebRequest { }
-    Mock Test-Path { Write-Output 1 }
+    Mock Test-Path { 1 }
 }
 
 Describe 'Install' {
@@ -19,10 +19,10 @@ Describe 'Install' {
 
     It 'Pass local path to Invoke-WebRequest' {
         if (Get-Command -ErrorAction SilentlyContinue bootware) {
-            Mock bootware { Write-Output '' }
+            Mock bootware { '' }
         }
         else {
-            function bootware() { Write-Output '' }
+            function bootware() { '' }
         }
 
         $Env:BOOTWARE_NOLOG = 'true'

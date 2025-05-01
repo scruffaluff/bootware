@@ -2,19 +2,17 @@ BeforeAll {
     $Bootware = "$PSScriptRoot/../../src/bootware.ps1"
     . $Bootware
 
-    Mock FindConfigPath {
-        return 'C:\Users\Administrator\.bootware\config.yaml'
-    }
-    Mock FindRelativeIP { Write-Output '192.48.16.0' }
+    Mock FindConfigPath { 'C:\Users\Administrator\.bootware\config.yaml' }
+    Mock FindRelativeIP { '192.48.16.0' }
     Mock Setup { }
 
     # Flatten array logic taken from https://stackoverflow.com/a/712205.
     if (Get-Command -ErrorAction SilentlyContinue wsl) {
-        Mock wsl { return "wsl $($Args | ForEach-Object {$_})" }
+        Mock wsl { "wsl $($Args | ForEach-Object {$_})" }
     }
     else {
         function wsl() {
-            return "wsl $($Args | ForEach-Object {$_})"
+            "wsl $($Args | ForEach-Object {$_})"
         }
     }
 }

@@ -5,8 +5,8 @@ BeforeAll {
 
     Mock Invoke-WebRequest { }
     # Mocking Git appears to not work on Windows.
-    function git { Write-Output "git $Args" }
-    Mock Test-Path { Write-Output 1 }
+    function git { "git $Args" }
+    Mock Test-Path { 1 }
 
     # Avoid overwriting WSL copy of Bootware during tests if installed.
     if (Get-Command -ErrorAction SilentlyContinue wsl) {
@@ -31,10 +31,10 @@ Describe 'Update' {
 
     It 'Subcommand passes args to Invoke-WebRequest and Git' {
         if (Get-Command -ErrorAction SilentlyContinue bootware) {
-            Mock bootware { Write-Output '' }
+            Mock bootware { '' }
         }
         else {
-            function bootware() { Write-Output '' }
+            function bootware() { '' }
         }
 
         $Env:BOOTWARE_NOLOG = 'true'

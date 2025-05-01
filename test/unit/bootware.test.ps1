@@ -16,7 +16,7 @@ Describe 'Main' {
 
 Describe 'FindConfigPath' {
     It 'Return given executable files' {
-        Mock Test-Path { Write-Output 1 }
+        Mock Test-Path { 1 }
 
         $Expected = 'C:\Windows\regedit.exe'
         $Actual = FindConfigPath $Expected
@@ -24,7 +24,7 @@ Describe 'FindConfigPath' {
     }
 
     It 'Return environment variable' {
-        Mock Test-Path { Write-Output 1 }
+        Mock Test-Path { 1 }
 
         $Expected = 'C:\Windows\regedit.exe'
         $Env:BOOTWARE_CONFIG = $Expected
@@ -33,7 +33,7 @@ Describe 'FindConfigPath' {
     }
 
     It 'Throw error when given non-existent file' {
-        Mock Test-Path { Write-Output 0 }
+        Mock Test-Path { 0 }
         $Env:BOOTWARE_CONFIG = '/a/fake/nonsense/path'
         { FindConfigPath } |
             Should -Throw 'Unable to find Bootware configuration file'

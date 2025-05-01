@@ -212,11 +212,11 @@ _setup:
 test: test-unit test-pkg test-e2e
 
 # Run end to end test suite.
-test-e2e *flags:
-  nu script/test_e2e.nu {{flags}}
+test-e2e *args:
+  nu script/test_e2e.nu {{args}}
 
-test-pkg *flags:
-  nu script/pkg.nu test {{flags}}
+test-pkg *args:
+  nu script/pkg.nu test {{args}}
 
 # Run unit test suite.
 [unix]

@@ -30,7 +30,7 @@ function ReadIni($File) {
         }
     }
 
-    return $Data
+    $Data
 }
 
 # Script entrypoint.
@@ -73,7 +73,7 @@ function DefaultProfile($Module) {
         }
     }
     $Module.ExitJson()
-    return $Module
+    $Module
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.

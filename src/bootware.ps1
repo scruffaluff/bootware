@@ -444,7 +444,7 @@ function FindConfigPath($FilePath) {
             'Unable to find Bootware configuration file'
     }
 
-    return $ConfigPath
+    $ConfigPath
 }
 
 # Find IP address of Windows host relative from WSL.
@@ -460,28 +460,28 @@ function FindRelativeIP {
         -Name DefaultVersion
 
     if ($WSLVersion -eq 1) {
-        return '127.0.0.1'
+        '127.0.0.1'
     }
     else {
-        return wsl sh -c 'ip route show | grep -i default | awk ''{print \$3}'''
+        wsl sh -c 'ip route show | grep -i default | awk ''{print \$3}'''
     }
 }
 
 # Get parameters for subcommands.
 function GetParameters($Params, $Index) {
     if ($Params.Length -gt $Index) {
-        return $Params[$Index..($Params.Length - 1)]
+        $Params[$Index..($Params.Length - 1)]
     }
     else {
-        return @()
+        @()
     }
 }
 
 # Check if script is run from an admin console.
 function IsAdministrator {
-    return (New-Object Security.Principal.WindowsPrincipal( `
-                [Security.Principal.WindowsIdentity]::GetCurrent() `
-        )).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    ([Security.Principal.WindowsPrincipal]`
+        [Security.Principal.WindowsIdentity]::GetCurrent()`
+    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
 # Print log message to stdout if logging is enabled.
@@ -499,7 +499,7 @@ function MakeWSLKey($FilePath) {
     $WSLFile = wsl mktemp --dry-run
     wsl cp "$(WSLPath $FilePath)" $WSLFile
     wsl chmod 600 $WSLFile
-    return $WSLFile
+    $WSLFile
 }
 
 # Request remote script and execution efficiently.
@@ -976,7 +976,7 @@ function WSLPath($FilePath) {
     $FilePath = $FilePath -replace '~', $HOME
     $Drive = $(Split-Path -Path $FilePath -Qualifier) -replace ':', ''
     $ChildPath = $(Split-Path -Path $FilePath -NoQualifier) -replace '\\', '/'
-    return "/mnt/$($Drive.ToLower())$ChildPath"
+    "/mnt/$($Drive.ToLower())$ChildPath"
 }
 
 # Script entrypoint.

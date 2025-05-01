@@ -16,6 +16,7 @@ __pycache__/
 *.tar.gz
 *.xml
 /.vendor/
+/.vitepress/.temp/
 /.vitepress/cache/
 /.vitepress/dist/
 /ansible_collections/*
