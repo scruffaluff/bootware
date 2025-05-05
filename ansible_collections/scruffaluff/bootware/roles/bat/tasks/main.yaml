@@ -234,6 +234,15 @@
     - config
   when: ansible_system == "Win32NT"
 
+- name: Override Scoop custom Bat configuration path for Windows
+  ansible.windows.win_environment:
+    level: user
+    name: BAT_CONFIG_PATH
+    value: "{{ user_home }}\\AppData\\Roaming\\bat\\config"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
 - name: Set owner of Bat files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\{{ item }}"
