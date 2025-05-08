@@ -45,6 +45,7 @@ vscode_extensions:
   - bierner.markdown-mermaid
   - bmalehorn.vscode-fish
   - bradlc.vscode-tailwindcss
+  - charliermarsh.ruff
   - coolbear.systemd-unit-file
   - dan-c-underwood.arm
   - dbaeumer.vscode-eslint
@@ -55,12 +56,10 @@ vscode_extensions:
   - foxundermoon.shell-format
   - grapecity.gc-excelviewer
   - james-yu.latex-workshop
-  - jroesch.lean
+  - leanprover.lean4
   - mhutchie.git-graph
   - ms-kubernetes-tools.vscode-kubernetes-tools
   - ms-playwright.playwright
-  - ms-python.black-formatter
-  - ms-python.flake8
   - ms-python.mypy-type-checker
   - ms-python.python
   - ms-vscode-remote.vscode-remote-extensionpack

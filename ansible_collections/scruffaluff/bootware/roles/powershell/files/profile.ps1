@@ -347,6 +347,11 @@ function procs() {
 
 # Python settings.
 
+# Add Jupyter Lab alias.
+function jupylab() {
+    uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab `
+        $Args
+}
 # Add Python debugger alias.
 function pdb() {
     python3 -m pdb $Args
