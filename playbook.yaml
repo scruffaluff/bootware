@@ -1033,10 +1033,12 @@
           tags:
             - desktop
             - libre_office
+            - office
         name: scruffaluff.bootware.libre_office
       tags:
         - desktop
         - libre_office
+        - office
 
     - name: Install Libvirt virtualization API
       ansible.builtin.include_role:
