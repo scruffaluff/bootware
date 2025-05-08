@@ -349,8 +349,14 @@ function procs() {
 
 # Add Jupyter Lab alias.
 function jupylab() {
-    # Disabled lint since using a space after commas here would cause errors.
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(" PSUseConsistentWhitespace", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseConsistentWhitespace',
+        '',
+        Justification = 'Space after comma is incorrect for Uv parameter.',
+        Scope = 'Function'
+    )]
+    param()
+
     uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab `
         $Args
 }
