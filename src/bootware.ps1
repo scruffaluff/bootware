@@ -52,7 +52,10 @@ Options:
   -u, --url <URL>                 URL of playbook repository
       --user <USER>               Remote user login name
 '@
-            wsl sh -c 'if [ -x "$(command -v ansible)" ]; printf "\nAnsible Options:\n"; ansible --help; fi'
+            if (wsl command -v ansible) {
+                Write-Output "`nAnsible Options:"
+                wsl ansible --help
+            }
         }
         'config' {
             Write-Output @'

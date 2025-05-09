@@ -26,8 +26,8 @@
 
 - name: Install Libre Office for Windows
   community.windows.win_scoop:
-    global: libreoffice
-    name: ripgrep
+    global: true
+    name: libreoffice
   tags:
     - install
   when: ansible_system == "Win32NT"
