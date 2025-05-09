@@ -1027,6 +1027,19 @@
         - server
         - wsl
 
+    - name: Install Libre Office document writing suite
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - libre_office
+            - office
+        name: scruffaluff.bootware.libre_office
+      tags:
+        - desktop
+        - libre_office
+        - office
+
     - name: Install Libvirt virtualization API
       ansible.builtin.include_role:
         apply:

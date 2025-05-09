@@ -11,8 +11,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Automatic Windows connections without additional flags.
 - Tags completion, config, install to tasks.
-- Carapace, Fastfetch, Htop, Nushell, Obsidian, Podman, Prune, SSH, and Uv
-  roles.
+- Carapace, Fastfetch, Htop, Libre Office, Nushell, Obsidian, Podman, Prune,
+  SSH, and Uv roles.
 - Support for Yazi 0.4.
 - Variable to configure default user shell.
 

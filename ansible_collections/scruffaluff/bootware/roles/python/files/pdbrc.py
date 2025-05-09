@@ -38,9 +38,7 @@ def catalog(
                 values.append(f"{name_}.{key} = {value}")
         return "\n".join(values)
     elif isinstance(object, dict):
-        return pprint.pformat(
-            {key: object[key] for key in sorted(object.keys())}
-        )
+        return pprint.pformat({key: object[key] for key in sorted(object.keys())})
     else:
         return pprint.pformat(object)
 
@@ -59,11 +57,7 @@ def do_cat(self, line: str) -> None:
         error(exception)
         return
 
-    if (
-        isinstance(object, tuple)
-        and len(object) == 2
-        and isinstance(object[1], str)
-    ):
+    if isinstance(object, tuple) and len(object) == 2 and isinstance(object[1], str):
         cat(*object)
     else:
         cat(object)
@@ -123,7 +117,7 @@ def do_shell(self, line: str) -> None:
     arguments = []
     for argument in shlex.split(line.strip()):
         try:
-            object = parse(self, argument)
+            object = parse_expr(self, argument)
         except Exception:
             arguments.append(argument)
         else:
@@ -244,12 +238,26 @@ def parent_shell() -> str:
     return os.environ.get("SHELL", default)
 
 
-def parse(pdb: Type, line: str) -> Any:
+def parse(pdb: Type, input: str) -> Any:
     """Parse and possibly execute command line input."""
-    if line.strip():
-        return eval(line, pdb.curframe.f_globals, pdb.curframe_locals)
+    if input.strip():
+        return eval(input, pdb.curframe.f_globals, pdb.curframe_locals)
     else:
         return None
+
+
+def parse_expr(pdb: Type, input: str) -> Any:
+    """Parse and possibly execute command line expressions."""
+    regex = re.compile(
+        r"(?<!$)(__pdb_convenience_variables\[|\$)(?P<variable>[\w.]+)\]"
+    )
+    match = regex.search(input)
+    while match:
+        variable = match.group("variable")
+        result = eval(variable, pdb.curframe.f_globals, pdb.curframe_locals)
+        input = input[: match.start()] + str(result) + input[match.end() :]
+        match = regex.search(input)
+    return input
 
 
 def setup(pdb: Type) -> None:

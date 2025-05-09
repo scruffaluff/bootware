@@ -195,6 +195,16 @@
     "tests": ["lazydocker --version"]
   },
   {
+    "name": "libre_office",
+    "tests": {
+      "default": ["libreoffice --version"],
+      "macos": [
+        "/Applications/LibreOffice.app/Contents/MacOS/soffice --version"
+      ],
+      "windows": ["scoop prefix libreoffice"]
+    }
+  },
+  {
     "name": "libvirt",
     "tests": {
       "alpine": [

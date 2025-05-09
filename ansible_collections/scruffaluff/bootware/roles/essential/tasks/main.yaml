@@ -98,15 +98,6 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Set owner of Scoop user folder for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\scoop"
-    recurse: true
-    user: "{{ user_id }}"
-  tags:
-    - install
-  when: ansible_system == "Win32NT"
-
 - name: Update package list for OpenWrt
   ansible.builtin.command: opkg update
   become: true
@@ -169,6 +160,23 @@
       - vcredist
       - xz
       - zip
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Scoop user folder for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\scoop"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Scoop user folder for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\scoop"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - install
   when: ansible_system == "Win32NT"

@@ -1,0 +1,33 @@
+---
+- name: Install Libre Office for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: libreoffice
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install Libre Office for Linux
+  ansible.builtin.package:
+    name: ripgrep
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Libre Office for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: libreoffice
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Libre Office for Windows
+  community.windows.win_scoop:
+    global: true
+    name: libreoffice
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

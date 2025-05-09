@@ -347,6 +347,19 @@ function procs() {
 
 # Python settings.
 
+# Add Jupyter Lab alias.
+function jupylab() {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseConsistentWhitespace',
+        '',
+        Justification = 'Space after comma is incorrect for Uv parameter.',
+        Scope = 'Function'
+    )]
+    param()
+
+    uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab `
+        $Args
+}
 # Add Python debugger alias.
 function pdb() {
     python3 -m pdb $Args

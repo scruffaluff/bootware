@@ -108,6 +108,13 @@
   tags:
     - plugin
 
+- name: Create Rust files for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\.rustup"
+    state: directory
+  tags:
+    - install
+
 - name: Set owner of Rust files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\.rustup"

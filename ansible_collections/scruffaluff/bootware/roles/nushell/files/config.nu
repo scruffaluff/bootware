@@ -641,6 +641,14 @@ alias procs = ^procs --theme light
 
 # Python settings.
 
+# Add Jupyter Lab alias.
+def --wrapped jupylab [...args] {
+    (
+        uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy
+        jupyter-lab
+        ...$args
+    )
+}
 # Add Python debugger alias.
 alias pdb = python3 -m pdb
 

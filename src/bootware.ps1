@@ -11,7 +11,11 @@ $ErrorActionPreference = 'Stop'
 # Disable progress bar for PowerShell cmdlets.
 $ProgressPreference = 'SilentlyContinue'
 # Keep native executable arguments consistent between PowerShell versions.
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSUseDeclaredVarsMoreThanAssignment',
+    '',
+    Justification = 'Variable is a standard PowerShell setting.'
+)]
 $PSNativeCommandArgumentPassing = 'Legacy'
 # Exit immediately when an native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
@@ -48,7 +52,10 @@ Options:
   -u, --url <URL>                 URL of playbook repository
       --user <USER>               Remote user login name
 '@
-            wsl sh -c 'if [ -x "$(command -v ansible)" ]; printf "\nAnsible Options:\n"; ansible --help; fi'
+            if (wsl command -v ansible) {
+                Write-Output "`nAnsible Options:"
+                wsl ansible --help
+            }
         }
         'config' {
             Write-Output @'
@@ -981,8 +988,14 @@ function WSLPath($FilePath) {
 
 # Script entrypoint.
 function Main() {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseDeclaredVarsMoreThanAssignment',
+        '',
+        Justification = 'Global variable is necessary for debugging.',
+        Scope = 'Function'
+    )]
+
     $ArgIdx = 0
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignment", "")]
     $Global:Debug = $False
 
     while ($ArgIdx -lt $Args[0].Count) {
