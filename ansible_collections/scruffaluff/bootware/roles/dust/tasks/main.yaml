@@ -25,6 +25,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Dust temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ dust_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
     dest: "{{ dust_temp.path }}"

@@ -17,6 +17,15 @@
     - install
   when: ansible_system == "Linux" and system_architecture == "amd64"
 
+- name: Set Qsv temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ qsv_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and system_architecture == "amd64"
+
 # Do not use GNU build of QSV. It depends on Wayland GUI libraries.
 - name: Download Qsv for Linux
   ansible.builtin.unarchive:

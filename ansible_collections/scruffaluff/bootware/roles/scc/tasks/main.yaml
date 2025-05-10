@@ -25,6 +25,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Scc temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ scc_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Scc for Linux
   ansible.builtin.unarchive:
     dest: "{{ scc_temp.path }}"

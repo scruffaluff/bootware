@@ -27,6 +27,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Yazi temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ yazi_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Yazi for Linux
   ansible.builtin.unarchive:
     dest: "{{ yazi_temp.path }}"

@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and helm_linux is failed
 
+- name: Set Helm temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ helm_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and helm_linux is failed
+
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
     dest: "{{ helm_temp.path }}"

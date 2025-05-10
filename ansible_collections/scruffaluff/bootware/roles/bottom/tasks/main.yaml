@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and bottom_linux is failed
 
+- name: Set Bottom temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ bottom_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and bottom_linux is failed
+
 - name: Download Bottom for Linux
   ansible.builtin.unarchive:
     dest: "{{ bottom_temp.path }}"

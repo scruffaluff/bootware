@@ -52,6 +52,15 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
+- name: Set VSCode temporary directory permissions for Fedora
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ vscode_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
 - name: Download VSCode for Fedora

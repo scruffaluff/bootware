@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and fastfetch_linux is failed
 
+- name: Set Fastfetch temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ fastfetch_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and fastfetch_linux is failed
+
 - name: Download Fastfetch for Linux
   ansible.builtin.unarchive:
     dest: "{{ fastfetch_temp.path }}"
