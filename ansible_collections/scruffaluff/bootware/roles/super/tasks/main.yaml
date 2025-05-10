@@ -67,7 +67,8 @@
     super_sudo_available.rc == 0
 
 - name: Restrict administrator permission popup to once per session for Windows
-  ansible.windows.win_command: gsudo config CacheMode Auto
+  ansible.windows.win_command:
+    cmd: gsudo config CacheMode Auto
   # Command always marks config as changed.
   changed_when: true
   when: super_passwordless and ansible_system == "Win32NT"

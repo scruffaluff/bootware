@@ -106,7 +106,8 @@
   when: ansible_system == "Linux"
 
 - name: Install Yazi plugins for Unix
-  ansible.builtin.command: ya pack --add {{ item }}
+  ansible.builtin.command:
+    cmd: ya pack --add {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Deploying package' in yazi_plugin_install"

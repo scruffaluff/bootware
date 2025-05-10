@@ -73,6 +73,12 @@
     - config
   when: ansible_system == "Darwin"
 
+- name: Install extensions for GNOME desktops
+  ansible.builtin.import_tasks: gnome.yaml
+  tags:
+    - install
+  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
+
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
   become: true

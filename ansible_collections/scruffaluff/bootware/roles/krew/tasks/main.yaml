@@ -81,7 +81,8 @@
     - plugin
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 # - name: Install Kubectl plugins for Windows
-#   ansible.windows.win_command: kubectl-krew install {{ item }}
+#   ansible.windows.win_command:
+#     cmd: kubectl-krew install {{ item }}
 #   changed_when: "'Installed plugin' in krew_plugin_install"
 #   environment:
 #     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_env.Path }}"

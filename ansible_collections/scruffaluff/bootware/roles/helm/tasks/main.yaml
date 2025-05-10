@@ -86,7 +86,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Helm plugins for Unix
-  ansible.builtin.command: helm plugin install {{ item }}
+  ansible.builtin.command:
+    cmd: helm plugin install {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install"
@@ -102,7 +103,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Helm plugins for Windows
-  ansible.windows.win_command: helm plugin install {{ item }}
+  ansible.windows.win_command:
+    cmd: helm plugin install {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"

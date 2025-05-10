@@ -1,0 +1,74 @@
+- name: Enable Light Style shell extension for GNOME desktops
+  block:
+    - name: Enable Light Style shell extension for GNOME desktops
+      ansible.builtin.command:
+        cmd: >-
+          gnome-extensions enable
+          light-style@gnome-shell-extensions.gcampax.github.com
+      become: true
+      become_user: "{{ user_id }}"
+      # Command does not provide stdout information to determine a change.
+      changed_when: true
+      tags:
+        - install
+      when: ansible_system == "Linux" and gnome_desktop
+  rescue:
+    - name: Get latest Light Style shell extension version for GNOME desktops
+      ansible.builtin.uri:
+        method: GET
+        return_content: true
+        url: >-
+          https://extensions.gnome.org/extension-info/?uuid=light-style@gnome-shell-extensions.gcampax.github.com&shell_version={{
+          gnome_version }}
+      register: desktop_environment_gnome_light_style_release
+      tags:
+        - install
+
+    - name: Create Light Style temporary directory for GNOME desktops
+      ansible.builtin.tempfile:
+        state: directory
+      register: desktop_environment_gnome_light_style_temp
+      tags:
+        - install
+
+    - name: Set Light Style temporary directory permissions for GNOME desktops
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ desktop_environment_gnome_light_style_temp.path }}"
+        state: directory
+      tags:
+        - install
+
+    - name: Download Light Style shell extension for GNOME desktops
+      ansible.builtin.get_url:
+        dest:
+          "{{ desktop_environment_gnome_light_style_temp.path
+          }}/desktop_environment_gnome_light_style_extension.zip"
+        mode: "644"
+        url:
+          https://extensions.gnome.org{{
+          desktop_environment_gnome_light_style_release.json.download_url }}
+      tags:
+        - install
+
+    - name: Install Light Style shell extension for GNOME desktops
+      ansible.builtin.command:
+        cmd: >-
+          gnome-extensions install {{
+          desktop_environment_gnome_light_style_temp.path
+          }}/desktop_environment_gnome_light_style_extension.zip
+      become: true
+      become_user: "{{ user_id }}"
+      # Command does not provide stdout information to determine a change.
+      changed_when: true
+      tags:
+        - install
+
+    - name: Notify user to log and back in
+      ansible.builtin.fail:
+        msg: >-
+          Enabling Light Style extension may require a desktop session restart.
+          Please log out of your current user session and log back in. Then
+          execute this role again.
+      tags:
+        - install

@@ -26,7 +26,8 @@
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Wasmtime for Unix
-  ansible.builtin.command: "{{ wasmtime_temp.path }}/wasmtime_install.sh"
+  ansible.builtin.command:
+    cmd: "{{ wasmtime_temp.path }}/wasmtime_install.sh"
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Finished installation' in wasm_install"
@@ -55,7 +56,8 @@
     "amd64"
 
 - name: Install Wasm Pack for Unix
-  ansible.builtin.command: "{{ wasmtime_temp.path }}/wasm_pack_init.sh"
+  ansible.builtin.command:
+    cmd: "{{ wasmtime_temp.path }}/wasm_pack_init.sh"
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in wasm_pack_install"
