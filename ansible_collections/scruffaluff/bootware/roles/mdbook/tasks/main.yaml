@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and mdbook_linux is failed
 
+- name: Set Mdbook temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ mdbook_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and mdbook_linux is failed
+
 - name: Download Mdbook for Linux
   ansible.builtin.unarchive:
     dest: "{{ mdbook_temp.path }}"

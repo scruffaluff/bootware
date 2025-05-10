@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and dive_linux is failed
 
+- name: Set Dive temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ dive_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and dive_linux is failed
+
 - name: Download Dive for Linux
   ansible.builtin.unarchive:
     dest: "{{ dive_temp.path }}"

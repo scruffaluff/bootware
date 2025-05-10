@@ -15,6 +15,15 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
+- name: Set Wezterm temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ wezterm_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download Wezterm GPG key for Debian
   ansible.builtin.get_url:
     dest: "{{ wezterm_temp.path }}/wezterm.key"

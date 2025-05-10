@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and croc_linux is failed
 
+- name: Set Croc temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ croc_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and croc_linux is failed
+
 - name: Download Croc for Linux
   ansible.builtin.unarchive:
     dest: "{{ croc_temp.path }}"

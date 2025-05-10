@@ -36,6 +36,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Zoxide temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ zoxide_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Zoxide for Linux
   ansible.builtin.unarchive:
     dest: "{{ zoxide_temp.path }}"

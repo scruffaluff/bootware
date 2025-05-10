@@ -25,6 +25,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set FD temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ fd_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download FD for Linux
   ansible.builtin.unarchive:
     dest: "{{ fd_temp.path }}"

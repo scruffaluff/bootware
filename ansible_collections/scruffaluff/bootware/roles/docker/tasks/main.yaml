@@ -35,6 +35,15 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
+- name: Set Docker temporary directory permissions for Debian
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ docker_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
 - name: Download Docker GPG key for Debian
   ansible.builtin.get_url:
     dest: "{{ docker_temp.path }}/docker-archive-keyring.gpg"

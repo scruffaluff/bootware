@@ -310,12 +310,14 @@
             - croc
             - desktop
             - server
+            - share
             - wsl
         name: scruffaluff.bootware.croc
       tags:
         - croc
         - desktop
         - server
+        - share
         - wsl
 
     - name: Install DBeaver database client
@@ -395,12 +397,14 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - container
             - desktop
             - dive
             - server
             - wsl
         name: scruffaluff.bootware.dive
       tags:
+        - container
         - desktop
         - dive
         - server
@@ -492,12 +496,14 @@
             - desktop
             - ffsend
             - server
+            - share
             - wsl
         name: scruffaluff.bootware.ffsend
       tags:
         - desktop
         - ffsend
         - server
+        - share
         - wsl
 
     - name: Install Firefox web browser

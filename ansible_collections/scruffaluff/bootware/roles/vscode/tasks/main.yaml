@@ -16,8 +16,8 @@
 # information, see
 # https://wiki.archlinux.org/index.php/Visual_Studio_Code#No_extensions_found.
 - name: Install VSCode for Arch
-  ansible.builtin.command: >-
-    yay --noconfirm --refresh --sync visual-studio-code-bin
+  ansible.builtin.command:
+    cmd: yay --noconfirm --refresh --sync visual-studio-code-bin
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing visual-studio-code-bin' in vscode_arch_install"
@@ -48,6 +48,15 @@
   ansible.builtin.tempfile:
     state: directory
   register: vscode_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Set VSCode temporary directory permissions for Fedora
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ vscode_temp.path }}"
+    state: directory
   tags:
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
@@ -103,7 +112,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Install VSCode extensions for Unix
-  ansible.builtin.command: code --install-extension {{ item }}
+  ansible.builtin.command:
+    cmd: code --install-extension {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in vscode_extension_install"

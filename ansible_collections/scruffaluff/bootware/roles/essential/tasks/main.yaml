@@ -99,7 +99,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Update package list for OpenWrt
-  ansible.builtin.command: opkg update
+  ansible.builtin.command:
+    cmd: opkg update
   become: true
   changed_when: false
   tags:

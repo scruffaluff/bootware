@@ -22,7 +22,8 @@
     - install
 
 - name: Set Rust default toolchain
-  ansible.builtin.command: rustup default {{ rust_toolchain }}
+  ansible.builtin.command:
+    cmd: rustup default {{ rust_toolchain }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_toolchain_set"
@@ -35,7 +36,8 @@
     - install
 
 - name: Add Rust components for Unix
-  ansible.builtin.command: rustup component add {{ item }}
+  ansible.builtin.command:
+    cmd: rustup component add {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_component_add"
@@ -49,7 +51,8 @@
     - install
 
 - name: Add Rust targets for Unix
-  ansible.builtin.command: rustup target add {{ item }}
+  ansible.builtin.command:
+    cmd: rustup target add {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_target_add"
@@ -116,7 +119,8 @@
   when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Cargo packages for Unix
-  ansible.builtin.command: cargo binstall --no-confirm {{ item }}
+  ansible.builtin.command:
+    cmd: cargo binstall --no-confirm {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'This will install' in rust_binstall_package"

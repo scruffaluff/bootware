@@ -41,6 +41,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Termshark temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ termshark_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Termshark for Linux
   ansible.builtin.unarchive:
     dest: "{{ termshark_temp.path }}"

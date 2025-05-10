@@ -9,9 +9,10 @@
   when: ansible_system == "Linux"
 
 - name: Add Flathub remote repository for Linux
-  ansible.builtin.command: >-
-    flatpak remote-add --if-not-exists flathub
-    https://flathub.org/repo/flathub.flatpakrepo
+  ansible.builtin.command:
+    cmd: >-
+      flatpak remote-add --if-not-exists flathub
+      https://flathub.org/repo/flathub.flatpakrepo
   become: true
   # Command does not provide stdout information to determine a change.
   changed_when: true
@@ -20,7 +21,8 @@
   when: ansible_system == "Linux"
 
 - name: Enable Flathub remote repository for Linux
-  ansible.builtin.command: flatpak remote-modify --enable flathub
+  ansible.builtin.command:
+    cmd: flatpak remote-modify --enable flathub
   become: true
   # Command does not provide stdout information to determine a change.
   changed_when: true

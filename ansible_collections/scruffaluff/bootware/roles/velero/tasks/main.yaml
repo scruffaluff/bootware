@@ -7,6 +7,15 @@
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Set Velero temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ velero_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Install Velero for Linux
   ansible.builtin.package:
     name: velero

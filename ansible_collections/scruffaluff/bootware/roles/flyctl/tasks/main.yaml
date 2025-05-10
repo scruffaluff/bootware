@@ -7,6 +7,15 @@
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Set Flyctl temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ flyctl_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Get latest Flyctl version for Linux
   ansible.builtin.uri:
     method: GET

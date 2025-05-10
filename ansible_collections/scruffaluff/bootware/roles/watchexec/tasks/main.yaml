@@ -17,6 +17,15 @@
     - install
   when: ansible_system in ["Darwin", "Linux"]
 
+- name: Set Watchexec temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ watchexec_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
     dest: "{{ watchexec_temp.path }}"

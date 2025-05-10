@@ -39,6 +39,7 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   run bash src/bootware.sh bootstrap --dev --start-at-role deno
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
+--extra-vars ansible_pipelining=false \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
 --extra-vars connect_role_executed=false --start-at-task \
 Install Deno JavaScript and TypeScript runtime --connection local playbook.yaml"
@@ -52,6 +53,7 @@ bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
   run bash src/bootware.sh bootstrap
   assert_success
   assert_output "ansible-pull --extra-vars @${HOME}/.bootware/config.yaml \
+--extra-vars ansible_pipelining=false \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
 --url https://github.com/scruffaluff/bootware.git playbook.yaml"
 }
@@ -64,6 +66,7 @@ bootstrap_subcommand_passes_dev_arguments_to_ansible() { # @test
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
 --extra-vars @${HOME}/.bootware/config.yaml \
+--extra-vars ansible_pipelining=false \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
 --tags none --connection local playbook.yaml"
 }
@@ -76,6 +79,7 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
 --extra-vars @${HOME}/.bootware/config.yaml \
+--extra-vars ansible_pipelining=false \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
 --tags none --check --timeout 60 --connection local playbook.yaml"
 }
@@ -116,6 +120,7 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   run bootstrap --start-at-role deno
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
+--extra-vars ansible_pipelining=false \
 --extra-vars ansible_python_interpreter=auto_silent --inventory 127.0.0.1, \
 --extra-vars connect_role_executed=false --start-at-task \
 Install Deno JavaScript and TypeScript runtime --connection local \

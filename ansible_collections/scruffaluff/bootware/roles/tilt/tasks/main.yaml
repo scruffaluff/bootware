@@ -17,6 +17,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Tilt temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ tilt_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Tilt for Linux
   ansible.builtin.unarchive:
     dest: "{{ tilt_temp.path }}"

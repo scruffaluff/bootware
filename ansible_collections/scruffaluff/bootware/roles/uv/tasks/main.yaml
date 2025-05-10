@@ -25,6 +25,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Uv temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ uv_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Uv for Linux
   ansible.builtin.unarchive:
     dest: "{{ uv_temp.path }}"

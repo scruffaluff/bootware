@@ -7,6 +7,15 @@
     - install
   when: ansible_system != "Win32NT"
 
+- name: Set Helmfile temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ helmfile_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
 - name: Install Helmfile for FreeBSD
   become: true
   community.general.pkgng:
