@@ -35,6 +35,14 @@
       tags:
         - install
 
+    - name: Set Forge temporary directory permissions for GNOME desktops
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ window_manager_forge_temp.path }}"
+        state: directory
+      tags:
+        - install
+
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
         dest: "{{ window_manager_forge_temp.path }}/forge_extension.zip"

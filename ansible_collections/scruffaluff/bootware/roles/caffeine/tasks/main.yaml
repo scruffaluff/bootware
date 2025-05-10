@@ -22,10 +22,18 @@
       tags:
         - install
 
-    - name: Create Caffeine temporary directory for Linux
+    - name: Create Caffeine temporary directory for GNOME desktops
       ansible.builtin.tempfile:
         state: directory
       register: caffeine_temp
+      tags:
+        - install
+
+    - name: Set Caffeine temporary directory permissions for GNOME desktops
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ caffeine_temp.path }}"
+        state: directory
       tags:
         - install
 

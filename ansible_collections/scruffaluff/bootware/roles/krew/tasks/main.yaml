@@ -17,6 +17,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Krew temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ krew_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Download Krew for Linux
   ansible.builtin.unarchive:
     dest: "{{ krew_temp.path }}"

@@ -358,6 +358,7 @@ bootstrap() {
     --extra-vars "@${config_path}" \
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
+    --extra-vars 'ansible_pipelining=false' \
     --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
@@ -649,6 +650,7 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local skip=''
   local tags=''
   local tmp_dir
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
@@ -659,6 +661,10 @@ roles() {
       -h | --help)
         usage 'roles'
         exit 0
+        ;;
+      -s | --skip)
+        skip="${2}"
+        shift 2
         ;;
       -t | --tags)
         tags="${2}"
@@ -683,11 +689,16 @@ roles() {
 
   # Flags:
   #   -n: Check if string is nonempty.
-  if [ -n "${tags:-}" ]; then
-    contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
-    filter=".[0].tasks[] | select(.tags | (${contains}))"
+  contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
+  rejects="(map(. != \"$(echo "${skip}" | sed 's/,/\") | all) and (map(. != \"/g')\") | all)"
+  if [ -n "${skip:-}" ] && [ -n "${tags}" ]; then
+    filter=".[0].tasks[] | select(.tags | (${contains} and ${rejects}))"
+  elif [ -n "${skip:-}" ]; then
+    filter=".[0].tasks[] | select(.tags | ${rejects})"
+  elif [ -n "${tags:-}" ]; then
+    filter=".[0].tasks[] | select(.tags | ${contains})"
   else
-    filter='.[0].tasks[]'
+    filter='.[0].tasks[] | select(.tags | (map(. != "never") | all))'
   fi
 
   format='."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'

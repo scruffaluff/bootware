@@ -7,6 +7,15 @@
     - install
   when: ansible_system not in ["FreeBSD", "Win32NT"]
 
+- name: Set Wasmtime temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ wasmtime_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system not in ["FreeBSD", "Win32NT"]
+
 - name: Download Wastime installer for Unix
   ansible.builtin.get_url:
     dest: "{{ wasmtime_temp.path }}/wasmtime_install.sh"
