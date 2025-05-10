@@ -523,6 +523,7 @@ function RemoteScript($URL) {
 function Roles() {
     $ArgIdx = 0
     $Playbook = ''
+    $Skip = ''
     $Tags = ''
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -530,6 +531,11 @@ function Roles() {
             { $_ -in '-h', '--help' } {
                 Usage 'roles'
                 exit 0
+            }
+            { $_ -in '-s', '--skip' } {
+                $Skip = $Args[0][$ArgIdx + 1] -join ','
+                $ArgIdx += 2
+                break
             }
             { $_ -in '-t', '--tags' } {
                 $Tags = $Args[0][$ArgIdx + 1] -join ','
@@ -544,8 +550,22 @@ function Roles() {
         }
     }
 
-    $TagList = "[`"$($Tags.Replace(',', '`", `"'))`"]"
-    $Filter = ".[0].tasks[] | select(.tags | contains($TagList))"
+    $ContainsInner = $Tags.Replace(',', '") | any) or (map(. == "')
+    $Contains = "(map(. == `"$ContainsInner`") | any)"
+    $RejectsInner = $Skip.Replace(',', '") | all) or (map(. != "')
+    $Rejects = "(map(. != `"$RejectsInner`") | all)"
+    if ($Skip -and $Tags) {
+        $Filter = ".[0].tasks[] | select(.tags | ($Contains and $Rejects))"
+    }
+    elseif ($Skip) {
+        $Filter = ".[0].tasks[] | select(.tags | $Rejects)"
+    }
+    elseif ($Tags) {
+        $Filter = ".[0].tasks[] | select(.tags | $Contains)"
+    }
+    else {
+        $Filter = '.[0].tasks[] | select(.tags | (map(. != "never") | all))'
+    }
     $Format = '."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
     $Command = "$Filter | $Format"
 
