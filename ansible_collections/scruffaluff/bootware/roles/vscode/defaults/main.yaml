@@ -1,6 +1,4 @@
 ---
-vscode_package: vscodium
-
 vscode_arch_:
   amd64: x64
   arm64: arm64
@@ -16,17 +14,7 @@ vscode_chrome_path_:
     {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
     }}
   Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
-vscode_path_linux_:
-  apk: /usr/lib/code-oss/resources/app
-  pacman: /opt/visual-studio-code/resources/app
 vscode_path_:
-  Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
-  FreeBSD: /usr/local/share/code-oss/resources/app
-  Linux: >-
-    {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
-    }}
-  Win32NT: C:\Program Files\Microsoft VS Code\resources\app
-vscodium_path_:
   Darwin: /Applications/VSCodium.app/Contents/Resources/app
   FreeBSD: /usr/local/share/codium/resources/app
   Linux: /usr/share/codium/resources/app
@@ -85,9 +73,7 @@ vscode_extensions:
   - waderyan.gitblame
   - zxh404.vscode-proto3
 vscode_install_customizations: true
-vscode_path: >-
-  {{ vscode_path_[ansible_system] if vscode_package == 'vscode' else
-  vscodium_path_[ansible_system] }}
+vscode_path: "{{ vscode_path_[ansible_system] }}"
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
