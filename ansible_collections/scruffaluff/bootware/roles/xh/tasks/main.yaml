@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and xh_linux is failed
 
+- name: Set Xh temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ xh_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and xh_linux is failed
+
 - name: Download Xh for Linux
   ansible.builtin.unarchive:
     dest: "{{ xh_temp.path }}"

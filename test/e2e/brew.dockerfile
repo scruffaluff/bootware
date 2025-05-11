@@ -1,4 +1,4 @@
-FROM docker.io/homebrew/brew:4.4.15 AS build
+FROM docker.io/homebrew/brew:4.5.2 AS build
 
 ARG version
 
@@ -24,7 +24,7 @@ FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/homebrew/brew:4.4.15
+FROM docker.io/homebrew/brew:4.5.2
 
 ARG version
 

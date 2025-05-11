@@ -954,6 +954,14 @@ prepend-paths $"($env.HOME)/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths $"($env.HOME)/.npm/global/bin"
 
+# Add PNPM binaries to system path.
+$env.PNPM_HOME = match $nu.os-info.name {
+    "macos" => $"($env.HOME)/Library/pnpm"
+    "windows" => $"($env.HOME)/AppData/Local/pnpm"
+    _ => $"($env.HOME)/.local/share/pnpm"
+}
+prepend-paths $env.PNPM_HOME
+
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path.

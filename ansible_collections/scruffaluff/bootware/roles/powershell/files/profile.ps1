@@ -641,6 +641,9 @@ if ($Tty) {
 # Disable Deno update messages.
 $Env:DENO_NO_UPDATE_CHECK = 'true'
 
+# Set PNPM home directory.
+$Env:PNPM_HOME = "$HOME\AppData\Local\pnpm"
+
 # Yazi settings.
 
 # Yazi wrapper to change directory on program exit.

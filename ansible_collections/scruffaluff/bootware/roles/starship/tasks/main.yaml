@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and starship_linux is failed
 
+- name: Set Starship temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ starship_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and starship_linux is failed
+
 - name: Download Starship for Linux
   ansible.builtin.unarchive:
     dest: "{{ starship_temp.path }}"

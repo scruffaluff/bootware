@@ -7,56 +7,34 @@
   register: etcher_cask
   tags:
     - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5", "zypper"] and system_architecture
+    == "amd64"
 
-- name: Create application directories for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ item }}"
-    state: directory
-  become: true
-  loop:
-    - /usr/share/applications
-    - /usr/share/pixmaps
-  tags:
-    - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
-
-# Balena Etcher version 2.1.0 Github release is missing its Appimage asset.
-- name: Install Balena Etcher for Linux
-  ansible.builtin.get_url:
-    dest: /usr/local/bin/balena-etcher
-    mode: "755"
-    url: >-
+- name: Install Balena Etcher for Debian
+  ansible.builtin.apt:
+    deb: >-
       https://github.com/balena-io/etcher/releases/download/v{{
-      etcher_cask.json.version | regex_replace('^2\.1\.0$', '2.0.0')
-      }}/balenaEtcher-{{ etcher_cask.json.version | regex_replace('^2\.1\.0$',
-      '2.0.0') }}-x64.AppImage
+      etcher_cask.json.version }}/balena-etcher_{{ etcher_cask.json.version
+      }}_amd64.deb
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Install Balena Etcher for Linux
-  ansible.builtin.get_url:
-    dest: /usr/share/pixmaps/balena-etcher.png
-    mode: "644"
-    url: https://raw.githubusercontent.com/balena-io/etcher/master/assets/icon.png
+- name: Install Balena Etcher for Fedora
+  ansible.builtin.dnf:
+    disable_gpg_check: true
+    name: >-
+      https://github.com/balena-io/etcher/releases/download/v{{
+      etcher_cask.json.version }}/balena-etcher-{{ etcher_cask.json.version
+      }}-1.x86_64.rpm
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
-
-- name: Copy Balena Etcher desktop file for Linux
-  ansible.builtin.copy:
-    dest: /usr/share/applications/balena-etcher.desktop
-    force: true
-    mode: "644"
-    src: balena-etcher.desktop
-  become: true
-  tags:
-    - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: >
+    ansible_pkg_mgr in ["dnf", "dnf5", "zypper"] and system_architecture ==
+    "amd64"
 
 - name: Install Balena Etcher for MacOS
   community.general.homebrew_cask:

@@ -1,0 +1,61 @@
+- name: Enable GNOME extension for GNOME desktops
+  block:
+    - name: Enable GNOME extension for GNOME desktops
+      ansible.builtin.command:
+        cmd: gnome-extensions enable {{ gnome_extension }}
+      become: true
+      become_user: "{{ user_id }}"
+      # Command does not provide stdout information to determine a change.
+      changed_when: true
+      tags:
+        - install
+      when: ansible_system == "Linux" and gnome_desktop
+  rescue:
+    - name: Get latest GNOME extension version for GNOME desktops
+      ansible.builtin.uri:
+        method: GET
+        return_content: true
+        url: >-
+          https://extensions.gnome.org/extension-info/?uuid={{ gnome_extension
+          }}&shell_version={{ gnome_version }}
+      register: gnome_extension_release
+      tags:
+        - install
+
+    - name: Create GNOME extension temporary directory for GNOME desktops
+      ansible.builtin.tempfile:
+        state: directory
+      register: gnome_extension_temp
+      tags:
+        - install
+
+    - name: >-
+        Set GNOME extension temporary directory permissions for GNOME desktops
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ gnome_extension_temp.path }}"
+        state: directory
+      tags:
+        - install
+
+    - name: Download GNOME extension for GNOME desktops
+      ansible.builtin.get_url:
+        dest: "{{ gnome_extension_temp.path }}/gnome_extension_extension.zip"
+        mode: "644"
+        url:
+          https://extensions.gnome.org{{
+          gnome_extension_release.json.download_url }}
+      tags:
+        - install
+
+    - name: Install GNOME extension for GNOME desktops
+      ansible.builtin.command:
+        cmd: >-
+          gnome-extensions install {{ gnome_extension_temp.path
+          }}/gnome_extension_extension.zip
+      become: true
+      become_user: "{{ user_id }}"
+      # Command does not provide stdout information to determine a change.
+      changed_when: true
+      tags:
+        - install

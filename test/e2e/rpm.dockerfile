@@ -1,4 +1,4 @@
-FROM docker.io/fedora:41 AS build
+FROM docker.io/fedora:42 AS build
 
 ARG version
 
@@ -20,7 +20,7 @@ FROM docker.io/scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/fedora:41
+FROM docker.io/fedora:42
 
 ARG version
 

@@ -2,7 +2,8 @@
 - name: Enable Forge extension for GNOME desktops
   block:
     - name: Enable Forge extension for GNOME desktops
-      ansible.builtin.command: gnome-extensions enable forge@jmmaranan.com
+      ansible.builtin.command:
+        cmd: gnome-extensions enable forge@jmmaranan.com
       become: true
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.
@@ -35,6 +36,14 @@
       tags:
         - install
 
+    - name: Set Forge temporary directory permissions for GNOME desktops
+      ansible.builtin.file:
+        mode: "755"
+        path: "{{ window_manager_forge_temp.path }}"
+        state: directory
+      tags:
+        - install
+
     - name: Download Forge extension for GNOME desktops
       ansible.builtin.get_url:
         dest: "{{ window_manager_forge_temp.path }}/forge_extension.zip"
@@ -46,9 +55,10 @@
         - install
 
     - name: Install Forge extension for GNOME desktops
-      ansible.builtin.command: >-
-        gnome-extensions install {{ window_manager_forge_temp.path
-        }}/forge_extension.zip
+      ansible.builtin.command:
+        cmd: >-
+          gnome-extensions install {{ window_manager_forge_temp.path
+          }}/forge_extension.zip
       become: true
       become_user: "{{ user_id }}"
       # Command does not provide stdout information to determine a change.

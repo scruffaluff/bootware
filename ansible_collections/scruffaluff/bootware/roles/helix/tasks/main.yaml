@@ -70,6 +70,15 @@
     - install
   when: ansible_system == "Linux"
 
+- name: Set Helix temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ helix_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
   ansible.builtin.unarchive:

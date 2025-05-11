@@ -35,6 +35,15 @@
     - install
   when: ansible_system == "Linux" and helm_linux is failed
 
+- name: Set Helm temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ helm_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and helm_linux is failed
+
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
     dest: "{{ helm_temp.path }}"
@@ -77,7 +86,8 @@
   when: ansible_system == "Win32NT"
 
 - name: Install Helm plugins for Unix
-  ansible.builtin.command: helm plugin install {{ item }}
+  ansible.builtin.command:
+    cmd: helm plugin install {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install"
@@ -93,7 +103,8 @@
   when: ansible_system != "Win32NT"
 
 - name: Install Helm plugins for Windows
-  ansible.windows.win_command: helm plugin install {{ item }}
+  ansible.windows.win_command:
+    cmd: helm plugin install {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"

@@ -278,6 +278,11 @@
   { "name": "obsidian" },
   { "name": "podman", "tests": ["podman --version"] },
   {
+    "name": "pnpm",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["pnpm --version"]
+  },
+  {
     "name": "powershell",
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
     "tests": ["pwsh --version"]

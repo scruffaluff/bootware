@@ -437,6 +437,14 @@ prepend-paths "${HOME}/.deno/bin"
 # Add NPM global binaries to system path.
 prepend-paths "${HOME}/.npm/global/bin"
 
+# Add PNPM binaries to system path.
+if [[ "${os}" == 'Darwin' ]]; then
+  export PNPM_HOME="${HOME}/Library/pnpm"
+else
+  export PNPM_HOME="${HOME}/.local/share/pnpm"
+fi
+prepend-paths "${PNPM_HOME}"
+
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path for Linux.
