@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:24.04
+FROM docker.io/ubuntu:25.04
 
 ARG TARGETARCH
 ARG version=0.8.3
