@@ -1,0 +1,128 @@
+---
+- name: Get latest PNPM version for Unix
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/pnpm.json
+  register: pnpm_formula_unix
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]
+
+- name: Create PNPM home directory for Linux
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.local/share/pnpm"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Linux"
+
+- name: Install PNPM for Linux
+  ansible.builtin.get_url:
+    dest: "{{ user_home }}/.local/share/pnpm/pnpm"
+    force: true
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    url: >-
+      https://github.com/pnpm/pnpm/releases/download/v{{
+      pnpm_formula_unix.json.versions.stable }}/pnpm-linuxstatic-{{ pnpm_arch }}
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Create PNPM home directory for MacOS
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/Library/pnpm"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Darwin"
+
+- name: Install PNPM for MacOS
+  ansible.builtin.get_url:
+    dest: "{{ user_home }}/Library/pnpm/pnpm"
+    force: true
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    url: >-
+      https://github.com/pnpm/pnpm/releases/download/v{{
+      pnpm_formula_unix.json.versions.stable }}/pnpm-macos-{{ pnpm_arch }}
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Get latest PNPM version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/pnpm.json
+  register: pnpm_formula_windows
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create PNPM home directory for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\AppData\\Local\\pnpm"
+    state: directory
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Install PNPM for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ user_home }}\\AppData\\Local\\pnpm\\pnpm.exe"
+    force: true
+    url: >-
+      https://github.com/pnpm/pnpm/releases/download/v{{
+      pnpm_formula_windows.json.versions.stable }}/pnpm-win-{{ pnpm_arch }}.exe
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Add PNPM to user path for Windows
+  ansible.windows.win_path:
+    elements: "{{ user_home }}\\AppData\\Local\\pnpm"
+    scope: user
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create PNPM user shell completions for Unix
+  ansible.builtin.shell:
+    cmd: pnpm completion {{ item.shell }} > {{ item.path }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  environment:
+    PATH: "{{ user_home }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+  loop:
+    - path: "{{ bash_user_completion }}/pnpm"
+      shell: bash
+    - path: "{{ fish_user_completion }}/pnpm.fish"
+      shell: fish
+  tags:
+    - completion
+    - install
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Set owner of PNPM files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Local\\pnpm"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

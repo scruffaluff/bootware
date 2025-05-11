@@ -1247,6 +1247,23 @@
         - desktop
         - obsidian
 
+    - name: Install PNPM Node package manager
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - language
+            - pnpm
+            - server
+            - wsl
+        name: scruffaluff.bootware.pnpm
+      tags:
+        - desktop
+        - language
+        - pnpm
+        - server
+        - wsl
+
     - name: Install Podman container platform
       ansible.builtin.include_role:
         apply:
