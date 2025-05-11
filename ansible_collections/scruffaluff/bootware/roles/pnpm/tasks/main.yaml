@@ -107,7 +107,9 @@
   become_user: "{{ user_id }}"
   changed_when: true
   environment:
-    PATH: "{{ user_home }}/.local/share/pnpm:{{ ansible_env.PATH }}"
+    PATH: >-
+      {{ user_home }}/Library/pnpm:{{ user_home }}/.local/share/pnpm:{{
+      ansible_env.PATH }}
   loop:
     - path: "{{ bash_user_completion }}/pnpm"
       shell: bash
