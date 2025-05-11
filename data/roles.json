@@ -412,7 +412,10 @@
   {
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
-    "tests": ["code --version"]
+    "tests": {
+      "default": ["code --version || codium --version"],
+      "windows": ["try { code --version } catch { codium --version }"]
+    }
   },
   { "name": "wasm" },
   {

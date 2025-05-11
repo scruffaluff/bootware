@@ -1,4 +1,6 @@
 ---
+vscode_package: vscodium
+
 vscode_arch_:
   amd64: x64
   arm64: arm64
@@ -24,6 +26,11 @@ vscode_path_:
     {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
     }}
   Win32NT: C:\Program Files\Microsoft VS Code\resources\app
+vscodium_path_:
+  Darwin: /Applications/VSCodium.app/Contents/Resources/app
+  FreeBSD: /usr/local/share/codium/resources/app
+  Linux: /usr/share/codium/resources/app
+  Win32NT: C:\Program Files\VSCodium\resources\app
 vscode_system_:
   Darwin: osx
   Linux: linux
@@ -62,28 +69,25 @@ vscode_extensions:
   - ms-playwright.playwright
   - ms-python.mypy-type-checker
   - ms-python.python
-  - ms-vscode-remote.vscode-remote-extensionpack
-  - ms-vscode.vscode-serial-monitor
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
   - rust-lang.rust-analyzer
   - streetsidesoftware.code-spell-checker
-  - sukumo28.wav-preview
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
   - thenuprojectcontributors.vscode-nushell-lang
-  - tilt-dev.tiltfile
   - timonwong.shellcheck
   - vadimcn.vscode-lldb
   - vitest.explorer
   - vscode-icons-team.vscode-icons
   - vue.volar
   - waderyan.gitblame
-  - zhwu95.riscv
   - zxh404.vscode-proto3
 vscode_install_customizations: true
-vscode_path: "{{ vscode_path_[ansible_system] }}"
+vscode_path: >-
+  {{ vscode_path_[ansible_system] if vscode_package == 'vscode' else
+  vscodium_path_[ansible_system] }}
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -96,7 +100,6 @@ vscode_remote_extensions:
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
   - redhat.vscode-yaml
-  - sukumo28.wav-preview
   - streetsidesoftware.code-spell-checker
   - tamasfe.even-better-toml
   - thenuprojectcontributors.vscode-nushell-lang
