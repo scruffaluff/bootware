@@ -552,10 +552,10 @@ function Roles() {
 
     $ContainsInner = $Tags.Replace(',', '") | any) or (map(. == "')
     $Contains = "(map(. == `"$ContainsInner`") | any)"
-    $RejectsInner = $Skip.Replace(',', '") | all) or (map(. != "')
+    $RejectsInner = $Skip.Replace(',', '") | all) and (map(. != "')
     $Rejects = "(map(. != `"$RejectsInner`") | all)"
     if ($Skip -and $Tags) {
-        $Filter = ".[0].tasks[] | select(.tags | ($Contains and $Rejects))"
+        $Filter = ".[0].tasks[] | select(.tags | (($Contains) and ($Rejects)))"
     }
     elseif ($Skip) {
         $Filter = ".[0].tasks[] | select(.tags | $Rejects)"
