@@ -111,7 +111,7 @@ _setup:
   if [ ! -x "$(command -v nu)" ]; then
     curl --fail --location --show-error \
       https://scruffaluff.github.io/scripts/install/nushell.sh | sh -s -- \
-      --dest .vendor/bin
+      --preserve-env --dest .vendor/bin
   fi
   echo "Nushell $(nu --version)"
   if [ ! -x "$(command -v poetry)" ]; then
@@ -179,7 +179,7 @@ _setup:
   if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
     $NushellScript = Invoke-WebRequest -UseBasicParsing -Uri `
       https://scruffaluff.github.io/scripts/install/nushell.ps1
-    Invoke-Expression "& { $NushellScript } --dest .vendor/bin"
+    Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
