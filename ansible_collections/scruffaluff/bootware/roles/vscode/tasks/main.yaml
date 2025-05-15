@@ -1,4 +1,5 @@
 ---
+# Enable when Alpine installation becomes stable.
 - name: Install VSCode for Alpine
   become: true
   community.general.apk:
@@ -8,7 +9,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_pkg_mgr == "apk" and false
 
 - name: Install VSCode for Arch
   ansible.builtin.command:
@@ -268,6 +269,14 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Add completions for VSCode
+  ansible.builtin.import_tasks: complete.yaml
+  tags:
+    - config
+  when: >-
+    ansible_system in ["Darwin", "Linux", "Win32NT"] and ansible_pkg_mgr !=
+    "apk"
 
 - name: Apply customizations to VSCode
   ansible.builtin.import_tasks: customize.yaml

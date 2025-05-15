@@ -27,6 +27,10 @@ fish_executable_:
   Darwin: "{{ brew_prefix }}/bin/fish"
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
+fish_vendor_completion_:
+  Darwin: "{{ brew_prefix }}/share/fish/completions"
+  FreeBSD: /usr/local/share/fish/completions
+  Linux: /usr/share/fish/completions
 github_api_token_: >-
   {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
@@ -69,6 +73,9 @@ fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
 fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
 fish_user_completion: "{{ user_home }}/.config/fish/completions"
+fish_vendor_completion: >-
+  {{ fish_vendor_completion_.get(ansible_system, '/usr/share/fish/completions')
+  }}
 font_size: 14
 github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
