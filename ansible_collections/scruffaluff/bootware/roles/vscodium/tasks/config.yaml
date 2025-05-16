@@ -1,5 +1,5 @@
 ---
-- name: Create VSCode user directory for MacOS
+- name: Create VSCodium user directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
@@ -11,7 +11,7 @@
     - config
   when: ansible_system == "Darwin"
 
-- name: Copy VSCode keybindings file for MacOS
+- name: Copy VSCodium keybindings file for MacOS
   ansible.builtin.template:
     dest: >-
       {{ user_home }}/Library/Application Support/VSCodium/User/keybindings.json
@@ -25,7 +25,7 @@
     - config
   when: ansible_system == "Darwin"
 
-- name: Copy VSCode settings file for MacOS
+- name: Copy VSCodium settings file for MacOS
   ansible.builtin.template:
     dest: >-
       {{ user_home }}/Library/Application Support/VSCodium/User/settings.json
@@ -39,7 +39,7 @@
     - config
   when: ansible_system == "Darwin"
 
-- name: Create VSCode user directory for Linux
+- name: Create VSCodium user directory for Linux
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
@@ -51,7 +51,7 @@
     - config
   when: ansible_system == "Linux"
 
-- name: Copy VSCode keybindings file for Linux
+- name: Copy VSCodium keybindings file for Linux
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/VSCodium/User/keybindings.json"
     force: true
@@ -64,7 +64,7 @@
     - config
   when: ansible_system == "Linux"
 
-- name: Copy VSCode settings file for Linux
+- name: Copy VSCodium settings file for Linux
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/VSCodium/User/settings.json"
     force: true
@@ -77,7 +77,7 @@
     - config
   when: ansible_system == "Linux"
 
-- name: Create VSCode user directory for Windows
+- name: Create VSCodium user directory for Windows
   ansible.windows.win_file:
     path: "{{ user_home }}\\AppData\\Roaming\\VSCodium\\User"
     state: directory
@@ -85,7 +85,7 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy VSCode keybindings file for Windows
+- name: Copy VSCodium keybindings file for Windows
   ansible.windows.win_template:
     dest: "{{ user_home }}\\AppData\\Roaming\\VSCodium\\User\\keybindings.json"
     force: true
@@ -94,7 +94,7 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy VSCode settings file for Windows
+- name: Copy VSCodium settings file for Windows
   ansible.windows.win_template:
     dest: "{{ user_home }}\\AppData\\Roaming\\VSCodium\\User\\settings.json"
     force: true

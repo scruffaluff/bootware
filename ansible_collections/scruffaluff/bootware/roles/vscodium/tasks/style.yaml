@@ -1,0 +1,94 @@
+---
+- name: Backup VSCodium internal files for Unix
+  ansible.builtin.copy:
+    dest: "{{ item }}.bak"
+    force: false
+    mode: preserve
+    remote_src: true
+    src: "{{ item }}"
+  become: true
+  loop:
+    - "{{ vscodium_path }}/product.json"
+    - "{{ vscodium_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Backup VSCodium internal files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ item }}.bak"
+    force: false
+    remote_src: true
+    src: "{{ item }}"
+  loop:
+    - "{{ vscodium_path }}\\product.json"
+    - >-
+      {{ vscodium_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Update VSCodium styles for Unix
+  ansible.builtin.blockinfile:
+    block: "{{ vscodium_custom_html }}"
+    create: false
+    insertbefore: </html>
+    marker: >-
+      <!--{mark} ANSIBLE MANAGED styles for VSCodium BLOCK-->
+    path: >-
+      {{ vscodium_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Update VSCodium styles for Windows
+  community.windows.win_lineinfile:
+    create: false
+    insertbefore: </html>
+    line: "{{ vscodium_custom_html | replace('\n', '') }}"
+    path: >-
+      {{ vscodium_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
+    state: present
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Read contents of VSCodium workbench file
+  ansible.builtin.slurp:
+    src: >-
+      {{ vscodium_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+  register: vscodium_workbench_file
+  tags:
+    - config
+
+- name: Compute checksum of VSCodium workbench file
+  ansible.builtin.set_fact:
+    vscodium_workbench_checksum: >-
+      {{ vscodium_workbench_file['content'] | b64decode |
+      scruffaluff.bootware.vscode_checksum }}
+  tags:
+    - config
+
+- name: Write contents of VSCodium product file for Unix
+  ansible.builtin.lineinfile:
+    backrefs: true
+    line: '\g<1>"{{ vscodium_workbench_checksum }}",'
+    path: "{{ vscodium_path }}/product.json"
+    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    state: present
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Write contents of VSCodium product file for Windows
+  community.windows.win_lineinfile:
+    backrefs: true
+    line: '$1"{{ vscodium_workbench_checksum }}",'
+    path: "{{ vscodium_path }}/product.json"
+    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    state: present
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

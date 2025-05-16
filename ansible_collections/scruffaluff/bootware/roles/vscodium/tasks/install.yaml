@@ -1,6 +1,6 @@
 ---
 # Enable when Alpine installation becomes stable.
-- name: Install VSCode for Alpine
+- name: Install VSCodium for Alpine
   become: true
   community.general.apk:
     name: vscodium
@@ -11,37 +11,37 @@
     - install
   when: ansible_pkg_mgr == "apk"
 
-- name: Install VSCode for Arch
+- name: Install VSCodium for Arch
   ansible.builtin.command:
     cmd: yay --noconfirm --refresh --sync vscodium-bin
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'installing vscodium' in vscode_arch_install"
-  register: vscode_arch_install
+  changed_when: "'installing vscodium' in vscodium_arch_install"
+  register: vscodium_arch_install
   tags:
     - install
   when: ansible_pkg_mgr == "pacman"
 
-- name: Create VSCode temporary directory for Debian
+- name: Create VSCodium temporary directory for Debian
   ansible.builtin.tempfile:
     state: directory
-  register: vscode_temp
+  register: vscodium_temp
   tags:
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Set VSCode temporary directory permissions for Debian
+- name: Set VSCodium temporary directory permissions for Debian
   ansible.builtin.file:
     mode: "755"
-    path: "{{ vscode_temp.path }}"
+    path: "{{ vscodium_temp.path }}"
     state: directory
   tags:
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Download VSCode GPG key for Debian
+- name: Download VSCodium GPG key for Debian
   ansible.builtin.get_url:
-    dest: "{{ vscode_temp.path }}/vscodium-archive-keyring.gpg"
+    dest: "{{ vscodium_temp.path }}/vscodium-archive-keyring.gpg"
     mode: "640"
     url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
   become: true
@@ -49,11 +49,11 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Add VSCode GPG key for Debian
+- name: Add VSCodium GPG key for Debian
   ansible.builtin.command:
     cmd: >-
       gpg --batch --dearmor --yes --output
-      /usr/share/keyrings/vscodium-archive-keyring.gpg {{ vscode_temp.path
+      /usr/share/keyrings/vscodium-archive-keyring.gpg {{ vscodium_temp.path
       }}/vscodium-archive-keyring.gpg
     creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
   become: true
@@ -61,7 +61,7 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Add VSCode repository for Debian
+- name: Add VSCodium repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
       deb [arch=amd64,arm64
@@ -71,12 +71,12 @@
     filename: vscodium
   become: true
   ignore_errors: true
-  register: vscode_debian
+  register: vscodium_debian
   tags:
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Install VSCode for Debian
+- name: Install VSCodium for Debian
   ansible.builtin.apt:
     name: codium
   become: true
@@ -84,7 +84,7 @@
     - install
   when: ansible_pkg_mgr == "apt"
 
-- name: Add VSCode GPG key for Fedora
+- name: Add VSCodium GPG key for Fedora
   ansible.builtin.rpm_key:
     key: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
   become: true
@@ -92,7 +92,7 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
-- name: Add VSCode repository for Fedora
+- name: Add VSCodium repository for Fedora
   ansible.builtin.copy:
     content: |
       [gitlab.com_paulcarroty_vscodium_repo]
@@ -111,7 +111,7 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
-- name: Install VSCode for Fedora
+- name: Install VSCodium for Fedora
   ansible.builtin.dnf:
     name: codium
   become: true
@@ -119,7 +119,7 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
 
-- name: Install VSCode for MacOS
+- name: Install VSCodium for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
     name: vscodium
@@ -128,7 +128,7 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Install VSCode for Windows
+- name: Install VSCodium for Windows
   chocolatey.chocolatey.win_chocolatey:
     choco_args:
       - --params
@@ -150,29 +150,29 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Install VSCode extensions for Unix
+- name: Install VSCodium extensions for Unix
   ansible.builtin.command:
     cmd: codium --install-extension {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'successfully installed' in vscode_extension_install"
+  changed_when: "'successfully installed' in vscodium_extension_install"
   environment:
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH
       }}
-  loop: "{{ vscode_extensions }}"
-  register: vscode_extension_install
+  loop: "{{ vscodium_extensions }}"
+  register: vscodium_extension_install
   tags:
     - plugin
   when: ansible_system != "Win32NT"
 
-- name: Install VSCode extensions for Windows
+- name: Install VSCodium extensions for Windows
   ansible.windows.win_shell: codium --install-extension {{ item }}
-  changed_when: "'successfully installed' in vscode_extension_install"
+  changed_when: "'successfully installed' in vscodium_extension_install"
   environment:
     Path: C:\Program Files\VSCodium\bin;{{ ansible_env.Path }}
-  loop: "{{ vscode_extensions }}"
-  register: vscode_extension_install
+  loop: "{{ vscodium_extensions }}"
+  register: vscodium_extension_install
   tags:
     - plugin
   when: ansible_system == "Win32NT"

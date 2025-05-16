@@ -1,39 +1,43 @@
 ---
-vscode_arch_:
+vscodium_arch_:
   amd64: x64
   arm64: arm64
-vscode_chrome_path_linux_:
+vscodium_chrome_path_linux_:
   apk: /usr/bin/chromium
   apt: /usr/bin/google-chrome
   dnf: /usr/bin/google-chrome
   pacman: /usr/sbin/chromium
-vscode_chrome_path_:
+vscodium_chrome_path_:
   Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   FreeBSD: /usr/local/bin/chrome
   Linux: >-
-    {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
-    }}
+    {{ vscodium_chrome_path_linux_.get(ansible_pkg_mgr,
+    '/usr/bin/google-chrome') }}
   Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
-vscode_path_:
+vscodium_path_linux_:
+  pacman: /opt/vscodium-bin/resources/app
+vscodium_path_:
   Darwin: /Applications/VSCodium.app/Contents/Resources/app
   FreeBSD: /usr/local/share/codium/resources/app
-  Linux: /usr/share/codium/resources/app
+  Linux: >-
+    {{ vscodium_path_linux_.get(ansible_pkg_mgr,
+    '/usr/share/codium/resources/app') }}
   Win32NT: C:\Program Files\VSCodium\resources\app
-vscode_system_:
+vscodium_system_:
   Darwin: osx
   Linux: linux
   Win32NT: windows
 
-vscode_arch: "{{ vscode_arch_[system_architecture] }}"
-vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
-vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
-vscode_custom_html: |
+vscodium_arch: "{{ vscodium_arch_[system_architecture] }}"
+vscodium_chrome_path: "{{ vscodium_chrome_path_[ansible_system] }}"
+vscodium_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscodium_custom_html: |
   <style>
     .terminal.xterm {
       top: 0px;
     }
   </style>
-vscode_extensions:
+vscodium_extensions:
   - 13xforever.language-x86-64-assembly
   - alefragnani.bookmarks
   - antfu.vite
@@ -69,10 +73,9 @@ vscode_extensions:
   - vscode-icons-team.vscode-icons
   - vue.volar
   - waderyan.gitblame
-  - zxh404.vscode-proto3
-vscode_style: true
-vscode_path: "{{ vscode_path_[ansible_system] }}"
-vscode_remote_extensions:
+vscodium_style: true
+vscodium_path: "{{ vscodium_path_[ansible_system] }}"
+vscodium_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
   - bmalehorn.vscode-fish
@@ -89,4 +92,4 @@ vscode_remote_extensions:
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
   - waderyan.gitblame
-vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
+vscodium_system: "{{ vscodium_system_.get(ansible_system, 'linux') }}"
