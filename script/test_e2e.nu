@@ -14,10 +14,10 @@ def main [
 
     for $dist in $dists_ {
         (
-            ^$runner build ...$args --file $"test/e2e/($dist).dockerfile"
-            --tag $"docker.io/scruffaluff/bootware:($dist)"
-            --platform $"linux/($arch)" . --build-arg $"skip=($skip)"
-            --build-arg $"tags=($tags)" --build-arg test=true
+            ^$runner build ...$args --file $"test/e2e/($dist).dockerfile" --tag
+            $"docker.io/scruffaluff/bootware:($dist)" --platform
+            $"linux/($arch)" . --build-arg $"skip=($skip)" --build-arg
+            $"tags=($tags)" --build-arg test=true
         )
         print $"End to end test ($dist) passed."
     }

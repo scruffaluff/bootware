@@ -181,6 +181,7 @@ _setup:
       https://scruffaluff.github.io/scripts/install/nushell.ps1
     Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
+  Write-Output "Nushell $(nu --version)"
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are

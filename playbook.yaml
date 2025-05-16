@@ -1396,12 +1396,14 @@
             - desktop
             - rclone
             - server
+            - sysadmin
             - wsl
         name: scruffaluff.bootware.rclone
       tags:
         - desktop
         - rclone
         - server
+        - sysadmin
         - wsl
 
     - name: Install Readline configuration

@@ -53,7 +53,6 @@ vscode_extensions:
   - james-yu.latex-workshop
   - leanprover.lean4
   - mhutchie.git-graph
-  - ms-kubernetes-tools.vscode-kubernetes-tools
   - ms-playwright.playwright
   - ms-python.mypy-type-checker
   - ms-python.python

@@ -30,9 +30,9 @@ def "main dist" [--version (-v): string = "0.8.3" ...packages: string] {
 
     for $package in $packages_ {
         (
-            ^$runner build --build-arg $"version=($version)"
-            --file $"test/e2e/($package).dockerfile"
-            --output build/dist --target dist .
+            ^$runner build --build-arg $"version=($version)" --file
+            $"test/e2e/($package).dockerfile" --output build/dist --target dist
+            .
         )
     }
 }
@@ -50,9 +50,9 @@ def "main test" [--version (-v): string = "0.8.3" ...packages: string] {
 
     for $package in $packages_ {
         (
-            ^$runner build --build-arg $"version=($version)"
-            --file $"test/e2e/($package).dockerfile"
-            --tag $"scruffaluff/bootware:($package)" .
+            ^$runner build --build-arg $"version=($version)" --file
+            $"test/e2e/($package).dockerfile" --tag
+            $"scruffaluff/bootware:($package)" .
         )
     }
 }

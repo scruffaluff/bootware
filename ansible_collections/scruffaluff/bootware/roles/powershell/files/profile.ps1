@@ -226,8 +226,10 @@ if (
     ($PSVersionTable.PSVersion.Major -ge 7) -and
     (Get-Command -ErrorAction SilentlyContinue carapace)
 ) {
-    $Env:CARAPACE_BRIDGES = 'fish,zsh,bash,inshellisense'
-    carapace _carapace | Out-String | Invoke-Expression
+    $Env:CARAPACE_BRIDGES = 'powershell'
+    $Env:CARAPACE_MERGEFLAGS = '1'
+    $Env:CARAPACE_TOOLTIP = '1'
+    carapace _carapace powershell | Out-String | Invoke-Expression
 }
 
 # Clipboard settings.
