@@ -676,7 +676,7 @@ Restart this script from an administrator console to continue.
     }
 
     if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
-        Log 'Installing YQ.'
+        Log 'Installing Yq.'
         scoop install yq
     }
 

@@ -344,9 +344,9 @@ bootstrap() {
   find_config_path "${config_path}"
   config_path="${RET_VAL}"
 
-  log "Executing Ansible ${cmd}"
+  log "Executing Ansible ${cmd}."
   if [ -n "${ask_passwd:-}" ]; then
-    log 'Enter your user account password when prompted'
+    log 'Enter your user account password when prompted.'
   fi
 
   # Do not quote extra_args. Otherwise extra_args will be interpreted as a
@@ -424,10 +424,10 @@ config() {
   # Flags:
   #   -z: Check if the string is empty.
   if [ "${empty_cfg:-}" = 'true' ] || [ -z "${src_url:-}" ]; then
-    log "Writing empty configuration file to ${dst_file}"
+    log "Writing empty configuration file to ${dst_file}."
     printf 'super_passwordless: false' > "${dst_file}"
   else
-    log "Downloading configuration file to ${dst_file}"
+    log "Downloading configuration file to ${dst_file}."
     fetch --dest "${dst_file}" "${src_url}"
   fi
 }
@@ -542,7 +542,7 @@ find_config_path() {
     RET_VAL="${HOME}/.bootware/config.yaml"
   fi
 
-  log "Using ${RET_VAL} as configuration file"
+  log "Using ${RET_VAL} as configuration file."
 }
 
 #######################################
@@ -579,7 +579,7 @@ fullpath() {
 }
 
 #######################################
-# Install YQ parser for YAML files.
+# Install Yq parser for YAML files.
 # Arguments:
 #   Super user elevation command.
 #######################################
@@ -591,7 +591,7 @@ install_yq() {
   arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
   os="$(uname -s)"
 
-  # Get latest YQ version.
+  # Get latest Yq version.
   #
   # Flags:
   #   -L: Follow redirect request.
@@ -776,31 +776,31 @@ setup_alpine() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${1}"
   fi
 }
@@ -819,26 +819,26 @@ setup_arch() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     # Installing Ansible via Python causes pacman conflicts with AWS CLI.
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync jq
   fi
@@ -855,7 +855,7 @@ setup_arch() {
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${1}"
   fi
 }
@@ -879,31 +879,31 @@ setup_debian() {
   if [ ! -x "$(command -v ansible)" ]; then
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${1}"
   fi
 }
@@ -922,7 +922,7 @@ setup_fedora() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
     dnf_check_update "${1}"
@@ -930,25 +930,25 @@ setup_fedora() {
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${1}"
   fi
 }
@@ -962,7 +962,7 @@ setup_freebsd() {
   local ansible_package super="${1:-}"
 
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     ${super:+"${super}"} pkg update
 
     ansible_package="$(
@@ -972,25 +972,25 @@ setup_freebsd() {
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${1}"
   fi
 }
@@ -1050,29 +1050,29 @@ setup_macos() {
   #   -s: Disable progress bars.
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v brew)" ]; then
-    log 'Installing Homebrew'
+    log 'Installing Homebrew.'
     fetch 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' |
       bash
     brew analytics off
   fi
 
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     brew install ansible
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     brew install git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     brew install jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     brew install yq
   fi
 }
@@ -1091,31 +1091,31 @@ setup_suse() {
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
   if [ ! -x "$(command -v ansible)" ]; then
-    log 'Installing Ansible'
+    log 'Installing Ansible.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm ansible
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
-    log 'Installing Curl'
+    log 'Installing Curl.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm curl
   fi
 
   if [ ! -x "$(command -v git)" ]; then
-    log 'Installing Git'
+    log 'Installing Git.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm git
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
-    log 'Installing JQ'
+    log 'Installing Jq.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm jq
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
-    log 'Installing YQ'
+    log 'Installing Yq.'
     install_yq "${super}"
   fi
 }
@@ -1157,7 +1157,7 @@ uninstall() {
   # being unable to find the "" command.
   ${super:+"${super}"} rm "${dst_file}"
 
-  log 'Uninstalled Bootware'
+  log 'Uninstalled Bootware.'
 }
 
 #######################################
@@ -1202,10 +1202,10 @@ update() {
     user_install='true'
   fi
 
-  log 'Updating Bootware'
+  log 'Updating Bootware.'
   fetch --dest "${dst_file}" --mode 755 --super "${super}" "${src_url}"
   update_completions "${super}" "${user_install:-}" "${version}"
-  log "Updated to version $(bootware --version)"
+  log "Updated to version $(bootware --version)."
 }
 
 #######################################

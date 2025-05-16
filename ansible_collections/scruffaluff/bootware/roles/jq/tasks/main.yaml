@@ -1,5 +1,5 @@
 ---
-- name: Install JQ for FreeBSD
+- name: Install Jq for FreeBSD
   become: true
   community.general.pkgng:
     name: jq
@@ -7,7 +7,7 @@
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Install JQ for Linux
+- name: Install Jq for Linux
   ansible.builtin.package:
     name: jq
   become: true
@@ -15,7 +15,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Install JQ for MacOS
+- name: Install Jq for MacOS
   become: true
   become_user: "{{ brew_user }}"
   community.general.homebrew:
@@ -24,7 +24,7 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Install JQ for Windows
+- name: Install Jq for Windows
   community.windows.win_scoop:
     global: true
     name: jq
