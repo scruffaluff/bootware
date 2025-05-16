@@ -3,4 +3,4 @@
   ansible.builtin.import_tasks: system.yaml
 
 - name: Configure Python user settings
-  ansible.builtin.import_tasks: settings.yaml
+  ansible.builtin.import_tasks: config.yaml

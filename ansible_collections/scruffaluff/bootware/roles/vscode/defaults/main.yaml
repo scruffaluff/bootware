@@ -70,7 +70,7 @@ vscode_extensions:
   - vue.volar
   - waderyan.gitblame
   - zxh404.vscode-proto3
-vscode_install_customizations: true
+vscode_style: true
 vscode_path: "{{ vscode_path_[ansible_system] }}"
 vscode_remote_extensions:
   - alefragnani.bookmarks
