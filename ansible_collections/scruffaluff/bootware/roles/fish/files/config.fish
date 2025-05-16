@@ -401,7 +401,7 @@ set --export HOMEBREW_NO_ENV_HINTS true
 # Just settings.
 
 # Add alias for account wide Just recipes.
-alias jt "just --justfile $HOME/.justfile --working-directory ."
+alias jt 'just --global-justfile'
 
 # Kubernetes settings.
 

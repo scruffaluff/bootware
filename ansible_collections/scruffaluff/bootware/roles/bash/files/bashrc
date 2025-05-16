@@ -21,7 +21,7 @@ _fzf_path_preview() {
 # Paste pipe to system pager command into the commandline.
 _paste_pager() {
   local program="${PAGER:-less}"
-  local command=" &| ${program}"
+  local command=" |& ${program}"
   if [[ "${READLINE_LINE}" == *"${command}" ]]; then
     READLINE_LINE="${READLINE_LINE/%${command}/}"
   else
@@ -193,9 +193,14 @@ fi
 # Carapace settings.
 
 # Load Carapace completions if available.
+#
+# Flags:
+#   -v: Only show file path of command.
+#   -x: Check if file exists and execute permission is granted.
 if [[ -x "$(command -v carapace)" ]]; then
-  export CARAPACE_BRIDGES='fish,zsh,bash,inshellisense'
-  eval "$(carapace _carapace)"
+  export CARAPACE_BRIDGES='fish,bash'
+  export CARAPACE_MERGEFLAGS='1'
+  eval "$(carapace _carapace bash)"
 fi
 
 # Clipboard settings.
@@ -257,16 +262,16 @@ if [[ -n "${tty}" && -x "$(command -v fzf)" ]]; then
   export FZF_ALT_C_COMMAND=''
   # Set Fzf styles with solarized light theme based on
   # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
-  export FZF_DEFAULT_OPTS="--border --reverse --bind ctrl-d:backward-kill-word 
---color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2 
---color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 
---color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 
+  export FZF_DEFAULT_OPTS="--border --reverse --bind ctrl-d:backward-kill-word
+--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2
+--color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198
+--color pointer:#2aa198,prompt:#b58900,spinner:#2aa198
 --height ~80% --with-shell 'bash -c'"
 
   eval "$(fzf --bash)"
   if [[ -x "$(command -v bat)" && -x "$(command -v lsd)" ]]; then
     export -f _fzf_path_preview
-    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}' 
+    export FZF_CTRL_T_OPTS="--preview '_fzf_path_preview {}'
 --preview-window border-left"
   fi
   if [[ -x "$(command -v fd)" ]]; then
@@ -299,8 +304,7 @@ export HOMEBREW_NO_ENV_HINTS='true'
 # Just settings.
 
 # Add alias for account wide Just recipes.
-# shellcheck disable=SC2139
-alias jt="just --justfile ${HOME}/.justfile --working-directory ."
+alias jt='just --global-justfile'
 
 # Kubernetes settings.
 

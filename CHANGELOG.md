@@ -21,6 +21,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Naming conventions for public functions from script profiles.
 - Node version manager back to NVM.
 - Roles to prefer system packages over Flatpaks.
+- VSCode role to VSCodium.
 - Yazi theme.
 
 ### Fixed

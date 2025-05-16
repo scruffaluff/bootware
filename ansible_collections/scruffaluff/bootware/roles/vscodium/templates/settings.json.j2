@@ -1,6 +1,6 @@
 {
   "bookmarks.sideBar.countBadge": "off",
-  "browse-lite.chromeExecutable": "{{ vscode_chrome_path }}",
+  "browse-lite.chromeExecutable": "{{ vscodium_chrome_path }}",
   "chat.commandCenter.enabled": false,
   "cSpell.customDictionaries": {
     "custom": true,
@@ -64,6 +64,8 @@
   "files.associations": {
     ".*.bash": "shellscript",
     ".*.fish": "fish",
+    ".*.nu": "nushell",
+    ".*.ps1": "powershell",
     ".justfile": "just",
     "*.bats": "shellscript",
     "*.yaml.gotmpl": "yaml",
@@ -118,18 +120,18 @@
   "notebook.stickyScroll.enabled": false,
   "prettier.resolveGlobalModules": true,
   "python.analysis.autoImportCompletions": false,
-  "python.languageServer": "Pylance",
+  "python.languageServer": "Jedi",
   "python.terminal.activateEnvironment": false,
   "python.testing.promptToConfigure": false,
   "python.testing.pytestEnabled": true,
   "python.venvPath": "${workspaceFolder}/.venv",
   "redhat.telemetry.enabled": false,
-{% if vscode_remote_extensions | length > 0 %}
+{% if vscodium_remote_extensions | length > 0 %}
   "remote.SSH.defaultExtensions": [
-{% for extension in vscode_remote_extensions[:-1] %}
+{% for extension in vscodium_remote_extensions[:-1] %}
     "{{ extension }}",
 {% endfor %}
-    "{{ vscode_remote_extensions[-1] }}"
+    "{{ vscodium_remote_extensions[-1] }}"
   ],
 {% endif %}
   "remote.SSH.useLocalServer": false,

@@ -410,9 +410,9 @@
     }
   },
   {
-    "name": "vscode",
+    "name": "vscodium",
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
-    "tests": ["code --version"]
+    "tests": ["codium --version"]
   },
   { "name": "wasm" },
   {

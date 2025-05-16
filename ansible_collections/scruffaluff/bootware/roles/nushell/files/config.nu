@@ -362,8 +362,7 @@ def fish-complete [spans: list<string>] {
 def fzf-history-widget [] {
     let history = history | get command | reverse | uniq | to text
     let selection = (
-        $history
-        | fzf --query (commandline) --scheme history
+        $history | fzf --query (commandline) --scheme history
     )
 
     if ($selection | is-not-empty) {
@@ -460,20 +459,15 @@ if $nu.os-info.name == "windows" {
 # Homebrew ARM directories should appear in system path before AMD directories
 # since some ARM systems might have slower emulated AMD copies of programs.
 (
-    prepend-paths
-    "/usr/sbin"
-    "/usr/local/bin"
-    "/opt/homebrew/sbin"
-    "/opt/homebrew/bin"
-    $"($env.HOME)/.local/bin"
+    prepend-paths "/usr/sbin" "/usr/local/bin" "/opt/homebrew/sbin"
+    "/opt/homebrew/bin" $"($env.HOME)/.local/bin"
 )
 
 # Alacritty settings.
 
 if (
-    $nu.is-interactive
-    and $env.TERM? == "alacritty"
-    and "TERM_PROGRAM" not-in $env
+    $nu.is-interactive and $env.TERM? == "alacritty" and "TERM_PROGRAM" not-in
+    $env
 ) {
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
@@ -485,10 +479,8 @@ if (
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if (
-        "ZELLIJ" not-in $env
-        and not (ssh-session)
-        and $env.LOGNAME? == $env.USER
-        and (which "zellij" | is-not-empty)
+        "ZELLIJ" not-in $env and not (ssh-session) and
+        $env.LOGNAME? == $env.USER and (which "zellij" | is-not-empty)
     ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
         # Close parent shell after Zellij exits.
@@ -512,7 +504,8 @@ if (which "bat" | is-not-empty) {
 
 # Carapace settings.
 
-$env.CARAPACE_BRIDGES = "fish,zsh,bash,inshellisense"
+$env.CARAPACE_BRIDGES = "fish,bash"
+$env.CARAPACE_MERGEFLAGS = "1"
 
 # Clipboard settings.
 
@@ -617,7 +610,7 @@ if $nu.os-info.name != "windows" {
 # Just settings.
 
 # Add alias for account wide Just recipes.
-alias jt = just --justfile $"($env.HOME)/.justfile" --working-directory .
+alias jt = just --global-justfile
 
 # Kubernetes settings.
 
@@ -645,8 +638,7 @@ alias procs = ^procs --theme light
 def --wrapped jupylab [...args] {
     (
         uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy
-        jupyter-lab
-        ...$args
+        jupyter-lab ...$args
     )
 }
 # Add Python debugger alias.
@@ -909,17 +901,10 @@ $env.config = {
 }
 
 # Enable external completions if available.
-if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
+if (which "carapace" | is-not-empty) {
     $env.config.completions = {
         external: {
-            completer: {|spans|
-                let completions = fish-complete $spans
-                if ($completions | is-empty) {
-                    carapace-complete $spans
-                } else {
-                    $completions
-                }
-            }
+            completer: {|spans| carapace-complete $spans }
             enable: true
         }
     }
@@ -927,13 +912,6 @@ if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     $env.config.completions = {
         external: {
             completer: {|spans| fish-complete $spans }
-            enable: true
-        }
-    }
-} else if (which "carapace" | is-not-empty) {
-    $env.config.completions = {
-        external: {
-            completer: {|spans| carapace-complete $spans }
             enable: true
         }
     }

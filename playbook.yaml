@@ -1396,12 +1396,14 @@
             - desktop
             - rclone
             - server
+            - sysadmin
             - wsl
         name: scruffaluff.bootware.rclone
       tags:
         - desktop
         - rclone
         - server
+        - sysadmin
         - wsl
 
     - name: Install Readline configuration
@@ -1812,18 +1814,18 @@
         - desktop
         - vlc
 
-    - name: Install VSCode text editor
+    - name: Install VSCodium text editor
       ansible.builtin.include_role:
         apply:
           tags:
             - desktop
             - editor
-            - vscode
-        name: scruffaluff.bootware.vscode
+            - vscodium
+        name: scruffaluff.bootware.vscodium
       tags:
         - desktop
         - editor
-        - vscode
+        - vscodium
 
     - name: Install Watchexec file watcher
       ansible.builtin.include_role:

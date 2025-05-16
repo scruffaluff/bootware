@@ -1,0 +1,178 @@
+---
+# Enable when Alpine installation becomes stable.
+- name: Install VSCodium for Alpine
+  become: true
+  community.general.apk:
+    name: vscodium
+    repository: http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    state: latest
+    update_cache: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apk"
+
+- name: Install VSCodium for Arch
+  ansible.builtin.command:
+    cmd: yay --noconfirm --refresh --sync vscodium-bin
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'installing vscodium' in vscodium_arch_install"
+  register: vscodium_arch_install
+  tags:
+    - install
+  when: ansible_pkg_mgr == "pacman"
+
+- name: Create VSCodium temporary directory for Debian
+  ansible.builtin.tempfile:
+    state: directory
+  register: vscodium_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Set VSCodium temporary directory permissions for Debian
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ vscodium_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Download VSCodium GPG key for Debian
+  ansible.builtin.get_url:
+    dest: "{{ vscodium_temp.path }}/vscodium-archive-keyring.gpg"
+    mode: "640"
+    url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add VSCodium GPG key for Debian
+  ansible.builtin.command:
+    cmd: >-
+      gpg --batch --dearmor --yes --output
+      /usr/share/keyrings/vscodium-archive-keyring.gpg {{ vscodium_temp.path
+      }}/vscodium-archive-keyring.gpg
+    creates: /usr/share/keyrings/vscodium-archive-keyring.gpg
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add VSCodium repository for Debian
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch=amd64,arm64
+      signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg]
+      https://download.vscodium.com/debs vscodium main
+    state: present
+    filename: vscodium
+  become: true
+  ignore_errors: true
+  register: vscodium_debian
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install VSCodium for Debian
+  ansible.builtin.apt:
+    name: codium
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"
+
+- name: Add VSCodium GPG key for Fedora
+  ansible.builtin.rpm_key:
+    key: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Add VSCodium repository for Fedora
+  ansible.builtin.copy:
+    content: |
+      [gitlab.com_paulcarroty_vscodium_repo]
+      baseurl=https://download.vscodium.com/rpms/
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/-/raw/master/pub.gpg
+      metadata_expire=1h
+      name=download.vscodium.com
+      repo_gpgcheck=1
+    dest: /etc/yum.repos.d/vscodium.repo
+    force: true
+    mode: "640"
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Install VSCodium for Fedora
+  ansible.builtin.dnf:
+    name: codium
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Install VSCodium for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: vscodium
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install VSCodium for Windows
+  chocolatey.chocolatey.win_chocolatey:
+    choco_args:
+      - --params
+      - "/NoDesktopIcon"
+    name: vscodium
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Install VSCodium Fish completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ fish_completion }}/codium.fish"
+    force: true
+    mode: "644"
+    src: codium.fish
+  become: true
+  tags:
+    - completion
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Install VSCodium extensions for Unix
+  ansible.builtin.command:
+    cmd: codium --install-extension {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'successfully installed' in vscodium_extension_install"
+  environment:
+    PATH: >-
+      /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH
+      }}
+  loop: "{{ vscodium_extensions }}"
+  register: vscodium_extension_install
+  tags:
+    - plugin
+  when: ansible_system != "Win32NT"
+
+- name: Install VSCodium extensions for Windows
+  ansible.windows.win_shell: codium --install-extension {{ item }}
+  changed_when: "'successfully installed' in vscodium_extension_install"
+  environment:
+    Path: C:\Program Files\VSCodium\bin;{{ ansible_env.Path }}
+  loop: "{{ vscodium_extensions }}"
+  register: vscodium_extension_install
+  tags:
+    - plugin
+  when: ansible_system == "Win32NT"
