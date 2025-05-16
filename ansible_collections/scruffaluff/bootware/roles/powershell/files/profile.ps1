@@ -352,7 +352,7 @@ function jupylab() {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
         'PSUseConsistentWhitespace',
         '',
-        Justification = 'Space after comma is incorrect for Uv parameter.',
+        Justification = 'Space after comma is incorrect for Uv parameters.',
         Scope = 'Function'
     )]
     param()

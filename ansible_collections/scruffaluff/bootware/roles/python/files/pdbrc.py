@@ -248,9 +248,7 @@ def parse(pdb: Type, input: str) -> Any:
 
 def parse_expr(pdb: Type, input: str) -> Any:
     """Parse and possibly execute command line expressions."""
-    regex = re.compile(
-        r"(?<!$)(__pdb_convenience_variables\[|\$)(?P<variable>[\w.]+)\]"
-    )
+    regex = re.compile(r"(?<!$)(__pdb_convenience_variables\[|\$)(?P<variable>[\w.]+)")
     match = regex.search(input)
     while match:
         variable = match.group("variable")

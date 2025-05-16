@@ -1,9 +1,26 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSUseConsistentWhitespace',
+    '',
+    Justification = 'Space after comma is incorrect for Bootware parameters.'
+)]
+param()
+
 BeforeAll {
     $Bootware = "$PSScriptRoot/../../src/bootware.ps1"
     . $Bootware
 }
 
 Describe 'Roles' {
+    It 'Subcommand applies multiple tags' {
+        $Env:BOOTWARE_NOLOG = ''
+        $Actual = & $Bootware roles --skip alacritty,language --tags `
+            server,terminal
+        $Actual | Should -Contain 'build'
+        $Actual | Should -Contain 'wezterm'
+        $Actual | Should -Not -Contain 'alacritty'
+        $Actual | Should -Not -Contain 'deno'
+    }
+
     It 'Subommand default hides never roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles

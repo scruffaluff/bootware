@@ -10,6 +10,16 @@ setup() {
   bats_require_minimum_version 1.5.0
 }
 
+roles_subcommand_applies_multiple_tags() { # @test
+  run bash src/bootware.sh roles --skip alacritty,language --tags \
+    server,terminal
+  assert_success
+  assert_output --partial 'build'
+  assert_output --partial 'wezterm'
+  refute_output --partial 'alacritty'
+  refute_output --partial 'deno'
+}
+
 roles_subcommand_default_hides_never_roles() { # @test
   run bash src/bootware.sh roles
   assert_success

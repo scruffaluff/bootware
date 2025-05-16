@@ -23,27 +23,41 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - always
+            - desktop
+            - essential
             - path
+            - server
             - setup
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.path
       tags:
-        - always
+        - desktop
+        - essential
         - path
+        - server
         - setup
+        - sysadmin
+        - wsl
 
     - name: Install essential packages
       ansible.builtin.include_role:
         apply:
           tags:
-            - always
+            - desktop
             - essential
+            - server
             - setup
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.essential
       tags:
-        - always
+        - desktop
         - essential
+        - server
         - setup
+        - sysadmin
+        - wsl
 
     - name: Install Age encryption tool
       ansible.builtin.include_role:

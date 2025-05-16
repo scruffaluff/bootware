@@ -691,11 +691,11 @@ roles() {
   #   -n: Check if string is nonempty.
   contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
   rejects="(map(. != \"$(echo "${skip}" | sed 's/,/\") | all) and (map(. != \"/g')\") | all)"
-  if [ -n "${skip:-}" ] && [ -n "${tags}" ]; then
-    filter=".[0].tasks[] | select(.tags | (${contains} and ${rejects}))"
-  elif [ -n "${skip:-}" ]; then
+  if [ -n "${skip}" ] && [ -n "${tags}" ]; then
+    filter=".[0].tasks[] | select(.tags | ((${contains}) and (${rejects})))"
+  elif [ -n "${skip}" ]; then
     filter=".[0].tasks[] | select(.tags | ${rejects})"
-  elif [ -n "${tags:-}" ]; then
+  elif [ -n "${tags}" ]; then
     filter=".[0].tasks[] | select(.tags | ${contains})"
   else
     filter='.[0].tasks[] | select(.tags | (map(. != "never") | all))'
