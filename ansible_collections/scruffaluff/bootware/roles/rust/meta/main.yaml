@@ -1,3 +1,5 @@
 ---
 dependencies:
   - role: variable
+  - role: build
+    when: build_role_executed is not defined

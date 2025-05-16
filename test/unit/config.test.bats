@@ -29,7 +29,7 @@ setup() {
 config_subcommand_makes_empty_configuration_log() { # @test
   run bash src/bootware.sh config -e --dest /dev/null
   assert_success
-  assert_output 'Writing empty configuration file to /dev/null'
+  assert_output 'Writing empty configuration file to /dev/null.'
 }
 
 config_subcommand_passes_source_to_curl() { # @test

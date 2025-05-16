@@ -9,6 +9,7 @@ rust_applications_:
     - cargo-update
     - cargo-watch
     - cross
+    - rust-script
   Darwin:
     amd64: []
     always: []
