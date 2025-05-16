@@ -315,7 +315,7 @@ if (Get-Command -ErrorAction SilentlyContinue hx) {
 
 # Add alias for account wide Just recipes.
 function jt() {
-    just --justfile "$HOME\.justfile" --working-directory . $Args
+    just --global-justfile $Args
 }
 
 # Lsd settings.

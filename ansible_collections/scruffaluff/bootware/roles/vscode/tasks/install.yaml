@@ -138,7 +138,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Install VSCodium Fish completions for Linux
+- name: Install VSCodium Fish completions for Unix
   ansible.builtin.copy:
     dest: "{{ fish_completion }}/codium.fish"
     force: true
@@ -146,6 +146,7 @@
     src: codium.fish
   become: true
   tags:
+    - completion
     - install
   when: ansible_system != "Win32NT"
 

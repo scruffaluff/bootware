@@ -610,7 +610,7 @@ if $nu.os-info.name != "windows" {
 # Just settings.
 
 # Add alias for account wide Just recipes.
-alias jt = just --justfile $"($env.HOME)/.justfile" --working-directory .
+alias jt = just --global-justfile
 
 # Kubernetes settings.
 
