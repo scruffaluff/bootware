@@ -86,6 +86,7 @@ Subcommands:
 Environment Variables:
   BOOTWARE_CONFIG         Set the configuration file path
   BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
+  BOOTWARE_NOLOG          Silence log messages
   BOOTWARE_NOPASSWD       Assume password less doas or sudo
   BOOTWARE_NOSETUP        Skip Ansible install and system setup
   BOOTWARE_PLAYBOOK       Set Ansible playbook name
@@ -779,29 +780,34 @@ setup_alpine() {
     log 'Installing Ansible.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     ${super:+"${super}"} apk update
     ${super:+"${super}"} apk add jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${1}"
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -823,24 +829,28 @@ setup_arch() {
     # Installing Ansible via Python causes pacman conflicts with AWS CLI.
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yay)" ]; then
@@ -857,6 +867,7 @@ setup_arch() {
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${1}"
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -882,29 +893,34 @@ setup_debian() {
     log 'Installing Ansible.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     ${super:+"${super}"} apt-get --quiet update
     ${super:+"${super}"} apt-get --quiet install --yes jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${1}"
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -927,29 +943,34 @@ setup_fedora() {
     # with Ansible.
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     dnf_check_update "${1}"
     ${super:+"${super}"} dnf install --assumeyes jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${1}"
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -969,29 +990,34 @@ setup_freebsd() {
       pkg search --quiet --regex 'py[0-9]+-ansible-[^A-Za-z]'
     )"
     ${super:+"${super}"} pkg install --yes "${ansible_package}"
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     ${super:+"${super}"} pkg update
     ${super:+"${super}"} pkg install --yes jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${1}"
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -1059,21 +1085,25 @@ setup_macos() {
   if [ ! -x "$(command -v ansible)" ]; then
     log 'Installing Ansible.'
     brew install ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     brew install git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     brew install jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     brew install yq
+    log "Installed $(yq --version)."
   fi
 }
 
@@ -1094,29 +1124,34 @@ setup_suse() {
     log 'Installing Ansible.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm ansible
+    log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm curl
+    log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm git
+    log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
     ${super:+"${super}"} zypper update --no-confirm
     ${super:+"${super}"} zypper install --no-confirm jq
+    log "Installed $(jq --version)."
   fi
 
   if [ ! -x "$(command -v yq)" ]; then
     log 'Installing Yq.'
     install_yq "${super}"
+    log "Installed $(yq --version)."
   fi
 }
 
