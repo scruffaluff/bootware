@@ -24,7 +24,7 @@ WORKDIR /bootware
 # Build Arch package.
 RUN script/pkg.sh --version "${version?}" alpm
 
-FROM docker.io/scratch AS dist
+FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 

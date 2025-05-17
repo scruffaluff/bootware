@@ -1205,7 +1205,7 @@ update() {
   log 'Updating Bootware.'
   fetch --dest "${dst_file}" --mode 755 --super "${super}" "${src_url}"
   update_completions "${super}" "${user_install:-}" "${version}"
-  log "Updated to version $(bootware --version)."
+  log "Updated to $(bootware --version)."
 }
 
 #######################################

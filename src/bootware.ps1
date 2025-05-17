@@ -975,7 +975,7 @@ function Update() {
         git -C $RepoPath pull
     }
 
-    Log "Updated to version $(bootware --version)."
+    Log "Updated to $(bootware --version)."
 }
 
 # Update completion script for Bootware.
