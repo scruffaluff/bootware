@@ -242,7 +242,7 @@ jobs:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         run: >-
           poetry run ansible-galaxy collection publish --token
-          "${ANSIBLE_GALAXY_TOKEN}" "dist/scruffaluff-bootware-${{
+          "${ANSIBLE_GALAXY_TOKEN}" "build/dist/scruffaluff-bootware-${{
           github.ref_name }}.tar.gz"
       - name: Create GitHub release
         id: release
