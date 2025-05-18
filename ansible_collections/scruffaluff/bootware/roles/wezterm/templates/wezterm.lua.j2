@@ -44,7 +44,9 @@ config.keys = {
 }
 config.warn_about_missing_glyphs = false
 config.window_close_confirmation = 'NeverPrompt'
+{% if wezterm_window_decorations %}
 config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
+{% endif %}
 config.window_frame = {
   active_titlebar_bg = '#e6e6e6',
   font_size = {{ font_size }},
