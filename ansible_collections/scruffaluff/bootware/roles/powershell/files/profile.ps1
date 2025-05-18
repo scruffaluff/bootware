@@ -213,14 +213,14 @@ if (Get-Command -ErrorAction SilentlyContinue bat) {
 
 # Bootware settings.
 
-# Load Bootware completions if available.
+# Load Bootware completions if interactive available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue BootwareCompletion
 }
 
 # Carapace settings.
 
-# Load Carapace completions if available.
+# Load Carapace completions if interactive and available.
 if (
     ($Tty) -and
     ($PSVersionTable.PSVersion.Major -ge 7) -and
@@ -248,7 +248,7 @@ $Env:DOCKER_CLI_HINTS = 'false'
 # Add LazyDocker convenience alias.
 Set-Alias -Name lzd -Value lazydocker
 
-# Load Docker completions if interactice and available.
+# Load Docker completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
@@ -335,7 +335,7 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
 
 # Podman settings.
 
-# Load Podman completions if interactice and available.
+# Load Podman completions if interactive and available.
 if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue PodmanCompletion
 }

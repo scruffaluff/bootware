@@ -1,7 +1,7 @@
 FROM docker.io/ubuntu:24.04
 
 ARG TARGETARCH
-ARG version=0.8.3
+ARG version=0.9.0
 
 # Install Ansible Curl and Sudo.
 RUN apt-get update --ignore-missing \

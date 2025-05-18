@@ -16,7 +16,7 @@ WORKDIR /bootware
 # Build Fedora package.
 RUN script/pkg.sh --version "${version?}" rpm
 
-FROM docker.io/scratch AS dist
+FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 

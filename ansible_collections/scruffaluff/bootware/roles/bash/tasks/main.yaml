@@ -49,28 +49,18 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Copy Bash non-login settings file for Unix
+- name: Copy Bash settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.bashrc"
+    dest: "{{ user_home }}/.{{ item }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: bashrc
+    src: "{{ item }}"
   become: true
-  tags:
-    - config
-  when: ansible_system != "Win32NT"
-
-- name: Copy Bash login settings file for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.bash_profile"
-    force: true
-    group: "{{ group_id }}"
-    mode: "640"
-    owner: "{{ user_id }}"
-    src: bash_profile
-  become: true
+  loop:
+    - bashrc
+    - bash_profile
   tags:
     - config
   when: ansible_system != "Win32NT"

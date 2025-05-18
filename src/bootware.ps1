@@ -92,6 +92,7 @@ Subcommands:
 Environment Variables:
   BOOTWARE_CONFIG         Set the configuration file path
   BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
+  BOOTWARE_NOLOG          Silence log messages
   BOOTWARE_NOPASSWD       Assume password less doas or sudo
   BOOTWARE_NOSETUP        Skip Ansible install and system setup
   BOOTWARE_PLAYBOOK       Set Ansible playbook name
@@ -673,11 +674,13 @@ Restart this script from an administrator console to continue.
     if (-not (Get-Command -ErrorAction SilentlyContinue git)) {
         Log 'Installing Git.'
         scoop install mingit
+        Log "Installed $(git --version)."
     }
 
     if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
         Log 'Installing Yq.'
         scoop install yq
+        Log "Installed $(yq --version)."
     }
 
     $ScoopBuckets = scoop bucket list
@@ -869,6 +872,7 @@ function SetupWSL($Branch) {
         Log "Complete pop up window and then run 'bootware setup' again."
         wsl --set-default-version 2
         wsl --install --distribution Debian
+        Log 'Finished Debian installation.'
         exit 0
     }
 
@@ -887,6 +891,7 @@ function SetupWSL($Branch) {
         else {
             wsl bootware setup
         }
+        Log 'Finished WSL Bootware installation.'
     }
 }
 
@@ -975,7 +980,7 @@ function Update() {
         git -C $RepoPath pull
     }
 
-    Log "Updated to version $(bootware --version)."
+    Log "Updated to $(bootware --version)."
 }
 
 # Update completion script for Bootware.

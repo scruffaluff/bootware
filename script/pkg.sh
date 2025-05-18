@@ -212,7 +212,7 @@ rpm() {
 # Script entrypoint.
 #######################################
 main() {
-  version='0.8.3'
+  version='0.9.0'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do

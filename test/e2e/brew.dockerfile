@@ -20,7 +20,7 @@ RUN sudo mkdir -p -m 777 build
 # Build Homebrew package.
 RUN script/pkg.sh --version "${version?}" brew
 
-FROM docker.io/scratch AS dist
+FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 

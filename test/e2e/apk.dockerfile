@@ -35,7 +35,7 @@ RUN openssl genrsa --out alpine.rsa  \
 # Build Alpine package.
 RUN script/pkg.sh --version "${version?}" apk
 
-FROM docker.io/scratch AS dist
+FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 

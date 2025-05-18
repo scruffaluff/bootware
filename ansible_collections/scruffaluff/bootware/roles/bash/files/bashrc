@@ -192,12 +192,13 @@ fi
 
 # Carapace settings.
 
-# Load Carapace completions if available.
+# Load Carapace completions if interactive and available.
 #
 # Flags:
+#   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
-if [[ -x "$(command -v carapace)" ]]; then
+if [[ -n "${tty}" && -x "$(command -v carapace)" ]]; then
   export CARAPACE_BRIDGES='fish,bash'
   export CARAPACE_MERGEFLAGS='1'
   eval "$(carapace _carapace bash)"
