@@ -287,11 +287,7 @@
     "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
     "tests": ["pwsh --version"]
   },
-  {
-    "name": "prettier",
-    "skip": [{ "os": "openwrt" }],
-    "tests": ["prettier --version"]
-  },
+  { "name": "prettier", "tests": ["prettier --version"] },
   {
     "name": "procs",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
