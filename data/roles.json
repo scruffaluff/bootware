@@ -288,6 +288,11 @@
     "tests": ["pwsh --version"]
   },
   {
+    "name": "prettier",
+    "skip": [{ "os": "openwrt" }],
+    "tests": ["prettier --version"]
+  },
+  {
     "name": "procs",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
     "tests": ["procs --version"]
