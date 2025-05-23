@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: variable
+  - role: deno
+    when: deno_role_executed is not defined

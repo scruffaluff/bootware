@@ -11,6 +11,13 @@ BeforeAll {
 }
 
 Describe 'Roles' {
+    It 'Subcommand applies all tag' {
+        $Env:BOOTWARE_NOLOG = ''
+        $Actual = & $Bootware roles --tags all,never
+        $Actual | Should -Contain 'chrome'
+        $Actual | Should -Contain 'firefox'
+    }
+
     It 'Subcommand applies multiple tags' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --skip alacritty,language --tags `

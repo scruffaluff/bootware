@@ -1308,6 +1308,23 @@
         - shell
         - sysadmin
 
+    - name: Install Prettier code formatter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - prettier
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.prettier
+      tags:
+        - desktop
+        - prettier
+        - server
+        - sysadmin
+        - wsl
+
     - name: Install Procs process viewer
       ansible.builtin.include_role:
         apply:

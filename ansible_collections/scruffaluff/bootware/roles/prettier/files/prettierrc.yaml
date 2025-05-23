@@ -1,0 +1,15 @@
+# Prettier configuration file for formatting text.
+#
+# For more information, visit https://prettier.io/docs/en/configuration.html.
+
+---
+arrowParens: always
+endOfLine: auto
+printWidth: 80
+proseWrap: always
+semi: true
+# Setting "singleQuote: true" changes double quoted strings containing variables
+# to single quoted strings, which causes incorrect interpolation in YAML files.
+singleQuote: false
+tabWidth: 2
+trailingComma: es5

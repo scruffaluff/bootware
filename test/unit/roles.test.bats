@@ -10,6 +10,13 @@ setup() {
   bats_require_minimum_version 1.5.0
 }
 
+roles_subcommand_applies_all_tag() { # @test
+  run bash src/bootware.sh roles --tags all,never
+  assert_success
+  assert_output --partial 'chrome'
+  assert_output --partial 'firefox'
+}
+
 roles_subcommand_applies_multiple_tags() { # @test
   run bash src/bootware.sh roles --skip alacritty,language --tags \
     server,terminal

@@ -268,17 +268,18 @@ function ffprobe() {
 
 # Fzf settings.
 
+# Disable Fzf Alt-C command.
+$Env:FZF_ALT_C_COMMAND = ''
+# Set Fzf styles with solarized light theme based on
+# https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
+$Env:FZF_BASE_OPTS = '--border --reverse --bind ctrl-d:backward-kill-word ' `
+    + '--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642,header:#268bd2 ' `
+    + '--color hl:#268bd2,hl+:#268bd2,info:#b58900,marker:#2aa198 ' `
+    + '--color pointer:#2aa198,prompt:#b58900,spinner:#2aa198 --height ~80%'
+$Env:FZF_DEFAULT_OPTS = "$Env:FZF_BASE_OPTS --with-shell 'powershell -Command'"
+
 # Setup Fzf PowerShell integration if interactive and available.
 if (($Tty) -and (Get-Module -ListAvailable -Name PsFzf)) {
-    # Disable Fzf Alt-C command.
-    $Env:FZF_ALT_C_COMMAND = ''
-    # Set Fzf solarized light theme.
-    $FzfColors = '--color fg:-1,bg:-1,hl:33,fg+:235,bg+:254,hl+:33'
-    $FzfHighlights = '--color info:136,prompt:136,pointer:230,marker:230,spinner:136'
-    $Env:FZF_DEFAULT_OPTS = "--reverse $FzfColors $FzfHighlights"
-    Remove-Variable -Name FzfColors
-    Remove-Variable -Name FzfHighlights
-
     Import-Module PsFzf
     if (
         (Get-Command -ErrorAction SilentlyContinue bat) -and `
@@ -648,6 +649,9 @@ $Env:PNPM_HOME = "$HOME\AppData\Local\pnpm"
 
 # Yazi settings.
 
+# Disable Yazi Zoxide plugin directory preview window.
+$Env:YAZI_ZOXIDE_OPTS = "$Env:FZF_BASE_OPTS --preview-window hidden"
+
 # Yazi wrapper to change directory on program exit.
 function yz() {
     $Tmp = [System.IO.Path]::GetTempFileName()
@@ -660,6 +664,9 @@ function yz() {
 }
 
 # Zoxide settings.
+
+# Disable Zoxide directory preview window.
+$Env:_ZO_FZF_OPTS = "$Env:FZF_BASE_OPTS --preview-window hidden"
 
 # Initialize Zoxide if interactive and available.
 if ($Tty -and (Get-Command -ErrorAction SilentlyContinue zoxide)) {
