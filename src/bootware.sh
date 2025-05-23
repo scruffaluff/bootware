@@ -688,10 +688,18 @@ roles() {
   tmp_dir="$(mktemp -u)"
   git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
 
+  case "${tags}," in
+    *all,*)
+      contains="((map(. != \"never\") | all) or (map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any))"
+      ;;
+    *)
+      contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
+      ;;
+  esac
+  rejects="(map(. != \"$(echo "${skip}" | sed 's/,/\") | all) and (map(. != \"/g')\") | all)"
+
   # Flags:
   #   -n: Check if string is nonempty.
-  contains="(map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any)"
-  rejects="(map(. != \"$(echo "${skip}" | sed 's/,/\") | all) and (map(. != \"/g')\") | all)"
   if [ -n "${skip}" ] && [ -n "${tags}" ]; then
     filter=".[0].tasks[] | select(.tags | ((${contains}) and (${rejects})))"
   elif [ -n "${skip}" ]; then

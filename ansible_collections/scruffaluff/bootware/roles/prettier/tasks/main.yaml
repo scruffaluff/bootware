@@ -1,4 +1,29 @@
 ---
+- name: Install Prettier for Unix
+  ansible.builtin.copy:
+    content: |
+      #!/usr/bin/env sh
+      set -eu
+      deno run --allow-all --node-modules-dir=none npm:prettier "$@"
+    dest: /usr/local/bin/prettier
+    force: true
+    mode: "755"
+  become: true
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Install Prettier for Windows
+  ansible.windows.win_copy:
+    content: |
+      @echo off
+      deno run --allow-all --node-modules-dir=none npm:prettier %*
+    dest: "C:\\Program Files\\Bin\\prettier.cmd"
+    force: true
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Copy Prettier settings file for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/.prettierrc.yaml"

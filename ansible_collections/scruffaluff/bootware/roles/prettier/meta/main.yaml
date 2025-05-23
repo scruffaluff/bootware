@@ -1,7 +1,5 @@
 ---
 dependencies:
   - role: variable
-  - role: node
-    vars:
-      node_applications:
-        - prettier
+  - role: deno
+    when: deno_role_executed is not defined

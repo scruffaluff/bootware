@@ -552,9 +552,15 @@ function Roles() {
     }
 
     $ContainsInner = $Tags.Replace(',', '") | any) or (map(. == "')
-    $Contains = "(map(. == `"$ContainsInner`") | any)"
+    if ($Tags -match 'All(,|$)') {
+        $Contains = "((map(. != `"never`") | all) or (map(. == `"$ContainsInner`") | any))"
+    }
+    else {
+        $Contains = "(map(. == `"$ContainsInner`") | any)"
+    }
     $RejectsInner = $Skip.Replace(',', '") | all) and (map(. != "')
     $Rejects = "(map(. != `"$RejectsInner`") | all)"
+
     if ($Skip -and $Tags) {
         $Filter = ".[0].tasks[] | select(.tags | (($Contains) and ($Rejects)))"
     }
