@@ -559,20 +559,21 @@ alias ffprobe = ^ffprobe -hide_banner
 
 # Fzf settings.
 
+# Disable Fzf Alt-C command.
+$env.FZF_ALT_C_COMMAND = ""
+# Set Fzf styles with solarized light theme based on
+# https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
+$env.FZF_BASE_OPTS = (
+    "--border --reverse --bind ctrl-d:backward-kill-word "
+    + "--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642 "
+    + "--color header:#268bd2,hl:#268bd2,hl+:#268bd2,info:#b58900 "
+    + "--color marker:#2aa198,pointer:#2aa198,prompt:#b58900 "
+    + "--color spinner:#2aa198 --height ~80%"
+)
+$env.FZF_DEFAULT_OPTS = $"($env.FZF_BASE_OPTS) --with-shell 'nu --commands'"
+
 # Load Fzf if interactive and available.
 if $nu.is-interactive and (which fzf | is-not-empty) {
-    # Disable Fzf Alt-C command.
-    $env.FZF_ALT_C_COMMAND = ""
-    # Set Fzf styles with solarized light theme based on
-    # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
-    $env.FZF_DEFAULT_OPTS = (
-        "--border --reverse --bind ctrl-d:backward-kill-word "
-        + "--color bg:#fdf6e3,bg+:#eee8d5,fg:#657b83,fg+:#073642 "
-        + "--color header:#268bd2,hl:#268bd2,hl+:#268bd2,info:#b58900 "
-        + "--color marker:#2aa198,pointer:#2aa198,prompt:#b58900 "
-        + "--color spinner:#2aa198 --height ~80% --with-shell 'nu --commands'"
-    )
-
     if (which bat | is-not-empty) and (which lsd | is-not-empty) {
         # Preview function needs to be inlined since "nu --commands" does not
         # load the configuration files.
@@ -953,6 +954,9 @@ prepend-paths $"($env.WASMTIME_HOME)/bin"
 
 # Yazi settings.
 
+# Disable Yazi Zoxide plugin directory preview window.
+$env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
+
 # Yazi wrapper to change directory on program exit.
 def --env --wrapped yz [...args] {
   let tmp_file = mktemp --tmpdir
@@ -967,8 +971,8 @@ def --env --wrapped yz [...args] {
 
 # Zoxide settings.
 
-# Disable fickle Zoxide directory preview.
-$env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS?)"
+# Disable Zoxide directory preview window.
+$env._ZO_FZF_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 
 # User settings.
 

@@ -349,6 +349,17 @@ alias ffprobe 'ffprobe -hide_banner'
 
 # Fzf settings.
 
+# Disable Fzf Alt-C command.
+set --export FZF_ALT_C_COMMAND ''
+# Set Fzf styles with solarized light theme based on
+# https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
+set --export FZF_BASE_OPTS '--border --reverse ' \
+    '--bind ctrl-d:backward-kill-word --color bg:#fdf6e3,bg+:#eee8d5 ' \
+    '--color fg:#657b83,fg+:#073642,header:#268bd2,hl:#268bd2 ' \
+    '--color hl+:#268bd2,info:#b58900,marker:#2aa198,pointer:#2aa198 ' \
+    '--color prompt:#b58900,spinner:#2aa198 --height ~80%'
+set --export FZF_DEFAULT_OPTS "$FZF_BASE_OPTS --with-shell 'fish --command'"
+
 # Load Fzf if interactive and available.
 #
 # Flags:
@@ -356,17 +367,6 @@ alias ffprobe 'ffprobe -hide_banner'
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 if test -n $tty; and type -q fzf
-    # Disable Fzf Alt-C command.
-    set --export FZF_ALT_C_COMMAND ''
-    # Set Fzf styles with solarized light theme based on
-    # https://github.com/tinted-theming/tinted-fzf/blob/main/fish/base16-solarized-light.fish.
-    set --export FZF_DEFAULT_OPTS '--border --reverse ' \
-        '--bind ctrl-d:backward-kill-word --color bg:#fdf6e3,bg+:#eee8d5 ' \
-        '--color fg:#657b83,fg+:#073642,header:#268bd2,hl:#268bd2 ' \
-        '--color hl+:#268bd2,info:#b58900,marker:#2aa198,pointer:#2aa198 ' \
-        '--color prompt:#b58900,spinner:#2aa198 --height ~80% ' \
-        "--with-shell 'fish --command'"
-
     fzf --fish | source
     if type -q bat; and type -q lsd
         set --export FZF_CTRL_T_OPTS "--preview '_fzf_path_preview {}'" \
@@ -620,6 +620,9 @@ prepend-paths "$WASMTIME_HOME/bin"
 
 # Yazi settings.
 
+# Disable Yazi Zoxide plugin directory preview window.
+set --export YAZI_ZOXIDE_OPTS "$FZF_BASE_OPTS --preview-window hidden"
+
 # Yazi wrapper to change directory on program exit.
 #
 # Flags:
@@ -639,8 +642,8 @@ end
 
 # Zoxide settings.
 
-# Disable fickle Zoxide directory preview.
-set --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS"
+# Disable Zoxide directory preview window.
+set --export _ZO_FZF_OPTS "$FZF_BASE_OPTS --preview-window hidden"
 
 # Initialize Zoxide if interactive and available.
 #
