@@ -49,6 +49,10 @@ user_pref("browser.newtabpage.activity-stream.system.showWeather", false);
 user_pref("browser.tabs.loadInBackground", true);
 // Disable detaching tab to a new window.
 user_pref("browser.tabs.allowTabDetach", false);
+// Do not show most visited sites in Windows taskbar.
+user_pref("browser.taskbar.lists.frequent.enabled", false);
+// Do not show recently visited sites in Windows taskbar.
+user_pref("browser.taskbar.lists.recent.enabled", false);
 // Show bookmarks bar in toolbar.
 user_pref("browser.toolbars.bookmarks.visibility", "always");
 // Disable automatic translation popups.

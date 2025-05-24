@@ -190,6 +190,35 @@ def error(message: Union[str, Exception]) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
+def find_expr(input: str) -> Tuple[int, int, str]:
+    """Find Python expression surrounded by '$()'."""
+    index = 0
+    length = len(input)
+    stack = []
+
+    while index < length:
+        character = input[index]
+        try:
+            next_ = input[index + 1]
+        except IndexError:
+            next_ = None
+
+        if stack:
+            if character == ")":
+                start = stack.pop()
+                if not stack:
+                    return start - 2, index + 1, input[start:index]
+            elif character == "(":
+                stack.append(index + 1)
+            index += 1
+        elif character == "$" and next_ == "(":
+            stack.append(index + 2)
+            index += 2
+        else:
+            index += 1
+    return length, length, ""
+
+
 def find_source(type: Type) -> Tuple[str, int]:
     """Find location of source code for a type."""
     file = inspect.getsourcefile(type)
@@ -248,13 +277,12 @@ def parse(pdb: Type, input: str) -> Any:
 
 def parse_expr(pdb: Type, input: str) -> Any:
     """Parse and possibly execute command line expressions."""
-    regex = re.compile(r"(?<!$)(__pdb_convenience_variables\[|\$)(?P<variable>[\w.]+)")
-    match = regex.search(input)
-    while match:
-        variable = match.group("variable")
-        result = eval(variable, pdb.curframe.f_globals, pdb.curframe_locals)
-        input = input[: match.start()] + str(result) + input[match.end() :]
-        match = regex.search(input)
+    while True:
+        start, stop, expr = find_expr(input)
+        if expr == "":
+            break
+        result = eval(expr, pdb.curframe.f_globals, pdb.curframe_locals)
+        input = input[:start] + str(result) + input[stop:]
     return input
 
 
