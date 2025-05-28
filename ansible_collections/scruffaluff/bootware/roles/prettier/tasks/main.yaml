@@ -4,7 +4,7 @@
     content: |
       #!/usr/bin/env sh
       set -eu
-      deno run --allow-all --node-modules-dir=none npm:prettier "$@"
+      deno run --allow-all --no-config --node-modules-dir=none npm:prettier "$@"
     dest: /usr/local/bin/prettier
     force: true
     mode: "755"
@@ -17,7 +17,7 @@
   ansible.windows.win_copy:
     content: |
       @echo off
-      deno run --allow-all --node-modules-dir=none npm:prettier %*
+      deno run --allow-all --no-config --node-modules-dir=none npm:prettier %*
     dest: "C:\\Program Files\\Bin\\prettier.cmd"
     force: true
   tags:
