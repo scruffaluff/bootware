@@ -24,7 +24,7 @@ ci: setup lint doc test-unit
 
 # Build distribution packages.
 [script("nu")]
-dist version="0.9.0":
+dist version="0.9.1":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
 

@@ -1304,7 +1304,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.9.0'
+  echo 'Bootware 0.9.1'
 }
 
 #######################################
