@@ -1308,6 +1308,21 @@
         - shell
         - sysadmin
 
+    - name: Install Presenterm terminal slideshow viewer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - presenterm
+            - server
+            - wsl
+        name: scruffaluff.bootware.presenterm
+      tags:
+        - desktop
+        - presenterm
+        - server
+        - wsl
+
     - name: Install Prettier code formatter
       ansible.builtin.include_role:
         apply:

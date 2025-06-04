@@ -55,6 +55,7 @@ vscodium_extensions:
   - foxundermoon.shell-format
   - grapecity.gc-excelviewer
   - james-yu.latex-workshop
+  - jeanp413.open-remote-ssh
   - leanprover.lean4
   - mhutchie.git-graph
   - ms-playwright.playwright

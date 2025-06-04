@@ -216,6 +216,7 @@ test: test-unit test-pkg test-e2e
 test-e2e *args:
   nu script/test_e2e.nu {{args}}
 
+# Run packaging test suite.
 test-pkg *args:
   nu script/pkg.nu test {{args}}
 

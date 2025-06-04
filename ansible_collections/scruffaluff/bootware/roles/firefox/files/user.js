@@ -129,6 +129,8 @@ user_pref("privacy.trackingprotection.socialtracking.enabled", true);
 user_pref("services.sync.engine.history", false);
 // Disable syncing site passwords.
 user_pref("services.sync.engine.passwords", false);
+// Disable Firefox sidebar.
+user_pref("sidebar.revamp", false);
 // Prevent Firefox from offering to save passwords.
 user_pref("signon.autofillForms", false);
 // Prevent Firefox from offering to save passwords.

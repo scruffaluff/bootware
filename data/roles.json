@@ -288,6 +288,11 @@
     "tests": ["pwsh --version"]
   },
   {
+    "name": "presenterm",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["presenterm --version"]
+  },
+  {
     "name": "prettier",
     "skip": [{ "os": "openwrt" }],
     "tests": ["prettier --version"]

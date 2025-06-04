@@ -1,0 +1,159 @@
+---
+- name: Install Presenterm for Linux
+  ansible.builtin.package:
+    name: presenterm
+  become: true
+  ignore_errors: true
+  register: presenterm_linux
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Get latest Presenterm version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/presenterm.json
+  register: presenterm_formula
+  tags:
+    - install
+  when: ansible_system == "Linux" and presenterm_linux is failed
+
+- name: Create Presenterm temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: presenterm_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and presenterm_linux is failed
+
+- name: Set Presenterm temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ presenterm_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and presenterm_linux is failed
+
+- name: Download Presenterm for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ presenterm_temp.path }}"
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/mfontanini/presenterm/releases/download/v{{
+      presenterm_formula.json.versions.stable }}/presenterm-{{
+      presenterm_formula.json.versions.stable }}-{{ presenterm_arch
+      }}-unknown-linux-{{ system_libc }}.tar.gz
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and presenterm_linux is failed
+
+- name: Install Presenterm for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/presenterm
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ presenterm_temp.path }}/presenterm-{{
+      presenterm_formula.json.versions.stable }}/presenterm
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and presenterm_linux is failed
+
+- name: Install Presenterm for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: presenterm
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Presenterm for Windows
+  community.windows.win_scoop:
+    global: true
+    name: presenterm
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Presenterm configuration directory for Linux
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/presenterm"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Linux"
+
+- name: Copy Presenterm configuration file for Linux
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/presenterm/config.yaml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: config.yaml
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Linux"
+
+- name: Create Presenterm configuration directory for MacOS
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/Library/Application Support/presenterm"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Darwin"
+
+- name: Copy Presenterm configuration file for MacOS
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/Library/Application Support/presenterm/config.yaml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: config.yaml
+  become: true
+  tags:
+    - config
+  when: ansible_system == "Darwin"
+
+- name: Create Presenterm configuration directory for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\AppData\\Roaming\\presenterm\\config"
+    state: directory
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy Presenterm configuration file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\AppData\\Roaming\\presenterm\\config\\config.yaml"
+    force: true
+    src: config.yaml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Presenterm files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\presenterm\\config"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

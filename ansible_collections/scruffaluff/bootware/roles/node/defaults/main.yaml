@@ -1,5 +1,6 @@
 ---
 node_applications:
+  - "@mermaid-js/mermaid-cli"
   - "@taplo/cli"
   - "@vue/language-server"
   - bash-language-server

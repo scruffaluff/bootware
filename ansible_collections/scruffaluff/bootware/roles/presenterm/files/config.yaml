@@ -1,0 +1,16 @@
+# Presenterm configuration file for Markdown slideshows in the terminal.
+#
+# For more information, visit
+# https://mfontanini.github.io/presenterm/configuration/introduction.html.
+
+---
+bindings:
+  next: [";", "<right>", " "]
+  previous: ["j", "<left>"]
+
+defaults:
+  implicit_slide_ends: true
+  theme: terminal-light
+
+options:
+  command_prefix: "cmd:"
