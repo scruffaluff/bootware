@@ -3,7 +3,6 @@
 # For a tutorial on writing Fish completions, visit
 # https://fishshell.com/docs/current/completions.html.
 
-complete --erase --command bootware
 complete --no-files --command bootware
 
 # Add Bootware options and subcommands as completions.

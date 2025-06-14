@@ -651,9 +651,9 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local repo_dir
   local skip=''
   local tags=''
-  local tmp_dir
   local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
 
   # Parse command line arguments.
@@ -683,10 +683,20 @@ roles() {
     esac
   done
 
-  # Do not use long form flags for mktemp. They are not supported on some
+  # Do not use long form flags for mkdir. They are not supported on some
   # systems.
-  tmp_dir="$(mktemp -u)"
-  git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
+  #
+  # Flags:
+  #   -d: Check if path is a directory.
+  mkdir -p "${HOME}/.cache/bootware"
+  repo_dir="${HOME}/.cache/bootware/repo"
+
+  # Update repository if more than a day since last modification.
+  if [ ! -d "${repo_dir}" ] ||
+    [ "$(($(date +%s) - $(stat -c %Y "${repo_dir}")))" -gt 86400 ]; then
+    rm -fr "${repo_dir}"
+    git clone --depth 1 "${url}" "${repo_dir}" > /dev/null 2>&1
+  fi
 
   case "${tags}," in
     *all,*)
@@ -711,7 +721,7 @@ roles() {
   fi
 
   format='."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
-  yq "${filter} | ${format}" "${tmp_dir}/playbook.yaml"
+  yq "${filter} | ${format}" "${repo_dir}/playbook.yaml"
 }
 
 #######################################
