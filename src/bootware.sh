@@ -651,6 +651,7 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
+  local modified
   local repo_dir
   local skip=''
   local tags=''
@@ -692,9 +693,14 @@ roles() {
   repo_dir="${HOME}/.cache/bootware/repo"
 
   # Update repository if more than a day since last modification.
-  if [ ! -d "${repo_dir}" ] ||
-    [ "$(($(date +%s) - $(stat -c %Y "${repo_dir}")))" -gt 86400 ]; then
-    rm -fr "${repo_dir}"
+  if [ -d "${repo_dir}" ]; then
+    # GNU and BSD versions of stat use different flags.
+    modified="$(stat -c %Y "${repo_dir}" || stat -f %m "${repo_dir}")"
+    if [ "$(($(date +%s) - modified))" -gt 86400 ]; then
+      rm -fr "${repo_dir}"
+      git clone --depth 1 "${url}" "${repo_dir}" > /dev/null 2>&1
+    fi
+  else
     git clone --depth 1 "${url}" "${repo_dir}" > /dev/null 2>&1
   fi
 
