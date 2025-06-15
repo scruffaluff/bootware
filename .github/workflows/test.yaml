@@ -48,7 +48,7 @@ jobs:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'alpine' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -80,7 +80,7 @@ jobs:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job ==  'arch' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -116,7 +116,7 @@ jobs:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'debian' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -148,7 +148,7 @@ jobs:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'fedora' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -174,7 +174,7 @@ jobs:
     name: Test bootstrapping software for FreeBSD
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -244,7 +244,7 @@ jobs:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'ubuntu' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -282,7 +282,7 @@ jobs:
         with:
           # Setup WSL uses the version 11 for Debian which has an out of date
           # version of Ansible.
-          distribution: Ubuntu-24.04
+          distribution: ubuntu-latest
           set-as-default: "true"
       # Variable ${{ github.ref_name }} does not replace this step, since
       # ref_name will be name of the pull request instead of the branch.
@@ -327,12 +327,13 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
+      # Docker role is skipped since it is already installed.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --tags all,never
+          bootware bootstrap --dev --no-setup --retries 3 --skip docker --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
@@ -345,7 +346,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip lldb,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,lldb,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

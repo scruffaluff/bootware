@@ -257,10 +257,10 @@ if ($Tty) {
 
 # Disable verbose FFmpeg banners.
 function ffmpeg() {
-    ffmpeg.exe -hide_banner -stats -loglevel quiet $Args
+    ffmpeg.exe -hide_banner -stats -loglevel error $Args
 }
 function ffplay() {
-    ffplay.exe -hide_banner -loglevel quiet $Args
+    ffplay.exe -hide_banner -loglevel error $Args
 }
 function ffprobe() {
     ffprobe.exe -hide_banner $Args

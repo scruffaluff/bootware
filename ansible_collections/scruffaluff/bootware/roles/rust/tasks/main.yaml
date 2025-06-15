@@ -1,4 +1,25 @@
 ---
+- name: Install Rust package dependencies for Linux
+  ansible.builtin.package:
+    name: "{{ rust_pkg_deps.get(ansible_pkg_mgr, []) }}"
+  become: true
+  vars:
+    rust_pkg_deps:
+      apk:
+        - libcrypto3
+        - openssl-dev
+      apt:
+        - libssl-dev
+      dnf:
+        - openssl-devel
+      dnf5:
+        - openssl-devel
+      pacman:
+        - openssl
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
 - name: Install Rust for Unix
   ansible.builtin.import_tasks: unix.yaml
   when: ansible_system != "Win32NT"
