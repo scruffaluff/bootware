@@ -14,6 +14,7 @@ essential_linux_packages_:
     - gnupg
     - openssl
     - openssl-dev
+    - openssl-libs-static
     - which
     - xz
     - zip
@@ -22,6 +23,7 @@ essential_linux_packages_:
     - apt-file
     - apt-transport-https
     - gnupg
+    - libssl-dev
     - lsb-release
     - openssl
     - pbuilder
@@ -32,6 +34,7 @@ essential_linux_packages_:
     - dnf-plugins-core
     - gnupg
     - openssl
+    - openssl-devel
     - p7zip
     - which
     - xz
@@ -40,6 +43,7 @@ essential_linux_packages_:
     - dnf-plugins-core
     - gnupg
     - openssl
+    - openssl-devel
     - p7zip
     - which
     - xz
