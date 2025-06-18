@@ -130,16 +130,18 @@
     "key": "ctrl+shift+.",
     "when": "breadcrumbsPossible && breadcrumbsVisible"
   },
+{% if ansible_system == "Darwin" %}
   {
     "command": "cursorDown",
-    "key": "alt+k",
+    "key": "ctrl+k",
     "when": "textInputFocus && !terminalFocus"
   },
   {
     "command": "cursorLeft",
-    "key": "alt+j",
+    "key": "ctrl+j",
     "when": "textInputFocus && !terminalFocus"
   },
+{% endif %}
   {
     "command": "cursorLineEnd",
     "key": "ctrl+e",
@@ -150,16 +152,18 @@
     "key": "ctrl+a",
     "when": "textInputFocus && !terminalFocus"
   },
+{% if ansible_system == "Darwin" %}
   {
     "command": "cursorRight",
-    "key": "alt+;",
+    "key": "ctrl+;",
     "when": "textInputFocus && !terminalFocus"
   },
   {
     "command": "cursorUp",
-    "key": "alt+l",
+    "key": "ctrl+l",
     "when": "textInputFocus && !terminalFocus"
   },
+{% endif %}
   { 
     "command": "cursorWordLeft",
     "key": "shift+left",

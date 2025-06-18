@@ -327,7 +327,7 @@ def --wrapped cat [...args] {
 def --wrapped chown [...args: string] {
     match $nu.os-info.name {
         "windows" => {
-            let args_ = $args | filter {|arg| not ($arg in ["-R", "--recursive"]) }
+            let args_ = $args | where {|arg| not ($arg in ["-R", "--recursive"]) }
             let length = $args_ | length
 
             if $length < 2 {
@@ -436,7 +436,7 @@ def fzf-path-widget [] {
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
     | each {|path| $path | path expand }
-    | filter {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
+    | where {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]
 }
