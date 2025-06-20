@@ -457,6 +457,12 @@ if test $os = Darwin
     prepend-paths $OPENBLAS
 end
 
+# Rclone settings.
+
+# Make rclone skip modifcation time updates.
+set --export RCLONE_NO_UPDATE_DIR_MODTIME true
+set --export RCLONE_NO_UPDATE_MODTIME true
+
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
@@ -473,8 +479,6 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Shell settings.
 
-# Make rclone skip modifcation time updates.
-alias rclone 'rclone --no-update-dir-modtime --no-update-modtime'
 # Add alias for remove by force.
 alias rmf 'rm -fr'
 # Make rsync use progress bars and skip ignored files.

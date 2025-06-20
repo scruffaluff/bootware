@@ -660,6 +660,12 @@ if $nu.os-info.name == "macos" {
     prepend-paths $env.OPENBLAS
 }
 
+# Rclone settings.
+
+# Make rclone skip modifcation time updates.
+$env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
+$env.RCLONE_NO_UPDATE_MODTIME = "true"
+
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
