@@ -32,7 +32,7 @@ run = { fg = "#d33682" }
 [input]
 border = { fg = "#268bd2" }
 
-[manager]
+[mgr]
 border_style = { fg = "#839496" }
 count_copied = { bg = "#859900", fg = "#fdf6e3" }
 count_cut = { bg = "#dc322f", fg = "#fdf6e3" }

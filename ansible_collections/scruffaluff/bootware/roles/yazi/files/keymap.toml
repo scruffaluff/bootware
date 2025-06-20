@@ -23,7 +23,7 @@ prepend_keymap = [
     { desc = "Kill backwards a word", on = "<C-d>", run = "kill backward" },
 ]
 
-[manager]
+[mgr]
 prepend_keymap = [
     { desc = "Go back to the parent directory", on = "j", run = "leave" },
     { desc = "Go back to the previous directory", on = "J", run = "back" },

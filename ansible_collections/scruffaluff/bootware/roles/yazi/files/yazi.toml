@@ -2,7 +2,7 @@
 #
 # For more information, visit https://yazi-rs.github.io/docs/configuration/yazi.
 
-[manager]
+[mgr]
 ratio = [0, 1, 2]
 
 [open]
