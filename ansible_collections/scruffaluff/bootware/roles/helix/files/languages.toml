@@ -83,7 +83,6 @@ formatter = { command = "prettier", args = ["--parser", "yaml"] }
 [language-server.pyright]
 args = ["--stdio"]
 command = "pyright-langserver"
-config = { reportMissingImports = "none", reportMissingModuleSource = "none" }
 
 [language-server.ruff]
 args = ["server"]

@@ -405,6 +405,10 @@ function poweroff() {
 function reboot() {
     Restart-Computer -Force
 }
+# Make rclone skip modifcation time updates.
+function rclone() {
+    rclone --no-update-dir-modtime --no-update-modtime $Args
+}
 
 # Configure PSReadLine settings if interactive and available.
 #

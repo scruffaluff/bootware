@@ -41,7 +41,16 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy Python settings files for Unix
+- name: Set owner of Jupyter files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.jupyter"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy PDB settings files for Unix
   ansible.builtin.copy:
     dest: "{{ user_home }}/{{ item.dest }}"
     force: true
@@ -51,8 +60,6 @@
     src: "{{ item.src }}"
   become: true
   loop:
-    - dest: .mypy.ini
-      src: mypy.ini
     - dest: .pdbrc
       src: pdbrc
     - dest: .config/pdbrc.py
@@ -61,14 +68,12 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Python settings files for Windows
+- name: Copy PDB settings files for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\{{ item.dest }}"
     force: true
     src: "{{ item.src }}"
   loop:
-    - dest: .mypy.ini
-      src: mypy.ini
     - dest: .pdbrc
       src: pdbrc
     - dest: .config\pdbrc.py
@@ -77,14 +82,11 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Set owner of Python files for Windows
+- name: Set owner of PDB files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\{{ item }}"
-    recurse: true
     user: "{{ user_id }}"
   loop:
-    - .jupyter
-    - .mypy.ini
     - .pdbrc
     - .config\pdbrc.py
   tags:

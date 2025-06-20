@@ -473,9 +473,11 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Shell settings.
 
+# Make rclone skip modifcation time updates.
+alias rclone 'rclone --no-update-dir-modtime --no-update-modtime'
 # Add alias for remove by force.
 alias rmf 'rm -fr'
-# Make rsync use human friendly output.
+# Make rsync use progress bars and skip ignored files.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
