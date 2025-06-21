@@ -234,5 +234,10 @@ defaults write com.apple.SpotlightResources.Defaults 'Search Queries Data Sharin
 # Save files to plain text by default.
 defaults write com.apple.textedit RichText -bool false
 
+# Trackpad settings.
+
+# Disable dictionary lookup on word trackpad press.
+defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
+
 # Activate keyboard shortcut changes.
 /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u

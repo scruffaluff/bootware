@@ -448,10 +448,13 @@ def ssh-session [] {
 
 # System settings.
 
-# Add standard Unix environment variables for Windows.
+# Ensure standard Unix environment variables are defined.
 if $nu.os-info.name == "windows" {
-    $env.HOME = $"($env.HOMEDRIVE)($env.HOMEPATH)"
-    $env.USER = $env.USERNAME
+    $env.HOME = $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
+    $env.USER = $env.USERNAME?
+} else {
+    $env.HOME = $env.HOME?
+    $env.USER = $env.USER?
 }
 
 # Add directories to system path that are not always included.

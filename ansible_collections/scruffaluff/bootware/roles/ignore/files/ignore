@@ -1,16 +1,19 @@
 # Configuration file for ignore paths.
 
-.DS_Store
 __pycache__/
 .benchmarks/
 .cache/
+.deno/
+.DS_Store
 .dvc/
 .git/
 .hg/
 .hypothesis/
 .ipynb_checkpoints/
 .mypy_cache/
+.obsidian/
 .pytest_cache/
+.ruff_cache/
 .sl/
 .svn/
 .tox/
