@@ -1876,23 +1876,6 @@
         - watchexec
         - wsl
 
-    - name: Install Web Assembly runtime
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - server
-            - vm
-            - wasm
-            - wsl
-        name: scruffaluff.bootware.wasm
-      tags:
-        - desktop
-        - server
-        - vm
-        - wasm
-        - wsl
-
     - name: Install Wez's terminal
       ansible.builtin.include_role:
         apply:

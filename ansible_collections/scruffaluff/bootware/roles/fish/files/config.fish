@@ -618,12 +618,6 @@ prepend-paths $PNPM_HOME
 # Add Visual Studio Code binaries to system path for Linux.
 prepend-paths /usr/share/code/bin
 
-# Wasmtime settings.
-
-# Add Wasmtime binaries to system path.
-set --export WASMTIME_HOME "$HOME/.wasmtime"
-prepend-paths "$WASMTIME_HOME/bin"
-
 # Yazi settings.
 
 # Disable Yazi Zoxide plugin directory preview window.
