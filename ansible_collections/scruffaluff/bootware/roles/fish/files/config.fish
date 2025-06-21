@@ -114,14 +114,14 @@ function fzf-path-widget
 
     set --function line (commandline)
     set --function path
-    set --function cwd $PWD
+    set --function cwd "$PWD"
     set --function token (commandline --current-token)
 
     # Build Fzf search path from current token.
     set --function search_dir
     if test -n $token
         set search_dir \
-            (string replace '~' $HOME (string trim --chars '"\'' $token))
+            (string replace '~' "$HOME" (string trim --chars '"\'' $token))
     else
         set search_dir .
     end
@@ -248,7 +248,7 @@ prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Check if the string is empty.
-if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
+if test -n $tty; and test "$TERM" = alacritty; and test -z "$TERM_PROGRAM"
     # Autostart Zellij or connect to existing session if within Alacritty
     # terminal and within an interactive shell for the login user. For more
     # information, visit https://zellij.dev/documentation/integration.html.
@@ -256,8 +256,8 @@ if test -n $tty; and test $TERM = alacritty; and test -z $TERM_PROGRAM
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.
-    if type -q zellij; and test -z $ZELLIJ; and not ssh-session;
-        and test $LOGNAME = $USER
+    if type -q zellij; and test -z "$ZELLIJ"; and not ssh-session;
+        and test "$LOGNAME" = "$USER"
         # Attach to a default session if it exists.
         set --export ZELLIJ_AUTO_ATTACH true
         # Exit the shell when Zellij exits.
@@ -457,6 +457,12 @@ if test $os = Darwin
     prepend-paths $OPENBLAS
 end
 
+# Rclone settings.
+
+# Make rclone skip modifcation time updates.
+set --export RCLONE_NO_UPDATE_DIR_MODTIME true
+set --export RCLONE_NO_UPDATE_MODTIME true
+
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
@@ -475,7 +481,7 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Add alias for remove by force.
 alias rmf 'rm -fr'
-# Make rsync use human friendly output.
+# Make rsync use progress bars and skip ignored files.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
@@ -584,7 +590,7 @@ if test -n $tty
         starship init fish | source
     else
         function fish_prompt
-            printf '\n%s at %s in %s\n❯ ' $USER (prompt_hostname) (prompt_pwd)
+            printf '\n%s at %s in %s\n❯ ' "$USER" (prompt_hostname) (prompt_pwd)
         end
     end
 end

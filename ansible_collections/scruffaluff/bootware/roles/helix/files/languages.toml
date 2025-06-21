@@ -57,8 +57,14 @@ formatter = { command = "prettier", args = ["--parser", "markdown"] }
 [[language]]
 name = "python"
 auto-format = true
+formatter = { command = "ruff", args = ["format", "-"] }
 language-servers = ["ruff", "pyright"]
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
+
+[[language]]
+name = "rust"
+auto-format = true
+formatter = { command = "rustfmt" }
 
 [[language]]
 name = "starlark"

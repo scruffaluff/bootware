@@ -448,10 +448,13 @@ def ssh-session [] {
 
 # System settings.
 
-# Add standard Unix environment variables for Windows.
+# Ensure standard Unix environment variables are defined.
 if $nu.os-info.name == "windows" {
-    $env.HOME = $"($env.HOMEDRIVE)($env.HOMEPATH)"
-    $env.USER = $env.USERNAME
+    $env.HOME = $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
+    $env.USER = $env.USERNAME?
+} else {
+    $env.HOME = $env.HOME?
+    $env.USER = $env.USER?
 }
 
 # Add directories to system path that are not always included.
@@ -660,6 +663,12 @@ if $nu.os-info.name == "macos" {
     prepend-paths $env.OPENBLAS
 }
 
+# Rclone settings.
+
+# Make rclone skip modifcation time updates.
+$env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
+$env.RCLONE_NO_UPDATE_MODTIME = "true"
+
 # Ripgrep settings.
 
 # Set Ripgrep settings file location.
@@ -676,9 +685,11 @@ prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Shell settings.
 
+# Make rclone skip modifcation time updates.
+alias rclone = ^rclone --no-update-dir-modtime --no-update-modtime
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
-# Make rsync use human friendly output.
+# Make rsync use progress bars and skip ignored files.
 alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 
 # Configure prompt if interactive.
