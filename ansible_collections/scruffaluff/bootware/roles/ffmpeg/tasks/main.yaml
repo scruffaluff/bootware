@@ -1,0 +1,33 @@
+---
+- name: Install FFmpeg for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install FFmpeg for Linux
+  ansible.builtin.package:
+    name: ffmpeg
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["dnf", "dnf5"]
+
+- name: Install FFmpeg for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install FFmpeg for Windows
+  community.windows.win_scoop:
+    global: true
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

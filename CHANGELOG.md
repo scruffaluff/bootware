@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Presenterm role.
+- Chafa, FFmpeg, Presenterm role.
 
 ## 0.9.1 = 2025-05-28
 

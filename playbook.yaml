@@ -291,6 +291,21 @@
         - sysadmin
         - wsl
 
+    - name: Install Chafa terminal image viewer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - chafa
+            - desktop
+            - server
+            - wsl
+        name: scruffaluff.bootware.chafa
+      tags:
+        - chafa
+        - desktop
+        - server
+        - wsl
+
     - name: Install Google Chrome web browser
       ansible.builtin.include_role:
         apply:
@@ -501,6 +516,21 @@
         - fd
         - server
         - sysadmin
+        - wsl
+
+    - name: Install FFmpeg media converter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - ffmpeg
+            - server
+            - wsl
+        name: scruffaluff.bootware.ffmpeg
+      tags:
+        - desktop
+        - ffmpeg
+        - server
         - wsl
 
     - name: Install FFSend secure file sharer
