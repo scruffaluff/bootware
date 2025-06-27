@@ -426,7 +426,6 @@
     "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
     "tests": ["codium --version"]
   },
-  { "name": "wasm" },
   {
     "name": "watchexec",
     "skip": [{ "os": "freebsd" }],
