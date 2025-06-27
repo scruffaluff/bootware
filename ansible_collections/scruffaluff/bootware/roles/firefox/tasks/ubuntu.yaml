@@ -13,7 +13,7 @@
   ansible.builtin.command:
     cmd: snap remove --purge firefox
   become: true
-  changed_when: "'firefox removed in firefox_snap_purge.stdout"
+  changed_when: "'firefox removed' in firefox_snap_purge.stdout"
   register: firefox_snap_purge
   tags:
     - install

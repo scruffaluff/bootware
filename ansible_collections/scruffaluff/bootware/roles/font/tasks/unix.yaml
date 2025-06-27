@@ -73,7 +73,7 @@
   ansible.builtin.command:
     cmd: fc-cache --verbose
   become: true
-  changed_when: "'new cache contents' in font_cache_unix"
+  changed_when: "'new cache contents' in font_cache_unix.stdout"
   register: font_cache_unix
   tags:
     - install

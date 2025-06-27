@@ -90,7 +90,7 @@
     cmd: helm plugin install {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installed plugin' in helm_plugin_install"
+  changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   failed_when: >-
@@ -105,7 +105,7 @@
 - name: Install Helm plugins for Windows
   ansible.windows.win_command:
     cmd: helm plugin install {{ item }}
-  changed_when: "'Installed plugin' in helm_plugin_install"
+  changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   failed_when: >-
