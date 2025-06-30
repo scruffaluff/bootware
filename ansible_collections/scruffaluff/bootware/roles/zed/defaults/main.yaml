@@ -1,0 +1,5 @@
+---
+zed_arch_:
+  amd64: x86_64
+  arm64: aarch64
+zed_arch: "{{ zed_arch_[system_architecture] }}"
