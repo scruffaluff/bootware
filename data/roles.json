@@ -450,6 +450,11 @@
   },
   { "name": "yq", "tests": ["yq --version"] },
   {
+    "name": "zed",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["zed --version"]
+  },
+  {
     "name": "zellij",
     "skip": [{ "os": "windows" }],
     "tests": ["zellij --version"]

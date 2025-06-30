@@ -2009,6 +2009,19 @@
         - wsl
         - yq
 
+    - name: Install Zed text editor
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - editor
+            - zed
+        name: scruffaluff.bootware.zed
+      tags:
+        - desktop
+        - editor
+        - zed
+
     - name: Install Zellij terminal multiplexer
       ansible.builtin.include_role:
         apply:
