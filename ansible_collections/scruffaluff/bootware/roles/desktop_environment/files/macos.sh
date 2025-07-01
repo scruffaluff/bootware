@@ -29,6 +29,8 @@ defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 defaults write com.apple.Safari AutoFillPasswords -bool false
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
+# Disable alert beep sound.
+defaults write 'Apple Global Domain' com.apple.sound.beep.volume -float 0
 
 # Dock and menu bar settings.
 
@@ -92,13 +94,21 @@ duti -s com.vscodium tsv all
 duti -s com.vscodium tsx all
 duti -s com.vscodium txt all
 duti -s com.vscodium vue all
-duti -s com.vscodium xlsx all
 duti -s com.vscodium xml all
 duti -s com.vscodium yaml all
 duti -s com.vscodium yml all
+duti -s org.libreoffice.script doc all
+duti -s org.libreoffice.script docx all
+duti -s org.libreoffice.script ppt all
+duti -s org.libreoffice.script pptx all
+duti -s org.libreoffice.script xls all
+duti -s org.libreoffice.script xlsx all
+duti -s org.mozilla.firefox avif all
+duti -s org.mozilla.firefox gif all
+duti -s org.mozilla.firefox webp all
 duti -s org.videolan.vlc aac all
-duti -s org.videolan.vlc alac all
 duti -s org.videolan.vlc aiff all
+duti -s org.videolan.vlc alac all
 duti -s org.videolan.vlc avi all
 duti -s org.videolan.vlc flac all
 duti -s org.videolan.vlc flv all

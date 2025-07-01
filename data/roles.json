@@ -44,6 +44,7 @@
   { "name": "bottom", "tests": ["btm --version"] },
   { "name": "caffeine" },
   { "name": "carapace", "tests": ["carapace --version"] },
+  { "name": "chafa", "tests": ["chafa --version"] },
   {
     "name": "chrome",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
@@ -77,6 +78,7 @@
   },
   { "name": "fastfetch", "tests": ["fastfetch --version"] },
   { "name": "fd", "tests": ["fd --version"] },
+  { "name": "ffmpeg", "tests": ["ffmpeg -version"] },
   {
     "name": "ffsend",
     "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],

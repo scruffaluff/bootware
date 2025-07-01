@@ -16,7 +16,7 @@
     cmd: yay --noconfirm --refresh --sync vscodium-bin
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'installing vscodium' in vscodium_arch_install"
+  changed_when: "'installing vscodium' in vscodium_arch_install.stdout"
   register: vscodium_arch_install
   tags:
     - install
@@ -155,7 +155,7 @@
     cmd: codium --install-extension {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'successfully installed' in vscodium_extension_install"
+  changed_when: "'successfully installed' in vscodium_extension_install.stdout"
   environment:
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH

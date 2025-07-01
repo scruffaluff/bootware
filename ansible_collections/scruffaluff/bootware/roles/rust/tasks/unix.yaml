@@ -26,7 +26,7 @@
     cmd: rustup default {{ rust_toolchain }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'installing' in rust_toolchain_set"
+  changed_when: "'installing' in rust_toolchain_set.stdout"
   environment:
     PATH: >-
       {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
@@ -40,7 +40,7 @@
     cmd: rustup component add {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'installing' in rust_component_add"
+  changed_when: "'installing' in rust_component_add.stdout"
   environment:
     PATH: >-
       {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
@@ -55,7 +55,7 @@
     cmd: rustup target add {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'installing' in rust_target_add"
+  changed_when: "'installing' in rust_target_add.stdout"
   environment:
     PATH: >-
       {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
@@ -123,7 +123,7 @@
     cmd: cargo binstall --no-confirm {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'This will install' in rust_binstall_package"
+  changed_when: "'This will install' in rust_binstall_package.stdout"
   environment:
     PATH: >-
       {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH

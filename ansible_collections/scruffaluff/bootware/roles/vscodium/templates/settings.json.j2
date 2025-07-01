@@ -148,6 +148,7 @@
   "terminal.integrated.defaultProfile.linux": "{{ 'fish' if user_shell == 'powershell' else user_shell }}",
   "terminal.integrated.defaultProfile.osx": "{{ 'fish' if user_shell == 'powershell' else user_shell }}",
   "terminal.integrated.defaultProfile.windows": "{{ 'powershell' if user_shell in ['bash', 'fish'] else user_shell }}",
+  "terminal.integrated.enableImages": true,
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.enablePersistentSessions": false,
   "terminal.integrated.environmentChangesIndicator": "off",
@@ -176,6 +177,7 @@
   "terminal.integrated.showExitAlert": false,
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.tabs.enabled": false,
+  "terminal.integrated.tabs.enableAnimation": true,
   "typescript.suggest.autoImports": false,
   "typescript.updateImportsOnFileMove.enabled": "never",
   "update.mode": "none",
@@ -301,6 +303,10 @@
     },
   },
   "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[tailwindcss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },

@@ -27,7 +27,7 @@
     - install
   when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
 
-- name: Add Google GPG key for Fedora and Suse
+- name: Add Google GPG key for Fedora
   ansible.builtin.rpm_key:
     key: https://dl.google.com/linux/linux_signing_key.pub
   become: true
@@ -37,16 +37,14 @@
     ansible_pkg_mgr in ["dnf", "dnf5", "zypper"] and system_architecture ==
     "amd64"
 
-- name: Install Google Chrome for Fedora and Suse
+- name: Install Google Chrome for Fedora
   ansible.builtin.dnf:
     name: >-
       https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
   become: true
   tags:
     - install
-  when: >-
-    ansible_pkg_mgr in ["dnf", "dnf5", "zypper"] and system_architecture ==
-    "amd64"
+  when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
 
 - name: Install Google Chrome for FreeBSD
   become: true

@@ -1,0 +1,88 @@
+---
+- name: Install Chafa for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: chafa
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install Chafa for Linux
+  ansible.builtin.package:
+    name: chafa
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Chafa for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: chafa
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Chafa for Windows
+  community.windows.win_scoop:
+    global: true
+    name: chafa
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Get latest Chafa version for Unix
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/chafa.json
+  register: chafa_formula
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Create Chafa temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: chafa_temp
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Set Chafa temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ chafa_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Download Chafa for Unix
+  ansible.builtin.unarchive:
+    dest: "{{ chafa_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/hpjansson/chafa/releases/download/{{
+      chafa_formula.json.versions.stable }}/chafa-{{
+      chafa_formula.json.versions.stable }}.tar.xz
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Install Chafa Fish completion for Unix
+  ansible.builtin.copy:
+    dest: "{{ fish_completion }}/chafa.fish"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: >-
+      {{ chafa_temp.path }}/chafa-{{ chafa_formula.json.versions.stable
+      }}/tools/completions/fish-completion.fish
+  become: true
+  tags:
+    - completion
+    - install
+  when: ansible_system != "Win32NT"
