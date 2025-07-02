@@ -115,7 +115,7 @@ def do_shell(self, line: str) -> None:
     Execute shell command or start interactive shell on empty command.
     """
     arguments = []
-    for argument in shlex.split(line.strip()):
+    for argument in map(os.path.expanduser, shlex.split(line.strip())):
         try:
             object = parse_expr(self, argument)
         except Exception:
@@ -194,7 +194,7 @@ def find_expr(input: str) -> Tuple[int, int, str]:
     """Find Python expression surrounded by '$()'."""
     index = 0
     length = len(input)
-    stack = []
+    stack: List[int] = []
 
     while index < length:
         character = input[index]
