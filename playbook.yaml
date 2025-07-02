@@ -1536,6 +1536,21 @@
         - server
         - wsl
 
+    - name: Install Samply benchmarking tool
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - samply
+            - server
+            - wsl
+        name: scruffaluff.bootware.samply
+      tags:
+        - desktop
+        - samply
+        - server
+        - wsl
+
     - name: Install Scc code line counter
       ansible.builtin.include_role:
         apply:

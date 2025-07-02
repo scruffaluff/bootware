@@ -353,6 +353,11 @@
     "name": "rust",
     "tests": ["cargo --version", "rustc --version", "rust-analyzer --version"]
   },
+  {
+    "name": "samply",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["samply --version"]
+  },
   { "name": "scc", "tests": ["scc --version"] },
   { "name": "sd", "tests": ["sd --version"] },
   {
