@@ -1,0 +1,41 @@
+// Keyboard shortcuts file for Zed editor.
+//
+// For more information, visit https://zed.dev/docs/key-bindings.
+
+[
+  {
+    "bindings": {
+      "ctrl-p": "file_finder::Toggle",
+      "ctrl-shift-p": "command_palette::Toggle",
+    },
+    "context": "Workspace"
+  },
+  {
+    "bindings": {
+      "ctrl-shift-j": "pane::ActivatePreviousItem",
+      "ctrl-:": "pane::ActivateNextItem",
+    },
+    "context": "Pane"
+  },
+  {
+    "bindings": {
+      "ctrl-k": "editor::CutToEndOfLine",
+      "ctrl-p:": "file_finder::Toggle"
+    },
+    "context": "Editor"
+  },
+  {
+    "bindings": {
+      "ctrl-n:": ["terminal::SendKeystroke", "ctrl-n"],
+      "ctrl-p:": ["terminal::SendKeystroke", "ctrl-p"],
+      "ctrl-shift-t:": "workspace::NewTerminal"
+    },
+    "context": "Terminal"
+  },
+  {
+    "bindings": {
+      "ctrl-shift-t:": "terminal_panel::ToggleFocus"
+    },
+    "context": "!Terminal"
+  },
+]

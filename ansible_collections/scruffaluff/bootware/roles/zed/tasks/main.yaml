@@ -136,20 +136,23 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Zed settings file for Unix
+- name: Copy Zed settings files for Unix
   ansible.builtin.template:
-    dest: "{{ user_home }}/.config/zed/settings.json"
+    dest: "{{ user_home }}/.config/zed/{{ item }}.json"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: settings.json.j2
+    src: "{{ item }}.json.j2"
   become: true
+  loop:
+    - keymap
+    - settings
   tags:
     - config
   when: ansible_system != "Win32NT"
 
-- name: Create Zed user directory for Unix
+- name: Create Zed user directory for Windows
   ansible.windows.win_file:
     path: "{{ user_home }}\\.config\\zed"
     state: directory
@@ -157,11 +160,23 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy Zed settings file for Windows
+- name: Copy Zed settings files for Windows
   ansible.windows.win_template:
-    dest: "{{ user_home }}\\.config\\zed\\settings.json"
+    dest: "{{ user_home }}\\.config\\zed\\{{ item }}.json"
     force: true
-    src: settings.json.j2
+    src: "{{ item }}.json.j2"
+  loop:
+    - keymap
+    - settings
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of Zed files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config\\zed"
+    recurse: true
+    user: "{{ user_id }}"
   tags:
     - config
   when: ansible_system == "Win32NT"
