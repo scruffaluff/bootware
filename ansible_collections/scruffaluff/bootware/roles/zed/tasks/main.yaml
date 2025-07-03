@@ -96,7 +96,7 @@
 
 - name: Install Zed desktop manifest for Linux
   ansible.builtin.copy:
-    dest: /usr/local/share/applications/zed.desktop
+    dest: /usr/local/share/applications/dev.zed.Zed.desktop
     force: true
     mode: "644"
     src: zed.desktop
