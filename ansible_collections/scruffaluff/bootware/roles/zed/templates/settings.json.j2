@@ -3,11 +3,55 @@
 // For more information, visit https://zed.dev/docs/configuring-zed.
 
 {
-  "buffer_font_size": {{ font_size }},
-  "theme": {
-    "mode": "system",
-    "light": "Gruvbox Light Soft",
-    "dark": "One Dark"
+  "agent": {
+    "button": false,
+    "version": "1"
   },
+  "auto_install_extensions": {
+    "solarized": true
+  },
+  "auto_update": false,
+  "base_keymap": "VSCode",
+  "buffer_font_family": "FiraCode Nerd Font",
+  "buffer_font_size": {{ font_size }},
+  "collaboration_panel": {
+    "button": false
+  },
+  "cursor_shape": "bar",
+  "helix_mode": false,
+  "inline_code_actions": false,
+  "notification_panel": {
+    "button": false
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "terminal": {
+    "cursor_shape": "bar",
+    "detect_venv": "off",
+    "font_family": "FiraCode Nerd Font",
+    "font_size": {{ font_size }},
+    "line_height": "standard",
+    "option_as_meta": true,
+    "shell": {
+      "with_arguments": {
+        "args": ["--login"],
+        "program": "{{ user_shell }}"
+      }
+    },
+    "toolbar": {
+      "breadcrumbs": false
+    }
+  },
+  "theme": {
+    "dark": "One Dark",
+    "light": "Solarized Light",
+    "mode": "light"
+  },
+  "title_bar": {
+    "show_sign_in": false
+  },
+  "ui_font_family": "Fira Sans",
   "ui_font_size": {{ font_size }}
 }
