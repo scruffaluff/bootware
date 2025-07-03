@@ -5,37 +5,31 @@
 [
   {
     "bindings": {
+      "ctrl-shift-j": "pane::ActivatePreviousItem",
+      "ctrl-:": "pane::ActivateNextItem",
+      "ctrl-shift-p": "command_palette::Toggle"
+    }
+  },
+  {
+    "bindings": {
       "ctrl-p": "file_finder::Toggle",
-      "ctrl-shift-p": "command_palette::Toggle",
+      "ctrl-shift-t": "terminal_panel::ToggleFocus"
     },
     "context": "Workspace"
   },
   {
     "bindings": {
-      "ctrl-shift-j": "pane::ActivatePreviousItem",
-      "ctrl-:": "pane::ActivateNextItem",
-    },
-    "context": "Pane"
-  },
-  {
-    "bindings": {
       "ctrl-k": "editor::CutToEndOfLine",
-      "ctrl-p:": "file_finder::Toggle"
+      "ctrl-p": "file_finder::Toggle"
     },
     "context": "Editor"
   },
   {
     "bindings": {
-      "ctrl-n:": ["terminal::SendKeystroke", "ctrl-n"],
-      "ctrl-p:": ["terminal::SendKeystroke", "ctrl-p"],
-      "ctrl-shift-t:": "workspace::NewTerminal"
+      "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
+      "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
+      "ctrl-shift-t": "workspace::NewTerminal"
     },
     "context": "Terminal"
-  },
-  {
-    "bindings": {
-      "ctrl-shift-t:": "terminal_panel::ToggleFocus"
-    },
-    "context": "!Terminal"
-  },
+  }
 ]
