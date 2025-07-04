@@ -8,13 +8,25 @@
 #     - install
 #   when: ansible_pkg_mgr == "apk"
 
-- name: Check if Zed is installed for Linux
-  ansible.builtin.stat:
-    path: /usr/local/share/applications/zed.desktop
-  register: zed_check
+- name: Install Zed for Linux
+  ansible.builtin.package:
+    name: zed
+  become: true
+  ignore_errors: true
+  register: zed_linux
   tags:
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+
+- name: Check if Zed is installed for Linux
+  ansible.builtin.stat:
+    path: /usr/local/share/applications/dev.zed.Zed.desktop
+  register: zed_check
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed
 
 - name: Get latest Zed version for Linux
   ansible.builtin.uri:
@@ -25,8 +37,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Create Zed temporary directory for Linux
   ansible.builtin.tempfile:
@@ -35,8 +47,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Set Zed temporary directory permissions for Linux
   ansible.builtin.file:
@@ -46,8 +58,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Download Zed for Linux
   ansible.builtin.unarchive:
@@ -60,8 +72,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Install Zed for Linux
   ansible.builtin.copy:
@@ -77,8 +89,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Add Zed symlink for Linux
   ansible.builtin.file:
@@ -91,8 +103,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Install Zed desktop manifest for Linux
   ansible.builtin.copy:
@@ -104,8 +116,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and not
-    zed_check.stat.exists
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and zed_linux is
+    failed and not zed_check.stat.exists
 
 - name: Install Zed for MacOS
   become: true

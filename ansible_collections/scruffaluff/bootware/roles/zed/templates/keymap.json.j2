@@ -5,9 +5,12 @@
 [
   {
     "bindings": {
-      "ctrl-shift-j": "pane::ActivatePreviousItem",
       "ctrl-:": "pane::ActivateNextItem",
-      "ctrl-shift-p": "command_palette::Toggle"
+      "ctrl-shift-j": "pane::ActivatePreviousItem",
+      "ctrl-shift-left": "pane::SwapItemLeft",
+      "ctrl-shift-m": "workspace::ToggleZoom",
+      "ctrl-shift-p": "command_palette::Toggle",
+      "ctrl-shift-right": "pane::SwapItemRight"
     }
   },
   {
@@ -19,8 +22,18 @@
   },
   {
     "bindings": {
-      "ctrl-k": "editor::CutToEndOfLine",
-      "ctrl-p": "file_finder::Toggle"
+      "ctrl-;": "editor::MoveRight",
+      "ctrl-a": "editor::MoveToBeginningOfLine",
+      "ctrl-d": "editor::DeleteToPreviousWordStart",
+      "ctrl-e": "editor::MoveToEndOfLine",
+      "ctrl-j": "editor::MoveLeft",
+      "ctrl-k": "editor::MoveDown",
+      "ctrl-l": "editor::MoveUp",
+      "ctrl-p": "file_finder::Toggle",
+      "ctrl-shift-down": "editor::AddSelectionBelow",
+      "ctrl-shift-up": "editor::AddSelectionAbove",
+      "shift-left": "editor::MoveToPreviousWordStart",
+      "shift-right": "editor::MoveToNextWordEnd"
     },
     "context": "Editor"
   },
@@ -28,7 +41,8 @@
     "bindings": {
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
-      "ctrl-shift-t": "workspace::NewTerminal"
+      "ctrl-shift-t": "workspace::NewTerminal",
+      "ctrl-shift-n": "pane::SplitRight"
     },
     "context": "Terminal"
   }
