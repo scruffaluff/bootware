@@ -8,5 +8,6 @@ import os, pdb, sys
 sys.path.append(os.path.expanduser("~/.config"))
 import pdbrc
 pdbrc.setup(pdb.Pdb)
+sys.excepthook = pdbrc.break_exception(pdb)
 _ = sys.path.pop()
 del _, os, pdb, pdbrc, sys

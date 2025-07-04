@@ -10,7 +10,22 @@ import subprocess
 from subprocess import CalledProcessError
 import sys
 import tempfile
-from typing import Any, cast, List, Optional, Tuple, Type, Union
+import traceback
+from types import TracebackType
+from typing import Any, Callable, cast, List, Optional, Tuple, Type, Union
+
+
+def break_exception(self) -> Callable:
+    """Create exception handler for debugging."""
+
+    def excepthook(
+        type: Type[BaseException], value: BaseException, trace: TracebackType
+    ) -> None:
+        """Start debugger on unhandled exception."""
+        traceback.print_exception(type, value, trace)
+        self.pm()
+
+    return excepthook
 
 
 def cat(object: Any, regex: Optional[str] = None) -> None:

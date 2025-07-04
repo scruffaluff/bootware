@@ -17,7 +17,11 @@ __pycache__/
 .sl/
 .svn/
 .tox/
+.vendor/
 .venv/
+.vitepress/cache/
+buck-out/
 node_modules/
 target/
+vendor/
 venv/
