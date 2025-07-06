@@ -1880,6 +1880,21 @@
         - never
         - vim
 
+    - name: Install VisiData terminal data explorer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - server
+            - visidata
+            - wsl
+        name: scruffaluff.bootware.visidata
+      tags:
+        - desktop
+        - server
+        - visidata
+        - wsl
+
     - name: Install VLC video player
       ansible.builtin.include_role:
         apply:

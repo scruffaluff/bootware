@@ -1,0 +1,21 @@
+# VisiData configuration file for terminal data exploration.
+#
+# For more information, visit https://www.visidata.org/docs/customize.
+
+del vd.themes["light"]["color_selected_col"]
+vd.motd = ""
+
+options.theme = "light"
+options.motd_url = ""
+
+vd.unbindkey("h")
+vd.unbindkey("j")
+vd.unbindkey("k")
+vd.unbindkey("l")
+vd.unbindkey(";")
+TableSheet.unbindkey(";")
+
+vd.bindkey("j", "go-left")
+vd.bindkey("k", "go-down")
+vd.bindkey("l", "go-up")
+vd.bindkey(";", "go-right")

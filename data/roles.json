@@ -419,6 +419,10 @@
     "tests": ["vim --version"]
   },
   {
+    "name": "visidata",
+    "tests": ["vd --version"]
+  },
+  {
     "name": "vlc",
     "tests": {
       "default": ["vlc --version"],

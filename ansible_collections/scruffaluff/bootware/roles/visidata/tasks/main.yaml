@@ -1,0 +1,75 @@
+---
+# - name: Install VisiData for FreeBSD
+#   become: true
+#   community.general.pkgng:
+#     name: py-visidata
+#   tags:
+#     - install
+#   when: ansible_system == "FreeBSD"
+
+# - name: Install VisiData for Linux
+#   ansible.builtin.package:
+#     name: visidata
+#   become: true
+#   tags:
+#     - install
+#   when: ansible_system == "Linux"
+
+# - name: Install VisiData for MacOS
+#   become: true
+#   become_user: "{{ brew_user }}"
+#   community.general.homebrew:
+#     name: visidata
+#   tags:
+#     - install
+#   when: ansible_system == "Darwin"
+
+- name: Install VisiData for Unix
+  ansible.builtin.copy:
+    dest: /usr/local/bin/vd
+    force: true
+    mode: "755"
+    src: vd
+  become: true
+  tags:
+    - install
+  when: ansible_system != "Win32NT"
+
+- name: Install VisiData for Windows
+  ansible.windows.win_copy:
+    dest: C:\Program Files\Bin\vd.cmd
+    force: true
+    src: vd.cmd
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Copy VisiData settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.visidatarc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: visidatarc
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Copy VisiData settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\.visidatarc"
+    force: true
+    src: visidatarc
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of VisiData file for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.visidatarc"
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
