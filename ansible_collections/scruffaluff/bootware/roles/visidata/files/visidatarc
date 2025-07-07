@@ -2,6 +2,7 @@
 #
 # For more information, visit https://www.visidata.org/docs/customize.
 
+# Remove invalid option from light theme.
 del vd.themes["light"]["color_selected_col"]
 vd.motd = ""
 

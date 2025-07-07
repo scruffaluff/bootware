@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
-
-exec uv --quiet tool run --from visidata --with h5py vd "$@"
+exec uv --quiet tool run --from visidata --with \
+  h5py,lxml,numpy,openpyxl,pandas,pyarrow,pyyaml vd "$@"
