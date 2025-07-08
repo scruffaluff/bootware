@@ -20,18 +20,18 @@ Describe 'Roles' {
 
     It 'Subcommand applies multiple tags' {
         $Env:BOOTWARE_NOLOG = ''
-        $Actual = & $Bootware roles --skip alacritty,language --tags `
-            server,terminal
+        $Actual = & $Bootware roles --skip firefox,language --tags `
+            browser,server
         $Actual | Should -Contain 'build'
-        $Actual | Should -Contain 'wezterm'
-        $Actual | Should -Not -Contain 'alacritty'
+        $Actual | Should -Contain 'chrome'
         $Actual | Should -Not -Contain 'deno'
+        $Actual | Should -Not -Contain 'firefox'
     }
 
     It 'Subommand default hides never roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles
-        $Actual | Should -Contain 'alacritty'
+        $Actual | Should -Contain 'wezterm'
         $Actual | Should -Not -Contain 'podman'
     }
 
@@ -53,6 +53,6 @@ Describe 'Roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --tags container
         $Actual | Should -Contain 'podman'
-        $Actual | Should -Not -Contain 'alacritty'
+        $Actual | Should -Not -Contain 'wezterm'
     }
 }
