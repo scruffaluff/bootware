@@ -1,2 +1,3 @@
 ---
+wezterm_font_size: "{{ font_size }}"
 wezterm_window_decorations: true

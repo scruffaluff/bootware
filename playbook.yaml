@@ -81,12 +81,12 @@
         apply:
           tags:
             - alacritty
-            - desktop
+            - never
             - terminal
         name: scruffaluff.bootware.alacritty
       tags:
         - alacritty
-        - desktop
+        - never
         - terminal
 
     - name: Install Android Studio

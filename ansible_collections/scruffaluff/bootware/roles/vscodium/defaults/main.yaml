@@ -74,6 +74,7 @@ vscodium_extensions:
   - vscode-icons-team.vscode-icons
   - vue.volar
   - waderyan.gitblame
+vscodium_font_size: "{{ font_size }}"
 vscodium_style: true
 vscodium_path: "{{ vscodium_path_[ansible_system] }}"
 vscodium_remote_extensions:
