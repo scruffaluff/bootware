@@ -9,7 +9,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Presenterm role.
+- Chafa, Presenterm, and Samply role.
+
+### Changed
+
+- Moved FFmpeg to its own role.
 
 ### Removed
 

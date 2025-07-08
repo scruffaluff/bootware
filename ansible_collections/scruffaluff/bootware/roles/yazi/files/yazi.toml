@@ -80,6 +80,12 @@ edit = [
     { for = "windows", orphan = true, run = 'hx "%*"' },
 ]
 
+[plugin]
+preloaders = []
+
 [preview]
 max_height = 1080
 max_width = 1920
+
+[tasks]
+image_bound = [0, 0]

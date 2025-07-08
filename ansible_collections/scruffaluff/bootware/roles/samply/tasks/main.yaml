@@ -1,0 +1,121 @@
+---
+- name: Install Samply for Linux
+  ansible.builtin.package:
+    name: samply
+  become: true
+  ignore_errors: true
+  register: samply_linux
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Get latest Samply version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/samply.json
+  register: samply_formula_linux
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Create Samply temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: samply_temp
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Set Samply temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ samply_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Download Samply for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ samply_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/mstange/samply/releases/download/samply-v{{
+      samply_formula_linux.json.versions.stable }}/samply-{{ samply_arch
+      }}-unknown-linux-{{ system_libc }}.tar.xz
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Install Samply for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/samply
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ samply_temp.path }}/samply-{{ samply_arch }}-unknown-linux-{{
+      system_libc }}/samply
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Install Samply for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: samply
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Get latest Samply version for Windows
+  ansible.windows.win_uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/samply.json
+  register: samply_formula_windows
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Create Samply temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\samply"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Download Samply archive for Windows
+  ansible.windows.win_get_url:
+    dest: "{{ ansible_env.TEMP }}\\samply\\samply.zip"
+    force: true
+    url: >-
+      https://github.com/mstange/samply/releases/download/samply-v{{
+      samply_formula_windows.json.versions.stable }}/samply-{{ samply_arch
+      }}-pc-windows-msvc.zip
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Decompress Samply archive for Windows
+  community.windows.win_unzip:
+    dest: "{{ ansible_env.TEMP }}\\samply\\samply"
+    src: "{{ ansible_env.TEMP }}\\samply\\samply.zip"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Install Samply for Windows
+  ansible.windows.win_copy:
+    dest: C:\Program Files\Bin\samply.exe
+    force: true
+    remote_src: true
+    src: "{{ ansible_env.TEMP }}\\samply\\samply\\samply.exe"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

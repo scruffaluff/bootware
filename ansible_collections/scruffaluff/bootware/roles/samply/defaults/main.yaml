@@ -1,0 +1,5 @@
+---
+samply_arch_:
+  amd64: x86_64
+  arm64: aarch64
+samply_arch: "{{ samply_arch_[system_architecture] }}"

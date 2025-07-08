@@ -641,7 +641,7 @@ alias procs = ^procs --theme light
 # Add Jupyter Lab alias.
 def --wrapped jupylab [...args] {
     (
-        uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy
+        uv --quiet tool run --from jupyterlab --with bokeh,numpy,polars,scipy
         jupyter-lab ...$args
     )
 }

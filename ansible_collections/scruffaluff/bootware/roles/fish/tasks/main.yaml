@@ -86,7 +86,7 @@
     executable: "{{ fish_executable }}"
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install"
+  changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
   register: fish_fisher_install
   tags:
     - install
@@ -102,7 +102,7 @@
     executable: "{{ fish_executable }}"
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installing' in fish_plugin_install"
+  changed_when: "'Installing' in fish_plugin_install.stdout"
   loop: "{{ fish_plugins }}"
   register: fish_plugin_install
   tags:

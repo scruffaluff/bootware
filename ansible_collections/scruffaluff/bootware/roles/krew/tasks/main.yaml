@@ -44,7 +44,7 @@
       {{ krew_temp.path }}/krew-linux_{{ system_architecture }} install krew
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installed plugin' in krew_install"
+  changed_when: "'Installed plugin' in krew_install.stdout"
   register: krew_install
   tags:
     - install
@@ -72,7 +72,7 @@
     cmd: kubectl-krew install {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Installed plugin' in krew_plugin_install"
+  changed_when: "'Installed plugin' in krew_plugin_install.stdout"
   environment:
     PATH: "{{ user_home }}/.krew/bin:{{ ansible_env.PATH }}"
   loop: "{{ krew_plugins }}"

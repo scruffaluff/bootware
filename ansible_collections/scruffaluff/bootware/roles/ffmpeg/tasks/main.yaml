@@ -1,0 +1,54 @@
+---
+- name: Install RPM Fusion for Fedora
+  ansible.builtin.dnf:
+    disable_gpg_check: true
+    name: >-
+      https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{
+      ansible_distribution_major_version }}.noarch.rpm
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+
+- name: Install FFmpeg for Fedora
+  ansible.builtin.command:
+    cmd: dnf swap --allowerasing --assumeyes ffmpeg-free ffmpeg
+  become: true
+  changed_when: "'Nothing to do' not in ffmpeg_install_fedora.stdout"
+  register: ffmpeg_install_fedora
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+
+- name: Install FFmpeg for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install FFmpeg for Linux
+  ansible.builtin.package:
+    name: ffmpeg
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["dnf", "dnf5"]
+
+- name: Install FFmpeg for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install FFmpeg for Windows
+  community.windows.win_scoop:
+    global: true
+    name: ffmpeg
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

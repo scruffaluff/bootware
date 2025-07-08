@@ -110,7 +110,7 @@
     cmd: ya pkg add {{ item }}
   become: true
   become_user: "{{ user_id }}"
-  changed_when: "'Deploying package' in yazi_plugin_install"
+  changed_when: "'Deploying package' in yazi_plugin_install.stdout"
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
   failed_when: >-

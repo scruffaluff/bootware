@@ -10,7 +10,22 @@ import subprocess
 from subprocess import CalledProcessError
 import sys
 import tempfile
-from typing import Any, cast, List, Optional, Tuple, Type, Union
+import traceback
+from types import TracebackType
+from typing import Any, Callable, cast, List, Optional, Tuple, Type, Union
+
+
+def break_exception(self) -> Callable:
+    """Create exception handler for debugging."""
+
+    def excepthook(
+        type: Type[BaseException], value: BaseException, trace: TracebackType
+    ) -> None:
+        """Start debugger on unhandled exception."""
+        traceback.print_exception(type, value, trace)
+        self.pm()
+
+    return excepthook
 
 
 def cat(object: Any, regex: Optional[str] = None) -> None:
@@ -115,7 +130,7 @@ def do_shell(self, line: str) -> None:
     Execute shell command or start interactive shell on empty command.
     """
     arguments = []
-    for argument in shlex.split(line.strip()):
+    for argument in map(os.path.expanduser, shlex.split(line.strip())):
         try:
             object = parse_expr(self, argument)
         except Exception:
@@ -194,7 +209,7 @@ def find_expr(input: str) -> Tuple[int, int, str]:
     """Find Python expression surrounded by '$()'."""
     index = 0
     length = len(input)
-    stack = []
+    stack: List[int] = []
 
     while index < length:
         character = input[index]

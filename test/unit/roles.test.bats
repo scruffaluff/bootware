@@ -18,19 +18,19 @@ roles_subcommand_applies_all_tag() { # @test
 }
 
 roles_subcommand_applies_multiple_tags() { # @test
-  run bash src/bootware.sh roles --skip alacritty,language --tags \
-    server,terminal
+  run bash src/bootware.sh roles --skip firefox,language --tags \
+    browser,server
   assert_success
   assert_output --partial 'build'
-  assert_output --partial 'wezterm'
-  refute_output --partial 'alacritty'
+  assert_output --partial 'chrome'
   refute_output --partial 'deno'
+  refute_output --partial 'firefox'
 }
 
 roles_subcommand_default_hides_never_roles() { # @test
   run bash src/bootware.sh roles
   assert_success
-  assert_output --partial 'alacritty'
+  assert_output --partial 'wezterm'
   refute_output --partial 'podman'
 }
 
@@ -52,5 +52,5 @@ roles_subcommand_tag_hides_desktop_roles() { # @test
   run bash src/bootware.sh roles --tags container
   assert_success
   assert_output --partial 'podman'
-  refute_output --partial 'alacritty'
+  refute_output --partial 'wezterm'
 }
