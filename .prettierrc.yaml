@@ -5,6 +5,8 @@
 ---
 arrowParens: always
 endOfLine: auto
+plugins:
+  - prettier-plugin-toml
 printWidth: 80
 proseWrap: always
 semi: true

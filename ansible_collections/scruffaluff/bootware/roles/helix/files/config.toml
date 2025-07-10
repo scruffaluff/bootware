@@ -35,13 +35,13 @@ enable = true
 
 [editor.statusline]
 right = [
-    "version-control",
-    "diagnostics",
-    "selections",
-    "register",
-    "position",
-    "file-line-ending",
-    "file-encoding",
+  "version-control",
+  "diagnostics",
+  "selections",
+  "register",
+  "position",
+  "file-line-ending",
+  "file-encoding",
 ]
 
 [keys.insert]

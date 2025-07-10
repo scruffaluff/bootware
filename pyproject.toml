@@ -8,7 +8,9 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 
 [project]
-authors = [{ name = "Macklan Weinstein", email = "macklan.weinstein@gmail.com" }]
+authors = [
+  { name = "Macklan Weinstein", email = "macklan.weinstein@gmail.com" },
+]
 description = "Ansible collection for bootstrapping software installations."
 homepage = "https://github.com/scruffaluff/bootware"
 keywords = []

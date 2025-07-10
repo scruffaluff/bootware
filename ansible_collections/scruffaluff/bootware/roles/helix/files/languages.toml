@@ -6,32 +6,32 @@
 name = "bash"
 auto-format = true
 file-types = [
-    "sh",
-    "bash",
-    "zsh",
-    ".bash_login",
-    ".bash_logout",
-    ".bash_profile",
-    ".bashrc",
-    "env",
-    ".profile",
-    ".secrets",
-    ".zshenv",
-    ".zlogin",
-    ".zlogout",
-    ".zprofile",
-    ".zshrc",
-    "APKBUILD",
-    "PKGBUILD",
-    "eclass",
-    "ebuild",
-    "bazelrc",
+  "sh",
+  "bash",
+  "zsh",
+  ".bash_login",
+  ".bash_logout",
+  ".bash_profile",
+  ".bashrc",
+  "env",
+  ".profile",
+  ".secrets",
+  ".zshenv",
+  ".zlogin",
+  ".zlogout",
+  ".zprofile",
+  ".zshrc",
+  "APKBUILD",
+  "PKGBUILD",
+  "eclass",
+  "ebuild",
+  "bazelrc",
 ]
 formatter = { command = "shfmt", args = [
-    "--case-indent",
-    "--space-redirects",
-    "--indent",
-    "2",
+  "--case-indent",
+  "--space-redirects",
+  "--indent",
+  "2",
 ] }
 
 [[language]]
@@ -68,7 +68,17 @@ formatter = { command = "rustfmt" }
 
 [[language]]
 name = "starlark"
-file-types = ["bzl", "bazel", "star", { glob = "BUCK" }, { glob = "BUILD" }, { glob = "BUILD.*" }, { glob = "TARGETS" }, { glob = "Tiltfile" }, { glob = "WORKSPACE" }]
+file-types = [
+  "bzl",
+  "bazel",
+  "star",
+  { glob = "BUCK" },
+  { glob = "BUILD" },
+  { glob = "BUILD.*" },
+  { glob = "TARGETS" },
+  { glob = "Tiltfile" },
+  { glob = "WORKSPACE" },
+]
 
 [[language]]
 name = "typescript"
