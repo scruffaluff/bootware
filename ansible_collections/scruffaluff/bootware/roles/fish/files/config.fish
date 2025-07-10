@@ -615,8 +615,9 @@ prepend-paths $PNPM_HOME
 
 # Visual Studio Code settings.
 
-# Add Visual Studio Code binaries to system path for Linux.
-prepend-paths /usr/share/code/bin
+# Add Visual Studio Code binaries to system path.
+prepend-paths /usr/share/code/bin \
+    '/Applications/Visual Studio Code.app/Contents/Resources/app/bin'
 
 # Yazi settings.
 

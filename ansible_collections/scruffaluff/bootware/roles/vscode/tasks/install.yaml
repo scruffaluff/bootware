@@ -1,0 +1,112 @@
+---
+- name: Install VSCode for Debian
+  ansible.builtin.apt:
+    deb: >-
+      https://update.code.visualstudio.com/latest/linux-deb-{{ vscode_arch
+      }}/stable
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
+
+- name: Add Microsoft GPG key for Fedora and Suse
+  ansible.builtin.rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Create VSCode temporary directory for Fedora
+  ansible.builtin.tempfile:
+    state: directory
+  register: vscode_temp
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Set VSCode temporary directory permissions for Fedora
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ vscode_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+# Package needs to be downloaded to a file with an rpm extension to prevent
+# confusion for Ansible DNF module.
+- name: Download VSCode for Fedora
+  ansible.builtin.get_url:
+    dest: "{{ vscode_temp.path }}/vscode.rpm"
+    mode: "644"
+    url: >-
+      https://update.code.visualstudio.com/latest/linux-rpm-{{ vscode_arch
+      }}/stable
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Install VSCode for Fedora
+  ansible.builtin.dnf:
+    name: "{{ vscode_temp.path }}/vscode.rpm"
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+
+- name: Install VSCode for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: visual-studio-code
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install VSCode for PopOS
+  ansible.builtin.apt:
+    name: code
+  become: true
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
+
+# Do not use Scoop for a global installation of VSCode. It ensures that there is
+# only one settings file for all users.
+- name: Install VSCode for Windows
+  chocolatey.chocolatey.win_chocolatey:
+    choco_args:
+      - --params
+      - "/NoDesktopIcon"
+    name: vscode
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Install VSCode extensions for Unix
+  ansible.builtin.command:
+    cmd: code --install-extension {{ item }}
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'successfully installed' in vscode_extension_install.stdout"
+  environment:
+    PATH: >-
+      /opt/homebrew/bin:/usr/local/bin:/usr/share/code/bin:/Applications/Visual
+      Studio Code.app/Contents/Resources/app/bin:{{ ansible_env.PATH }}
+  loop: "{{ vscode_extensions }}"
+  register: vscode_extension_install
+  tags:
+    - plugin
+  when: ansible_system != "Win32NT"
+
+- name: Install VSCode extensions for Windows
+  ansible.windows.win_shell: code --install-extension {{ item }}
+  changed_when: "'successfully installed' in vscode_extension_install"
+  environment:
+    Path: C:\Program Files\Microsoft VS Code\bin;{{ ansible_env.Path }}
+  loop: "{{ vscode_extensions }}"
+  register: vscode_extension_install
+  tags:
+    - plugin
+  when: ansible_system == "Win32NT"

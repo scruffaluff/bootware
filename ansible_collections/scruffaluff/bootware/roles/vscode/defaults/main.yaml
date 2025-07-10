@@ -1,0 +1,101 @@
+---
+vscode_arch_:
+  amd64: x64
+  arm64: arm64
+vscode_chrome_path_linux_:
+  apk: /usr/bin/chromium
+  apt: /usr/bin/google-chrome
+  dnf: /usr/bin/google-chrome
+  pacman: /usr/sbin/chromium
+vscode_chrome_path_:
+  Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+  FreeBSD: /usr/local/bin/chrome
+  Linux: >-
+    {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
+    }}
+  Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
+vscode_path_linux_:
+  apk: /usr/lib/code-oss/resources/app
+  pacman: /opt/visual-studio-code/resources/app
+vscode_path_:
+  Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
+  FreeBSD: /usr/local/share/code-oss/resources/app
+  Linux: >-
+    {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
+    }}
+  Win32NT: C:\Program Files\Microsoft VS Code\resources\app
+vscode_system_:
+  Darwin: osx
+  Linux: linux
+  Win32NT: windows
+
+vscode_arch: "{{ vscode_arch_[system_architecture] }}"
+vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
+vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscode_custom_html: |
+  <style>
+    .terminal.xterm {
+      top: 0px;
+    }
+  </style>
+vscode_extensions:
+  - 13xforever.language-x86-64-assembly
+  - alefragnani.bookmarks
+  - antfu.vite
+  - bierner.markdown-mermaid
+  - bmalehorn.vscode-fish
+  - bradlc.vscode-tailwindcss
+  - charliermarsh.ruff
+  - coolbear.systemd-unit-file
+  - dan-c-underwood.arm
+  - dbaeumer.vscode-eslint
+  - denoland.vscode-deno
+  - dnut.rewrap-revived
+  - esbenp.prettier-vscode
+  - firefox-devtools.vscode-firefox-debug
+  - foxundermoon.shell-format
+  - grapecity.gc-excelviewer
+  - james-yu.latex-workshop
+  - leanprover.lean4
+  - mhutchie.git-graph
+  - ms-playwright.playwright
+  - ms-python.mypy-type-checker
+  - ms-python.python
+  - ms-vscode-remote.vscode-remote-extensionpack
+  - nefrob.vscode-just-syntax
+  - pomdtr.excalidraw-editor
+  - rust-lang.rust-analyzer
+  - streetsidesoftware.code-spell-checker
+  - sukumo28.wav-preview
+  - svelte.svelte-vscode
+  - tamasfe.even-better-toml
+  - thenuprojectcontributors.vscode-nushell-lang
+  - timonwong.shellcheck
+  - vadimcn.vscode-lldb
+  - vitest.explorer
+  - vscode-icons-team.vscode-icons
+  - vue.volar
+  - waderyan.gitblame
+vscode_font_size: "{{ font_size }}"
+vscode_install_customizations: true
+vscode_path: "{{ vscode_path_[ansible_system] }}"
+vscode_remote_extensions:
+  - alefragnani.bookmarks
+  - bierner.markdown-mermaid
+  - bmalehorn.vscode-fish
+  - coolbear.systemd-unit-file
+  - dnut.rewrap-revived
+  - foxundermoon.shell-format
+  - james-yu.latex-workshop
+  - mhutchie.git-graph
+  - nefrob.vscode-just-syntax
+  - pomdtr.excalidraw-editor
+  - sukumo28.wav-preview
+  - streetsidesoftware.code-spell-checker
+  - tamasfe.even-better-toml
+  - thenuprojectcontributors.vscode-nushell-lang
+  - timonwong.shellcheck
+  - vscode-icons-team.vscode-icons
+  - waderyan.gitblame
+vscode_style: true
+vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"

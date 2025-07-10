@@ -204,7 +204,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Flyctl, K3sup, Wezterm, and Velero roles.
 - GlazeWM tiling window manager for Windows.
-- Unified keybinging for tiling window managers.
+- Unified keybinding for tiling window managers.
 - Utility role for miscellaneous system tools.
 
 ### Changed
@@ -433,7 +433,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Alpine support.
 - Cuda and Nvidia Docker installations.
 - Deno autocompletion support for Windows.
-- Environment variable documenation.
+- Environment variable documentation.
 - Flag --debug to set Ansible task debugger.
 - Java, Julia, Parquet, Vagrant, Virtualbox, and Xsv roles.
 

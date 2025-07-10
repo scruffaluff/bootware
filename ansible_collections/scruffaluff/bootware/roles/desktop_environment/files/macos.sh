@@ -227,6 +227,8 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
     </dict>
   </dict>
 '
+# Disable extra bindings for Fn key.
+defaults write com.apple.HIToolbox AppleFnUsageType -int 0
 
 # Privacy settings.
 

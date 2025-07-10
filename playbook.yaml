@@ -1891,6 +1891,19 @@
         - desktop
         - vlc
 
+    - name: Install VSCode text editor
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - editor
+            - never
+            - vscode
+        name: scruffaluff.bootware.vscode
+      tags:
+        - editor
+        - never
+        - vscode
+
     - name: Install VSCodium text editor
       ansible.builtin.include_role:
         apply:

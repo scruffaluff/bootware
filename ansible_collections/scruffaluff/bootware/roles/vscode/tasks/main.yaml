@@ -1,0 +1,30 @@
+---
+- name: Install VSCode
+  ansible.builtin.import_tasks: install.yaml
+  when: >-
+    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
+    ansible_pkg_mgr not in ["apk", "pacman"]
+
+- name: Configure VSCode user settings
+  ansible.builtin.import_tasks: config.yaml
+  when: >-
+    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
+    ansible_pkg_mgr not in ["apk", "pacman"]
+
+- name: Apply custom styles to VSCode
+  ansible.builtin.import_tasks: style.yaml
+  when: >-
+    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
+    ansible_pkg_mgr not in ["apk", "pacman"]
+
+- name: Set owner of VSCode files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - .vscode
+    - AppData\Roaming\VSCode
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
