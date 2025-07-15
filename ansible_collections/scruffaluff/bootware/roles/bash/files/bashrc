@@ -140,6 +140,9 @@ tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
 # System settings.
 
+# Set terminal environment variable if empty.
+export TERM="${TERM:-xterm-256color}"
+
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -149,16 +152,16 @@ prepend-paths '/usr/sbin' '/usr/local/bin' '/opt/homebrew/sbin' \
 
 # Alacritty settings.
 
+# Autostart Zellij or connect to existing session if within Alacritty terminal
+# and within an interactive shell for the login user. For more information,
+# visit https://zellij.dev/documentation/integration.html.
+#
 # Flags:
 #   -n: Check if string is nonempty.
 #   -v: Only show file path of command.
 #   -x: Check if file exists and execute permission is granted.
 #   -z: Check if the string is empty.
 if [[ -n "${tty}" && "${TERM}" == 'alacritty' && -z "${TERM_PROGRAM}" ]]; then
-  # Autostart Zellij or connect to existing session if within Alacritty
-  # terminal and within an interactive shell for the login user. For more
-  # information, visit https://zellij.dev/documentation/integration.html.
-  #
   # Do not use logname command, since it sometimes incorrectly returns "root"
   # on MacOS. For for information, visit
   # https://github.com/vercel/hyper/issues/3762.

@@ -23,14 +23,14 @@ edit = [
   { block = true, desc = "%EDITOR%", for = "windows", run = '%EDITOR% %*' },
 ]
 show = [
-  { block = true, desc = "chafa", for = "unix", run = 'chafa --clear --align center --duration infinite--scale max "$@"; clear' },
-  { block = true, desc = "chafa", for = "windows", run = 'chafa --clear --align center --duration infinite --scale max %*; clear' },
-  { block = true, desc = "mediainfo", for = "unix", run = '''mediainfo "$1"; echo "Press enter to exit"; read _''' },
+  { block = true, desc = "chafa", for = "unix", run = 'chafa --clear --align center --duration infinite --scale max "$1"; clear' },
+  { block = true, desc = "chafa", for = "windows", run = 'chafa --clear --align center --duration infinite --scale max %1; clear' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
 ]
 sound = [
-  { desc = "mpv", for = "unix", orphan = true, run = 'mpv --no-video "$@"' },
-  { desc = "mpv", for = "windows", orphan = true, run = 'mpv --no-video %*' },
-  { block = true, desc = "mediainfo", for = "unix", run = '''mediainfo "$1"; echo "Press enter to exit"; read _''' },
+  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video "$1"' },
+  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %1' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
 ]
 
 [plugin]
