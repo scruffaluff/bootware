@@ -160,6 +160,9 @@
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH
       }}
+  failed_when: >-
+    vscodium_extension_install.rc != 0 and 'already installed' not in
+    vscodium_extension_install.stderr
   loop: "{{ vscodium_extensions }}"
   register: vscodium_extension_install
   tags:
@@ -171,6 +174,9 @@
   changed_when: "'successfully installed' in vscodium_extension_install"
   environment:
     Path: C:\Program Files\VSCodium\bin;{{ ansible_env.Path }}
+  failed_when: >-
+    vscodium_extension_install.rc != 0 and 'already installed' not in
+    vscodium_extension_install.stderr
   loop: "{{ vscodium_extensions }}"
   register: vscodium_extension_install
   tags:

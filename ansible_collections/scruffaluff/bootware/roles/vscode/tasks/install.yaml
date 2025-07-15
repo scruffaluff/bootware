@@ -94,6 +94,9 @@
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/code/bin:/Applications/Visual
       Studio Code.app/Contents/Resources/app/bin:{{ ansible_env.PATH }}
+  failed_when: >-
+    vscode_extension_install.rc != 0 and 'already installed' not in
+    vscode_extension_install.stderr
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
   tags:
@@ -105,6 +108,9 @@
   changed_when: "'successfully installed' in vscode_extension_install"
   environment:
     Path: C:\Program Files\Microsoft VS Code\bin;{{ ansible_env.Path }}
+  failed_when: >-
+    vscode_extension_install.rc != 0 and 'already installed' not in
+    vscode_extension_install.stderr
   loop: "{{ vscode_extensions }}"
   register: vscode_extension_install
   tags:
