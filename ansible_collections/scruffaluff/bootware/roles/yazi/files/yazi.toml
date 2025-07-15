@@ -28,8 +28,8 @@ show = [
   { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
 ]
 sound = [
-  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video "$1"' },
-  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %1' },
+  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video "$1"; clear' },
+  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %1; clear' },
   { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
 ]
 

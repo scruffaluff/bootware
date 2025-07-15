@@ -9,7 +9,7 @@
   become: true
   loop:
     - "{{ vscode_path }}/product.json"
-    - "{{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html"
+    - "{{ vscode_path }}/out/vs/code/electron-browser/workbench/workbench.html"
   tags:
     - config
   when: ansible_system != "Win32NT"
@@ -23,7 +23,7 @@
   loop:
     - "{{ vscode_path }}\\product.json"
     - >-
-      {{ vscode_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
+      {{ vscode_path }}\out\vs\code\electron-browser\workbench\workbench.html
   tags:
     - config
   when: ansible_system == "Win32NT"
@@ -36,7 +36,7 @@
     marker: >-
       <!--{mark} ANSIBLE MANAGED styles for VSCode BLOCK-->
     path: >-
-      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+      {{ vscode_path }}/out/vs/code/electron-browser/workbench/workbench.html
   become: true
   tags:
     - config
@@ -48,7 +48,7 @@
     insertbefore: </html>
     line: "{{ vscode_custom_html | replace('\n', '') }}"
     path: >-
-      {{ vscode_path }}\out\vs\code\electron-sandbox\workbench\workbench.html
+      {{ vscode_path }}\out\vs\code\electron-browser\workbench\workbench.html
     state: present
   tags:
     - config
@@ -57,7 +57,7 @@
 - name: Read contents of VSCode workbench file
   ansible.builtin.slurp:
     src: >-
-      {{ vscode_path }}/out/vs/code/electron-sandbox/workbench/workbench.html
+      {{ vscode_path }}/out/vs/code/electron-browser/workbench/workbench.html
   register: vscode_workbench_file
   tags:
     - config
@@ -75,7 +75,7 @@
     backrefs: true
     line: '\g<1>"{{ vscode_workbench_checksum }}",'
     path: "{{ vscode_path }}/product.json"
-    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    regexp: '^(\s+"vs/code/electron-browser/workbench/workbench.html":\s+)".*",$'
     state: present
   become: true
   tags:
@@ -87,7 +87,7 @@
     backrefs: true
     line: '$1"{{ vscode_workbench_checksum }}",'
     path: "{{ vscode_path }}/product.json"
-    regexp: '^(\s+"vs/code/electron-sandbox/workbench/workbench.html":\s+)".*",$'
+    regexp: '^(\s+"vs/code/electron-browser/workbench/workbench.html":\s+)".*",$'
     state: present
   tags:
     - config
