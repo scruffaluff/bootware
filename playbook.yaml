@@ -1856,18 +1856,14 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - kubernetes
-            - server
+            - never
             - velero
-            - wsl
         name: scruffaluff.bootware.velero
       tags:
-        - desktop
         - kubernetes
-        - server
+        - never
         - velero
-        - wsl
 
     - name: Install Vim text editor
       ansible.builtin.include_role:

@@ -176,14 +176,16 @@ $Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
 $Env:HOME = "$($Env:HOMEDRIVE)$($Env:HOMEPATH)"
 $Env:USER = $Env:USERNAME
 
+# Set terminal environment variable if empty.
+if (-not ($TERM)) {
+    $Env:TERM = 'xterm-256color'
+}
+
 # Alacritty settings.
 
+# Autostart Zellij or connect to existing session if within Alacritty terminal.
+# For more information, visit https://zellij.dev/documentation/integration.html.
 if ($Tty -and ($Env:TERM -eq 'alacritty') -and (-not ($TERM_PROGRAM))) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal.
-    #
-    # For more information, visit
-    # https://zellij.dev/documentation/integration.html.
     if (
         (Get-Command -ErrorAction SilentlyContinue zellij) -and
         (-not $(ssh-session))

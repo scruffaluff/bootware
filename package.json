@@ -4,7 +4,7 @@
     "@types/node": "^22.10.0",
     "commander": "^13.1.0",
     "mustache": "^4.2.0",
-    "prettier": "^3.5.0",
+    "prettier": "^3.6.2",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "vitepress": "^1.6.0",

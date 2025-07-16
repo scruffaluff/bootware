@@ -457,6 +457,11 @@ if $nu.os-info.name == "windows" {
     $env.USER = $env.USER?
 }
 
+# Set terminal environment variable if empty.
+if ($env.TERM? | is-empty) {
+    $env.TERM = "xterm-256color"
+}
+
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -468,16 +473,13 @@ if $nu.os-info.name == "windows" {
 
 # Alacritty settings.
 
+# Autostart Zellij or connect to existing session if within Alacritty
+# terminal and within an interactive shell for the login user. For more
+# information, visit https://zellij.dev/documentation/integration.html.
 if (
     $nu.is-interactive and $env.TERM? == "alacritty" and "TERM_PROGRAM" not-in
     $env
 ) {
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
-    # Based on output of "zellij setup --generate-auto-start bash" command.
-    #
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.

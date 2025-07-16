@@ -81,7 +81,11 @@
   { "name": "ffmpeg", "tests": ["ffmpeg -version"] },
   {
     "name": "ffsend",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "windows" }],
+    "skip": [
+      { "arch": "arm64", "os": "linux" },
+      { "os": "freebsd" },
+      { "os": "windows" }
+    ],
     "tests": ["ffsend --version"]
   },
   {

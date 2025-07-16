@@ -14,14 +14,14 @@ title = { fg = "#268bd2" }
 
 [filetype]
 rules = [
-    { fg = "#268bd2", name = "*/" },
-	{ fg = "#b58900", mime = "{audio,image,video}/*" },
-	{ fg = "#d33682", mime = "application/{gzip,zip}" },
-	{ fg = "#d33682", mime = "application/{7z*,bzip*,rar,tar,xz}" },
-	{ fg = "#2aa198", mime = "application/{doc,msword,pdf,rtf,vnd.ms-*,vnd.openxmlformats-*}" },
-    { fg = "#859900", is = "exec", name = "*" },
-    { fg = "#dc322f", is = "orphan", name = "*" },
-    { fg = "#586e75", name = "*"},
+  { fg = "#268bd2", name = "*/" },
+  { fg = "#b58900", mime = "{audio,image,video}/*" },
+  { fg = "#d33682", mime = "application/{gzip,zip}" },
+  { fg = "#d33682", mime = "application/{7z*,bzip*,rar,tar,xz}" },
+  { fg = "#2aa198", mime = "application/{doc,msword,pdf,rtf,vnd.ms-*,vnd.openxmlformats-*}" },
+  { fg = "#859900", is = "exec", name = "*" },
+  { fg = "#dc322f", is = "orphan", name = "*" },
+  { fg = "#586e75", name = "*" },
 ]
 
 [help]

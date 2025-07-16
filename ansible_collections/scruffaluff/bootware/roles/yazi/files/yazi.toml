@@ -6,78 +6,31 @@
 ratio = [0, 1, 2]
 
 [open]
-rules = [
-    { mime = "*/javascript", use = [
-        "edit",
-        "reveal",
-    ] },
-    { mime = "application/gzip", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/7z-compressed", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/bzip", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/bzip2", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/rar", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/tar", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "application/json", use = [
-        "edit",
-        "reveal",
-    ] },
-    { mime = "application/zip", use = [
-        "extract",
-        "reveal",
-    ] },
-    { mime = "audio/*", use = [
-        "play",
-        "reveal",
-    ] },
-    { mime = "image/*", use = [
-        "open",
-        "reveal",
-    ] },
-    { mime = "inode/empty", use = [
-        "edit",
-        "reveal",
-    ] },
-    { mime = "video/*", use = [
-        "play",
-        "reveal",
-    ] },
-    { mime = "text/*", use = [
-        "edit",
-        "reveal",
-    ] },
-    { mime = "*", use = [
-        "open",
-        "reveal",
-    ] },
-    { name = "*/", use = [
-        "edit",
-        "open",
-        "reveal",
-    ] },
+prepend_rules = [
+  { mime = "audio/*", use = [
+    "sound",
+    "reveal",
+  ] },
+  { mime = "image/*", use = [
+    "show",
+    "reveal",
+  ] },
 ]
 
 [opener]
 edit = [
-    { block = true, for = "unix", run = '$EDITOR "$@"' },
-    { for = "windows", orphan = true, run = 'hx "%*"' },
+  { block = true, desc = "$EDITOR", for = "unix", run = '${EDITOR:-vi} "$@"' },
+  { block = true, desc = "%EDITOR%", for = "windows", run = '%EDITOR% %*' },
+]
+show = [
+  { block = true, desc = "chafa", for = "unix", run = 'chafa --clear --align center --duration infinite --scale max "$1"; clear' },
+  { block = true, desc = "chafa", for = "windows", run = 'chafa --clear --align center --duration infinite --scale max %1; clear' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
+]
+sound = [
+  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video "$1"; clear' },
+  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %1; clear' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
 ]
 
 [plugin]

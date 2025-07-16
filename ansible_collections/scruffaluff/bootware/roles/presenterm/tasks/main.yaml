@@ -45,7 +45,7 @@
       https://github.com/mfontanini/presenterm/releases/download/v{{
       presenterm_formula.json.versions.stable }}/presenterm-{{
       presenterm_formula.json.versions.stable }}-{{ presenterm_arch
-      }}-unknown-linux-{{ system_libc }}.tar.gz
+      }}-unknown-linux-{{ presenterm_libc }}.tar.gz
   become: true
   tags:
     - install

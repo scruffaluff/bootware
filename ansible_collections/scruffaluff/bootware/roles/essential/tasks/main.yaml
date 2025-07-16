@@ -81,7 +81,8 @@
 
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: scoop bucket add {{ item }}
-  changed_when: "'bucket was added successfully' in essential_scoop_bucket"
+  changed_when: >-
+    'bucket was added successfully' in essential_scoop_bucket.stdout
   environment:
     Path: >-
       {{ user_home }}\\scoop\\shims;C:\\ProgramData\\scoop\\shims;{{

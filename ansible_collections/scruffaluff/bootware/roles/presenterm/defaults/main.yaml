@@ -3,3 +3,6 @@ presenterm_arch_:
   amd64: x86_64
   arm64: aarch64
 presenterm_arch: "{{ presenterm_arch_[system_architecture] }}"
+presenterm_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.38", ">") else 'musl' }}

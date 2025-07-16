@@ -163,7 +163,7 @@
     (pipx install {{ item.name if item.name is defined else item }}) -And ({{
     'pipx inject ' + item.name + ' ' + (item.extras | join(' ')) if item.extras
     is defined else '? .' }})
-  changed_when: "'already installed' not in python_application_windows"
+  changed_when: "'already installed' not in python_application_windows.stderr"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ python_applications }}"

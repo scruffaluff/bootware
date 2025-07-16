@@ -235,6 +235,14 @@ end
 
 # System settings.
 
+# Set terminal environment variable if empty.
+#
+# Flags:
+#   -z: Check if the string is empty.
+if test -z "$TERM"
+    set --export TERM xterm-256color
+end
+
 # Add directories to system path that are not always included.
 #
 # Homebrew ARM directories should appear in system path before AMD directories
@@ -244,15 +252,15 @@ prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 
 # Alacritty settings.
 
+# Autostart Zellij or connect to existing session if within Alacritty terminal
+# and within an interactive shell for the login user. For more information,
+# visit https://zellij.dev/documentation/integration.html.
+#
 # Flags:
 #   -n: Check if string is nonempty.
 #   -q: Only check for exit status by supressing output.
 #   -z: Check if the string is empty.
 if test -n $tty; and test "$TERM" = alacritty; and test -z "$TERM_PROGRAM"
-    # Autostart Zellij or connect to existing session if within Alacritty
-    # terminal and within an interactive shell for the login user. For more
-    # information, visit https://zellij.dev/documentation/integration.html.
-    #
     # Do not use logname command, since it sometimes incorrectly returns "root"
     # on MacOS. For for information, visit
     # https://github.com/vercel/hyper/issues/3762.

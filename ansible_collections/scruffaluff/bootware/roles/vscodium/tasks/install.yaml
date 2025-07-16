@@ -160,6 +160,9 @@
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH
       }}
+  failed_when: >-
+    vscodium_extension_install.rc != 0 and 'already installed' not in
+    vscodium_extension_install.stdout
   loop: "{{ vscodium_extensions }}"
   register: vscodium_extension_install
   tags:
@@ -168,9 +171,12 @@
 
 - name: Install VSCodium extensions for Windows
   ansible.windows.win_shell: codium --install-extension {{ item }}
-  changed_when: "'successfully installed' in vscodium_extension_install"
+  changed_when: "'successfully installed' in vscodium_extension_install.stdout"
   environment:
     Path: C:\Program Files\VSCodium\bin;{{ ansible_env.Path }}
+  failed_when: >-
+    vscodium_extension_install.rc != 0 and 'already installed' not in
+    vscodium_extension_install.stdout
   loop: "{{ vscodium_extensions }}"
   register: vscodium_extension_install
   tags:
