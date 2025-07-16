@@ -101,7 +101,7 @@
   ansible.builtin.set_fact:
     vscodium_workbench_checksum: >-
       {{ vscodium_workbench_file['content'] | b64decode |
-      scruffaluff.bootware.vscodium_checksum }}
+      scruffaluff.bootware.vscode_checksum }}
   tags:
     - config
 
