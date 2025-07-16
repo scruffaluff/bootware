@@ -13,6 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Integrated terminal openers for Yazi.
 - Moved FFmpeg to its own role.
 
 ### Removed

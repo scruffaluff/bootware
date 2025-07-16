@@ -10,14 +10,6 @@
     - install
   when: ansible_pkg_mgr == "apk"
 
-- name: Install FFSend for FreeBSD
-  become: true
-  community.general.pkgng:
-    name: ffsend
-  tags:
-    - install
-  when: ansible_system == "FreeBSD"
-
 - name: Get latest FFSend version for Linux
   ansible.builtin.uri:
     method: GET
