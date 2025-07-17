@@ -42,7 +42,7 @@
     src: >-
       https://github.com/astral-sh/uv/releases/download/{{
       uv_formula.json.versions.stable }}/uv-{{ uv_arch }}-unknown-linux-{{
-      system_libc }}.tar.gz
+      uv_libc }}.tar.gz
   tags:
     - install
   when: ansible_system == "Linux"
@@ -53,8 +53,7 @@
     force: true
     mode: "755"
     remote_src: true
-    src: >-
-      {{ uv_temp.path }}/uv-{{ uv_arch }}-unknown-linux-{{ system_libc }}/uv
+    src: "{{ uv_temp.path }}/uv-{{ uv_arch }}-unknown-linux-{{ uv_libc }}/uv"
   become: true
   tags:
     - install

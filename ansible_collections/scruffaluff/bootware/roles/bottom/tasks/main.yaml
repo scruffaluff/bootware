@@ -52,7 +52,7 @@
     src: >-
       https://github.com/ClementTsang/bottom/releases/download/{{
       bottom_formula.json.versions.stable }}/bottom_{{
-      bottom_arch[system_architecture] }}-unknown-linux-{{ system_libc }}.tar.gz
+      bottom_arch[system_architecture] }}-unknown-linux-{{ bottom_libc }}.tar.gz
   tags:
     - install
   vars:

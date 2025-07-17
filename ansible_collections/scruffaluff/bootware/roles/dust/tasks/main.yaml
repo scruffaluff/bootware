@@ -43,7 +43,7 @@
       https://github.com/bootandy/dust/releases/download/v{{
       dust_formula.json.versions.stable }}/dust-v{{
       dust_formula.json.versions.stable }}-{{ dust_arch }}-unknown-linux-{{
-      system_libc }}.tar.gz
+      dust_libc }}.tar.gz
   tags:
     - install
   when: ansible_system == "Linux"
@@ -56,7 +56,7 @@
     remote_src: true
     src: >-
       {{ dust_temp.path }}/dust-v{{ dust_formula.json.versions.stable }}-{{
-      dust_arch }}-unknown-linux-{{ system_libc }}/dust
+      dust_arch }}-unknown-linux-{{ dust_libc }}/dust
   become: true
   tags:
     - install
