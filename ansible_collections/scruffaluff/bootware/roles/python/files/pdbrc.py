@@ -1,6 +1,7 @@
 """Python debugger settings file."""
 
 import inspect
+import itertools
 import os
 from pathlib import Path
 import pprint
@@ -206,10 +207,13 @@ def error(message: Union[str, Exception]) -> None:
 
 
 def find_expr(input: str) -> Tuple[int, int, str]:
-    """Find Python expression surrounded by '$()'."""
+    """Find Python variables starting with % or expression surrounded by '%{}'."""
+    first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
+    chars = first_chars + list(map(chr, range(48, 58)))
     index = 0
     length = len(input)
     stack: List[int] = []
+    variable: List[int] = []
 
     while index < length:
         character = input[index]
@@ -219,16 +223,24 @@ def find_expr(input: str) -> Tuple[int, int, str]:
             next_ = None
 
         if stack:
-            if character == ")":
+            if character == "}":
                 start = stack.pop()
                 if not stack:
                     return start - 2, index + 1, input[start:index]
-            elif character == "(":
+            elif character == "{":
                 stack.append(index + 1)
             index += 1
-        elif character == "$" and next_ == "(":
+        elif variable:
+            index += 1
+            if next_ not in chars:
+                start = variable.pop()
+                return start - 1, index, input[start:index]
+        elif character == "%" and next_ == "{":
             stack.append(index + 2)
             index += 2
+        elif character == "%" and next_ in first_chars:
+            variable.append(index + 1)
+            index += 1
         else:
             index += 1
     return length, length, ""
