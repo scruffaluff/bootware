@@ -1,4 +1,4 @@
-FROM docker.io/debian:12.10
+FROM docker.io/debian:12.11
 
 ARG TARGETARCH
 
