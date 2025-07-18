@@ -57,6 +57,17 @@ format:
     [System.IO.File]::WriteAllText($Script.FullName, $Text)
   }
 
+# Initialize project.
+init: _setup _init && format
+  npm install
+
+[unix]
+_init:
+  poetry install
+
+[windows]
+_init:
+
 # Run code analyses.
 [unix]
 lint:

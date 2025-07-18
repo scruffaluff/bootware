@@ -21,7 +21,6 @@ on:
         description: Use Tmate session for debugging
         type: boolean
       job:
-        default: debian
         description: CI job to run
         options:
           - alpine
@@ -32,6 +31,7 @@ on:
           - macos
           - ubuntu
           - windows
+        required: true
         type: choice
       platform:
         default: amd64

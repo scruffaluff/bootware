@@ -22,13 +22,13 @@ on:
         description: Use Tmate session for debugging
         type: boolean
       job:
-        default: test
         description: CI job to run
         options:
           - build
           - package
           - pages
           - release
+        required: true
         type: choice
       os:
         description: Operating system
@@ -97,7 +97,7 @@ jobs:
       - name: Run CI workflow commands
         run: just ci
       - if: ${{ always() && inputs.debug }}
-        name: Setup Tmate session if debug enabled
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -191,7 +191,7 @@ jobs:
         with:
           artifact_name: pages
       - if: ${{ always() && inputs.debug }}
-        name: Setup Tmate session if debug enabled
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
@@ -289,6 +289,6 @@ jobs:
           asset_path: build/dist/bootware.rb
           upload_url: ${{ steps.release.outputs.upload_url }}
       - if: ${{ always() && inputs.debug }}
-        name: Setup Tmate session if debug enabled
+        name: Launch Tmate session if debug enabled
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3

@@ -10,6 +10,7 @@ __pycache__/
 .hg/
 .hypothesis/
 .ipynb_checkpoints/
+.jj/
 .mypy_cache/
 .obsidian/
 .pytest_cache/
