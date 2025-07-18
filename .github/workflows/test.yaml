@@ -187,7 +187,7 @@ jobs:
           prepare: |
             pkg update -f
             pkg install --yes curl
-          release: "14.2"
+          release: "14.3"
           # Audacity and Musescore tests are skipped in FreeBSD VM since they
           # require a display connection. Python is skipped since Poetry fails
           # during installation as of 02/28/2025. Security role is skipped since

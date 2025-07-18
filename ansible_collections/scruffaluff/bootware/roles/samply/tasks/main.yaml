@@ -44,7 +44,7 @@
     src: >-
       https://github.com/mstange/samply/releases/download/samply-v{{
       samply_formula_linux.json.versions.stable }}/samply-{{ samply_arch
-      }}-unknown-linux-{{ system_libc }}.tar.xz
+      }}-unknown-linux-{{ samply_libc }}.tar.xz
   tags:
     - install
   when: ansible_system == "Linux" and samply_linux is failed
@@ -57,7 +57,7 @@
     remote_src: true
     src: >-
       {{ samply_temp.path }}/samply-{{ samply_arch }}-unknown-linux-{{
-      system_libc }}/samply
+      samply_libc }}/samply
   become: true
   tags:
     - install

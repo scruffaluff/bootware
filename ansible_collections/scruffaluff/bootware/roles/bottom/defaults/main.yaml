@@ -1,8 +1,4 @@
 ---
-samply_arch_:
-  amd64: x86_64
-  arm64: aarch64
-samply_arch: "{{ samply_arch_[system_architecture] }}"
-samply_libc: >-
+bottom_libc: >-
   {{ 'gnu' if glibc_version is defined and glibc_version is
   ansible.builtin.version("2.28", ">") else 'musl' }}

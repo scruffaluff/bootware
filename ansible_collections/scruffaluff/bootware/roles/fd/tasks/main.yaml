@@ -42,7 +42,7 @@
     src: >-
       https://github.com/sharkdp/fd/releases/download/v{{
       fd_formula.json.versions.stable }}/fd-v{{ fd_formula.json.versions.stable
-      }}-{{ fd_arch }}-unknown-linux-{{ system_libc }}.tar.gz
+      }}-{{ fd_arch }}-unknown-linux-{{ fd_libc }}.tar.gz
   tags:
     - install
   when: ansible_system == "Linux"
@@ -55,7 +55,7 @@
     remote_src: true
     src: >-
       {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
-      }}-unknown-linux-{{ system_libc }}/fd
+      }}-unknown-linux-{{ fd_libc }}/fd
   become: true
   tags:
     - install
@@ -86,7 +86,7 @@
     remote_src: true
     src: >-
       {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
-      }}-unknown-linux-{{ system_libc }}/autocomplete/fd.{{ item.shell }}
+      }}-unknown-linux-{{ fd_libc }}/autocomplete/fd.{{ item.shell }}
   become: true
   loop:
     - dest: "{{ bash_completion }}/fd"

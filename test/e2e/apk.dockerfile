@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.21.3 AS build
+FROM docker.io/alpine:3.22.1 AS build
 
 ARG version
 
@@ -39,7 +39,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/alpine:3.21.3
+FROM docker.io/alpine:3.22.1
 
 ARG version
 

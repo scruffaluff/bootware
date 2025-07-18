@@ -1,4 +1,4 @@
-FROM docker.io/archlinux:base-20250504.0.344409
+FROM docker.io/archlinux:base-20250713.0.382768
 
 ARG TARGETARCH
 

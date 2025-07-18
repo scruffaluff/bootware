@@ -1,4 +1,4 @@
-FROM docker.io/debian:12.10 AS build
+FROM docker.io/debian:12.11 AS build
 
 ARG version
 
@@ -19,7 +19,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/debian:12.10
+FROM docker.io/debian:12.11
 
 ARG version
 

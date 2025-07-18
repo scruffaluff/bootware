@@ -3,3 +3,6 @@ fd_arch_:
   amd64: x86_64
   arm64: aarch64
 fd_arch: "{{ fd_arch_[system_architecture] }}"
+fd_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.17", ">") else 'musl' }}
