@@ -3,7 +3,7 @@
 # For more information, visit https://just.systems.
 
 set unstable := true
-set windows-shell := ['powershell.exe', '-NoLogo', '-Command']
+set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
   join(justfile_dir(), ".vendor\\bin;") + env("Path")
 } else {
@@ -57,17 +57,6 @@ format:
     [System.IO.File]::WriteAllText($Script.FullName, $Text)
   }
 
-# Initialize project.
-init: _setup _init && format
-  npm install
-
-[unix]
-_init:
-  poetry install
-
-[windows]
-_init:
-
 # Run code analyses.
 [unix]
 lint:
@@ -97,13 +86,8 @@ lint:
     data/config/script_analyzer.psd1
 
 # Install development dependencies.
-setup: _setup
-  node --version
-  npm --version
-  npm ci
-
 [unix]
-_setup:
+setup:
   #!/usr/bin/env sh
   set -eu
   arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
@@ -167,11 +151,21 @@ _setup:
   python3 --version
   python3 -m venv .venv
   poetry --version
-  poetry check --lock
+  if [ -z "${JUST_INIT:-}" ]; then
+    poetry check --lock
+  fi
   poetry install
+  node --version
+  npm --version
+  if [ -n "${JUST_INIT:-}" ]; then
+    npm install
+  else
+    npm ci
+  fi
 
+# Install development dependencies.
 [windows]
-_setup:
+setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
   $ProgressPreference = 'SilentlyContinue'
@@ -219,6 +213,14 @@ _setup:
       "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_$Arch.exe"
   }
   yq --version
+  node --version
+  npm --version
+  if ("$Env:JUST_INIT") {
+    npm install
+  }
+  else {
+    npm ci
+  }
 
 # Run test suites.
 test: test-unit test-pkg test-e2e

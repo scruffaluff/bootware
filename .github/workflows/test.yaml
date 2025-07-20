@@ -188,20 +188,21 @@ jobs:
             pkg update -f
             pkg install --yes curl
           release: "14.3"
-          # Audacity and Musescore tests are skipped in FreeBSD VM since they
-          # require a display connection. Gdu is skipped as 07/20/2025 it is not
-          # available in FreeBSD 14.3 yet. Node is skipped since Mermaid CLI
-          # fails during installation as of 02/28/2025. Security role is skipped
-          # since it breaks the freebsd-vm action's Rsync connection by
-          # enforcing stricter SSH rules. VLC is skipped since it cannot run as
-          # root.
+          # Gdu is skipped as 07/20/2025 it is not available in FreeBSD 14.3
+          # yet. Node is skipped since Mermaid CLI fails during installation as
+          # of 07/20/2025. Security role is skipped since it breaks the
+          # freebsd-vm action's Rsync connection by enforcing stricter SSH
+          # rules. Audacity and Musescore tests are skipped in FreeBSD VM since
+          # they require a display connection. VLibvirt and QEMU tests are
+          # skipped since the packages are broken on FreeBSD 14.3 as of
+          # 07/20/2025. LC test is skipped since it cannot run as root.
           run: |
             set -eu
             src/install.sh --global
             install src/bootware.sh $(which bootware)
             bootware setup
             bootware bootstrap --dev --no-passwd --retries 3 --skip gdu,node,security --tags all,never
-            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,gdu,musescore,node,vlc freebsd'
+            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,gdu,libvirt,musescore,node,qemu,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
