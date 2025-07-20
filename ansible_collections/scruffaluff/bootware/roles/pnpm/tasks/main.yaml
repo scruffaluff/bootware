@@ -118,7 +118,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT" and user_id != "root"
+  when: ansible_system in ["Darwin", "Linux"] and user_id != "root"
 
 - name: Set owner of PNPM files for Windows
   ansible.windows.win_owner:

@@ -9,15 +9,16 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Install Yazi for Linux
-  ansible.builtin.package:
-    name: yazi
-  become: true
-  ignore_errors: true
-  register: yazi_linux
-  tags:
-    - install
-  when: ansible_system == "Linux"
+# Disabled since many package manager include an incomplete version of Yazi.
+# - name: Install Yazi for Linux
+#   ansible.builtin.package:
+#     name: yazi
+#   become: true
+#   ignore_errors: true
+#   register: yazi_linux
+#   tags:
+#     - install
+#   when: ansible_system == "Linux"
 
 - name: Create Yazi temporary directory for Linux
   ansible.builtin.tempfile:
@@ -64,7 +65,7 @@
     - yazi
   tags:
     - install
-  when: ansible_system == "Linux" and yazi_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Install Yazi for MacOS
   become: true
