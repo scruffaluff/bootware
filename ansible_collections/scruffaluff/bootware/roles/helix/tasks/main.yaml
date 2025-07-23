@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     helix_glibc_support: >-
       {{ glibc_version is defined and glibc_version is
-      ansible.builtin.version("2.38", ">") }}
+      ansible.builtin.version("2.33", ">") }}
   tags:
     - install
   when: ansible_system == "Linux"

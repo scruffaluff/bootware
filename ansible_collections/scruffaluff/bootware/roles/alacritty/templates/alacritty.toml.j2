@@ -84,6 +84,11 @@ chars = "\ue005"
 key = "j"
 mods = "Control"
 
+[[keyboard.bindings]]
+chars = "\ue006"
+key = "."
+mods = "Control"
+
 [terminal.shell]
 args = ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"]
 program = '{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}'

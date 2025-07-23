@@ -57,6 +57,16 @@ format:
     [System.IO.File]::WriteAllText($Script.FullName, $Text)
   }
 
+# Install project programs.
+[unix]
+install *args:
+  src/install.sh {{args}}
+
+# Install project programs.
+[windows]
+install *args:
+  src/install.ps1 {{args}}
+
 # Run code analyses.
 [unix]
 lint:
