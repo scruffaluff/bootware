@@ -501,7 +501,7 @@
         - sysadmin
         - wsl
 
-    - name: Install FD file searcher
+    - name: Install Fd file searcher
       ansible.builtin.include_role:
         apply:
           tags:
@@ -760,6 +760,23 @@
         - desktop
         - hadolint
         - server
+        - wsl
+
+    - name: Install Harper spell checker
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - harper
+            - server
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.harper
+      tags:
+        - desktop
+        - harper
+        - server
+        - sysadmin
         - wsl
 
     - name: Install HDF5 file serialization tools

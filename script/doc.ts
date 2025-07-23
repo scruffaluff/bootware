@@ -1,5 +1,5 @@
 /**
- * Vuepress documentation builder.
+ * VitePress documentation builder.
  */
 
 import * as vitepress from "vitepress";

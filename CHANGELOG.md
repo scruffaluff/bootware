@@ -114,7 +114,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Improved Fzf search with FD integration.
+- Improved Fzf search with Fd integration.
 
 ### Fixed
 
@@ -491,7 +491,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Disabled pagination for Bat.
 - Set EDITOR environment variable to Neovim.
-- Switched to binary installer for FD.
+- Switched to binary installer for Fd.
 
 ### Fixed
 
@@ -524,7 +524,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- FD installation for Pop OS.
+- Fd installation for Pop OS.
 - GCloud Bash and Fish completion.
 - Go root directory for MacOS.
 

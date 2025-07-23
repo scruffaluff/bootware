@@ -1,5 +1,5 @@
 ---
-- name: Install FD for FreeBSD
+- name: Install Fd for FreeBSD
   become: true
   community.general.pkgng:
     name: fd-find
@@ -7,7 +7,7 @@
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Get latest FD version for Linux
+- name: Get latest Fd version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -17,7 +17,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Create FD temporary directory for Linux
+- name: Create Fd temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: fd_temp
@@ -25,7 +25,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Set FD temporary directory permissions for Linux
+- name: Set Fd temporary directory permissions for Linux
   ansible.builtin.file:
     mode: "755"
     path: "{{ fd_temp.path }}"
@@ -34,7 +34,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Download FD for Linux
+- name: Download Fd for Linux
   ansible.builtin.unarchive:
     dest: "{{ fd_temp.path }}"
     mode: "777"
@@ -47,7 +47,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Install FD for Linux
+- name: Install Fd for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/fd
     force: true
@@ -61,7 +61,7 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Install FD for MacOS
+- name: Install Fd for MacOS
   become: true
   become_user: "{{ brew_user }}"
   community.general.homebrew:
@@ -70,7 +70,7 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Install FD for Windows
+- name: Install Fd for Windows
   community.windows.win_scoop:
     global: true
     name: fd

@@ -49,5 +49,5 @@ contribution, see the
 
 ## License
 
-Bootware is distributed under a
+Bootware is distributed under the
 [MIT license](https://github.com/scruffaluff/bootware/blob/main/LICENSE.md).
