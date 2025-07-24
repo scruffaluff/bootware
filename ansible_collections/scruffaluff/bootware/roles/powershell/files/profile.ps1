@@ -377,8 +377,9 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 
 # Rclone settings.
 
-# Make rclone skip directory modifcation time updates.
+# Make Rclone skip modifcation time updates.
 $Env:RCLONE_NO_UPDATE_DIR_MODTIME = 'true'
+$Env:RCLONE_NO_UPDATE_MODTIME = 'true'
 
 # Ripgrep settings.
 

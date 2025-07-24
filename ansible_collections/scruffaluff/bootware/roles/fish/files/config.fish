@@ -262,7 +262,7 @@ prepend-paths /usr/sbin /usr/local/bin /opt/homebrew/sbin \
 #   -z: Check if the string is empty.
 if test -n $tty; and test "$TERM" = alacritty; and test -z "$TERM_PROGRAM"
     # Do not use logname command, since it sometimes incorrectly returns "root"
-    # on MacOS. For for information, visit
+    # on MacOS. For more information, visit
     # https://github.com/vercel/hyper/issues/3762.
     if type -q zellij; and test -z "$ZELLIJ"; and not ssh-session;
         and test "$LOGNAME" = "$USER"
@@ -467,8 +467,9 @@ end
 
 # Rclone settings.
 
-# Make rclone skip directory modifcation time updates.
+# Make Rclone skip modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
+set --export RCLONE_NO_UPDATE_MODTIME true
 
 # Ripgrep settings.
 
@@ -488,7 +489,7 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Add alias for remove by force.
 alias rmf 'rm -fr'
-# Make rsync use progress bars and skip ignored files.
+# Make Rsync use progress bars and skip ignored files.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
