@@ -146,6 +146,7 @@
     "skip": [{ "os": "freebsd" }],
     "tests": ["hadolint --version"]
   },
+  { "name": "harper", "tests": ["harper-ls --version"] },
   { "name": "helix", "skip": [{ "os": "openwrt" }], "tests": ["hx --version"] },
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },

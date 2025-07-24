@@ -25,7 +25,7 @@ hidden = false
 render = true
 
 [editor.inline-diagnostics]
-cursor-line = "warning"
+cursor-line = "hint"
 
 [editor.smart-tab]
 enable = false
