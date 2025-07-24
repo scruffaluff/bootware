@@ -31,6 +31,28 @@
     - install
   when: ansible_system != "Win32NT"
 
+- name: Create system paths directory for MacOS
+  ansible.builtin.file:
+    dest: /etc/paths.d
+    mode: "755"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Add binaries directories to path for MacOS
+  ansible.builtin.copy:
+    content: |
+      /opt/homebrew/bin
+      /usr/local/bin
+    dest: /etc/paths.d/bootware
+    mode: "644"
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
 - name: Create binaries directories for Windows
   ansible.windows.win_file:
     path: "{{ item }}"

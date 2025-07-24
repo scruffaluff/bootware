@@ -1,0 +1,8 @@
+---
+harper_arch_:
+  amd64: x86_64
+  arm64: aarch64
+harper_arch: "{{ harper_arch_[system_architecture] }}"
+harper_libc: >-
+  {{ 'gnu' if glibc_version is defined and glibc_version is
+  ansible.builtin.version("2.17", ">") else 'musl' }}

@@ -1,0 +1,83 @@
+---
+- name: Install Harper for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: harper
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Harper version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/harper.json
+  register: harper_formula
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Create Harper temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: harper_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Set Harper temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ harper_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Download Harper for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ harper_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/Automattic/harper/releases/download/v{{
+      harper_formula.json.versions.stable }}/{{ item }}-{{ harper_arch
+      }}-unknown-linux-{{ harper_libc }}.tar.gz
+  loop:
+    - harper-cli
+    - harper-ls
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Harper for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/{{ item }}
+    force: true
+    mode: "755"
+    remote_src: true
+    src: "{{ harper_temp.path }}/{{ item }}"
+  become: true
+  loop:
+    - harper-cli
+    - harper-ls
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Harper for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: harper
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Harper for Windows
+  community.windows.win_scoop:
+    global: true
+    name: harper
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

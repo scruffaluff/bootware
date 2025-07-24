@@ -50,6 +50,7 @@ vscodium_extensions:
   - dbaeumer.vscode-eslint
   - denoland.vscode-deno
   - dnut.rewrap-revived
+  - elijah-potter.harper
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
@@ -64,7 +65,6 @@ vscodium_extensions:
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
   - rust-lang.rust-analyzer
-  - streetsidesoftware.code-spell-checker
   - svelte.svelte-vscode
   - tamasfe.even-better-toml
   - thenuprojectcontributors.vscode-nushell-lang
@@ -83,12 +83,12 @@ vscodium_remote_extensions:
   - bmalehorn.vscode-fish
   - coolbear.systemd-unit-file
   - dnut.rewrap-revived
+  - elijah-potter.harper
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mhutchie.git-graph
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
-  - streetsidesoftware.code-spell-checker
   - tamasfe.even-better-toml
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck

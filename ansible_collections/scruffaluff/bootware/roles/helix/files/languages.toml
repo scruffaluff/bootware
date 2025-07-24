@@ -38,33 +38,43 @@ formatter = { command = "shfmt", args = [
 name = "javascript"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["typescript-language-server", "harper"]
 
 [[language]]
-name = "json"
+name = "jsonc"
+file-types = []
+
+[[language]]
+name = "jsonc"
 auto-format = true
+file-types = ["json", "jsonc", { glob = "{t,j}sconfig.json" }, { glob = "bun.lock" }]
 formatter = { command = "prettier", args = ["--parser", "json"] }
+language-servers = ["vscode-json-language-server", "harper"]
 
 [[language]]
 name = "html"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "html"] }
+language-servers = ["vscode-html-language-server", "superhtml", "harper"]
 
 [[language]]
 name = "markdown"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "markdown"] }
+language-servers = ["marksman", "markdown-oxide", "harper"]
 
 [[language]]
 name = "python"
 auto-format = true
 formatter = { command = "ruff", args = ["format", "-"] }
-language-servers = ["ruff", "pyright"]
+language-servers = ["ruff", "pyright", "harper"]
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
 
 [[language]]
 name = "rust"
 auto-format = true
 formatter = { command = "rustfmt" }
+language-servers = ["rust-analyzer", "harper"]
 
 [[language]]
 name = "starlark"
@@ -84,11 +94,17 @@ file-types = [
 name = "typescript"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "typescript"] }
+language-servers = ["typescript-language-server", "harper"]
 
 [[language]]
 name = "yaml"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "yaml"] }
+language-servers = ["yaml-language-server", "ansible-language-server", "harper"]
+
+[language-server.harper]
+args = ["--stdio"]
+command = "harper-ls"
 
 [language-server.pyright]
 args = ["--stdio"]
