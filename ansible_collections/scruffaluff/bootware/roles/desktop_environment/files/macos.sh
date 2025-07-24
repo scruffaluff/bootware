@@ -23,23 +23,27 @@ defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool fa
 defaults write com.apple.WindowManager GloballyEnabled -bool false
 # Prevent accent character popup when holding down a key.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-# Disble Apple intelligence report.
+# Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
-# Disable Apple handling passwordless autofill.
-defaults write com.apple.Safari AutoFillPasswords -bool false
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 # Disable alert beep sound.
 defaults write 'Apple Global Domain' com.apple.sound.beep.volume -float 0
+# Disable window animations.
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+# Speed up window resize animations.
+defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+# Disable zoom animation for text input focus.
+defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 
 # Dock and menu bar settings.
 
-# Set dock to autohide.
+# Set dock to auto hide.
 defaults write com.apple.dock autohide -bool true
-# Set dock autohide delay time to 0 seconds.
+# Set dock auto hide delay time to 0 seconds.
 defaults write com.apple.dock autohide-delay -float 0
-# Use simplier minimized animation for hiding applications.
-defaults write com.apple.dock mineffect scale
+# Use simpler minimized animation for hiding applications.
+defaults write com.apple.dock mineffect -string scale
 # Minimize multiple windows of an applications to one dock icon.
 defaults write com.apple.dock minimize-to-application -bool true
 # Do not show recent applications in the dock.
@@ -129,13 +133,15 @@ duti -s org.videolan.vlc wmv all
 # Show hidden files in Finder.
 defaults write com.apple.finder AppleShowAllFiles -bool true
 # Use only the current folder for Finder searches.
-defaults write com.apple.finder FXDefaultSearchScope SCcf
+defaults write com.apple.finder FXDefaultSearchScope -string SCcf
 # Disable file extension change warning.
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Show items in Finder via icon view.
-defaults write com.apple.Finder FXPreferredViewStyle icnv
+defaults write com.apple.finder FXPreferredViewStyle -string icnv
+# Remove trash items older than 30 days.
+defaults write com.apple.finder FXRemoveOldTrashItems -bool true
 # Sort items in Finder by name.
-defaults write com.apple.Finder FXPreferredGroupBy Name
+defaults write com.apple.finder FXPreferredGroupBy Name
 # Show path bar in Finder folder window.
 defaults write com.apple.finder ShowPathbar -bool true
 # Hide recent tags from Finder sidebar.
@@ -169,7 +175,7 @@ if ! expr "${input_sources}" : '.*no_alt_characters.*' > /dev/null; then
   '
 fi
 
-# Change move workspace left keybinding to Ctrl+Option+J.
+# Change move workspace left key binding to `Ctrl+Option+J`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
     <key>enabled</key><true/>
@@ -198,7 +204,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
     </dict>
   </dict>
 '
-# Change move workspace right keybinding to Ctrl+Option+Semicolon.
+# Change move workspace right key binding to `Ctrl+Option+Semicolon`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
   <dict>
     <key>enabled</key><true/>
@@ -227,17 +233,17 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
     </dict>
   </dict>
 '
-# Disable extra bindings for Fn key.
+# Disable extra bindings for function key.
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0
 
 # Privacy settings.
 
 # Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
+# Disable Apple intelligence.
+defaults write com.apple.CloudSubscriptionFeatures.optIn 545129924 -bool false
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
-# Disable Apple password manager.
-defaults write com.apple.Safari AutoFillPasswords -bool false
 # Disable sharing search queries with Apple.
 defaults write com.apple.SpotlightResources.Defaults 'Search Queries Data Sharing Status' -float 2
 

@@ -467,9 +467,8 @@ end
 
 # Rclone settings.
 
-# Make rclone skip modifcation time updates.
+# Make rclone skip directory modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
-set --export RCLONE_NO_UPDATE_MODTIME true
 
 # Ripgrep settings.
 

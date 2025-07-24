@@ -667,9 +667,8 @@ if $nu.os-info.name == "macos" {
 
 # Rclone settings.
 
-# Make rclone skip modifcation time updates.
+# Make rclone skip directory modifcation time updates.
 $env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
-$env.RCLONE_NO_UPDATE_MODTIME = "true"
 
 # Ripgrep settings.
 
@@ -687,8 +686,6 @@ prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Shell settings.
 
-# Make rclone skip modifcation time updates.
-alias rclone = ^rclone --no-update-dir-modtime --no-update-modtime
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Make rsync use progress bars and skip ignored files.
