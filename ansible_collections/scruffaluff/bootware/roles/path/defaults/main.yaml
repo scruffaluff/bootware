@@ -1,0 +1,11 @@
+---
+system_paths_:
+  Darwin:
+    amd64:
+      - /usr/local/bin
+    arm64:
+      - /opt/homebrew/bin
+      - /opt/homebrew/sbin
+      - /usr/local/bin
+system_paths: >-
+  {{ system_paths_.get(ansible_system, {}).get(system_architecture, []) }}

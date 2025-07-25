@@ -303,8 +303,8 @@ Get-ChildItem ($path) | ForEach-Object {
 def carapace-complete [spans: list<string>] {
     let expanded_alias = scope aliases
     | where name == $spans.0
-    | get --ignore-errors 0
-    | get --ignore-errors expansion
+    | get --optional 0
+    | get --optional expansion
 
     let spans = if $expanded_alias != null  {
         $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)

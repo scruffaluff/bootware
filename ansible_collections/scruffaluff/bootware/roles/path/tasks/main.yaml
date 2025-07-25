@@ -31,27 +31,74 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Create system paths directory for MacOS
+- name: Create system paths configuration directories for Linux
   ansible.builtin.file:
-    dest: /etc/paths.d
+    dest: "{{ item }}"
     mode: "755"
     state: directory
   become: true
+  loop:
+    - /etc/profile.d
+    - /etc/environment.d
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Linux" and system_paths | length > 0
 
-- name: Add binaries directories to path for MacOS
+- name: Add binaries directories to environment paths for Linux
   ansible.builtin.copy:
     content: |
-      /opt/homebrew/bin
-      /usr/local/bin
-    dest: /etc/paths.d/bootware
+      PATH={{ system_paths | join(':') }}:${PATH}
+    dest: /etc/environment.d/1-bootware.conf
     mode: "644"
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Linux" and system_paths | length > 0
+
+- name: Add binaries directories to profile paths for Linux
+  ansible.builtin.template:
+    dest: /etc/profile.d/bootware.sh
+    mode: "644"
+    src: profile.sh.j2
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux" and system_paths | length > 0
+
+- name: Create system paths configuration directories for MacOS
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    mode: "755"
+    state: directory
+  become: true
+  loop:
+    - /etc/paths.d
+    - /private/var/db/com.apple.xpc.launchd/config
+  tags:
+    - install
+  when: ansible_system == "Darwin" and system_paths | length > 0
+
+# Contents of user.plist were created by running command
+# `sudo launchctl config user path "/opt/homebrew/bin:/usr/local/bin:$(sysctl -n user.cs_path)"`.
+- name: Add binaries directories to Launchd paths for MacOS
+  ansible.builtin.template:
+    dest: /private/var/db/com.apple.xpc.launchd/config/user.plist
+    mode: "644"
+    src: user.plist.j2
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Darwin" and system_paths | length > 0
+
+- name: Add binaries directories to shell paths for MacOS
+  ansible.builtin.copy:
+    content: "{{ system_paths | join('\n') }}\n"
+    dest: /etc/paths.d/1-bootware
+    mode: "644"
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Darwin" and system_paths | length > 0
 
 - name: Create binaries directories for Windows
   ansible.windows.win_file:

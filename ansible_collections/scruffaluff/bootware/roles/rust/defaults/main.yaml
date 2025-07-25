@@ -32,8 +32,9 @@ rust_applications_:
     always: []
     arm64: []
 rust_applications: >-
-  {{ rust_applications_.always + rust_applications_[ansible_system].always +
-  rust_applications_[ansible_system].get(system_architecture, []) }}
+  {{ rust_applications_.always + rust_applications_.get(ansible_system,
+  {}).get('always', []) + rust_applications_.get(ansible_system,
+  {}).get(system_architecture, []) }}
 rust_components:
   - clippy
   - llvm-tools-preview
