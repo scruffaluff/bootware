@@ -42,28 +42,28 @@
     - /etc/environment.d
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and system_paths | length > 0
 
 - name: Add binaries directories to environment paths for Linux
   ansible.builtin.copy:
     content: |
-      PATH=/usr/local/bin:${PATH}
+      PATH={{ system_paths | join(':') }}:${PATH}
     dest: /etc/environment.d/1-bootware.conf
     mode: "644"
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and system_paths | length > 0
 
 - name: Add binaries directories to profile paths for Linux
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/profile.d/bootware.sh
     mode: "644"
-    src: profile.sh
+    src: profile.sh.j2
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and system_paths | length > 0
 
 - name: Create system paths configuration directories for MacOS
   ansible.builtin.file:
@@ -76,31 +76,29 @@
     - /private/var/db/com.apple.xpc.launchd/config
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and system_paths | length > 0
 
 # Contents of user.plist were created by running command
 # `sudo launchctl config user path "/opt/homebrew/bin:/usr/local/bin:$(sysctl -n user.cs_path)"`.
 - name: Add binaries directories to Launchd paths for MacOS
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /private/var/db/com.apple.xpc.launchd/config/user.plist
     mode: "644"
-    src: user.plist
+    src: user.plist.j2
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and system_paths | length > 0
 
 - name: Add binaries directories to shell paths for MacOS
   ansible.builtin.copy:
-    content: |
-      /opt/homebrew/bin
-      /usr/local/bin
+    content: "{{ system_paths | join('\n') }}\n"
     dest: /etc/paths.d/1-bootware
     mode: "644"
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_system == "Darwin" and system_paths | length > 0
 
 - name: Create binaries directories for Windows
   ansible.windows.win_file:

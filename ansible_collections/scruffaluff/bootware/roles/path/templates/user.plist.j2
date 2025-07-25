@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
   <key>PathEnvironmentVariable</key>
-  <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  <string>{{ system_paths | join(':') }}:/usr/bin:/bin:/usr/sbin:/sbin</string>
 </dict>
 </plist>

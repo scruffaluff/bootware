@@ -21,4 +21,4 @@ prepend_paths() {
   done
 }
 
-prepend_paths '/usr/sbin' '/usr/local/bin'
+prepend_paths "{{ system_paths | map('quote') | join(' ') }}"
