@@ -31,22 +31,71 @@
     - install
   when: ansible_system != "Win32NT"
 
-- name: Create system paths directory for MacOS
+- name: Create system paths configuration directories for Linux
   ansible.builtin.file:
-    dest: /etc/paths.d
+    dest: "{{ item }}"
     mode: "755"
     state: directory
+  become: true
+  loop:
+    - /etc/profile.d
+    - /etc/environment.d
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Add binaries directories to environment paths for Linux
+  ansible.builtin.copy:
+    content: |
+      PATH=/usr/local/bin:${PATH}
+    dest: /etc/environment.d/1-bootware.conf
+    mode: "644"
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Add binaries directories to profile paths for Linux
+  ansible.builtin.copy:
+    dest: /etc/profile.d/bootware.sh
+    mode: "644"
+    src: profile.sh
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Create system paths configuration directories for MacOS
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    mode: "755"
+    state: directory
+  become: true
+  loop:
+    - /etc/paths.d
+    - /private/var/db/com.apple.xpc.launchd/config
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+# Contents of user.plist were created by running command
+# `sudo launchctl config user path "/opt/homebrew/bin:/usr/local/bin:$(sysctl -n user.cs_path)"`.
+- name: Add binaries directories to Launchd paths for MacOS
+  ansible.builtin.copy:
+    dest: /private/var/db/com.apple.xpc.launchd/config/user.plist
+    mode: "644"
+    src: user.plist
   become: true
   tags:
     - install
   when: ansible_system == "Darwin"
 
-- name: Add binaries directories to path for MacOS
+- name: Add binaries directories to shell paths for MacOS
   ansible.builtin.copy:
     content: |
       /opt/homebrew/bin
       /usr/local/bin
-    dest: /etc/paths.d/bootware
+    dest: /etc/paths.d/1-bootware
     mode: "644"
   become: true
   tags:

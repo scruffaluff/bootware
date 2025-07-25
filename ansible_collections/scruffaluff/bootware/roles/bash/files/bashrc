@@ -87,12 +87,10 @@ fzf-path-widget() {
 prepend-paths() {
   local folder inode
   for inode in "$@"; do
-    # Variable in regex is quoted to perform an exact substring match.
-    # shellcheck disable=SC2076
     if [[ -d "${inode}" ]]; then
       # Expand folder to its full path.
       folder="$(cd "${inode}" && pwd)"
-      if [[ ! "${PATH}" =~ ":${folder}:" ]]; then
+      if [[ ! "${PATH}" =~ (^|:)${folder}(:|$) ]]; then
         export PATH="${folder}:${PATH}"
       fi
     fi
