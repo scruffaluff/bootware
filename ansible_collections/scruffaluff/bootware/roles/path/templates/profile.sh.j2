@@ -1,4 +1,4 @@
-# Add folders to system paths.
+# Add folders to system path.
 # shellcheck shell=sh
 
 # Prepend existing directories that are not in the system path.
@@ -21,4 +21,4 @@ prepend_paths() {
   done
 }
 
-prepend_paths "{{ system_paths | map('quote') | join(' ') }}"
+prepend_paths {{ "'" + system_paths | join("' '") + "'" }}

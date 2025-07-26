@@ -106,6 +106,12 @@ language-servers = ["yaml-language-server", "ansible-language-server", "harper"]
 args = ["--stdio"]
 command = "harper-ls"
 
+[language-server.harper.config.harper-ls.linters]
+AvoidCurses = false
+ExpandStandardInputAndOutput = false
+ExpandTimeShorthands = false
+SentenceCapitalization = false
+
 [language-server.pyright]
 args = ["--stdio"]
 command = "pyright-langserver"
