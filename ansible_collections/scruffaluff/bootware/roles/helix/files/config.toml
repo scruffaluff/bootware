@@ -34,6 +34,7 @@ enable = false
 enable = true
 
 [editor.statusline]
+diagnostics = ["error", "hint", "info", "warning"]
 right = [
   "version-control",
   "diagnostics",
