@@ -9,7 +9,7 @@
 
 - name: Install Wireshark CLI for Linux
   ansible.builtin.package:
-    name: "{{ termshark_package[ansible_pkg_mgr] }}"
+    name: "{{ termshark_package.get(ansible_pkg_mgr, 'tshark') }}"
   become: true
   tags:
     - install

@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Chafa, Presenterm, and Samply role.
+- Chafa, Image Magick, Presenterm, and Samply roles.
 
 ### Changed
 

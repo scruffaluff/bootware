@@ -9,7 +9,7 @@
 
 - name: Install Wireshark for Linux
   ansible.builtin.package:
-    name: "{{ wireshark_package[ansible_pkg_mgr] }}"
+    name: "{{ wireshark_package.get(ansible_pkg_mgr, 'wireshark') }}"
   become: true
   tags:
     - install

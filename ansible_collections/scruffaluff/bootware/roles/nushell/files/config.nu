@@ -450,8 +450,8 @@ def ssh-session [] {
 
 # Ensure standard Unix environment variables are defined.
 if $nu.os-info.name == "windows" {
-    $env.HOME = $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
-    $env.USER = $env.USERNAME?
+    $env.HOME = $env.HOME? | default $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
+    $env.USER = $env.USER? | default $env.USERNAME?
 } else {
     $env.HOME = $env.HOME?
     $env.USER = $env.USER?

@@ -1,0 +1,41 @@
+---
+- name: Install Image Magick for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: ImageMagick7
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install Image Magick for Linux
+  ansible.builtin.package:
+    name: "{{ image_magick_package.get(ansible_pkg_mgr, 'imagemagick') }}"
+  become: true
+  tags:
+    - install
+  vars:
+    image_magick_package:
+      apk: imagemagick
+      apt: imagemagick
+      dnf: ImageMagick
+      dnf5: ImageMagick
+      pacman: imagemagick
+      zypper: ImageMagick
+  when: ansible_system == "Linux"
+
+- name: Install Image Magick for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: imagemagick
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Image Magick for Windows
+  community.windows.win_scoop:
+    global: true
+    name: imagemagick
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

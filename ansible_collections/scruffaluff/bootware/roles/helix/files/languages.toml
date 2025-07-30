@@ -47,7 +47,12 @@ file-types = []
 [[language]]
 name = "jsonc"
 auto-format = true
-file-types = ["json", "jsonc", { glob = "{t,j}sconfig.json" }, { glob = "bun.lock" }]
+file-types = [
+  "json",
+  "jsonc",
+  { glob = "{t,j}sconfig.json" },
+  { glob = "bun.lock" },
+]
 formatter = { command = "prettier", args = ["--parser", "json"] }
 language-servers = ["vscode-json-language-server", "harper"]
 

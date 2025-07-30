@@ -3,7 +3,7 @@
 # information, visit https://github.com/FiloSottile/mkcert#installation.
 - name: Install Mkcert dependencies for Linux
   ansible.builtin.package:
-    name: "{{ mkcert_dependencies[ansible_pkg_mgr] }}"
+    name: "{{ mkcert_dependencies.get(ansible_pkg_mgr, 'nss') }}"
   become: true
   tags:
     - install

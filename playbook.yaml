@@ -142,11 +142,15 @@
             - audio
             - desktop
             - music
+            - server
+            - wsl
         name: scruffaluff.bootware.audio
       tags:
         - audio
         - desktop
         - music
+        - server
+        - wsl
 
     - name: Install Amazon Web Services development tools
       ansible.builtin.include_role:
@@ -911,6 +915,21 @@
         - sysadmin
         - wsl
 
+    - name: Install Image Magick picture converter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - image_magick
+            - server
+            - wsl
+        name: scruffaluff.bootware.image_magick
+      tags:
+        - desktop
+        - image_magick
+        - server
+        - wsl
+
     - name: Install Jq JSON parser
       ansible.builtin.include_role:
         apply:
@@ -1302,10 +1321,12 @@
         apply:
           tags:
             - desktop
+            - editor
             - obsidian
         name: scruffaluff.bootware.obsidian
       tags:
         - desktop
+        - editor
         - obsidian
 
     - name: Install PNPM Node package manager
