@@ -57,6 +57,10 @@ formatter = { command = "prettier", args = ["--parser", "json"] }
 language-servers = ["vscode-json-language-server", "harper"]
 
 [[language]]
+name = "just"
+indent = { tab-width = 2, unit = "  " }
+
+[[language]]
 name = "html"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "html"] }
