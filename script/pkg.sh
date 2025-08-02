@@ -21,9 +21,9 @@ Distribute Bootware in package formats.
 Usage: pkg [OPTIONS] PACKAGES...
 
 Options:
-      --debug               Enable shell debug traces
-  -h, --help                Print help information
-  -v, --version <VERSION>   Version of Bootware package
+      --debug               Enable shell debug traces.
+  -h, --help                Print help information.
+  -v, --version <VERSION>   Version of Bootware package.
 EOF
 }
 

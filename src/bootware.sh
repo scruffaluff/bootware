@@ -23,28 +23,28 @@ Bootstrap install computer software.
 Usage: bootware bootstrap [OPTIONS]
 
 Options:
-      --check                     Perform dry run and show possible changes
-      --checkout <REF>            Git reference to run against
-  -c, --config <PATH>             Path to bootware user configuration file
-      --debug                     Enable Ansible task debugger
-  -d, --dev                       Run bootstrapping in development mode
-  -h, --help                      Print help information
-      --install-group <GROUP>     Remote group to install software for
-      --install-user <USER>       Remote user to install software for
-  -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses
-      --no-passwd                 Do not ask for user password
-      --no-setup                  Skip Bootware dependency installation
-      --password <PASSWORD>       Remote user login password
-  -p, --playbook <FILE>           Path to playbook to execute
-      --port <INTEGER>            Port for SSH connection
-      --private-key <FILE>        Path to SSH private key
-      --retries <INTEGER>         Playbook retry limit during failure
-  -s, --skip <TAG-LIST>           Ansible playbook tags to skip
-      --start-at-role <ROLE>      Begin execution with role
-  -t, --tags <TAG-LIST>           Ansible playbook tags to select
-      --temp-key <FILE>           Path to SSH private key for one time connection
-  -u, --url <URL>                 URL of playbook repository
-      --user <USER>               Remote user login name
+      --check                     Perform dry run and show possible changes.
+      --checkout <REF>            Git reference to run against.
+  -c, --config <PATH>             Path to bootware user configuration file.
+      --debug                     Enable Ansible task debugger.
+  -d, --dev                       Run bootstrapping in development mode.
+  -h, --help                      Print help information.
+      --install-group <GROUP>     Remote group to install software for.
+      --install-user <USER>       Remote user to install software for.
+  -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses.
+      --no-passwd                 Do not ask for user password.
+      --no-setup                  Skip Bootware dependency installation.
+      --password <PASSWORD>       Remote user login password.
+  -p, --playbook <FILE>           Path to playbook to execute.
+      --port <INTEGER>            Port for SSH connection.
+      --private-key <FILE>        Path to SSH private key.
+      --retries <INTEGER>         Playbook retry limit during failure.
+  -s, --skip <TAG-LIST>           Ansible playbook tags to skip.
+      --start-at-role <ROLE>      Begin execution with role.
+  -t, --tags <TAG-LIST>           Ansible playbook tags to select.
+      --temp-key <FILE>           Path to SSH private key for one time connection.
+  -u, --url <URL>                 URL of playbook repository.
+      --user <USER>               Remote user login name.
 EOF
       if [ -x "$(command -v ansible)" ]; then
         printf '\nAnsible Options:\n'
@@ -58,10 +58,10 @@ Download default Bootware configuration file.
 Usage: bootware config [OPTIONS]
 
 Options:
-  -d, --dest <PATH>     Path to alternate download destination
-  -e, --empty           Write empty configuration file
-  -h, --help            Print help information
-  -s, --source <URL>    URL to configuration file
+  -d, --dest <PATH>     Path to alternate download destination.
+  -e, --empty           Write empty configuration file.
+  -h, --help            Print help information.
+  -s, --source <URL>    URL to configuration file.
 EOF
       ;;
     main)
@@ -71,28 +71,28 @@ Bootstrapping software installer.
 Usage: bootware [OPTIONS] <SUBCOMMAND>
 
 Options:
-      --debug     Enable shell debug traces
-  -h, --help      Print help information
-  -v, --version   Print version information
+      --debug     Enable shell debug traces.
+  -h, --help      Print help information.
+  -v, --version   Print version information.
 
 Subcommands:
-  bootstrap   Bootstrap install computer software
-  config      Generate Bootware configuration file
-  roles       List all Bootware roles
-  setup       Install dependencies for Bootware
-  uninstall   Remove Bootware files
-  update      Update Bootware to latest version
+  bootstrap   Bootstrap install computer software.
+  config      Generate Bootware configuration file.
+  roles       List all Bootware roles.
+  setup       Install dependencies for Bootware.
+  uninstall   Remove Bootware files.
+  update      Update Bootware to latest version.
 
 Environment Variables:
-  BOOTWARE_CONFIG         Set the configuration file path
-  BOOTWARE_GITHUB_TOKEN   GitHub API authentication token
-  BOOTWARE_NOLOG          Silence log messages
-  BOOTWARE_NOPASSWD       Assume password less doas or sudo
-  BOOTWARE_NOSETUP        Skip Ansible install and system setup
-  BOOTWARE_PLAYBOOK       Set Ansible playbook name
-  BOOTWARE_SKIP           Set skip tags for Ansible roles
-  BOOTWARE_TAGS           Set tags for Ansible roles
-  BOOTWARE_URL            Set location of Ansible repository
+  BOOTWARE_CONFIG         Set the configuration file path.
+  BOOTWARE_GITHUB_TOKEN   GitHub API authentication token.
+  BOOTWARE_NOLOG          Silence log messages.
+  BOOTWARE_NOPASSWD       Assume password less doas or sudo.
+  BOOTWARE_NOSETUP        Skip Ansible install and system setup.
+  BOOTWARE_PLAYBOOK       Set Ansible playbook name.
+  BOOTWARE_SKIP           Set skip tags for Ansible roles.
+  BOOTWARE_TAGS           Set tags for Ansible roles.
+  BOOTWARE_URL            Set location of Ansible repository.
 
 Run 'bootware <subcommand> --help' for usage on a subcommand.
 EOF
@@ -104,9 +104,9 @@ List all Bootware roles.
 Usage: bootware roles [OPTIONS]
 
 Options:
-  -h, --help              Print help information
-  -t, --tags <TAG-LIST>   Ansible playbook tags to select
-  -u, --url <URL>         URL of playbook repository
+  -h, --help              Print help information.
+  -t, --tags <TAG-LIST>   Ansible playbook tags to select.
+  -u, --url <URL>         URL of playbook repository.
 EOF
       ;;
     setup)
@@ -116,7 +116,7 @@ Install dependencies for Bootware.
 Usage: bootware setup [OPTIONS]
 
 Options:
-  -h, --help    Print help information
+  -h, --help    Print help information.
 EOF
       ;;
     uninstall)
@@ -126,7 +126,7 @@ Remove Bootware files.
 Usage: bootware uninstall
 
 Options:
-  -h, --help    Print help information
+  -h, --help    Print help information.
 EOF
       ;;
     update)
@@ -136,8 +136,8 @@ Update Bootware to latest version.
 Usage: bootware update [OPTIONS]
 
 Options:
-  -h, --help                Print help information
-  -v, --version <VERSION>   Version override for update
+  -h, --help                Print help information.
+  -v, --version <VERSION>   Version override for update.
 EOF
       ;;
     *)

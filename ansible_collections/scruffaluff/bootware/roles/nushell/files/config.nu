@@ -5,7 +5,7 @@
 # Private convenience functions.
 
 # Symlink scripts to user autoload directory.
-def _autoload-scripts [...scripts: string] {
+def _autoload-scripts [...scripts: path] {
     let autoload_dir = $nu.user-autoload-dirs.0
     mkdir $autoload_dir
     for script in $scripts {
@@ -259,7 +259,7 @@ def _paste-super [] {
 def _wchown [
     --recursive (-R) # Operate on files and directories recursively
     owner: string # User account to give ownership
-    ...files: string # File or directory to modify
+    ...files: path # File or directory to modify
 ] {
     for file in $files {
         powershell -command $"
@@ -284,7 +284,7 @@ foreach \($Path in $Paths\) {
 
 # List Windows ACL properties for files.
 def acls [
-    path: string = "." # File or directory
+    path: path = "." # File or directory
 ] {
     if $nu.os-info.name == "windows" {
         powershell -command $"
@@ -316,7 +316,7 @@ def carapace-complete [spans: list<string>] {
 }
 
 # Wrapper for cat command with Windows support.
-def --wrapped cat [...args] {
+def --wrapped cat [...args: string] {
     match $nu.os-info.name {
         "windows" => { open --raw ...$args },
         _ => { ^cat ...$args },
@@ -518,7 +518,7 @@ $env.CARAPACE_MERGEFLAGS = "1"
 #
 # Commands are defined as functions instead of OS specific aliases since Nushell
 # does not support conditional defintions.
-def --wrapped cbcopy [...args] {
+def --wrapped cbcopy [...args: string] {
     match $nu.os-info.name {
         "macos" => { pbcopy ...$args },
         "windows" => {
@@ -532,7 +532,7 @@ def --wrapped cbcopy [...args] {
         _ => { wl-copy ...$args },
     }
 }
-def --wrapped cbpaste [...args] {
+def --wrapped cbpaste [...args: string] {
     match $nu.os-info.name {
         "macos" => { pbpaste ...$args },
         "windows" => { powershell -command Get-Clipboard },

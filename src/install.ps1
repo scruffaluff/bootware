@@ -21,12 +21,12 @@ Installer script for Bootware.
 Usage: install-bootware [OPTIONS]
 
 Options:
-  -d, --dest <PATH>         Directory to install Bootware
-  -g, --global              Install Bootware for all users
-  -h, --help                Print help information
-  -p, --preserve-env        Do not update system environment
-  -q, --quiet               Print only error messages
-  -v, --version <VERSION>   Version of Bootware to install
+  -d, --dest <PATH>         Directory to install Bootware.
+  -g, --global              Install Bootware for all users.
+  -h, --help                Print help information.
+  -p, --preserve-env        Do not update system environment.
+  -q, --quiet               Print only error messages.
+  -v, --version <VERSION>   Version of Bootware to install.
 '@
 }
 

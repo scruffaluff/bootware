@@ -174,10 +174,11 @@ jobs:
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
+  # FreeBSD test is disabled as of 08/01/2025 since FreeBSD 14.3 is too slow.
   freebsd:
     name: Test bootstrapping software for FreeBSD
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

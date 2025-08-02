@@ -477,17 +477,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Balena Etcher ISO flasher
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - etcher
-        name: scruffaluff.bootware.etcher
-      tags:
-        - desktop
-        - etcher
-
     - name: Install Fastfetch system information finder
       ansible.builtin.include_role:
         apply:

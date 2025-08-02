@@ -18,23 +18,23 @@ defaults write com.apple.controlcenter \
 
 # Desktop settings.
 
-# Prevent Stage Manager from hiding windows after a left click on desktop.
-defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
-defaults write com.apple.WindowManager GloballyEnabled -bool false
-# Prevent accent character popup when holding down a key.
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
+# Prevent Stage Manager from hiding windows after a left click on desktop.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+defaults write com.apple.WindowManager GloballyEnabled -bool false
 # Disable alert beep sound.
 defaults write 'Apple Global Domain' com.apple.sound.beep.volume -float 0
+# Prevent accent character popup when holding down a key.
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Disable window animations.
 defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
-# Speed up window resize animations.
-defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 # Disable zoom animation for text input focus.
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
+# Speed up window resize animations.
+defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 
 # Dock and menu bar settings.
 
@@ -46,11 +46,11 @@ defaults write com.apple.dock autohide-delay -float 0
 defaults write com.apple.dock mineffect -string scale
 # Minimize multiple windows of an applications to one dock icon.
 defaults write com.apple.dock minimize-to-application -bool true
-# Do not show recent applications in the dock.
-defaults write com.apple.dock show-recents -bool false
 # Disable arranging spaces based on recent use for Amethyst.
 defaults write com.apple.dock mru-spaces -bool false
 defaults write com.apple.dock workspaces-auto-swoosh -bool false
+# Do not show recent applications in the dock.
+defaults write com.apple.dock show-recents -bool false
 # Remove keyboard settings from menu bar.
 defaults write com.apple.TextInputMenu visible -bool false
 
@@ -130,6 +130,8 @@ duti -s org.videolan.vlc wmv all
 
 # Finder settings.
 
+# Do not write `.DS_Store` files on network drives.
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Show hidden files in Finder.
 defaults write com.apple.finder AppleShowAllFiles -bool true
 # Use only the current folder for Finder searches.
@@ -235,6 +237,8 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
 '
 # Disable extra bindings for function key.
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0
+# Disable dictionary lookup on word trackpad press.
+defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
 
 # Privacy settings.
 
@@ -251,11 +255,6 @@ defaults write com.apple.SpotlightResources.Defaults 'Search Queries Data Sharin
 
 # Save files to plain text by default.
 defaults write com.apple.textedit RichText -bool false
-
-# Trackpad settings.
-
-# Disable dictionary lookup on word trackpad press.
-defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
 
 # Activate keyboard shortcut changes.
 /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u

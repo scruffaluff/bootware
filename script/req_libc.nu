@@ -8,7 +8,7 @@ def main [] {
     } | where version != null
 }
 
-def reqver [file: string] {
+def reqver [file: path] {
     let messages = [
         "file format not recognized"
         "invalid operation"

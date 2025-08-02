@@ -28,8 +28,8 @@ Change file owner.
 Usage: wchown [OPTIONS] <OWNER> <FILE>
 
 Options:
-  -h, --help        Print help information
-  -R, --recursive   Operate on files and directories recursively
+  -h, --help        Print help information.
+  -R, --recursive   Operate on files and directories recursively.
 '@
                 exit 0
             }
@@ -134,7 +134,7 @@ Create file if does not exist.
 Usage: touch [OPTIONS] <FILES>...
 
 Options:
-  -h, --help        Print help information
+  -h, --help        Print help information.
 '@
                 exit 0
             }

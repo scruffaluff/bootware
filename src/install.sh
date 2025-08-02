@@ -21,13 +21,13 @@ Installer script for Bootware.
 Usage: install-bootware [OPTIONS]
 
 Options:
-      --debug               Show shell debug traces
-  -d, --dest <PATH>         Directory to install Bootware
-  -g, --global              Install Bootware for all users
-  -h, --help                Print help information
-  -p, --preserve-env        Do not update system environment
-  -q, --quiet               Print only error messages
-  -v, --version <VERSION>   Version of Bootware to install
+      --debug               Show shell debug traces.
+  -d, --dest <PATH>         Directory to install Bootware.
+  -g, --global              Install Bootware for all users.
+  -h, --help                Print help information.
+  -p, --preserve-env        Do not update system environment.
+  -q, --quiet               Print only error messages.
+  -v, --version <VERSION>   Version of Bootware to install.
 EOF
 }
 
@@ -167,7 +167,7 @@ find_super() {
 # Download and install Bootware.
 # Arguments:
 #   Super user command for installation.
-#   Whethter to install for all users.
+#   Whether to install for all users.
 #   Bootware version.
 #   Destination path.
 #   Whether to update system environment.
