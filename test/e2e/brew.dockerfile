@@ -1,13 +1,13 @@
 FROM docker.io/homebrew/brew:4.5.10 AS build
 
 ARG version
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Update Apt package cache.
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get update
+RUN sudo -E apt-get update
 
 # Avoid APT interactively requesting to configure tzdata.
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
-    curl gettext-base libdigest-sha-perl
+RUN sudo -E apt-get --quiet --yes install curl gettext-base libdigest-sha-perl
 
 COPY data/ /bootware/data/
 COPY script/ /bootware/script/
@@ -29,11 +29,10 @@ FROM docker.io/homebrew/brew:4.5.10
 ARG version
 
 # Update Apt package cache.
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get update
+RUN sudo -E apt-get update
 
 # Avoid APT interactively requesting to configure tzdata.
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
-    libdigest-sha-perl tzdata
+RUN sudo -E apt-get --quiet --yes install libdigest-sha-perl tzdata
 
 # Pull Homebrew package from previous Docker stage.
 COPY --from=build /bootware/build/dist/ .

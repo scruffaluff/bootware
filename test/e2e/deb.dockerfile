@@ -1,9 +1,9 @@
 FROM docker.io/debian:12.11 AS build
 
 ARG version
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes \
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes \
     gettext-base libdigest-sha-perl
 
 # Copy bootware package build files.
@@ -23,13 +23,13 @@ COPY --from=build /bootware/build/dist/ /
 FROM docker.io/debian:12.11
 
 ARG version
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Update Apt package cache.
-RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN apt-get update
 
 # Avoid APT interactively requesting to configure tzdata.
-RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
-    libdigest-sha-perl tzdata
+RUN apt-get --quiet --yes install libdigest-sha-perl tzdata
 
 # Pull Debian package from previous Docker stage.
 COPY --from=build /bootware/build/dist/ .
@@ -38,8 +38,7 @@ COPY --from=build /bootware/build/dist/ .
 RUN shasum --check --algorithm 512 "bootware_${version?}_all.deb.sha512"
 
 # Install Debian package.
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes \
-    "./bootware_${version?}_all.deb"
+RUN apt-get install --quiet --yes "./bootware_${version?}_all.deb"
 
 # Test package was installed successfully.
 RUN bootware --help

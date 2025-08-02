@@ -1,10 +1,10 @@
 FROM docker.io/debian:12.11
 
 ARG TARGETARCH
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Curl and Sudo.
-RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing && \
-    DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes curl sudo
+RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl sudo
 
 # Create non-priviledged user and grant user passwordless sudo.
 RUN useradd --create-home --no-log-init debian \
@@ -45,9 +45,9 @@ COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes bash \
+    || sudo -E apt-get install --quiet --yes bash \
     && command -v deno > /dev/null \
-    || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes unzip \
+    || sudo -E apt-get install --quiet --yes unzip \
     && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test

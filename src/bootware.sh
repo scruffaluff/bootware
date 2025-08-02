@@ -886,6 +886,9 @@ setup_arch() {
 setup_debian() {
   local super="${1:-}"
 
+  # Avoid APT interactive configuration requests.
+  export DEBIAN_FRONTEND='noninteractive'
+
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -895,33 +898,29 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible.'
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
-      install --yes ansible
+    ${super:+"${super}" -E} apt-get --quiet update
+    ${super:+"${super}" -E} apt-get --quiet install --yes ansible
     log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
-      install --yes curl
+    ${super:+"${super}" -E} apt-get --quiet update
+    ${super:+"${super}" -E} apt-get --quiet install --yes curl
     log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
-      install --yes git
+    ${super:+"${super}" -E} apt-get --quiet update
+    ${super:+"${super}" -E} apt-get --quiet install --yes git
     log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
-    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
-      install --yes jq
+    ${super:+"${super}" -E} apt-get --quiet update
+    ${super:+"${super}" -E} apt-get --quiet install --yes jq
     log "Installed $(jq --version)."
   fi
 
