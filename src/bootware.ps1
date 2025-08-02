@@ -751,8 +751,9 @@ function SetupSSHKeys {
         wsl chmod 600 "`$HOME/.ssh/bootware"
         wsl mv "$WSLKeyPath.pub" "`$HOME/.ssh/bootware.pub"
 
-        wsl sudo apt-get --quiet update
-        wsl sudo apt-get --quiet install --yes openssh-client
+        wsl sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+        wsl sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet install --yes `
+            openssh-client
         wsl ssh-keyscan "$(FindRelativeIP)" `1`>`> "`$HOME/.ssh/known_hosts"
 
         Log 'Disabling SSH password authentication.'
@@ -885,8 +886,9 @@ function SetupWSL($Branch) {
     if (-not (wsl command -v bootware)) {
         Log 'Installing a WSL copy of Bootware.'
 
-        wsl sudo apt-get --quiet update
-        wsl sudo apt-get --quiet install --yes curl
+        wsl sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+        wsl sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet install --yes `
+            curl
         wsl curl -LSfs `
             https://scruffaluff.github.io/bootware/install.sh `
             `| sh -s -- --global --version $Branch

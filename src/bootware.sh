@@ -886,9 +886,6 @@ setup_arch() {
 setup_debian() {
   local super="${1:-}"
 
-  # Avoid APT interactively requesting to configure tzdata.
-  export DEBIAN_FRONTEND='noninteractive'
-
   # Install dependencies for Bootware.
   #
   # Flags:
@@ -898,29 +895,33 @@ setup_debian() {
     # Install Ansible with Python3 since most package managers provide an old
     # version of Ansible.
     log 'Installing Ansible.'
-    ${super:+"${super}"} apt-get --quiet update
-    ${super:+"${super}"} apt-get --quiet install --yes ansible
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
+      install --yes ansible
     log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
-    ${super:+"${super}"} apt-get --quiet update
-    ${super:+"${super}"} apt-get --quiet install --yes curl
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
+      install --yes curl
     log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
-    ${super:+"${super}"} apt-get --quiet update
-    ${super:+"${super}"} apt-get --quiet install --yes git
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
+      install --yes git
     log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
-    ${super:+"${super}"} apt-get --quiet update
-    ${super:+"${super}"} apt-get --quiet install --yes jq
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet update
+    ${super:+"${super}"} DEBIAN_FRONTEND=noninteractive apt-get --quiet \
+      install --yes jq
     log "Installed $(jq --version)."
   fi
 

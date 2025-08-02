@@ -4,8 +4,9 @@ ARG TARGETARCH
 ARG version=0.9.1
 
 # Install Ansible Curl and Sudo.
-RUN apt-get update --ignore-missing \
-    && apt-get install --quiet --yes ansible curl sudo
+RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes ansible \
+    curl sudo
 
 # Grant ubuntu user passwordless sudo.
 RUN usermod --append --groups sudo ubuntu \
@@ -47,9 +48,9 @@ COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Node are installed.
 RUN command -v bash > /dev/null \
-    || sudo apt-get install --quiet --yes bash \
+    || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes bash \
     && command -v deno > /dev/null \
-    || sudo apt-get install --quiet --yes unzip \
+    || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes unzip \
     && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
 
 ARG test
