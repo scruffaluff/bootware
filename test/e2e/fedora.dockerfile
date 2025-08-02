@@ -3,8 +3,7 @@ FROM docker.io/fedora:42
 ARG TARGETARCH
 
 # Install Curl and Sudo.  
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes curl sudo
+RUN dnf makecache && dnf install --assumeyes curl sudo
 
 # Install SQLite to avoid Node symbol lookup errors when building image inside
 # some virtual machines.

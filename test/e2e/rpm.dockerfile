@@ -3,8 +3,7 @@ FROM docker.io/fedora:42 AS build
 ARG version
 
 # Install Node and RPM Build.
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes gettext perl-Digest-SHA rpm-build
+RUN dnf makecache && dnf install --assumeyes gettext perl-Digest-SHA rpm-build
 
 # # Copy bootware package build files.
 COPY data/ /bootware/data/
@@ -24,9 +23,8 @@ FROM docker.io/fedora:42
 
 ARG version
 
-# Update DNF package lists.
-RUN dnf check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
-RUN dnf install --assumeyes perl-Digest-SHA
+# Install SHA checksum package.
+RUN dnf makecache && dnf install --assumeyes perl-Digest-SHA
 
 # Pull Fedora package from previous Docker stage.
 COPY --from=build /bootware/build/dist/ .

@@ -18,7 +18,7 @@ usage() {
   cat 1>&2 << EOF
 Distribute Bootware in package formats.
 
-Usage: pkg [OPTIONS] PACKAGES...
+Usage: pkg [OPTIONS] <PACKAGES>...
 
 Options:
       --debug               Enable shell debug traces.

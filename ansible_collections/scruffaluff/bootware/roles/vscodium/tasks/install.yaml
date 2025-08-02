@@ -105,7 +105,7 @@
       repo_gpgcheck=1
     dest: /etc/yum.repos.d/vscodium.repo
     force: true
-    mode: "640"
+    mode: "644"
   become: true
   tags:
     - install

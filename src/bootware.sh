@@ -434,25 +434,6 @@ config() {
 }
 
 #######################################
-# Update dnf package lists.
-#
-# DNF's check-update command will give a 100 exit code if there are packages
-# available to update. Thus both 0 and 100 must be treated as successful exit
-# codes.
-#
-# Arguments:
-#   Super user elevation command.
-#######################################
-dnf_check_update() {
-  local code super="${1:-}"
-  ${super:+"${super}"} dnf check-update || {
-    code="$?"
-    [ "${code}" -eq 100 ] && return 0
-    return "${code}"
-  }
-}
-
-#######################################
 # Perform network request.
 #######################################
 fetch() {
@@ -967,28 +948,28 @@ setup_fedora() {
     log 'Installing Ansible.'
     # Installing Ansible via Python causes issues installing remote DNF packages
     # with Ansible.
-    dnf_check_update "${1}"
+    ${super:+"${super}"} dnf makecache
     ${super:+"${super}"} dnf install --assumeyes ansible
     log "Installed $(ansible --version)."
   fi
 
   if [ ! -x "$(command -v curl)" ]; then
     log 'Installing Curl.'
-    dnf_check_update "${1}"
+    ${super:+"${super}"} dnf makecache
     ${super:+"${super}"} dnf install --assumeyes curl
     log "Installed $(curl --version)."
   fi
 
   if [ ! -x "$(command -v git)" ]; then
     log 'Installing Git.'
-    dnf_check_update "${1}"
+    ${super:+"${super}"} dnf makecache
     ${super:+"${super}"} dnf install --assumeyes git
     log "Installed $(git --version)."
   fi
 
   if [ ! -x "$(command -v jq)" ]; then
     log 'Installing Jq.'
-    dnf_check_update "${1}"
+    ${super:+"${super}"} dnf makecache
     ${super:+"${super}"} dnf install --assumeyes jq
     log "Installed $(jq --version)."
   fi
