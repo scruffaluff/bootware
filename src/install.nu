@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-# Download file for system and handle permissions.
+# Download file, set ownership, and set permissions.
 def download [
     super: string
     mode: string
@@ -10,25 +10,21 @@ def download [
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
     let folder = $dest | path dirname
 
+    let temp = mktemp --tmpdir
+    if $quiet {
+        http get $url | save --force $temp
+    } else {
+        http get $url | save --force --progress $temp
+    }
+    if $nu.os-info.name != "windows" and ($mode | is-not-empty) {
+        chmod $mode $temp
+    }
+
     if ($super | is-empty) {
         mkdir $folder
-        if $quiet {
-            http get $url | save --force $dest
-        } else {
-            http get $url | save --force --progress $dest
-        }
-
-        chmod $mode $dest
+        cp $temp $dest
     } else {
-        let temp = mktemp --tmpdir
         ^$super mkdir -p $folder
-        if $quiet {
-            http get $url | save --force $temp
-        } else {
-            http get $url | save --force --progress $temp
-        }
-
-        chmod $mode $temp
         ^$super cp $temp $dest
     }
 }
@@ -66,36 +62,24 @@ def --wrapped log [...args: string] {
 # Download and install Bootware.
 def install [super: string dest: directory version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
-    let ext = if $nu.os-info.name == "windows" { ".ps1" } else { ".sh" }
-    let program = if $nu.os-info.name == "windows" {
-        "bootware.ps1"
+    let url = if $nu.os-info.name == "windows" {
+        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware.ps1"
     } else {
-        "bootware"
+        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware.sh"
+    }
+    let program = if $nu.os-info.name == "windows" {
+        $"($dest)/bootware.ps1"
+    } else {
+        $"($dest)/bootware"
     }
 
-    let temp = mktemp --tmpdir
-    let uri = $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware($ext)"
-    if $quiet {
-        http get $uri | save --force $temp
-    } else {
-        http get $uri | save --force --progress $temp
-    }
+    download $super 755 $url $program
     if $nu.os-info.name == "windows" {
         '
 @echo off
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dnp0.ps1" %*
 '
         | str trim --left | save --force $"($dest)/bootware.cmd"
-    } else {
-        chmod +rx $temp
-    }
-
-    if ($super | is-empty) {
-        mkdir $dest
-        mv $temp $"($dest)/($program)"
-    } else {
-        ^$super mkdir -p $dest
-        ^$super cp $temp $"($dest)/($program)"
     }
 }
 
@@ -105,73 +89,60 @@ def install-completions [super: string global: bool version: string] {
     let home = path-home
     let url = $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/completion/bootware"
 
-    if $global {
-        if $nu.os-info.name == "freebsd" {
-            (
-                download $super 644 $"($url).bash"
-                "/usr/local/share/bash-completion/completions/bootware"
-            )
-            (
-                download $super 644 $"($url).fish"
-                "/usr/local/etc/fish/completions/bootware.fish"
-            )
-        } else if $nu.os-info.name == "macos" {
-            let prefix = if $nu.os-info.arch == "aarch64" {
-                "/opt/homebrew"
-            } else {
-                "/usr/local"
-            }
-            (
-                download $super 644 $"($url).bash"
-                $"($prefix)/share/bash-completion/completions/bootware"
-            )
-            (
-                download $super 644 $"($url).fish"
-                $"($prefix)/etc/fish/completions/bootware.fish"
-            )
-        } else if $nu.os-info.name == "windows" {
-            let folders = [
+    if $nu.os-info.name == "windows" {
+        let folders = if $global {
+            [
                 'C:\Program Files\PowerShell\Modules'
                 'C:\Program Files\WindowsPowerShell\Modules'
             ]
-            for folder in $folders {
-                (
-                    download $super "" $"($url).psm1"
-                    $"($folder)/BootwareCompletion.psm1"
-                )
-            }
         } else {
-            (
-                download $super 644 $"($url).bash"
-                "/usr/share/bash-completion/completions/bootware"
-            )
-            (
-                download $super 644 $"($url).fish"
-                "/etc/fish/completions/bootware.fish"
-            )
-        }
-    } else {
-        if $nu.os-info.name == "windows" {
-            let folders = [
+            [
                 $'($home)\Documents\PowerShell\Modules'
                 $'($home)\Documents\WindowsPowerShell\Modules'
             ]
-            for folder in $folders {
-                (
-                    download $super "" $"($url).psm1"
-                    $"($folder)/BootwareCompletion.psm1"
-                )
-            }
-        } else {
-            (
-                download $super 644 $"($url).bash"
-                $"($home)/.local/share/bash-completion/completions/bootware"
-            )
-            (
-                download $super 644 $"($url).fish"
-                $"($home)/.config/fish/completions/bootware.fish"
-            )
         }
+
+        for folder in $folders {
+            download "" "" $"($url).psm1" $"($folder)/BootwareCompletion.psm1"
+        }
+    } else if $global {
+        let dest = match $nu.os-info.name {
+            "freebsd" => {
+                bash: "/usr/local/share/bash-completion/completions/bootware"
+                fish: "/usr/local/etc/fish/completions/bootware.fish"
+             }
+            "macos" => {
+                let prefix = if $nu.os-info.arch == "aarch64" {
+                    "/opt/homebrew"
+                } else {
+                    "/usr/local"
+                }
+                {
+                    bash: $"($prefix)/share/bash-completion/completions/bootware"
+                    fish: $"($prefix)/etc/fish/completions/bootware.fish"
+                }
+            }
+            _ => {
+                bash: "/usr/share/bash-completion/completions/bootware"
+                fish: "/etc/fish/completions/bootware.fish"
+            }
+        }
+
+        download $super 644 $"($url).bash" $dest.bash
+        download $super 644 $"($url).fish" $dest.fish
+        (
+            download $super 644 $"($url).man"
+            "/usr/local/share/man/man1/bootware.1"
+        )
+    } else {
+        (
+            download "" 644 $"($url).bash"
+            $"($home)/.local/share/bash-completion/completions/bootware"
+        )
+        (
+            download "" 644 $"($url).fish"
+            $"($home)/.config/fish/completions/bootware.fish"
+        )
     }
 }
 
