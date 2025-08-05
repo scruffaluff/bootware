@@ -337,15 +337,28 @@ main() {
     esac
   done
 
+  # Choose destination if not selected.
+  #
+  # Flags:
+  #   -z: Check if string has zero length.
+  if [ -z "${dst_dir}" ]; then
+    if [ "$(id -u)" -eq 0 ]; then
+      global_='true'
+      dst_dir='/usr/local/bin'
+    else
+      dst_dir="${HOME}/.local/bin"
+    fi
+  fi
+
   # Find super user command if destination is not writable.
   #
   # Flags:
   #   -n: Check if string has nonzero length.
   #   -p: Make parent directories if necessary.
   #   -w: Check if file exists and is writable.
-  dst_dir="${dst_dir:-"${HOME}/.local/bin"}"
   if [ -n "${global_}" ] || ! mkdir -p "${dst_dir}" > /dev/null 2>&1 ||
     [ ! -w "${dst_dir}" ]; then
+    global_='true'
     super="$(find_super)"
   fi
 
