@@ -8,7 +8,8 @@ default_shell r#"{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) 
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Alt p"
+    unbind "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
         bind "Alt j" { MoveFocusOrTab "Left"; }
@@ -43,6 +44,7 @@ keybinds {
     pane {
         unbind "c" "d" "f"
         bind "Ctrl m" { SwitchToMode "Normal"; }
+        bind "g" { TogglePaneInGroup; }
         bind "j" { MoveFocus "Left"; }
         bind "k" { MoveFocus "Down"; }
         bind "l" { MoveFocus "Up"; }

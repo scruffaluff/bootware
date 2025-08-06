@@ -1,10 +1,10 @@
 #!/usr/bin/env nu
 
-# Download file, set ownership, and set permissions.
-def download [
-    super: string
-    mode: string
-    url: string
+# Download file and set permissions.
+def fetch [
+    --mode (-m): string
+    --super (-s): string
+    src: string
     dest: string
 ] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
@@ -12,9 +12,9 @@ def download [
 
     let temp = mktemp --tmpdir
     if $quiet {
-        http get $url | save --force $temp
+        http get $src | save --force $temp
     } else {
-        http get $url | save --force --progress $temp
+        http get $src | save --force --progress $temp
     }
     if $nu.os-info.name != "windows" and ($mode | is-not-empty) {
         chmod $mode $temp
@@ -73,7 +73,7 @@ def install [super: string dest: directory version: string] {
         $"($dest)/bootware"
     }
 
-    download $super 755 $url $program
+    fetch --super $super --mode 755 $url $program
     if $nu.os-info.name == "windows" {
         '
 @echo off
@@ -103,7 +103,7 @@ def install-completions [super: string global: bool version: string] {
         }
 
         for folder in $folders {
-            download "" "" $"($url).psm1" $"($folder)/BootwareCompletion.psm1"
+            fetch $"($url).psm1" $"($folder)/BootwareCompletion.psm1"
         }
     } else if $global {
         let dest = match $nu.os-info.name {
@@ -128,19 +128,19 @@ def install-completions [super: string global: bool version: string] {
             }
         }
 
-        download $super 644 $"($url).bash" $dest.bash
-        download $super 644 $"($url).fish" $dest.fish
+        fetch --super $super --mode 644 $"($url).bash" $dest.bash
+        fetch --super $super --mode 644 $"($url).fish" $dest.fish
         (
-            download $super 644 $"($url).man"
+            fetch --super $super --mode 644 $"($url).man"
             "/usr/local/share/man/man1/bootware.1"
         )
     } else {
         (
-            download "" 644 $"($url).bash"
+            fetch --mode 644 $"($url).bash"
             $"($home)/.local/share/bash-completion/completions/bootware"
         )
         (
-            download "" 644 $"($url).fish"
+            fetch --mode 644 $"($url).fish"
             $"($home)/.config/fish/completions/bootware.fish"
         )
     }
