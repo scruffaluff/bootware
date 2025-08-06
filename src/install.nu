@@ -77,7 +77,7 @@ def install [super: string dest: directory version: string] {
     if $nu.os-info.name == "windows" {
         '
 @echo off
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dnp0.ps1" %*
+powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 '
         | str trim --left | save --force $"($dest)/bootware.cmd"
     }

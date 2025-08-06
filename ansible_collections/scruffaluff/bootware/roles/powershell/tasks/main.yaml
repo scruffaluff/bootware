@@ -76,6 +76,41 @@
     - install
   when: ansible_system == "Win32NT"
 
+- name: Register PowerShell files as executables for Windows
+  ansible.windows.win_regedit:
+    data: "{{ item.data }}"
+    path: "{{ item.path }}"
+    type: string
+  loop:
+    - data: ps1file
+      path: "HKLM:\\Software\\Classes\\.ps1"
+    - data: >-
+        "C:\Program Files\PowerShell\7\pwsh.exe" -NoProfile -ExecutionPolicy
+        RemoteSigned -File "%1" %*
+      path: "HKLM:\\Software\\Classes\\ps1file\\shell\\open\\command"
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+# Since ansible_env.Path is fixed on play connection, using
+# ansible.windows.win_environment for PATHEXT in other roles will overwrite
+# changes made here. Thus ansible.windows.win_environment cannot be used to
+# extend PATHEXT.
+- name: Add PowerShell files to system path for Windows
+  ansible.windows.win_shell: |
+    $PathExt = [Environment]::GetEnvironmentVariable('PATHEXT', 'Machine')
+    If (-Not ($PathExt -Like "*.PS1*")) {
+      [System.Environment]::SetEnvironmentVariable(
+        'PATHEXT', "$PathExt;.PS1", 'Machine'
+      )
+      Write-Output 'PATHEXT updated'
+    }
+  changed_when: "'PATHEXT updated' in powershell_pathext"
+  register: powershell_pathext
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
 - name: Set PowerShell Core as default OpenSSH shell for Windows
   ansible.windows.win_regedit:
     data: C:\Program Files\PowerShell\7\pwsh.exe

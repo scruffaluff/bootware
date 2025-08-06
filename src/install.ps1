@@ -39,7 +39,7 @@ function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) 
         -Uri "$URL/src/bootware.ps1"
     Set-Content -Path "$DestDir\bootware.cmd" -Value @"
 @echo off
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dnp0.ps1" %*
+powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 "@
     InstallCompletion $TargetEnv $Version
 
