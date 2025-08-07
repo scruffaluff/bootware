@@ -8,9 +8,11 @@ default_shell r#"{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) 
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt f" "Alt h" "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Alt p"
+    unbind "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
+        unbind "Ctrl q"
         bind "Alt j" { MoveFocusOrTab "Left"; }
         bind "Alt k" { MoveFocus "Down"; }
         bind "Alt l" { MoveFocus "Up"; }
@@ -20,8 +22,18 @@ keybinds {
         bind "Alt Right" { MovePane "Right"; }
         bind "Alt Up" { MovePane "Up"; }
     }
+    shared_except "move" "locked" {
+        unbind "Ctrl h"
+    }
     shared_except "pane" "locked" {
+        unbind "Ctrl p"
         bind "Ctrl y" { SwitchToMode "Pane"; }
+    }
+    shared_except "resize" "locked" {
+        unbind "Ctrl n"
+    }
+    shared_except "tmux" "locked" {
+        unbind "Ctrl b"
     }
     shared_among "renametab" "tab" {
         bind "Alt j" { GoToPreviousTab; }
@@ -41,8 +53,9 @@ keybinds {
         bind "Alt w" { ToggleFloatingPanes; }
     }
     pane {
-        unbind "c" "d" "f"
+        unbind "c" "d" "f" "Ctrl p"
         bind "Ctrl m" { SwitchToMode "Normal"; }
+        bind "g" { TogglePaneInGroup; }
         bind "j" { MoveFocus "Left"; }
         bind "k" { MoveFocus "Down"; }
         bind "l" { MoveFocus "Up"; }
@@ -85,6 +98,7 @@ keybinds {
     }
 }
 
+mirror_session true
 session_serialization false
 serialize_pane_viewport false
 show_release_notes false

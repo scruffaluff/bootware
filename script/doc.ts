@@ -126,6 +126,7 @@ async function main(): Promise<void> {
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir);
   }
+  fs.copyFileSync("src/install.nu", `${publicDir}/install.nu`);
   fs.copyFileSync("src/install.ps1", `${publicDir}/install.ps1`);
   fs.copyFileSync("src/install.sh", `${publicDir}/install.sh`);
 

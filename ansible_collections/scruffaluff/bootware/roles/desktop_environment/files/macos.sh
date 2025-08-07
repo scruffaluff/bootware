@@ -18,6 +18,8 @@ defaults write com.apple.controlcenter \
 
 # Desktop settings.
 
+# Disable personalized advertisements.
+defaults write com.apple.AdPlatforms allowApplePersonalizedAdvertising -bool false
 # Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Delete verification codes after use.
