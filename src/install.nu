@@ -1,31 +1,41 @@
 #!/usr/bin/env nu
 
-# Download file and set permissions.
-def fetch [
+# Copy and configure file.
+def deploy [
     --mode (-m): string
     --super (-s): string
-    src: string
+    source: string
     dest: string
 ] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
     let folder = $dest | path dirname
 
-    let temp = mktemp --tmpdir
-    if $quiet {
-        http get $src | save --force $temp
+    # Download to temporary file to avoid permission restrictions.
+    let file = if ($source | path exists) {
+        $source
     } else {
-        http get $src | save --force --progress $temp
-    }
-    if $nu.os-info.name != "windows" and ($mode | is-not-empty) {
-        chmod $mode $temp
+        let temp = mktemp --tmpdir
+        if $quiet {
+            http get $source | save --force $temp
+        } else {
+            http get $source | save --force --progress $temp
+        }
+        $temp
     }
 
+    # Copy file instead of move to ensure correct ownership.
     if ($super | is-empty) {
         mkdir $folder
-        cp $temp $dest
+        cp $file $dest
+        if ($mode | is-not-empty) and $nu.os-info.name != "windows" {
+            chmod $mode $dest
+        }
     } else {
         ^$super mkdir -p $folder
-        ^$super cp $temp $dest
+        ^$super cp $file $dest
+        if ($mode | is-not-empty) and $nu.os-info.name != "windows" {
+            sudo chmod $mode $dest
+        }
     }
 }
 
@@ -62,10 +72,12 @@ def --wrapped log [...args: string] {
 # Download and install Bootware.
 def install [super: string dest: directory version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
-    let url = if $nu.os-info.name == "windows" {
-        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware.ps1"
+    let ext = if $nu.os-info.name == "windows" { ".ps1" } else { ".sh" }
+    let source = if $version == "local" {
+        const folder = path self | path dirname
+        $"($folder)/bootware($ext)"
     } else {
-        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware.sh"
+        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware($ext)"
     }
     let program = if $nu.os-info.name == "windows" {
         $"($dest)/bootware.ps1"
@@ -73,7 +85,7 @@ def install [super: string dest: directory version: string] {
         $"($dest)/bootware"
     }
 
-    fetch --super $super --mode 755 $url $program
+    deploy --super $super --mode 755 $source $program
     if $nu.os-info.name == "windows" {
         '
 @echo off
@@ -87,7 +99,12 @@ powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 def install-completions [super: string global: bool version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
     let home = path-home
-    let url = $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/completion/bootware"
+    let source = if $version == "local" {
+        const folder = path self | path dirname
+        $"($folder)/completion/bootware"
+    } else {
+        $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/completion/bootware"
+    }
 
     if $nu.os-info.name == "windows" {
         let folders = if $global {
@@ -103,7 +120,7 @@ def install-completions [super: string global: bool version: string] {
         }
 
         for folder in $folders {
-            fetch $"($url).psm1" $"($folder)/BootwareCompletion.psm1"
+            deploy $"($source).psm1" $"($folder)/BootwareCompletion.psm1"
         }
     } else if $global {
         let dest = match $nu.os-info.name {
@@ -128,19 +145,19 @@ def install-completions [super: string global: bool version: string] {
             }
         }
 
-        fetch --super $super --mode 644 $"($url).bash" $dest.bash
-        fetch --super $super --mode 644 $"($url).fish" $dest.fish
+        deploy --super $super --mode 644 $"($source).bash" $dest.bash
+        deploy --super $super --mode 644 $"($source).fish" $dest.fish
         (
-            fetch --super $super --mode 644 $"($url).man"
+            deploy --super $super --mode 644 $"($source).man"
             "/usr/local/share/man/man1/bootware.1"
         )
     } else {
         (
-            fetch --mode 644 $"($url).bash"
+            deploy --mode 644 $"($source).bash"
             $"($home)/.local/share/bash-completion/completions/bootware"
         )
         (
-            fetch --mode 644 $"($url).fish"
+            deploy --mode 644 $"($source).fish"
             $"($home)/.config/fish/completions/bootware.fish"
         )
     }
@@ -247,7 +264,7 @@ def update-shell [dest: directory] {
         _ => $"($env.HOME)/.profile"
     }
 
-    # Create profile parent directory and add export command to profile
+    # Create profile parent directory and add export command to profile.
     mkdir ($profile | path dirname)
     $"\n# Added by Bootware installer.\n($command)\n" | save --append $profile
     log $"Added '($command)' to the '($profile)' shell profile."

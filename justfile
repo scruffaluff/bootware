@@ -60,12 +60,12 @@ format:
 # Install project programs.
 [unix]
 install *args:
-  src/install.sh {{args}}
+  src/install.nu --version local {{args}}
 
 # Install project programs.
 [windows]
 install *args:
-  src/install.ps1 {{args}}
+  src/install.ps1 --version local {{args}}
 
 # Run code analyses.
 [unix]
