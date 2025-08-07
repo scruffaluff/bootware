@@ -9,8 +9,12 @@ command will download the shell scripts and add them to the system path.
 curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh
 ```
 
-```powershell [Windows]
+```powershell [Windows PowerShell]
 iwr -useb https://scruffaluff.github.io/bootware/install.ps1 | iex
+```
+
+```nushell [Nushell]
+http get https://scruffaluff.github.io/bootware/install.nu | nu -c $"($in | decode); main"
 ```
 
 :::
@@ -24,8 +28,12 @@ to the script by replacing the `--help` argument.
 curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- --help
 ```
 
-```powershell [Windows]
+```powershell [Windows PowerShell]
 powershell { iex "& { $(iwr -useb https://scruffaluff.github.io/bootware/install.ps1) } --help" }
+```
+
+```nushell [Nushell]
+http get https://scruffaluff.github.io/bootware/install.nu | nu -c $"($in | decode); main --help"
 ```
 
 :::

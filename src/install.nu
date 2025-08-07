@@ -1,4 +1,4 @@
-#!/usr/bin/env nu
+#!/usr/bin/env -S nu --no-config-file --stdin
 
 # Copy and configure file.
 def deploy [
