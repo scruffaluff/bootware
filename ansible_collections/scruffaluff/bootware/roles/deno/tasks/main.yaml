@@ -108,7 +108,7 @@
   changed_when: "'PATHEXT updated' in deno_pathext"
   loop:
     - JS
-    - TS
+    - TSX
   register: deno_pathext
   tags:
     - install

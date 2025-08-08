@@ -58,14 +58,8 @@ format:
   }
 
 # Install project programs.
-[unix]
 install *args:
-  src/install.nu --version {{justfile_directory()}} {{args}}
-
-# Install project programs.
-[windows]
-install *args:
-  src/install.ps1 --version {{justfile_directory()}} {{args}}
+  nu src/install.nu --version {{justfile_directory()}} {{args}}
 
 # Run code analyses.
 [unix]

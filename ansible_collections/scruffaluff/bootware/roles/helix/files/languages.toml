@@ -73,6 +73,10 @@ formatter = { command = "prettier", args = ["--parser", "markdown"] }
 language-servers = ["marksman", "markdown-oxide", "harper"]
 
 [[language]]
+name = "nu"
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
 name = "python"
 auto-format = true
 formatter = { command = "ruff", args = ["format", "-"] }
