@@ -68,6 +68,8 @@
     - install
   when: ansible_system == "Win32NT"
 
+# Microsft File Explorer overrides any file assoications for ts files. So
+# extension tsx must be used instead.
 - name: Register JavaScript and TypeScript files as executables for Windows
   ansible.windows.win_regedit:
     data: "{{ item.data }}"
@@ -76,12 +78,16 @@
   loop:
     - data: jsfile
       path: "HKLM:\\Software\\Classes\\.js"
-    - data: '"{{ scoop_path }}\shims\deno.exe" run --allow-all "%1" %*'
+    - data: >-
+        "{{ scoop_path }}\shims\deno.exe" run --allow-all --no-config --quiet
+        --node-modules-dir=none "%1" %*
       path: "HKLM:\\Software\\Classes\\jsfile\\shell\\open\\command"
-    - data: tsfile
-      path: "HKLM:\\Software\\Classes\\.ts"
-    - data: '"{{ scoop_path }}\shims\deno.exe" run --allow-all "%1" %*'
-      path: "HKLM:\\Software\\Classes\\tsfile\\shell\\open\\command"
+    - data: tsxfile
+      path: "HKLM:\\Software\\Classes\\.tsx"
+    - data: >-
+        "{{ scoop_path }}\shims\deno.exe" run --allow-all --no-config --quiet
+        --node-modules-dir=none "%1" %*
+      path: "HKLM:\\Software\\Classes\\tsxfile\\shell\\open\\command"
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -153,7 +159,7 @@
     [System.IO.File]::WriteAllLines("{{ item }}\DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: C:\Program Files\Deno\bin;{{ ansible_env.Path }}
+    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion

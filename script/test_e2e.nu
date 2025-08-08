@@ -1,4 +1,4 @@
-#!/usr/bin/env -S nu --no-config-file --stdin
+#!/usr/bin/env nu
 
 # Run all container end to end tests for an architecture.
 def main [

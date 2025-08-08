@@ -1,4 +1,4 @@
-#!/usr/bin/env -S nu --no-config-file --stdin
+#!/usr/bin/env nu
 
 # Copy and configure file.
 def deploy [
@@ -73,9 +73,8 @@ def --wrapped log [...args: string] {
 def install [super: string dest: directory version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
     let ext = if $nu.os-info.name == "windows" { ".ps1" } else { ".sh" }
-    let source = if $version == "local" {
-        const folder = path self | path dirname
-        $"($folder)/bootware($ext)"
+    let source = if ($version | path exists) {
+        $"($version)/src/bootware($ext)"
     } else {
         $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/bootware($ext)"
     }
@@ -99,9 +98,8 @@ powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 def install-completions [super: string global: bool version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
     let home = path-home
-    let source = if $version == "local" {
-        const folder = path self | path dirname
-        $"($folder)/completion/bootware"
+    let source = if ($version | path exists) {
+        $"($version)/src/completion/bootware"
     } else {
         $"https://raw.githubusercontent.com/scruffaluff/bootware/($version)/src/completion/bootware"
     }

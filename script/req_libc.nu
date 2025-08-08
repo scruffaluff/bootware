@@ -1,4 +1,4 @@
-#!/usr/bin/env -S nu --no-config-file --stdin
+#!/usr/bin/env nu
 
 def main [] {
     ls /usr/local/bin | get name

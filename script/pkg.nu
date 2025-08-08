@@ -1,4 +1,4 @@
-#!/usr/bin/env -S nu --no-config-file --stdin
+#!/usr/bin/env nu
 
 # Distribute Bootware in package formats.
 def main [] {}
