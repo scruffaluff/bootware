@@ -1,23 +1,9 @@
 # Fish completion file for Bootware.
 #
-# For a tutorial on writing Fish completions, visit
-# https://fishshell.com/docs/current/completions.html.
+# For a reference on flags for the Fish complete command, visit
+# https://fishshell.com/docs/current/cmds/complete.html#description.
 
-complete --no-files --command bootware
-
-# Add Bootware options and subcommands as completions.
-#
-# Flags:
-#   -F: Allow completion to be followed by a filename.
-#   -a <OPTIONS>: Add arguments to completions list.
-#   -c <COMMAND>: Provide completions for command.
-#   -d <DESCRIPTION>: Add description to completion prompt.
-#   -f: Prevent completion from being followed by a filename.
-#   -l <WORD>: Add word as a long switch flag.
-#   -n <CONDITION>: Only use this configuration if condition is true.
-#   -r: Completion must have an argument before another option.
-#   -s <CHARACTER>: Add character as a short switch flag.
-#   -x: Apply both -f and -r flags.
+complete -f -c bootware
 complete -c bootware -n __fish_use_subcommand -l debug -d 'Enable shell debug traces'
 complete -c bootware -n __fish_use_subcommand -s h -l help -d 'Print help information'
 complete -c bootware -n __fish_use_subcommand -s v -l version -d 'Print version information'
@@ -35,9 +21,9 @@ complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s c -l conf
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l debug -d 'Enable Ansible task debugger'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s d -l dev -d 'Run bootstrapping in development mode'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -s h -l help -d 'Print help information'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l install-group -a '$(__fish_complete_groups)' -d 'Remote group to install software for'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l install-user -a '$(__fish_complete_users)' -d 'Remote user to install software for'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s i -l inventory -a '$(__fish_print_hostnames)' -d 'Ansible remote hosts IP addesses'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l install-group -a '(__fish_complete_groups)' -d 'Remote group to install software for'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l install-user -a '(__fish_complete_users)' -d 'Remote user to install software for'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s i -l inventory -a '(__fish_print_hostnames)' -d 'Ansible remote hosts IP addesses'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l no-passwd -d 'Do not ask for user password'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -l no-setup -d 'Skip Bootware dependency installation'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l password -d 'Remote user login password'
@@ -45,12 +31,12 @@ complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -s p -l play
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -l private-key -d 'Path to SSH private key'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l port -d 'Port for SSH connection'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l retries -d 'Playbook retry limit during failure'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s s -l skip -a 'desktop server sysadmin wsl $(bootware roles)' -d 'Ansible playbook tags to skip'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s s -l skip -a 'desktop server sysadmin wsl (bootware roles)' -d 'Ansible playbook tags to skip'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l start-at-role -d 'Begin execution with role'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s t -l tags -a 'desktop server sysadmin wsl $(bootware roles)' -d 'Ansible playbook tags to select'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s t -l tags -a 'desktop server sysadmin wsl (bootware roles)' -d 'Ansible playbook tags to select'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -Fr -l temp-key -d 'Path to SSH private key for one time connection'
 complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -s u -l url -d 'URL of playbook repository'
-complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l user -a '$(__fish_complete_users)' -d 'Remote user login name'
+complete -c bootware -n '__fish_seen_subcommand_from bootstrap' -x -l user -a '(__fish_complete_users)' -d 'Remote user login name'
 
 complete -c bootware -n '__fish_seen_subcommand_from config' -Fr -s d -l dest -d 'Path to alternate download destination'
 complete -c bootware -n '__fish_seen_subcommand_from config' -s e -l empty -d 'Write empty configuration file'
