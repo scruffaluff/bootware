@@ -437,11 +437,6 @@ if type -q lsd
     alias ls lsd
 end
 
-# Procs settings.
-
-# Set light theme since Procs automatic theming fails on some systems.
-alias procs 'procs --theme light'
-
 # Python settings.
 
 # Add Jupyter Lab alias.

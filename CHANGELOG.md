@@ -18,7 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Balena Etcher and Wasm roles.
+- Balena Etcher , Procs, and Wasm roles.
 
 ## 0.9.1 = 2025-05-28
 

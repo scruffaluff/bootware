@@ -343,13 +343,6 @@ if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue PodmanCompletion
 }
 
-# Procs settings.
-
-# Set light theme since Procs automatic theming fails on some systems.
-function procs() {
-    procs.exe --theme light $Args
-}
-
 # Python settings.
 
 # Add Jupyter Lab alias.

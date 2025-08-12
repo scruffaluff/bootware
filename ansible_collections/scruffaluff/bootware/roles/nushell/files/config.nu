@@ -633,11 +633,6 @@ if ($"($env.HOME)/.ls_colors" | path exists) {
     $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
 }
 
-# Procs settings.
-
-# Set light theme since Procs automatic theming fails on some systems.
-alias procs = ^procs --theme light
-
 # Python settings.
 
 # Add Jupyter Lab alias.

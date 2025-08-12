@@ -96,6 +96,7 @@
       - cdrtools
       - libvirt
       - spice-gtk
+      - swtpm
       - virt-manager
   tags:
     - install

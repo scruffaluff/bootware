@@ -132,7 +132,10 @@
   # Command always marks application as changed.
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    # NPM is often missing from Scoop shims.
+    Path: >-
+      {{ scoop_path }}\\apps\\nodejs\\current;{{ scoop_path }}\\shims;{{
+      ansible_env.Path }}
   loop: "{{ node_applications }}"
   tags:
     - plugin
