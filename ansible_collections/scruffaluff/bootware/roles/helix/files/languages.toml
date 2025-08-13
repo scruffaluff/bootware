@@ -104,6 +104,10 @@ file-types = [
 ]
 
 [[language]]
+name = "toml"
+indent = { tab-width = 2, unit = "  " }
+
+[[language]]
 name = "typescript"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "typescript"] }
