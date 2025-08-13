@@ -74,3 +74,12 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Mongo Shell temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ mongosh_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]

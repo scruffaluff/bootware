@@ -170,3 +170,13 @@
   ansible.builtin.set_fact:
     cacheable: true
     deno_role_executed: true
+
+- name: Remove Deno temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ deno_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
+    system_libc == "gnu") or ansible_pkg_mgr == "apk"

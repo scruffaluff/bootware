@@ -122,3 +122,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Just temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ just_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

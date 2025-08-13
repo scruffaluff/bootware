@@ -101,3 +101,11 @@
   ansible.builtin.set_fact:
     cacheable: true
     fzf_role_executed: true
+
+- name: Remove Fzf temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ fzf_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["FreeBSD", "Linux"]

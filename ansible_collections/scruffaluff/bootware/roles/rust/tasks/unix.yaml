@@ -133,3 +133,11 @@
   tags:
     - plugin
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Remove Rust temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ rust_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]

@@ -182,3 +182,11 @@
   tags:
     - plugin
   when: ansible_system == "Win32NT"
+
+- name: Remove VSCodium temporary directory for Debian
+  ansible.builtin.file:
+    path: "{{ vscodium_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"

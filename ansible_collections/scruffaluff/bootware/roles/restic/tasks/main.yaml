@@ -74,3 +74,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Restic temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ restic_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

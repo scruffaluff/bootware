@@ -88,3 +88,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Age temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ age_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and age_linux is failed

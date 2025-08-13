@@ -272,3 +272,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT" and user_login == "nushell"
+
+- name: Remove Nushell temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ nushell_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and nushell_linux is failed

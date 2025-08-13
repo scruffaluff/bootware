@@ -95,3 +95,13 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove GDU temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ gdu_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
+    failed

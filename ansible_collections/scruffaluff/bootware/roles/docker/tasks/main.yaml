@@ -251,3 +251,11 @@
   ansible.builtin.set_fact:
     cacheable: true
     docker_role_executed: true
+
+- name: Remove Docker temporary directory for Debian
+  ansible.builtin.file:
+    path: "{{ docker_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_pkg_mgr == "apt"

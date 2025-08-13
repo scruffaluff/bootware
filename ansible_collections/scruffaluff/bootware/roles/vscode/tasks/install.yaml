@@ -116,3 +116,11 @@
   tags:
     - plugin
   when: ansible_system == "Win32NT"
+
+- name: Remove VSCode temporary directory for Fedora
+  ansible.builtin.file:
+    path: "{{ vscode_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]

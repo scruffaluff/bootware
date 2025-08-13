@@ -88,3 +88,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Tilt temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ tilt_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

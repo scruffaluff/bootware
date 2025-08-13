@@ -186,3 +186,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove K9s temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ k9s_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and k9s_linux is failed

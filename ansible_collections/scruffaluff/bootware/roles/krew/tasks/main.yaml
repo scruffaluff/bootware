@@ -91,3 +91,11 @@
 #   tags:
 #     - plugin
 #   when: ansible_system == "Win32NT"
+
+- name: Remove Krew temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ krew_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

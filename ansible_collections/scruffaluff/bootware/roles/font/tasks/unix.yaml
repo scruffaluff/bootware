@@ -78,3 +78,11 @@
   tags:
     - install
   when: ansible_system in ["FreeBSD", "Linux"]
+
+- name: Remove font temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ font_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: not font_check_unix.stat.exists

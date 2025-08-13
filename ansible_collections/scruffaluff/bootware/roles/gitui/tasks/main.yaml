@@ -143,3 +143,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove GitUI temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ gitui_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

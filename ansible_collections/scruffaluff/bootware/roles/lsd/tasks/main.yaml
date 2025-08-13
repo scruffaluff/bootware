@@ -172,3 +172,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove Lsd temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ lsd_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

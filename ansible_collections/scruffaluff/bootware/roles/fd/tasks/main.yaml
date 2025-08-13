@@ -97,3 +97,11 @@
     - completion
     - install
   when: ansible_system == "Linux"
+
+- name: Remove Fd temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ fd_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

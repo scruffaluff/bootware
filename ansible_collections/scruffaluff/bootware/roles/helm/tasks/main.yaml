@@ -116,3 +116,11 @@
   tags:
     - plugin
   when: ansible_system == "Win32NT"
+
+- name: Remove Helm temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ helm_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and helm_linux is failed

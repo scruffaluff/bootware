@@ -79,3 +79,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Scc temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ scc_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

@@ -87,3 +87,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Fastfetch temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ fastfetch_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and fastfetch_linux is failed

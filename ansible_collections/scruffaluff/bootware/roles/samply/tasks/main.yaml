@@ -119,3 +119,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Samply temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ samply_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and samply_linux is failed

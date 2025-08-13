@@ -87,3 +87,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove SD temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ sd_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and sd_linux is failed
