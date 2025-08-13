@@ -211,3 +211,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove Yazi temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ yazi_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

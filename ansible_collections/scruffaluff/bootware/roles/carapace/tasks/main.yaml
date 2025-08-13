@@ -76,3 +76,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Carapace temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ carapace_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

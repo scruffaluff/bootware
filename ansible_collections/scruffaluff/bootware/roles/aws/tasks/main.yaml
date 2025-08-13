@@ -65,3 +65,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove AWS temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ aws_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"

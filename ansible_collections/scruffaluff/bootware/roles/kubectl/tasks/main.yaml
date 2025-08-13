@@ -113,3 +113,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Kubectl temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ kubectl_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

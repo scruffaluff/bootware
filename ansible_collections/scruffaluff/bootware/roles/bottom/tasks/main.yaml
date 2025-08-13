@@ -140,3 +140,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove Bottom temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ bottom_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and bottom_linux is failed

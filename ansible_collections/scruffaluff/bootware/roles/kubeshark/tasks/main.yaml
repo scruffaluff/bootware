@@ -103,3 +103,11 @@
     - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Remove Kubeshark temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ kubeshark_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]

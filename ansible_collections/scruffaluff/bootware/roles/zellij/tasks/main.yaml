@@ -162,3 +162,11 @@
   tags:
     - config
   when: ansible_system != "Win32NT"
+
+- name: Remove Zellij temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ zellij_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

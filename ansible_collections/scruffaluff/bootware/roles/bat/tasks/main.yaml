@@ -254,3 +254,13 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove Bat temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ bat_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == 'amd64') and bat_linux is failed

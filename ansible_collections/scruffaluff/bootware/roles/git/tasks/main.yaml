@@ -143,3 +143,13 @@
   ansible.builtin.set_fact:
     cacheable: true
     git_role_executed: true
+
+- name: Remove Git temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ git_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64") and git_delta_linux is failed

@@ -77,3 +77,13 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Terraform temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ terraform_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
+    is failed)

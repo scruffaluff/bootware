@@ -133,3 +133,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Zoxide temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ zoxide_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

@@ -105,3 +105,11 @@
     - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Remove Flyctl temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ flyctl_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]

@@ -68,3 +68,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Qsv temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ qsv_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and system_architecture == "amd64"

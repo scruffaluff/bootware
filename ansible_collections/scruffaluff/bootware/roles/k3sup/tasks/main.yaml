@@ -84,3 +84,11 @@
     - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Remove K3sup temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ k3sup_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]

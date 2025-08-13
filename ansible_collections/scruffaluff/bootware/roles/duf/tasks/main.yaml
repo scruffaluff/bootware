@@ -100,3 +100,13 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Duf temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ duf_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    failed

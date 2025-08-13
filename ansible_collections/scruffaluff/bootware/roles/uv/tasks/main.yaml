@@ -156,3 +156,11 @@
     - completion
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Uv temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ uv_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"

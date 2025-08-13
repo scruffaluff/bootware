@@ -79,3 +79,11 @@
     - completion
     - install
   when: ansible_system in ["Darwin", "Linux"]
+
+- name: Remove Kind temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ kind_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system in ["Darwin", "Linux"]

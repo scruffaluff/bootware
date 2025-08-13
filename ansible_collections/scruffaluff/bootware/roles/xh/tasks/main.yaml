@@ -107,3 +107,11 @@
     - completion
     - install
   when: ansible_system == "Linux" and xh_linux is failed
+
+- name: Remove Xh temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ xh_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and xh_linux is failed

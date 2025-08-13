@@ -86,3 +86,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Dive temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ dive_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and dive_linux is failed

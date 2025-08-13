@@ -121,3 +121,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Helmfile temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ helmfile_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

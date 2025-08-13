@@ -119,3 +119,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Doctl temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ doctl_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

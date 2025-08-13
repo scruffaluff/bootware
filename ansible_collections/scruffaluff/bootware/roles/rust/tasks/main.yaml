@@ -106,3 +106,13 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Rust temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ rust_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
+    == "amd64")

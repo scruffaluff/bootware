@@ -183,3 +183,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove GitHub Runner temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\github-runner"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

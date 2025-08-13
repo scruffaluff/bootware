@@ -124,3 +124,11 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove Topgrade temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ topgrade_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux" and topgrade_linux is failed

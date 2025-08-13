@@ -108,3 +108,11 @@
     - completion
     - install
   when: ansible_system != "Win32NT"
+
+- name: Remove Miniserve temporary directory for Unix
+  ansible.builtin.file:
+    path: "{{ miniserve_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system != "Win32NT"

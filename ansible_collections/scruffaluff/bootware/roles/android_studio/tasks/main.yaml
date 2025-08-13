@@ -146,3 +146,13 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Android Studio temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ android_studio_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    and not android_studio_check.stat.exists

@@ -72,3 +72,11 @@
   tags:
     - install
   when: ansible_system == "Win32NT"
+
+- name: Remove Lazydocker temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ lazydocker_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"
