@@ -124,6 +124,7 @@ AvoidCurses = false
 ExpandStandardInputAndOutput = false
 ExpandTimeShorthands = false
 SentenceCapitalization = false
+ToDoHyphen = false
 
 [language-server.pyright]
 args = ["--stdio"]
