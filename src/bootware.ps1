@@ -784,7 +784,7 @@ function SetupSSHServer() {
             Start-Service -Name wuauserv
         }
 
-        Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+        Add-WindowsCapability -Online -Name OpenSSH.Server
         if (
             (-not (Get-NetFirewallRule -DisplayName 'Bootware SSH' -ErrorAction SilentlyContinue)) -and
             (-not (Get-NetFirewallRule -Name 'sshd' -ErrorAction SilentlyContinue))
