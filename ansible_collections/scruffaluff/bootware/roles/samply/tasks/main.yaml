@@ -127,3 +127,11 @@
   tags:
     - install
   when: ansible_system == "Linux" and samply_linux is failed
+
+- name: Remove Samply temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\samply"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

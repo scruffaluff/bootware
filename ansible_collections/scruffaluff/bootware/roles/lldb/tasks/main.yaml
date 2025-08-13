@@ -130,3 +130,9 @@
   tags:
     - config
   when: ansible_system == "Win32NT"
+
+- name: Remove LLDB temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\lldb"
+    state: absent
+  when: ansible_system == "Win32NT" and not lldb_python_check.stat.exists

@@ -126,3 +126,10 @@
     user: "{{ user_id }}"
   tags:
     - install
+
+- name: Remove Rust temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\rust"
+    state: absent
+  tags:
+    - install

@@ -63,3 +63,8 @@
             -Value $File.Name
         }
       changed_when: true
+
+- name: Remove font temporary directory for Windows
+  ansible.windows.win_file:
+    path: "{{ ansible_env.TEMP }}\\font"
+    state: absent
