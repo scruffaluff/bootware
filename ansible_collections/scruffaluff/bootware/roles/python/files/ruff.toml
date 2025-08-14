@@ -2,20 +2,20 @@
 #
 # For more information, visit https://docs.astral.sh/ruff/configuration.
 
+[format]
+docstring-code-format = true
+
 [lint]
-select = ["ALL"]
+pydocstyle = { convention = "google" }
 ignore = [
-    "COM", # Rule conflicts with formatter.
-    "D203", # Rule is incompatible with better rule D211.
-    "D213", # Rule is incompatible with better rule D212.
-    "E402", # Code is required before imports to test standalone scripts.
-    "EXE003", # Uv should be shebang executor.
-    "FBT", # Boolean function arguments are acceptable.
-    "FIX", # Todo comments are acceptable.
-    "ICN", # Import abbreviations reduce readability.
-    "INP", # Standalone scripts should not be part of a package.
-    "S101", # Assert statements are standard for test functions.
-    "S603", # Rule warns about using subprocess commands without a solution.
-    "T201", # Print statements are acceptable for CLI applications.
-    "TD", # Todo formatting is excessive for personal projects.
+  "COM",    # Rule conflicts with formatter.
+  "EXE003", # Uv should be shebang executor.
+  "FBT",    # Boolean function arguments are acceptable.
+  "FIX",    # Todo comments are acceptable.
+  "ICN",    # Import abbreviations reduce readability.
+  "S101",   # Assert statements are standard for test functions.
+  "S603",   # Rule warns about using subprocess commands without a solution.
+  "T201",   # Print statements are acceptable for CLI applications.
+  "TD",     # Todo formatting is excessive for personal projects.
 ]
+select = ["ALL"]

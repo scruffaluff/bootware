@@ -18,7 +18,7 @@
 function _delete_commandline_from_history
     set --function command (commandline | string collect | string trim)
     if test -n $command
-        set --local results "(history search $command)"
+        set --local results "$(history search $command)"
 
         if test -n $results
             printf '\nFish History Entry Delete\n\n'
@@ -45,7 +45,7 @@ end
 # Paste current working directory into the commandline.
 function _paste_cwd
     set --function line (commandline | string collect)
-    set --function working_directory "(string replace "$HOME" '~' (pwd))/"
+    set --function working_directory "$(string replace "$HOME" '~' (pwd))/"
 
     if string match --entire --quiet $working_directory $line
         commandline --replace (string replace $working_directory '' $line)
@@ -174,7 +174,7 @@ function prepend-paths
     for inode in $argv
         if test -d $inode
             # Expand folder to its full path.
-            set --local folder "(builtin realpath --no-symlinks $inode)"
+            set --local folder "$(builtin realpath --no-symlinks $inode)"
             if not contains $folder $PATH
                 set --export PATH $folder $PATH
             end
@@ -314,7 +314,7 @@ if test $os = Darwin
                 set text $line
             end
         end
-        echo -n "(printf '%s' $text)" | pbcopy
+        echo -n "$(printf '%s' $text)" | pbcopy
     end
     alias cbpaste pbpaste
 else if type -q wl-copy
@@ -328,7 +328,7 @@ else if type -q wl-copy
                 set text $line
             end
         end
-        echo -n "(printf '%s' $text)" | wl-copy
+        echo -n "$(printf '%s' $text)" | wl-copy
     end
     alias cbpaste wl-paste
 end
@@ -426,7 +426,7 @@ prepend-paths "$HOME/.krew/bin"
 # Flags:
 #   -f: Check if file exists and is a regular file.
 if test -f "$HOME/.ls_colors"
-    set --export LS_COLORS "(cat "$HOME/.ls_colors")"
+    set --export LS_COLORS "$(cat "$HOME/.ls_colors")"
 end
 
 # Replace Ls with Lsd if available.
