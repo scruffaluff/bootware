@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck disable=SC2030,SC2031,SC2317
+# shellcheck disable=SC2030,SC2031,SC2317,SC2329
 
 setup() {
   REPO_PATH="${BATS_TEST_DIRNAME}/../.."
@@ -19,13 +19,11 @@ setup() {
 
   # Mock functions for child processes by printing received arguments.
   ansible-playbook() {
-    # shellcheck disable=SC2317
     echo "ansible-playbook $*"
   }
   export -f ansible-playbook
 
   ansible-pull() {
-    # shellcheck disable=SC2317
     echo "ansible-pull $*"
   }
   export -f ansible-pull
