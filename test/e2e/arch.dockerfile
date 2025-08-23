@@ -49,7 +49,7 @@ RUN command -v bash > /dev/null \
     || sudo pacman --noconfirm --sync bash \
     && command -v deno > /dev/null \
     || sudo pacman --noconfirm --sync unzip \
-    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
+    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | sh -s -- --global
 
 ARG test
 

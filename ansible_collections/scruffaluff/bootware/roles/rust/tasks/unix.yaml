@@ -12,9 +12,7 @@
 
 - name: Install Rust for Unix
   ansible.builtin.shell: # noqa command-instead-of-module
-    cmd: >-
-      curl -LSfs --proto '=https' --tlsv1.2 https://sh.rustup.rs | sh -s -- -y
-      --no-modify-path
+    cmd: curl -LSfs https://sh.rustup.rs | sh -s -- -y --no-modify-path
     creates: "{{ user_home }}/.cargo/bin/rustup"
   become: true
   become_user: "{{ user_id }}"

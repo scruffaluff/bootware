@@ -127,7 +127,7 @@ function Main() {
                 break
             }
             { $_ -in '-q', '--quiet' } {
-                $Env:SCRIPTS_NOLOG = 'true'
+                $Env:BOOTWARE_NOLOG = 'true'
                 $ArgIdx += 1
                 break
             }

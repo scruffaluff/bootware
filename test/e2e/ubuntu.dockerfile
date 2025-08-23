@@ -51,7 +51,7 @@ RUN command -v bash > /dev/null \
     || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes bash \
     && command -v deno > /dev/null \
     || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes unzip \
-    && curl -LSfs https://scruffaluff.github.io/scripts/install/deno.sh | sh -s -- --global
+    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | sh -s -- --global
 
 ARG test
 

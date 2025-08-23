@@ -34,7 +34,7 @@ EOF
 #######################################
 # Add Bootware to system path in shell profile.
 # Arguments:
-#   Parent directory of Scripts script.
+#   Parent directory of Bootware script.
 # Globals:
 #   SHELL
 #######################################

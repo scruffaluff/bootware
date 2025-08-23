@@ -87,12 +87,12 @@ jobs:
         name: Install Just for Windows
         run: >-
           powershell { iex "& { $(iwr -useb
-          https://scruffaluff.github.io/scripts/install/just.ps1) } --dest
+          https://scruffaluff.github.io/picoware/install/just.ps1) } --dest
           C:\Windows" }
       - if: ${{ runner.os != 'Windows' }}
         name: Install Just for Unix
         run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          curl -LSfs https://scruffaluff.github.io/picoware/install/just.sh | sh
           -s -- --global
       - name: Run CI workflow commands
         run: just ci
@@ -133,7 +133,7 @@ jobs:
           python-version: "3.12"
       - name: Install Just
         run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          curl -LSfs https://scruffaluff.github.io/picoware/install/just.sh | sh
           -s -- --global
       - name: Build packages
         run: just setup test-pkg
@@ -169,7 +169,7 @@ jobs:
             hashFiles('poetry.lock') }}
       - name: Install Just
         run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          curl -LSfs https://scruffaluff.github.io/picoware/install/just.sh | sh
           -s -- --global
       - name: Install Node interpreter
         uses: actions/setup-node@v4
@@ -219,7 +219,7 @@ jobs:
             hashFiles('poetry.lock') }}
       - name: Install Just
         run: >-
-          curl -LSfs https://scruffaluff.github.io/scripts/install/just.sh | sh
+          curl -LSfs https://scruffaluff.github.io/picoware/install/just.sh | sh
           -s -- --global
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

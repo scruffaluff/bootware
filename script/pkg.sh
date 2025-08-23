@@ -147,7 +147,7 @@ deb() {
 # Arguments:
 #   Message to print.
 # Globals:
-#   SCRIPTS_NOLOG
+#   BOOTWARE_NOLOG
 # Outputs:
 #   Message argument.
 #######################################

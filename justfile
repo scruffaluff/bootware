@@ -109,7 +109,7 @@ setup:
   fi
   if [ ! -x "$(command -v nu)" ]; then
     curl --fail --location --show-error \
-      https://scruffaluff.github.io/scripts/install/nushell.sh | sh -s -- \
+      https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
       --preserve-env --dest .vendor/bin
   fi
   echo "Nushell $(nu --version)"
@@ -187,7 +187,7 @@ setup:
   }
   if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
     $NushellScript = Invoke-WebRequest -UseBasicParsing -Uri `
-      https://scruffaluff.github.io/scripts/install/nushell.ps1
+      https://scruffaluff.github.io/picoware/install/nushell.ps1
     Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
   Write-Output "Nushell $(nu --version)"
