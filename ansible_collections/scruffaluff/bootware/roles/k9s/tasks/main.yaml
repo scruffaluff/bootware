@@ -86,101 +86,77 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create K9s configuration directory for FreeBSD
+- name: Create K9s configuration directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.k9s"
+    path: "{{ k9s_config }}/skins"
     state: directory
   become: true
   tags:
     - config
-  when: ansible_system == "FreeBSD"
-
-- name: Create K9s configuration directory for Linux
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/k9s"
-    state: directory
-  become: true
-  tags:
-    - config
-  when: ansible_system == "Linux"
-
-- name: Create K9s configuration directory for MacOS
-  ansible.builtin.file:
-    group: "{{ group_id }}"
-    mode: "755"
-    owner: "{{ user_id }}"
-    path: "{{ user_home }}/Library/Application Support/k9s"
-    state: directory
-  become: true
-  tags:
-    - config
-  when: ansible_system == "Darwin"
+  when: ansible_system != "Win32NT"
 
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}\\AppData\\Local\\k9s"
+    path: "{{ k9s_config }}\\skins"
     state: directory
   tags:
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy K9s skin file for FreeBSD
+- name: Copy K9s skin file for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.k9s/skin.yml"
+    dest: "{{ k9s_config }}/skins/solarized_light.yaml"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: skin.yml
+    src: skin.yaml
   become: true
   tags:
     - config
-  when: ansible_system == "FreeBSD"
-
-- name: Copy K9s skin file for Linux
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/k9s/skin.yml"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: skin.yml
-  become: true
-  tags:
-    - config
-  when: ansible_system == "Linux"
-
-- name: Copy K9s skin file for MacOS
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/Library/Application Support/k9s/skin.yml"
-    force: true
-    group: "{{ group_id }}"
-    mode: "644"
-    owner: "{{ user_id }}"
-    src: skin.yml
-  become: true
-  tags:
-    - config
-  when: ansible_system == "Darwin"
+  when: ansible_system != "Win32NT"
 
 - name: Copy K9s skin file for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}\\AppData\\Local\\k9s\\skin.yml"
+    dest: "{{ k9s_config }}\\skins\\solarized_light.yaml"
     force: true
-    src: skin.yml
+    src: skin.yaml
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set K9s skin for Unix
+  ansible.builtin.lineinfile:
+    backrefs: true
+    create: true
+    line: "\\g<1> solarized_light"
+    mode: "644"
+    path: "{{ k9s_config }}/config.yaml"
+    regex: "^(\\s*skin:)"
+    state: present
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Apply K9s settings for Windows
+  community.windows.win_lineinfile:
+    backrefs: true
+    create: false
+    line: "\\g<1> solarized_light"
+    path: "{{ k9s_config }}\\config.yaml"
+    regex: "^(\\s*skin:)"
+    state: present
   tags:
     - config
   when: ansible_system == "Win32NT"
 
 - name: Set owner of K9s files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Local\\k9s"
+    path: "{{ k9s_config }}"
     recurse: true
     user: "{{ user_id }}"
   tags:
