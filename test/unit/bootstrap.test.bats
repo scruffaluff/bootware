@@ -98,6 +98,7 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   local tmp_dir
   # Do not use long form flags for mktemp. They are not supported on some
   # systems.
+  # shellcheck disable=SC2218
   tmp_dir="$(mktemp -u)"
 
   export BOOTWARE_NOPASSWD='true'

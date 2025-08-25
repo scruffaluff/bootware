@@ -6,26 +6,27 @@
 name = "bash"
 auto-format = true
 file-types = [
-  "sh",
-  "bash",
-  "zsh",
   ".bash_login",
   ".bash_logout",
   ".bash_profile",
   ".bashrc",
-  "env",
   ".profile",
   ".secrets",
-  ".zshenv",
   ".zlogin",
   ".zlogout",
   ".zprofile",
+  ".zshenv",
   ".zshrc",
   "APKBUILD",
   "PKGBUILD",
-  "eclass",
-  "ebuild",
+  "bash",
+  "bats",
   "bazelrc",
+  "ebuild",
+  "eclass",
+  "env",
+  "sh",
+  "zsh",
 ]
 formatter = { command = "shfmt", args = [
   "--case-indent",
@@ -92,8 +93,8 @@ language-servers = ["rust-analyzer", "harper"]
 [[language]]
 name = "starlark"
 file-types = [
-  "bzl",
   "bazel",
+  "bzl",
   "star",
   { glob = "BUCK" },
   { glob = "BUILD" },
