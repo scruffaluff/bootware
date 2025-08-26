@@ -17,7 +17,11 @@ def cmd_cb(
     interpreter = debugger.GetCommandInterpreter()
     interpreter.HandleCommand(f"b {command}", result)
     if result.Succeeded():
-        id_ = re.match(r"^Breakpoint (\d):.*", result.GetOutput()).group(1)
+        match = re.match(r"^Breakpoint (\d):.*", result.GetOutput())
+        if match is None:
+            return
+
+        id_ = match.group(1)
         interpreter.HandleCommand("continue", result)
         interpreter.HandleCommand(f"breakpoint delete {id_}", result)
 

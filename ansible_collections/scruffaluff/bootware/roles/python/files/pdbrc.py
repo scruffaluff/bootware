@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Any, Callable, cast
 
 if TYPE_CHECKING:
     from pdb import Pdb
-    from types import TracebackType
+    from types import FrameType, TracebackType
 
 
 def break_exception(self: Pdb) -> Callable:
@@ -31,7 +31,9 @@ def break_exception(self: Pdb) -> Callable:
     ) -> None:
         """Start debugger on unhandled exception."""
         traceback.print_exception(type_, value, trace)
-        self.pm()
+        # Mypy is incorrect since the method is defined at
+        # https://docs.python.org/3/library/pdb.html#pdb.pm.
+        self.pm()  # type: ignore[attr-defined]
 
     return excepthook
 
@@ -63,6 +65,11 @@ def catalog(
     if isinstance(object_, dict):
         return pprint.pformat({key: object_[key] for key in sorted(object_.keys())})
     return pprint.pformat(object_)
+
+
+def curframe(pdb: Pdb) -> FrameType:
+    """Attribute accessor wrapper to satisfy Mypy."""
+    return cast("FrameType", pdb.curframe)
 
 
 def do_cat(self: Pdb, line: str) -> None:
@@ -98,7 +105,7 @@ def do_doc(self: Pdb, line: str) -> None:
 
     if object_ is None:
         try:
-            docstring = self.curframe.f_globals["__doc__"]
+            docstring = curframe(self).f_globals["__doc__"]
         except KeyError:
             error("Unable to find current module docstring")
         else:
@@ -117,7 +124,7 @@ def do_edit(self: Pdb, line: str) -> None:
     except Exception as exception:
         error(exception)
     else:
-        edit(object_, self.curframe)
+        edit(object_, curframe(self))
 
 
 def do_nextlist(self: Pdb, _arg: str) -> int:
@@ -125,7 +132,7 @@ def do_nextlist(self: Pdb, _arg: str) -> int:
 
     Continue execution until the next line and then list source code.
     """  # noqa: D403, D415
-    self.set_next(self.curframe)
+    self.set_next(curframe(self))
     self.do_list("")
     # Returning "1" appears to be necessary for subsequent calls to work.
     return 1
@@ -144,7 +151,7 @@ def do_shell(self: Pdb, line: str) -> None:
             arguments.append(argument)
         else:
             arguments.append(str(object_))
-    shell(arguments, self.curframe)
+    shell(arguments, curframe(self))
 
 
 def do_steplist(self: Pdb, arg: str) -> int:
@@ -213,7 +220,8 @@ def error(message: str | Exception) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
-def find_expr(input_: str) -> tuple[int, int, str]:
+# TODO: Break function into smaller components.
+def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
     """Find Python variables starting with % or expression surrounded by '%{}'."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
@@ -302,7 +310,7 @@ def parent_shell() -> str:
 def parse(pdb: Pdb, input_: str) -> Any:
     """Parse and possibly execute command line input."""
     if input_.strip():
-        return eval(input_, pdb.curframe.f_globals, pdb.curframe_locals)
+        return eval(input_, curframe(pdb).f_globals, pdb.curframe_locals)
     return None
 
 
@@ -312,7 +320,7 @@ def parse_expr(pdb: Pdb, input_: str) -> Any:
         start, stop, expr = find_expr(input_)
         if expr == "":
             break
-        result = eval(expr, pdb.curframe.f_globals, pdb.curframe_locals)
+        result = eval(expr, curframe(pdb).f_globals, pdb.curframe_locals)
         input_ = input_[:start] + str(result) + input_[stop:]
     return input_
 

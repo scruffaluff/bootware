@@ -52,7 +52,7 @@ def main() -> None:
     database = profiles_database(module, system)
     try:
         paths = profiles_paths(module, database)
-    except Exception as exception:
+    except OSError as exception:
         module.fail_json(
             msg=(
                 "Unable to parse default Firefox profile from profiles database"
@@ -100,7 +100,7 @@ def profiles_paths(module: AnsibleModule, path: Path) -> list[str]:
     parser = ConfigParser()
     try:
         parser.read(path)
-    except Exception as exception:
+    except OSError as exception:
         module.fail_json(
             msg=(
                 "Unable to read default Firefox profile from profiles database"

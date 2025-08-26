@@ -21,7 +21,7 @@ requires-python = ">=3.11.0,<4.0.0"
 version = "0.9.1"
 
 [tool.mypy]
-cache_dir = ".cache/mypy"
+cache_dir = ".vendor/cache/mypy"
 check_untyped_defs = true
 disallow_untyped_calls = false
 disallow_untyped_defs = true
@@ -55,7 +55,7 @@ ruff = "^0.12.10"
 yamllint = ">=1.36.0,<2.0.0"
 
 [tool.ruff]
-cache-dir = ".cache/ruff"
+cache-dir = ".vendor/cache/ruff"
 extend-exclude = ["jupyter_notebook_config.py"]
 
 [tool.ruff.format]
