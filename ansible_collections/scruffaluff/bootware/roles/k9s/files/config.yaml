@@ -1,0 +1,11 @@
+# K9s configuration file for managing Kubernetes clusters.
+#
+# For more information, visit https://k9scli.io/topics/config.
+
+---
+k9s:
+  # K9s crashes without the maxConnRetry and refreshRate settings.
+  maxConnRetry: 5
+  refreshRate: 2
+  ui:
+    skin: solarized_light

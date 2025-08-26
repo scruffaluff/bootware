@@ -37,6 +37,7 @@ doc:
 format:
   npx prettier --write .
   shfmt --write ansible_collections script src test
+  poetry run ruff format .
 
 # Fix code formatting.
 [windows]
@@ -73,6 +74,8 @@ lint:
     shellcheck "${file}"
   done
   poetry run ansible-lint ansible_collections playbook.yaml
+  poetry run ruff check .
+  poetry run mypy .
 
 # Run code analyses.
 [windows]

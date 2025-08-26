@@ -106,50 +106,34 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy K9s skin file for Unix
+- name: Copy K9s settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ k9s_config }}/skins/solarized_light.yaml"
+    dest: "{{ k9s_config }}/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: skin.yaml
+    src: "{{ item.source }}"
   become: true
+  loop:
+    - dest: config.yaml
+      source: config.yaml
+    - dest: skins/solarized_light.yaml
+      source: skin.yaml
   tags:
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy K9s skin file for Windows
+- name: Copy K9s settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ k9s_config }}\\skins\\solarized_light.yaml"
+    dest: "{{ k9s_config }}\\{{ item.dest }}"
     force: true
-    src: skin.yaml
-  tags:
-    - config
-  when: ansible_system == "Win32NT"
-
-- name: Set K9s skin for Unix
-  ansible.builtin.lineinfile:
-    backrefs: true
-    create: true
-    line: "\\g<1> solarized_light"
-    mode: "644"
-    path: "{{ k9s_config }}/config.yaml"
-    regex: "^(\\s*skin:)"
-    state: present
-  become: true
-  tags:
-    - config
-  when: ansible_system != "Win32NT"
-
-- name: Apply K9s settings for Windows
-  community.windows.win_lineinfile:
-    backrefs: true
-    create: false
-    line: "\\g<1> solarized_light"
-    path: "{{ k9s_config }}\\config.yaml"
-    regex: "^(\\s*skin:)"
-    state: present
+    src: "{{ item.source }}"
+  loop:
+    - dest: config.yaml
+      source: config.yaml
+    - dest: skins\solarized_light.yaml
+      source: skin.yaml
   tags:
     - config
   when: ansible_system == "Win32NT"

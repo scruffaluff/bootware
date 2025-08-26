@@ -1,96 +1,102 @@
 """Python debugger settings file."""
 
+# ruff: noqa: ANN401, BLE001, S307, SLF001
+
+from __future__ import annotations
+
 import inspect
 import itertools
 import os
-from pathlib import Path
 import pprint
 import re
 import shlex
 import subprocess
-from subprocess import CalledProcessError
 import sys
 import tempfile
 import traceback
-from types import TracebackType
-from typing import Any, Callable, cast, List, Optional, Tuple, Type, Union
+from pathlib import Path
+from subprocess import CalledProcessError
+from typing import TYPE_CHECKING, Any, Callable, cast
+
+if TYPE_CHECKING:
+    from pdb import Pdb
+    from types import TracebackType
 
 
-def break_exception(self) -> Callable:
+def break_exception(self: Pdb) -> Callable:
     """Create exception handler for debugging."""
 
     def excepthook(
-        type: Type[BaseException], value: BaseException, trace: TracebackType
+        type_: type[BaseException], value: BaseException, trace: TracebackType
     ) -> None:
         """Start debugger on unhandled exception."""
-        traceback.print_exception(type, value, trace)
+        traceback.print_exception(type_, value, trace)
         self.pm()
 
     return excepthook
 
 
-def cat(object: Any, regex: Optional[str] = None) -> None:
+def cat(object_: Any, regex: str | None = None) -> None:
     """Print object catalog with default pager."""
     regex = ".*" if regex is None else regex
-    page(catalog(object, regex=regex))
+    page(catalog(object_, regex=regex))
 
 
 def catalog(
-    object: Any,
+    object_: Any,
     regex: str = ".*",
 ) -> str:
     """Convert object to string representation with all attributes."""
-    if hasattr(object, "__dict__") and object.__dict__:
-        name_ = name(object)
+    if hasattr(object_, "__dict__") and object_.__dict__:
+        name_ = name(object_)
         regex_ = re.compile(regex, re.IGNORECASE)
 
         values = []
-        for key in sorted(object.__dict__.keys()):
+        for key in sorted(object_.__dict__.keys()):
             # Avoid key __builtins__ since formatting it can cause a crash.
             if not isinstance(key, str) or (
                 key != "__builtins__" and regex_.match(key)
             ):
-                value = pprint.pformat(object.__dict__[key])
+                value = pprint.pformat(object_.__dict__[key])
                 values.append(f"{name_}.{key} = {value}")
         return "\n".join(values)
-    elif isinstance(object, dict):
-        return pprint.pformat({key: object[key] for key in sorted(object.keys())})
-    else:
-        return pprint.pformat(object)
+    if isinstance(object_, dict):
+        return pprint.pformat({key: object_[key] for key in sorted(object_.keys())})
+    return pprint.pformat(object_)
 
 
-def do_cat(self, line: str) -> None:
+def do_cat(self: Pdb, line: str) -> None:
     """cat object [, regex]
 
     Print object catalog with default pager.
-    """
+    """  # noqa: D403, D415
     if not line.strip():
         error("Command cat takes one or two arguments")
         return
     try:
-        object = parse(self, line)
+        object_ = parse(self, line)
     except Exception as exception:
         error(exception)
         return
 
-    if isinstance(object, tuple) and len(object) == 2 and isinstance(object[1], str):
-        cat(*object)
+    if isinstance(object_, tuple) and len(object_) == 2 and isinstance(object_[1], str):  # noqa: PLR2004
+        cat(*object_)
     else:
-        cat(object)
+        cat(object_)
 
 
-def do_doc(self, line: str) -> None:
+def do_doc(self: Pdb, line: str) -> None:
     """doc [object]
 
     Print object signature and documentation in default pager.
-    """
+    """  # noqa: D403, D415
     try:
-        object = parse(self, line)
+        object_ = parse(self, line)
     except Exception as exception:
         error(exception)
         return
 
-    if object is None:
+    if object_ is None:
         try:
             docstring = self.curframe.f_globals["__doc__"]
         except KeyError:
@@ -98,88 +104,88 @@ def do_doc(self, line: str) -> None:
         else:
             cat(docstring)
     else:
-        doc(object)
+        doc(object_)
 
 
-def do_edit(self, line: str) -> None:
+def do_edit(self: Pdb, line: str) -> None:
     """ed(it) [object]
 
     Open object source code or current module in default text editor.
-    """
+    """  # noqa: D415
     try:
-        object = parse(self, line)
+        object_ = parse(self, line)
     except Exception as exception:
         error(exception)
     else:
-        edit(object, self.curframe)
+        edit(object_, self.curframe)
 
 
-def do_nextlist(self, arg) -> int:
+def do_nextlist(self: Pdb, _arg: str) -> int:
     """nl | nextlist
 
     Continue execution until the next line and then list source code.
-    """
+    """  # noqa: D403, D415
     self.set_next(self.curframe)
-    self.do_list(None)
+    self.do_list("")
     # Returning "1" appears to be necessary for subsequent calls to work.
     return 1
 
 
-def do_shell(self, line: str) -> None:
+def do_shell(self: Pdb, line: str) -> None:
     """sh(ell) [command]
 
     Execute shell command or start interactive shell on empty command.
-    """
+    """  # noqa: D415
     arguments = []
     for argument in map(os.path.expanduser, shlex.split(line.strip())):
         try:
-            object = parse_expr(self, argument)
-        except Exception:
+            object_ = parse_expr(self, argument)
+        except Exception:  # noqa: PERF203
             arguments.append(argument)
         else:
-            arguments.append(str(object))
+            arguments.append(str(object_))
     shell(arguments, self.curframe)
 
 
-def do_steplist(self, arg) -> int:
+def do_steplist(self: Pdb, arg: str) -> int:
     """sl | steplist
 
     Execution current line and then list source code.
-    """
+    """  # noqa: D403, D415
     self.set_step()
     self.do_list(arg)
     # Returning "1" appears to be necessary for subsequent calls to work.
     return 1
 
 
-def doc(object: Any) -> None:
+def doc(object_: Any) -> None:
     """Print object signature and documentation in default pager."""
-    docstring = inspect.getdoc(object)
+    docstring = inspect.getdoc(object_)
     try:
-        signature = f"{name(object)}{inspect.signature(object)}"
+        signature = f"{name(object_)}{inspect.signature(object_)}"
     except (AttributeError, TypeError):
         signature = None
 
     if docstring is None and signature is None:
-        error(f"Unable to find documenation for '{object}'")
+        error(f"Unable to find documenation for '{object_}'")
     elif docstring is None:
-        page(cast(str, signature))
+        page(cast("str", signature))
     elif signature is None:
         page(docstring)
     else:
         page(f"{signature}\n{docstring}")
 
 
-def edit(object: Any = None, frame: Any = None) -> None:
+def edit(object_: Any = None, frame: Any = None) -> None:
     """Open object's source code in default editor."""
     editor = os.environ.get("EDITOR", "vi")
-    if isinstance(object, int) and frame is not None:
-        command = [editor, f"+{object}", frame.f_code.co_filename]
-    elif object is None and frame is not None:
+    if isinstance(object_, int) and frame is not None:
+        command = [editor, f"+{object_}", frame.f_code.co_filename]
+    elif object_ is None and frame is not None:
         file, line = frame.f_code.co_filename, frame.f_lineno
         command = [editor, f"+{line}", file]
     else:
-        type_ = object if is_type(object) else type(object)
+        type_ = object_ if is_type(object_) else type(object_)
         try:
             file, line = find_source(type_)
         except Exception as exception:
@@ -194,11 +200,12 @@ def edit(object: Any = None, frame: Any = None) -> None:
             "new-pane",
             "--close-on-exit",
             "--",
-        ] + command
+            *command,
+        ]
     subprocess.run(command, check=True)
 
 
-def error(message: Union[str, Exception]) -> None:
+def error(message: str | Exception) -> None:
     """Print error to console."""
     if isinstance(message, str):
         print(f"*** {message}")
@@ -206,19 +213,19 @@ def error(message: Union[str, Exception]) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
-def find_expr(input: str) -> Tuple[int, int, str]:
+def find_expr(input_: str) -> tuple[int, int, str]:
     """Find Python variables starting with % or expression surrounded by '%{}'."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
     index = 0
-    length = len(input)
-    stack: List[int] = []
-    variable: List[int] = []
+    length = len(input_)
+    stack: list[int] = []
+    variable: list[int] = []
 
     while index < length:
-        character = input[index]
+        character = input_[index]
         try:
-            next_ = input[index + 1]
+            next_ = input_[index + 1]
         except IndexError:
             next_ = None
 
@@ -226,7 +233,7 @@ def find_expr(input: str) -> Tuple[int, int, str]:
             if character == "}":
                 start = stack.pop()
                 if not stack:
-                    return start - 2, index + 1, input[start:index]
+                    return start - 2, index + 1, input_[start:index]
             elif character == "{":
                 stack.append(index + 1)
             index += 1
@@ -234,7 +241,7 @@ def find_expr(input: str) -> Tuple[int, int, str]:
             index += 1
             if next_ not in chars:
                 start = variable.pop()
-                return start - 1, index, input[start:index]
+                return start - 1, index, input_[start:index]
         elif character == "%" and next_ == "{":
             stack.append(index + 2)
             index += 2
@@ -246,12 +253,13 @@ def find_expr(input: str) -> Tuple[int, int, str]:
     return length, length, ""
 
 
-def find_source(type: Type) -> Tuple[str, int]:
+def find_source(type_: type) -> tuple[str, int]:
     """Find location of source code for a type."""
-    file = inspect.getsourcefile(type)
+    file = inspect.getsourcefile(type_)
     if file is None or not isinstance(file, str):
-        raise ValueError(f"Unable to find source file for '{type}'")
-    line = inspect.findsource(type)[1] + 1
+        message = f"Unable to find source file for '{type_}'"
+        raise ValueError(message)
+    line = inspect.findsource(type_)[1] + 1
     return file, line
 
 
@@ -266,23 +274,20 @@ def is_type(value: Any) -> bool:
     )
 
 
-def name(object: Any) -> str:
+def name(object_: Any) -> str:
     """Get name object of name of its type."""
-    return getattr(object, "__name__", object.__class__.__name__)
+    return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
 
 
 def page(text: str) -> None:
     """Print string with default pager."""
     pager = os.environ.get("PAGER", "less")
-    basename = os.path.basename(pager)
-    if basename == "bat":
-        command = [pager, "--language", "python"]
-    else:
-        command = [pager]
+    basename = Path(pager).name
+    command = [pager, "--language", "python"] if basename == "bat" else [pager]
     with tempfile.NamedTemporaryFile("w") as file:
         file.write(text)
         file.flush()
-        subprocess.run(command + [file.name], check=True)
+        subprocess.run([*command, file.name], check=True)
 
 
 def parent_shell() -> str:
@@ -294,42 +299,41 @@ def parent_shell() -> str:
     return os.environ.get("SHELL", default)
 
 
-def parse(pdb: Type, input: str) -> Any:
+def parse(pdb: Pdb, input_: str) -> Any:
     """Parse and possibly execute command line input."""
-    if input.strip():
-        return eval(input, pdb.curframe.f_globals, pdb.curframe_locals)
-    else:
-        return None
+    if input_.strip():
+        return eval(input_, pdb.curframe.f_globals, pdb.curframe_locals)
+    return None
 
 
-def parse_expr(pdb: Type, input: str) -> Any:
+def parse_expr(pdb: Pdb, input_: str) -> Any:
     """Parse and possibly execute command line expressions."""
     while True:
-        start, stop, expr = find_expr(input)
+        start, stop, expr = find_expr(input_)
         if expr == "":
             break
         result = eval(expr, pdb.curframe.f_globals, pdb.curframe_locals)
-        input = input[:start] + str(result) + input[stop:]
-    return input
+        input_ = input_[:start] + str(result) + input_[stop:]
+    return input_
 
 
-def setup(pdb: Type) -> None:
+def setup(pdb: Pdb) -> None:
     """Extend PDB with custom functionality."""
-    pdb.do_cat = do_cat
-    pdb.complete_cat = pdb._complete_expression
-    pdb.do_doc = do_doc
-    pdb.complete_doc = pdb._complete_expression
-    pdb.do_edit = do_edit
-    pdb.complete_edit = pdb._complete_expression
-    pdb.do_nl = do_nextlist
-    pdb.do_nextlist = do_nextlist
-    pdb.do_sh = do_shell
-    pdb.do_shell = do_shell
-    pdb.do_sl = do_steplist
-    pdb.do_steplist = do_steplist
+    pdb.do_cat = do_cat  # type: ignore[attr-defined]
+    pdb.complete_cat = pdb._complete_expression  # type: ignore[attr-defined]
+    pdb.do_doc = do_doc  # type: ignore[attr-defined]
+    pdb.complete_doc = pdb._complete_expression  # type: ignore[attr-defined]
+    pdb.do_edit = do_edit  # type: ignore[attr-defined]
+    pdb.complete_edit = pdb._complete_expression  # type: ignore[attr-defined]
+    pdb.do_nl = do_nextlist  # type: ignore[attr-defined]
+    pdb.do_nextlist = do_nextlist  # type: ignore[attr-defined]
+    pdb.do_sh = do_shell  # type: ignore[attr-defined]
+    pdb.do_shell = do_shell  # type: ignore[attr-defined]
+    pdb.do_sl = do_steplist  # type: ignore[attr-defined]
+    pdb.do_steplist = do_steplist  # type: ignore[attr-defined]
 
 
-def shell(command: List[str], frame: Any = None) -> None:
+def shell(command: list[str], frame: Any = None) -> None:
     """Execute shell command or start interactive shell on empty command."""
     if not command:
         command = [parent_shell()]
