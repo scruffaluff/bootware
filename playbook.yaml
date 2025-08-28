@@ -1901,26 +1901,26 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - desktop
             - editor
-            - never
             - vscode
         name: scruffaluff.bootware.vscode
       tags:
+        - desktop
         - editor
-        - never
         - vscode
 
     - name: Install VSCodium text editor
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - editor
+            - never
             - vscodium
         name: scruffaluff.bootware.vscodium
       tags:
-        - desktop
         - editor
+        - never
         - vscodium
 
     - name: Install Watchexec file watcher

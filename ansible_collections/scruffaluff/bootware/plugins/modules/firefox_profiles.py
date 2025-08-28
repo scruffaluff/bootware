@@ -1,15 +1,13 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
+"""Find path of each Firefox profile folder for current user."""
 
-from configparser import ConfigParser
-from pathlib import Path
 import platform
 import subprocess
-from typing import List
+from configparser import ConfigParser
+from pathlib import Path
 
 from ansible.module_utils.basic import AnsibleModule
-
 
 DOCUMENTATION = r"""
 ---
@@ -44,9 +42,7 @@ def main() -> None:
     """Find name and path of Firefox default profile for current user."""
     result = {"changed": False, "name": "", "path": ""}
     module = AnsibleModule(
-        argument_spec={
-            "user": {"default": "", "required": False, "type": "str"}
-        },
+        argument_spec={"user": {"default": "", "required": False, "type": "str"}},
         supports_check_mode=True,
     )
     if module.check_mode:
@@ -56,7 +52,7 @@ def main() -> None:
     database = profiles_database(module, system)
     try:
         paths = profiles_paths(module, database)
-    except Exception as exception:
+    except OSError as exception:
         module.fail_json(
             msg=(
                 "Unable to parse default Firefox profile from profiles database"
@@ -99,12 +95,12 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
     return path
 
 
-def profiles_paths(module: AnsibleModule, path: Path) -> List[str]:
+def profiles_paths(module: AnsibleModule, path: Path) -> list[str]:
     """Parse default profile from Firefox profiles file."""
     parser = ConfigParser()
     try:
         parser.read(path)
-    except Exception as exception:
+    except OSError as exception:
         module.fail_json(
             msg=(
                 "Unable to read default Firefox profile from profiles database"
@@ -120,9 +116,7 @@ def profiles_paths(module: AnsibleModule, path: Path) -> List[str]:
             paths.append(data["default"])
 
     snap_path = Path.home() / "snap"
-    return [
-        path for path in set(paths) if not Path(path).is_relative_to(snap_path)
-    ]
+    return [path for path in set(paths) if not Path(path).is_relative_to(snap_path)]
 
 
 if __name__ == "__main__":

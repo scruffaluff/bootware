@@ -3,7 +3,7 @@
 # For more information, visit
 # https://jupyter-notebook.readthedocs.io/en/stable/config.html.
 
-# type: ignore
+# ruff: noqa: D100, F821
 
 ## Whether to open in a browser after starting. The specific browser used is
 #  platform dependent and determined by the python standard library `webbrowser`

@@ -20,6 +20,29 @@ readme = "README.md"
 requires-python = ">=3.11.0,<4.0.0"
 version = "0.9.1"
 
+[tool.mypy]
+cache_dir = ".vendor/cache/mypy"
+check_untyped_defs = true
+disallow_untyped_calls = false
+disallow_untyped_defs = true
+exclude = [
+  '\.benchmarks/',
+  '\.cache/',
+  '\.hypothesis/',
+  '\.pytest_cache/',
+  '\.ruff_cache/',
+  '\.vendor/',
+  '\.venv/',
+  'tmp/',
+  'jupyter_notebook_config.py',
+]
+ignore_missing_imports = true
+no_implicit_optional = true
+strict_optional = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_ignores = true
+
 [tool.poetry]
 package-mode = false
 
@@ -27,4 +50,29 @@ package-mode = false
 ansible = ">=11.3.0,<12.0.0"
 ansible-compat = ">=25.1.0,<26.0.0"
 ansible-lint = { markers = "platform_system != 'Windows'", version = ">=25.1.0,<26.0.0" }
+mypy = "^1.17.1"
+ruff = "^0.12.10"
 yamllint = ">=1.36.0,<2.0.0"
+
+[tool.ruff]
+cache-dir = ".vendor/cache/ruff"
+extend-exclude = ["jupyter_notebook_config.py"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+pydocstyle = { convention = "google" }
+ignore = [
+  "COM",    # Rule conflicts with formatter.
+  "FBT",    # Boolean function arguments are acceptable.
+  "FIX",    # Todo comments are acceptable.
+  "ICN",    # Import abbreviations reduce readability.
+  "INP001", # Project hooks directory is not a package.
+  "S101",   # Assert statements are standard for test functions.
+  "S603",   # Rule warns about using subprocess commands without a solution.
+  "S607",   # Partial paths for process executables is more cross platform.
+  "T201",   # Print statements are acceptable for CLI applications.
+  "TD",     # Todo formatting is excessive for personal projects.
+]
+select = ["ALL"]
