@@ -34,10 +34,19 @@
     - install
   when: ansible_system == "Darwin"
 
+# Do not use Scoop for a global installation of VLC. It ensures that there is
+# only one settings file for all users.
 - name: Install VLC for Windows
-  community.windows.win_scoop:
-    global: true
+  chocolatey.chocolatey.win_chocolatey:
     name: vlc
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Remove VLC desktop shortcut
+  community.windows.win_shortcut:
+    dest: C:\Users\Public\Desktop\VLC media player.lnk
+    state: absent
   tags:
     - install
   when: ansible_system == "Win32NT"
@@ -128,7 +137,7 @@
 
 - name: Set owner of VLC files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Local\\vlc"
+    path: "{{ user_home }}\\AppData\\Roaming\\vlc"
     recurse: true
     user: "{{ user_id }}"
   tags:
