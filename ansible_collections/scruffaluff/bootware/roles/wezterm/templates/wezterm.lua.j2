@@ -20,6 +20,7 @@ config.colors = {
 }
 config.default_cursor_style = 'SteadyBar'
 config.default_prog = { [[{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}]], '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
+config.enable_kitty_keyboard = true
 config.enable_scroll_bar = true
 config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ wezterm_font_size }}
@@ -32,13 +33,11 @@ config.keys = {
   { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.RotatePanes('CounterClockwise'), key = 'DownArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.RotatePanes('Clockwise'), key = 'UpArrow', mods = 'CTRL|SHIFT' },
-  { action = wezterm.action.SendString('\u{e000}'), key = ';', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e001}'), key = '.', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e002}'), key = '[', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e003}'), key = ']', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e004}'), key = '/', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e005}'), key = 'i', mods = 'CTRL' },
-  { action = wezterm.action.SendString('\u{e006}'), key = 'j', mods = 'CTRL' },
   { action = wezterm.action.SpawnTab('CurrentPaneDomain'), key = 't', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.SplitHorizontal({ domain = 'CurrentPaneDomain' }), key = 'n', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.TogglePaneZoomState, key = 'm', mods = 'CTRL|SHIFT' },

@@ -423,8 +423,10 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
     Set-PSReadLineOption -WordDelimiters ' /\'
 
     # Add Unix shell key bindings.
+    Set-PSReadLineKeyHandler -Chord 'Alt+;' -Function ForwardChar
     Set-PSReadLineKeyHandler -Chord Alt+b -Function ShellBackwardWord
     Set-PSReadLineKeyHandler -Chord Alt+d -Function DeleteWord
+    Set-PSReadLineKeyHandler -Chord Alt+j -Function BackwardChar
     Set-PSReadLineKeyHandler -Chord Alt+Z -Function Redo
     Set-PSReadLineKeyHandler -Chord Alt+z -Function Undo
     Set-PSReadLineKeyHandler -Chord Ctrl+a -Function BeginningOfLine
@@ -573,9 +575,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
-        Set-PSReadLineKeyHandler -Chord "`u{e000}" -Function ForwardChar
-        Set-PSReadLineKeyHandler -Chord "`u{e004}" -Function MenuComplete
-        Set-PSReadLineKeyHandler -Chord "`u{e005}" -Function BackwardChar
+        Set-PSReadLineKeyHandler -Chord "`u{e005}" -Function MenuComplete
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.

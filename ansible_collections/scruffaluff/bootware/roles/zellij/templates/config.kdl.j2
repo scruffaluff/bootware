@@ -9,19 +9,19 @@ default_shell r#"{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) 
 keybinds {
     tmux clear-defaults=true {}
     unbind "h" "H" "Alt f" "Alt h" "Alt j" "Alt k" "Alt l" "Alt p"
-    unbind "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
+    unbind "Ctrl b" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
         unbind "Ctrl q"
+        // Use "Ctrl h" as an alternative for "Ctrl ;" in terminals that do not
+        // support the Kitty keyboard protocol.
+        bind "Ctrl h" { MoveFocusOrTab "Right"; }
         bind "Ctrl j" { MoveFocusOrTab "Left"; }
         bind "Ctrl ;" { MoveFocusOrTab "Right"; }
         bind "Ctrl Down" { MovePane "Down"; }
         bind "Ctrl Left" { MovePane "Left"; }
         bind "Ctrl Right" { MovePane "Right"; }
         bind "Ctrl Up" { MovePane "Up"; }
-    }
-    shared_except "move" "locked" {
-        unbind "Ctrl h"
     }
     shared_except "pane" "locked" {
         unbind "Ctrl p"
@@ -34,6 +34,7 @@ keybinds {
         unbind "Ctrl b"
     }
     shared_among "renametab" "tab" {
+        bind "Ctrl h" { GoToNextTab; }
         bind "Ctrl j" { GoToPreviousTab; }
         bind "Ctrl ;" { GoToNextTab; }
         bind "Ctrl Left" { MoveTab "Left"; }
