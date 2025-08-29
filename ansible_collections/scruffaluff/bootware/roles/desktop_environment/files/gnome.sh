@@ -21,6 +21,10 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true
 # Do not show notifications in the lock screen.
 gsettings set org.gnome.desktop.notifications show-in-lock-screen false
 
+# Set keyboard typing speeds.
+gsettings set org.gnome.desktop.peripherals.keyboard delay 256
+gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 16
+
 # Use natural scroll orientation for mouse.
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 

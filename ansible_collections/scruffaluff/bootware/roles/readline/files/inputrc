@@ -39,12 +39,12 @@ set visible-stats on
 
 # Use Tab, Shift+I, and Shift+Tab to cycle through completions.
 tab: menu-complete
-"\xee\x80\x84": menu-complete
+"\xee\x80\x85": menu-complete
 "\e[Z": menu-complete-backward
 
 # Add Vim like keybindings for line navigation.
-"\xee\x80\x85": backward-char
-"\xee\x80\x80": forward-char
+"\ej": backward-char
+"\e\;": forward-char
 
 # Use Up and Down to search history for commands matching text before cursor.
 "\e[A": history-search-backward

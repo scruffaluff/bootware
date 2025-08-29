@@ -739,6 +739,12 @@ $env.config = {
             modifier: alt
         }
         {
+            event: { edit: moveleft }
+            keycode: char_j
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { cmd: _paste-pager send: executehostcommand }
             keycode: char_p
             mode: [emacs vi_insert vi_normal]
@@ -759,6 +765,12 @@ $env.config = {
         {
             event: { edit: undo }
             keycode: char_z
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
+            event: { edit: moveright }
+            keycode: "char_;"
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
@@ -799,24 +811,12 @@ $env.config = {
             modifier: control
         }
         {
-            event: { edit: moveright }
-            keycode: char_ue000
-            mode: [emacs vi_insert vi_normal]
-            modifier: none
-        }
-        {
             event: {
                 until: [
                     { name: completion_menu send: menu }
                     { send: menunext }
                 ]
             }
-            keycode: char_ue004
-            mode: [emacs vi_insert vi_normal]
-            modifier: none
-        }
-        {
-            event: { edit: moveleft }
             keycode: char_ue005
             mode: [emacs vi_insert vi_normal]
             modifier: none
