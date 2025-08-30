@@ -75,6 +75,10 @@
   { "command": "-workbench.action.tasks.build", "key": "ctrl+shift+b" },
   { "command": "-workbench.action.terminal.chat.start", "key": "{{ vscodium_ctrl_key }}+i" },
   { "command": "-workbench.action.terminal.focusFind", "key": "ctrl+f" },
+  { 
+    "command": "-workbench.action.terminal.goToRecentDirectory",
+    "key": "ctrl+g"
+  },
   {
     "command": "-workbench.action.terminal.openDetectedLink",
     "key": "ctrl+shift+g"
@@ -110,6 +114,7 @@
   { "command": "-workbench.debug.action.toggleRepl", "key": "ctrl+shift+y" },
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscodium_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
+  { "command": "", "key": "ctrl+h", "when": "terminalFocus" },
   {
     "command": "actions.find",
     "key": "ctrl+f",
@@ -134,18 +139,16 @@
     "key": "ctrl+shift+.",
     "when": "breadcrumbsPossible && breadcrumbsVisible"
   },
-{% if ansible_system == "Darwin" %}
   {
     "command": "cursorDown",
-    "key": "ctrl+k",
+    "key": "alt+k",
     "when": "textInputFocus && !terminalFocus"
   },
   {
     "command": "cursorLeft",
-    "key": "ctrl+j",
+    "key": "alt+j",
     "when": "textInputFocus && !terminalFocus"
   },
-{% endif %}
   {
     "command": "cursorLineEnd",
     "key": "ctrl+e",
@@ -156,18 +159,16 @@
     "key": "ctrl+a",
     "when": "textInputFocus && !terminalFocus"
   },
-{% if ansible_system == "Darwin" %}
   {
     "command": "cursorRight",
-    "key": "ctrl+;",
+    "key": "alt+;",
     "when": "textInputFocus && !terminalFocus"
   },
   {
     "command": "cursorUp",
-    "key": "ctrl+l",
+    "key": "alt+l",
     "when": "textInputFocus && !terminalFocus"
   },
-{% endif %}
   { 
     "command": "cursorWordLeft",
     "key": "shift+left",
@@ -506,7 +507,7 @@
     "when": "terminalFocus"
   },
   {
-    "args": { "text": "\ue000" },
+    "args": { "text": "\u0008" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+;",
     "when": "terminalFocus"
@@ -514,37 +515,31 @@
   {
     "args": { "text": "\ue001" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+[",
+    "key": "ctrl+.",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue002" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+]",
+    "key": "ctrl+[",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue003" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+/",
+    "key": "ctrl+]",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue004" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+i",
+    "key": "ctrl+/",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue005" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+j",
-    "when": "terminalFocus"
-  },
-  {
-    "args": { "text": "\ue006" },
-    "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+.",
+    "key": "ctrl+i",
     "when": "terminalFocus"
   },
   {

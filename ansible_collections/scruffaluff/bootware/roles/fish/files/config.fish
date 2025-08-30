@@ -499,21 +499,23 @@ set fish_greeting ''
 #   -n: Check if string is nonempty.
 if test -n $tty
     function fish_user_key_bindings
-        bind \cw true
         bind \cd backward-kill-path-component
+        bind \ch true
+        bind \cj true
+        bind \cw true
+        bind \e\; forward-char
         bind \eb backward-word
         bind \ec _paste_cwd
         bind \ed kill-bigword
         bind \ef forward-word
+        bind \ej backward-char
         bind \ep _paste_pager
         bind \ex _delete_commandline_from_history
         bind \eZ redo
         bind \ez undo
-        bind \ue000 forward-char
-        bind \ue001 'prevd; commandline --function repaint'
-        bind \ue002 'nextd; commandline --function repaint'
-        bind \ue004 complete
-        bind \ue005 backward-char
+        bind \ue002 'prevd; commandline --function repaint'
+        bind \ue003 'nextd; commandline --function repaint'
+        bind \ue005 complete
     end
 
     # Set solarized light theme variables based on

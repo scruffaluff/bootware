@@ -4,10 +4,18 @@
 
 j noaction
 J noaction
+^j noaction
+^J noaction
+\ej noaction
+\eJ noaction
 k forw-line
 K forw-line-force
+\ek forw-line
+\eK forw-line-force
 l back-line
 L back-line-force
+\el back-line
+\eL back-line-force
 
 #env
 LESS = --ignore-case

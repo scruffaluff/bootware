@@ -8,22 +8,20 @@ default_shell r#"{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) 
 
 keybinds {
     tmux clear-defaults=true {}
-    unbind "h" "H" "Alt f" "Alt h" "Alt p"
-    unbind "Ctrl b" "Ctrl h" "Ctrl n" "Ctrl p" "Ctrl q"
+    unbind "h" "H" "Alt f" "Alt h" "Alt j" "Alt k" "Alt l" "Alt p"
+    unbind "Ctrl b" "Ctrl n" "Ctrl p" "Ctrl q"
 
     shared_except "locked" {
         unbind "Ctrl q"
-        bind "Alt j" { MoveFocusOrTab "Left"; }
-        bind "Alt k" { MoveFocus "Down"; }
-        bind "Alt l" { MoveFocus "Up"; }
-        bind "Alt ;" { MoveFocusOrTab "Right"; }
-        bind "Alt Down" { MovePane "Down"; }
-        bind "Alt Left" { MovePane "Left"; }
-        bind "Alt Right" { MovePane "Right"; }
-        bind "Alt Up" { MovePane "Up"; }
-    }
-    shared_except "move" "locked" {
-        unbind "Ctrl h"
+        // Use "Ctrl h" as an alternative for "Ctrl ;" in terminals that do not
+        // support the Kitty keyboard protocol.
+        bind "Ctrl h" { MoveFocusOrTab "Right"; }
+        bind "Ctrl j" { MoveFocusOrTab "Left"; }
+        bind "Ctrl ;" { MoveFocusOrTab "Right"; }
+        bind "Ctrl Down" { MovePane "Down"; }
+        bind "Ctrl Left" { MovePane "Left"; }
+        bind "Ctrl Right" { MovePane "Right"; }
+        bind "Ctrl Up" { MovePane "Up"; }
     }
     shared_except "pane" "locked" {
         unbind "Ctrl p"
@@ -36,10 +34,11 @@ keybinds {
         unbind "Ctrl b"
     }
     shared_among "renametab" "tab" {
-        bind "Alt j" { GoToPreviousTab; }
-        bind "Alt ;" { GoToNextTab; }
-        bind "Alt Left" { MoveTab "Left"; }
-        bind "Alt Right" { MoveTab "Right"; }
+        bind "Ctrl h" { GoToNextTab; }
+        bind "Ctrl j" { GoToPreviousTab; }
+        bind "Ctrl ;" { GoToNextTab; }
+        bind "Ctrl Left" { MoveTab "Left"; }
+        bind "Ctrl Right" { MoveTab "Right"; }
     }
 
     move {
