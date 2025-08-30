@@ -22,10 +22,10 @@ set show-all-if-unmodified on
 # Use symbols to distinguish completion options.
 set visible-stats on
 
+
 # Undefine keybindings.
-"\C-h":
-"\C-j":
-"\C-w":
+"\C-d":
+"\eb":
 
 # Use common shell keybindings.
 "\C-a": beginning-of-line
@@ -34,9 +34,11 @@ set visible-stats on
 "\C-l": clear-screen
 "\C-r": reverse-search-history
 "\C-u": backward-kill-line
+"\C-w": backward-kill-word
 "\eb": backward-word
 "\ee": edit-and-execute-command
 "\ef": forward-word
+"\ew": kill-word
 "\ez": undo
 
 # Use Tab, Shift+I, and Shift+Tab to cycle through completions.
@@ -59,7 +61,3 @@ tab: menu-complete
 # Use Control+Left and Control+Right to jump backwards and forwards.
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
-
-# Use Control+D and Alt+D to delete words backwards and forwards.
-"\C-d": backward-kill-word
-"\ed": kill-word

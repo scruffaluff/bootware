@@ -713,6 +713,12 @@ $env.config = {
             modifier: alt
         }
         {
+            event: null
+            keycode: char_d
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { send: openeditor }
             keycode: char_e
             mode: [emacs vi_insert vi_normal]
@@ -757,6 +763,12 @@ $env.config = {
             modifier: alt
         }
         {
+            event: { edit: cutbigwordright }
+            keycode: char_w
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { cmd: _delete-from-history send: executehostcommand }
             keycode: char_x
             mode: [emacs vi_insert vi_normal]
@@ -775,26 +787,14 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: _cut-path-left send: executehostcommand }
-            keycode: char_d
+            event: { edit: cutbigwordright }
+            keycode: char_w
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
         {
             event: { cmd: fzf-path-widget send: executehostcommand }
             keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: null
-            keycode: char_h
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: null
-            keycode: char_j
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -811,7 +811,7 @@ $env.config = {
             modifier: control
         }
         {
-            event: null
+            event: { cmd: _cut-path-left send: executehostcommand }
             keycode: char_w
             mode: [emacs vi_insert vi_normal]
             modifier: control

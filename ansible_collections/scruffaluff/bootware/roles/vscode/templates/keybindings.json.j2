@@ -34,6 +34,9 @@
   { "command": "-notebook.unfold", "key": "ctrl+shift+]" },
   { "command": "-notification.acceptPrimaryAction", "key": "ctrl+shift+a" },
   { "command": "-rust-analyzer.joinLines", "key": "ctrl+shift+j" },
+  { "command": "-toggleFindWholeWord", "key": "alt+w" },
+  { "command": "-toggleSearchEditorWholeWord", "key": "alt+w" },
+  { "command": "-toggleSearchWholeWord", "key": "alt+w" },
   { "command": "-workbench.action.chat.startVoiceChat", "key": "{{ vscode_ctrl_key }}+i" },
   {
     "command": "-workbench.action.chat.holdToVoiceChatInChatView",
@@ -43,7 +46,8 @@
     "command": "-workbench.action.chat.stopListeningAndSubmit",
     "key": "{{ vscode_ctrl_key }}+i"
   },
-  { "command": "-workbench.action.closeActiveEditor", "key": "{{ vscode_ctrl_key }}+w" },
+  { "command": "-workbench.action.closeActiveEditor", "key": "ctrl+w" },
+  { "command": "-workbench.action.closeGroup", "key": "ctrl+w" },
   { "command": "-workbench.action.closeWindow", "key": "{{ vscode_ctrl_key }}+shift+w" },
   { "command": "-workbench.action.debug.continue", "key": "f5" },
   { "command": "-workbench.action.debug.restart", "key": "ctrl+shift+f5" },
@@ -79,6 +83,7 @@
     "command": "-workbench.action.terminal.goToRecentDirectory",
     "key": "ctrl+g"
   },
+  { "command": "-workbench.action.terminal.killEditor", "key": "ctrl+w" },
   {
     "command": "-workbench.action.terminal.openDetectedLink",
     "key": "ctrl+shift+g"
@@ -114,7 +119,6 @@
   { "command": "-workbench.debug.action.toggleRepl", "key": "ctrl+shift+y" },
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscode_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
-  { "command": "", "key": "ctrl+h", "when": "terminalFocus" },
   {
     "command": "actions.find",
     "key": "ctrl+f",
@@ -206,12 +210,12 @@
   },
   {
     "command": "deleteWordLeft",
-    "key": "ctrl+d",
+    "key": "ctrl+w",
     "when": "textInputFocus && !terminalFocus"
   },
   {
     "command": "deleteWordRight",
-    "key": "alt+d",
+    "key": "alt+w",
     "when": "textInputFocus && !terminalFocus"
   },
   {
@@ -291,7 +295,7 @@
   },
   { 
     "command": "workbench.action.closeActiveEditor",
-    "key": "{{ vscode_ctrl_key }}+w",
+    "key": "ctrl+shift+w",
     "when": "!panelFocus"
   },
   {
@@ -507,7 +511,7 @@
     "when": "terminalFocus"
   },
   {
-    "args": { "text": "\u0008" },
+    "args": { "text": "\ue000" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+;",
     "when": "terminalFocus"
@@ -540,6 +544,12 @@
     "args": { "text": "\ue005" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+i",
+    "when": "terminalFocus"
+  },
+  {
+    "args": { "text": "\ue006" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+j",
     "when": "terminalFocus"
   },
   {
