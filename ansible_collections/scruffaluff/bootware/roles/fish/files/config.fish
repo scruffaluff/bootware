@@ -500,6 +500,8 @@ set fish_greeting ''
 if test -n $tty
     function fish_user_key_bindings
         bind \cd backward-kill-path-component
+        bind \ch true
+        bind \cj true
         bind \cw true
         bind \e\; forward-char
         bind \eb backward-word

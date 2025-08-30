@@ -414,6 +414,8 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
     Import-Module PSReadLine
 
     # Remove shell key bindings.
+    Remove-PSReadLineKeyHandler -Chord Ctrl+h
+    Remove-PSReadLineKeyHandler -Chord Ctrl+j
     Remove-PSReadLineKeyHandler -Chord Ctrl+w
     # Disable prompt to show all completion possibilities.
     Set-PSReadLineOption -CompletionQueryItems 1000000

@@ -788,6 +788,18 @@ $env.config = {
         }
         {
             event: null
+            keycode: char_h
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: null
+            keycode: char_j
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: null
             keycode: char_o
             mode: [emacs vi_insert vi_normal]
             modifier: control

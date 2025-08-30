@@ -23,6 +23,8 @@ set show-all-if-unmodified on
 set visible-stats on
 
 # Undefine keybindings.
+"\C-h":
+"\C-j":
 "\C-w":
 
 # Use common shell keybindings.

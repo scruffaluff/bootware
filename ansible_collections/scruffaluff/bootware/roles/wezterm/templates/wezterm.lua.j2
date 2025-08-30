@@ -33,6 +33,7 @@ config.keys = {
   { action = wezterm.action.MoveTabRelative(1), key = 'RightArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.RotatePanes('CounterClockwise'), key = 'DownArrow', mods = 'CTRL|SHIFT' },
   { action = wezterm.action.RotatePanes('Clockwise'), key = 'UpArrow', mods = 'CTRL|SHIFT' },
+  { action = wezterm.action.SendString('\u{0008}'), key = ';', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e001}'), key = '.', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e002}'), key = '[', mods = 'CTRL' },
   { action = wezterm.action.SendString('\u{e003}'), key = ']', mods = 'CTRL' },

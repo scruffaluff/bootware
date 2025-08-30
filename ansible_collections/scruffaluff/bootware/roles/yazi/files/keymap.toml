@@ -15,9 +15,13 @@ prepend_keymap = [
 
 [input]
 prepend_keymap = [
+  { on = "<C-h>", run = "noop" },
+  { on = "<C-j>", run = "noop" },
   { on = "<C-w>", run = "noop" },
   { desc = "Move backward a word", on = "<C-Left>", run = "backward" },
   { desc = "Move backward a word", on = "<S-Left>", run = "backward" },
+  { desc = "Move cursor left", on = "<A-j>", run = "move -1" },
+  { desc = "Move cursor right", on = "<A-;>", run = "move 1" },
   { desc = "Move forward a word", on = "<C-Right>", run = "forward" },
   { desc = "Move forward a word", on = "<S-Right>", run = "forward" },
   { desc = "Kill backwards a word", on = "<C-d>", run = "kill backward" },
