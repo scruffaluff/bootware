@@ -22,10 +22,8 @@ set show-all-if-unmodified on
 # Use symbols to distinguish completion options.
 set visible-stats on
 
-
 # Undefine keybindings.
 "\C-d":
-"\eb":
 
 # Use common shell keybindings.
 "\C-a": beginning-of-line

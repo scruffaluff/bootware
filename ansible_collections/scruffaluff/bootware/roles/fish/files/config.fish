@@ -499,11 +499,10 @@ set fish_greeting ''
 #   -n: Check if string is nonempty.
 if test -n $tty
     function fish_user_key_bindings
-        bind \cd true
+        bind --erase --preset \cd
         bind \e\; forward-char
         bind \eb backward-word
         bind \ec _paste_cwd
-        bind \ed true
         bind \ef forward-word
         bind \ej backward-char
         bind \ep _paste_pager

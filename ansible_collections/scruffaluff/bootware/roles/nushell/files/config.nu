@@ -699,6 +699,7 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color-theme)
+    completions: { algorithm: "fuzzy" }
     keybindings: [
         {
             event: { edit: movewordleft }
@@ -709,12 +710,6 @@ $env.config = {
         {
             event: { cmd: _paste-cwd send: executehostcommand }
             keycode: char_c
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: null
-            keycode: char_d
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
@@ -787,8 +782,8 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: cutbigwordright }
-            keycode: char_w
+            event: null
+            keycode: char_d
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -921,18 +916,14 @@ $env.config = {
 
 # Enable external completions if available.
 if (which "carapace" | is-not-empty) {
-    $env.config.completions = {
-        external: {
-            completer: {|spans| carapace-complete $spans }
-            enable: true
-        }
+    $env.config.completions.external = {
+        completer: {|spans| carapace-complete $spans }
+        enable: true
     }
 } else if (which "fish" | is-not-empty) {
-    $env.config.completions = {
-        external: {
-            completer: {|spans| fish-complete $spans }
-            enable: true
-        }
+    $env.config.completions.external = {
+        completer: {|spans| fish-complete $spans }
+        enable: true
     }
 }
 

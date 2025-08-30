@@ -41,5 +41,9 @@ noremap ; l
 noremap l k
 noremap k j
 noremap j h
+inoremap <A-j> <C-o>j
+inoremap <A-k> <C-o>k
+inoremap <A-l> <C-o>l
+inoremap <A-;> <C-o>;
 vmap y ygv<Esc> " Yank text without moving cursor.
 

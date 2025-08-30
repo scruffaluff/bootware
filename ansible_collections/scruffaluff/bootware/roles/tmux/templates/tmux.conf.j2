@@ -34,6 +34,10 @@ set-option -g status-right "#[fg=colour254,bg=colour64][#S]"
 
 # Keybinding settings to mimic Zellij.
 
+set-option -g prefix C-d
+unbind-key C-b
+bind-key C-d send-prefix
+
 bind-key -n m-j select-pane -L
 bind-key -n m-k select-pane -D
 bind-key -n m-l select-pane -U
