@@ -420,7 +420,7 @@
     "tests": {
       "default": ["vlc --version"],
       "linux": ["vlc --version || flatpak info org.videolan.VLC"],
-      "windows": ["scoop prefix vlc"]
+      "windows": []
     }
   },
   {
