@@ -353,9 +353,17 @@ def edit-history [] {
 
 # Complete commandline argument with Fish.
 def fish-complete [spans: list<string>] {
-    fish --command $'complete "--do-complete=($spans | str join " ")"'
+    fish --command $"complete '--do-complete=($spans | str replace --all "'" "\\'" | str join ' ')'"
     | from tsv --flexible --noheaders --no-infer
     | rename value description
+    | update value {|row|
+        let value = $row.value
+        let need_quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"] | any {$in in $value}
+        if ($need_quote and ($value | path exists)) {
+            let expanded_path = if ($value starts-with ~) {$value | path expand --no-symlink} else {$value}
+            $'"($expanded_path | str replace --all "\"" "\\\"")"'
+        } else {$value}
+    }
 }
 
 # Complete commandline argument with interactive history search.
@@ -915,14 +923,17 @@ $env.config = {
 }
 
 # Enable external completions if available.
-if (which "carapace" | is-not-empty) {
-    $env.config.completions.external = {
-        completer: {|spans| carapace-complete $spans }
-        enable: true
-    }
-} else if (which "fish" | is-not-empty) {
+#
+# Prefer Fish completions over Carapace since they are more extensive and
+# use fuzzy searching.
+if (which "fish" | is-not-empty) {
     $env.config.completions.external = {
         completer: {|spans| fish-complete $spans }
+        enable: true
+    }
+} else if (which "carapace" | is-not-empty) {
+    $env.config.completions.external = {
+        completer: {|spans| carapace-complete $spans }
         enable: true
     }
 }
