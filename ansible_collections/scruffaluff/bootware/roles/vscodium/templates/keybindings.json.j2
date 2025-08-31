@@ -59,6 +59,8 @@
     "command": "-workbench.action.files.copyPathOfActiveFile",
     "key": "ctrl+k p"
   },
+  { "command": "-workbench.action.files.saveAs", "key": "ctrl+shift+s" },
+  { "command": "-workbench.action.files.saveLocalFile", "key": "ctrl+shift+s" },
   { "command": "-workbench.action.focusSecondEditorGroup", "key": "cmd+2" },
   { "command": "-workbench.action.gotoSymbol", "key": "ctrl+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
@@ -356,7 +358,7 @@
   { "command": "workbench.action.findInFiles", "key": "ctrl+shift+f" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
-    "key": "ctrl+`",
+    "key": "ctrl+shift+s",
     "when": "panelFocus"
   },
   {
@@ -472,7 +474,7 @@
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
   {
     "command": "workbench.action.terminal.focus",
-    "key": "ctrl+`",
+    "key": "ctrl+shift+s",
     "when": "!panelFocus && activePanel != 'workbench.panel.repl'"
   },
   {
@@ -568,7 +570,7 @@
   },
   {
     "command": "workbench.panel.repl.view.focus",
-    "key": "ctrl+`",
+    "key": "ctrl+shift+s",
     "when": "!panelFocus && activePanel == 'workbench.panel.repl'"
   },
   {
