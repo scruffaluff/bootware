@@ -499,17 +499,14 @@ set fish_greeting ''
 #   -n: Check if string is nonempty.
 if test -n $tty
     function fish_user_key_bindings
-        bind \cd backward-kill-path-component
-        bind \ch true
-        bind \cj true
-        bind \cw true
+        bind --erase --preset \cd
         bind \e\; forward-char
         bind \eb backward-word
         bind \ec _paste_cwd
-        bind \ed kill-bigword
         bind \ef forward-word
         bind \ej backward-char
         bind \ep _paste_pager
+        bind \ew kill-bigword
         bind \ex _delete_commandline_from_history
         bind \eZ redo
         bind \ez undo

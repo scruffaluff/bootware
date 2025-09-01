@@ -353,9 +353,17 @@ def edit-history [] {
 
 # Complete commandline argument with Fish.
 def fish-complete [spans: list<string>] {
-    fish --command $'complete "--do-complete=($spans | str join " ")"'
+    fish --command $"complete '--do-complete=($spans | str replace --all "'" "\\'" | str join ' ')'"
     | from tsv --flexible --noheaders --no-infer
     | rename value description
+    | update value {|row|
+        let value = $row.value
+        let need_quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"] | any {$in in $value}
+        if ($need_quote and ($value | path exists)) {
+            let expanded_path = if ($value starts-with ~) {$value | path expand --no-symlink} else {$value}
+            $'"($expanded_path | str replace --all "\"" "\\\"")"'
+        } else {$value}
+    }
 }
 
 # Complete commandline argument with interactive history search.
@@ -699,6 +707,7 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color-theme)
+    completions: { algorithm: "fuzzy" }
     keybindings: [
         {
             event: { edit: movewordleft }
@@ -757,6 +766,12 @@ $env.config = {
             modifier: alt
         }
         {
+            event: { edit: cutbigwordright }
+            keycode: char_w
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { cmd: _delete-from-history send: executehostcommand }
             keycode: char_x
             mode: [emacs vi_insert vi_normal]
@@ -775,7 +790,7 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: _cut-path-left send: executehostcommand }
+            event: null
             keycode: char_d
             mode: [emacs vi_insert vi_normal]
             modifier: control
@@ -783,18 +798,6 @@ $env.config = {
         {
             event: { cmd: fzf-path-widget send: executehostcommand }
             keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: null
-            keycode: char_h
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: null
-            keycode: char_j
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
@@ -811,7 +814,7 @@ $env.config = {
             modifier: control
         }
         {
-            event: null
+            event: { cmd: _cut-path-left send: executehostcommand }
             keycode: char_w
             mode: [emacs vi_insert vi_normal]
             modifier: control
@@ -920,19 +923,18 @@ $env.config = {
 }
 
 # Enable external completions if available.
-if (which "carapace" | is-not-empty) {
-    $env.config.completions = {
-        external: {
-            completer: {|spans| carapace-complete $spans }
-            enable: true
-        }
+#
+# Prefer Fish completions over Carapace since they are more extensive and
+# use fuzzy searching.
+if (which "fish" | is-not-empty) {
+    $env.config.completions.external = {
+        completer: {|spans| fish-complete $spans }
+        enable: true
     }
-} else if (which "fish" | is-not-empty) {
-    $env.config.completions = {
-        external: {
-            completer: {|spans| fish-complete $spans }
-            enable: true
-        }
+} else if (which "carapace" | is-not-empty) {
+    $env.config.completions.external = {
+        completer: {|spans| carapace-complete $spans }
+        enable: true
     }
 }
 
