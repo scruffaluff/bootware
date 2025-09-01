@@ -100,23 +100,24 @@ setup:
   arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
   os='{{replace(os(), "macos", "darwin")}}'
   mkdir -p .vendor/bin .vendor/lib
-  if [ ! -x "$(command -v node)" ] || [ ! -x "$(command -v npm)" ]; then
+  if ! command -v node > /dev/null 2>&1 || ! command -v npm > /dev/null 2>&1;
+  then
     echo 'Error: Unable to find NodeJS and NPM.' >&2
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
     exit 1
   fi
-  if [ ! -x "$(command -v python3)" ]; then
+  if ! command -v python3 > /dev/null 2>&1; then
     echo 'Error: Unable to find Python.' >&2
     echo 'Install Python, https://python.org, manually before continuing.' >&2
     exit 1
   fi
-  if [ ! -x "$(command -v nu)" ]; then
+  if ! command -v nu > /dev/null 2>&1; then
     curl --fail --location --show-error \
       https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
       --preserve-env --dest .vendor/bin
   fi
   echo "Nushell $(nu --version)"
-  if [ ! -x "$(command -v poetry)" ]; then
+  if ! command -v poetry > /dev/null 2>&1; then
     curl -LSfs https://install.python-poetry.org | python3 -
   fi
   for spec in 'assert:v2.1.0' 'core:v1.11.1' 'file:v0.4.0' 'support:v0.3.0'; do
@@ -128,7 +129,7 @@ setup:
     fi
   done
   bats --version
-  if [ ! -x "$(command -v shellcheck)" ]; then
+  if ! command -v shellcheck > /dev/null 2>&1; then
     shellcheck_arch="$(uname -m | sed 's/amd64/x86_64/;s/x64/x86_64/;s/arm64/aarch64/')"
     shellcheck_version="$(curl  --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shellcheck.json |
@@ -139,7 +140,7 @@ setup:
     install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" .vendor/bin/
   fi
   shellcheck --version
-  if [ ! -x "$(command -v shfmt)" ]; then
+  if ! command -v shfmt > /dev/null 2>&1; then
     shfmt_arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
     shfmt_version="$(curl  --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shfmt.json |
@@ -149,7 +150,7 @@ setup:
     chmod 755 .vendor/bin/shfmt
   fi
   echo "Shfmt version $(shfmt --version)"
-  if [ ! -x "$(command -v yq)" ]; then
+  if ! command -v yq > /dev/null 2>&1; then
     curl --fail --location --show-error --output .vendor/bin/yq \
       "https://github.com/mikefarah/yq/releases/latest/download/yq_${os}_${arch}"
     chmod 755 .vendor/bin/yq

@@ -11,7 +11,7 @@
 - name: Install Homebrew for MacOS
   ansible.builtin.shell:
     cmd: |
-      if [ ! -x "$(command -v brew)" ]; then
+      if ! command -v brew > /dev/null 2>&1; then
         curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
       fi
   become: true
