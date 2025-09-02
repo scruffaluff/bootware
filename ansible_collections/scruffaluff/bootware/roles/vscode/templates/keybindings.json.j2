@@ -15,12 +15,16 @@
   },
   { "command": "-editor.action.blockComment", "key": "ctrl+shift+a" },
   { "command": "-editor.action.deleteLines", "key": "ctrl+shift+k" },
+  { "command": "-editor.action.goToBottomHover", "key": "ctrl+down" },
+  { "command": "-editor.action.goToTopHover", "key": "ctrl+up"},
   { "command": "-editor.action.selectAll", "key": "ctrl+a" },
   { "command": "-editor.action.selectHighlights", "key": "ctrl+shift+l" },
   { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
   { "command": "-editor.action.toggleWordWrap", "key": "alt+z" },
   { "command": "-editor.fold", "key": "ctrl+shift+[" },
   { "command": "-editor.unfold", "key": "ctrl+shift+]" },
+  { "command": "-inlineChat.focus", "key": "ctrl+up" },
+  { "command": "-inlineChat.focus", "key": "ctrl+down" },
   { "command": "-inlineChat.holdForSpeech", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.startWithCurrentLine", "key": "{{ vscode_ctrl_key }}+i" },
@@ -79,8 +83,19 @@
   { "command": "-workbench.action.reopenClosedEditor", "key": "ctrl+shift+t" },
   { "command": "-workbench.action.switchWindow", "key": "ctrl+w" },
   { "command": "-workbench.action.tasks.build", "key": "ctrl+shift+b" },
+  {
+    "command": "-workbench.action.terminal.accessibleBufferGoToNextCommand",
+    "key": "alt+down"
+  },
+  {
+    "command": "-workbench.action.terminal.accessibleBufferGoToPreviousCommand",
+    "key": "alt+up"
+  },
   { "command": "-workbench.action.terminal.chat.start", "key": "{{ vscode_ctrl_key }}+i" },
+  { "command": "-workbench.action.terminal.focus", "key": "ctrl+down" },
   { "command": "-workbench.action.terminal.focusFind", "key": "ctrl+f" },
+  { "command": "-workbench.action.terminal.focusNextPane", "key": "alt+down" },
+  { "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up" },
   { 
     "command": "-workbench.action.terminal.goToRecentDirectory",
     "key": "ctrl+g"
@@ -99,9 +114,19 @@
     "key": "ctrl+shift+c"
   },
   {
+    "command": "-workbench.action.terminal.scrollToNextCommand",
+    "key": "ctrl+down"
+  },
+  {
+    "command": "-workbench.action.terminal.scrollToPreviousCommand",
+    "key": "ctrl+up"
+  },
+  {
     "command": "-workbench.action.terminal.searchWorkspace",
     "key": "ctrl+shift+f"
   },
+  { "command": "-workbench.action.terminal.sendSequence", "key": "alt+down" },
+  { "command": "-workbench.action.terminal.sendSequence", "key": "alt+up" },
   {
     "command": "-workbench.action.terminal.sizeToContentWidth",
     "key": "alt+z"
@@ -227,12 +252,12 @@
   },
   {
     "command": "editor.action.insertCursorAbove",
-    "key": "ctrl+shift+up",
+    "key": "ctrl+up",
     "when": "editorTextFocus"
   },
   {
     "command": "editor.action.insertCursorBelow",
-    "key": "ctrl+shift+down",
+    "key": "ctrl+down",
     "when": "editorTextFocus"
   },
   {

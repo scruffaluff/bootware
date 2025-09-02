@@ -11,20 +11,20 @@ prepend_keymap = [
   { desc = "Move cursor down 5 lines", on = "K", run = "arrow 5" },
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
   { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
 ]
 
 [input]
 prepend_keymap = [
-  { on = "<C-h>", run = "noop" },
-  { on = "<C-j>", run = "noop" },
-  { on = "<C-w>", run = "noop" },
   { desc = "Move backward a word", on = "<C-Left>", run = "backward" },
   { desc = "Move backward a word", on = "<S-Left>", run = "backward" },
   { desc = "Move cursor left", on = "<A-j>", run = "move -1" },
   { desc = "Move cursor right", on = "<A-;>", run = "move 1" },
   { desc = "Move forward a word", on = "<C-Right>", run = "forward" },
   { desc = "Move forward a word", on = "<S-Right>", run = "forward" },
-  { desc = "Kill backwards a word", on = "<C-d>", run = "kill backward" },
+  { desc = "Kill backward a word", on = "<C-w>", run = "kill backward" },
+  { desc = "Kill forward a word", on = "<A-w>", run = "kill forward" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
 ]
 
 [mgr]
@@ -39,6 +39,7 @@ prepend_keymap = [
   { desc = "Go forward to the next directory", on = ":", run = "forward" },
   { desc = "Open file or exit to directory", on = "<Enter>", run = "plugin smart-open" },
   { desc = "Open file or exit to directory", on = "o", run = "plugin smart-open" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
   { desc = "Seek down 5 units in the preview", on = "<A-k>", run = "seek 5" },
   { desc = "Seek up 5 units in the preview", on = "<A-l>", run = "seek -5" },
   { desc = "Run a shell command", on = "s", run = "shell --interactive" },
@@ -81,10 +82,12 @@ prepend_keymap = [
   { desc = "Move cursor down 5 lines", on = "K", run = "arrow 5" },
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
   { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
 ]
 
 [tasks]
 prepend_keymap = [
   { desc = "Move cursor down", on = "k", run = "arrow 1" },
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
 ]
