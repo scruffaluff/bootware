@@ -109,9 +109,9 @@ checksum() {
   folder="$(dirname "${1}")"
   file="$(basename "${1}")"
 
-  if [ -x "$(command -v shasum)" ]; then
+  if command -v shasum > /dev/null 2>&1; then
     (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
-  elif [ -x "$(command -v sha512sum)" ]; then
+  elif command -v sha512sum > /dev/null 2>&1; then
     (cd "${folder}" && sha512sum "${file}" > "${file}.sha512")
   else
     error 'Unable to find a checksum command'
