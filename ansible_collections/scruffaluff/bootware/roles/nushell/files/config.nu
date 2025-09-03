@@ -710,6 +710,12 @@ $env.config = {
     completions: { algorithm: "fuzzy" }
     keybindings: [
         {
+            event: { edit: moveright }
+            keycode: "char_;"
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
             event: { edit: movewordleft }
             keycode: char_b
             mode: [emacs vi_insert vi_normal]
@@ -784,12 +790,6 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: moveright }
-            keycode: "char_;"
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
             event: null
             keycode: char_d
             mode: [emacs vi_insert vi_normal]
@@ -802,8 +802,14 @@ $env.config = {
             modifier: control
         }
         {
-            event: null
-            keycode: char_o
+            event: { until: [{ send: menunext } { send: down }] }
+            keycode: char_n
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: { until: [{ send: menuprevious } { send: up }] }
+            keycode: char_p
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }

@@ -70,14 +70,11 @@
   become: true
   loop:
     - nu
-    - nu_plugin_custom_values
-    - nu_plugin_example
     - nu_plugin_formats
     - nu_plugin_gstat
     - nu_plugin_inc
     - nu_plugin_polars
     - nu_plugin_query
-    - nu_plugin_stress_internals
   tags:
     - install
   when: ansible_system == "Linux" and nushell_linux is failed

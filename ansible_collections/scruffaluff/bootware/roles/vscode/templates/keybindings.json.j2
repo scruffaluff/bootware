@@ -1,6 +1,6 @@
 [
-  { "command": "-bookmarks.toggle", "key": "ctrl+alt+k" },
-  { "command": "-breadcrumbs.focus", "key": "ctrl+shift+;" },
+  { "command": "-bookmarks.toggle", "key": "{{ vscode_ctrl_key }}+alt+k" },
+  { "command": "-breadcrumbs.focus", "key": "{{ vscode_ctrl_key }}+shift+;" },
   { "command": "-cursorColumnSelectLeft", "key": "shift+left" },
   { "command": "-cursorColumnSelectRight", "key": "shift+right" },
   { "command": "-cursorLeftSelect", "key": "shift+left" },
@@ -11,20 +11,20 @@
   },
   {
     "command": "-editor.action.accessibleViewGoToSymbol",
-    "key": "ctrl+shift+o"
+    "key": "{{ vscode_ctrl_key }}+shift+o"
   },
   { "command": "-editor.action.blockComment", "key": "ctrl+shift+a" },
-  { "command": "-editor.action.deleteLines", "key": "ctrl+shift+k" },
-  { "command": "-editor.action.goToBottomHover", "key": "ctrl+down" },
-  { "command": "-editor.action.goToTopHover", "key": "ctrl+up"},
-  { "command": "-editor.action.selectAll", "key": "ctrl+a" },
-  { "command": "-editor.action.selectHighlights", "key": "ctrl+shift+l" },
+  { "command": "-editor.action.deleteLines", "key": "{{ vscode_ctrl_key }}+shift+k" },
+  { "command": "-editor.action.goToBottomHover", "key": "{{ vscode_ctrl_key }}+down" },
+  { "command": "-editor.action.goToTopHover", "key": "{{ vscode_ctrl_key }}+up"},
+  { "command": "-editor.action.selectAll", "key": "{{ vscode_ctrl_key }}+a" },
+  { "command": "-editor.action.selectHighlights", "key": "{{ vscode_ctrl_key }}+shift+l" },
   { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
   { "command": "-editor.action.toggleWordWrap", "key": "alt+z" },
   { "command": "-editor.fold", "key": "ctrl+shift+[" },
   { "command": "-editor.unfold", "key": "ctrl+shift+]" },
-  { "command": "-inlineChat.focus", "key": "ctrl+up" },
-  { "command": "-inlineChat.focus", "key": "ctrl+down" },
+  { "command": "-inlineChat.focus", "key": "{{ vscode_ctrl_key }}+up" },
+  { "command": "-inlineChat.focus", "key": "{{ vscode_ctrl_key }}+down" },
   { "command": "-inlineChat.holdForSpeech", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.startWithCurrentLine", "key": "{{ vscode_ctrl_key }}+i" },
@@ -32,11 +32,11 @@
   { "command": "-inlineChat2.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat2.stop", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-list.find", "key": "ctrl+f" },
-  { "command": "-list.selectAll", "key": "ctrl+a" },
+  { "command": "-list.selectAll", "key": "{{ vscode_ctrl_key }}+a" },
   { "command": "-notebook.cell.chat.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-notebook.fold", "key": "ctrl+shift+[" },
   { "command": "-notebook.unfold", "key": "ctrl+shift+]" },
-  { "command": "-notification.acceptPrimaryAction", "key": "ctrl+shift+a" },
+  { "command": "-notification.acceptPrimaryAction", "key": "{{ vscode_ctrl_key }}+shift+a" },
   { "command": "-rust-analyzer.joinLines", "key": "ctrl+shift+j" },
   { "command": "-toggleFindWholeWord", "key": "alt+w" },
   { "command": "-toggleSearchEditorWholeWord", "key": "alt+w" },
@@ -50,28 +50,23 @@
     "command": "-workbench.action.chat.stopListeningAndSubmit",
     "key": "{{ vscode_ctrl_key }}+i"
   },
-  { "command": "-workbench.action.closeActiveEditor", "key": "ctrl+w" },
-  { "command": "-workbench.action.closeGroup", "key": "ctrl+w" },
+  { "command": "-workbench.action.closeActiveEditor", "key": "{{ vscode_ctrl_key }}+w" },
+  { "command": "-workbench.action.closeGroup", "key": "{{ vscode_ctrl_key }}+w" },
   { "command": "-workbench.action.closeWindow", "key": "{{ vscode_ctrl_key }}+shift+w" },
   { "command": "-workbench.action.debug.continue", "key": "f5" },
-  { "command": "-workbench.action.debug.restart", "key": "ctrl+shift+f5" },
+  { "command": "-workbench.action.debug.restart", "key": "{{ vscode_ctrl_key }}+shift+f5" },
   { "command": "-workbench.action.debug.stepInto", "key": "f11" },
   { "command": "-workbench.action.debug.stepOut", "key": "shift+f11" },
   { "command": "-workbench.action.debug.stepOver", "key": "f10" },
   { "command": "-workbench.action.debug.stop", "key": "shift+f5" },
-  {
-    "command": "-workbench.action.files.copyPathOfActiveFile",
-    "key": "ctrl+k p"
-  },
-  { "command": "-workbench.action.files.saveAs", "key": "ctrl+shift+s" },
-  { "command": "-workbench.action.files.saveLocalFile", "key": "ctrl+shift+s" },
-  { "command": "-workbench.action.focusSecondEditorGroup", "key": "cmd+2" },
-  { "command": "-workbench.action.gotoSymbol", "key": "ctrl+shift+o" },
+  { "command": "-workbench.action.files.saveAs", "key": "{{ vscode_ctrl_key }}+shift+s" },
+  { "command": "-workbench.action.files.saveLocalFile", "key": "{{ vscode_ctrl_key }}+shift+s" },
+  { "command": "-workbench.action.gotoSymbol", "key": "{{ vscode_ctrl_key }}+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
   { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
-  { "command": "-workbench.action.files.newUntitledFile", "key": "ctrl+n" },
+  { "command": "-workbench.action.files.newUntitledFile", "key": "{{ vscode_ctrl_key }}+n" },
   { "command": "-workbench.action.quickOpen", "key": "ctrl+e" },
-  { "command": "-workbench.action.quickOpen", "key": "ctrl+p" },
+  { "command": "-workbench.action.quickOpen", "key": "{{ vscode_ctrl_key }}+p" },
   {
     "command": "-workbench.action.quickOpenLeastRecentlyUsedEditorInGroup",
     "key": "ctrl+shift+tab"
@@ -80,9 +75,9 @@
     "command": "-workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
     "key": "ctrl+tab"
   },
-  { "command": "-workbench.action.reopenClosedEditor", "key": "ctrl+shift+t" },
+  { "command": "-workbench.action.reopenClosedEditor", "key": "{{ vscode_ctrl_key }}+shift+t" },
   { "command": "-workbench.action.switchWindow", "key": "ctrl+w" },
-  { "command": "-workbench.action.tasks.build", "key": "ctrl+shift+b" },
+  { "command": "-workbench.action.tasks.build", "key": "{{ vscode_ctrl_key }}+shift+b" },
   {
     "command": "-workbench.action.terminal.accessibleBufferGoToNextCommand",
     "key": "alt+down"
@@ -92,38 +87,38 @@
     "key": "alt+up"
   },
   { "command": "-workbench.action.terminal.chat.start", "key": "{{ vscode_ctrl_key }}+i" },
-  { "command": "-workbench.action.terminal.focus", "key": "ctrl+down" },
-  { "command": "-workbench.action.terminal.focusFind", "key": "ctrl+f" },
+  { "command": "-workbench.action.terminal.focus", "key": "{{ vscode_ctrl_key }}+down" },
+  { "command": "-workbench.action.terminal.focusFind", "key": "{{ vscode_ctrl_key }}+f" },
   { "command": "-workbench.action.terminal.focusNextPane", "key": "alt+down" },
   { "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up" },
   { 
     "command": "-workbench.action.terminal.goToRecentDirectory",
-    "key": "ctrl+g"
+    "key": "{{ vscode_ctrl_key }}+g"
   },
-  { "command": "-workbench.action.terminal.killEditor", "key": "ctrl+w" },
+  { "command": "-workbench.action.terminal.killEditor", "key": "{{ vscode_ctrl_key }}+w" },
   {
     "command": "-workbench.action.terminal.openDetectedLink",
-    "key": "ctrl+shift+g"
+    "key": "{{ vscode_ctrl_key }}+shift+g"
   },
   {
     "command": "-workbench.action.terminal.openDetectedLink",
-    "key": "ctrl+shift+o"
+    "key": "{{ vscode_ctrl_key }}+shift+o"
   },
   {
     "command": "-workbench.action.terminal.openNativeConsole",
-    "key": "ctrl+shift+c"
+    "key": "{{ vscode_ctrl_key }}+shift+c"
   },
   {
     "command": "-workbench.action.terminal.scrollToNextCommand",
-    "key": "ctrl+down"
+    "key": "{{ vscode_ctrl_key }}+down"
   },
   {
     "command": "-workbench.action.terminal.scrollToPreviousCommand",
-    "key": "ctrl+up"
+    "key": "{{ vscode_ctrl_key }}+up"
   },
   {
     "command": "-workbench.action.terminal.searchWorkspace",
-    "key": "ctrl+shift+f"
+    "key": "{{ vscode_ctrl_key }}+shift+f"
   },
   { "command": "-workbench.action.terminal.sendSequence", "key": "alt+down" },
   { "command": "-workbench.action.terminal.sendSequence", "key": "alt+up" },
@@ -140,12 +135,12 @@
     "key": "alt+w"
   },
   { "command": "-workbench.action.terminal.toggleTerminal", "key": "ctrl+`" },
-  { "command": "-workbench.action.togglePanel", "key": "ctrl+j" },
-  { "command": "-workbench.action.toggleSidebarVisibility", "key": "ctrl+b" },
-  { "command": "-workbench.actions.view.problems", "key": "ctrl+shift+m" },
-  { "command": "-workbench.debug.action.toggleRepl", "key": "ctrl+shift+y" },
+  { "command": "-workbench.action.togglePanel", "key": "{{ vscode_ctrl_key }}+j" },
+  { "command": "-workbench.action.toggleSidebarVisibility", "key": "{{ vscode_ctrl_key }}+b" },
+  { "command": "-workbench.actions.view.problems", "key": "{{ vscode_ctrl_key }}+shift+m" },
+  { "command": "-workbench.debug.action.toggleRepl", "key": "{{ vscode_ctrl_key }}+shift+y" },
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscode_ctrl_key }}+k d" },
-  { "command": "-workbench.view.extensions", "key": "ctrl+shift+x" },
+  { "command": "-workbench.view.extensions", "key": "{{ vscode_ctrl_key }}+shift+x" },
   {
     "command": "actions.find",
     "key": "ctrl+f",
@@ -477,8 +472,7 @@
   },
   {
     "command": "workbench.action.quickOpen",
-    "key": "ctrl+p",
-    "when": "!inQuickOpen && !panelFocus && !suggestWidgetVisible"
+    "key": "ctrl+shift+o",
   },
   { 
     "command": "workbench.action.quickOpenSelectNext",

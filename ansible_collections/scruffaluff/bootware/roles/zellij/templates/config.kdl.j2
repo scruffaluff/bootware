@@ -57,22 +57,22 @@ keybinds clear-defaults=true {
         bind "ctrl d" { SwitchToMode "normal"; }
     }
     normal {
-        bind ";" { MoveFocusOrTab "right"; }
-        bind "[" { PreviousSwapLayout; }
-        bind "]" { NextSwapLayout; }
+        bind ";" { MoveFocusOrTab "right"; SwitchToMode "locked"; }
+        bind "[" { PreviousSwapLayout; SwitchToMode "locked"; }
+        bind "]" { NextSwapLayout; SwitchToMode "locked"; }
         bind "c" { NewTab; SwitchToMode "locked"; }
         bind "d" { Detach; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "locked"; }
         bind "f" { ToggleFloatingPanes; SwitchToMode "locked"; }
-        bind "j" { MoveFocusOrTab "left"; }
-        bind "k" { MoveFocus "down"; }
-        bind "l" { MoveFocus "up"; }
+        bind "j" { MoveFocusOrTab "left"; SwitchToMode "locked"; }
+        bind "k" { MoveFocus "down"; SwitchToMode "locked"; }
+        bind "l" { MoveFocus "up"; SwitchToMode "locked"; }
         bind "m" { ToggleFocusFullscreen; SwitchToMode "locked"; }
         bind "n" { NewPane; SwitchToMode "locked"; }
-        bind "down" { MovePane "down"; }
-        bind "left" { MovePane "left"; }
-        bind "right" { MovePane "right"; }
-        bind "up" { MovePane "up"; }
+        bind "down" { MovePane "down"; SwitchToMode "locked"; }
+        bind "left" { MovePane "left"; SwitchToMode "locked"; }
+        bind "right" { MovePane "right"; SwitchToMode "locked"; }
+        bind "up" { MovePane "up"; SwitchToMode "locked"; }
     }
     pane {
         bind ";" { MoveFocus "right"; }
