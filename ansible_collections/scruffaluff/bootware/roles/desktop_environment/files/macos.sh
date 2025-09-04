@@ -179,6 +179,36 @@ if ! expr "${input_sources}" : '.*no_alt_characters.*' > /dev/null; then
   '
 fi
 
+# Disable application windows `Ctrl+Down` keybinding.
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 33 '
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>125</integer>
+        <integer>865072</integer>
+      </array>
+    </dict>
+  </dict>
+'
+# Change Mission Control key binding to `Ctrl+Option+A`.
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32 '
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>97</integer>
+        <integer>0</integer>
+        <integer>786432</integer>
+      </array>
+    </dict>
+  </dict>
+'
 # Change move workspace left key binding to `Ctrl+Option+J`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>

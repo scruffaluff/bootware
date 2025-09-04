@@ -1,23 +1,9 @@
 ---
 - name: Install Firefox for Debian
-  ansible.builtin.apt:
-    name: firefox
-  become: true
-  ignore_errors: true
-  register: firefox_debian
+  ansible.builtin.import_tasks: debian.yaml
   tags:
     - install
   when: ansible_pkg_mgr == "apt" and ansible_distribution != "Ubuntu"
-
-- name: Install Firefox for Debian
-  ansible.builtin.apt:
-    name: firefox-esr
-  become: true
-  tags:
-    - install
-  when: >-
-    ansible_pkg_mgr == "apt" and ansible_distribution != "Ubuntu" and
-    firefox_debian is failed
 
 - name: Install Firefox for FreeBSD
   become: true

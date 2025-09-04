@@ -1,3 +1,4 @@
 ---
 wezterm_font_size: "{{ font_size }}"
+wezterm_package: wezterm
 wezterm_window_decorations: true

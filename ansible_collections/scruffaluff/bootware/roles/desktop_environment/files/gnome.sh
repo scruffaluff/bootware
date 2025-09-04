@@ -27,9 +27,16 @@ gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 16
 
 # Use natural scroll orientation for mouse.
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
+# Set mouse speed.
+gsettings set org.gnome.desktop.peripherals.mouse speed 0.8
 
 # Use natural scroll orientation for touchpad.
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+# Set touchpad speed.
+gsettings set org.gnome.desktop.peripherals.touchpad speed 0.5
+
+# Disable file history.
+gsettings set org.gnome.desktop.privacy remember-recent-files false
 
 # Maximize application windows when double clicking the title bar.
 gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar \
@@ -69,7 +76,7 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Alt>
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Alt><Control>L"]'
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space"]'
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space","<Alt><Control>A"]'
 gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
 
 # File extension settings.

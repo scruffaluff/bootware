@@ -315,14 +315,6 @@ def carapace-complete [spans: list<string>] {
     carapace $spans.0 nushell ...$spans | from json
 }
 
-# Wrapper for cat command with Windows support.
-def --wrapped cat [...args: string] {
-    match $nu.os-info.name {
-        "windows" => { open --raw ...$args },
-        _ => { ^cat ...$args },
-    }
-}
-
 # Wrapper for chown command with Windows support.
 def --wrapped chown [...args: string] {
     match $nu.os-info.name {
@@ -690,6 +682,8 @@ prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Shell settings.
 
+# Add cat an alias for Windows support.
+alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Make Rsync use progress bars and skip ignored files.
@@ -707,7 +701,7 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color-theme)
-    completions: { algorithm: "fuzzy" }
+    completions: { algorithm: "substring" }
     keybindings: [
         {
             event: { edit: moveright }

@@ -2,7 +2,7 @@
 - name: Install Wez's terminal for FreeBSD
   become: true
   community.general.pkgng:
-    name: wezterm
+    name: "{{ wezterm_package }}"
   tags:
     - install
   when: ansible_system == "FreeBSD"
@@ -37,9 +37,10 @@
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg {{
-      wezterm_temp.path }}/wezterm.key
-    creates: /usr/share/keyrings/wezterm.gpg
+      gpg --batch --dearmor --yes --output
+      /usr/share/keyrings/wezterm-archive-keyring.gpg {{ wezterm_temp.path
+      }}/wezterm.key
+    creates: /usr/share/keyrings/wezterm-archive-keyring.gpg
   become: true
   tags:
     - install
@@ -48,8 +49,8 @@
 - name: Add Wezterm repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by=/usr/share/keyrings/wezterm.gpg] https://apt.fury.io/wez/ *
-      *
+      deb [signed-by=/usr/share/keyrings/wezterm-archive-keyring.gpg]
+      https://apt.fury.io/wez/ * *
     state: present
     filename: wezterm
   become: true
@@ -59,7 +60,7 @@
 
 - name: Install Wezterm for Debian
   ansible.builtin.apt:
-    name: wezterm
+    name: "{{ wezterm_package }}"
     update_cache: true
   become: true
   tags:
@@ -76,7 +77,7 @@
 
 - name: Install Wez's terminal for Linux
   ansible.builtin.package:
-    name: wezterm
+    name: "{{ wezterm_package }}"
   become: true
   tags:
     - install
@@ -85,7 +86,7 @@
 - name: Install Wez's terminal for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
-    name: wezterm
+    name: "{{ wezterm_package }}"
     state: present
   tags:
     - install
@@ -94,7 +95,7 @@
 - name: Install Wez's terminal for Windows
   community.windows.win_scoop:
     global: true
-    name: wezterm
+    name: "{{ wezterm_package }}"
   tags:
     - install
   when: ansible_system == "Win32NT"

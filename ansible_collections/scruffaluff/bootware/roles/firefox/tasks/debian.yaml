@@ -1,0 +1,40 @@
+---
+- name: Download Mozilla GPG key for Debian
+  ansible.builtin.get_url:
+    dest: /usr/share/keyrings/mozilla-archive-keyring.asc
+    mode: "644"
+    url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+  become: true
+  tags:
+    - install
+
+- name: Add Mozilla repository for Debian
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/mozilla-archive-keyring.asc]
+      https://packages.mozilla.org/apt mozilla main
+    state: present
+    filename: firefox
+  become: true
+  tags:
+    - install
+
+- name: Prioritize Mozilla repository for Debian
+  ansible.builtin.copy:
+    content: |
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+    dest: /etc/apt/preferences.d/mozilla
+    force: true
+    mode: "644"
+  become: true
+  tags:
+    - install
+
+- name: Install Firefox for Debian
+  ansible.builtin.apt:
+    name: firefox
+  become: true
+  tags:
+    - install
