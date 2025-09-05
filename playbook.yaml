@@ -111,17 +111,6 @@
         - android_tools
         - never
 
-    - name: Install AppImage dependencies
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - appimage
-            - desktop
-        name: scruffaluff.bootware.appimage
-      tags:
-        - appimage
-        - desktop
-
     - name: Install Audacity audio editor
       ansible.builtin.include_role:
         apply:
@@ -840,21 +829,6 @@
         - server
         - wsl
 
-    - name: Install Htmlq HTML parser
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - htmlq
-            - server
-            - wsl
-        name: scruffaluff.bootware.htmlq
-      tags:
-        - desktop
-        - htmlq
-        - server
-        - wsl
-
     - name: Install Htop process monitor
       ansible.builtin.include_role:
         apply:
@@ -968,23 +942,6 @@
         - container
         - desktop
         - k3d
-        - kubernetes
-        - server
-        - wsl
-
-    - name: Install K3sup SSH installer for K3s
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - k3sup
-            - kubernetes
-            - server
-            - wsl
-        name: scruffaluff.bootware.k3sup
-      tags:
-        - desktop
-        - k3sup
         - kubernetes
         - server
         - wsl
@@ -1176,21 +1133,6 @@
         - desktop
         - language
         - lua
-        - server
-        - wsl
-
-    - name: Install Mdbook static website generator
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - mdbook
-            - server
-            - wsl
-        name: scruffaluff.bootware.mdbook
-      tags:
-        - desktop
-        - mdbook
         - server
         - wsl
 

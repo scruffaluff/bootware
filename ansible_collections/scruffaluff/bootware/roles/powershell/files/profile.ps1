@@ -255,6 +255,17 @@ if ($Tty) {
     Import-Module -ErrorAction SilentlyContinue DockerCompletion
 }
 
+# Fd settings.
+
+# Always have Fd read available gitignore files.
+function fd() {
+    fd.exe --no-require-git $Args
+}
+# Add edit alias for interactive Fd.
+function fde() {
+    fdi --edit $Args
+}
+
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
@@ -376,6 +387,10 @@ $Env:RCLONE_NO_UPDATE_MODTIME = 'true'
 
 # Ripgrep settings.
 
+# Add edit alias for interactive Ripgrep.
+function rge() {
+    rgi --edit $Args
+}
 # Set Ripgrep settings file location.
 $Env:RIPGREP_CONFIG_PATH = "$HOME\.ripgreprc"
 

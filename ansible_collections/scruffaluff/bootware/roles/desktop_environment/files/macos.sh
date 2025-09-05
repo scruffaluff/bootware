@@ -58,51 +58,51 @@ defaults write com.apple.TextInputMenu visible -bool false
 
 # File extension settings.
 
-duti -s com.vscodium bak all
-duti -s com.vscodium bash all
-duti -s com.vscodium c all
-duti -s com.vscodium cfg all
-duti -s com.vscodium class all
-duti -s com.vscodium cpp all
-duti -s com.vscodium cs all
-duti -s com.vscodium css all
-duti -s com.vscodium csv all
-duti -s com.vscodium dockerignore all
-duti -s com.vscodium env all
-duti -s com.vscodium fish all
-duti -s com.vscodium go all
-duti -s com.vscodium h all
-duti -s com.vscodium hpp all
-duti -s com.vscodium ini all
-duti -s com.vscodium java all
-duti -s com.vscodium jl all
-duti -s com.vscodium js all
-duti -s com.vscodium json all
-duti -s com.vscodium jsx all
-duti -s com.vscodium justfile all
-duti -s com.vscodium log all
-duti -s com.vscodium lua all
-duti -s com.vscodium md all
-duti -s com.vscodium nu all
-duti -s com.vscodium ps1 all
-duti -s com.vscodium py all
-duti -s com.vscodium rb all
-duti -s com.vscodium rs all
-duti -s com.vscodium sh all
-duti -s com.vscodium sql all
-duti -s com.vscodium svelte all
-duti -s com.vscodium swift all
-duti -s com.vscodium tf all
-duti -s com.vscodium tmp all
-duti -s com.vscodium toml all
-duti -s com.vscodium ts all
-duti -s com.vscodium tsv all
-duti -s com.vscodium tsx all
-duti -s com.vscodium txt all
-duti -s com.vscodium vue all
-duti -s com.vscodium xml all
-duti -s com.vscodium yaml all
-duti -s com.vscodium yml all
+duti -s com.microsoft.vscode bak all
+duti -s com.microsoft.vscode bash all
+duti -s com.microsoft.vscode c all
+duti -s com.microsoft.vscode cfg all
+duti -s com.microsoft.vscode class all
+duti -s com.microsoft.vscode cpp all
+duti -s com.microsoft.vscode cs all
+duti -s com.microsoft.vscode css all
+duti -s com.microsoft.vscode csv all
+duti -s com.microsoft.vscode dockerignore all
+duti -s com.microsoft.vscode env all
+duti -s com.microsoft.vscode fish all
+duti -s com.microsoft.vscode go all
+duti -s com.microsoft.vscode h all
+duti -s com.microsoft.vscode hpp all
+duti -s com.microsoft.vscode ini all
+duti -s com.microsoft.vscode java all
+duti -s com.microsoft.vscode jl all
+duti -s com.microsoft.vscode js all
+duti -s com.microsoft.vscode json all
+duti -s com.microsoft.vscode jsx all
+duti -s com.microsoft.vscode justfile all
+duti -s com.microsoft.vscode log all
+duti -s com.microsoft.vscode lua all
+duti -s com.microsoft.vscode md all
+duti -s com.microsoft.vscode nu all
+duti -s com.microsoft.vscode ps1 all
+duti -s com.microsoft.vscode py all
+duti -s com.microsoft.vscode rb all
+duti -s com.microsoft.vscode rs all
+duti -s com.microsoft.vscode sh all
+duti -s com.microsoft.vscode sql all
+duti -s com.microsoft.vscode svelte all
+duti -s com.microsoft.vscode swift all
+duti -s com.microsoft.vscode tf all
+duti -s com.microsoft.vscode tmp all
+duti -s com.microsoft.vscode toml all
+duti -s com.microsoft.vscode ts all
+duti -s com.microsoft.vscode tsv all
+duti -s com.microsoft.vscode tsx all
+duti -s com.microsoft.vscode txt all
+duti -s com.microsoft.vscode vue all
+duti -s com.microsoft.vscode xml all
+duti -s com.microsoft.vscode yaml all
+duti -s com.microsoft.vscode yml all
 duti -s org.libreoffice.script doc all
 duti -s org.libreoffice.script docx all
 duti -s org.libreoffice.script ppt all
@@ -194,7 +194,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 33
     </dict>
   </dict>
 '
-# Change Mission Control key binding to `Ctrl+Option+A`.
+# Change Mission Control key binding to `Ctrl+Option+Up`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32 '
   <dict>
     <key>enabled</key><true/>
@@ -202,9 +202,9 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32
       <key>type</key><string>standard</string>
       <key>parameters</key>
       <array>
-        <integer>97</integer>
-        <integer>0</integer>
-        <integer>786432</integer>
+        <integer>65535</integer>
+        <integer>126</integer>
+        <integer>11272192</integer>
       </array>
     </dict>
   </dict>

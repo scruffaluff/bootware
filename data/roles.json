@@ -147,11 +147,6 @@
   { "name": "helm", "tests": ["helm version --short"] },
   { "name": "helmfile", "tests": ["helmfile --version"] },
   {
-    "name": "htmlq",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
-    "tests": ["htmlq --version"]
-  },
-  {
     "name": "htop",
     "skip": [{ "os": "windows" }],
     "tests": ["htop --version"]
@@ -162,11 +157,6 @@
   { "name": "jq", "tests": ["jq --version"] },
   { "name": "just", "tests": ["just --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
-  {
-    "name": "k3sup",
-    "skip": [{ "os": "freebsd" }],
-    "tests": ["k3sup version"]
-  },
   { "name": "k9s", "tests": ["k9s version"] },
   {
     "name": "kdenlive",
@@ -244,7 +234,6 @@
       "freebsd": ["lua54 -v"]
     }
   },
-  { "name": "mdbook", "tests": ["mdbook --version"] },
   { "name": "miniserve", "tests": ["miniserve --version"] },
   {
     "name": "mkcert",

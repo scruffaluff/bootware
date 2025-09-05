@@ -76,16 +76,16 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Alt>
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Alt><Control>L"]'
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space","<Alt><Control>A"]'
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space","<Alt><Control>Up"]'
 gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
 
 # File extension settings.
-xdg-mime default codium.desktop application/json
-xdg-mime default codium.desktop application/x-sh
-xdg-mime default codium.desktop application/xml
-xdg-mime default codium.desktop text/css
-xdg-mime default codium.desktop text/csv
-xdg-mime default codium.desktop text/plain
+xdg-mime default code.desktop application/json
+xdg-mime default code.desktop application/x-sh
+xdg-mime default code.desktop application/xml
+xdg-mime default code.desktop text/css
+xdg-mime default code.desktop text/csv
+xdg-mime default code.desktop text/plain
 xdg-mime default firefox.desktop image/avif
 xdg-mime default firefox.desktop image/gif
 xdg-mime default firefox.desktop image/webp

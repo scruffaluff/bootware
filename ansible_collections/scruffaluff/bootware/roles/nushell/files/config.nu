@@ -554,6 +554,8 @@ alias lzd = lazydocker
 
 # Always have Fd read available gitignore files.
 alias fd = ^fd --no-require-git
+# Add edit alias for interactive Fd.
+alias fde = ^fdi --edit
 
 # FFmpeg settings.
 
@@ -668,6 +670,8 @@ $env.RCLONE_NO_UPDATE_MODTIME = "true"
 
 # Ripgrep settings.
 
+# Add edit alias for interactive Ripgrep.
+alias rge = ^rgi --edit
 # Set Ripgrep settings file location.
 $env.RIPGREP_CONFIG_PATH = $"($env.HOME)/.ripgreprc"
 
