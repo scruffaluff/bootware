@@ -1,0 +1,25 @@
+---
+- name: Install Spotify for Linux
+  become: true
+  community.general.flatpak:
+    name: com.spotify.Client
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Spotify for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: spotify
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Spotify for Windows
+  community.windows.win_scoop:
+    global: true
+    name: spotify
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

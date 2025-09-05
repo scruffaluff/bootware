@@ -366,6 +366,15 @@
       "windows": ["scoop prefix sonic-pi"]
     }
   },
+  {
+    "name": "spotify",
+    "skip": [{ "os": "freebsd" }],
+    "tests": {
+      "linux": ["flatpak info com.spotify.Client"],
+      "macos": ["/Applications/Spotify.app/Contents/MacOS/Spotify --version"],
+      "windows": ["scoop prefix spotify"]
+    }
+  },
   { "name": "sqlite", "tests": ["sqlite3 --version"] },
   {
     "name": "ssh",

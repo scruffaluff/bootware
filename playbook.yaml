@@ -1612,6 +1612,19 @@
         - sysadmin
         - wsl
 
+    - name: Install Spotify music player
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - music
+            - spotify
+        name: scruffaluff.bootware.spotify
+      tags:
+        - desktop
+        - music
+        - spotify
+
     - name: Install SQLite database
       ansible.builtin.include_role:
         apply:

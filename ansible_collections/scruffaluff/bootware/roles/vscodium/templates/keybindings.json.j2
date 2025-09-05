@@ -335,9 +335,24 @@
     "when": "textCompareEditorVisible"
   },
   {
+    "command": "workbench.action.debug.callStackDown",
+    "key": "alt+d",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.callStackUp",
+    "key": "alt+u",
+    "when": "debugState == 'stopped'"
+  },
+  {
     "command": "workbench.action.debug.continue",
     "key": "alt+c",
     "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "workbench.action.debug.disconnect",
+    "key": "alt+q",
+    "when": "inDebugMode && focusedSessionIsAttach"
   },
   {
     "command": "workbench.action.debug.restart",
@@ -345,13 +360,18 @@
     "when": "inDebugMode"
   },
   {
+    "command": "workbench.action.debug.start",
+    "key": "{{ vscodium_ctrl_key }}+k d",
+    "when": "debuggersAvailable && debugState == 'inactive'"
+  },
+  {
     "command": "workbench.action.debug.stepInto",
     "key": "alt+s",
-    "when": "debugState != 'inactive'"
+    "when": "debugState == 'stopped'"
   },
   {
     "command": "workbench.action.debug.stepOut",
-    "key": "alt+u",
+    "key": "alt+o",
     "when": "debugState == 'stopped'"
   },
   {
