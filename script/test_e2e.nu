@@ -8,6 +8,11 @@ def main [
     --skip (-s): string = "none" # Ansible roles to skip
     --tags (-t): string = "all,never" # Ansible roles to keep
 ] {
+    let arch = if ($arch | is-empty) {
+        match $nu.os-info.arch { "aarch64" => "arm64", "x86_64" => "x64" }
+    } else {
+        $arch
+    }
     let args = if $cache { [] } else { ["--no-cache"] }
     let dists_ = $dists | split row ","
     let runner = if (which podman | is-empty) { "docker" } else { "podman" }

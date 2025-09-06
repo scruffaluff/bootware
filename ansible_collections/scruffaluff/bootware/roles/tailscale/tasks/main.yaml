@@ -1,0 +1,34 @@
+---
+- name: Install Tailscale for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: tailscale
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Install Tailscale for Linux
+  ansible.builtin.shell: # noqa command-instead-of-module
+    cmd: curl -LSfs https://tailscale.com/install.sh | sh
+    creates: /usr/bin/tailscale
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Tailscale for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: tailscale-app
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Tailscale for Windows
+  community.windows.win_scoop:
+    global: true
+    name: tailscale
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

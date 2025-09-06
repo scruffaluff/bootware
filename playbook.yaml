@@ -1691,6 +1691,19 @@
         - super
         - wsl
 
+    - name: Install Spotify music player
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - server
+            - tailscale
+        name: scruffaluff.bootware.tailscale
+      tags:
+        - desktop
+        - server
+        - tailscale
+
     - name: Install Termshark network analyzer
       ansible.builtin.include_role:
         apply:

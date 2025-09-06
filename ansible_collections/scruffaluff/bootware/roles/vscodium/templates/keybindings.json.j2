@@ -142,6 +142,11 @@
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscodium_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "{{ vscodium_ctrl_key }}+shift+x" },
   {
+    "command": "acceptSelectedSuggestion",
+    "key": "ctrl+i",
+    "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
+  },
+  {
     "command": "actions.find",
     "key": "ctrl+f",
     "when": "editorFocus || editorIsOpen"
@@ -337,17 +342,17 @@
   {
     "command": "workbench.action.debug.callStackDown",
     "key": "alt+d",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.callStackUp",
     "key": "alt+u",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.continue",
     "key": "alt+c",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.disconnect",
@@ -361,23 +366,23 @@
   },
   {
     "command": "workbench.action.debug.start",
-    "key": "{{ vscodium_ctrl_key }}+k d",
-    "when": "debuggersAvailable && debugState == 'inactive'"
+    "key": "ctrl+shift+d",
+    "when": "debuggersAvailable && activeViewlet == 'workbench.view.debug' && !inDebugMode"
   },
   {
     "command": "workbench.action.debug.stepInto",
     "key": "alt+s",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.stepOut",
     "key": "alt+o",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.stepOver",
     "key": "alt+n",
-    "when": "debugState == 'stopped'"
+    "when": "debugState == 'stopped' && !terminalFocus"
   },
   {
     "command": "workbench.action.debug.stop",
@@ -399,6 +404,7 @@
     "key": "ctrl+shift+n",
     "when": "!panelFocus"
   },
+  { "command": "workbench.action.files.save", "key": "ctrl+s" },
   { "command": "workbench.action.findInFiles", "key": "ctrl+shift+f" },
   {
     "command": "workbench.action.focusActiveEditorGroup",
@@ -615,7 +621,11 @@
     "command": "workbench.panel.repl.view.focus",
     "key": "ctrl+shift+y"
   },
-  { "command": "workbench.view.debug", "key": "ctrl+shift+d" },
+  {
+    "command": "workbench.view.debug",
+    "key": "ctrl+shift+d",
+    "when": "activeViewlet != 'workbench.view.debug' || inDebugMode"
+  },
   {
     "command": "workbench.view.explorer",
     "key": "ctrl+shift+e",

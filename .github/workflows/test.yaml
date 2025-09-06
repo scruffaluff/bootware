@@ -41,6 +41,8 @@ on:
           - arm64
         type: choice
 
+# All Docker Spotify tests are disabled since its Flatpak requirements are
+# incompatible with Docker containers.
 jobs:
   alpine:
     name: Test bootstrapping software for Alpine Linux
@@ -68,7 +70,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            skip=android_studio,gdu,helix
+            skip=android_studio,gdu,helix,spotify
             test=true
           context: .
           file: test/e2e/alpine.dockerfile
@@ -104,7 +106,7 @@ jobs:
           # Libvirt test fails in GitHub workflow as of 01/18/2025 due to a "No
           # module named 'gi'" Python error. The test passes when run locally.
           build-args: |
-            skip=android_studio,libvirt
+            skip=android_studio,libvirt,spotify
             test=true
           context: .
           file: test/e2e/arch.dockerfile
@@ -137,7 +139,9 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          build-args: test=true
+          build-args: |
+            skip=spotify
+            test=true
           context: .
           file: test/e2e/debian.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}
@@ -167,10 +171,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        run: >-
-          docker build --no-cache --build-arg test=true --file
-          test/e2e/fedora.dockerfile --tag docker.io/scruffaluff/bootware:fedora
-          --platform linux/${{ inputs.platform || 'amd64' }} .
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            skip=spotify
+            test=true
+          context: .
+          file: test/e2e/fedora.dockerfile
+          platforms: linux/${{ inputs.platform || 'amd64' }}
+          push: false
+          tags: docker.io/scruffaluff/bootware:fedora
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
@@ -269,7 +279,9 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          build-args: test=true
+          build-args: |
+            skip=spotify
+            test=true
           context: .
           file: test/e2e/ubuntu.dockerfile
           platforms: linux/${{ inputs.platform || 'amd64' }}

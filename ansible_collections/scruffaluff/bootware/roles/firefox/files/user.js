@@ -87,11 +87,11 @@ user_pref("dom.private-attribution.submission.enabled", false);
 user_pref("dom.security.https_only_mode", true);
 // Remove Pocket extension from Firefox.
 user_pref("extensions.pocket.enabled", false);
-// Disable autofilling addresses.
+// Disable auto filling addresses.
 user_pref("extensions.formautofill.addresses.enabled", false);
-// Disable autofilling credit cards.
+// Disable auto filling credit cards.
 user_pref("extensions.formautofill.creditCards.enabled", false);
-// Disable notifications about webpages entering fullscreen mode.
+// Disable notifications about web pages entering fullscreen mode.
 user_pref("full-screen-api.warning.timeout", 0);
 // Disable audio and video autoplay.
 user_pref("media.autoplay.blocking_policy", 2);
@@ -101,8 +101,10 @@ user_pref("mousewheel.with_alt.action", 0);
 user_pref("mousewheel.with_control.action", 0);
 // Allow DRM protected content to be played.
 user_pref("media.eme.enabled", true);
-// Prevent "add application for mailto links" popup.
+// Prevent "add application for mail to links" popup.
 user_pref("network.protocol-handler.external.mailto", false);
+// Set default zoom for PDFs to page width.
+user_pref("pdfjs.defaultZoomValue", "page-width");
 // Prevent sites from asking to send notifications.
 user_pref("permissions.default.desktop-notification", 2);
 // Prevent sites from asking for location.
@@ -115,9 +117,9 @@ user_pref("privacy.clearOnShutdown.downloads", true);
 user_pref("privacy.donottrackheader.enabled", true);
 // Send sites no consent message to selling personal information.
 user_pref("privacy.globalprivacycontrol.enabled", true);
-// Strip tracking querys from URLs.
+// Strip tracking queries from URLs.
 user_pref("privacy.query_stripping.enabled", true);
-// Strip tracking querys from URLs.
+// Strip tracking queries from URLs.
 user_pref("privacy.query_stripping.enabled.pbmode", true);
 // Prevent trackers from following browsing habits.
 user_pref("privacy.trackingprotection.enabled", true);

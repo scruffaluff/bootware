@@ -387,6 +387,10 @@
   { "name": "super" },
   { "name": "system" },
   {
+    "name": "tailscale",
+    "tests": ["tailscale --version"]
+  },
+  {
     "name": "termshark",
     "tests": {
       "freebsd": ["tshark --version"],
