@@ -15,24 +15,24 @@
   },
   {
     "bindings": {
-      "ctrl-p": "file_finder::Toggle",
+      "ctrl-shift-o": "file_finder::Toggle",
       "ctrl-shift-t": "terminal_panel::ToggleFocus"
     },
     "context": "Workspace"
   },
   {
     "bindings": {
-      "ctrl-;": "editor::MoveRight",
+      "alt-;": "editor::MoveRight",
+      "alt-j": "editor::MoveLeft",
+      "alt-k": "editor::MoveDown",
+      "alt-l": "editor::MoveUp",
       "ctrl-a": "editor::MoveToBeginningOfLine",
-      "ctrl-d": "editor::DeleteToPreviousWordStart",
+      "ctrl-down": "editor::AddSelectionBelow",
       "ctrl-e": "editor::MoveToEndOfLine",
-      "ctrl-j": "editor::MoveLeft",
-      "ctrl-k": "editor::MoveDown",
-      "ctrl-l": "editor::MoveUp",
-      "ctrl-p": "file_finder::Toggle",
-      "ctrl-shift-down": "editor::AddSelectionBelow",
-      "ctrl-shift-up": "editor::AddSelectionAbove",
-      "ctrl-shift-s": "pane::SplitRight",
+      "ctrl-p": null,
+      "ctrl-shift-s": "terminal_panel::ToggleFocus",
+      "ctrl-up": "editor::AddSelectionAbove",
+      "ctrl-w": "editor::DeleteToPreviousWordStart",
       "shift-left": "editor::MoveToPreviousWordStart",
       "shift-right": "editor::MoveToNextWordEnd"
     },
@@ -43,7 +43,8 @@
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
       "ctrl-shift-t": "workspace::NewTerminal",
-      "ctrl-shift-n": "pane::SplitRight"
+      "ctrl-shift-n": "pane::SplitRight",
+      "ctrl-shift-s": "terminal_panel::ToggleFocus"
     },
     "context": "Terminal"
   }

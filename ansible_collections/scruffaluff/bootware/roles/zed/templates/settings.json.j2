@@ -5,7 +5,7 @@
 {
   "agent": {
     "button": false,
-    "version": "1"
+    "enabled": false
   },
   "auto_install_extensions": {
     "solarized": true
@@ -38,7 +38,7 @@
     "shell": {
       "with_arguments": {
         "args": ["--login"],
-        "program": "{{ user_shell }}"
+        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"
       }
     },
     "toolbar": {
