@@ -30,16 +30,9 @@
     "tests": ["bash --version"]
   },
   { "name": "bat", "tests": ["bat --version"] },
-  { "name": "beekeeper" },
-  {
-    "name": "bitwig",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": {
-      "linux": ["flatpak info com.bitwig.BitwigStudio"],
-      "macos": [],
-      "windows": []
-    }
-  },
+  { "name": "beekeeper", "skip": [{ "os": "freebsd" }] },
+  { "name": "bitwarden", "skip": [{ "os": "freebsd" }] },
+  { "name": "bitwig", "skip": [{ "os": "freebsd" }] },
   { "name": "build" },
   { "name": "bottom", "tests": ["btm --version"] },
   { "name": "caffeine" },
@@ -385,10 +378,12 @@
   },
   { "name": "starship", "tests": ["starship --version"] },
   { "name": "super" },
-  { "name": "system" },
   {
     "name": "tailscale",
-    "tests": ["tailscale --version"]
+    "tests": {
+      "default": ["tailscale --version"],
+      "macos": ["which tailscale"]
+    }
   },
   {
     "name": "termshark",

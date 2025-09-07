@@ -211,6 +211,19 @@
         - database
         - never
 
+    - name: Install Bitwarden password manager
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - bitwarden
+            - desktop
+            - never
+        name: scruffaluff.bootware.bitwarden
+      tags:
+        - bitwarden
+        - desktop
+        - never
+
     - name: Install Bitwig Studio audio workstation
       ansible.builtin.include_role:
         apply:

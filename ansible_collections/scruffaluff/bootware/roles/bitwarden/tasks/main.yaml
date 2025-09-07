@@ -1,0 +1,25 @@
+---
+- name: Install Bitwarden for Linux
+  become: true
+  community.general.flatpak:
+    name: com.bitwarden.desktop
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Bitwarden for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: bitwarden
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Bitwarden for Windows
+  community.windows.win_scoop:
+    global: true
+    name: bitwarden
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
