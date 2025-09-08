@@ -6,6 +6,7 @@
 docstring-code-format = true
 
 [lint]
+flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
   "COM",    # Rule conflicts with formatter.

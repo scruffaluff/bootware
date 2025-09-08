@@ -5,7 +5,7 @@
 
 # Load interactive functions from pdbrc module.
 import os, pdb, sys
-sys.path.append(os.path.expanduser("~/.config"))
+sys.path.append(os.path.expanduser("~/.config/pyrc"))
 import pdbrc
 pdbrc.setup(pdb.Pdb)
 sys.excepthook = pdbrc.break_exception(pdb)
