@@ -84,6 +84,8 @@
       src: pdbrc
     - dest: .config/pyrc/pdbrc.py
       src: pdbrc.py
+    - dest: .config/pyrc/sitecustomize.py
+      src: sitecustomize.py
   tags:
     - config
   when: ansible_system != "Win32NT"
@@ -98,6 +100,8 @@
       src: pdbrc
     - dest: .config\pyrc\pdbrc.py
       src: pdbrc.py
+    - dest: .config\pyrc\sitecustomize.py
+      src: sitecustomize.py
   tags:
     - config
   when: ansible_system == "Win32NT"
