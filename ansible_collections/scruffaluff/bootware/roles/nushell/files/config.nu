@@ -651,8 +651,6 @@ alias pdb = python3 -m pdb
 $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
-# Add custom modules to Python package path.
-$env.PYTHONPATH = $"($env.HOME)/.config/pyrc"
 
 # Make numerical compute libraries findable for MacOS.
 if $nu.os-info.name == "macos" {

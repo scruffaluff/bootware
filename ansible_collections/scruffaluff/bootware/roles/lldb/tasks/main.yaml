@@ -88,7 +88,7 @@
         dest: "{{ scoop_path }}\\apps\\llvm\\current\\bin"
         src: "{{ ansible_env.TEMP }}\\lldb\\python_embed.zip"
 
-- name: Create Python settings directory for Unix
+- name: Create LLDB settings directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
@@ -100,7 +100,7 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Create Python settings directory for Windows
+- name: Create LLDB settings directory for Windows
   ansible.windows.win_file:
     path: "{{ user_home }}\\.config\\pyrc"
     state: directory

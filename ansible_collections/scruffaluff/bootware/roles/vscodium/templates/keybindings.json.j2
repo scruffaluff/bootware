@@ -61,6 +61,7 @@
   { "command": "-workbench.action.debug.stop", "key": "shift+f5" },
   { "command": "-workbench.action.files.saveAs", "key": "{{ vscodium_ctrl_key }}+shift+s" },
   { "command": "-workbench.action.files.saveLocalFile", "key": "{{ vscodium_ctrl_key }}+shift+s" },
+  { "command": "-workbench.action.gotoLine", "key": "ctrl+g" },
   { "command": "-workbench.action.gotoSymbol", "key": "{{ vscodium_ctrl_key }}+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
   { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
@@ -273,13 +274,23 @@
     "when": "editorTextFocus"
   },
   {
+    "command": "editor.action.marker.nextInFiles",
+    "key": "ctrl+g d",
+    "when": "editorFocus"
+  },
+  {
+    "command": "editor.action.marker.prevInFiles",
+    "key": "ctrl+g shift+d",
+    "when": "editorFocus"
+  },
+  {
     "command": "editor.action.peekDefinition",
     "key": "{{ vscodium_ctrl_key }}+k p",
     "when": "editorTextFocus && editorHasDefinitionProvider"
   },
   {
     "command": "editor.action.revealDefinition",
-    "key": "{{ vscodium_ctrl_key }}+k d",
+    "key": "ctrl+g t",
     "when": "editorTextFocus && editorHasDefinitionProvider"
   },
   {
@@ -331,12 +342,12 @@
   },
   {
     "command": "workbench.action.compareEditor.nextChange",
-    "key": "ctrl+shift+]",
+    "key": "ctrl+g g",
     "when": "textCompareEditorVisible"
   },
   {
     "command": "workbench.action.compareEditor.previousChange",
-    "key": "ctrl+shift+[",
+    "key": "ctrl+g shift+g",
     "when": "textCompareEditorVisible"
   },
   {
@@ -411,6 +422,7 @@
     "key": "ctrl+shift+s",
     "when": "panelFocus"
   },
+  { "command": "workbench.action.gotoLine", "key": "ctrl+g l" },
   {
     "command": "workbench.action.moveEditorLeftInGroup",
     "key": "ctrl+shift+left",
@@ -423,12 +435,12 @@
   },
   {
     "command": "workbench.action.navigateBack",
-    "key": "ctrl+[",
+    "key": "ctrl+g p",
     "when": "!panelFocus"
   },
   {
     "command": "workbench.action.navigateForward",
-    "key": "ctrl+]",
+    "key": "ctrl+g n",
     "when": "!panelFocus"
   },
   {

@@ -3,7 +3,6 @@ python_applications:
   - "jinja2-cli[toml,yaml,xml]"
   - "black[jupyter]"
   - cookiecutter
-  - debugpy
   - jupytext
   - name: poetry
     extras:
