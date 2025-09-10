@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import importlib
 import inspect
 import itertools
 import os
@@ -126,48 +125,6 @@ def do_edit(self: Pdb, line: str) -> None:
         error(exception)
     else:
         edit(object_, curframe(self))
-
-
-def do_listen(self: Pdb, line: str) -> None:
-    """listen [address]
-
-    Print object catalog with default pager.
-    """  # noqa: D403, D415
-    line = line.strip()
-    if line:
-        try:
-            port = int(line)
-            host = "localhost"
-        except ValueError:
-            host, port_ = line.split(":")
-            port = int(port_)
-    else:
-        host, port = "localhost", 5678
-
-    os.environ["DEBUGPY_LOG_DIR"] = str(Path(__file__).parent / "log")
-    packages = str(Path(__file__).parent / "package")
-    sys.path.append(packages)
-    try:
-        debugpy = importlib.import_module("debugpy")
-    except ModuleNotFoundError:
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                "--target",
-                packages,
-                "debugpy",
-            ],
-            check=True,
-        )
-        debugpy = importlib.import_module("debugpy")
-
-    debugpy.listen((host, port))
-    print(f"Debugpy session listening at {host}:{port}.")
-    debugpy.wait_for_client()
-    self.set_quit()
 
 
 def do_nextlist(self: Pdb, _arg: str) -> int:
@@ -376,7 +333,6 @@ def setup(pdb: Pdb) -> None:
     pdb.complete_doc = pdb._complete_expression  # type: ignore[attr-defined]
     pdb.do_edit = do_edit  # type: ignore[attr-defined]
     pdb.complete_edit = pdb._complete_expression  # type: ignore[attr-defined]
-    pdb.do_listen = do_listen  # type: ignore[attr-defined]
     pdb.do_nl = do_nextlist  # type: ignore[attr-defined]
     pdb.do_nextlist = do_nextlist  # type: ignore[attr-defined]
     pdb.do_sh = do_shell  # type: ignore[attr-defined]

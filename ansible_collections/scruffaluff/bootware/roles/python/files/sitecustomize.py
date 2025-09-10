@@ -39,4 +39,4 @@ def debugadapt(host: str = "localhost", port: int = 5678) -> None:
 
 
 # Export utilities as Python builtins.
-builtins.debugadapt = debugadapt
+builtins.debugadapt = debugadapt  # type: ignore[attr-defined]

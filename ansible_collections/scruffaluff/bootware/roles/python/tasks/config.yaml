@@ -64,7 +64,7 @@
 
 - name: Create Python settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}\\AppData\\Roaming\\pyrc"
+    path: "{{ user_home }}\\.config\\pyrc"
     state: directory
   tags:
     - config
