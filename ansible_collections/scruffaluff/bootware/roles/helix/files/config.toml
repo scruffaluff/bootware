@@ -80,6 +80,21 @@ C-up = "copy_selection_on_prev_line"
 S-left = "move_prev_long_word_start"
 S-right = "move_next_long_word_end"
 
+[keys.insert.C-g]
+";" = "jump_forward"
+D = "goto_declaration"
+d = "goto_definition"
+G	= "goto_prev_change"
+g = "goto_next_change"
+i = "goto_implementation"
+j = "jump_backward"
+k = "goto_previous_buffer"
+l = "goto_next_buffer"
+p = "goto_next_diag"
+P = "goto_prev_diag"
+r = "goto_reference"
+t = "goto_type_definition"
+
 [keys.normal]
 ";" = "move_char_right"
 "\ue001" = "code_action"
@@ -123,6 +138,21 @@ C-up = "copy_selection_on_prev_line"
 S-left = "move_prev_long_word_start"
 S-right = "move_next_long_word_end"
 
+[keys.normal.C-g]
+";" = "jump_forward"
+D = "goto_declaration"
+d = "goto_definition"
+G	= "goto_prev_change"
+g = "goto_next_change"
+i = "goto_implementation"
+j = "jump_backward"
+k = "goto_previous_buffer"
+l = "goto_next_buffer"
+p = "goto_next_diag"
+P = "goto_prev_diag"
+r = "goto_reference"
+t = "goto_type_definition"
+
 [keys.normal.C-w]
 ";" = "jump_view_right"
 ":" = "swap_view_right"
@@ -152,11 +182,15 @@ C-v = "no_op"
 C-w = "no_op"
 
 [keys.normal.g]
-";" = "goto_line_end_newline"
+";" = "jump_forward"
 h = "no_op"
-j = "goto_line_start"
+j = "jump_backward"
 k = "goto_previous_buffer"
 l = "goto_next_buffer"
+t = "goto_type_definition"
+n = "no_op"
+p = "no_op"
+y = "no_op"
 
 [keys.normal.space]
 A-c = "no_op"
@@ -234,6 +268,21 @@ C-up = "copy_selection_on_prev_line"
 S-left = "extend_prev_long_word_start"
 S-right = "extend_next_long_word_end"
 
+[keys.select.C-g]
+";" = "jump_forward"
+D = "goto_declaration"
+d = "goto_definition"
+G	= "goto_prev_change"
+g = "goto_next_change"
+i = "goto_implementation"
+j = "jump_backward"
+k = "goto_previous_buffer"
+l = "goto_next_buffer"
+p = "goto_next_diag"
+P = "goto_prev_diag"
+r = "goto_reference"
+t = "goto_type_definition"
+
 [keys.select.C-w]
 ";" = "jump_view_right"
 ":" = "swap_view_right"
@@ -263,9 +312,9 @@ C-v = "no_op"
 C-w = "no_op"
 
 [keys.select.g]
-";" = "goto_line_end_newline"
+";" = "jump_forward"
 h = "no_op"
-j = "goto_line_start"
+j = "jump_backward"
 k = "goto_previous_buffer"
 l = "goto_next_buffer"
 

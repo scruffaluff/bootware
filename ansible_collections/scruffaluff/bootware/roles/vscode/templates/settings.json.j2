@@ -114,6 +114,16 @@
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
+  "launch": {
+    "configurations": [
+      {
+        "connect": { "host": "localhost", "port": 5678 },
+        "name": "Python Debugger: Attach",
+        "request": "attach",
+        "type": "debugpy"
+      }
+    ]
+  },
   "lldb.launch.initCommands": ["command source ~/.lldbinit"],
   "lldb.launch.sourceLanguages": ["rust"],
   "lldb.suppressUpdateNotifications": true,
@@ -127,6 +137,7 @@
   "notebook.stickyScroll.enabled": false,
   "prettier.resolveGlobalModules": true,
   "python.analysis.autoImportCompletions": false,
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
   "python.languageServer": "Pylance",
   "python.terminal.activateEnvironment": false,
   "python.testing.promptToConfigure": false,

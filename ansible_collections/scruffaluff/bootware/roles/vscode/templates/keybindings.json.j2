@@ -61,6 +61,7 @@
   { "command": "-workbench.action.debug.stop", "key": "shift+f5" },
   { "command": "-workbench.action.files.saveAs", "key": "{{ vscode_ctrl_key }}+shift+s" },
   { "command": "-workbench.action.files.saveLocalFile", "key": "{{ vscode_ctrl_key }}+shift+s" },
+  { "command": "-workbench.action.gotoLine", "key": "ctrl+g" },
   { "command": "-workbench.action.gotoSymbol", "key": "{{ vscode_ctrl_key }}+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
   { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
@@ -253,6 +254,21 @@
     "when": "editorTextFocus"
   },
   {
+    "command": "editor.action.goToImplementation",
+    "key": "ctrl+g i",
+    "when": "editorTextFocus && editorHasImplementationProvider"
+  },
+  {
+    "command": "editor.action.goToReferences",
+    "key": "ctrl+g r",
+    "when": "editorTextFocus && editorHasReferenceProvider && !inReferenceSearchEditor && !isInEmbeddedEditor"
+  },
+  {
+    "command": "editor.action.goToTypeDefinition",
+    "key": "ctrl+g t",
+    "when": "editorTextFocus"
+  },
+  {
     "command": "editor.action.insertCursorAbove",
     "key": "ctrl+up",
     "when": "editorTextFocus"
@@ -273,13 +289,23 @@
     "when": "editorTextFocus"
   },
   {
-    "command": "editor.action.peekDefinition",
-    "key": "{{ vscode_ctrl_key }}+k p",
-    "when": "editorTextFocus && editorHasDefinitionProvider"
+    "command": "editor.action.marker.nextInFiles",
+    "key": "ctrl+g p",
+    "when": "editorFocus"
   },
   {
+    "command": "editor.action.marker.prevInFiles",
+    "key": "ctrl+g shift+p",
+    "when": "editorFocus"
+  },
+  {
+    "command": "editor.action.revealDeclaration",
+    "key": "ctrl+g shift+d",
+    "when": "editorTextFocus"
+  }
+  {
     "command": "editor.action.revealDefinition",
-    "key": "{{ vscode_ctrl_key }}+k d",
+    "key": "ctrl+g d",
     "when": "editorTextFocus && editorHasDefinitionProvider"
   },
   {
@@ -331,7 +357,17 @@
   },
   {
     "command": "workbench.action.compareEditor.nextChange",
+    "key": "ctrl+g g",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.nextChange",
     "key": "ctrl+shift+]",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.previousChange",
+    "key": "ctrl+g shift+g",
     "when": "textCompareEditorVisible"
   },
   {
@@ -411,6 +447,7 @@
     "key": "ctrl+shift+s",
     "when": "panelFocus"
   },
+  { "command": "workbench.action.gotoLine", "key": "ctrl+g l" },
   {
     "command": "workbench.action.moveEditorLeftInGroup",
     "key": "ctrl+shift+left",
@@ -427,8 +464,18 @@
     "when": "!panelFocus"
   },
   {
+    "command": "workbench.action.navigateBack",
+    "key": "ctrl+g j",
+    "when": "!panelFocus"
+  },
+  {
     "command": "workbench.action.navigateForward",
     "key": "ctrl+]",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.navigateForward",
+    "key": "ctrl+g ;",
     "when": "!panelFocus"
   },
   {
