@@ -590,7 +590,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
-        Set-PSReadLineKeyHandler -Chord "`u{e005}" -Function MenuComplete
+        Set-PSReadLineKeyHandler -Chord "`u{e006}" -Function MenuComplete
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.

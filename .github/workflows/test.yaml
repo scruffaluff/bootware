@@ -349,14 +349,16 @@ jobs:
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Docker role is skipped since it is already installed. VSCodium role is
-      # skipped as of 08/22/2025 since it fails to install extensions.
+      # Docker role is skipped since it is already installed. Fzf role is
+      # skipped as of 09/20/2025 since the PSFzf TSL certificate is expired.
+      # VSCodium role is skipped as of 08/22/2025 since it fails to install
+      # extensions.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip docker,vscodium --tags all,never
+          bootware bootstrap --dev --no-setup --retries 3 --skip docker,fzf,vscodium --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
@@ -369,7 +371,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,lldb,rust,vscodium windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,fzf,lldb,rust,vscodium windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

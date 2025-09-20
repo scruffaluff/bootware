@@ -1,27 +1,141 @@
 {
-  "app:go-back": [{ "key": "[", "modifiers": ["Ctrl"] }],
-  "app:go-forward": [{ "key": "]", "modifiers": ["Ctrl"] }],
-  "command-palette:open": [{ "key": "P", "modifiers": ["Ctrl", "Shift"] }],
+  "app:go-back": [
+    {
+      "key": "[",
+      "modifiers": ["Ctrl"]
+    }
+  ],
+  "app:go-forward": [
+    {
+      "key": "]",
+      "modifiers": ["Ctrl"]
+    }
+  ],
+  "app:open-help": [
+    {
+      "key": "H",
+      "modifiers": ["Mod", "Shift"]
+    }
+  ],
+  "app:toggle-right-sidebar": [
+    {
+      "key": "R",
+      "modifiers": ["Mod", "Shift"]
+    }
+  ],
+  "command-palette:open": [
+    {
+      "key": "P",
+      "modifiers": ["Ctrl", "Shift"]
+    }
+  ],
   "editor:add-cursor-above": [
-    { "key": "ArrowUp", "modifiers": ["Ctrl", "Shift"] }
+    {
+      "key": "ArrowUp",
+      "modifiers": ["Mod"]
+    }
   ],
   "editor:add-cursor-below": [
-    { "key": "ArrowDown", "modifiers": ["Ctrl", "Shift"] }
+    {
+      "key": "ArrowDown",
+      "modifiers": ["Mod"]
+    }
   ],
-  "editor:open-search": [{ "key": "F", "modifiers": ["Ctrl"] }],
-  "editor:open-search-replace": [{ "key": "H", "modifiers": ["Ctrl"] }],
-  "editor:toggle-comments": [{ "key": "/", "modifiers": ["Ctrl"] }],
-  "file-explorer:new-file": [{ "key": "N", "modifiers": ["Ctrl", "Shift"] }],
+  "editor:insert-link": [],
+  "editor:open-search": [
+    {
+      "key": "F",
+      "modifiers": ["Ctrl"]
+    }
+  ],
+  "editor:open-search-replace": [
+    {
+      "key": "H",
+      "modifiers": ["Ctrl"]
+    }
+  ],
+  "editor:swap-line-down": [
+    {
+      "key": "ArrowUp",
+      "modifiers": ["Alt"]
+    }
+  ],
+  "editor:swap-line-up": [
+    {
+      "key": "ArrowDown",
+      "modifiers": ["Alt"]
+    }
+  ],
+  "editor:toggle-checklist-status": [],
+  "editor:toggle-comments": [
+    {
+      "key": "/",
+      "modifiers": ["Ctrl"]
+    }
+  ],
+  "file-explorer:new-file": [
+    {
+      "key": "N",
+      "modifiers": ["Ctrl", "Shift"]
+    }
+  ],
   "file-explorer:new-file-in-new-pane": [],
-  "file-explorer:open": [{ "key": "A", "modifiers": ["Ctrl", "Shift"] }],
-  "global-search:open": [{ "key": "F", "modifiers": ["Ctrl", "Shift"] }],
+  "file-explorer:open": [
+    {
+      "key": "A",
+      "modifiers": ["Ctrl", "Shift"]
+    }
+  ],
+  "global-search:open": [
+    {
+      "key": "F",
+      "modifiers": ["Ctrl", "Shift"]
+    }
+  ],
+  "switcher:open": [
+    {
+      "key": "O",
+      "modifiers": ["Mod", "Shift"]
+    }
+  ],
+  "workspace:close": [
+    {
+      "key": "W",
+      "modifiers": ["Mod", "Shift"]
+    }
+  ],
+  "workspace:close-window": [],
+  "workspace:new-tab": [
+    {
+      "key": "T",
+      "modifiers": ["Mod", "Shift"]
+    }
+  ],
   "workspace:next-tab": [
-    { "key": ";", "modifiers": ["Ctrl", "Shift"] },
-    { "key": "Tab", "modifiers": ["Ctrl"] }
+    {
+      "key": ";",
+      "modifiers": ["Ctrl", "Shift"]
+    },
+    {
+      "key": "Tab",
+      "modifiers": ["Ctrl"]
+    }
   ],
   "workspace:previous-tab": [
-    { "key": "J", "modifiers": ["Ctrl", "Shift"] },
-    { "key": "Tab", "modifiers": ["Ctrl", "Shift"] }
+    {
+      "key": "J",
+      "modifiers": ["Ctrl", "Shift"]
+    },
+    {
+      "key": "Tab",
+      "modifiers": ["Ctrl", "Shift"]
+    }
   ],
-  "workspace:split-vertical": [{ "key": "S", "modifiers": ["Ctrl", "Shift"] }]
+  "workspace:split-vertical": [
+    {
+      "key": "\\",
+      "modifiers": ["Mod"]
+    }
+  ],
+  "workspace:undo-close-pane": []
 }

@@ -77,6 +77,7 @@
     "key": "ctrl+tab"
   },
   { "command": "-workbench.action.reopenClosedEditor", "key": "{{ vscode_ctrl_key }}+shift+t" },
+  { "command": "-workbench.action.splitEditor", "key": "ctrl+\\" },
   { "command": "-workbench.action.switchWindow", "key": "ctrl+w" },
   { "command": "-workbench.action.tasks.build", "key": "{{ vscode_ctrl_key }}+shift+b" },
   {
@@ -302,7 +303,7 @@
     "command": "editor.action.revealDeclaration",
     "key": "ctrl+g shift+d",
     "when": "editorTextFocus"
-  }
+  },
   {
     "command": "editor.action.revealDefinition",
     "key": "ctrl+g d",
@@ -564,6 +565,11 @@
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
   {
+    "command": "workbench.action.splitEditor",
+    "key": "ctrl+\\",
+    "when": "editorFocus"
+  },
+  {
     "command": "workbench.action.terminal.focus",
     "key": "ctrl+shift+s",
     "when": "!panelFocus && activePanel != 'workbench.panel.repl'"
@@ -636,11 +642,17 @@
   {
     "args": { "text": "\ue005" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+i",
+    "key": "ctrl+\\",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue006" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+i",
+    "when": "terminalFocus"
+  },
+  {
+    "args": { "text": "\ue007" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+j",
     "when": "terminalFocus"

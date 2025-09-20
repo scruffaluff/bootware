@@ -518,7 +518,7 @@ if test -n $tty
         bind \ez undo
         bind \ue002 'prevd; commandline --function repaint'
         bind \ue003 'nextd; commandline --function repaint'
-        bind \ue005 complete
+        bind \ue006 complete
     end
 
     # Set solarized light theme variables based on

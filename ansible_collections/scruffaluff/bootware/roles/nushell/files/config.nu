@@ -836,7 +836,7 @@ $env.config = {
                     { send: menunext }
                 ]
             }
-            keycode: char_ue005
+            keycode: char_ue006
             mode: [emacs vi_insert vi_normal]
             modifier: none
         }
