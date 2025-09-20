@@ -350,6 +350,9 @@ bootstrap() {
     log 'Enter your user account password when prompted.'
   fi
 
+  # Disable Python buffering to ensure realtime stdout for MacOS.
+  export PYTHONUNBUFFERED='1'
+
   # Do not quote extra_args. Otherwise extra_args will be interpreted as a
   # single argument.
   # shellcheck disable=SC2086

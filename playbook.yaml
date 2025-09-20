@@ -1704,7 +1704,7 @@
         - super
         - wsl
 
-    - name: Install Spotify music player
+    - name: Install Tailscale virtual private network
       ansible.builtin.include_role:
         apply:
           tags:

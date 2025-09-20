@@ -640,8 +640,8 @@ if ($"($env.HOME)/.ls_colors" | path exists) {
 # Add Jupyter Lab alias.
 def --wrapped jupylab [...args] {
     (
-        uv --quiet tool run --from jupyterlab --with bokeh,numpy,polars,scipy
-        jupyter-lab ...$args
+        uv --quiet tool run --from jupyterlab --with
+        bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab ...$args
     )
 }
 # Add Python debugger alias.
@@ -686,11 +686,11 @@ prepend-paths $"($env.HOME)/.cargo/bin"
 
 # Shell settings.
 
-# Add cat an alias for Windows support.
+# Add alias for cat with Windows support.
 alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
-# Make Rsync use progress bars and skip ignored files.
+# Add alias for Rsync with progress bars and ignored files.
 alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 
 # Configure prompt if interactive.

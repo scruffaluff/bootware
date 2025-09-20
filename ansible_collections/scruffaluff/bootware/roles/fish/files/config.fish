@@ -443,7 +443,7 @@ end
 
 # Add Jupyter Lab alias.
 alias jupylab \
-    'uv --quiet tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab'
+    'uv --quiet tool run --from jupyterlab --with bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 
@@ -486,9 +486,11 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Shell settings.
 
+# Add alias for make directory with parents.
+alias mkdir 'mkdir -p'
 # Add alias for remove by force.
 alias rmf 'rm -fr'
-# Make Rsync use progress bars and skip ignored files.
+# Add alias for Rsync with progress bars and ignored files.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''

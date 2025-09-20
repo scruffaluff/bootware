@@ -73,7 +73,6 @@ vscodium_extensions:
   - vitest.explorer
   - vscode-icons-team.vscode-icons
   - vue.volar
-  - waderyan.gitblame
 vscodium_font_size: "{{ font_size }}"
 vscodium_style: true
 vscodium_path: "{{ vscodium_path_[ansible_system] }}"
@@ -93,5 +92,4 @@ vscodium_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
-  - waderyan.gitblame
 vscodium_system: "{{ vscodium_system_.get(ansible_system, 'linux') }}"
