@@ -109,10 +109,11 @@
 - name: Set owner of Python files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\{{ item }}"
+    recurse: true
     user: "{{ user_id }}"
   loop:
     - .pdbrc
-    - .config\pdbrc
+    - .config\pyrc
   tags:
     - config
   when: ansible_system == "Win32NT"

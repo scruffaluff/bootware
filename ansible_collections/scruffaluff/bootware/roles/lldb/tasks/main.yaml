@@ -143,10 +143,11 @@
 - name: Set owner of LLDB files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\{{ item }}"
+    recurse: true
     user: "{{ user_id }}"
   loop:
     - .lldbinit
-    - .config\lldbinit.py
+    - .config\pyrc
   tags:
     - config
   when: ansible_system == "Win32NT"

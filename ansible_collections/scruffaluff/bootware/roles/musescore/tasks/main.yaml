@@ -8,22 +8,12 @@
   when: ansible_system == "FreeBSD"
 
 - name: Install MuseScore for Linux
-  ansible.builtin.package:
-    name: musescore
-  become: true
-  ignore_errors: true
-  register: musescore_linux
-  tags:
-    - install
-  when: ansible_system == "Linux"
-
-- name: Install MuseScore for Linux
   become: true
   community.general.flatpak:
     name: org.musescore.MuseScore
   tags:
     - install
-  when: ansible_system == "Linux" and musescore_linux is failed
+  when: ansible_system == "Linux"
 
 - name: Install MuseScore for MacOS
   community.general.homebrew_cask:
@@ -40,4 +30,63 @@
     name: musescore
   tags:
     - install
+  when: ansible_system == "Win32NT"
+
+- name: Change MuseScore settings for MacOS
+  ansible.builtin.script: macos.sh
+  become: true
+  become_user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_system == "Darwin"
+
+- name: Create MuseScore settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ musescore_config }}"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system not in ["Darwin", "Win32NT"]
+
+- name: Copy MuseScore settings files for Unix
+  ansible.builtin.template:
+    dest: "{{ musescore_config }}/MuseScore4.ini"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: musescore.ini.j2
+  become: true
+  tags:
+    - config
+  when: ansible_system not in ["Darwin", "Win32NT"]
+
+- name: Create MuseScore settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ musescore_config }}"
+    state: directory
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy MuseScore settings files for Windows
+  ansible.windows.win_template:
+    dest: "{{ musescore_config }}\\MuseScore4.ini"
+    force: true
+    src: musescore.ini.j2
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set owner of MuseScore files for Windows
+  ansible.windows.win_owner:
+    path: "{{ musescore_config }}"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
   when: ansible_system == "Win32NT"
