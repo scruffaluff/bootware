@@ -16,7 +16,7 @@
   { "command": "-editor.action.blockComment", "key": "ctrl+shift+a" },
   { "command": "-editor.action.deleteLines", "key": "{{ vscodium_ctrl_key }}+shift+k" },
   { "command": "-editor.action.goToBottomHover", "key": "{{ vscodium_ctrl_key }}+down" },
-  { "command": "-editor.action.goToTopHover", "key": "{{ vscodium_ctrl_key }}+up"},
+  { "command": "-editor.action.goToTopHover", "key": "{{ vscodium_ctrl_key }}+up" },
   { "command": "-editor.action.selectAll", "key": "{{ vscodium_ctrl_key }}+a" },
   { "command": "-editor.action.selectHighlights", "key": "{{ vscodium_ctrl_key }}+shift+l" },
   { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
@@ -92,7 +92,9 @@
   { "command": "-workbench.action.terminal.focus", "key": "{{ vscodium_ctrl_key }}+down" },
   { "command": "-workbench.action.terminal.focusFind", "key": "{{ vscodium_ctrl_key }}+f" },
   { "command": "-workbench.action.terminal.focusNextPane", "key": "alt+down" },
-  { "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up" },
+  {
+    "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up"
+  },
   { 
     "command": "-workbench.action.terminal.goToRecentDirectory",
     "key": "{{ vscodium_ctrl_key }}+g"
@@ -153,8 +155,8 @@
     "key": "ctrl+f",
     "when": "editorFocus || editorIsOpen"
   },
-  { 
-    "command": "bookmarks.listFromAllFiles", 
+  {
+    "command": "bookmarks.listFromAllFiles",
     "key": "{{ vscodium_ctrl_key }}+k l"
   },
   {
@@ -202,7 +204,7 @@
     "key": "alt+l",
     "when": "textInputFocus && !terminalFocus"
   },
-  { 
+  {
     "command": "cursorWordLeft",
     "key": "shift+left",
     "when": "textInputFocus"
@@ -227,12 +229,12 @@
     "key": "ctrl+right",
     "when": "textInputFocus"
   },
-  { 
+  {
     "command": "cursorWordRight",
     "key": "shift+right",
     "when": "textInputFocus"
   },
-  { 
+  {
     "command": "deleteAllLeft",
     "key": "ctrl+u",
     "when": "textInputFocus && !terminalFocus"
@@ -336,6 +338,51 @@
   },
   { "command": "redo", "key": "ctrl+shift+z" },
   {
+    "args": {
+      "commands": [
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.focusActiveEditorGroup"
+      ],
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && !panelVisible"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.togglePanel",
+        "workbench.action.focusActiveEditorGroup"
+      ],
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && !sideBarVisible"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.togglePanel",
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.focusActiveEditorGroup"
+      ],
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && (panelVisible && sideBarVisible) || (!panelVisible && !sideBarVisible)"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.toggleMaximizedPanel",
+        "workbench.action.toggleSidebarVisibility"
+      ],
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "panelFocus && (panelMaximized && !sideBarVisible) || (!panelMaximized && sideBarVisible)"
+  },
+  {
     "command": "selectNextSuggestion",
     "key": "ctrl+n",
     "when": "suggestWidgetVisible"
@@ -351,7 +398,7 @@
     "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
   },
   { "command": "undo", "key": "ctrl+z" },
-  { 
+  {
     "command": "workbench.action.closeActiveEditor",
     "key": "ctrl+shift+w",
     "when": "!panelFocus"
@@ -550,14 +597,14 @@
   },
   {
     "command": "workbench.action.quickOpen",
-    "key": "ctrl+shift+o",
+    "key": "ctrl+shift+o"
   },
   { 
     "command": "workbench.action.quickOpenSelectNext",
     "key": "ctrl+n",
     "when": "inQuickOpen"
   },
-  { 
+  {
     "command": "workbench.action.quickOpenSelectPrevious",
     "key": "ctrl+p",
     "when": "inQuickOpen"
@@ -664,7 +711,8 @@
   },
   {
     "command": "workbench.action.toggleMaximizedPanel",
-    "key": "ctrl+shift+m"
+    "key": "ctrl+shift+m",
+    "when": "panelFocus && !panelMaximized && !sideBarVisible"
   },
   { "command": "workbench.action.togglePanel", "key": "ctrl+shift+x" },
   {

@@ -63,6 +63,28 @@
     - config
   when: ansible_system == "Win32NT"
 
+- name: Create Firefox user preferences directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "750"
+    owner: "{{ user_id }}"
+    path: "{{ item }}"
+    state: directory
+  become: true
+  loop: "{{ firefox_profiles_unix['paths'] }}"
+  tags:
+    - config
+  when: ansible_system != "Win32NT" and user_id != "root"
+
+- name: Create Firefox user preferences directory for Windows
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: directory
+  loop: "{{ firefox_profiles_windows['paths'] }}"
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
 - name: Copy Firefox user preferences for Unix
   ansible.builtin.copy:
     dest: "{{ item }}/user.js"
