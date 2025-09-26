@@ -95,7 +95,7 @@
   {
     "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up"
   },
-  { 
+  {
     "command": "-workbench.action.terminal.goToRecentDirectory",
     "key": "{{ vscode_ctrl_key }}+g"
   },
@@ -342,22 +342,22 @@
       "commands": [
         "workbench.action.toggleSidebarVisibility",
         "workbench.action.focusActiveEditorGroup"
-      ],
+      ]
     },
     "command": "runCommands",
     "key": "ctrl+shift+m",
-    "when": "editorFocus && !panelVisible"
+    "when": "editorFocus && !panelVisible && sideBarVisible"
   },
   {
     "args": {
       "commands": [
         "workbench.action.togglePanel",
         "workbench.action.focusActiveEditorGroup"
-      ],
+      ]
     },
     "command": "runCommands",
     "key": "ctrl+shift+m",
-    "when": "editorFocus && !sideBarVisible"
+    "when": "editorFocus && panelVisible && !sideBarVisible"
   },
   {
     "args": {
@@ -365,22 +365,22 @@
         "workbench.action.togglePanel",
         "workbench.action.toggleSidebarVisibility",
         "workbench.action.focusActiveEditorGroup"
-      ],
+      ]
     },
     "command": "runCommands",
     "key": "ctrl+shift+m",
-    "when": "editorFocus && (panelVisible && sideBarVisible) || (!panelVisible && !sideBarVisible)"
+    "when": "editorFocus && ((panelVisible && sideBarVisible) || (!panelVisible && !sideBarVisible))"
   },
   {
     "args": {
       "commands": [
         "workbench.action.toggleMaximizedPanel",
         "workbench.action.toggleSidebarVisibility"
-      ],
+      ]
     },
     "command": "runCommands",
     "key": "ctrl+shift+m",
-    "when": "panelFocus && (panelMaximized && !sideBarVisible) || (!panelMaximized && sideBarVisible)"
+    "when": "panelFocus && ((panelMaximized && !sideBarVisible) || (!panelMaximized && sideBarVisible))"
   },
   {
     "command": "selectNextSuggestion",
@@ -599,7 +599,7 @@
     "command": "workbench.action.quickOpen",
     "key": "ctrl+shift+o"
   },
-  { 
+  {
     "command": "workbench.action.quickOpenSelectNext",
     "key": "ctrl+n",
     "when": "inQuickOpen"
