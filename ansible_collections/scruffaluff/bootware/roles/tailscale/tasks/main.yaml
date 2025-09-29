@@ -17,10 +17,10 @@
   when: ansible_system == "Linux"
 
 - name: Install Tailscale for MacOS
-  community.general.homebrew_cask:
-    accept_external_apps: true
-    name: tailscale-app
-    state: present
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: tailscale
   tags:
     - install
   when: ansible_system == "Darwin"

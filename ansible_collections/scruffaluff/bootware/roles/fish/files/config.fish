@@ -467,6 +467,9 @@ end
 # Make Rclone skip modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
 set --export RCLONE_NO_UPDATE_MODTIME true
+# Make Rclone show progress bars.
+set --export RCLONE_PROGRESS true
+set --export RCLONE_STATS_ONE_LINE true
 
 # Ripgrep settings.
 

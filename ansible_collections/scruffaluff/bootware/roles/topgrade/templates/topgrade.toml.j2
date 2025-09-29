@@ -3,6 +3,9 @@
 # For more infomation, visit
 # https://github.com/topgrade-rs/topgrade/blob/main/config.example.toml.
 
+[brew]
+greedy_cask = true
+
 [misc]
 assume_yes = true
 {% if ansible_system in ["Darwin", "Win32NT"] %}

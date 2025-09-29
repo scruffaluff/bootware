@@ -378,6 +378,9 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 # Make Rclone skip modifcation time updates.
 $Env:RCLONE_NO_UPDATE_DIR_MODTIME = 'true'
 $Env:RCLONE_NO_UPDATE_MODTIME = 'true'
+# Make Rclone show progress bars.
+$Env:RCLONE_PROGRESS = 'true'
+$Env:RCLONE_STATS_ONE_LINE = 'true'
 
 # Ripgrep settings.
 

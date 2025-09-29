@@ -667,6 +667,9 @@ if $nu.os-info.name == "macos" {
 # Make Rclone skip modifcation time updates.
 $env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
 $env.RCLONE_NO_UPDATE_MODTIME = "true"
+# Make Rclone show progress bars.
+$env.RCLONE_PROGRESS = "true"
+$env.RCLONE_STATS_ONE_LINE = "true"
 
 # Ripgrep settings.
 
