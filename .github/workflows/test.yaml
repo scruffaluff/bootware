@@ -296,11 +296,11 @@ jobs:
     name: Test bootstrapping software for Windows
     if: >-
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'windows' }}
-    runs-on: windows-latest
+    runs-on: windows-2025
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: Vampire/setup-wsl@v3
+      - uses: Vampire/setup-wsl@v6
         with:
           # Setup WSL uses the version 11 for Debian which has an out of date
           # version of Ansible.
