@@ -116,22 +116,25 @@ function fzf-path-widget
     set --function path
     set --function cwd "$PWD"
     set --function token (commandline --current-token)
+    set --function argument \
+        (string replace '~' "$HOME" (string trim --chars '"\'' $token))
 
-    # Build Fzf search path from current token.
+    # Build Fzf search from current token or exit early if invalid.
+    set --function query
     set --function search_dir
-    if test -n $token
-        set search_dir \
-            (string replace '~' "$HOME" (string trim --chars '"\'' $token))
-    else
+    if test -z $argument
         set search_dir .
-    end
-
-    # Exit early if search path is invalid or change Fzf execution directory.
-    if not test -d $search_dir
+    else if test -d $argument
+        set search_dir $argument
+    else if test -d (path dirname $argument)
+        set query (path basename $argument)
+        set search dir (path dirname $argument)
+    else
         return
     end
+
     cd $search_dir
-    set path (fzf --scheme path --walker file,dir,follow,hidden)
+    set path (fzf --query $query --scheme path --walker file,dir,follow,hidden)
     cd $cwd
 
     # Exit early if no selection was made, i.e. user sigkilled Fzf.
@@ -464,6 +467,8 @@ end
 
 # Rclone settings.
 
+# Make Rclone create empty intermediate folders.
+set --export RCLONE_CREATE_EMPTY_SRC_DIRS true
 # Make Rclone skip modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
 set --export RCLONE_NO_UPDATE_MODTIME true

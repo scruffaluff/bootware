@@ -319,7 +319,9 @@ def carapace-complete [spans: list<string>] {
 def --wrapped chown [...args: string] {
     match $nu.os-info.name {
         "windows" => {
-            let args_ = $args | where {|arg| not ($arg in ["-R", "--recursive"]) }
+            let args_ = $args | where {|arg|
+                not ($arg in ["-R", "--recursive"])
+            }
             let length = $args_ | length
 
             if $length < 2 {
@@ -345,16 +347,43 @@ def edit-history [] {
 
 # Complete commandline argument with Fish.
 def fish-complete [spans: list<string>] {
-    fish --command $"complete '--do-complete=($spans | str replace --all "'" "\\'" | str join ' ')'"
+    let expands = $spans | each {|span|
+        let span = $span | str trim --char "`" | str trim --char "'"
+        | str trim --char '"'
+
+        if ($span | path exists) and ($span | str starts-with "~") {
+            let path = $span | path expand --no-symlink
+            { full: $path short: $span }
+        } else {
+            { full: null short: $span }
+        }
+    }
+    
+    let command = $expands | each {|expand|
+        if $expand.full == null { $expand.short } else { $"'($expand.full)'" }
+    } | str replace --all "'" "\\'" | str replace --all "`" "\\'" | str join ' '
+    let expands = $expands | where {|expand| $expand.full != null }
+
+    fish --command $"complete '--do-complete=($command)'"
     | from tsv --flexible --noheaders --no-infer
     | rename value description
     | update value {|row|
-        let value = $row.value
-        let need_quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"] | any {$in in $value}
-        if ($need_quote and ($value | path exists)) {
-            let expanded_path = if ($value starts-with ~) {$value | path expand --no-symlink} else {$value}
-            $'"($expanded_path | str replace --all "\"" "\\\"")"'
-        } else {$value}
+        mut value = $row.value
+        for expand in $expands {
+            if $expand.full != null and ($value | str starts-with $expand.full) {
+                $value = $value | str replace $expand.full $expand.short
+                break
+            }
+        }
+        let value = $value
+        
+        let quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"]
+        | any {$in in $value}
+        if $quote {
+            $'`($value | str trim --char "`" | str replace --all "`" "\\`")`'
+        } else {
+            $value
+        }
     }
 }
 
@@ -392,22 +421,34 @@ def fzf-path-widget [] {
         $sum = $sum + ($part | str length)
         if $cursor <= $sum {
             if ($part | str trim | is-not-empty) {
-                $token = $part
+                $token = $part | str trim --char '"' | str trim --char "'"
+                | str trim --char "`"
             }
             break
         }
         $index += 1
     }
 
-    # Build Fzf search path from current token.
-    let search_dir = if ($token | is-empty) { "." } else { $token }
-
-    # Exit early if search path is invalid or change Fzf execution directory.
-    if ($token | path type) != "dir" {
+    # Build Fzf search from current token or exit early if invalid.
+    mut search = { dir: "" query: "" }
+    if ($token | is-empty) {
+        $search.dir = "."
+    } else if ($token | path type) == "dir" {
+        $search.dir = $token
+    } else if ($token | path dirname | path type) == "dir" {
+        $search = {
+            dir: ($token | path dirname) query: ($token | path basename)
+        }
+        $token = $search.dir
+    } else {
         return
     }
-    cd $search_dir
-    let path = fzf --scheme "path" --walker "file,dir,follow,hidden"
+
+    cd $search.dir
+    let path = (
+        fzf --query $search.query --scheme "path" --walker
+        "file,dir,follow,hidden"
+    )
 
     # Exit early if no selection was made, i.e. user sigkilled Fzf.
     if ($path | is-empty) {
@@ -664,6 +705,8 @@ if $nu.os-info.name == "macos" {
 
 # Rclone settings.
 
+# Make Rclone create empty intermediate folders.
+$env.RCLONE_CREATE_EMPTY_SRC_DIRS = "true"
 # Make Rclone skip modifcation time updates.
 $env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
 $env.RCLONE_NO_UPDATE_MODTIME = "true"

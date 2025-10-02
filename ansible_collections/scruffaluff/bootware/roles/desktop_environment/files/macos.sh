@@ -18,10 +18,6 @@ defaults write com.apple.controlcenter \
 
 # Desktop settings.
 
-# Disable personalized advertisements.
-defaults write com.apple.AdPlatforms allowApplePersonalizedAdvertising -bool false
-# Disable Apple intelligence report.
-defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 # Prevent Stage Manager from hiding windows after a left click on desktop.
@@ -37,9 +33,14 @@ defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 # Speed up window resize animations.
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+# Remove widgets from desktop.
+defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+defaults write com.apple.WindowManager StandardHideWidgets -bool true
 
 # Dock and menu bar settings.
 
+# Show menu bar background.
+defaults write 'Apple Global Domain' SLSMenuBarUseBlurredAppearance -bool true
 # Set dock to auto hide.
 defaults write com.apple.dock autohide -bool true
 # Set dock auto hide delay time to 0 seconds.
@@ -274,6 +275,8 @@ defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
 
 # Privacy settings.
 
+# Disable personalized advertisements.
+defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
 # Disable Apple intelligence report.
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Disable Apple intelligence.

@@ -298,6 +298,21 @@ jobs:
       ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'windows' }}
     runs-on: windows-2025
     steps:
+      - name: Free disk space
+        run: |
+          $Folders = @(
+            'C:\Program Files\Microsoft Visual Studio',
+            'C:\Program Files (x86)\Android',
+            'C:\Julia',
+            'C:\Miniconda',
+            'C:\Strawberry'
+          )
+          foreach ($Folder in $Folders) {
+            if (Test-Path $Folder) {
+              Remove-Item -Force -Recurse -Path $Folder
+            }
+          }
+        shell: powershell
       - name: Checkout repository
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v6
@@ -336,13 +351,13 @@ jobs:
         run: Get-NetFirewallRule -All
         shell: powershell
       # IdentitiesOnly is required to avoid an infinite wait for user password
-      # input if the private key is rejected. Localhost is used since
-      # Vampire/setup-wsl@v2 sets up WSL version 1.
+      # input if the private key is rejected.
       - name: Test SSH connection from WSL to Windows host
-        run: >-
-          wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o
-          StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
-          $Env:UserName@127.0.0.1 dir
+        run: |
+          $IpAddr = wsl sh -c 'ip route show | grep -i default | awk ''{print \$3}'''
+          wsl ssh -vvv -i '$HOME/.ssh/bootware' -o IdentitiesOnly=yes -o `
+            StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
+            $Env:UserName@$IpAddr dir
         shell: powershell
       - name: Copy Bootware configuration file
         run: |
