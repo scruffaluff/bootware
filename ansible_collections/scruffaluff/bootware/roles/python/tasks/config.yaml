@@ -1,42 +1,83 @@
 ---
-- name: Create Jupyter settings directory for Unix
+- name: Create Jupyter settings directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.jupyter"
+    path: "{{ user_home }}/.jupyter/lab/user-settings/@jupyterlab/{{ item }}"
     state: directory
   become: true
+  loop:
+    - apputils-extension
+    - filebrowser-extension
+    - shortcuts-extension
+    - terminal-extension
   tags:
     - config
   when: ansible_system != "Win32NT"
 
 - name: Create Jupyter settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}\\.jupyter"
+    path: >-
+      {{ user_home }}\\.jupyter\\lab\\user-settings\\@jupyterlab\\{{ item }}
     state: directory
+  loop:
+    - apputils-extension
+    - filebrowser-extension
+    - shortcuts-extension
+    - terminal-extension
   tags:
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy Jupyter settings file for Unix
+- name: Copy Jupyter settings files for Unix
   ansible.builtin.copy:
-    dest: "{{ user_home }}/.jupyter/jupyter_notebook_config.py"
+    dest: "{{ user_home }}/.jupyter/{{ item.dest }}"
     force: true
     group: "{{ group_id }}"
     mode: "640"
     owner: "{{ user_id }}"
-    src: jupyter_notebook_config.py
+    src: "{{ item.src }}"
   become: true
+  loop:
+    - dest: jupyter_notebook_config.py
+      src: jupyter_notebook_config.py
+    - dest: >-
+        lab/user-settings/@jupyterlab/apputils-extension/notification.jupyterlab-settings
+      src: jupyterlab_notification.json
+    - dest: >-
+        lab/user-settings/@jupyterlab/filebrowser-extension/browser.jupyterlab-settings
+      src: jupyterlab_filebrowser.json
+    - dest: >-
+        lab/user-settings/@jupyterlab/shortcuts-extension/shortcuts.jupyterlab-settings
+      src: jupyterlab_shortcuts.json
+    - dest: >-
+        lab/user-settings/@jupyterlab/terminal-extension/plugin.jupyterlab-settings
+      src: jupyterlab_terminal.json
   tags:
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Jupyter settings file for Windows
+- name: Copy Jupyter settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ user_home }}\\.jupyter\\jupyter_notebook_config.py"
+    dest: "{{ user_home }}\\.jupyter\\{{ item.dest }}"
     force: true
-    src: jupyter_notebook_config.py
+    src: "{{ item.src }}"
+  loop:
+    - dest: jupyter_notebook_config.py
+      src: jupyter_notebook_config.py
+    - dest: >-
+        lab\user-settings\@jupyterlab\apputils-extension\notification.jupyterlab-settings
+      src: jupyterlab_notification.json
+    - dest: >-
+        lab\user-settings\@jupyterlab\filebrowser-extension\browser.jupyterlab-settings
+      src: jupyterlab_filebrowser.json
+    - dest: >-
+        lab\user-settings\@jupyterlab\shortcuts-extension\shortcuts.jupyterlab-settings
+      src: jupyterlab_shortcuts.json
+    - dest: >-
+        lab\user-settings\@jupyterlab\terminal-extension\plugin.jupyterlab-settings
+      src: jupyterlab_terminal.json
   tags:
     - config
   when: ansible_system == "Win32NT"

@@ -143,6 +143,7 @@
   { "command": "-workbench.action.toggleSidebarVisibility", "key": "{{ vscodium_ctrl_key }}+b" },
   { "command": "-workbench.actions.view.problems", "key": "{{ vscodium_ctrl_key }}+shift+m" },
   { "command": "-workbench.debug.action.toggleRepl", "key": "{{ vscodium_ctrl_key }}+shift+y" },
+  { "command": "-workbench.debug.panel.action.clearReplAction", "key": "{{ vscodium_ctrl_key }}+k" },
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscodium_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "{{ vscodium_ctrl_key }}+shift+x" },
   {
@@ -444,6 +445,21 @@
     "when": "inDebugMode && focusedSessionIsAttach"
   },
   {
+    "command": "workbench.action.debug.nextConsole",
+    "key": "ctrl+shift+;",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.action.debug.pause",
+    "key": "alt+p",
+    "when": "debugState == 'running' && !terminalFocus"
+  },
+  {
+    "command": "workbench.action.debug.prevConsole",
+    "key": "ctrl+shift+j",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
+  },
+  {
     "command": "workbench.action.debug.restart",
     "key": "alt+r",
     "when": "inDebugMode"
@@ -718,6 +734,11 @@
   {
     "command": "workbench.action.toggleSidebarVisibility",
     "key": "ctrl+shift+a"
+  },
+  {
+    "command": "workbench.debug.panel.action.clearReplAction",
+    "key": "ctrl+l",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
   },
   {
     "command": "workbench.panel.repl.view.focus",

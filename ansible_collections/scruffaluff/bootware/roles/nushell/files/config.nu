@@ -676,6 +676,11 @@ if ($"($env.HOME)/.ls_colors" | path exists) {
     $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
 }
 
+# Miniserve settings.
+
+# Serve index file if available.
+$env.MINISERVE_INDEX = "index.html"
+
 # Python settings.
 
 # Add Jupyter Lab alias.

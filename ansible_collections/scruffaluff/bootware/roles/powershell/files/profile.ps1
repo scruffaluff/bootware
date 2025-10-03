@@ -341,6 +341,11 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
+# Miniserve settings.
+
+# Serve index file if available.
+$Env:MINISERVE_INDEX = 'index.html'
+
 # Podman settings.
 
 # Load Podman completions if interactive and available.

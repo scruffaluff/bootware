@@ -120,7 +120,7 @@ function fzf-path-widget
         (string replace '~' "$HOME" (string trim --chars '"\'' $token))
 
     # Build Fzf search from current token or exit early if invalid.
-    set --function query
+    set --function query ''
     set --function search_dir
     if test -z $argument
         set search_dir .
@@ -128,7 +128,7 @@ function fzf-path-widget
         set search_dir $argument
     else if test -d (path dirname $argument)
         set query (path basename $argument)
-        set search dir (path dirname $argument)
+        set search_dir (path dirname $argument)
     else
         return
     end
@@ -441,6 +441,11 @@ end
 if type -q lsd
     alias ls lsd
 end
+
+# Miniserve settings.
+
+# Serve index file if available.
+set --export MINISERVE_INDEX index.html
 
 # Python settings.
 

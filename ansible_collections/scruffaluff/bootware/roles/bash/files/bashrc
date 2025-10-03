@@ -338,6 +338,11 @@ if [[ -x "$(command -v lsd)" ]]; then
   alias ls='lsd'
 fi
 
+# Miniserve settings.
+
+# Serve index file if available.
+export MINISERVE_INDEX='index.html'
+
 # Python settings.
 
 # Add Jupyter Lab alias.
