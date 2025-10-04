@@ -120,21 +120,17 @@ function fzf-path-widget
         (string replace '~' "$HOME" (string trim --chars '"\'' $token))
 
     # Build Fzf search from current token or exit early if invalid.
-    set --function query ''
     set --function search_dir
     if test -z $argument
         set search_dir .
     else if test -d $argument
         set search_dir $argument
-    else if test -d (path dirname $argument)
-        set query (path basename $argument)
-        set search_dir (path dirname $argument)
     else
         return
     end
 
     cd $search_dir
-    set path (fzf --query $query --scheme path --walker file,dir,follow,hidden)
+    set path (fzf --scheme path --walker file,dir,follow,hidden)
     cd $cwd
 
     # Exit early if no selection was made, i.e. user sigkilled Fzf.

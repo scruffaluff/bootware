@@ -435,13 +435,22 @@ def fzf-path-widget [] {
         $search.dir = "."
     } else if ($token | path type) == "dir" {
         $search.dir = $token
-    } else if ($token | path dirname | path type) == "dir" {
-        $search = {
-            dir: ($token | path dirname) query: ($token | path basename)
-        }
-        $token = $search.dir
     } else {
-        return
+        let prefix = $token | parse --regex '^(\s*)' | get capture0.0
+        let parent = $token | path dirname
+        let query = $token | path basename
+
+        # Separate logic for empty case is required since Nushell types an empty
+        # string as a directory.
+        if ($parent | is-empty) {
+            $search = {dir: "." query: $query}
+            $token = $prefix
+        } else if ($parent | path type) == "dir" {
+            $search = {dir: $parent query: $query}
+            $token = $"($prefix)($parent)"
+        } else {
+            return
+        }
     }
 
     cd $search.dir
@@ -462,7 +471,7 @@ def fzf-path-widget [] {
     }
 
     # Insert selection and update cursor to end of path.
-    if ($token | is-empty) {
+        if ($token | is-empty) {
         commandline edit --insert $path
         commandline set-cursor --end
     } else {

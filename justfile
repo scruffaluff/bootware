@@ -15,10 +15,6 @@ export PSModulePath := if os() == "windows" {
   env("PSModulePath", "")
 } else { "" }
 
-# List all commands available in justfile.
-list:
-  @just --list
-
 # Execute CI workflow commands.
 ci: setup lint doc test-unit
 
@@ -91,6 +87,11 @@ lint:
     data/config/script_analyzer.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings \
     data/config/script_analyzer.psd1
+
+# List all commands available in justfile.
+[default]
+list:
+  @just --list
 
 # Install development dependencies.
 [unix]

@@ -138,6 +138,22 @@ def do_nextlist(self: Pdb, _arg: str) -> int:
     return 1
 
 
+def do_nushell(self: Pdb, line: str) -> None:
+    """nu(shell) [command]
+
+    Execute Nushell command or start interactive Nushell on empty command.
+    """  # noqa: D415
+    arguments = []
+    for argument in map(os.path.expanduser, shlex.split(line.strip())):
+        try:
+            object_ = parse_expr(self, argument)
+        except Exception:  # noqa: PERF203
+            arguments.append(argument)
+        else:
+            arguments.append(str(object_))
+    nushell(arguments, curframe(self))
+
+
 def do_shell(self: Pdb, line: str) -> None:
     """sh(ell) [command]
 
@@ -287,6 +303,20 @@ def name(object_: Any) -> str:
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
 
 
+def nushell(command: list[str], frame: Any = None) -> None:
+    """Execute shell command or start interactive shell on empty command."""
+    command = (
+        ["nu", "--commands", " ".join(command).replace("'", "\\'")]
+        if command
+        else ["nu"]
+    )
+    folder = Path(frame.f_code.co_filename).parent if frame else None
+    try:
+        subprocess.run(command, check=True, cwd=folder)
+    except (CalledProcessError, FileNotFoundError) as exception:
+        error(exception)
+
+
 def page(text: str) -> None:
     """Print string with default pager."""
     pager = os.environ.get("PAGER", "less")
@@ -335,6 +365,8 @@ def setup(pdb: Pdb) -> None:
     pdb.complete_edit = pdb._complete_expression  # type: ignore[attr-defined]
     pdb.do_nl = do_nextlist  # type: ignore[attr-defined]
     pdb.do_nextlist = do_nextlist  # type: ignore[attr-defined]
+    pdb.do_nu = do_nushell  # type: ignore[attr-defined]
+    pdb.do_nushell = do_nushell  # type: ignore[attr-defined]
     pdb.do_sh = do_shell  # type: ignore[attr-defined]
     pdb.do_shell = do_shell  # type: ignore[attr-defined]
     pdb.do_sl = do_steplist  # type: ignore[attr-defined]
