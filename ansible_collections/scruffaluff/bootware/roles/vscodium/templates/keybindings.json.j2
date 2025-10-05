@@ -728,7 +728,7 @@
   {
     "command": "workbench.action.toggleMaximizedPanel",
     "key": "ctrl+shift+m",
-    "when": "panelFocus && !panelMaximized && !sideBarVisible"
+    "when": "panelFocus && ((panelMaximized && sideBarVisible) || (!panelMaximized && !sideBarVisible))"
   },
   { "command": "workbench.action.togglePanel", "key": "ctrl+shift+x" },
   {

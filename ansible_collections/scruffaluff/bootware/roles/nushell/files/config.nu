@@ -471,15 +471,14 @@ def fzf-path-widget [] {
     }
 
     # Insert selection and update cursor to end of path.
-        if ($token | is-empty) {
-        commandline edit --insert $path
-        commandline set-cursor --end
+    let diff = ($full_path | str length) - ($token | str length)
+    let edit = if ($parts | is-empty) {
+        $full_path
     } else {
-        let diff = ($full_path | str length) - ($token | str length)
-        let edit = $parts | update $index $full_path | str join
-        commandline edit --replace $edit
-        commandline set-cursor ($sum + $diff)
+        $parts | update $index $full_path | str join " "
     }
+    commandline edit --replace $edit
+    commandline set-cursor ($sum + $diff)
 }
 
 # Prepend existing directories that are not in the system path.
