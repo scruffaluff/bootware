@@ -148,6 +148,7 @@
   { "name": "ignore" },
   { "name": "image_magick", "tests": ["magick --version"] },
   { "name": "jq", "tests": ["jq --version"] },
+  { "name": "jujutsu", "tests": ["jj --version", "jjui --version"] },
   { "name": "just", "tests": ["just --version"] },
   { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
   { "name": "k9s", "tests": ["k9s version"] },

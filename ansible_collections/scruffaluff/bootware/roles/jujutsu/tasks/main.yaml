@@ -1,0 +1,127 @@
+---
+- name: Install Jujutsu for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - jjui
+      - jujutsu
+  tags:
+    - install
+  when: ansible_system == "FreeBSD"
+
+- name: Get latest Jujutsu version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/jj.json
+  register: jujutsu_formula
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Get latest JJUI version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/jjui.json
+  register: jjui_formula
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Create Jujutsu temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: jujutsu_temp
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Set Jujutsu temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ jujutsu_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Download Jujutsu for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ jujutsu_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/jj-vcs/jj/releases/download/v{{
+      jujutsu_formula.json.versions.stable }}/jj-v{{
+      jujutsu_formula.json.versions.stable }}-{{ jujutsu_arch
+      }}-unknown-linux-musl.tar.gz
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Jujutsu for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/jj
+    force: true
+    mode: "755"
+    remote_src: true
+    src: "{{ jujutsu_temp.path }}/jj"
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Download JJUI for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ jujutsu_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/idursun/jjui/releases/download/v{{
+      jjui_formula.json.versions.stable }}/jjui-{{
+      jjui_formula.json.versions.stable }}-linux-{{ system_architecture }}.zip
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install JJUI for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/jjui
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ jujutsu_temp.path }}/jjui-{{ jjui_formula.json.versions.stable
+      }}-linux-{{ system_architecture }}
+  become: true
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Jujutsu for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name:
+      - jj
+      - jjui
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Jujutsu for Windows
+  community.windows.win_scoop:
+    global: true
+    name: jj
+  tags:
+    - install
+  when: ansible_system == "Win32NT"
+
+- name: Remove Jujutsu temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ jujutsu_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_system == "Linux"
