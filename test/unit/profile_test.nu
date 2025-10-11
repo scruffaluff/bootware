@@ -84,7 +84,10 @@ def "fzf-path-widget cases" [] {
                 open --raw $"($env.NUTEST_TMPDIR)/commandline_setcursor"
                 | into int
             )
-            line: (open --raw $"($env.NUTEST_TMPDIR)/commandline_edit")
+            line: (
+                open --raw $"($env.NUTEST_TMPDIR)/commandline_edit"
+                | str replace "\\" "/"
+            )
         }
         assert equal $actual $case.expected
     }
