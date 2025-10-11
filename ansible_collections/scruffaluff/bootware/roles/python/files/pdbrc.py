@@ -16,11 +16,20 @@ import tempfile
 import traceback
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import TYPE_CHECKING, Any, Callable, cast
+from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
     from pdb import Pdb
     from types import FrameType, TracebackType
+
+
+class Expr(NamedTuple):
+    """Command line expression with location."""
+
+    expr: str
+    start: int
+    stop: int
 
 
 def break_exception(self: Pdb) -> Callable:
@@ -141,33 +150,20 @@ def do_nextlist(self: Pdb, _arg: str) -> int:
 def do_nushell(self: Pdb, line: str) -> None:
     """nu(shell) [command]
 
-    Execute Nushell command or start interactive Nushell on empty command.
+    Execute Nushell expression or start interactive session.
     """  # noqa: D415
-    arguments = []
-    for argument in map(os.path.expanduser, shlex.split(line.strip())):
-        try:
-            object_ = parse_expr(self, argument)
-        except Exception:  # noqa: PERF203
-            arguments.append(argument)
-        else:
-            arguments.append(str(object_))
-    nushell(arguments, curframe(self))
+    line_ = parse_exprs(self, line)
+    nushell(line_)
 
 
 def do_shell(self: Pdb, line: str) -> None:
     """sh(ell) [command]
 
-    Execute shell command or start interactive shell on empty command.
+    Execute command or start interactive default shell session.
     """  # noqa: D415
-    arguments = []
-    for argument in map(os.path.expanduser, shlex.split(line.strip())):
-        try:
-            object_ = parse_expr(self, argument)
-        except Exception:  # noqa: PERF203
-            arguments.append(argument)
-        else:
-            arguments.append(str(object_))
-    shell(arguments, curframe(self))
+    line_ = parse_exprs(self, line)
+    arguments = list(map(os.path.expanduser, shlex.split(line_.strip())))
+    shell(arguments)
 
 
 def do_steplist(self: Pdb, arg: str) -> int:
@@ -236,20 +232,19 @@ def error(message: str | Exception) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
-# TODO: Break function into smaller components.
-def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
-    """Find Python variables starting with % or expression surrounded by '%{}'."""
+def find_exprs(line: str) -> Iterator[Expr]:  # noqa: C901
+    """Find Python variables starting with % or expressions surrounded by %{}."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
     index = 0
-    length = len(input_)
+    length = len(line)
     stack: list[int] = []
     variable: list[int] = []
 
     while index < length:
-        character = input_[index]
+        character = line[index]
         try:
-            next_ = input_[index + 1]
+            next_ = line[index + 1]
         except IndexError:
             next_ = None
 
@@ -257,7 +252,8 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             if character == "}":
                 start = stack.pop()
                 if not stack:
-                    return start - 2, index + 1, input_[start:index]
+                    stack = []
+                    yield Expr(line[start:index], start - 2, index + 1)
             elif character == "{":
                 stack.append(index + 1)
             index += 1
@@ -265,7 +261,7 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             index += 1
             if next_ not in chars:
                 start = variable.pop()
-                return start - 1, index, input_[start:index]
+                yield Expr(line[start:index], start - 1, index)
         elif character == "%" and next_ == "{":
             stack.append(index + 2)
             index += 2
@@ -274,7 +270,6 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             index += 1
         else:
             index += 1
-    return length, length, ""
 
 
 def find_source(type_: type) -> tuple[str, int]:
@@ -303,16 +298,11 @@ def name(object_: Any) -> str:
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
 
 
-def nushell(command: list[str], frame: Any = None) -> None:
-    """Execute shell command or start interactive shell on empty command."""
-    command = (
-        ["nu", "--commands", " ".join(command).replace("'", "\\'")]
-        if command
-        else ["nu"]
-    )
-    folder = Path(frame.f_code.co_filename).parent if frame else None
+def nushell(expr: str) -> None:
+    """Execute Nushell expression or start interactive session."""
+    command = ["nu", "--commands", expr] if expr else ["nu"]
     try:
-        subprocess.run(command, check=True, cwd=folder)
+        subprocess.run(command, check=True)
     except (CalledProcessError, FileNotFoundError) as exception:
         error(exception)
 
@@ -344,15 +334,17 @@ def parse(pdb: Pdb, input_: str) -> Any:
     return None
 
 
-def parse_expr(pdb: Pdb, input_: str) -> Any:
+def parse_exprs(pdb: Pdb, line: str) -> str:
     """Parse and possibly execute command line expressions."""
-    while True:
-        start, stop, expr = find_expr(input_)
-        if expr == "":
-            break
-        result = eval(expr, curframe(pdb).f_globals, pdb.curframe_locals)
-        input_ = input_[:start] + str(result) + input_[stop:]
-    return input_
+    offset = 0
+    for expr in find_exprs(line):
+        try:
+            result = str(eval(expr.expr, curframe(pdb).f_globals, pdb.curframe_locals))
+        except Exception:  # noqa: S112
+            continue
+        line = line[: expr.start + offset] + result + line[expr.stop + offset :]
+        offset += len(result) - expr.stop + expr.start
+    return line
 
 
 def setup(pdb: Pdb) -> None:
@@ -373,12 +365,11 @@ def setup(pdb: Pdb) -> None:
     pdb.do_steplist = do_steplist  # type: ignore[attr-defined]
 
 
-def shell(command: list[str], frame: Any = None) -> None:
-    """Execute shell command or start interactive shell on empty command."""
+def shell(command: list[str]) -> None:
+    """Execute command or start interactive default shell session."""
     if not command:
         command = [parent_shell()]
-    folder = Path(frame.f_code.co_filename).parent if frame else None
     try:
-        subprocess.run(command, check=True, cwd=folder)
+        subprocess.run(command, check=True)
     except (CalledProcessError, FileNotFoundError) as exception:
         error(exception)

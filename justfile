@@ -16,7 +16,7 @@ export PSModulePath := if os() == "windows" {
 } else { "" }
 
 # Execute CI workflow commands.
-ci: setup lint doc test-shell test-nushell
+ci: setup lint doc test-shell test-nushell test-python
 
 # Build distribution packages.
 [script("nu")]
@@ -240,7 +240,7 @@ setup:
   }
 
 # Run test suites.
-test: test-shell test-nushell test-pkg test-e2e
+test: test-shell test-nushell test-python test-pkg test-e2e
 
 # Run end to end test suite.
 test-e2e *args:
@@ -254,6 +254,15 @@ test-nushell *args:
 # Run packaging test suite.
 test-pkg *args:
   nu script/pkg.nu test {{args}}
+
+# Run Python test suite.
+[unix]
+test-python *args:
+  poetry run pytest test {{args}}
+
+# Run Python test suite.
+[windows]
+test-python *args:
 
 # Run unit test suite.
 [unix]

@@ -336,6 +336,7 @@ def --wrapped chown [...args: string] {
     }
 }
 
+# Get the current argument under the cursor.
 def "commandline argument" [] {
     mut breakout = false
     mut chars = []
