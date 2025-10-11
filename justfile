@@ -16,7 +16,7 @@ export PSModulePath := if os() == "windows" {
 } else { "" }
 
 # Execute CI workflow commands.
-ci: setup lint doc test-unit
+ci: setup lint doc test-shell test-nushell test-python
 
 # Build distribution packages.
 [script("nu")]
@@ -130,6 +130,10 @@ setup:
     fi
   done
   bats --version
+  if [ ! -d .vendor/lib/nutest ]; then
+    git clone -c advice.detachedHead=false --branch main \
+      --depth 1 https://github.com/vyadh/nutest.git .vendor/lib/nutest
+  fi
   if ! command -v shellcheck > /dev/null 2>&1; then
     shellcheck_arch="$(uname -m | sed 's/amd64/x86_64/;s/x64/x86_64/;s/arm64/aarch64/')"
     shellcheck_version="$(curl  --fail --location --show-error \
@@ -196,6 +200,10 @@ setup:
     Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
   Write-Output "Nushell $(nu --version)"
+  if (-not (Test-Path -Path .vendor/lib/nutest -PathType Container)) {
+    git clone -c advice.detachedHead=false --branch main --depth 1 `
+      https://github.com/vyadh/nutest.git .vendor/lib/nutest
+  }
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are
@@ -232,24 +240,38 @@ setup:
   }
 
 # Run test suites.
-test: test-unit test-pkg test-e2e
+test: test-shell test-nushell test-python test-pkg test-e2e
 
 # Run end to end test suite.
 test-e2e *args:
   nu script/test_e2e.nu {{args}}
 
+# Run Nushell test suite.
+test-nushell *args:
+  nu --commands \
+    "use .vendor/lib/nutest/nutest run-tests; run-tests --fail --path test {{args}}"
+
 # Run packaging test suite.
 test-pkg *args:
   nu script/pkg.nu test {{args}}
 
+# Run Python test suite.
+[unix]
+test-python *args:
+  poetry run pytest test {{args}}
+
+# Run Python test suite.
+[windows]
+test-python *args:
+
 # Run unit test suite.
 [unix]
-test-unit *args:
+test-shell *args:
   bats --recursive test {{args}}
 
 # Run unit test suite.
 [windows]
-test-unit:
+test-shell:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
 

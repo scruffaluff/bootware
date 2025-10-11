@@ -336,6 +336,55 @@ def --wrapped chown [...args: string] {
     }
 }
 
+# Get the current argument under the cursor.
+def "commandline argument" [] {
+    mut breakout = false
+    mut chars = []
+    let cursor = commandline get-cursor
+    let line = commandline
+    mut match = false
+    mut start = 0
+    mut stop = 0
+    mut whitespace = false
+
+    for elem in ($line | split chars | enumerate) {
+        if $elem.index == $cursor {
+            $match = true
+        }
+
+        if ($elem.item | str trim | is-empty) {
+            if $whitespace {
+                $chars = []
+                $start = $elem.index
+            } else {
+                $whitespace = true
+            }
+
+            if $match {
+                $stop = $elem.index
+                $breakout = true
+                break
+            } 
+        } else {
+            if $whitespace {
+                $whitespace = false
+                $chars = []
+                $start = $elem.index
+            }
+            $chars = [...$chars $elem.item]
+        }
+    }
+
+    if not $breakout {
+        if $whitespace {
+            $chars = []
+            $start = $line | str length
+        }
+        $stop = $line | str length
+    }
+    { start: $start stop: $stop token: ($chars | str join) }
+}
+
 # Open Nushell history file with default editor.
 def edit-history [] {
     if "EDITOR" in $env {
@@ -405,29 +454,8 @@ def fzf-path-widget [] {
     $env.FZF_DEFAULT_COMMAND = $"($env.FZF_CTRL_T_COMMAND?)"
     $env.FZF_DEFAULT_OPTS = $"($env.FZF_DEFAULT_OPTS?) ($env.FZF_CTRL_T_OPTS?)"
 
-    let line = commandline
-    let cursor = commandline get-cursor
-
-    # Split command line arguments while considering quotes.
-    let parts = $line
-    | parse --regex '(".*?"|\'.*?\'|`.*?`|[^\s]+|\s+)' 
-    | get capture0
-
-    # Find argument under the cursor.
-    mut index = 0
-    mut token = ""
-    mut sum = 0
-    for part in $parts {
-        $sum = $sum + ($part | str length)
-        if $cursor <= $sum {
-            if ($part | str trim | is-not-empty) {
-                $token = $part | str trim --char '"' | str trim --char "'"
-                | str trim --char "`"
-            }
-            break
-        }
-        $index += 1
-    }
+    let arg = commandline argument
+    mut token = $arg.token
 
     # Build Fzf search from current token or exit early if invalid.
     mut search = { dir: "" query: "" }
@@ -471,14 +499,15 @@ def fzf-path-widget [] {
     }
 
     # Insert selection and update cursor to end of path.
-    let diff = ($full_path | str length) - ($token | str length)
-    let edit = if ($parts | is-empty) {
-        $full_path
-    } else {
-        $parts | update $index $full_path | str join " "
-    }
+
+    let chars = commandline | split chars
+    let edit = [
+        ...($chars | take $arg.start)
+        ...($full_path | split chars)
+        ...($chars | skip $arg.stop)
+    ] | str join
     commandline edit --replace $edit
-    commandline set-cursor ($sum + $diff)
+    commandline set-cursor ($arg.start + ($full_path | str length))
 }
 
 # Prepend existing directories that are not in the system path.
