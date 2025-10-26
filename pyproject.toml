@@ -58,10 +58,7 @@ yamllint = ">=1.36.0,<2.0.0"
 [tool.pytest.ini_options]
 addopts = "-sv"
 cache_dir = ".vendor/cache/pytest"
-markers = [
-  "e2e: mark as end to end test.",
-  "unit: mark as unit test.",
-]
+markers = ["e2e: mark as end to end test.", "unit: mark as unit test."]
 testpaths = ["test"]
 
 [tool.ruff]
@@ -75,15 +72,16 @@ docstring-code-format = true
 flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
-  "COM",    # Rule conflicts with formatter.
-  "FBT",    # Boolean function arguments are acceptable.
-  "FIX",    # Todo comments are acceptable.
-  "ICN",    # Import abbreviations reduce readability.
-  "INP001", # Project hooks directory is not a package.
-  "S101",   # Assert statements are standard for test functions.
-  "S603",   # Rule warns about using subprocess commands without a solution.
-  "S607",   # Partial paths for process executables is more cross platform.
-  "T201",   # Print statements are acceptable for CLI applications.
-  "TD",     # Todo formatting is excessive for personal projects.
+  "COM",     # Rule conflicts with formatter.
+  "FBT",     # Boolean function arguments are acceptable.
+  "FIX",     # Todo comments are acceptable.
+  "ICN",     # Import abbreviations reduce readability.
+  "INP001",  # Project hooks directory is not a package.
+  "PLR2004", # Constant numerical comparisons are often readable.
+  "S101",    # Assert statements are standard for test functions.
+  "S603",    # Rule warns about using subprocess commands without a solution.
+  "S607",    # Partial paths for process executables is more cross platform.
+  "T201",    # Print statements are acceptable for CLI applications.
+  "TD",      # Todo formatting is excessive for personal projects.
 ]
 select = ["ALL"]
