@@ -101,4 +101,4 @@ scoop_user_path: "{{ user_home }}\\scoop"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_login: "{{ 'powershell' if ansible_system == 'Win32NT' else 'bash' }}"
-user_shell: "{{ 'powershell' if ansible_system == 'Win32NT' else 'fish' }}"
+user_shell: nushell

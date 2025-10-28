@@ -34,39 +34,77 @@ set-option -g status-right "#[fg=colour254,bg=colour64][#S]"
 
 # Keybinding settings to mimic Zellij.
 
-set-option -g prefix C-d
 unbind-key C-b
+set-option -g prefix C-d
 bind-key C-d send-prefix
 
-bind-key -n m-j select-pane -L
-bind-key -n m-k select-pane -D
-bind-key -n m-l select-pane -U
-bind-key -n 'm-;' select-pane -R
-bind-key -n m-n split-window -h -c "#{pane_current_path}"
-bind-key -n m-N split-window -v -c "#{pane_current_path}"
+bind-key -T prefix ';' run-shell '
+  if [ $(tmux display-message -p "#{pane_at_right}") -eq 1 ]; then
+    tmux next-window
+  else
+    tmux select-pane -R
+  fi
+'
+bind-key -T prefix c new-window -c "#{pane_current_path}"
+bind-key -T prefix d detach-client
+bind-key -T prefix f choose-window
+bind-key -T prefix j run-shell '
+  if [ $(tmux display-message -p "#{pane_at_left}") -eq 1 ]; then
+    tmux previous-window
+  else
+    tmux select-pane -L
+  fi
+'
+bind-key -T prefix k select-pane -D
+bind-key -T prefix l select-pane -U
+bind-key -T prefix m resize-pane -Z
+bind-key -T prefix n split-window -h -c "#{pane_current_path}"
+bind-key -T prefix left swap-pane -U
+bind-key -T prefix right swap-pane -D
 
-bind-key -n c-p switch-client -T pane
+bind-key -T prefix p switch-client -T pane
+bind-key -T pane -r ';' select-pane -R
+bind-key -T pane f choose-window 
 bind-key -T pane -r j select-pane -L
 bind-key -T pane -r k select-pane -D
 bind-key -T pane -r l select-pane -U
-bind-key -T pane -r ';' select-pane -R
+bind-key -T pane -r m resize-pane -Z
 bind-key -T pane -r n split-window -h -c "#{pane_current_path}"
+bind-key -T pane p set -g @mode "normal"
 bind-key -T pane x kill-pane
+bind-key -T pane -r left swap-pane -U
+bind-key -T pane -r right swap-pane -D
 
-bind-key -n c-n switch-client -T resize
+bind-key -T prefix r switch-client -T resize
+bind-key -T resize r set -g @mode "normal"
 bind-key -T resize -r left resize-pane -L
 bind-key -T resize -r down resize-pane -D
 bind-key -T resize -r up resize-pane -U
 bind-key -T resize -r right resize-pane -R
 
-bind-key -n c-o switch-client -T session
+bind-key -T prefix o switch-client -T session
 bind-key -T session d detach-client
+bind-key -T session o set -g @mode "normal"
+bind-key -T session q kill-session
 bind-key -T session r command-prompt -I "#W" "rename-session '%%'"
-bind-key -T session w choose-window
+bind-key -T session s choose-session
+bind-key -T session w new-session
 
-bind-key -n c-t switch-client -T tab
+bind-key -T prefix t switch-client -T tab
+bind-key -T tab 1 select-window -t 1
+bind-key -T tab 2 select-window -t 2
+bind-key -T tab 3 select-window -t 3
+bind-key -T tab 4 select-window -t 4
+bind-key -T tab 5 select-window -t 5
+bind-key -T tab 6 select-window -t 6
+bind-key -T tab 7 select-window -t 7
+bind-key -T tab 8 select-window -t 8
+bind-key -T tab 9 select-window -t 9
 bind-key -T tab -r j previous-window
 bind-key -T tab -r ';' next-window
 bind-key -T tab -r n new-window -c "#{pane_current_path}"
 bind-key -T tab r command-prompt -I "#W" "rename-window '%%'"
+bind-key -T tab t set -g @mode "normal"
 bind-key -T tab x kill-window
+bind-key -T tab -r left swap-window -t -1
+bind-key -T tab -r right swap-window -t +1

@@ -8,8 +8,11 @@ def main [
     --skip (-s): string = "none" # Ansible roles to skip
     --tags (-t): string = "all,never" # Ansible roles to keep
 ] {
+    const script = path self
+    cd ($script | path dirname --num-levels 2)
+
     let arch = if ($arch | is-empty) {
-        match $nu.os-info.arch { "aarch64" => "arm64", "x86_64" => "x64" }
+        match $nu.os-info.arch { "aarch64" => "arm64", "x86_64" => "amd64" }
     } else {
         $arch
     }
