@@ -350,6 +350,12 @@ bootstrap() {
     log 'Enter your user account password when prompted.'
   fi
 
+  # Disable Ansible Pull warnings about parsing the local hostname.
+  export ANSIBLE_HOST_PATTERN_MISMATCH='ignore'
+  # Disable file optimizations that can conflict with become operations.
+  export ANSIBLE_PIPELINING='false'
+  # Disable warnings about implicit Python interpreter selection.
+  export ANSIBLE_PYTHON_INTERPRETER='auto_silent'
   # Disable Python buffering to ensure realtime stdout for MacOS.
   export PYTHONUNBUFFERED='1'
 
@@ -362,8 +368,6 @@ bootstrap() {
     --extra-vars "@${config_path}" \
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
-    --extra-vars 'ansible_pipelining=false' \
-    --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
