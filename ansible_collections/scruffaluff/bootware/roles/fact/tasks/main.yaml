@@ -45,6 +45,18 @@
       {{ gnome_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
   when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
 
+- name: Check if systemd is available for Linux
+  ansible.builtin.stat:
+    path: /usr/bin/systemctl
+  register: systemd_stat
+  when: ansible_system == "Linux"
+
+- name: Mark if Systemd is available for Linux
+  ansible.builtin.set_fact:
+    cacheable: true
+    systemd: "{{ systemd_stat.stat.exists }}"
+  when: ansible_system == "Linux"
+
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
     cacheable: true

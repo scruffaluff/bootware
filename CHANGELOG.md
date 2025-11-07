@@ -19,7 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Appimage, Balena Etcher, Htmlq, K3sup, Mdbook, Procs, and Wasm roles.
+- Appimage, Balena Etcher, Htmlq, K3sup, Mdbook, Procs, QSV, and Wasm roles.
 
 ## 0.9.1 = 2025-05-28
 

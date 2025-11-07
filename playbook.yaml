@@ -1399,23 +1399,6 @@
         - qemu
         - vm
 
-    - name: Install Qsv CSV parser
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - qsv
-            - server
-            - sysadmin
-            - wsl
-        name: scruffaluff.bootware.qsv
-      tags:
-        - desktop
-        - qsv
-        - server
-        - sysadmin
-        - wsl
-
     - name: Install RClone cloud storage utility
       ansible.builtin.include_role:
         apply:

@@ -33,7 +33,7 @@ doc:
 format:
   npx prettier --write .
   shfmt --write ansible_collections script src test
-  poetry run ruff format .
+  uv run ruff format .
 
 # Fix code formatting.
 [windows]
@@ -69,9 +69,9 @@ lint:
   for file in ${files}; do
     shellcheck "${file}"
   done
-  poetry run ansible-lint ansible_collections playbook.yaml
-  poetry run ruff check .
-  poetry run mypy .
+  uv run ansible-lint ansible_collections playbook.yaml
+  uv run ruff check .
+  uv run mypy .
 
 # Run code analyses.
 [windows]
@@ -107,20 +107,18 @@ setup:
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
     exit 1
   fi
-  if ! command -v python3 > /dev/null 2>&1; then
-    echo 'Error: Unable to find Python.' >&2
-    echo 'Install Python, https://python.org, manually before continuing.' >&2
-    exit 1
-  fi
   if ! command -v nu > /dev/null 2>&1; then
     curl --fail --location --show-error \
       https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
       --preserve-env --dest .vendor/bin
   fi
   echo "Nushell $(nu --version)"
-  if ! command -v poetry > /dev/null 2>&1; then
-    curl -LSfs https://install.python-poetry.org | python3 -
+  if ! command -v uv > /dev/null 2>&1; then
+    curl --fail --location --show-error \
+      https://scruffaluff.github.io/picoware/install/uv.sh | sh -s -- \
+      --preserve-env --dest .vendor/bin
   fi
+  uv --version
   for spec in 'assert:v2.1.0' 'core:v1.11.1' 'file:v0.4.0' 'support:v0.3.0'; do
     pkg="${spec%:*}"
     tag="${spec#*:}"
@@ -161,19 +159,14 @@ setup:
     chmod 755 .vendor/bin/yq
   fi
   yq --version
-  python3 --version
-  python3 -m venv .venv
-  poetry --version
-  if [ -z "${JUST_INIT:-}" ]; then
-    poetry check --lock
-  fi
-  poetry install
   node --version
   npm --version
   if [ -n "${JUST_INIT:-}" ]; then
     npm install
+    uv sync --locked
   else
     npm ci
+    uv sync
   fi
 
 # Install development dependencies.
@@ -258,7 +251,7 @@ test-pkg *args:
 # Run Python test suite.
 [unix]
 test-python *args:
-  poetry run pytest test {{args}}
+  uv run pytest test {{args}}
 
 # Run Python test suite.
 [windows]

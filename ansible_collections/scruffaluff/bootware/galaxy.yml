@@ -19,12 +19,12 @@ build_ignore:
   - node_modules
   - package-lock.json
   - package.json
-  - poetry.lock
   - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
   - script
   - test
   - tmp
+  - uv.lock
 dependencies:
   chocolatey.chocolatey: ">=1.1.0"
   community.general: ">=4.0.0"
