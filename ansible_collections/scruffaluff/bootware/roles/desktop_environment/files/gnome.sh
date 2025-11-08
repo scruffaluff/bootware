@@ -76,7 +76,7 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Alt>
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Alt><Control>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Alt><Control>Semicolon"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Alt><Control>L"]'
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space","<Alt><Control>Up"]'
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt><Control>Up"]'
 gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
 
 # File extension settings.
@@ -109,3 +109,13 @@ xdg-mime default vlc.desktop video/x-m4v
 xdg-mime default vlc.desktop video/x-ms-wmv
 xdg-mime default vlc.desktop video/x-msvideo
 xdg-mime default vlc.desktop x-matroska
+
+# Search Light extension settings.
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light background-color '(0.99215686321258545, 0.96470588445663452, 0.89019608497619629, 1.0)'
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light border-radius 2
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light border-thickness 0
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light shortcut-search '["<Alt>Space"]'
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light show-panel-icon false
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light text-color '(0.0, 0.16862741112709045, 0.21176470816135406, 0.0)'
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light use-animations false
+gsettings --schemadir "${HOME}/.local/share/gnome-shell/extensions/search-light@icedman.github.com/schemas" set org.gnome.shell.extensions.search-light window-effect 0
