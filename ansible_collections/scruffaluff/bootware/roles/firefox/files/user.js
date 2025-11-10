@@ -18,19 +18,23 @@ user_pref("browser.contentblocking.report.lockwise.enabled", false);
 user_pref("browser.contentblocking.report.monitor.enabled", false);
 // Disable saving information entered in web page forms and search bar.
 user_pref("browser.formfill.enable", false);
-// Disable Firefox machine learning chat.
+// Disable machine learning chat.
 user_pref("browser.ml.chat.enabled", false);
-// Disable Firefox machine learning chat shortcuts.
+// Disable machine learning chat menu.
+user_pref("browser.ml.chat.menu", false);
+// Disable machine learning chat shortcuts.
 user_pref("browser.ml.chat.shortcuts", false);
-// Disable Firefox machine learning chat sidebar.
+// Disable machine learning chat sidebar.
 user_pref("browser.ml.chat.sidebar", false);
-// Disable Firefox machine learning.
+// Disable machine learning.
 user_pref("browser.ml.enabled", false);
+// Disable machine learning link previews.
+user_pref("browser.ml.linkPreview.enabled", false);
 // Remove news stories recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 // Remove weather status recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.weatherfeed", false);
-// Disable Firefox telemetry.
+// Disable telemetry.
 user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
 // Remove top sites recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
@@ -39,7 +43,7 @@ user_pref(
   "browser.newtabpage.activity-stream.section.highlights.includePocket",
   false
 );
-// Disable Firefox telemetry.
+// Disable telemetry.
 user_pref("browser.newtabpage.activity-stream.telemetry", false);
 // Disable weather status suggestions in search bar.
 user_pref("browser.newtabpage.activity-stream.showWeather", false);
@@ -77,11 +81,11 @@ user_pref("browser.urlbar.suggest.weather", false);
 user_pref("browser.warnOnQuit", false);
 // Don't warning on quitting Firefox.
 user_pref("browser.warnOnQuitShortcut", false);
-// Disable Firefox health reporting.
+// Disable health reporting.
 user_pref("datareporting.healthreport.uploadEnabled", false);
-// Disable Firefox data reporting.
+// Disable data reporting.
 user_pref("datareporting.policy.dataSubmissionEnabled", false);
-// Disable Firefox website advertising preferences telemetry.
+// Disable website advertising preferences telemetry.
 user_pref("dom.private-attribution.submission.enabled", false);
 // Enable HTTPS only mode.
 user_pref("dom.security.https_only_mode", true);
@@ -131,7 +135,7 @@ user_pref("privacy.trackingprotection.socialtracking.enabled", true);
 user_pref("services.sync.engine.history", false);
 // Disable syncing site passwords.
 user_pref("services.sync.engine.passwords", false);
-// Disable Firefox sidebar.
+// Disable sidebar.
 user_pref("sidebar.revamp", false);
 // Prevent Firefox from offering to save passwords.
 user_pref("signon.autofillForms", false);

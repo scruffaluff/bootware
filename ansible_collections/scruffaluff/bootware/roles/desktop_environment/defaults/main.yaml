@@ -1,3 +1,5 @@
 ---
 gnome_extensions:
   - light-style@gnome-shell-extensions.gcampax.github.com
+  - rounded-window-corners@fxgn
+  - search-light@icedman.github.com

@@ -22,6 +22,9 @@ config.default_cursor_style = 'SteadyBar'
 config.default_prog = { [[{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}]], '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
 config.enable_kitty_keyboard = true
 config.enable_scroll_bar = true
+{% if not wezterm_wayland %}
+config.enable_wayland = false
+{% endif %}
 config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
 config.font_size = {{ wezterm_font_size }}
 config.keys = {
