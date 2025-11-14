@@ -99,7 +99,7 @@ def _color-theme [] {
         range: $yellow
         record: $cyan
         row_index: $green
-        search_result: { bg: $base01 fg: $red }
+        search_result: $violet
         separator: $base01
         shape_and: $violet
         shape_binary: $violet
@@ -115,7 +115,7 @@ def _color-theme [] {
         shape_filepath: $cyan
         shape_flag: $blue
         shape_float: $red
-        shape_garbage: { bg: $red fg: $base3 }
+        shape_garbage: $red
         shape_glob_interpolation: $cyan
         shape_globpattern: $cyan
         shape_int: $violet
@@ -162,11 +162,10 @@ def _cut-path-left [] {
 # Prompt user to remove current command from Nushell history.
 def _delete-from-history [] {
     let line = commandline
-    let matches = history
-    | where command =~ $line
-    | reverse
-    | get command
-    | uniq
+    if ($line | is-empty) {
+        return
+    }
+    let matches = history | get command | where $it =~ $line | reverse | uniq
     if ($matches | is-empty) {
         return
     }
@@ -214,8 +213,10 @@ Enter 'all' to delete all the matching entries.
         }
     }
 
-    let update = history | where command not-in $selections | get command
-    $update | to text | save --force $nu.history-path
+    let ids = history --long | where command in $selections | get item_id
+    | str join ","
+    open $nu.history-path
+    | query db $"delete from history where command_line in \(($ids)\)"
     commandline edit --replace ""
 }
 
@@ -510,6 +511,13 @@ def fzf-path-widget [] {
     commandline set-cursor ($arg.start + ($full_path | str length))
 }
 
+# Remove failed commands from history.
+def "history prune" [] {
+    open $nu.history-path
+    | query db "delete from history where exit_status != 0"
+    | ignore
+}
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths 
@@ -607,14 +615,22 @@ def --wrapped cbcopy [...args: string] {
             }
             powershell -command $"Set-Clipboard '($text)'"
         },
-        _ => { wl-copy ...$args },
+        _ => { 
+            if (which wl-copy | is-not-empty) {
+                wl-copy ...$args
+            }
+        },
     }
 }
 def --wrapped cbpaste [...args: string] {
     match $nu.os-info.name {
         "macos" => { pbpaste ...$args },
         "windows" => { powershell -command Get-Clipboard },
-        _ => { wl-paste ...$args },
+        _ => { 
+            if (which wl-paste | is-not-empty) {
+                wl-paste ...$args
+            }
+        },
     }
 }
 
@@ -794,6 +810,7 @@ if $nu.is-interactive {
 $env.config = {
     color_config: (_color-theme)
     completions: { algorithm: "substring" }
+    history: { file_format: "sqlite" isolation: true }
     keybindings: [
         {
             event: { edit: moveright }
