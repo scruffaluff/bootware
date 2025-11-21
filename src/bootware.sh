@@ -350,6 +350,8 @@ bootstrap() {
     log 'Enter your user account password when prompted.'
   fi
 
+  # Disable Ansible deprecation warnings.
+  export ANSIBLE_DEPRECATION_WARNINGS='false'
   # Disable Ansible Pull warnings about parsing the local hostname.
   export ANSIBLE_HOST_PATTERN_MISMATCH='ignore'
   # Disable file optimizations that can conflict with become operations.
@@ -1071,9 +1073,9 @@ setup_macos() {
   # On Apple silicon, brew is not in the system path after installation.
   export PATH="/opt/homebrew/bin:${PATH}"
 
-  # Install XCode command line tools if not already installed.
+  # Install Xcode command line tools if not already installed.
   #
-  # Homebrew depends on the XCode command line tools.
+  # Homebrew depends on the Xcode command line tools.
   # Flags:
   #   -p: Print path to active developer directory.
   if ! xcode-select -p > /dev/null 2>&1; then

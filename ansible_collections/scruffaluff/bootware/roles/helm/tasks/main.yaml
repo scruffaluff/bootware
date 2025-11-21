@@ -87,7 +87,7 @@
 
 - name: Install Helm plugins for Unix
   ansible.builtin.command:
-    cmd: helm plugin install {{ item }}
+    cmd: helm plugin install --verify=false {{ item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
@@ -104,7 +104,7 @@
 
 - name: Install Helm plugins for Windows
   ansible.windows.win_command:
-    cmd: helm plugin install {{ item }}
+    cmd: helm plugin install --verify=false {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"

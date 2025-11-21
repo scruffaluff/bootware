@@ -215,9 +215,26 @@ Enter 'all' to delete all the matching entries.
 
     let ids = history --long | where command in $selections | get item_id
     | str join ","
-    open $nu.history-path
-    | query db $"delete from history where command_line in \(($ids)\)"
+    let statement = $"delete from history where id in \(($ids)\)"
+    open $nu.history-path | query db $statement
     commandline edit --replace ""
+}
+
+# Expand alias for autocompletion.
+#
+# Based on logic from
+# https://www.nushell.sh/cookbook/external_completers.html#alias-completions.
+def _expand-alias [spans: list<string>] {
+    let expanded_alias = scope aliases
+    | where name == $spans.0
+    | get --optional 0
+    | get --optional expansion
+
+    if $expanded_alias != null  {
+        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
+    } else {
+        $spans
+    }
 }
 
 # Paste current working directory into the commandline.
@@ -302,17 +319,7 @@ Get-ChildItem ($path) | ForEach-Object {
 
 # Complete commandline argument with Carapace.
 def carapace-complete [spans: list<string>] {
-    let expanded_alias = scope aliases
-    | where name == $spans.0
-    | get --optional 0
-    | get --optional expansion
-
-    let spans = if $expanded_alias != null  {
-        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
-    } else {
-        $spans | skip 1 | prepend ($spans.0)
-    }
-
+    let spans = _expand-alias $spans
     carapace $spans.0 nushell ...$spans | from json
 }
 
@@ -386,17 +393,9 @@ def "commandline argument" [] {
     { start: $start stop: $stop token: ($chars | str join) }
 }
 
-# Open Nushell history file with default editor.
-def edit-history [] {
-    if "EDITOR" in $env {
-        run-external $env.EDITOR $nu.history-path
-    } else {
-        vi $nu.history-path
-    }
-}
-
 # Complete commandline argument with Fish.
 def fish-complete [spans: list<string>] {
+    let spans = _expand-alias $spans
     let expands = $spans | each {|span|
         let span = $span | str trim --char "`" | str trim --char "'"
         | str trim --char '"'
@@ -509,6 +508,11 @@ def fzf-path-widget [] {
     ] | str join
     commandline edit --replace $edit
     commandline set-cursor ($arg.start + ($full_path | str length))
+}
+
+# Open Nushell history file with default editor.
+def "history edit" [] {
+    sqlite3 $nu.history-path
 }
 
 # Remove failed commands from history.
