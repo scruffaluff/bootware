@@ -1,4 +1,4 @@
-FROM docker.io/fedora:42
+FROM docker.io/fedora:43
 
 ARG TARGETARCH
 

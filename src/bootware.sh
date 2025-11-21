@@ -354,6 +354,8 @@ bootstrap() {
   export ANSIBLE_DEPRECATION_WARNINGS='false'
   # Disable Ansible Pull warnings about parsing the local hostname.
   export ANSIBLE_HOST_PATTERN_MISMATCH='ignore'
+  # Use legacy style Ansible facts.
+  export ANSIBLE_INJECT_FACT_VARS='true'
   # Disable file optimizations that can conflict with become operations.
   export ANSIBLE_PIPELINING='false'
   # Disable warnings about implicit Python interpreter selection.

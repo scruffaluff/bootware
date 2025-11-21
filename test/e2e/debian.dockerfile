@@ -1,4 +1,4 @@
-FROM docker.io/debian:13.0
+FROM docker.io/debian:13.2
 
 ARG TARGETARCH
 ENV DEBIAN_FRONTEND=noninteractive

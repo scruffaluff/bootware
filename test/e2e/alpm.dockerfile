@@ -1,4 +1,4 @@
-FROM docker.io/archlinux:base-20250810.0.398652 AS build
+FROM docker.io/archlinux:base-20251019.0.436919 AS build
 
 ARG version
 
@@ -28,7 +28,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/archlinux:base-20250810.0.398652
+FROM docker.io/archlinux:base-20251019.0.436919
 
 ARG version
 

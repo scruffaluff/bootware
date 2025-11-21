@@ -100,7 +100,7 @@
   register: helm_plugin_install
   tags:
     - plugin
-  when: ansible_system != "Win32NT"
+  when: ansible_system in ["Darwin", "Linux"]
 
 - name: Install Helm plugins for Windows
   ansible.windows.win_command:
