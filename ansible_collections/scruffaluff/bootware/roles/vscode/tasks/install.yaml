@@ -7,7 +7,8 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt" and ansible_distribution != "Pop!_OS"
+  when: >-
+    ansible_facts.pkg_mgr == "apt" and ansible_facts.distribution != "Pop!_OS"
 
 - name: Add Microsoft GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
@@ -15,7 +16,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Create VSCode temporary directory for Fedora
   ansible.builtin.tempfile:
@@ -23,7 +24,7 @@
   register: vscode_temp
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Set VSCode temporary directory permissions for Fedora
   ansible.builtin.file:
@@ -32,7 +33,7 @@
     state: directory
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
@@ -45,7 +46,7 @@
       }}/stable
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCode for Fedora
   ansible.builtin.dnf:
@@ -53,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCode for MacOS
   community.general.homebrew_cask:
@@ -62,7 +63,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install VSCode for PopOS
   ansible.builtin.apt:
@@ -70,7 +71,8 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt" and ansible_distribution == "Pop!_OS"
+  when: >-
+    ansible_facts.pkg_mgr == "apt" and ansible_facts.distribution == "Pop!_OS"
 
 # Do not use Scoop for a global installation of VSCode. It ensures that there is
 # only one settings file for all users.
@@ -82,7 +84,7 @@
     name: vscode
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command:
@@ -93,7 +95,7 @@
   environment:
     PATH: >-
       /opt/homebrew/bin:/usr/local/bin:/usr/share/code/bin:/Applications/Visual
-      Studio Code.app/Contents/Resources/app/bin:{{ ansible_env.PATH }}
+      Studio Code.app/Contents/Resources/app/bin:{{ ansible_facts.env.PATH }}
   failed_when: >-
     vscode_extension_install.rc != 0 and 'already installed' not in
     vscode_extension_install.stdout
@@ -101,13 +103,13 @@
   register: vscode_extension_install
   tags:
     - plugin
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install VSCode extensions for Windows
   ansible.windows.win_shell: code --install-extension {{ item }}
   changed_when: "'successfully installed' in vscode_extension_install.stdout"
   environment:
-    Path: C:\Program Files\Microsoft VS Code\bin;{{ ansible_env.Path }}
+    Path: C:\Program Files\Microsoft VS Code\bin;{{ ansible_facts.env.Path }}
   failed_when: >-
     vscode_extension_install.rc != 0 and 'already installed' not in
     vscode_extension_install.stdout
@@ -115,7 +117,7 @@
   register: vscode_extension_install
   tags:
     - plugin
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove VSCode temporary directory for Fedora
   ansible.builtin.file:
@@ -123,4 +125,4 @@
     state: absent
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]

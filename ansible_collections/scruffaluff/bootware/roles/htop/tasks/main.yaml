@@ -5,7 +5,7 @@
     name: htop
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Htop for Linux
   ansible.builtin.package:
@@ -13,7 +13,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Htop for MacOS
   become: true
@@ -22,4 +22,4 @@
     name: htop
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"

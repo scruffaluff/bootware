@@ -9,7 +9,7 @@
       changed_when: true
       tags:
         - install
-      when: ansible_system == "Linux" and gnome_desktop
+      when: ansible_facts.system == "Linux" and gnome_desktop
   rescue:
     - name: Get latest GNOME extension version for GNOME desktops
       ansible.builtin.uri:

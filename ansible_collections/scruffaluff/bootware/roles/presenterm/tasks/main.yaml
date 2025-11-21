@@ -7,7 +7,7 @@
   register: presenterm_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Presenterm version for Linux
   ansible.builtin.uri:
@@ -17,7 +17,7 @@
   register: presenterm_formula
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed
 
 - name: Create Presenterm temporary directory for Linux
   ansible.builtin.tempfile:
@@ -25,7 +25,7 @@
   register: presenterm_temp
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed
 
 - name: Set Presenterm temporary directory permissions for Linux
   ansible.builtin.file:
@@ -34,7 +34,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed
 
 - name: Download Presenterm for Linux
   ansible.builtin.unarchive:
@@ -48,7 +48,7 @@
       }}-unknown-linux-{{ presenterm_libc }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed
 
 - name: Install Presenterm for Linux
   ansible.builtin.copy:
@@ -62,7 +62,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed
 
 - name: Install Presenterm for MacOS
   become: true
@@ -71,7 +71,7 @@
     name: presenterm
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Presenterm for Windows
   community.windows.win_scoop:
@@ -79,7 +79,7 @@
     name: presenterm
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Presenterm configuration directory for Linux
   ansible.builtin.file:
@@ -91,7 +91,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Copy Presenterm configuration file for Linux
   ansible.builtin.copy:
@@ -104,7 +104,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Presenterm configuration directory for MacOS
   ansible.builtin.file:
@@ -116,7 +116,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Copy Presenterm configuration file for MacOS
   ansible.builtin.copy:
@@ -129,7 +129,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Create Presenterm configuration directory for Windows
   ansible.windows.win_file:
@@ -137,7 +137,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Presenterm configuration file for Windows
   ansible.windows.win_copy:
@@ -146,7 +146,7 @@
     src: config.yaml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Presenterm files for Windows
   ansible.windows.win_owner:
@@ -155,7 +155,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Presenterm temporary directory for Linux
   ansible.builtin.file:
@@ -163,4 +163,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and presenterm_linux is failed
+  when: ansible_facts.system == "Linux" and presenterm_linux is failed

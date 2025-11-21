@@ -4,5 +4,5 @@ obsidian_user_:
   Linux: "{{ user_home }}/.var/app/md.obsidian.Obsidian/config"
   Win32NT: "{{ user_home }}\\AppData\\Roaming"
 obsidian_user: >-
-  {{ obsidian_user_.get(ansible_system, user_home +
+  {{ obsidian_user_.get(ansible_facts.system, user_home +
   '/.var/app/md.obsidian.Obsidian/config/') }}/obsidian

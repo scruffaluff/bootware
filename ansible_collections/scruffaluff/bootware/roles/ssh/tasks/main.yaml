@@ -5,17 +5,17 @@
     name: rsync
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install SSH for Linux
   ansible.builtin.package:
     name:
-      - "{{ 'ssh' if ansible_pkg_mgr == 'apt' else 'openssh' }}"
+      - "{{ 'ssh' if ansible_facts.pkg_mgr == 'apt' else 'openssh' }}"
       - rsync
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install SSH for MacOS
   become: true
@@ -26,4 +26,4 @@
       - rsync
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"

@@ -5,7 +5,7 @@
     name: age
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Age for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: age_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Age version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: age_formula
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed
 
 - name: Create Age temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: age_temp
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed
 
 - name: Set Age temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed
 
 - name: Download Age for Linux
   ansible.builtin.unarchive:
@@ -55,7 +55,7 @@
       age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed
 
 - name: Install Age for Linux
   ansible.builtin.copy:
@@ -70,7 +70,7 @@
     - age-keygen
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed
 
 - name: Install Age for MacOS
   become: true
@@ -79,7 +79,7 @@
     name: age
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Age for Windows
   community.windows.win_scoop:
@@ -87,7 +87,7 @@
     name: age
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Age temporary directory for Linux
   ansible.builtin.file:
@@ -95,4 +95,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and age_linux is failed
+  when: ansible_facts.system == "Linux" and age_linux is failed

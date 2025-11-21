@@ -10,7 +10,7 @@
       - sox
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install audio packages for Arch
   become: true
@@ -23,7 +23,7 @@
       - sox
   tags:
     - install
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_facts.pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
   ansible.builtin.apt:
@@ -36,7 +36,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora
   ansible.builtin.dnf:
@@ -49,7 +49,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install audio packages for FreeBSD
   become: true
@@ -62,7 +62,7 @@
       - sox
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install audio packages for MacOS
   become: true
@@ -74,7 +74,7 @@
       - sox
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install audio packages for Windows
   community.windows.win_scoop:
@@ -85,4 +85,4 @@
       - sox
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

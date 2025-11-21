@@ -9,7 +9,7 @@
   register: powershell_cask
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install PowerShell Core for Windows
   ansible.windows.win_package:
@@ -27,7 +27,7 @@
     powershell_arch:
       amd64: x64
       arm64: arm64
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy PowerShell settings files for Windows
   ansible.windows.win_copy:
@@ -39,7 +39,7 @@
     - Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy PowerShell user modules for Windows
   ansible.windows.win_copy:
@@ -53,7 +53,7 @@
   vars:
     powershell_modules:
       - SSHCompletion
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of PowerShell files for Windows
   ansible.windows.win_owner:
@@ -65,7 +65,7 @@
     - Documents\WindowsPowerShell
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Disable PowerShell update check during startup for Windows
   ansible.windows.win_environment:
@@ -74,7 +74,7 @@
     value: "Off"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Register PowerShell files as executables for Windows
   ansible.windows.win_regedit:
@@ -90,9 +90,9 @@
       path: "HKLM:\\Software\\Classes\\ps1file\\shell\\open\\command"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
-# Since ansible_env.Path is fixed on play connection, using
+# Since ansible_facts.env.Path is fixed on play connection, using
 # ansible.windows.win_environment for PATHEXT in other roles will overwrite
 # changes made here. Thus ansible.windows.win_environment cannot be used to
 # extend PATHEXT.
@@ -109,7 +109,7 @@
   register: powershell_pathext
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set PowerShell Core as default OpenSSH shell for Windows
   ansible.windows.win_regedit:
@@ -119,7 +119,7 @@
     type: string
   tags:
     - config
-  when: ansible_system == "Win32NT" and user_login == "powershell"
+  when: ansible_facts.system == "Win32NT" and user_login == "powershell"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

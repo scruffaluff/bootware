@@ -7,7 +7,7 @@
   register: samply_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Samply version for Linux
   ansible.builtin.uri:
@@ -17,7 +17,7 @@
   register: samply_formula_linux
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Create Samply temporary directory for Linux
   ansible.builtin.tempfile:
@@ -25,7 +25,7 @@
   register: samply_temp
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Set Samply temporary directory permissions for Linux
   ansible.builtin.file:
@@ -34,7 +34,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Download Samply for Linux
   ansible.builtin.unarchive:
@@ -47,7 +47,7 @@
       }}-unknown-linux-{{ samply_libc }}.tar.xz
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Install Samply for Linux
   ansible.builtin.copy:
@@ -61,7 +61,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Install Samply for MacOS
   become: true
@@ -70,7 +70,7 @@
     name: samply
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Get latest Samply version for Windows
   ansible.windows.win_uri:
@@ -80,19 +80,19 @@
   register: samply_formula_windows
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Samply temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\samply"
+    path: "{{ ansible_facts.env.TEMP }}\\samply"
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Download Samply archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}\\samply\\samply.zip"
+    dest: "{{ ansible_facts.env.TEMP }}\\samply\\samply.zip"
     force: true
     url: >-
       https://github.com/mstange/samply/releases/download/samply-v{{
@@ -100,25 +100,25 @@
       }}-pc-windows-msvc.zip
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Decompress Samply archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}\\samply\\samply"
-    src: "{{ ansible_env.TEMP }}\\samply\\samply.zip"
+    dest: "{{ ansible_facts.env.TEMP }}\\samply\\samply"
+    src: "{{ ansible_facts.env.TEMP }}\\samply\\samply.zip"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Samply for Windows
   ansible.windows.win_copy:
     dest: C:\Program Files\Bin\samply.exe
     force: true
     remote_src: true
-    src: "{{ ansible_env.TEMP }}\\samply\\samply\\samply.exe"
+    src: "{{ ansible_facts.env.TEMP }}\\samply\\samply\\samply.exe"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Samply temporary directory for Linux
   ansible.builtin.file:
@@ -126,12 +126,12 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and samply_linux is failed
+  when: ansible_facts.system == "Linux" and samply_linux is failed
 
 - name: Remove Samply temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\samply"
+    path: "{{ ansible_facts.env.TEMP }}\\samply"
     state: absent
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

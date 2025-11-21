@@ -8,7 +8,7 @@ greedy_cask = true
 
 [misc]
 assume_yes = true
-{% if ansible_system in ["Darwin", "Win32NT"] %}
+{% if ansible_facts.system in ["Darwin", "Win32NT"] %}
 disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "system", "uv"]
 {% else %}
 disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "uv"]

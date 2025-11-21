@@ -27,8 +27,8 @@
   changed_when: "'installing' in rust_toolchain_set.stdout"
   environment:
     PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
-      }}
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
+      ansible_facts.env.PATH }}
   register: rust_toolchain_set
   tags:
     - install
@@ -41,8 +41,8 @@
   changed_when: "'installing' in rust_component_add.stdout"
   environment:
     PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
-      }}
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
+      ansible_facts.env.PATH }}
   loop: "{{ rust_components }}"
   register: rust_component_add
   tags:
@@ -56,8 +56,8 @@
   changed_when: "'installing' in rust_target_add.stdout"
   environment:
     PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
-      }}
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
+      ansible_facts.env.PATH }}
   loop: "{{ rust_targets }}"
   register: rust_target_add
   tags:
@@ -71,7 +71,7 @@
   register: rust_binstall_formula
   tags:
     - plugin
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create Rust temporary directory for Unix
   ansible.builtin.tempfile:
@@ -79,7 +79,7 @@
   register: rust_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Download Cargo Binstall for Unix
   ansible.builtin.unarchive:
@@ -90,7 +90,7 @@
       https://github.com/ryankurte/cargo-binstall/releases/download/v{{
       rust_binstall_formula.json.versions.stable }}/cargo-binstall-{{
       rust_binstall_arch[system_architecture] }}-{{
-      rust_binstall_suffix[ansible_system] }}
+      rust_binstall_suffix[ansible_facts.system] }}
   vars:
     rust_binstall_arch:
       amd64: x86_64
@@ -100,7 +100,7 @@
       Linux: unknown-linux-{{ system_libc }}.tgz
   tags:
     - plugin
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Cargo Binstall for Unix
   ansible.builtin.copy:
@@ -114,7 +114,7 @@
   become: true
   tags:
     - plugin
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Cargo packages for Unix
   ansible.builtin.command:
@@ -124,13 +124,13 @@
   changed_when: "'This will install' in rust_binstall_package.stdout"
   environment:
     PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{ ansible_env.PATH
-      }}
+      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
+      ansible_facts.env.PATH }}
   loop: "{{ rust_applications }}"
   register: rust_binstall_package
   tags:
     - plugin
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Rust temporary directory for Unix
   ansible.builtin.file:
@@ -138,4 +138,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

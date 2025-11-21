@@ -7,17 +7,17 @@
       - npm-node22
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Node for Linux
   ansible.builtin.package:
     name:
       - nodejs
-      - "{{ 'nodejs-npm' if ansible_pkg_mgr in ['dnf'] else 'npm' }}"
+      - "{{ 'nodejs-npm' if ansible_facts.pkg_mgr in ['dnf'] else 'npm' }}"
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Node for MacOS
   become: true
@@ -26,7 +26,7 @@
     name: node
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Node for OpenWrt
   become: true
@@ -36,7 +36,7 @@
       - node-npm
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: ansible_facts.pkg_mgr == "opkg"
 
 - name: Install Node for Windows
   community.windows.win_scoop:
@@ -44,7 +44,7 @@
     name: nodejs
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Node applications directory for Unix
   ansible.builtin.file:
@@ -56,7 +56,7 @@
   become: true
   tags:
     - install
-  when: ansible_system != "Win32NT" and user_id != "root"
+  when: ansible_facts.system != "Win32NT" and user_id != "root"
 
 - name: Configure Node applications directory for Unix
   ansible.builtin.lineinfile:
@@ -77,7 +77,7 @@
       line: update-notifier = false
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Node applications directory for Windows
   ansible.windows.win_file:
@@ -85,7 +85,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Add Node applications to user path for Windows
   ansible.windows.win_path:
@@ -93,7 +93,7 @@
     scope: user
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Configure Node applications directory for Windows
   community.windows.win_lineinfile:
@@ -113,7 +113,7 @@
     - install
   vars:
     node_backslash: "\\"
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Node applications for Unix
   ansible.builtin.command:
@@ -125,7 +125,7 @@
   loop: "{{ node_applications }}"
   tags:
     - plugin
-  when: ansible_system != "Win32NT" and user_id != "root"
+  when: ansible_facts.system != "Win32NT" and user_id != "root"
 
 - name: Install Node applications for Windows
   ansible.windows.win_shell: npm install --global {{ item }}
@@ -135,11 +135,11 @@
     # NPM is often missing from Scoop shims.
     Path: >-
       {{ scoop_path }}\\apps\\nodejs\\current;{{ scoop_path }}\\shims;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   loop: "{{ node_applications }}"
   tags:
     - plugin
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Node files for Windows
   ansible.windows.win_owner:
@@ -151,7 +151,7 @@
     - .npmrc
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

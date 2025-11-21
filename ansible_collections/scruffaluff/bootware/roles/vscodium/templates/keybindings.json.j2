@@ -552,7 +552,7 @@
     "key": "ctrl+tab",
     "when": "!panelFocus"
   },
-{% if ansible_system == "Darwin" %}
+{% if ansible_facts.system == "Darwin" %}
   {
     "command": "workbench.action.openEditorAtIndex1",
     "key": "cmd+1",

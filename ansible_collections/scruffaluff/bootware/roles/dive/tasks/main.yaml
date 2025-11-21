@@ -5,7 +5,7 @@
     name: dive
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Dive for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: dive_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Dive version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: dive_formula
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed
 
 - name: Create Dive temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: dive_temp
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed
 
 - name: Set Dive temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed
 
 - name: Download Dive for Linux
   ansible.builtin.unarchive:
@@ -56,7 +56,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed
 
 - name: Install Dive for Linux
   ansible.builtin.copy:
@@ -68,7 +68,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed
 
 - name: Install Dive for MacOS
   become: true
@@ -77,7 +77,7 @@
     name: dive
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Dive for Windows
   community.windows.win_scoop:
@@ -85,7 +85,7 @@
     name: dive
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Dive temporary directory for Linux
   ansible.builtin.file:
@@ -93,4 +93,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and dive_linux is failed
+  when: ansible_facts.system == "Linux" and dive_linux is failed

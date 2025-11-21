@@ -5,7 +5,7 @@
     name: zoxide
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Zoxide package in most distributions reaches version 0.9.4.
 # - name: Install Zoxide for Linux
@@ -16,7 +16,7 @@
 #   register: zoxide_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux"
+#   when: ansible_facts.system == "Linux"
 
 - name: Get latest Zoxide version for Linux
   ansible.builtin.uri:
@@ -26,7 +26,7 @@
   register: zoxide_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Zoxide temporary directory for Linux
   ansible.builtin.tempfile:
@@ -34,7 +34,7 @@
   register: zoxide_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Zoxide temporary directory permissions for Linux
   ansible.builtin.file:
@@ -43,7 +43,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Zoxide for Linux
   ansible.builtin.unarchive:
@@ -61,7 +61,7 @@
     zoxide_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Zoxide for Linux
   ansible.builtin.copy:
@@ -73,7 +73,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Zoxide for MacOS
   become: true
@@ -82,7 +82,7 @@
     name: zoxide
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
@@ -90,7 +90,7 @@
     name: zoxide
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Zoxide shell completions for Linux
   ansible.builtin.copy:
@@ -108,7 +108,7 @@
   tags:
     - completion
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
@@ -116,10 +116,10 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Zoxide Nushell configuration for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
@@ -129,10 +129,10 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/zoxide.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Zoxide temporary directory for Linux
   ansible.builtin.file:
@@ -140,4 +140,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

@@ -5,7 +5,7 @@
     name: docker
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install Docker for Arch
   become: true
@@ -13,7 +13,7 @@
     name: docker
   tags:
     - install
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_facts.pkg_mgr == "pacman"
 
 - name: Install Docker repository dependencies for Debian
   ansible.builtin.apt:
@@ -25,7 +25,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Create Docker temporary directory for Debian
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: docker_temp
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Set Docker temporary directory permissions for Debian
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Download Docker GPG key for Debian
   ansible.builtin.get_url:
@@ -52,7 +52,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add Docker GPG key for Debian
   ansible.builtin.command:
@@ -64,15 +64,15 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
       deb [arch={{ system_architecture }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
-      https://download.docker.com/linux/debian {{ ansible_distribution_release |
-      lower }} stable
+      https://download.docker.com/linux/debian {{
+      ansible_facts.distribution_release | lower }} stable
     state: present
     filename: docker
   become: true
@@ -80,21 +80,21 @@
   register: docker_debian
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add Docker repository for Ubuntu
   ansible.builtin.apt_repository:
     repo: >-
       deb [arch={{ system_architecture }}
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
-      https://download.docker.com/linux/ubuntu {{ ansible_distribution_release |
-      lower }} stable
+      https://download.docker.com/linux/ubuntu {{
+      ansible_facts.distribution_release | lower }} stable
     state: present
     filename: docker
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt" and docker_debian is failed
+  when: ansible_facts.pkg_mgr == "apt" and docker_debian is failed
 
 - name: Install Docker for Debian
   ansible.builtin.apt:
@@ -106,7 +106,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add Docker repository for Fedora
   ansible.builtin.get_url:
@@ -116,7 +116,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for Fedora
   ansible.builtin.dnf:
@@ -127,7 +127,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
 
 - name: Install Docker for FreeBSD
   become: true
@@ -135,7 +135,7 @@
     name: docker
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Docker for MacOS
   community.general.homebrew_cask:
@@ -144,14 +144,14 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Docker for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: docker-desktop
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Check if service manager is available for Alpine
   ansible.builtin.stat:
@@ -159,7 +159,7 @@
   register: docker_service
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Start Containerd on system boot for Alpine
   ansible.builtin.service:
@@ -169,7 +169,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
+  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Containerd on system boot for Linux
   ansible.builtin.systemd:
@@ -178,7 +178,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and systemd
+  when: ansible_facts.system == "Linux" and systemd
 
 - name: Start Docker on system boot for Alpine
   ansible.builtin.service:
@@ -188,7 +188,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
+  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Docker on system boot for Linux
   ansible.builtin.systemd:
@@ -197,7 +197,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and systemd
+  when: ansible_facts.system == "Linux" and systemd
 
 - name: Add user to Docker group for Alpine
   ansible.builtin.user:
@@ -208,7 +208,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk" and docker_service.stat.exists
+  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
@@ -219,7 +219,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and systemd
+  when: ansible_facts.system == "Linux" and systemd
 
 - name: Install Docker shell completions for Unix
   ansible.builtin.get_url:
@@ -237,7 +237,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
@@ -250,4 +250,4 @@
     state: absent
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"

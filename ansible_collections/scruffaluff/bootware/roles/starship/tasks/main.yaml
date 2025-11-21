@@ -5,7 +5,7 @@
     name: starship
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Starship for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: starship_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Starship version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: starship_formula
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed
 
 - name: Create Starship temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: starship_temp
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed
 
 - name: Set Starship temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed
 
 - name: Download Starship for Linux
   ansible.builtin.unarchive:
@@ -55,7 +55,7 @@
       }}-unknown-linux-{{ starship_libc }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed
 
 - name: Install Starship for Linux
   ansible.builtin.copy:
@@ -67,7 +67,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed
 
 - name: Install Starship for MacOS
   become: true
@@ -76,7 +76,7 @@
     name: starship
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Starship for Windows
   community.windows.win_scoop:
@@ -84,7 +84,7 @@
     name: starship
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Starship Nushell configuration for Unix
   ansible.builtin.shell: >-
@@ -92,10 +92,10 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Starship Nushell configuration for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
@@ -105,10 +105,10 @@
     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Starship settings file for Unix
   ansible.builtin.copy:
@@ -121,7 +121,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Starship settings file for Windows
   ansible.windows.win_copy:
@@ -130,7 +130,7 @@
     src: starship.toml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Starship file for Windows
   ansible.windows.win_owner:
@@ -138,7 +138,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Starship temporary directory for Linux
   ansible.builtin.file:
@@ -146,4 +146,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and starship_linux is failed
+  when: ansible_facts.system == "Linux" and starship_linux is failed

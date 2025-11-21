@@ -5,7 +5,7 @@
   register: vscodium_electron_check_unix
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Check if newer VSCodium Electron structure is available for Windows
   ansible.windows.win_stat:
@@ -13,7 +13,7 @@
   register: vscodium_electron_check_windows
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set VSCodium Electron check
   ansible.builtin.set_fact:
@@ -43,7 +43,7 @@
       }}/workbench/workbench.html
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Backup VSCodium internal files for Windows
   ansible.windows.win_copy:
@@ -58,7 +58,7 @@
       }}\workbench\workbench.html
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Update VSCodium styles for Unix
   ansible.builtin.blockinfile:
@@ -73,7 +73,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Update VSCodium styles for Windows
   community.windows.win_lineinfile:
@@ -86,7 +86,7 @@
     state: present
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Read contents of VSCodium workbench file
   ansible.builtin.slurp:
@@ -117,7 +117,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Write contents of VSCodium product file for Windows
   community.windows.win_lineinfile:
@@ -130,4 +130,4 @@
     state: present
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

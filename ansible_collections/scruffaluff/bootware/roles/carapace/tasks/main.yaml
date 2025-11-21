@@ -5,7 +5,7 @@
     name: carapace
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Get latest Carapace version for Linux
   ansible.builtin.uri:
@@ -15,7 +15,7 @@
   register: carapace_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Carapace temporary directory for Linux
   ansible.builtin.tempfile:
@@ -23,7 +23,7 @@
   register: carapace_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Carapace temporary directory permissions for Linux
   ansible.builtin.file:
@@ -32,7 +32,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Carapace for Linux
   ansible.builtin.unarchive:
@@ -46,7 +46,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Carapace for Linux
   ansible.builtin.copy:
@@ -58,7 +58,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Carapace for MacOS
   become: true
@@ -67,7 +67,7 @@
     name: carapace
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Carapace for Windows
   community.windows.win_scoop:
@@ -75,7 +75,7 @@
     name: extras/carapace-bin
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Carapace temporary directory for Linux
   ansible.builtin.file:
@@ -83,4 +83,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

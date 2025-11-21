@@ -7,4 +7,4 @@
   loop: "{{ bloatware_linux_packages }}"
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

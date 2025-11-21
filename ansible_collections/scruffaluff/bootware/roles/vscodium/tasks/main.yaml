@@ -2,20 +2,20 @@
 - name: Install VSCodium
   ansible.builtin.import_tasks: install.yaml
   when: >-
-    ansible_system in ["Darwin", "Linux", "Win32NT"] and ansible_pkg_mgr !=
-    "apk"
+    ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
+    ansible_facts.pkg_mgr != "apk"
 
 - name: Configure VSCodium user settings
   ansible.builtin.import_tasks: config.yaml
   when: >-
-    ansible_system in ["Darwin", "Linux", "Win32NT"] and ansible_pkg_mgr !=
-    "apk"
+    ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
+    ansible_facts.pkg_mgr != "apk"
 
 - name: Apply custom styles to VSCodium
   ansible.builtin.import_tasks: style.yaml
   when: >-
-    vscodium_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
-    ansible_pkg_mgr != "apk"
+    vscodium_style and ansible_facts.system in ["Darwin", "Linux", "Win32NT"]
+    and ansible_facts.pkg_mgr != "apk"
 
 - name: Set owner of VSCodium files for Windows
   ansible.windows.win_owner:
@@ -27,4 +27,4 @@
     - AppData\Roaming\VSCodium
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

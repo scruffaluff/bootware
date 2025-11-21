@@ -7,7 +7,7 @@
     name: tmux
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install Tmux for FreeBSD
   become: true
@@ -17,7 +17,7 @@
       - tmux
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Tmux for Linux
   ansible.builtin.package:
@@ -27,7 +27,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
   become: true
@@ -38,7 +38,7 @@
       - tmux
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Copy Tmux settings file for Unix
   ansible.builtin.template:
@@ -51,4 +51,4 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"

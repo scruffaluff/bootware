@@ -5,4 +5,5 @@ musescore_config_:
   Linux: "{{ user_home }}/.var/app/org.musescore.MuseScore/config/MuseScore"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\MuseScore"
 musescore_config: >-
-  {{ musescore_config_.get(ansible_system, user_home + '.config/MuseScore') }}
+  {{ musescore_config_.get(ansible_facts.system, user_home +
+  '.config/MuseScore') }}

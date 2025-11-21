@@ -5,7 +5,7 @@
   register: just_temp
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Just for Alpine
   become: true
@@ -16,7 +16,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install Just for FreeBSD
   become: true
@@ -24,7 +24,7 @@
     name: just
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Just package in most distributions reaches version 1.38.
 # - name: Install Just for Linux
@@ -35,7 +35,7 @@
 #   register: just_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+#   when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Get latest Just version for Linux
   ansible.builtin.uri:
@@ -45,7 +45,7 @@
   register: just_formula
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Download Just for Linux
   ansible.builtin.unarchive:
@@ -59,7 +59,7 @@
       }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Install Just for Linux
   ansible.builtin.copy:
@@ -71,7 +71,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Install Just for MacOS
   become: true
@@ -80,7 +80,7 @@
     name: just
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Just for Windows
   community.windows.win_scoop:
@@ -88,7 +88,7 @@
     name: just
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Just shell completions for Unix
   ansible.builtin.shell: >-
@@ -96,14 +96,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Just shell completions for Unix
   ansible.builtin.copy:
@@ -121,7 +121,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Remove Just temporary directory for Unix
   ansible.builtin.file:
@@ -129,4 +129,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"

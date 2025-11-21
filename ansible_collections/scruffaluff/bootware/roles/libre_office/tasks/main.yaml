@@ -5,7 +5,7 @@
     name: libreoffice
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Libre Office for Linux
   ansible.builtin.package:
@@ -13,7 +13,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Libre Office for MacOS
   community.general.homebrew_cask:
@@ -22,7 +22,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Libre Office for Windows
   community.windows.win_scoop:
@@ -30,4 +30,4 @@
     name: libreoffice
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

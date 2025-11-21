@@ -6,7 +6,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create GitHub Runner user for MacOS
   ansible.builtin.user:
@@ -18,19 +18,20 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Create GitHub Runner user for Linux
   ansible.builtin.user:
     append: true
     groups: >-
-      {{ ['docker', 'wheel'] | intersect(ansible_facts.getent_group.keys()) }}
+      {{ ['docker', 'wheel'] |
+      intersect(ansible_facts.facts.getent_group.keys()) }}
     name: github-runner
     shell: /bin/bash
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Check if Doas is available for Unix
   ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
@@ -39,7 +40,7 @@
   register: github_runner_doas_available
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Enable GitHub passwordless doas for Unix
   ansible.builtin.blockinfile:
@@ -56,8 +57,8 @@
   tags:
     - install
   when: >-
-    ansible_system in ["Darwin", "Linux"] and github_runner_doas_available.rc ==
-    0
+    ansible_facts.system in ["Darwin", "Linux"] and
+    github_runner_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
   ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
@@ -66,7 +67,7 @@
   register: github_runner_sudo_available
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Enable GitHub Runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
@@ -84,8 +85,8 @@
   tags:
     - install
   when: >-
-    ansible_system in ["Darwin", "Linux"] and github_runner_sudo_available.rc ==
-    0
+    ansible_facts.system in ["Darwin", "Linux"] and
+    github_runner_sudo_available.rc == 0
 
 - name: Create GitHub Runner directory for Unix
   ansible.builtin.file:
@@ -96,7 +97,7 @@
   become: true
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create GitHub Runner user for Windows
   ansible.windows.win_user:
@@ -104,7 +105,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create GitHub Runner directory for Windows
   ansible.windows.win_file:
@@ -112,7 +113,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Get latest GitHub Runner version for Unix
   ansible.builtin.uri:
@@ -123,7 +124,7 @@
   register: github_runner_release_unix
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Download GitHub Runner for Unix
   ansible.builtin.unarchive:
@@ -134,7 +135,7 @@
     src: >-
       https://github.com/actions/runner/releases/download/{{
       github_runner_release_unix.json.tag_name }}/actions-runner-{{
-      github_runner_os[ansible_system] }}-{{ github_runner_arch }}-{{
+      github_runner_os[ansible_facts.system] }}-{{ github_runner_arch }}-{{
       github_runner_release_unix.json.tag_name[1:] }}.tar.gz
   become: true
   tags:
@@ -143,7 +144,7 @@
     github_runner_os:
       Darwin: osx
       Linux: linux
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Get latest GitHub Runner version for Windows
   ansible.windows.win_uri:
@@ -154,19 +155,19 @@
   register: github_runner_release_windows
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create GitHub Runner temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\github-runner"
+    path: "{{ ansible_facts.env.TEMP }}\\github-runner"
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Download GitHub Runner archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}\\github-runner\\github_runner.zip"
+    dest: "{{ ansible_facts.env.TEMP }}\\github-runner\\github_runner.zip"
     url: >-
       https://github.com/actions/runner/releases/download/{{
       github_runner_release_windows.json.tag_name }}/actions-runner-win-{{
@@ -174,20 +175,20 @@
       }}.zip
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Decompress GitHub Runner archive for Windows
   community.windows.win_unzip:
     dest: "{{ github_runner_folder }}"
-    src: "{{ ansible_env.TEMP }}\\github-runner\\github_runner.zip"
+    src: "{{ ansible_facts.env.TEMP }}\\github-runner\\github_runner.zip"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove GitHub Runner temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\github-runner"
+    path: "{{ ansible_facts.env.TEMP }}\\github-runner"
     state: absent
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

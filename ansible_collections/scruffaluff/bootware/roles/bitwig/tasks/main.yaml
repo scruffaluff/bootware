@@ -5,7 +5,7 @@
     name: com.bitwig.BitwigStudio
   tags:
     - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_facts.system == "Linux" and system_architecture == "amd64"
 
 - name: Install Bitwig for MacOS
   community.general.homebrew_cask:
@@ -14,11 +14,11 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Bitwig for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: bitwig
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

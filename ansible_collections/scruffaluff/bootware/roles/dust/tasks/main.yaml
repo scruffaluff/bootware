@@ -5,7 +5,7 @@
     name: dust
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Get latest Dust version for Linux
   ansible.builtin.uri:
@@ -15,7 +15,7 @@
   register: dust_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Dust temporary directory for Linux
   ansible.builtin.tempfile:
@@ -23,7 +23,7 @@
   register: dust_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Dust temporary directory permissions for Linux
   ansible.builtin.file:
@@ -32,7 +32,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Dust for Linux
   ansible.builtin.unarchive:
@@ -46,7 +46,7 @@
       dust_libc }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Dust for Linux
   ansible.builtin.copy:
@@ -60,14 +60,14 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Dust for MacOS
   community.general.homebrew:
     name: dust
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Dust for Windows
   community.windows.win_scoop:
@@ -75,7 +75,7 @@
     name: dust
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Dust settings directory for Unix
   ansible.builtin.file:
@@ -87,7 +87,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Dust settings directory for Windows
   ansible.windows.win_file:
@@ -95,7 +95,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Dust settings file for Unix
   ansible.builtin.copy:
@@ -108,7 +108,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Dust settings file for Windows
   ansible.windows.win_copy:
@@ -117,7 +117,7 @@
     src: config.toml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Dust files for Windows
   ansible.windows.win_owner:
@@ -126,7 +126,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Dust temporary directory for Linux
   ansible.builtin.file:
@@ -134,4 +134,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

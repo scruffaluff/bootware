@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install GDU for FreeBSD
   become: true
@@ -16,7 +16,7 @@
     name: gdu
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install GDU for Linux
   ansible.builtin.package:
@@ -26,7 +26,7 @@
   register: gdu_linux
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
 
 - name: Get latest GDU version for Linux
   ansible.builtin.uri:
@@ -37,8 +37,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
-    failed
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    gdu_linux is failed
 
 - name: Create GDU temporary directory for Linux
   ansible.builtin.tempfile:
@@ -47,8 +47,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
-    failed
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    gdu_linux is failed
 
 - name: Download GDU for Linux
   ansible.builtin.unarchive:
@@ -62,8 +62,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
-    failed
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    gdu_linux is failed
 
 - name: Install GDU for Linux
   ansible.builtin.copy:
@@ -76,8 +76,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
-    failed
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    gdu_linux is failed
 
 - name: Install GDU for MacOS
   become: true
@@ -86,7 +86,7 @@
     name: gdu
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install GDU for Windows
   community.windows.win_scoop:
@@ -94,7 +94,7 @@
     name: gdu
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove GDU temporary directory for Linux
   ansible.builtin.file:
@@ -103,5 +103,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and gdu_linux is
-    failed
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    gdu_linux is failed

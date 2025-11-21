@@ -6,7 +6,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Homebrew for MacOS
   ansible.builtin.shell:
@@ -21,14 +21,14 @@
   register: essential_homebrew
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
     name: chocolatey
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Scoop for Windows
   ansible.windows.win_shell: |
@@ -56,7 +56,7 @@
   register: essential_scoop
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Add Scoop shims to path for Windows
   ansible.windows.win_path:
@@ -69,7 +69,7 @@
       scope: user
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Scoop bucket dependency for Windows
   community.windows.win_scoop:
@@ -77,7 +77,7 @@
     name: mingit
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: scoop bucket add {{ item }}
@@ -86,7 +86,7 @@
   environment:
     Path: >-
       {{ user_home }}\\scoop\\shims;C:\\ProgramData\\scoop\\shims;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   failed_when: >-
     essential_scoop_bucket.rc != 0 and 'bucket already exists' not in
     essential_scoop_bucket.stdout
@@ -97,7 +97,7 @@
   register: essential_scoop_bucket
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Update package list for OpenWrt
   ansible.builtin.command:
@@ -106,7 +106,7 @@
   changed_when: false
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: ansible_facts.pkg_mgr == "opkg"
 
 - name: Install essential packages for FreeBSD
   become: true
@@ -121,7 +121,7 @@
       - zip
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install essential packages for Linux
   ansible.builtin.package:
@@ -131,7 +131,7 @@
   loop: "{{ essential_linux_packages }}"
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install essential packages for MacOS
   become: true
@@ -147,7 +147,7 @@
       - zip
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:
@@ -164,7 +164,7 @@
       - zip
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Scoop user folder for Windows
   ansible.windows.win_file:
@@ -172,7 +172,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Scoop user folder for Windows
   ansible.windows.win_owner:
@@ -181,7 +181,7 @@
     user: "{{ user_id }}"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

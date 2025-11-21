@@ -11,7 +11,7 @@ vscodium_chrome_path_:
   Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   FreeBSD: /usr/local/bin/chrome
   Linux: >-
-    {{ vscodium_chrome_path_linux_.get(ansible_pkg_mgr,
+    {{ vscodium_chrome_path_linux_.get(ansible_facts.pkg_mgr,
     '/usr/bin/google-chrome') }}
   Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
 vscodium_path_linux_:
@@ -20,7 +20,7 @@ vscodium_path_:
   Darwin: /Applications/VSCodium.app/Contents/Resources/app
   FreeBSD: /usr/local/share/codium/resources/app
   Linux: >-
-    {{ vscodium_path_linux_.get(ansible_pkg_mgr,
+    {{ vscodium_path_linux_.get(ansible_facts.pkg_mgr,
     '/usr/share/codium/resources/app') }}
   Win32NT: C:\Program Files\VSCodium\resources\app
 vscodium_system_:
@@ -29,8 +29,8 @@ vscodium_system_:
   Win32NT: windows
 
 vscodium_arch: "{{ vscodium_arch_[system_architecture] }}"
-vscodium_chrome_path: "{{ vscodium_chrome_path_[ansible_system] }}"
-vscodium_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscodium_chrome_path: "{{ vscodium_chrome_path_[ansible_facts.system] }}"
+vscodium_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
 vscodium_custom_html: |
   <style>
     .terminal.xterm {
@@ -75,7 +75,7 @@ vscodium_extensions:
   - vue.volar
 vscodium_font_size: "{{ font_size }}"
 vscodium_style: true
-vscodium_path: "{{ vscodium_path_[ansible_system] }}"
+vscodium_path: "{{ vscodium_path_[ansible_facts.system] }}"
 vscodium_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -92,4 +92,4 @@ vscodium_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
-vscodium_system: "{{ vscodium_system_.get(ansible_system, 'linux') }}"
+vscodium_system: "{{ vscodium_system_.get(ansible_facts.system, 'linux') }}"

@@ -7,7 +7,7 @@
       - rsync
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install utilities for Linux
   ansible.builtin.package:
@@ -17,7 +17,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install utilities for MacOS
   become: true
@@ -28,4 +28,4 @@
       - rsync
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"

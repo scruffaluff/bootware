@@ -8,4 +8,4 @@ system_paths_:
       - /opt/homebrew/sbin
       - /usr/local/bin
 system_paths: >-
-  {{ system_paths_.get(ansible_system, {}).get(system_architecture, []) }}
+  {{ system_paths_.get(ansible_facts.system, {}).get(system_architecture, []) }}

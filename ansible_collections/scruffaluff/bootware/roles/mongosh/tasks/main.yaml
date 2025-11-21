@@ -7,7 +7,7 @@
   register: mongosh_formula_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Mongo Shell temporary directory for Linux
   ansible.builtin.tempfile:
@@ -16,7 +16,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
+    "dnf", "dnf5"]
 
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
@@ -29,7 +30,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
+    "dnf", "dnf5"]
 
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
@@ -45,7 +47,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
+    "dnf", "dnf5"]
 
 - name: Install Mongo Shell for MacOS
   become: true
@@ -54,7 +57,7 @@
     name: mongosh
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Get latest Mongo Shell version for Windows
   ansible.windows.win_uri:
@@ -64,7 +67,7 @@
   register: mongosh_formula_windows
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Mongo Shell for Windows
   ansible.windows.win_package:
@@ -73,7 +76,7 @@
       mongosh_formula_windows.json.versions.stable }}-x64.msi
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Mongo Shell temporary directory for Linux
   ansible.builtin.file:
@@ -82,4 +85,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apk", "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
+    "dnf", "dnf5"]
