@@ -5,7 +5,7 @@
     name: build-base
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install build tools for FreeBSD
   become: true
@@ -18,7 +18,7 @@
       - openocd
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install build tools for Linux
   ansible.builtin.package:
@@ -30,11 +30,11 @@
       - llvm
       - make
       - openocd
-      - "{{ 'pkgconf' if ansible_pkg_mgr == 'apk' else 'pkg-config' }}"
+      - "{{ 'pkgconf' if ansible_facts.pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "opkg"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
@@ -49,7 +49,7 @@
       - openocd
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install build tools for OpenWrt
   ansible.builtin.package:
@@ -61,7 +61,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: ansible_facts.pkg_mgr == "opkg"
 
 - name: Install build tools with Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
@@ -72,7 +72,7 @@
       - windows-sdk-10.1
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
   community.windows.win_scoop:
@@ -86,7 +86,7 @@
       - pkg-config
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

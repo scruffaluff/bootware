@@ -9,7 +9,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: ansible_facts.pkg_mgr == "apk"
 
 - name: Install VSCodium for Arch
   ansible.builtin.command:
@@ -20,7 +20,7 @@
   register: vscodium_arch_install
   tags:
     - install
-  when: ansible_pkg_mgr == "pacman"
+  when: ansible_facts.pkg_mgr == "pacman"
 
 - name: Create VSCodium temporary directory for Debian
   ansible.builtin.tempfile:
@@ -28,7 +28,7 @@
   register: vscodium_temp
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Set VSCodium temporary directory permissions for Debian
   ansible.builtin.file:
@@ -37,7 +37,7 @@
     state: directory
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Download VSCodium GPG key for Debian
   ansible.builtin.get_url:
@@ -47,7 +47,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add VSCodium GPG key for Debian
   ansible.builtin.command:
@@ -59,7 +59,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add VSCodium repository for Debian
   ansible.builtin.apt_repository:
@@ -74,7 +74,7 @@
   register: vscodium_debian
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Install VSCodium for Debian
   ansible.builtin.apt:
@@ -82,7 +82,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"
 
 - name: Add VSCodium GPG key for Fedora
   ansible.builtin.rpm_key:
@@ -90,7 +90,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Add VSCodium repository for Fedora
   ansible.builtin.copy:
@@ -109,7 +109,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCodium for Fedora
   ansible.builtin.dnf:
@@ -117,7 +117,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
 
 - name: Install VSCodium for MacOS
   community.general.homebrew_cask:
@@ -126,7 +126,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install VSCodium for Windows
   chocolatey.chocolatey.win_chocolatey:
@@ -136,7 +136,7 @@
     name: vscodium
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install VSCodium Fish completions for Unix
   ansible.builtin.copy:
@@ -148,7 +148,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install VSCodium extensions for Unix
   ansible.builtin.command:
@@ -158,8 +158,8 @@
   changed_when: "'successfully installed' in vscodium_extension_install.stdout"
   environment:
     PATH: >-
-      /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{ ansible_env.PATH
-      }}
+      /opt/homebrew/bin:/usr/local/bin:/usr/share/codium/bin:{{
+      ansible_facts.env.PATH }}
   failed_when: >-
     vscodium_extension_install.rc != 0 and 'already installed' not in
     vscodium_extension_install.stdout
@@ -167,13 +167,13 @@
   register: vscodium_extension_install
   tags:
     - plugin
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install VSCodium extensions for Windows
   ansible.windows.win_shell: codium --install-extension {{ item }}
   changed_when: "'successfully installed' in vscodium_extension_install.stdout"
   environment:
-    Path: C:\Program Files\VSCodium\bin;{{ ansible_env.Path }}
+    Path: C:\Program Files\VSCodium\bin;{{ ansible_facts.env.Path }}
   failed_when: >-
     vscodium_extension_install.rc != 0 and 'already installed' not in
     vscodium_extension_install.stdout
@@ -181,7 +181,7 @@
   register: vscodium_extension_install
   tags:
     - plugin
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove VSCodium temporary directory for Debian
   ansible.builtin.file:
@@ -189,4 +189,4 @@
     state: absent
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_facts.pkg_mgr == "apt"

@@ -5,7 +5,7 @@
     name: harper
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Get latest Harper version for Linux
   ansible.builtin.uri:
@@ -15,7 +15,7 @@
   register: harper_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Harper temporary directory for Linux
   ansible.builtin.tempfile:
@@ -23,7 +23,7 @@
   register: harper_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Harper temporary directory permissions for Linux
   ansible.builtin.file:
@@ -32,7 +32,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Harper for Linux
   ansible.builtin.unarchive:
@@ -48,7 +48,7 @@
     - harper-ls
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Harper for Linux
   ansible.builtin.copy:
@@ -63,7 +63,7 @@
     - harper-ls
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Harper for MacOS
   become: true
@@ -72,7 +72,7 @@
     name: harper
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Harper for Windows
   community.windows.win_scoop:
@@ -80,7 +80,7 @@
     name: harper
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Harper temporary directory for Linux
   ansible.builtin.file:
@@ -88,4 +88,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

@@ -5,7 +5,7 @@
     name: io.dbeaver.DBeaverCommunity
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install DBeaver for MacOS
   community.general.homebrew_cask:
@@ -14,7 +14,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install DBeaver for Windows
   community.windows.win_scoop:
@@ -22,4 +22,4 @@
     name: dbeaver
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

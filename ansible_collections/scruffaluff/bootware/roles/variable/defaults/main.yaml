@@ -1,15 +1,15 @@
 ---
 brew_prefix: >-
-  {{ '/opt/homebrew' if ansible_architecture in ['aarch64', 'arm64'] else
+  {{ '/opt/homebrew' if ansible_facts.architecture in ['aarch64', 'arm64'] else
   '/usr/local' }}
-user_id: "{{ ansible_user_id }}"
+user_id: "{{ ansible_facts.user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
   FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   # Backslashes are required for Windows Defender firewall rules.
   Win32NT: C:\Users\{{ user_id }}
-user_home: "{{ user_home_.get(ansible_system, '/home/' + user_id) }}"
+user_home: "{{ user_home_.get(ansible_facts.system, '/home/' + user_id) }}"
 
 bash_completion_:
   Darwin: "{{ brew_prefix }}/share/bash-completion/completions"
@@ -36,7 +36,7 @@ github_api_token_: >-
 group_id_:
   Darwin: "{{ 'wheel' if user_id == 'root' else 'staff' }}"
   FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
-  Linux: "{{ {'zypper': 'users'}.get(ansible_pkg_mgr, user_id) }}"
+  Linux: "{{ {'zypper': 'users'}.get(ansible_facts.pkg_mgr, user_id) }}"
 nushell_executable_:
   Darwin: "{{ brew_prefix }}/bin/nu"
   FreeBSD: /usr/local/bin/nu
@@ -53,7 +53,7 @@ nushell_user_vendor_autoload_:
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 system_libc_:
-  Linux: "{{ 'musl' if ansible_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
+  Linux: "{{ 'musl' if ansible_facts.pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
   64-bit: amd64
   64bit: amd64
@@ -64,30 +64,31 @@ system_architecture_:
   x64: amd64
   x86_64: amd64
 bash_completion: >-
-  {{ bash_completion_.get(ansible_system,
+  {{ bash_completion_.get(ansible_facts.system,
   '/usr/share/bash-completion/completions') }}
-bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
+bash_executable: "{{ bash_executable_.get(ansible_facts.system, '/bin/bash') }}"
 bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
 fish_completion: >-
-  {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
-fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
+  {{ fish_completion_.get(ansible_facts.system, '/etc/fish/completions') }}
+fish_executable:
+  "{{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}"
 fish_user_completion: "{{ user_home }}/.config/fish/completions"
 fish_vendor_completion: >-
-  {{ fish_vendor_completion_.get(ansible_system, '/usr/share/fish/completions')
-  }}
+  {{ fish_vendor_completion_.get(ansible_facts.system,
+  '/usr/share/fish/completions') }}
 font_size: 14
 github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
-group_id: "{{ group_id_.get(ansible_system, user_id) }}"
+group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
 nushell_executable: >-
-  {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
+  {{  nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
 nushell_vendor_autoload: >-
-  {{  nushell_vendor_autoload_.get(ansible_system,
+  {{  nushell_vendor_autoload_.get(ansible_facts.system,
   '/usr/local/share/nushell/vendor/autoload') }}
 nushell_user_vendor_autoload: >-
-  {{  nushell_user_vendor_autoload_.get(ansible_system, user_home +
+  {{  nushell_user_vendor_autoload_.get(ansible_facts.system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 powershell_module_paths:
@@ -98,7 +99,9 @@ powershell_user_module_paths:
   - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
 scoop_path: C:\ProgramData\scoop
 scoop_user_path: "{{ user_home }}\\scoop"
-system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
-system_libc: "{{ system_libc_.get(ansible_system, '') }}"
-user_login: "{{ 'powershell' if ansible_system == 'Win32NT' else 'bash' }}"
+system_architecture:
+  "{{ system_architecture_.get(ansible_facts.architecture, '') }}"
+system_libc: "{{ system_libc_.get(ansible_facts.system, '') }}"
+user_login:
+  "{{ 'powershell' if ansible_facts.system == 'Win32NT' else 'bash' }}"
 user_shell: nushell

@@ -5,7 +5,7 @@
   register: fzf_temp
   tags:
     - install
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]
 
 # TODO: Renable when Fzf package in most distributions reaches version 0.48.0.
 # - name: Install FzF for FreeBSD
@@ -14,7 +14,7 @@
 #     name: fzf
 #   tags:
 #     - install
-#   when: ansible_system == "FreeBSD"
+#   when: ansible_facts.system == "FreeBSD"
 #
 # - name: Install Fzf for Linux
 #   ansible.builtin.package:
@@ -24,7 +24,7 @@
 #   register: fzf_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux"
+#   when: ansible_facts.system == "Linux"
 
 - name: Get latest Fzf version for Unix
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
   register: fzf_formula
   tags:
     - install
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]
 
 # Some of the Fzf releases have a "v" in the name while others do not.
 #
@@ -49,7 +49,7 @@
     src: >-
       https://github.com/junegunn/fzf/releases/download/{{ item }}{{
       fzf_formula.json.versions.stable }}/fzf-{{
-      fzf_formula.json.versions.stable }}-{{ ansible_system | lower }}_{{
+      fzf_formula.json.versions.stable }}-{{ ansible_facts.system | lower }}_{{
       system_architecture }}.tar.gz
   ignore_errors: "{{ item != 'v' }}"
   loop:
@@ -62,7 +62,7 @@
     fzf_unarchive_run: >-
       {{ (fzf_unarchive_result is failed) if fzf_unarchive_result is defined
       else true }}
-  when: ansible_system in ["FreeBSD", "Linux"] and fzf_unarchive_run
+  when: ansible_facts.system in ["FreeBSD", "Linux"] and fzf_unarchive_run
 
 - name: Install Fzf for Unix
   ansible.builtin.copy:
@@ -74,7 +74,7 @@
   become: true
   tags:
     - install
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Install FzF for MacOS
   become: true
@@ -85,7 +85,7 @@
       - tree
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install FzF for Windows
   community.windows.win_scoop:
@@ -95,7 +95,7 @@
       - psfzf
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
@@ -108,4 +108,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]

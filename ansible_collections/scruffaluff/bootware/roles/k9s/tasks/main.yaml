@@ -5,7 +5,7 @@
     name: k9s
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install K9s for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: k9s_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest K9s version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: k9s_formula
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
 
 - name: Create K9s temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: k9s_temp
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
 
 - name: Set K9s temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
 
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
@@ -55,7 +55,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for Linux
   ansible.builtin.copy:
@@ -67,7 +67,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
 
 - name: Install K9s for MacOS
   become: true
@@ -76,7 +76,7 @@
     name: k9s
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install K9s for Windows
   community.windows.win_scoop:
@@ -84,7 +84,7 @@
     name: k9s
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create K9s configuration directory for Unix
   ansible.builtin.file:
@@ -96,7 +96,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create K9s configuration directory for Windows
   ansible.windows.win_file:
@@ -104,7 +104,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy K9s settings files for Unix
   ansible.builtin.copy:
@@ -122,7 +122,7 @@
       source: skin.yaml
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy K9s settings files for Windows
   ansible.windows.win_copy:
@@ -136,7 +136,7 @@
       source: skin.yaml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of K9s files for Windows
   ansible.windows.win_owner:
@@ -145,7 +145,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove K9s temporary directory for Linux
   ansible.builtin.file:
@@ -153,4 +153,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and k9s_linux is failed
+  when: ansible_facts.system == "Linux" and k9s_linux is failed
