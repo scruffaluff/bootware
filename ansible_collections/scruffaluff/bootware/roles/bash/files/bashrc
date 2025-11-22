@@ -338,12 +338,17 @@ if [[ -x "$(command -v lsd)" ]]; then
   alias ls='lsd'
 fi
 
+# Miniserve settings.
+
+# Serve index file if available.
+export MINISERVE_INDEX='index.html'
+
 # Python settings.
 
 # Add Jupyter Lab alias.
 jupylab() {
-  uv --quiet tool run --from jupyterlab --with bokeh,numpy,polars,scipy \
-    jupyter-lab "$@"
+  uv --quiet tool run --from jupyterlab --with \
+    bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab "$@"
 }
 # Add Python debugger alias.
 alias pdb='python3 -m pdb'
@@ -365,9 +370,14 @@ fi
 
 # Rclone settings.
 
+# Make Rclone create empty intermediate folders.
+export RCLONE_CREATE_EMPTY_SRC_DIRS='true'
 # Make Rclone skip modification time updates.
 export RCLONE_NO_UPDATE_DIR_MODTIME='true'
 export RCLONE_NO_UPDATE_MODTIME='true'
+# Make Rclone show progress bars.
+export RCLONE_PROGRESS='true'
+export RCLONE_STATS_ONE_LINE='true'
 
 # Ripgrep settings.
 
@@ -387,13 +397,15 @@ prepend-paths "${HOME}/.cargo/bin"
 
 # Shell settings.
 
+# Add alias for make directory with parents.
+alias mkdir='mkdir -p'
 # Add alias for remove by force.
 alias rmf='rm -fr'
-# Make Rsync use progress bars and skip ignored files.
+# Add alias for Rsync with progress bars and ignored files.
 alias rsync='rsync --partial --progress --filter ":- .gitignore"'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING='1'
-# Prevent `Ctrl+D` keybinding on an empty line from closing the shell.
+# Prevent `Ctrl+D` keybinding from closing the shell on an empty line.
 export IGNOREEOF='-1'
 
 # Configure completions and keybindings if interactive.

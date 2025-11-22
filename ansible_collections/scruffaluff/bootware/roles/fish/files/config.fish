@@ -116,20 +116,19 @@ function fzf-path-widget
     set --function path
     set --function cwd "$PWD"
     set --function token (commandline --current-token)
+    set --function argument \
+        (string replace '~' "$HOME" (string trim --chars '"\'' $token))
 
-    # Build Fzf search path from current token.
+    # Build Fzf search from current token or exit early if invalid.
     set --function search_dir
-    if test -n $token
-        set search_dir \
-            (string replace '~' "$HOME" (string trim --chars '"\'' $token))
-    else
+    if test -z $argument
         set search_dir .
-    end
-
-    # Exit early if search path is invalid or change Fzf execution directory.
-    if not test -d $search_dir
+    else if test -d $argument
+        set search_dir $argument
+    else
         return
     end
+
     cd $search_dir
     set path (fzf --scheme path --walker file,dir,follow,hidden)
     cd $cwd
@@ -439,11 +438,16 @@ if type -q lsd
     alias ls lsd
 end
 
+# Miniserve settings.
+
+# Serve index file if available.
+set --export MINISERVE_INDEX index.html
+
 # Python settings.
 
 # Add Jupyter Lab alias.
 alias jupylab \
-    'uv --quiet tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab'
+    'uv --quiet tool run --from jupyterlab --with bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 
@@ -464,9 +468,14 @@ end
 
 # Rclone settings.
 
+# Make Rclone create empty intermediate folders.
+set --export RCLONE_CREATE_EMPTY_SRC_DIRS true
 # Make Rclone skip modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
 set --export RCLONE_NO_UPDATE_MODTIME true
+# Make Rclone show progress bars.
+set --export RCLONE_PROGRESS true
+set --export RCLONE_STATS_ONE_LINE true
 
 # Ripgrep settings.
 
@@ -486,9 +495,11 @@ prepend-paths "$HOME/.cargo/bin"
 
 # Shell settings.
 
+# Add alias for make directory with parents.
+alias mkdir 'mkdir -p'
 # Add alias for remove by force.
 alias rmf 'rm -fr'
-# Make Rsync use progress bars and skip ignored files.
+# Add alias for Rsync with progress bars and ignored files.
 alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
@@ -516,7 +527,7 @@ if test -n $tty
         bind \ez undo
         bind \ue002 'prevd; commandline --function repaint'
         bind \ue003 'nextd; commandline --function repaint'
-        bind \ue005 complete
+        bind \ue006 complete
     end
 
     # Set solarized light theme variables based on

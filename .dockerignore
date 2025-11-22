@@ -8,6 +8,8 @@
 .git/
 .github/
 .gitignore
+.mypy_cache/
+.pytest_cache/
 .venv/
 *.bak
 *.dockerfile

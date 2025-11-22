@@ -1,0 +1,232 @@
+{
+  "shortcuts": [
+    {
+      "command": "application:activate-next-tab",
+      "disabled": true,
+      "keys": ["Ctrl Shift ]"],
+      "selector": "body"
+    },
+    {
+      "command": "application:activate-previous-tab",
+      "disabled": true,
+      "keys": ["Ctrl Shift ["],
+      "selector": "body"
+    },
+    {
+      "command": "application:close",
+      "disabled": true,
+      "keys": ["Alt W"],
+      "selector": ".jp-Activity"
+    },
+    {
+      "command": "application:toggle-left-area",
+      "disabled": true,
+      "keys": ["Accel B"],
+      "selector": "body"
+    },
+    {
+      "command": "application:toggle-right-area",
+      "disabled": true,
+      "keys": ["Accel J"],
+      "selector": "body"
+    },
+    {
+      "command": "apputils:activate-command-palette",
+      "disabled": true,
+      "keys": ["Accel Shift C"],
+      "selector": "body"
+    },
+    {
+      "command": "apputils:display-shortcuts",
+      "disabled": true,
+      "keys": ["Accel Shift H"],
+      "selector": "body"
+    },
+    {
+      "command": "codemirror:toggle-comment",
+      "disabled": true,
+      "keys": ["Accel /"],
+      "selector": ".cm-content"
+    },
+    {
+      "command": "debugger:continue",
+      "disabled": true,
+      "keys": ["F9"],
+      "selector": "body"
+    },
+    {
+      "command": "debugger:next",
+      "disabled": true,
+      "keys": ["F10"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:show-panel",
+      "disabled": true,
+      "keys": ["Accel Shift E"],
+      "selector": "body"
+    },
+    {
+      "command": "debugger:stepIn",
+      "disabled": true,
+      "keys": ["F11"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:stepOut",
+      "disabled": true,
+      "keys": ["Shift F11"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:terminate",
+      "disabled": true,
+      "keys": ["Shift F9"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "filebrowser:toggle-main",
+      "disabled": true,
+      "keys": ["Accel Shift F"],
+      "selector": "body"
+    },
+    {
+      "command": "inline-completer:accept",
+      "disabled": true,
+      "keys": ["Alt End"],
+      "selector": ".jp-mod-inline-completer-active"
+    },
+    {
+      "command": "notebook:extend-marked-cells-above",
+      "disabled": true,
+      "keys": ["Shift K"],
+      "selector": ".jp-Notebook.jp-mod-commandMode:not(.jp-mod-readWrite) :focus"
+    },
+    {
+      "command": "notebook:extend-marked-cells-below",
+      "disabled": true,
+      "keys": ["Shift J"],
+      "selector": ".jp-Notebook.jp-mod-commandMode:not(.jp-mod-readWrite) :focus"
+    },
+    {
+      "command": "application:activate-next-tab",
+      "disabled": false,
+      "keys": ["Ctrl Shift ;"],
+      "selector": "body"
+    },
+    {
+      "command": "application:activate-previous-tab",
+      "disabled": false,
+      "keys": ["Ctrl Shift J"],
+      "selector": "body"
+    },
+    {
+      "command": "application:close",
+      "disabled": false,
+      "keys": ["Ctrl Shift W"],
+      "selector": ".jp-Activity"
+    },
+    {
+      "command": "application:toggle-left-area",
+      "disabled": false,
+      "keys": ["Shift Ctrl A"],
+      "selector": "body"
+    },
+    {
+      "command": "application:toggle-right-area",
+      "disabled": false,
+      "keys": ["Shift Ctrl X"],
+      "selector": "body"
+    },
+    {
+      "command": "apputils:activate-command-palette",
+      "disabled": false,
+      "keys": ["Ctrl Shift P"],
+      "selector": "body"
+    },
+    {
+      "command": "apputils:display-shortcuts",
+      "disabled": false,
+      "keys": ["Ctrl Shift H"],
+      "selector": "body"
+    },
+    {
+      "command": "codemirror:toggle-comment",
+      "disabled": false,
+      "keys": ["Ctrl /"],
+      "selector": ".cm-content"
+    },
+    {
+      "command": "completer:invoke-console",
+      "disabled": false,
+      "keys": ["Ctrl I"],
+      "selector": ".jp-CodeConsole-promptCell .jp-mod-completer-enabled:not(.jp-mod-at-line-beginning)"
+    },
+    {
+      "command": "completer:invoke-file",
+      "disabled": false,
+      "keys": ["Ctrl I"],
+      "selector": ".jp-FileEditor .jp-mod-completer-enabled:not(.jp-mod-at-line-beginning)"
+    },
+    {
+      "command": "completer:invoke-notebook",
+      "disabled": false,
+      "keys": ["Ctrl I"],
+      "selector": ".jp-Notebook.jp-mod-editMode .jp-mod-completer-enabled:not(.jp-mod-at-line-beginning)"
+    },
+    {
+      "command": "debugger:continue",
+      "disabled": false,
+      "keys": ["Alt P"],
+      "selector": "body"
+    },
+    {
+      "command": "debugger:next",
+      "disabled": false,
+      "keys": ["Alt N"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:show-panel",
+      "disabled": false,
+      "keys": ["Ctrl Shift D"],
+      "selector": "body"
+    },
+    {
+      "command": "debugger:stepIn",
+      "disabled": false,
+      "keys": ["Alt S"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:stepOut",
+      "disabled": false,
+      "keys": ["Alt O"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "debugger:terminate",
+      "disabled": false,
+      "keys": ["Alt Q"],
+      "selector": "[data-jp-debugger-stopped-threads='true']"
+    },
+    {
+      "command": "inline-completer:accept",
+      "disabled": false,
+      "keys": ["Ctrl I"],
+      "selector": ".jp-mod-inline-completer-active"
+    },
+    {
+      "command": "filebrowser:toggle-main",
+      "disabled": false,
+      "keys": ["Ctrl Shift E"],
+      "selector": "body"
+    },
+    {
+      "command": "notebook:extend-marked-cells-below",
+      "disabled": false,
+      "keys": ["Ctrl L"],
+      "selector": ".jp-Notebook.jp-mod-commandMode:not(.jp-mod-readWrite) :focus"
+    }
+  ]
+}

@@ -16,7 +16,7 @@
   { "command": "-editor.action.blockComment", "key": "ctrl+shift+a" },
   { "command": "-editor.action.deleteLines", "key": "{{ vscodium_ctrl_key }}+shift+k" },
   { "command": "-editor.action.goToBottomHover", "key": "{{ vscodium_ctrl_key }}+down" },
-  { "command": "-editor.action.goToTopHover", "key": "{{ vscodium_ctrl_key }}+up"},
+  { "command": "-editor.action.goToTopHover", "key": "{{ vscodium_ctrl_key }}+up" },
   { "command": "-editor.action.selectAll", "key": "{{ vscodium_ctrl_key }}+a" },
   { "command": "-editor.action.selectHighlights", "key": "{{ vscodium_ctrl_key }}+shift+l" },
   { "command": "-editor.action.toggleTabFocusMode", "key": "ctrl+shift+m" },
@@ -61,6 +61,7 @@
   { "command": "-workbench.action.debug.stop", "key": "shift+f5" },
   { "command": "-workbench.action.files.saveAs", "key": "{{ vscodium_ctrl_key }}+shift+s" },
   { "command": "-workbench.action.files.saveLocalFile", "key": "{{ vscodium_ctrl_key }}+shift+s" },
+  { "command": "-workbench.action.gotoLine", "key": "ctrl+g" },
   { "command": "-workbench.action.gotoSymbol", "key": "{{ vscodium_ctrl_key }}+shift+o" },
   { "command": "-workbench.action.navigateBack", "key": "ctrl+-" },
   { "command": "-workbench.action.navigateForward", "key": "ctrl+shift+-" },
@@ -76,6 +77,7 @@
     "key": "ctrl+tab"
   },
   { "command": "-workbench.action.reopenClosedEditor", "key": "{{ vscodium_ctrl_key }}+shift+t" },
+  { "command": "-workbench.action.splitEditor", "key": "ctrl+\\" },
   { "command": "-workbench.action.switchWindow", "key": "ctrl+w" },
   { "command": "-workbench.action.tasks.build", "key": "{{ vscodium_ctrl_key }}+shift+b" },
   {
@@ -90,8 +92,10 @@
   { "command": "-workbench.action.terminal.focus", "key": "{{ vscodium_ctrl_key }}+down" },
   { "command": "-workbench.action.terminal.focusFind", "key": "{{ vscodium_ctrl_key }}+f" },
   { "command": "-workbench.action.terminal.focusNextPane", "key": "alt+down" },
-  { "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up" },
-  { 
+  {
+    "command": "-workbench.action.terminal.focusPreviousPane", "key": "alt+up"
+  },
+  {
     "command": "-workbench.action.terminal.goToRecentDirectory",
     "key": "{{ vscodium_ctrl_key }}+g"
   },
@@ -139,6 +143,7 @@
   { "command": "-workbench.action.toggleSidebarVisibility", "key": "{{ vscodium_ctrl_key }}+b" },
   { "command": "-workbench.actions.view.problems", "key": "{{ vscodium_ctrl_key }}+shift+m" },
   { "command": "-workbench.debug.action.toggleRepl", "key": "{{ vscodium_ctrl_key }}+shift+y" },
+  { "command": "-workbench.debug.panel.action.clearReplAction", "key": "{{ vscodium_ctrl_key }}+k" },
   { "command": "-workbench.files.action.compareWithSaved", "key": "{{ vscodium_ctrl_key }}+k d" },
   { "command": "-workbench.view.extensions", "key": "{{ vscodium_ctrl_key }}+shift+x" },
   {
@@ -151,8 +156,8 @@
     "key": "ctrl+f",
     "when": "editorFocus || editorIsOpen"
   },
-  { 
-    "command": "bookmarks.listFromAllFiles", 
+  {
+    "command": "bookmarks.listFromAllFiles",
     "key": "{{ vscodium_ctrl_key }}+k l"
   },
   {
@@ -200,7 +205,7 @@
     "key": "alt+l",
     "when": "textInputFocus && !terminalFocus"
   },
-  { 
+  {
     "command": "cursorWordLeft",
     "key": "shift+left",
     "when": "textInputFocus"
@@ -225,12 +230,12 @@
     "key": "ctrl+right",
     "when": "textInputFocus"
   },
-  { 
+  {
     "command": "cursorWordRight",
     "key": "shift+right",
     "when": "textInputFocus"
   },
-  { 
+  {
     "command": "deleteAllLeft",
     "key": "ctrl+u",
     "when": "textInputFocus && !terminalFocus"
@@ -250,6 +255,21 @@
   {
     "command": "editor.action.commentLine",
     "key": "ctrl+/",
+    "when": "editorTextFocus"
+  },
+  {
+    "command": "editor.action.goToImplementation",
+    "key": "ctrl+g i",
+    "when": "editorTextFocus && editorHasImplementationProvider"
+  },
+  {
+    "command": "editor.action.goToReferences",
+    "key": "ctrl+g r",
+    "when": "editorTextFocus && editorHasReferenceProvider && !inReferenceSearchEditor && !isInEmbeddedEditor"
+  },
+  {
+    "command": "editor.action.goToTypeDefinition",
+    "key": "ctrl+g t",
     "when": "editorTextFocus"
   },
   {
@@ -273,13 +293,23 @@
     "when": "editorTextFocus"
   },
   {
-    "command": "editor.action.peekDefinition",
-    "key": "{{ vscodium_ctrl_key }}+k p",
-    "when": "editorTextFocus && editorHasDefinitionProvider"
+    "command": "editor.action.marker.nextInFiles",
+    "key": "ctrl+g p",
+    "when": "editorFocus"
+  },
+  {
+    "command": "editor.action.marker.prevInFiles",
+    "key": "ctrl+g shift+p",
+    "when": "editorFocus"
+  },
+  {
+    "command": "editor.action.revealDeclaration",
+    "key": "ctrl+g shift+d",
+    "when": "editorTextFocus"
   },
   {
     "command": "editor.action.revealDefinition",
-    "key": "{{ vscodium_ctrl_key }}+k d",
+    "key": "ctrl+g d",
     "when": "editorTextFocus && editorHasDefinitionProvider"
   },
   {
@@ -309,6 +339,51 @@
   },
   { "command": "redo", "key": "ctrl+shift+z" },
   {
+    "args": {
+      "commands": [
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.focusActiveEditorGroup"
+      ]
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && !panelVisible && sideBarVisible"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.togglePanel",
+        "workbench.action.focusActiveEditorGroup"
+      ]
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && panelVisible && !sideBarVisible"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.togglePanel",
+        "workbench.action.toggleSidebarVisibility",
+        "workbench.action.focusActiveEditorGroup"
+      ]
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "editorFocus && ((panelVisible && sideBarVisible) || (!panelVisible && !sideBarVisible))"
+  },
+  {
+    "args": {
+      "commands": [
+        "workbench.action.toggleMaximizedPanel",
+        "workbench.action.toggleSidebarVisibility"
+      ]
+    },
+    "command": "runCommands",
+    "key": "ctrl+shift+m",
+    "when": "panelFocus && ((panelMaximized && !sideBarVisible) || (!panelMaximized && sideBarVisible))"
+  },
+  {
     "command": "selectNextSuggestion",
     "key": "ctrl+n",
     "when": "suggestWidgetVisible"
@@ -324,14 +399,24 @@
     "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && textInputFocus"
   },
   { "command": "undo", "key": "ctrl+z" },
-  { 
+  {
     "command": "workbench.action.closeActiveEditor",
     "key": "ctrl+shift+w",
     "when": "!panelFocus"
   },
   {
     "command": "workbench.action.compareEditor.nextChange",
+    "key": "ctrl+g g",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.nextChange",
     "key": "ctrl+shift+]",
+    "when": "textCompareEditorVisible"
+  },
+  {
+    "command": "workbench.action.compareEditor.previousChange",
+    "key": "ctrl+g shift+g",
     "when": "textCompareEditorVisible"
   },
   {
@@ -358,6 +443,21 @@
     "command": "workbench.action.debug.disconnect",
     "key": "alt+q",
     "when": "inDebugMode && focusedSessionIsAttach"
+  },
+  {
+    "command": "workbench.action.debug.nextConsole",
+    "key": "ctrl+shift+;",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
+  },
+  {
+    "command": "workbench.action.debug.pause",
+    "key": "alt+p",
+    "when": "debugState == 'running' && !terminalFocus"
+  },
+  {
+    "command": "workbench.action.debug.prevConsole",
+    "key": "ctrl+shift+j",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
   },
   {
     "command": "workbench.action.debug.restart",
@@ -411,6 +511,7 @@
     "key": "ctrl+shift+s",
     "when": "panelFocus"
   },
+  { "command": "workbench.action.gotoLine", "key": "ctrl+g l" },
   {
     "command": "workbench.action.moveEditorLeftInGroup",
     "key": "ctrl+shift+left",
@@ -427,8 +528,18 @@
     "when": "!panelFocus"
   },
   {
+    "command": "workbench.action.navigateBack",
+    "key": "ctrl+g j",
+    "when": "!panelFocus"
+  },
+  {
     "command": "workbench.action.navigateForward",
     "key": "ctrl+]",
+    "when": "!panelFocus"
+  },
+  {
+    "command": "workbench.action.navigateForward",
+    "key": "ctrl+g ;",
     "when": "!panelFocus"
   },
   {
@@ -502,20 +613,25 @@
   },
   {
     "command": "workbench.action.quickOpen",
-    "key": "ctrl+shift+o",
+    "key": "ctrl+shift+o"
   },
-  { 
+  {
     "command": "workbench.action.quickOpenSelectNext",
     "key": "ctrl+n",
     "when": "inQuickOpen"
   },
-  { 
+  {
     "command": "workbench.action.quickOpenSelectPrevious",
     "key": "ctrl+p",
     "when": "inQuickOpen"
   },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
+  {
+    "command": "workbench.action.splitEditor",
+    "key": "ctrl+\\",
+    "when": "editorFocus"
+  },
   {
     "command": "workbench.action.terminal.focus",
     "key": "ctrl+shift+s",
@@ -589,11 +705,17 @@
   {
     "args": { "text": "\ue005" },
     "command": "workbench.action.terminal.sendSequence",
-    "key": "ctrl+i",
+    "key": "ctrl+\\",
     "when": "terminalFocus"
   },
   {
     "args": { "text": "\ue006" },
+    "command": "workbench.action.terminal.sendSequence",
+    "key": "ctrl+i",
+    "when": "terminalFocus"
+  },
+  {
+    "args": { "text": "\ue007" },
     "command": "workbench.action.terminal.sendSequence",
     "key": "ctrl+j",
     "when": "terminalFocus"
@@ -605,12 +727,18 @@
   },
   {
     "command": "workbench.action.toggleMaximizedPanel",
-    "key": "ctrl+shift+m"
+    "key": "ctrl+shift+m",
+    "when": "panelFocus && ((panelMaximized && sideBarVisible) || (!panelMaximized && !sideBarVisible))"
   },
   { "command": "workbench.action.togglePanel", "key": "ctrl+shift+x" },
   {
     "command": "workbench.action.toggleSidebarVisibility",
     "key": "ctrl+shift+a"
+  },
+  {
+    "command": "workbench.debug.panel.action.clearReplAction",
+    "key": "ctrl+l",
+    "when": "panelFocus && activePanel == 'workbench.panel.repl'"
   },
   {
     "command": "workbench.panel.repl.view.focus",

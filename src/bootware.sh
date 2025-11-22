@@ -350,6 +350,19 @@ bootstrap() {
     log 'Enter your user account password when prompted.'
   fi
 
+  # Disable Ansible deprecation warnings.
+  export ANSIBLE_DEPRECATION_WARNINGS='false'
+  # Disable Ansible Pull warnings about parsing the local hostname.
+  export ANSIBLE_HOST_PATTERN_MISMATCH='ignore'
+  # Use legacy style Ansible facts.
+  export ANSIBLE_INJECT_FACT_VARS='true'
+  # Disable file optimizations that can conflict with become operations.
+  export ANSIBLE_PIPELINING='false'
+  # Disable warnings about implicit Python interpreter selection.
+  export ANSIBLE_PYTHON_INTERPRETER='auto_silent'
+  # Disable Python buffering to ensure realtime stdout for MacOS.
+  export PYTHONUNBUFFERED='1'
+
   # Do not quote extra_args. Otherwise extra_args will be interpreted as a
   # single argument.
   # shellcheck disable=SC2086
@@ -359,8 +372,6 @@ bootstrap() {
     --extra-vars "@${config_path}" \
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
-    --extra-vars 'ansible_pipelining=false' \
-    --extra-vars 'ansible_python_interpreter=auto_silent' \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
@@ -1064,9 +1075,9 @@ setup_macos() {
   # On Apple silicon, brew is not in the system path after installation.
   export PATH="/opt/homebrew/bin:${PATH}"
 
-  # Install XCode command line tools if not already installed.
+  # Install Xcode command line tools if not already installed.
   #
-  # Homebrew depends on the XCode command line tools.
+  # Homebrew depends on the Xcode command line tools.
   # Flags:
   #   -p: Print path to active developer directory.
   if ! xcode-select -p > /dev/null 2>&1; then

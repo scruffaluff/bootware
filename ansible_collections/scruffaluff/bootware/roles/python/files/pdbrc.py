@@ -14,13 +14,57 @@ import subprocess
 import sys
 import tempfile
 import traceback
+from argparse import ArgumentError, ArgumentParser
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import TYPE_CHECKING, Any, Callable, cast
+from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 if TYPE_CHECKING:
+    from argparse import Namespace
+    from collections.abc import Callable, Iterator, Sequence
     from pdb import Pdb
     from types import FrameType, TracebackType
+
+
+class Expr(NamedTuple):
+    """Command line expression with location."""
+
+    expr: str
+    start: int
+    stop: int
+
+
+class Parser(ArgumentParser):
+    """Argument parser for PDB commands."""
+
+    def __init__(self) -> None:
+        """Create a new Parser instance."""
+        super().__init__(exit_on_error=False)
+
+    def parse_line(self, line: str) -> tuple[str, Namespace]:
+        """Parse line for PDB command."""
+        index = 0
+        previous = False
+        tokens = shlex.split(line)
+        for token in tokens:
+            if token.startswith("-"):
+                previous = True
+            elif previous:
+                previous = False
+            else:
+                break
+            index += 1
+
+        try:
+            args = self.parse_args(tokens[:index])
+        except ArgumentError:
+            index -= 1
+            try:
+                args = self.parse_args(tokens[:index])
+            except ArgumentError:
+                return line, self.parse_args([])
+        rest = drop_tokens(tokens[:index], line)
+        return rest, args
 
 
 def break_exception(self: Pdb) -> Callable:
@@ -57,7 +101,7 @@ def catalog(
         for key in sorted(object_.__dict__.keys()):
             # Avoid key __builtins__ since formatting it can cause a crash.
             if not isinstance(key, str) or (
-                key != "__builtins__" and regex_.match(key)
+                key != "__builtins__" and regex_.search(key)
             ):
                 value = pprint.pformat(object_.__dict__[key])
                 values.append(f"{name_}.{key} = {value}")
@@ -73,23 +117,20 @@ def curframe(pdb: Pdb) -> FrameType:
 
 
 def do_cat(self: Pdb, line: str) -> None:
-    """cat object [, regex]
+    """cat -r, --regex <regex> object
 
     Print object catalog with default pager.
     """  # noqa: D403, D415
-    if not line.strip():
-        error("Command cat takes one or two arguments")
-        return
+    parser = Parser()
+    parser.add_argument("-r", "--regex", default=None)
+    rest, args = parser.parse_line(line)
+
     try:
-        object_ = parse(self, line)
+        object_ = parse(self, rest)
+        cat(object_, regex=args.regex)
     except Exception as exception:
         error(exception)
         return
-
-    if isinstance(object_, tuple) and len(object_) == 2 and isinstance(object_[1], str):  # noqa: PLR2004
-        cat(*object_)
-    else:
-        cat(object_)
 
 
 def do_doc(self: Pdb, line: str) -> None:
@@ -138,20 +179,26 @@ def do_nextlist(self: Pdb, _arg: str) -> int:
     return 1
 
 
+def do_nushell(self: Pdb, line: str) -> None:
+    """nu(shell) -c, --cwd <path> [expression]
+
+    Execute Nushell expression or start interactive session.
+    """  # noqa: D415
+    line_ = parse_exprs(self, line)
+    parser = Parser()
+    parser.add_argument("-c", "--cwd", default=None)
+    rest, args = parser.parse_line(line_)
+    nushell(rest, cwd=args.cwd)
+
+
 def do_shell(self: Pdb, line: str) -> None:
     """sh(ell) [command]
 
-    Execute shell command or start interactive shell on empty command.
+    Execute command or start interactive default shell session.
     """  # noqa: D415
-    arguments = []
-    for argument in map(os.path.expanduser, shlex.split(line.strip())):
-        try:
-            object_ = parse_expr(self, argument)
-        except Exception:  # noqa: PERF203
-            arguments.append(argument)
-        else:
-            arguments.append(str(object_))
-    shell(arguments, curframe(self))
+    line_ = parse_exprs(self, line)
+    arguments = list(map(os.path.expanduser, shlex.split(line_.strip())))
+    shell(arguments)
 
 
 def do_steplist(self: Pdb, arg: str) -> int:
@@ -181,6 +228,22 @@ def doc(object_: Any) -> None:
         page(docstring)
     else:
         page(f"{signature}\n{docstring}")
+
+
+def drop_tokens(tokens: list[str], line: str) -> str:
+    """Remove lexical tokens from start of line."""
+    position = 0
+    for token in tokens:
+        index = line.find(token, position)
+        if index == -1:
+            message = f"Tokens {tokens} are not a subset of line '{line}'."
+            raise ValueError(message)
+        position = index + len(token)
+
+        # Remove trailing quotes after token that shlex may have ignored.
+        while not list_get(line, position, " ").isspace():
+            position += 1
+    return line[position:].lstrip()
 
 
 def edit(object_: Any = None, frame: Any = None) -> None:
@@ -220,20 +283,19 @@ def error(message: str | Exception) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
-# TODO: Break function into smaller components.
-def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
-    """Find Python variables starting with % or expression surrounded by '%{}'."""
+def find_exprs(line: str) -> Iterator[Expr]:  # noqa: C901
+    """Find Python variables starting with % or expressions surrounded by %{}."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
     index = 0
-    length = len(input_)
+    length = len(line)
     stack: list[int] = []
     variable: list[int] = []
 
     while index < length:
-        character = input_[index]
+        character = line[index]
         try:
-            next_ = input_[index + 1]
+            next_ = line[index + 1]
         except IndexError:
             next_ = None
 
@@ -241,7 +303,8 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             if character == "}":
                 start = stack.pop()
                 if not stack:
-                    return start - 2, index + 1, input_[start:index]
+                    stack = []
+                    yield Expr(line[start:index], start - 2, index + 1)
             elif character == "{":
                 stack.append(index + 1)
             index += 1
@@ -249,7 +312,7 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             index += 1
             if next_ not in chars:
                 start = variable.pop()
-                return start - 1, index, input_[start:index]
+                yield Expr(line[start:index], start - 1, index)
         elif character == "%" and next_ == "{":
             stack.append(index + 2)
             index += 2
@@ -258,7 +321,6 @@ def find_expr(input_: str) -> tuple[int, int, str]:  # noqa: C901
             index += 1
         else:
             index += 1
-    return length, length, ""
 
 
 def find_source(type_: type) -> tuple[str, int]:
@@ -282,9 +344,26 @@ def is_type(value: Any) -> bool:
     )
 
 
+def list_get(lst: Sequence[Any], pos: int, default: Any) -> Any:
+    """Safe implementation of get for sequences."""
+    try:
+        return lst[pos]
+    except IndexError:
+        return default
+
+
 def name(object_: Any) -> str:
     """Get name object of name of its type."""
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
+
+
+def nushell(expr: str, **kwargs: Any) -> None:
+    """Execute Nushell expression or start interactive session."""
+    command = ["nu", "--login", "--commands", expr] if expr else ["nu", "--login"]
+    try:
+        subprocess.run(command, check=True, **kwargs)
+    except (CalledProcessError, FileNotFoundError) as exception:
+        error(exception)
 
 
 def page(text: str) -> None:
@@ -314,15 +393,21 @@ def parse(pdb: Pdb, input_: str) -> Any:
     return None
 
 
-def parse_expr(pdb: Pdb, input_: str) -> Any:
+def parse_exprs(pdb: Pdb, line: str) -> str:
     """Parse and possibly execute command line expressions."""
-    while True:
-        start, stop, expr = find_expr(input_)
-        if expr == "":
-            break
-        result = eval(expr, curframe(pdb).f_globals, pdb.curframe_locals)
-        input_ = input_[:start] + str(result) + input_[stop:]
-    return input_
+    offset = 0
+    for expr in find_exprs(line):
+        try:
+            result = str(eval(expr.expr, curframe(pdb).f_globals, pdb.curframe_locals))
+        except Exception:  # noqa: S112
+            continue
+        line = (
+            line[: expr.start + offset]
+            + shlex.quote(result)
+            + line[expr.stop + offset :]
+        )
+        offset += len(result) - expr.stop + expr.start
+    return line
 
 
 def setup(pdb: Pdb) -> None:
@@ -335,18 +420,19 @@ def setup(pdb: Pdb) -> None:
     pdb.complete_edit = pdb._complete_expression  # type: ignore[attr-defined]
     pdb.do_nl = do_nextlist  # type: ignore[attr-defined]
     pdb.do_nextlist = do_nextlist  # type: ignore[attr-defined]
+    pdb.do_nu = do_nushell  # type: ignore[attr-defined]
+    pdb.do_nushell = do_nushell  # type: ignore[attr-defined]
     pdb.do_sh = do_shell  # type: ignore[attr-defined]
     pdb.do_shell = do_shell  # type: ignore[attr-defined]
     pdb.do_sl = do_steplist  # type: ignore[attr-defined]
     pdb.do_steplist = do_steplist  # type: ignore[attr-defined]
 
 
-def shell(command: list[str], frame: Any = None) -> None:
-    """Execute shell command or start interactive shell on empty command."""
+def shell(command: list[str]) -> None:
+    """Execute command or start interactive default shell session."""
     if not command:
         command = [parent_shell()]
-    folder = Path(frame.f_code.co_filename).parent if frame else None
     try:
-        subprocess.run(command, check=True, cwd=folder)
+        subprocess.run(command, check=True)
     except (CalledProcessError, FileNotFoundError) as exception:
         error(exception)

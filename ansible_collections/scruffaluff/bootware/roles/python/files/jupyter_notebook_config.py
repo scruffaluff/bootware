@@ -1,4 +1,4 @@
-# Configuration file for jupyter-notebook.
+# Configuration file for Jupyter.
 #
 # For more information, visit
 # https://jupyter-notebook.readthedocs.io/en/stable/config.html.

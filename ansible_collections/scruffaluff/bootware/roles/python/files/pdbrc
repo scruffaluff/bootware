@@ -2,12 +2,21 @@
 #
 # For more information, visit https://docs.python.org/3/library/pdb.html.
 
+# Import setup modules if necessary.
+_namespace = dir()
+if "os" not in _namespace: import os
+if "pdb" not in _namespace: import pdb
+if "sys" not in _namespace: import sys
 
 # Load interactive functions from pdbrc module.
-import os, pdb, sys
-sys.path.append(os.path.expanduser("~/.config"))
+sys.path.append(os.path.expanduser("~/.config/pyrc"))
 import pdbrc
 pdbrc.setup(pdb.Pdb)
 sys.excepthook = pdbrc.break_exception(pdb)
+
+# Remove setup import modules.
 _ = sys.path.pop()
-del _, os, pdb, pdbrc, sys
+if "os" not in _namespace: del os
+if "pdb" not in _namespace: del pdb
+if "sys" not in _namespace: del sys
+del _, _namespace, pdbrc

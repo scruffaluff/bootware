@@ -75,7 +75,6 @@ vscode_extensions:
   - vitest.explorer
   - vscode-icons-team.vscode-icons
   - vue.volar
-  - waderyan.gitblame
 vscode_font_size: "{{ font_size }}"
 vscode_install_customizations: true
 vscode_path: "{{ vscode_path_[ansible_system] }}"
@@ -96,6 +95,5 @@ vscode_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
-  - waderyan.gitblame
 vscode_style: true
 vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"

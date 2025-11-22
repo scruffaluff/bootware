@@ -1,0 +1,8 @@
+---
+musescore_config_:
+  FreeBSD: "{{ user_home }}/.config/MuseScore"
+  Darwin: "{{ user_home }}/Library/Application Support/MuseScore/MuseScore4"
+  Linux: "{{ user_home }}/.var/app/org.musescore.MuseScore/config/MuseScore"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\MuseScore"
+musescore_config: >-
+  {{ musescore_config_.get(ansible_system, user_home + '.config/MuseScore') }}

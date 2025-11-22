@@ -79,6 +79,16 @@ function export($Key, $Value) {
     Set-Content Env:$Key $Value
 }
 
+function mkdir() {
+    $ArgIdx = 0
+    while ($ArgIdx -lt $Args.Count) {
+        if (-not (Test-Path -Path $Args[$ArgIdx])) {
+            New-Item -ItemType Directory $Args[$ArgIdx] | Out-Null
+        }
+        $ArgIdx += 1
+    }
+}
+
 function pkill() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
@@ -126,26 +136,10 @@ function ssh-session() {
 function touch() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
-        switch ($Args[$ArgIdx]) {
-            { $_ -in '-h', '--help' } {
-                Write-Output @'
-Create file if does not exist.
-
-Usage: touch [OPTIONS] <FILES>...
-
-Options:
-  -h, --help        Print help information.
-'@
-                exit 0
-            }
-            default {
-                if (-not (Test-Path -Path $Args[$ArgIdx])) {
-                    New-Item $Args[$ArgIdx] | Out-Null
-                }
-                $ArgIdx += 1
-                break
-            }
+        if (-not (Test-Path -Path $Args[$ArgIdx])) {
+            New-Item $Args[$ArgIdx] | Out-Null
         }
+        $ArgIdx += 1
     }
 }
 
@@ -347,6 +341,11 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
     Set-Alias -Name ls -Option AllScope -Value lsd
 }
 
+# Miniserve settings.
+
+# Serve index file if available.
+$Env:MINISERVE_INDEX = 'index.html'
+
 # Podman settings.
 
 # Load Podman completions if interactive and available.
@@ -366,8 +365,8 @@ function jupylab() {
     )]
     param()
 
-    uv tool run --from jupyterlab --with bokeh,numpy,polars,scipy jupyter-lab `
-        $Args
+    uv tool run --from jupyterlab --with `
+        bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab $Args
 }
 # Add Python debugger alias.
 function pdb() {
@@ -381,9 +380,14 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 
 # Rclone settings.
 
+# Make Rclone create empty intermediate folders.
+$Env:RCLONE_CREATE_EMPTY_SRC_DIRS = 'true'
 # Make Rclone skip modifcation time updates.
 $Env:RCLONE_NO_UPDATE_DIR_MODTIME = 'true'
 $Env:RCLONE_NO_UPDATE_MODTIME = 'true'
+# Make Rclone show progress bars.
+$Env:RCLONE_PROGRESS = 'true'
+$Env:RCLONE_STATS_ONE_LINE = 'true'
 
 # Ripgrep settings.
 
@@ -413,6 +417,10 @@ if ($Tty) {
 
 # Shell settings.
 
+# Add alias for remove by force.
+function rm() {
+    Remove-Item -Force -Recurse
+}
 # Add Unix compatibility aliases.
 Set-Alias -Name open -Value Invoke-Item
 function poweroff() {
@@ -592,7 +600,7 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
         # Add Unix shell key bindings.
-        Set-PSReadLineKeyHandler -Chord "`u{e005}" -Function MenuComplete
+        Set-PSReadLineKeyHandler -Chord "`u{e006}" -Function MenuComplete
 
         # Set solarized light theme variables based on
         # https://ethanschoonover.com/solarized/#the-values.

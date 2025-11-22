@@ -10,7 +10,7 @@ def "main ansible" [--version (-v): string = "0.9.1"] {
 
     cp CHANGELOG.md README.md ansible_collections/scruffaluff/bootware/
     (
-        poetry run ansible-galaxy collection build --force --output-path
+        uv run ansible-galaxy collection build --force --output-path
         build/dist ansible_collections/scruffaluff/bootware
     )
     open $path | hash sha256 | save --force $"($path).sha512"

@@ -6,17 +6,20 @@
 docstring-code-format = true
 
 [lint]
+flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
-  "COM",    # Rule conflicts with formatter.
-  "EXE003", # Uv should be shebang executor.
-  "FBT",    # Boolean function arguments are acceptable.
-  "FIX",    # Todo comments are acceptable.
-  "ICN",    # Import abbreviations reduce readability.
-  "S101",   # Assert statements are standard for test functions.
-  "S603",   # Rule warns about using subprocess commands without a solution.
-  "S607",   # Partial paths for process executables is more cross platform.
-  "T201",   # Print statements are acceptable for CLI applications.
-  "TD",     # Todo formatting is excessive for personal projects.
+  "COM",     # Rule conflicts with formatter.
+  "EXE003",  # Uv should be shebang executor.
+  "FBT",     # Boolean function arguments are acceptable.
+  "FIX",     # Todo comments are acceptable.
+  "ICN",     # Import abbreviations reduce readability.
+  "PLR2004", # Constant numerical comparisons are often readable.
+  "S101",    # Assert statements are standard for test functions.
+  "S603",    # Rule warns about using subprocess commands without a solution.
+  "S607",    # Partial paths for process executables is more cross platform.
+  "T201",    # Print statements are acceptable for CLI applications.
+  "T203",    # Print statements are acceptable for CLI applications.
+  "TD",      # Todo formatting is excessive for personal projects.
 ]
 select = ["ALL"]
