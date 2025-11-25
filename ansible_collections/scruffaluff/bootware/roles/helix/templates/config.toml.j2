@@ -10,7 +10,15 @@ auto-pairs = false
 bufferline = "multiple"
 color-modes = true
 cursorline = true
-shell = ["{{ user_shell_name }}", "{{ '-Command' if user_shell == 'powershell' else '-c' }}"]
+{% if user_shell == "bash" %}
+shell = ["bash", "-c"]
+{% elif user_shell == "fish" %}
+shell = ["fish", "--command"]
+{% elif user_shell == "nushell" %}
+shell = ["nu", "--stdin", "--commands"]
+{% elif user_shell == "powershell" %}
+shell = ["pwsh", "-Command"]
+{% endif %}
 true-color = true
 undercurl = true
 
