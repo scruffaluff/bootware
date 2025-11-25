@@ -19,7 +19,7 @@ config.colors = {
   },
 }
 config.default_cursor_style = 'SteadyBar'
-config.default_prog = { [[{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}]], '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
+config.default_prog = { '{{ user_shell_name }}', '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
 config.enable_kitty_keyboard = true
 config.enable_scroll_bar = true
 {% if not wezterm_wayland %}

@@ -145,7 +145,7 @@ def _color-theme [] {
 
 # Cut commandline one path component to the left.
 #
-# Based on Fish's backward-kill-path-component from 
+# Based on Fish's backward-kill-path-component from
 # https://fishshell.com/docs/current/cmds/bind.html#special-input-functions.
 def _cut-path-left [] {
     let chars = commandline | split chars
@@ -183,7 +183,7 @@ Enter 'all' to delete all the matching entries.
         input "Delete which entries? "
     } catch {
         print "\n\nCancelling the delete!\n"
-        return 
+        return
     }
 
     mut selections = []
@@ -372,7 +372,7 @@ def "commandline argument" [] {
                 $stop = $elem.index
                 $breakout = true
                 break
-            } 
+            }
         } else {
             if $whitespace {
                 $whitespace = false
@@ -407,7 +407,7 @@ def fish-complete [spans: list<string>] {
             { full: null short: $span }
         }
     }
-    
+
     let command = $expands | each {|expand|
         if $expand.full == null { $expand.short } else { $"'($expand.full)'" }
     } | str replace --all "'" "\\'" | str replace --all "`" "\\'" | str join ' '
@@ -425,7 +425,7 @@ def fish-complete [spans: list<string>] {
             }
         }
         let value = $value
-        
+
         let quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"]
         | any {$in in $value}
         if $quote {
@@ -524,7 +524,7 @@ def "history prune" [] {
 
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
-    $env.PATH = $paths 
+    $env.PATH = $paths
     | each {|path| $path | path expand }
     | where {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
@@ -619,7 +619,7 @@ def --wrapped cbcopy [...args: string] {
             }
             powershell -command $"Set-Clipboard '($text)'"
         },
-        _ => { 
+        _ => {
             if (which wl-copy | is-not-empty) {
                 wl-copy ...$args
             }
@@ -630,7 +630,7 @@ def --wrapped cbpaste [...args: string] {
     match $nu.os-info.name {
         "macos" => { pbpaste ...$args },
         "windows" => { powershell -command Get-Clipboard },
-        _ => { 
+        _ => {
             if (which wl-paste | is-not-empty) {
                 wl-paste ...$args
             }
@@ -759,7 +759,7 @@ $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 if $nu.os-info.name == "macos" {
     let brew_prefix = if ("/opt/homebrew" | path exists) {
         $env.OPENBLAS = "/opt/homebrew/opt/openblas"
-    } else { 
+    } else {
         $env.OPENBLAS = "/usr/local/opt/openblas"
     }
     prepend-paths $env.OPENBLAS
@@ -805,7 +805,7 @@ alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 if $nu.is-interactive {
     $env.PROMPT_COMMAND = {||
         let path = $env.PWD | path basename
-        $"\n($env.USER) at (sys host | get hostname) in ($path)\n" 
+        $"\n($env.USER) at (sys host | get hostname) in ($path)\n"
     }
     $env.PROMPT_COMMAND_RIGHT = ""
     $env.PROMPT_INDICATOR = "❯ "
@@ -911,6 +911,12 @@ $env.config = {
         {
             event: { until: [{ send: menunext } { send: down }] }
             keycode: char_n
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: null
+            keycode: char_o
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
