@@ -6,18 +6,27 @@
   {
     "bindings": {
       "ctrl-:": "pane::ActivateNextItem",
+      "ctrl-shift-a": "workspace::ToggleLeftDock",
+      "ctrl-shift-e": "project_panel::ToggleFocus",
+      "ctrl-shift-f": "pane::DeploySearch",
       "ctrl-shift-j": "pane::ActivatePreviousItem",
       "ctrl-shift-left": "pane::SwapItemLeft",
       "ctrl-shift-m": "workspace::ToggleZoom",
+      "ctrl-shift-n": "workspace::NewFile",
+      "ctrl-shift-o": "file_finder::Toggle",
       "ctrl-shift-p": "command_palette::Toggle",
       "ctrl-shift-right": "pane::SwapItemRight",
-      "ctrl-shift-w": "pane::CloseActiveItem"
+      "ctrl-shift-t": "terminal_panel::ToggleFocus",
+      "ctrl-shift-w": "pane::CloseActiveItem",
+      "ctrl-shift-x": "workspace::ToggleBottomDock"
     }
   },
   {
     "bindings": {
-      "ctrl-shift-o": "file_finder::Toggle",
-      "ctrl-shift-t": "terminal_panel::ToggleFocus"
+      "cmd-n": null,
+      "cmd-p": null,
+      "cmd-shift-p": null,
+      "cmd-w": null
     },
     "context": "Workspace"
   },
@@ -30,10 +39,17 @@
       "ctrl-a": "editor::MoveToBeginningOfLine",
       "ctrl-down": "editor::AddSelectionBelow",
       "ctrl-e": "editor::MoveToEndOfLine",
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-h": "search::ToggleReplace",
+      "ctrl-i": "editor::ShowCompletions",
       "ctrl-p": null,
       "ctrl-shift-s": "terminal_panel::ToggleFocus",
+      "ctrl-space": null,
+      "ctrl-u": "editor::DeleteToBeginningOfLine",
       "ctrl-up": "editor::AddSelectionAbove",
       "ctrl-w": "editor::DeleteToPreviousWordStart",
+      "ctrl-{": "editor::GoToPreviousHunk",
+      "ctrl-}": "editor::GoToHunk",
       "shift-left": "editor::MoveToPreviousWordStart",
       "shift-right": "editor::MoveToNextWordEnd"
     },
@@ -41,11 +57,22 @@
   },
   {
     "bindings": {
+      "cmd-shift-h": null,
+      "cmd-w": null,
+      "cmd-}": null,
+      "ctrl-[": "pane::GoBack",
+      "ctrl-]": "pane::GoForward"
+    },
+    "context": "Pane"
+  },
+  {
+    "bindings": {
+      "cmd-f": null,
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
-      "ctrl-shift-t": "workspace::NewTerminal",
       "ctrl-shift-n": "pane::SplitRight",
-      "ctrl-shift-s": "terminal_panel::ToggleFocus"
+      "ctrl-shift-s": "terminal_panel::ToggleFocus",
+      "ctrl-shift-t": "workspace::NewTerminal"
     },
     "context": "Terminal"
   }
