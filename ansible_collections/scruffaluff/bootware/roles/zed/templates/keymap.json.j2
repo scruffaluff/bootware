@@ -1,0 +1,96 @@
+// Keyboard shortcuts file for Zed editor.
+//
+// For more information, visit https://zed.dev/docs/key-bindings.
+
+[
+  {
+    "bindings": {
+      "ctrl-:": "pane::ActivateNextItem",
+      "ctrl-shift-a": "workspace::ToggleLeftDock",
+      "ctrl-shift-d": "debug_panel::ToggleFocus",
+      "ctrl-shift-down": "workspace::SwapPaneLeft",
+      "ctrl-shift-e": "project_panel::ToggleFocus",
+      "ctrl-shift-f": "pane::DeploySearch",
+      "ctrl-shift-h": ["action::Sequence", ["pane::DeploySearch", "search::ToggleReplace"]],
+      "ctrl-shift-j": "pane::ActivatePreviousItem",
+      "ctrl-shift-k": "workspace::ActivatePreviousPane",
+      "ctrl-shift-l": "workspace::ActivateNextPane",
+      "ctrl-shift-left": "pane::SwapItemLeft",
+      "ctrl-shift-m": "workspace::ToggleZoom",
+      "ctrl-shift-n": "workspace::NewFile",
+      "ctrl-shift-o": "file_finder::Toggle",
+      "ctrl-shift-p": "command_palette::Toggle",
+      "ctrl-shift-right": "pane::SwapItemRight",
+      "ctrl-shift-t": "terminal_panel::ToggleFocus",
+      "ctrl-shift-up": "workspace::SwapPaneRight",
+      "ctrl-shift-w": "pane::CloseActiveItem",
+      "ctrl-shift-x": "workspace::ToggleBottomDock"
+    }
+  },
+  {
+    "bindings": {
+      "cmd-n": null,
+      "cmd-p": null,
+      "cmd-shift-p": null,
+      "cmd-w": null
+    },
+    "context": "Workspace"
+  },
+  {
+    "bindings": {
+      "alt-;": "editor::MoveRight",
+      "alt-b": "editor::MoveToPreviousSubwordStart",
+      "alt-f": "editor::MoveToNextSubwordEnd",
+      "alt-j": "editor::MoveLeft",
+      "alt-k": "editor::MoveDown",
+      "alt-l": "editor::MoveUp",
+      "alt-w": "editor::DeleteToNextWordEnd",
+      "ctrl-.": "editor::ToggleCodeActions",
+      "ctrl-/": ["editor::ToggleComments", {"advance_downwards": false}],
+      "ctrl->": "outline::Toggle",
+      "ctrl-\\": "pane::SplitRight",
+      "ctrl-a": "editor::MoveToBeginningOfLine",
+      "ctrl-down": "editor::AddSelectionBelow",
+      "ctrl-e": "editor::MoveToEndOfLine",
+      "ctrl-enter": "editor::NewlineBelow",
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-h": "buffer_search::DeployReplace",
+      "ctrl-i": "editor::ShowCompletions",
+      "ctrl-left": "editor::MoveToPreviousSubwordStart",
+      "ctrl-p": null,
+      "ctrl-right": "editor::MoveToNextSubwordEnd",
+      "ctrl-shift-enter": "editor::NewlineAbove",
+      "ctrl-shift-s": "terminal_panel::ToggleFocus",
+      "ctrl-space": null,
+      "ctrl-u": "editor::DeleteToBeginningOfLine",
+      "ctrl-up": "editor::AddSelectionAbove",
+      "ctrl-w": "editor::DeleteToPreviousWordStart",
+      "ctrl-{": "editor::GoToPreviousHunk",
+      "ctrl-}": "editor::GoToHunk",
+      "shift-left": "editor::MoveToPreviousWordStart",
+      "shift-right": "editor::MoveToNextWordEnd"
+    },
+    "context": "Editor"
+  },
+  {
+    "bindings": {
+      "cmd-shift-h": null,
+      "cmd-w": null,
+      "cmd-}": null,
+      "ctrl-[": "pane::GoBack",
+      "ctrl-]": "pane::GoForward"
+    },
+    "context": "Pane"
+  },
+  {
+    "bindings": {
+      "cmd-f": null,
+      "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
+      "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
+      "ctrl-shift-n": "pane::SplitRight",
+      "ctrl-shift-s": "terminal_panel::ToggleFocus",
+      "ctrl-shift-t": "workspace::NewTerminal"
+    },
+    "context": "Terminal"
+  }
+]
