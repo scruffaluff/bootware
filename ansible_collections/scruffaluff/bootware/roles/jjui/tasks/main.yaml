@@ -1,127 +1,128 @@
 ---
-- name: Install Jujutsu for FreeBSD
+- name: Install JJUI for FreeBSD
   become: true
   community.general.pkgng:
-    name: jujutsu
+    name: jjui
   tags:
     - install
   when: ansible_system == "FreeBSD"
 
-- name: Get latest Jujutsu version for Linux
+- name: Get latest JJUI version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
-    url: https://formulae.brew.sh/api/formula/jj.json
-  register: jujutsu_formula
+    url: https://formulae.brew.sh/api/formula/jjui.json
+  register: jjui_formula
   tags:
     - install
   when: ansible_system == "Linux"
 
-- name: Create Jujutsu temporary directory for Linux
+- name: Create JJUI temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
-  register: jujutsu_temp
+  register: jjui_temp
   tags:
     - install
   when: ansible_system == "Linux"
 
-- name: Set Jujutsu temporary directory permissions for Linux
+- name: Set JJUI temporary directory permissions for Linux
   ansible.builtin.file:
     mode: "755"
-    path: "{{ jujutsu_temp.path }}"
+    path: "{{ jjui_temp.path }}"
     state: directory
   tags:
     - install
   when: ansible_system == "Linux"
 
-- name: Download Jujutsu for Linux
+- name: Download JJUI for Linux
   ansible.builtin.unarchive:
-    dest: "{{ jujutsu_temp.path }}"
+    dest: "{{ jjui_temp.path }}"
     mode: "777"
     remote_src: true
     src: >-
-      https://github.com/jj-vcs/jj/releases/download/v{{
-      jujutsu_formula.json.versions.stable }}/jj-v{{
-      jujutsu_formula.json.versions.stable }}-{{ jujutsu_arch
-      }}-unknown-linux-musl.tar.gz
+      https://github.com/idursun/jjui/releases/download/v{{
+      jjui_formula.json.versions.stable }}/jjui-{{
+      jjui_formula.json.versions.stable }}-linux-{{ system_architecture }}.zip
   tags:
     - install
   when: ansible_system == "Linux"
 
-- name: Install Jujutsu for Linux
+- name: Install JJUI for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/jj
+    dest: /usr/local/bin/jjui
     force: true
     mode: "755"
     remote_src: true
-    src: "{{ jujutsu_temp.path }}/jj"
+    src: >-
+      {{ jjui_temp.path }}/jjui-{{ jjui_formula.json.versions.stable }}-linux-{{
+      system_architecture }}
   become: true
   tags:
     - install
   when: ansible_system == "Linux"
 
-- name: Install Jujutsu for MacOS
+- name: Install JJUI for MacOS
   become: true
   become_user: "{{ brew_user }}"
   community.general.homebrew:
-    name: jj
+    name: jjui
   tags:
     - install
   when: ansible_system == "Darwin"
 
-- name: Install Jujutsu for Windows
+- name: Install JJUI for Windows
   community.windows.win_scoop:
     global: true
-    name: jj
+    name: jjui
   tags:
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create Jujutsu settings directory for Unix
+- name: Create JJUI settings directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/jj"
+    path: "{{ user_home }}/.config/jjui"
     state: directory
   become: true
   tags:
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Jujutsu settings file for Unix
-  ansible.builtin.template:
-    dest: "{{ user_home }}/.config/jj/config.toml"
+- name: Copy JJUI settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/jjui/config.toml"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: config.toml.j2
+    src: config.toml
   become: true
   tags:
     - config
   when: ansible_system != "Win32NT"
 
-- name: Create Jujutsu settings directory for Windows
+- name: Create JJUI settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}\\AppData\\Roaming\\jj"
+    path: "{{ user_home }}\\AppData\\Roaming\\jjui"
     state: directory
   tags:
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy Jujutsu settings file for Windows
-  ansible.windows.win_template:
-    dest: "{{ user_home }}\\AppData\\Roaming\\jj\\config.toml"
+- name: Copy JJUI settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\AppData\\Roaming\\jjui\\config.toml"
     force: true
-    src: config.toml.j2
+    src: config.toml
   tags:
     - config
   when: ansible_system == "Win32NT"
 
-- name: Remove Jujutsu temporary directory for Linux
+- name: Remove JJUI temporary directory for Linux
   ansible.builtin.file:
-    path: "{{ jujutsu_temp.path }}"
+    path: "{{ jjui_temp.path }}"
     state: absent
   tags:
     - install

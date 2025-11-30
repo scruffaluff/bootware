@@ -3,3 +3,5 @@ jujutsu_arch_:
   amd64: x86_64
   arm64: aarch64
 jujutsu_arch: "{{ jujutsu_arch_[system_architecture] }}"
+jujutsu_user_email: "{{ git_user_name | lower | replace(' ', '.') }}@gmail.com"
+jujutsu_user_name: User Name

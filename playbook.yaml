@@ -906,6 +906,23 @@
         - server
         - wsl
 
+    - name: Install JJUI Jujutsu manager
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - jjui
+            - server
+            - vcs
+            - wsl
+        name: scruffaluff.bootware.jjui
+      tags:
+        - desktop
+        - jjui
+        - server
+        - vcs
+        - wsl
+
     - name: Install Jq JSON parser
       ansible.builtin.include_role:
         apply:
