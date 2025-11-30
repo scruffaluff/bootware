@@ -1,4 +1,46 @@
 ---
+- name: Check if VSCodium settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ vscodium_user_path }}/settings.json"
+  register: vscodium_settings_check_unix
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Check if VSCodium settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ vscodium_user_path }}\\settings.json"
+  register: vscodium_settings_check_windows
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set VSCodium settings check
+  ansible.builtin.set_fact:
+    vscodium_settings_check: >-
+      {{ vscodium_settings_check_unix if not 'skipped' in
+      vscodium_settings_check_unix else vscodium_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of VSCodium settings file
+  ansible.builtin.slurp:
+    src: "{{ vscodium_user_path }}/settings.json"
+  register: vscodium_settings_file
+  tags:
+    - config
+  when: vscodium_settings_check.stat.exists
+
+- name: Set VSCodium remotes
+  ansible.builtin.set_fact:
+    vscodium_remotes: >-
+      {{ vscodium_remotes if vscodium_remotes or 'skipped' in
+      vscodium_settings_file else (vscodium_settings_file['content'] | b64decode
+      | regex_replace('//.*', '') | from_yaml).get('remote.SSH.remotePlatform',
+      {}) }}
+  tags:
+    - config
+
 - name: Create VSCodium user directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"

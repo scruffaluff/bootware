@@ -7,12 +7,9 @@
     "button": false,
     "enabled": false
   },
-  "auto_install_extensions": {
-    "html": true,
-    "nu": true,
-    "solarized": true,
-    "toml": true
-  },
+{% if zed_extensions | length > 0 %}
+  "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
   "auto_update": false,
   "base_keymap": "VSCode",
   "buffer_font_family": "FiraCode Nerd Font",
@@ -21,13 +18,53 @@
     "button": false
   },
   "cursor_shape": "bar",
+  "diagnostics": {
+    "inline": {
+      "enabled": true
+    }
+  },
   "disable_ai": true,
+  "extend_comment_on_newline": false,
+  "file_types": {
+    "Shell Script": [".*.bash", "*.bats"]
+  },
+  "formatter": "prettier",
+  "git": {
+    "blame": {
+      "show_avatar": false
+    }
+  },
   "helix_mode": false,
+  "indent_guides": {
+    "coloring": "indent_aware"
+  },
+  "inlay_hints": {
+    "enabled": true,
+    "show_background": false
+  },
   "inline_code_actions": false,
   "notification_panel": {
     "button": false
   },
+  "prettier": {
+    "allowed": true,
+    "arrowParens": "always",
+    "proseWrap": "always",
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5"
+  },
+  "project_panel": {
+    "sticky_scroll": false
+  },
   "show_completions_on_input": false,
+{% if zed_remotes | length > 0 %}
+  "ssh_connections": {{ zed_remotes | to_nice_json }},
+{% endif %}
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
   "telemetry": {
     "diagnostics": false,
     "metrics": false
@@ -61,6 +98,9 @@
   },
   "title_bar": {
     "show_sign_in": false
+  },
+  "toolbar": {
+    "agent_review": false
   },
   "ui_font_family": "Fira Sans",
   "ui_font_size": {{ zed_font_size }}

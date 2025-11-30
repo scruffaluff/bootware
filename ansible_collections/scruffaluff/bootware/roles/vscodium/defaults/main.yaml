@@ -27,6 +27,11 @@ vscodium_system_:
   Darwin: osx
   Linux: linux
   Win32NT: windows
+vscodium_user_path_:
+  Darwin: "{{ user_home }}/Library/Application Support/VSCodium/User"
+  FreeBSD: "{{ user_home }}/.config/VSCodium/User"
+  Linux: "{{ user_home }}/.config/VSCodium/User"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\VSCodium\\User"
 
 vscodium_arch: "{{ vscodium_arch_[system_architecture] }}"
 vscodium_chrome_path: "{{ vscodium_chrome_path_[ansible_system] }}"
@@ -75,7 +80,8 @@ vscodium_extensions:
   - vue.volar
 vscodium_font_size: "{{ font_size }}"
 vscodium_style: true
-vscodium_path: "{{ vscodium_path_[ansible_system] }}"
+vscodium_path: >-
+  {{ vscodium_path_.get(ansible_system, '/usr/share/codium/resources/app') }}
 vscodium_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -92,4 +98,8 @@ vscodium_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
+vscodium_remotes: {}
 vscodium_system: "{{ vscodium_system_.get(ansible_system, 'linux') }}"
+vscodium_user_path: >-
+  {{ vscodium_user_path_.get(ansible_system, user_home +
+  '/.config/VSCodium/User') }}

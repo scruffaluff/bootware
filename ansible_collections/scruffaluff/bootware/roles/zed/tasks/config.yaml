@@ -1,0 +1,89 @@
+---
+- name: Check if Zed settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ zed_config_path }}/settings.json"
+  register: zed_settings_check_unix
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Check if Zed settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ zed_config_path }}\\settings.json"
+  register: zed_settings_check_windows
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set Zed settings check
+  ansible.builtin.set_fact:
+    zed_settings_check: >-
+      {{ zed_settings_check_unix if not 'skipped' in zed_settings_check_unix
+      else zed_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of Zed settings file
+  ansible.builtin.slurp:
+    src: "{{ zed_config_path }}/settings.json"
+  register: zed_settings_file
+  tags:
+    - config
+  when: zed_settings_check.stat.exists
+
+- name: Set Zed remotes
+  ansible.builtin.set_fact:
+    zed_remotes: >-
+      {{ zed_remotes if zed_remotes or 'skipped' in zed_settings_file else
+      (zed_settings_file['content'] | b64decode | regex_replace('//.*', '') |
+      from_yaml).get('ssh_connections', []) }}
+  tags:
+    - config
+
+- name: Create Zed settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ zed_config_path }}"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Copy Zed settings files for Unix
+  ansible.builtin.template:
+    dest: "{{ zed_config_path }}/{{ item }}.json"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: "{{ item }}.json.j2"
+  become: true
+  loop:
+    - keymap
+    - settings
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Create Zed settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ zed_config_path }}"
+    state: directory
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy Zed settings files for Windows
+  ansible.windows.win_template:
+    dest: "{{ zed_config_path }}\\{{ item }}.json"
+    force: true
+    src: "{{ item }}.json.j2"
+  loop:
+    - keymap
+    - settings
+  tags:
+    - config
+  when: ansible_system == "Win32NT"

@@ -1,4 +1,45 @@
 ---
+- name: Check if VSCode settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ vscode_user_path }}/settings.json"
+  register: vscode_settings_check_unix
+  tags:
+    - config
+  when: ansible_system != "Win32NT"
+
+- name: Check if VSCode settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ vscode_user_path }}\\settings.json"
+  register: vscode_settings_check_windows
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Set VSCode settings check
+  ansible.builtin.set_fact:
+    vscode_settings_check: >-
+      {{ vscode_settings_check_unix if not 'skipped' in
+      vscode_settings_check_unix else vscode_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of VSCode settings file
+  ansible.builtin.slurp:
+    src: "{{ vscode_user_path }}/settings.json"
+  register: vscode_settings_file
+  tags:
+    - config
+  when: vscode_settings_check.stat.exists
+
+- name: Set VSCode remotes
+  ansible.builtin.set_fact:
+    vscode_remotes: >-
+      {{ vscode_remotes if vscode_remotes or 'skipped' in vscode_settings_file
+      else (vscode_settings_file['content'] | b64decode | regex_replace('//.*',
+      '') | from_yaml).get('remote.SSH.remotePlatform', {}) }}
+  tags:
+    - config
+
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"

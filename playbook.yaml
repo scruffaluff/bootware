@@ -1996,13 +1996,13 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - editor
+            - never
             - zed
         name: scruffaluff.bootware.zed
       tags:
-        - desktop
         - editor
+        - never
         - zed
 
     - name: Install Zellij terminal multiplexer

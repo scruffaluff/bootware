@@ -9,7 +9,6 @@
   "chat.disableAIFeatures": true,
   "chat.extensionTools.enabled": false,
   "chat.mcp.access": "none",
-  "chat.promptFiles": false,
   "chat.sendElementsToChat.attachCSS": false,
   "chat.sendElementsToChat.attachImages": false,
   "chat.sendElementsToChat.enabled": false,
@@ -145,14 +144,12 @@
   "python.venvPath": "${workspaceFolder}/.venv",
   "redhat.telemetry.enabled": false,
 {% if vscode_remote_extensions | length > 0 %}
-  "remote.SSH.defaultExtensions": [
-{% for extension in vscode_remote_extensions[:-1] %}
-    "{{ extension }}",
-{% endfor %}
-    "{{ vscode_remote_extensions[-1] }}"
-  ],
+  "remote.SSH.defaultExtensions": {{ vscode_remote_extensions | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "remote.SSH.experimental.chat": false,
+{% if vscode_remotes | length > 0 %}
+  "remote.SSH.remotePlatform": {{ vscode_remotes | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
   "remote.SSH.useLocalServer": false,
   "rust-analyzer.showUnlinkedFileNotification": false,
   "security.workspace.trust.enabled": false,
@@ -171,7 +168,6 @@
   "terminal.integrated.enableImages": true,
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   "terminal.integrated.enablePersistentSessions": false,
-  "terminal.integrated.environmentChangesIndicator": "off",
   "terminal.integrated.environmentChangesRelaunch": false,
   "terminal.integrated.fontFamily": "FiraCode Nerd Font",
   "terminal.integrated.fontSize": {{ vscode_font_size }},
@@ -246,7 +242,7 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
+    }
   },
   "[fish]": {
     "editor.tabSize": 4
@@ -317,7 +313,7 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
+    }
   },
   "[svelte]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",

@@ -28,6 +28,11 @@ vscode_system_:
   Darwin: osx
   Linux: linux
   Win32NT: windows
+vscode_user_path_:
+  Darwin: "{{ user_home }}/Library/Application Support/Code/User"
+  FreeBSD: "{{ user_home }}/.config/Code/User"
+  Linux: "{{ user_home }}/.config/Code/User"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\VSCode\\User"
 
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
 vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
@@ -77,7 +82,8 @@ vscode_extensions:
   - vue.volar
 vscode_font_size: "{{ font_size }}"
 vscode_install_customizations: true
-vscode_path: "{{ vscode_path_[ansible_system] }}"
+vscode_path: >-
+  {{ vscode_path_.get(ansible_system, '/usr/share/code/resources/app') }}
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -95,5 +101,9 @@ vscode_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
+vscode_remotes: {}
 vscode_style: true
 vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
+vscode_user_path: >-
+  {{ vscode_user_path_.get(ansible_system, user_home + '/.config/VSCodium/User')
+  }}
