@@ -321,11 +321,6 @@
       ]
     }
   },
-  {
-    "name": "qsv",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "freebsd" }],
-    "tests": ["qsv --version"]
-  },
   { "name": "rclone", "tests": ["rclone --version"] },
   { "name": "readline" },
   { "name": "restic", "tests": ["restic version"] },
@@ -384,6 +379,7 @@
     "name": "tailscale",
     "tests": {
       "default": ["tailscale --version"],
+      "linux": [],
       "macos": ["which tailscale"]
     }
   },
@@ -451,6 +447,11 @@
     "tests": ["yazi --version"]
   },
   { "name": "yq", "tests": ["yq --version"] },
+  {
+    "name": "zed",
+    "skip": [{ "os": "freebsd" }],
+    "tests": ["zed --version"]
+  },
   {
     "name": "zellij",
     "skip": [{ "os": "windows" }],

@@ -5,7 +5,7 @@
 
 default_layout "layout"
 default_mode "locked"
-default_shell r#"{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"#
+default_shell "{{ user_shell_name }}"
 
 keybinds clear-defaults=true {
     shared_except "locked" "entersearch" {

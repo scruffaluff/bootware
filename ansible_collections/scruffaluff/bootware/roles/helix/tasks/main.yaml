@@ -150,23 +150,33 @@
     - install
   when: ansible_system == "Linux"
 
-- name: Copy Helix configuration files for Unix
-  ansible.builtin.copy:
-    dest: "{{ user_home }}/.config/helix/{{ item }}"
+- name: Copy Helix configuration file for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/helix/config.toml"
     force: true
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: "{{ item }}"
+    src: config.toml.j2
   become: true
-  loop:
-    - config.toml
-    - languages.toml
   tags:
     - config
   when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
 
-- name: Create Helix configuration directory for Windows
+- name: Copy Helix language file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.config/helix/languages.toml"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+    src: languages.toml
+  become: true
+  tags:
+    - config
+  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
+
+- name: Create Helix configuration directories for Windows
   ansible.windows.win_file:
     path: "{{ user_home }}\\{{ item }}\\helix"
     state: directory
@@ -178,19 +188,25 @@
   when: ansible_system == "Win32NT"
 
 - name: Copy Helix configuration files for Windows
-  ansible.windows.win_copy:
-    dest: "{{ user_home }}\\{{ item.subpath }}\\helix\\{{ item.file }}"
+  ansible.windows.win_template:
+    dest: "{{ user_home }}\\{{ item }}\\helix\\config.toml"
     force: true
-    src: "{{ item.file }}"
+    src: config.toml.j2
   loop:
-    - file: config.toml
-      subpath: AppData\Roaming
-    - file: languages.toml
-      subpath: AppData\Roaming
-    - file: config.toml
-      subpath: scoop\persist
-    - file: languages.toml
-      subpath: scoop\persist
+    - AppData\Roaming
+    - scoop\persist
+  tags:
+    - config
+  when: ansible_system == "Win32NT"
+
+- name: Copy Helix language files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\{{ item }}\\helix\\languages.toml"
+    force: true
+    src: languages.toml
+  loop:
+    - AppData\Roaming
+    - scoop\persist
   tags:
     - config
   when: ansible_system == "Win32NT"

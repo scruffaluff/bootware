@@ -1,6 +1,6 @@
-# Qsv
+# Zed
 
-Qsv is an Ansible role
+Zed is an Ansible role
 
 ## Requirements
 

@@ -69,7 +69,6 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}\\AppData\\Roaming\\alacritty\\alacritty.toml"
     force: true
-    owner: "{{ user_id }}"
     src: alacritty.toml.j2
   tags:
     - config

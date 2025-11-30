@@ -161,14 +161,6 @@
     - install
   when: ansible_pkg_mgr == "apk"
 
-- name: Check if systemd is available for Linux
-  ansible.builtin.stat:
-    path: /usr/bin/systemctl
-  register: docker_systemd
-  tags:
-    - install
-  when: ansible_system == "Linux"
-
 - name: Start Containerd on system boot for Alpine
   ansible.builtin.service:
     enabled: true
@@ -186,7 +178,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and docker_systemd.stat.exists
+  when: ansible_system == "Linux" and systemd
 
 - name: Start Docker on system boot for Alpine
   ansible.builtin.service:
@@ -205,7 +197,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and docker_systemd.stat.exists
+  when: ansible_system == "Linux" and systemd
 
 - name: Add user to Docker group for Alpine
   ansible.builtin.user:
@@ -227,7 +219,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and docker_systemd.stat.exists
+  when: ansible_system == "Linux" and systemd
 
 - name: Install Docker shell completions for Unix
   ansible.builtin.get_url:

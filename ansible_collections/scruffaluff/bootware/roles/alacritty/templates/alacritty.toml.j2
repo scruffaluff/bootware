@@ -96,7 +96,7 @@ mods = "Control"
 
 [terminal.shell]
 args = ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"]
-program = '{{ lookup("ansible.builtin.vars", user_shell + "_executable" ) }}'
+program = "{{ user_shell_name }}"
 {% if ansible_system == "Darwin" %}
 
 [window]

@@ -162,25 +162,7 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Keyboard settings.
 
-# Switch to keyboard layout without alt character keys.
-input_sources="$(
-  defaults read com.apple.inputsources.plist AppleEnabledThirdPartyInputSources ||
-    echo 'Missing Domain'
-)"
-if ! expr "${input_sources}" : '.*no_alt_characters.*' > /dev/null; then
-  defaults write com.apple.inputsources.plist AppleEnabledThirdPartyInputSources -array-add '
-    <dict>
-      <key>InputSourceKind</key>
-      <string>Keyboard Layout</string>
-      <key>KeyboardLayout ID</key>
-      <integer>5000</integer>
-      <key>KeyboardLayout Name</key>
-      <string>no_alt_characters</string>
-    </dict>
-  '
-fi
-
-# Disable application windows `Ctrl+Down` keybinding.
+# Disable application windows `Ctrl+Down` key binding.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 33 '
   <dict>
     <key>enabled</key><false/>
@@ -270,7 +252,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
 '
 # Disable extra bindings for function key.
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0
-# Disable dictionary lookup on word trackpad press.
+# Disable dictionary lookup on word track pad press.
 defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
 
 # Privacy settings.

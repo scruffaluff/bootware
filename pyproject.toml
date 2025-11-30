@@ -4,8 +4,19 @@
 # https://snarky.ca/what-the-heck-is-pyproject-toml/.
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "hatchling.build"
+requires = ["hatchling~=1.0"]
+
+[dependency-groups]
+dev = [
+  "ansible ~= 12.2",
+  "ansible-compat ~= 25.8",
+  "ansible-lint ~= 25.9; sys_platform != 'windows'",
+  "mypy ~= 1.18",
+  "pytest ~= 8.4",
+  "ruff ~= 0.14.4",
+  "yamllint ~= 1.37",
+]
 
 [project]
 authors = [
@@ -43,16 +54,11 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unused_ignores = true
 
-[tool.poetry]
-package-mode = false
-
-[tool.poetry.group.dev.dependencies]
-ansible = ">=11.3.0,<12.0.0"
-ansible-compat = ">=25.1.0,<26.0.0"
-ansible-lint = { markers = "platform_system != 'Windows'", version = ">=25.1.0,<26.0.0" }
-mypy = "^1.17.1"
-ruff = "^0.12.10"
-yamllint = ">=1.36.0,<2.0.0"
+[tool.pytest.ini_options]
+addopts = "-sv"
+cache_dir = ".vendor/cache/pytest"
+markers = ["e2e: mark as end to end test.", "unit: mark as unit test."]
+testpaths = ["test"]
 
 [tool.ruff]
 cache-dir = ".vendor/cache/ruff"
@@ -65,15 +71,20 @@ docstring-code-format = true
 flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
-  "COM",    # Rule conflicts with formatter.
-  "FBT",    # Boolean function arguments are acceptable.
-  "FIX",    # Todo comments are acceptable.
-  "ICN",    # Import abbreviations reduce readability.
-  "INP001", # Project hooks directory is not a package.
-  "S101",   # Assert statements are standard for test functions.
-  "S603",   # Rule warns about using subprocess commands without a solution.
-  "S607",   # Partial paths for process executables is more cross platform.
-  "T201",   # Print statements are acceptable for CLI applications.
-  "TD",     # Todo formatting is excessive for personal projects.
+  "COM",     # Rule conflicts with formatter.
+  "FBT",     # Boolean function arguments are acceptable.
+  "FIX",     # Todo comments are acceptable.
+  "ICN",     # Import abbreviations reduce readability.
+  "INP001",  # Project hooks directory is not a package.
+  "PLR2004", # Constant numerical comparisons are often readable.
+  "S101",    # Assert statements are standard for test functions.
+  "S603",    # Rule warns about using subprocess commands without a solution.
+  "S607",    # Partial paths for process executables is more cross platform.
+  "T201",    # Print statements are acceptable for CLI applications.
+  "T203",    # Print statements are acceptable for CLI applications.
+  "TD",      # Todo formatting is excessive for personal projects.
 ]
 select = ["ALL"]
+
+[tool.uv]
+package = false

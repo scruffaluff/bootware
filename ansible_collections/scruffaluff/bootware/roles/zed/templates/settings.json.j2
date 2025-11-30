@@ -1,0 +1,67 @@
+// Settings file for Zed editor.
+//
+// For more information, visit https://zed.dev/docs/configuring-zed.
+
+{
+  "agent": {
+    "button": false,
+    "enabled": false
+  },
+  "auto_install_extensions": {
+    "html": true,
+    "nu": true,
+    "solarized": true,
+    "toml": true
+  },
+  "auto_update": false,
+  "base_keymap": "VSCode",
+  "buffer_font_family": "FiraCode Nerd Font",
+  "buffer_font_size": {{ zed_font_size }},
+  "collaboration_panel": {
+    "button": false
+  },
+  "cursor_shape": "bar",
+  "disable_ai": true,
+  "helix_mode": false,
+  "inline_code_actions": false,
+  "notification_panel": {
+    "button": false
+  },
+  "show_completions_on_input": false,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "terminal": {
+    "cursor_shape": "bar",
+    "detect_venv": "off",
+    "font_family": "FiraCode Nerd Font",
+    "font_size": {{ zed_font_size }},
+    "line_height": "standard",
+    "option_as_meta": true,
+    "shell": {
+      "with_arguments": {
+        "args": ["--login"],
+        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"
+      }
+    },
+    "toolbar": {
+      "breadcrumbs": false
+    }
+  },
+  "theme": {
+    "dark": "Solarized Dark",
+    "light": "Solarized Light",
+    "mode": "light"
+  },
+  "theme_overrides": {
+    "Solarized Light": {
+      "text.muted": "#586e75"
+    }
+  },
+  "title_bar": {
+    "show_sign_in": false
+  },
+  "ui_font_family": "Fira Sans",
+  "ui_font_size": {{ zed_font_size }}
+}

@@ -67,11 +67,13 @@ bash_completion: >-
   {{ bash_completion_.get(ansible_system,
   '/usr/share/bash-completion/completions') }}
 bash_executable: "{{ bash_executable_.get(ansible_system, '/bin/bash') }}"
+bash_name: bash
 bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_system, '/etc/fish/completions') }}
 fish_executable: "{{ fish_executable_.get(ansible_system, '/usr/bin/fish') }}"
+fish_name: fish
 fish_user_completion: "{{ user_home }}/.config/fish/completions"
 fish_vendor_completion: >-
   {{ fish_vendor_completion_.get(ansible_system, '/usr/share/fish/completions')
@@ -83,6 +85,7 @@ github_api_headers: >-
 group_id: "{{ group_id_.get(ansible_system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_system, '/usr/bin/nu') }}
+nushell_name: nu
 nushell_vendor_autoload: >-
   {{  nushell_vendor_autoload_.get(ansible_system,
   '/usr/local/share/nushell/vendor/autoload') }}
@@ -90,6 +93,7 @@ nushell_user_vendor_autoload: >-
   {{  nushell_user_vendor_autoload_.get(ansible_system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
+powershell_name: pwsh
 powershell_module_paths:
   - C:\\Program Files\\PowerShell\\Modules
   - C:\\Program Files\\WindowsPowerShell\\Modules
@@ -101,4 +105,8 @@ scoop_user_path: "{{ user_home }}\\scoop"
 system_architecture: "{{ system_architecture_.get(ansible_architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_system, '') }}"
 user_login: "{{ 'powershell' if ansible_system == 'Win32NT' else 'bash' }}"
-user_shell: "{{ 'powershell' if ansible_system == 'Win32NT' else 'fish' }}"
+user_shell: nushell
+user_shell_executable: >-
+  {{ lookup("ansible.builtin.vars", user_shell + "_executable") }}
+user_shell_name: >-
+  {{ lookup("ansible.builtin.vars", user_shell + "_name") }}

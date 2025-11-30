@@ -14,7 +14,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_system == "Linux" and systemd
 
 - name: Install Tailscale for MacOS
   become: true

@@ -99,7 +99,7 @@ def _color-theme [] {
         range: $yellow
         record: $cyan
         row_index: $green
-        search_result: { bg: $base01 fg: $red }
+        search_result: $violet
         separator: $base01
         shape_and: $violet
         shape_binary: $violet
@@ -115,7 +115,7 @@ def _color-theme [] {
         shape_filepath: $cyan
         shape_flag: $blue
         shape_float: $red
-        shape_garbage: { bg: $red fg: $base3 }
+        shape_garbage: $red
         shape_glob_interpolation: $cyan
         shape_globpattern: $cyan
         shape_int: $violet
@@ -145,7 +145,7 @@ def _color-theme [] {
 
 # Cut commandline one path component to the left.
 #
-# Based on Fish's backward-kill-path-component from 
+# Based on Fish's backward-kill-path-component from
 # https://fishshell.com/docs/current/cmds/bind.html#special-input-functions.
 def _cut-path-left [] {
     let chars = commandline | split chars
@@ -162,11 +162,10 @@ def _cut-path-left [] {
 # Prompt user to remove current command from Nushell history.
 def _delete-from-history [] {
     let line = commandline
-    let matches = history
-    | where command =~ $line
-    | reverse
-    | get command
-    | uniq
+    if ($line | is-empty) {
+        return
+    }
+    let matches = history | get command | where $it =~ $line | reverse | uniq
     if ($matches | is-empty) {
         return
     }
@@ -184,7 +183,7 @@ Enter 'all' to delete all the matching entries.
         input "Delete which entries? "
     } catch {
         print "\n\nCancelling the delete!\n"
-        return 
+        return
     }
 
     mut selections = []
@@ -214,9 +213,28 @@ Enter 'all' to delete all the matching entries.
         }
     }
 
-    let update = history | where command not-in $selections | get command
-    $update | to text | save --force $nu.history-path
+    let ids = history --long | where command in $selections | get item_id
+    | str join ","
+    let statement = $"delete from history where id in \(($ids)\)"
+    open $nu.history-path | query db $statement
     commandline edit --replace ""
+}
+
+# Expand alias for autocompletion.
+#
+# Based on logic from
+# https://www.nushell.sh/cookbook/external_completers.html#alias-completions.
+def _expand-alias [spans: list<string>] {
+    let expanded_alias = scope aliases
+    | where name == $spans.0
+    | get --optional 0
+    | get --optional expansion
+
+    if $expanded_alias != null  {
+        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
+    } else {
+        $spans
+    }
 }
 
 # Paste current working directory into the commandline.
@@ -301,17 +319,7 @@ Get-ChildItem ($path) | ForEach-Object {
 
 # Complete commandline argument with Carapace.
 def carapace-complete [spans: list<string>] {
-    let expanded_alias = scope aliases
-    | where name == $spans.0
-    | get --optional 0
-    | get --optional expansion
-
-    let spans = if $expanded_alias != null  {
-        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
-    } else {
-        $spans | skip 1 | prepend ($spans.0)
-    }
-
+    let spans = _expand-alias $spans
     carapace $spans.0 nushell ...$spans | from json
 }
 
@@ -336,17 +344,58 @@ def --wrapped chown [...args: string] {
     }
 }
 
-# Open Nushell history file with default editor.
-def edit-history [] {
-    if "EDITOR" in $env {
-        run-external $env.EDITOR $nu.history-path
-    } else {
-        vi $nu.history-path
+# Get the current argument under the cursor.
+def "commandline argument" [] {
+    mut breakout = false
+    mut chars = []
+    let cursor = commandline get-cursor
+    let line = commandline
+    mut match = false
+    mut start = 0
+    mut stop = 0
+    mut whitespace = false
+
+    for elem in ($line | split chars | enumerate) {
+        if $elem.index == $cursor {
+            $match = true
+        }
+
+        if ($elem.item | str trim | is-empty) {
+            if $whitespace {
+                $chars = []
+                $start = $elem.index
+            } else {
+                $whitespace = true
+            }
+
+            if $match {
+                $stop = $elem.index
+                $breakout = true
+                break
+            }
+        } else {
+            if $whitespace {
+                $whitespace = false
+                $chars = []
+                $start = $elem.index
+            }
+            $chars = [...$chars $elem.item]
+        }
     }
+
+    if not $breakout {
+        if $whitespace {
+            $chars = []
+            $start = $line | str length
+        }
+        $stop = $line | str length
+    }
+    { start: $start stop: $stop token: ($chars | str join) }
 }
 
 # Complete commandline argument with Fish.
 def fish-complete [spans: list<string>] {
+    let spans = _expand-alias $spans
     let expands = $spans | each {|span|
         let span = $span | str trim --char "`" | str trim --char "'"
         | str trim --char '"'
@@ -358,7 +407,7 @@ def fish-complete [spans: list<string>] {
             { full: null short: $span }
         }
     }
-    
+
     let command = $expands | each {|expand|
         if $expand.full == null { $expand.short } else { $"'($expand.full)'" }
     } | str replace --all "'" "\\'" | str replace --all "`" "\\'" | str join ' '
@@ -376,7 +425,7 @@ def fish-complete [spans: list<string>] {
             }
         }
         let value = $value
-        
+
         let quote = ['\' ',' '[' ']' '(' ')' ' ' '\t' "'" '"' "`"]
         | any {$in in $value}
         if $quote {
@@ -405,29 +454,8 @@ def fzf-path-widget [] {
     $env.FZF_DEFAULT_COMMAND = $"($env.FZF_CTRL_T_COMMAND?)"
     $env.FZF_DEFAULT_OPTS = $"($env.FZF_DEFAULT_OPTS?) ($env.FZF_CTRL_T_OPTS?)"
 
-    let line = commandline
-    let cursor = commandline get-cursor
-
-    # Split command line arguments while considering quotes.
-    let parts = $line
-    | parse --regex '(".*?"|\'.*?\'|`.*?`|[^\s]+|\s+)' 
-    | get capture0
-
-    # Find argument under the cursor.
-    mut index = 0
-    mut token = ""
-    mut sum = 0
-    for part in $parts {
-        $sum = $sum + ($part | str length)
-        if $cursor <= $sum {
-            if ($part | str trim | is-not-empty) {
-                $token = $part | str trim --char '"' | str trim --char "'"
-                | str trim --char "`"
-            }
-            break
-        }
-        $index += 1
-    }
+    let arg = commandline argument
+    mut token = $arg.token
 
     # Build Fzf search from current token or exit early if invalid.
     mut search = { dir: "" query: "" }
@@ -471,19 +499,32 @@ def fzf-path-widget [] {
     }
 
     # Insert selection and update cursor to end of path.
-    let diff = ($full_path | str length) - ($token | str length)
-    let edit = if ($parts | is-empty) {
-        $full_path
-    } else {
-        $parts | update $index $full_path | str join " "
-    }
+
+    let chars = commandline | split chars
+    let edit = [
+        ...($chars | take $arg.start)
+        ...($full_path | split chars)
+        ...($chars | skip $arg.stop)
+    ] | str join
     commandline edit --replace $edit
-    commandline set-cursor ($sum + $diff)
+    commandline set-cursor ($arg.start + ($full_path | str length))
+}
+
+# Open Nushell history file with default editor.
+def "history edit" [] {
+    sqlite3 $nu.history-path
+}
+
+# Remove failed commands from history.
+def "history prune" [] {
+    open $nu.history-path
+    | query db "delete from history where exit_status != 0"
+    | ignore
 }
 
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
-    $env.PATH = $paths 
+    $env.PATH = $paths
     | each {|path| $path | path expand }
     | where {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
@@ -578,14 +619,22 @@ def --wrapped cbcopy [...args: string] {
             }
             powershell -command $"Set-Clipboard '($text)'"
         },
-        _ => { wl-copy ...$args },
+        _ => {
+            if (which wl-copy | is-not-empty) {
+                wl-copy ...$args
+            }
+        },
     }
 }
 def --wrapped cbpaste [...args: string] {
     match $nu.os-info.name {
         "macos" => { pbpaste ...$args },
         "windows" => { powershell -command Get-Clipboard },
-        _ => { wl-paste ...$args },
+        _ => {
+            if (which wl-paste | is-not-empty) {
+                wl-paste ...$args
+            }
+        },
     }
 }
 
@@ -710,7 +759,7 @@ $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 if $nu.os-info.name == "macos" {
     let brew_prefix = if ("/opt/homebrew" | path exists) {
         $env.OPENBLAS = "/opt/homebrew/opt/openblas"
-    } else { 
+    } else {
         $env.OPENBLAS = "/usr/local/opt/openblas"
     }
     prepend-paths $env.OPENBLAS
@@ -756,7 +805,7 @@ alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
 if $nu.is-interactive {
     $env.PROMPT_COMMAND = {||
         let path = $env.PWD | path basename
-        $"\n($env.USER) at (sys host | get hostname) in ($path)\n" 
+        $"\n($env.USER) at (sys host | get hostname) in ($path)\n"
     }
     $env.PROMPT_COMMAND_RIGHT = ""
     $env.PROMPT_INDICATOR = "❯ "
@@ -765,6 +814,7 @@ if $nu.is-interactive {
 $env.config = {
     color_config: (_color-theme)
     completions: { algorithm: "substring" }
+    history: { file_format: "sqlite" isolation: true }
     keybindings: [
         {
             event: { edit: moveright }
@@ -861,6 +911,12 @@ $env.config = {
         {
             event: { until: [{ send: menunext } { send: down }] }
             keycode: char_n
+            mode: [emacs vi_insert vi_normal]
+            modifier: control
+        }
+        {
+            event: null
+            keycode: char_o
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }

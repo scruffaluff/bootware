@@ -7,11 +7,13 @@ __pycache__/
 .env
 .hypothesis/
 .local/
+.lock
+.mypy_cache/
+.pytest_cache/
 .vagrant/
 .venv/
 .vscode/
 *.bak
-*.lock
 *.log
 *.tar.gz
 *.xml
