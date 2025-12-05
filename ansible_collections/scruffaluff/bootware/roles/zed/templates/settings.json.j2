@@ -26,15 +26,13 @@
   "disable_ai": true,
   "extend_comment_on_newline": false,
   "file_types": {
-    "Shell Script": [".*.bash", "*.bats"]
+    "Shell Script": ["*.bats", ".*.bash", ".env.*"]
   },
-  "formatter": "prettier",
   "git": {
     "blame": {
       "show_avatar": false
     }
   },
-  "helix_mode": false,
   "indent_guides": {
     "coloring": "indent_aware"
   },
@@ -49,18 +47,27 @@
   "prettier": {
     "allowed": true,
     "arrowParens": "always",
+    "plugins": ["prettier-plugin-toml"],
     "proseWrap": "always",
     "semi": true,
     "singleQuote": false,
     "trailingComma": "es5"
   },
+{% if zed_profiles | length > 0 %}
+  "profiles": {{ zed_profiles | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
   "project_panel": {
     "sticky_scroll": false
   },
+  "restore_on_startup": "last_workspace",
   "show_completions_on_input": false,
 {% if zed_remotes | length > 0 %}
-  "ssh_connections": {{ zed_remotes | to_nice_json }},
+  "ssh_connections": {{ zed_remotes | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
+  "status_bar": {
+    "line_endings_button": true
+  },
+  "tab_size": 2,
   "tabs": {
     "file_icons": true,
     "git_status": true
@@ -79,7 +86,7 @@
     "shell": {
       "with_arguments": {
         "args": ["--login"],
-        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_executable' ) }}"
+        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_name' ) }}"
       }
     },
     "toolbar": {
@@ -88,8 +95,7 @@
   },
   "theme": {
     "dark": "Solarized Dark",
-    "light": "Solarized Light",
-    "mode": "light"
+    "light": "Solarized Light"
   },
   "theme_overrides": {
     "Solarized Light": {
@@ -97,11 +103,17 @@
     }
   },
   "title_bar": {
-    "show_sign_in": false
+    "show_onboarding_banner": false,
+    "show_sign_in": false,
+    "show_user_picture": false,
+    "show_menus": true
   },
   "toolbar": {
-    "agent_review": false
+    "agent_review": false,
+    "code_actions": true
   },
   "ui_font_family": "Fira Sans",
-  "ui_font_size": {{ zed_font_size }}
+  "ui_font_size": {{ zed_font_size }},
+  "use_autoclose": false,
+  "use_auto_surround": false
 }

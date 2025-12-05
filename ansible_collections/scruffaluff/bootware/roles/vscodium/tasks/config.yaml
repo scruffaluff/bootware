@@ -31,6 +31,23 @@
     - config
   when: vscodium_settings_check.stat.exists
 
+- name: Parse VSCodium settings
+  ansible.builtin.set_fact:
+    vscodium_settings: >-
+      {{ {} if 'skipped' in vscodium_settings_file else
+      vscodium_settings_file['content'] | b64decode | regex_replace('//.*', '')
+      | from_yaml }}
+  tags:
+    - config
+
+- name: Set VSCodium remotes
+  ansible.builtin.set_fact:
+    vscodium_remotes: >-
+      {{ vscodium_remotes |
+      default(vscodium_settings.get('remote.SSH.remotePlatform', {})) }}
+  tags:
+    - config
+
 - name: Set VSCodium remotes
   ansible.builtin.set_fact:
     vscodium_remotes: >-

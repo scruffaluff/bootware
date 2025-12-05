@@ -31,12 +31,20 @@
     - config
   when: zed_settings_check.stat.exists
 
+- name: Parse Zed settings
+  ansible.builtin.set_fact:
+    zed_settings: >-
+      {{ {} if 'skipped' in zed_settings_file else zed_settings_file['content']
+      | b64decode | regex_replace('//.*', '') | from_yaml }}
+  tags:
+    - config
+
 - name: Set Zed remotes
   ansible.builtin.set_fact:
+    zed_profiles: >-
+      {{ zed_profiles | default(zed_settings.get('profiles', {})) }}
     zed_remotes: >-
-      {{ zed_remotes if zed_remotes or 'skipped' in zed_settings_file else
-      (zed_settings_file['content'] | b64decode | regex_replace('//.*', '') |
-      from_yaml).get('ssh_connections', []) }}
+      {{ zed_remotes | default(zed_settings.get('ssh_connections', [])) }}
   tags:
     - config
 

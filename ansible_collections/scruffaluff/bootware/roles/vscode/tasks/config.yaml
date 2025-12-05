@@ -31,12 +31,20 @@
     - config
   when: vscode_settings_check.stat.exists
 
+- name: Parse VSCode settings
+  ansible.builtin.set_fact:
+    vscode_settings: >-
+      {{ {} if 'skipped' in vscode_settings_file else
+      vscode_settings_file['content'] | b64decode | regex_replace('//.*', '') |
+      from_yaml }}
+  tags:
+    - config
+
 - name: Set VSCode remotes
   ansible.builtin.set_fact:
     vscode_remotes: >-
-      {{ vscode_remotes if vscode_remotes or 'skipped' in vscode_settings_file
-      else (vscode_settings_file['content'] | b64decode | regex_replace('//.*',
-      '') | from_yaml).get('remote.SSH.remotePlatform', {}) }}
+      {{ vscode_remotes |
+      default(vscode_settings.get('remote.SSH.remotePlatform', {})) }}
   tags:
     - config
 

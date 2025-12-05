@@ -38,6 +38,12 @@
   },
   {
     "bindings": {
+      "ctrl-shift-d": "debugger::Start"
+    },
+    "context": "DebugPanel"
+  },
+  {
+    "bindings": {
       "alt-;": "editor::MoveRight",
       "alt-b": "editor::MoveToPreviousSubwordStart",
       "alt-f": "editor::MoveToNextSubwordEnd",
@@ -84,6 +90,13 @@
   },
   {
     "bindings": {
+      "ctrl-n": "project_panel::NewFile",
+      "ctrl-shift-n": "project_panel::NewDirectory"
+    },
+    "context": "ProjectPanel"
+  },
+  {
+    "bindings": {
       "cmd-f": null,
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
@@ -92,5 +105,28 @@
       "ctrl-shift-t": "workspace::NewTerminal"
     },
     "context": "Terminal"
+  },
+  {
+    "bindings": {
+      "ctrl-shift-d": "debug_panel::ToggleFocus"
+    },
+    "context": "!DebugPanel"
+  },
+  {
+    "bindings": {
+      "ctrl-shift-t": "terminal_panel::ToggleFocus"
+    },
+    "context": "!Terminal"
+  },
+  {
+    "bindings": {
+      "alt-c": "debugger::Continue",
+      "alt-n": "debugger::StepOver",
+      "alt-o": "debugger::StepOut",
+      "alt-q": "debugger::Stop",
+      "alt-r": "debugger::Restart",
+      "alt-s": "debugger::StepInto"
+    },
+    "context": "debugger_stopped"
   }
 ]
