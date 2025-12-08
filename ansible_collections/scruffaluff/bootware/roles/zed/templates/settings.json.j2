@@ -42,9 +42,20 @@
   },
   "inline_code_actions": false,
   "languages": {
+    "Dockerfile": {
+      "format_on_save": "off",
+      "tab_size": 4
+    },
+    "Jinja2": {
+      "format_on_save": "off"
+    },
     "Nu": {
       "format_on_save": "off",
       "tab_size": 4
+    },
+    "PowerShell": {
+      "enable_language_server": {{ (ansible_system == "Win32NT") | to_json }},
+      "format_on_save": "off"
     },
     "Python": {
       "tab_size": 4

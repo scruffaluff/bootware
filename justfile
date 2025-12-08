@@ -7,11 +7,11 @@ set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
   join(justfile_dir(), ".vendor\\bin;") + env("Path")
 } else {
-  justfile_dir() / ".vendor/bin:" + justfile_dir() / 
+  justfile_dir() / ".vendor/bin:" + justfile_dir() /
   ".vendor/lib/bats-core/bin:" + env("PATH")
 }
 export PSModulePath := if os() == "windows" {
-  join(justfile_dir(), ".vendor\\lib\\powershell\\modules;") + 
+  join(justfile_dir(), ".vendor\\lib\\powershell\\modules;") +
   env("PSModulePath", "")
 } else { "" }
 
@@ -180,7 +180,7 @@ setup:
   $ModulePath = '.vendor\lib\powershell\modules'
   New-Item -Force -ItemType Directory -Path $ModulePath | Out-Null
   if (-not (
-    (Get-Command -ErrorAction SilentlyContinue node) -And 
+    (Get-Command -ErrorAction SilentlyContinue node) -And
     (Get-Command -ErrorAction SilentlyContinue npm)
   )) {
     Write-Error 'Error: Unable to find NodeJS and NPM.'
@@ -267,4 +267,3 @@ test-shell *args:
 test-shell:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
-

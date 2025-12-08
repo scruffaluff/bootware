@@ -38,7 +38,7 @@ ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd \
-    --retries 3 ${extra:--extra-vars $extra} ${skip:+--skip $skip} \
+    --retries 3 ${extra:+--extra-vars $extra} ${skip:+--skip $skip} \
     --tags ${tags:-all,never}
 
 # Copy bootware test files for testing.

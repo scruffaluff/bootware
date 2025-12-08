@@ -369,6 +369,7 @@ jobs:
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
+          [System.IO.File]::WriteAllLines("$HOME\.bootware\config.yaml", 'font_install: false')
         shell: powershell
       # Docker role is skipped since it is already installed. Fzf role is
       # skipped as of 09/20/2025 since the PSFzf TSL certificate is expired.
