@@ -5,6 +5,7 @@ def main [
     --arch (-a): string = "" # Chip architecture
     --cache (-c) # Use container cache
     --dists (-d): string = "alpine,arch,debian,fedora,ubuntu" # Linux distributions list
+    --extra (-e): string = "" # Extra variables for Ansible
     --skip (-s): string = "none" # Ansible roles to skip
     --tags (-t): string = "all,never" # Ansible roles to keep
 ] {
@@ -24,8 +25,8 @@ def main [
         (
             ^$runner build ...$args --file $"test/e2e/($dist).dockerfile" --tag
             $"docker.io/scruffaluff/bootware:($dist)" --platform
-            $"linux/($arch)" . --build-arg $"skip=($skip)" --build-arg
-            $"tags=($tags)" --build-arg test=true
+            $"linux/($arch)" . --build-arg $"extra=($extra)" --build-arg
+            $"skip=($skip)" --build-arg $"tags=($tags)" --build-arg test=true
         )
         print $"End to end test ($dist) passed."
     }

@@ -9,7 +9,7 @@ font_families:
     name: fira-code-nerd-font
     patterns:
       - FiraCodeNerdFont-*.ttf
-    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip
   - check: FiraMono-Regular.ttf
     name: fira-mono
     patterns:
@@ -35,3 +35,4 @@ font_families:
     patterns:
       - PT*.ttf
     url: https://www.fontsquirrel.com/fonts/download/pt-serif
+font_install: true

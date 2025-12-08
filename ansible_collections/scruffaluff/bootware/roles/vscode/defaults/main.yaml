@@ -60,9 +60,9 @@ vscode_extensions:
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
-  - grapecity.gc-excelviewer
   - james-yu.latex-workshop
   - leanprover.lean4
+  - mechatroner.rainbow-csv
   - mhutchie.git-graph
   - ms-playwright.playwright
   - ms-python.mypy-type-checker
@@ -93,6 +93,7 @@ vscode_remote_extensions:
   - elijah-potter.harper
   - foxundermoon.shell-format
   - james-yu.latex-workshop
+  - mechatroner.rainbow-csv
   - mhutchie.git-graph
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor

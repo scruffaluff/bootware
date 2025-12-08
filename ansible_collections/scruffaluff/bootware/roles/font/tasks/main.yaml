@@ -12,7 +12,7 @@
       FreeBSD: /usr/local/share/fonts/{{ font_family.name }}
       Darwin: /Library/Fonts
       Linux: /usr/share/fonts/{{ font_family.name }}
-  when: ansible_system != "Win32NT"
+  when: ansible_system != "Win32NT" and font_install
 
 - name: Install fonts for Windows
   ansible.builtin.include_tasks:
@@ -24,7 +24,7 @@
     - install
   vars:
     font_folder: C:\Windows\Fonts
-  when: ansible_system == "Win32NT"
+  when: ansible_system == "Win32NT" and font_install
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

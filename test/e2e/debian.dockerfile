@@ -32,12 +32,14 @@ COPY --chown="${USER}" ansible.cfg playbook.yaml ./
 # issues of running inside of the WSL and force a yes or no prompt.
 ENV DONT_PROMPT_WSL_INSTALL='true'
 
+ARG extra
 ARG skip
 ARG tags
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --dev --no-passwd \
-    --retries 3 ${skip:+--skip $skip} --tags ${tags:-all,never}
+    --retries 3 ${extra:--extra-vars $extra} ${skip:+--skip $skip} \
+    --tags ${tags:-all,never}
 
 # Copy bootware test files for testing.
 COPY --chown="${USER}" data/ ./data/

@@ -70,6 +70,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
+            extra='{"font_install":false}'
             skip=android_studio,gdu,helix,spotify
             test=true
           context: .
@@ -106,6 +107,7 @@ jobs:
           # Libvirt test fails in GitHub workflow as of 01/18/2025 due to a "No
           # module named 'gi'" Python error. The test passes when run locally.
           build-args: |
+            extra='{"font_install":false}'
             skip=android_studio,libvirt,spotify
             test=true
           context: .
@@ -140,6 +142,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
+            extra='{"font_install":false}'
             skip=spotify
             test=true
           context: .
@@ -174,6 +177,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
+            extra='{"font_install":false}'
             skip=spotify
             test=true
           context: .
@@ -218,7 +222,7 @@ jobs:
             src/install.sh --global
             install src/bootware.sh $(which bootware)
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip gdu,node,security --tags all,never
+            bootware bootstrap --dev --no-passwd --extra-vars '{"font_install":false}' --retries 3 --skip gdu,node,security --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,gdu,libvirt,musescore,node,qemu,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -248,7 +252,8 @@ jobs:
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --tags all,never
+          bootware bootstrap --dev --no-passwd --extra-vars
+          '{"font_install":false}' --retries 3 --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
@@ -280,6 +285,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
+            extra='{"font_install":false}'
             skip=spotify
             test=true
           context: .
@@ -373,7 +379,7 @@ jobs:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip docker,fzf,vscodium --tags all,never
+          bootware bootstrap --dev --no-setup --extra-vars '{"font_install":false}' --retries 3 --skip docker,fzf,vscodium --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
