@@ -70,7 +70,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra='{"font_install":false}'
+            extra={"font_install":false}
             skip=android_studio,gdu,helix,spotify
             test=true
           context: .
@@ -107,7 +107,7 @@ jobs:
           # Libvirt test fails in GitHub workflow as of 01/18/2025 due to a "No
           # module named 'gi'" Python error. The test passes when run locally.
           build-args: |
-            extra='{"font_install":false}'
+            extra={"font_install":false}
             skip=android_studio,libvirt,spotify
             test=true
           context: .
@@ -142,7 +142,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra='{"font_install":false}'
+            extra={"font_install":false}
             skip=spotify
             test=true
           context: .
@@ -177,7 +177,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra='{"font_install":false}'
+            extra={"font_install":false}
             skip=spotify
             test=true
           context: .
@@ -285,7 +285,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra='{"font_install":false}'
+            extra={"font_install":false}
             skip=spotify
             test=true
           context: .
