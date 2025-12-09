@@ -1,4 +1,4 @@
-FROM docker.io/debian:13.2 AS build
+FROM docker.io/debian:13 AS build
 
 ARG version
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/debian:13.2
+FROM docker.io/debian:13
 
 ARG version
 ENV DEBIAN_FRONTEND=noninteractive

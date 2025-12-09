@@ -1,4 +1,4 @@
-FROM docker.io/homebrew/brew:4.6.20 AS build
+FROM docker.io/homebrew/brew:4 AS build
 
 ARG version
 ENV DEBIAN_FRONTEND=noninteractive
@@ -24,7 +24,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/homebrew/brew:4.6.20
+FROM docker.io/homebrew/brew:4
 
 ARG version
 
