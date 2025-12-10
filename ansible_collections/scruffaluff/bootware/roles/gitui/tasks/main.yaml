@@ -3,9 +3,6 @@
   become: true
   community.general.apk:
     name: gitui
-    repository: http://dl-cdn.alpinelinux.org/alpine/edge/community
-    state: latest
-    update_cache: true
   tags:
     - install
   when: ansible_pkg_mgr == "apk"
