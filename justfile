@@ -5,13 +5,13 @@
 set unstable := true
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
-  join(justfile_dir(), ".vendor\\bin;") + env("Path")
+  join(justfile_directory(), ".vendor\\bin;") + env("Path")
 } else {
-  justfile_dir() / ".vendor/bin:" + justfile_dir() /
+  justfile_directory() / ".vendor/bin:" + justfile_directory() /
   ".vendor/lib/bats-core/bin:" + env("PATH")
 }
 export PSModulePath := if os() == "windows" {
-  join(justfile_dir(), ".vendor\\lib\\powershell\\modules;") +
+  join(justfile_directory(), ".vendor\\lib\\powershell\\modules;") +
   env("PSModulePath", "")
 } else { "" }
 
@@ -71,7 +71,7 @@ lint:
   done
   uv run ansible-lint ansible_collections playbook.yaml
   uv run ruff check .
-  uv run mypy .
+  uv run ty check .
 
 # Run code analyses.
 [windows]

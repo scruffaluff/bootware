@@ -8,5 +8,5 @@ python_applications:
     extras:
       - poetry-plugin-shell
       - poetry-plugin-up
-  - pyright
   - ruff
+  - ty
