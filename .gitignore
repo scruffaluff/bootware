@@ -2,21 +2,22 @@
 #
 # For more information, visit https://git-scm.com/docs/gitignore.
 
-__pycache__/
+*.bak
+*.log
+*.tar.gz
+*.xml
 .DS_Store
+.classpath/
 .env
 .hypothesis/
 .local/
+.localized
 .lock
 .mypy_cache/
 .pytest_cache/
 .vagrant/
 .venv/
 .vscode/
-*.bak
-*.log
-*.tar.gz
-*.xml
 /.vendor/
 /.vitepress/.temp/
 /.vitepress/cache/
@@ -27,6 +28,8 @@ __pycache__/
 /build/
 /data/public/install*
 /doc/software.md
+Thumbs.db
+__pycache__/
 deno.lock
 dist/
 node_modules/

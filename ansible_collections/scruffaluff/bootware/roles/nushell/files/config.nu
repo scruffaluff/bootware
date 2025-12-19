@@ -225,15 +225,15 @@ Enter 'all' to delete all the matching entries.
 # Based on logic from
 # https://www.nushell.sh/cookbook/external_completers.html#alias-completions.
 def _expand-alias [spans: list<string>] {
-    let expanded_alias = scope aliases
+    let expansion = scope aliases
     | where name == $spans.0
     | get --optional 0
     | get --optional expansion
 
-    if $expanded_alias != null  {
-        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
-    } else {
+    if $expansion == null  {
         $spans
+    } else {
+        $spans | skip 1 | prepend ($expansion | split row " " | take 1)
     }
 }
 

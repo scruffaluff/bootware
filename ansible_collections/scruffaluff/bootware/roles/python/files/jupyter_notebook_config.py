@@ -9,4 +9,4 @@
 #  platform dependent and determined by the python standard library `webbrowser`
 #  module, unless it is overridden using the --browser (NotebookApp.browser)
 #  configuration option.
-c.NotebookApp.open_browser = False
+c.NotebookApp.open_browser = False  # ty: ignore[unresolved-reference]

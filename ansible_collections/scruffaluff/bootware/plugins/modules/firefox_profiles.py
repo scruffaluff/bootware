@@ -58,7 +58,6 @@ def main() -> None:
                 "Unable to parse default Firefox profile from profiles database"
                 f" at '{database}'. Error: {exception}"
             ),
-            **result,
         )
 
     result["paths"] = [str(database.parent / path) for path in paths]

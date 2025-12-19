@@ -81,13 +81,7 @@ indent = { tab-width = 4, unit = "    " }
 name = "python"
 auto-format = true
 formatter = { command = "ruff", args = ["format", "-"] }
-language-servers = [
-  "ruff",
-  { except-features = [
-    "diagnostics",
-  ], name = "pyright" },
-  "harper",
-]
+language-servers = ["ty", "ruff", "harper"]
 roots = ["pyproject.toml", "setup.py", "requirements.txt"]
 
 [[language]]
@@ -137,10 +131,13 @@ ExpandTimeShorthands = false
 SentenceCapitalization = false
 ToDoHyphen = false
 
-[language-server.pyright]
-args = ["--stdio"]
-command = "pyright-langserver"
-
 [language-server.ruff]
 args = ["server"]
 command = "ruff"
+
+[language-server.ty]
+args = ["server"]
+command = "ty"
+
+[language-server.ty.completions]
+autoImport = false

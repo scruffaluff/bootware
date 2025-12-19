@@ -5,7 +5,7 @@
 {
   "agent": {
     "button": false,
-    "enabled": false
+    "enabled": false,
   },
 {% if zed_extensions | length > 0 %}
   "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},
@@ -15,57 +15,85 @@
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": {{ zed_font_size }},
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "cursor_shape": "bar",
   "diagnostics": {
     "inline": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
   "disable_ai": true,
   "extend_comment_on_newline": false,
+  "file_scan_exclusions": [
+    "**/.DS_Store",
+    "**/.classpath",
+    "**/.git",
+    "**/.hg",
+    "**/.jj",
+    "**/.localized",
+    "**/.settings",
+    "**/.sl",
+    "**/.svn",
+    "**/Thumbs.db",
+  ],
   "file_types": {
-    "Shell Script": ["*.bats", ".*.bash", ".env.*"]
+    "Shell Script": ["*.bats", ".*.bash", ".env.*"],
   },
   "git": {
     "blame": {
-      "show_avatar": false
-    }
+      "show_avatar": false,
+    },
   },
   "indent_guides": {
-    "coloring": "indent_aware"
+    "coloring": "indent_aware",
   },
   "inlay_hints": {
     "enabled": true,
-    "show_background": false
+    "show_background": false,
   },
   "inline_code_actions": false,
+  "jsx_tag_auto_close": {
+    "enabled": false,
+  },
   "languages": {
     "Dockerfile": {
       "format_on_save": "off",
-      "tab_size": 4
+      "tab_size": 4,
     },
     "Jinja2": {
-      "format_on_save": "off"
+      "format_on_save": "off",
+    },
+    "Justfile": {
+      "format_on_save": "off",
     },
     "Nu": {
       "format_on_save": "off",
-      "tab_size": 4
+      "tab_size": 4,
     },
     "PowerShell": {
       "enable_language_server": {{ (ansible_system == "Win32NT") | to_json }},
-      "format_on_save": "off"
+      "format_on_save": "off",
     },
     "Python": {
-      "tab_size": 4
+      "language_servers": ["ty", "!basedpyright", "..."],
+      "tab_size": 4,
     },
     "Rust": {
-      "tab_size": 4
-    }
+      "tab_size": 4,
+    },
+  },
+  "lsp": {
+    "ty": {
+      "settings": {
+        "completions": {
+          "autoImport": true,
+        },
+      },
+    },
   },
   "notification_panel": {
-    "button": false
+    "button": false,
   },
   "on_last_window_closed": "quit_app",
   "prettier": {
@@ -75,13 +103,13 @@
     "proseWrap": "always",
     "semi": true,
     "singleQuote": false,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
   },
 {% if zed_profiles | length > 0 %}
   "profiles": {{ zed_profiles | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "project_panel": {
-    "sticky_scroll": false
+    "sticky_scroll": false,
   },
   "restore_on_startup": "last_workspace",
   "show_completions_on_input": false,
@@ -89,16 +117,16 @@
   "ssh_connections": {{ zed_remotes | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "status_bar": {
-    "line_endings_button": true
+    "line_endings_button": true,
   },
   "tab_size": 2,
   "tabs": {
     "file_icons": true,
-    "git_status": true
+    "git_status": true,
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "terminal": {
     "cursor_shape": "bar",
@@ -110,34 +138,35 @@
     "shell": {
       "with_arguments": {
         "args": ["--login"],
-        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_name' ) }}"
-      }
+        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_name' ) }}",
+      },
     },
     "toolbar": {
-      "breadcrumbs": false
-    }
+      "breadcrumbs": false,
+    },
   },
   "theme": {
     "dark": "Solarized Dark",
-    "light": "Solarized Light"
+    "light": "Solarized Light",
   },
   "theme_overrides": {
     "Solarized Light": {
-      "text.muted": "#586e75"
-    }
+      "text.muted": "#586e75",
+    },
   },
   "title_bar": {
     "show_onboarding_banner": false,
     "show_sign_in": false,
     "show_user_picture": false,
-    "show_menus": true
+    "show_menus": true,
   },
   "toolbar": {
     "agent_review": false,
-    "code_actions": true
+    "code_actions": true,
   },
   "ui_font_family": "Fira Sans",
   "ui_font_size": {{ zed_font_size }},
   "use_autoclose": false,
-  "use_auto_surround": false
+  "use_auto_surround": false,
+  "when_closing_with_no_tabs": "keep_window_open",
 }

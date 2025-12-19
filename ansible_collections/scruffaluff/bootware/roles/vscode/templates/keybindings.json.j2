@@ -513,6 +513,11 @@
   },
   { "command": "workbench.action.gotoLine", "key": "ctrl+g l" },
   {
+    "command": "workbench.action.moveEditorToNextGroup",
+    "key": "ctrl+\\",
+    "when": "!panelFocus"
+  },
+  {
     "command": "workbench.action.moveEditorLeftInGroup",
     "key": "ctrl+shift+left",
     "when": "!panelFocus"
@@ -627,11 +632,6 @@
   },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
-  {
-    "command": "workbench.action.splitEditor",
-    "key": "ctrl+\\",
-    "when": "editorFocus"
-  },
   {
     "command": "workbench.action.terminal.focus",
     "key": "ctrl+shift+s",
