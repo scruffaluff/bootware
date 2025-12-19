@@ -7,19 +7,22 @@
 authors:
   - Macklan Weinstein <macklan.weinstein@gmail.com>
 build_ignore:
-  - __pycache__
   - .DS_Store
+  - .classpath
   - .dockerignore
   - .editorconfig
   - .github
+  - .localized
   - .shellcheckrc
   - .venv
+  - PSScriptAnalyzerSettings.psd1
+  - Thumbs.db
+  - __pycache__
   - completions
   - doc
   - node_modules
   - package-lock.json
   - package.json
-  - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
   - script
   - test
