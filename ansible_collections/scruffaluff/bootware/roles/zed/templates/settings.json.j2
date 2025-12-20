@@ -58,22 +58,19 @@
   },
   "languages": {
     "Dockerfile": {
-      "format_on_save": "off",
       "tab_size": 4,
     },
-    "Jinja2": {
+    "Just": {
       "format_on_save": "off",
     },
-    "Justfile": {
-      "format_on_save": "off",
+    "Markdown": {
+      "format_on_save": "on",
     },
     "Nu": {
-      "format_on_save": "off",
       "tab_size": 4,
     },
     "PowerShell": {
-      "enable_language_server": {{ (ansible_system == "Win32NT") | to_json }},
-      "format_on_save": "off",
+      "enable_language_server": false,
     },
     "Python": {
       "language_servers": ["ty", "!basedpyright", "..."],
@@ -81,6 +78,9 @@
     },
     "Rust": {
       "tab_size": 4,
+    },
+    "TOML": {
+      "prettier": { "allowed": true, "plugins": ["prettier-plugin-toml"] },
     },
   },
   "lsp": {
@@ -97,9 +97,7 @@
   },
   "on_last_window_closed": "quit_app",
   "prettier": {
-    "allowed": true,
     "arrowParens": "always",
-    "plugins": ["prettier-plugin-toml"],
     "proseWrap": "always",
     "semi": true,
     "singleQuote": false,
@@ -169,4 +167,14 @@
   "use_autoclose": false,
   "use_auto_surround": false,
   "when_closing_with_no_tabs": "keep_window_open",
+  "windows": {
+    "languages": {
+      "Fish": {
+        "enable_language_server": false,
+      },
+      "PowerShell": {
+        "enable_language_server": true,
+      },
+    },
+  },
 }
