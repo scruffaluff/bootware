@@ -9,8 +9,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Bitwarden, Chafa, Image Magick, Presenterm, Samply, Spotify, and Tailscale
-  roles.
+- Bitwarden, Chafa, Image Magick, Presenterm, Samply, Spotify, Tailscale, and
+  Zed roles.
 
 ### Changed
 
@@ -19,7 +19,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
-- Appimage, Balena Etcher, Htmlq, K3sup, Mdbook, Procs, QSV, and Wasm roles.
+- Appimage, Balena Etcher, Htmlq, K3sup, Mdbook, Procs, QSV, VSCodium and Wasm
+  roles.
 
 ## 0.9.1 = 2025-05-28
 

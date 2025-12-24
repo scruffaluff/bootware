@@ -105,5 +105,4 @@ vscode_remotes: {}
 vscode_style: true
 vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
 vscode_user_path: >-
-  {{ vscode_user_path_.get(ansible_system, user_home + '/.config/VSCodium/User')
-  }}
+  {{ vscode_user_path_.get(ansible_system, user_home + '/.config/Code/User') }}

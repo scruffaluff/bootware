@@ -1865,27 +1865,14 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - editor
+            - never
             - vscode
         name: scruffaluff.bootware.vscode
       tags:
-        - desktop
-        - editor
-        - vscode
-
-    - name: Install VSCodium text editor
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - editor
-            - never
-            - vscodium
-        name: scruffaluff.bootware.vscodium
-      tags:
         - editor
         - never
-        - vscodium
+        - vscode
 
     - name: Install Watchexec file watcher
       ansible.builtin.include_role:
@@ -1996,13 +1983,13 @@
       ansible.builtin.include_role:
         apply:
           tags:
+            - destkop
             - editor
-            - never
             - zed
         name: scruffaluff.bootware.zed
       tags:
+        - desktop
         - editor
-        - never
         - zed
 
     - name: Install Zellij terminal multiplexer
