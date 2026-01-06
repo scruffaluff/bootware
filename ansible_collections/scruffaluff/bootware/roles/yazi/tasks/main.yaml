@@ -1,4 +1,15 @@
 ---
+- name: Install Yazi dependencies for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name:
+      - poppler
+      - resvg
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
 - name: Get latest Yazi version for Linux
   ansible.builtin.uri:
     method: GET

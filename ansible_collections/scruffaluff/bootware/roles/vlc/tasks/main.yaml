@@ -111,9 +111,9 @@
     state: present
   become: true
   loop:
-    - key: qt-recentplay
+    - key: macosx-recentitems
       value: 0
-    - key: qt-privacy-ask
+    - key: stats
       value: 0
   tags:
     - config

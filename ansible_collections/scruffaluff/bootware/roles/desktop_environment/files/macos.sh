@@ -33,6 +33,8 @@ defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 # Speed up window resize animations.
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+# Disable hot corners new note popup.
+defaults write com.apple.doc wvous-br-corner -int 0
 # Remove widgets from desktop.
 defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 defaults write com.apple.WindowManager StandardHideWidgets -bool true

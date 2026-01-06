@@ -2,5 +2,6 @@
 #
 # For more information, visit https://github.com/sharkdp/bat#configuration-file.
 
+--map-syntax '*justfile:Makefile'
 --style plain
---theme "Solarized (light)"
+--theme 'Solarized (light)'

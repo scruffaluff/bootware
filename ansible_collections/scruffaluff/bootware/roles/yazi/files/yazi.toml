@@ -19,26 +19,26 @@ prepend_rules = [
 
 [opener]
 edit = [
-  { block = true, desc = "$EDITOR", for = "unix", run = '${EDITOR:-vi} "$@"' },
-  { block = true, desc = "%EDITOR%", for = "windows", run = '%EDITOR% %*' },
+  { block = true, desc = "$EDITOR", for = "unix", run = '${EDITOR:-vi} %s1' },
+  { block = true, desc = "%EDITOR%", for = "windows", run = '%EDITOR% %s1' },
 ]
 show = [
-  { block = true, desc = "chafa", for = "unix", run = 'chafa --clear --align center --duration infinite --scale max "$1"; clear' },
-  { block = true, desc = "chafa", for = "windows", run = 'chafa --clear --align center --duration infinite --scale max %1; clear' },
-  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
+  { block = true, desc = "chafa", for = "unix", run = 'chafa --clear --align center --duration infinite --scale max %s1; clear' },
+  { block = true, desc = "chafa", for = "windows", run = 'chafa --clear --align center --duration infinite --scale max %s1; clear' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo %s1; echo "Press enter to exit"; read _' },
 ]
 sound = [
-  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video "$1"; clear' },
-  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %1; clear' },
-  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo "$1"; echo "Press enter to exit"; read _' },
+  { block = true, desc = "mpv", for = "unix", run = 'mpv --no-video %s1; clear' },
+  { block = true, desc = "mpv", for = "windows", run = 'mpv --no-video %s1; clear' },
+  { block = true, desc = "mediainfo", for = "unix", run = 'mediainfo %s1; echo "Press enter to exit"; read _' },
 ]
 
 [plugin]
 preloaders = []
 
 [preview]
-max_height = 1080
-max_width = 1920
+max_height = 2160
+max_width = 4096
 
 [tasks]
 image_bound = [0, 0]
