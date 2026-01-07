@@ -1,0 +1,25 @@
+---
+- name: Install Readest for Linux
+  become: true
+  community.general.flatpak:
+    name: com.bilingify.readest
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install Readest for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: readest
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install Readest for Windows
+  community.windows.win_scoop:
+    global: true
+    name: readest
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

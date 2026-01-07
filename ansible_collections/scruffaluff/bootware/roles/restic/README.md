@@ -1,7 +1,23 @@
 # Restic
 
-Restic is an Ansible role
+Ansible role that installs Restic.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.restic
+```

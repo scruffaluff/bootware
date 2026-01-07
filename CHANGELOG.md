@@ -9,8 +9,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Bitwarden, Chafa, Image Magick, Presenterm, Samply, Spotify, Tailscale, and
-  Zed roles.
+- Bitwarden, Chafa, Image Magick, LocalSend, Presenterm, Readest, Samply,
+  Spotify, Tailscale, and Zed roles.
 
 ### Changed
 

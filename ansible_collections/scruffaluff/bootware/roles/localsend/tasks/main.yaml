@@ -1,0 +1,25 @@
+---
+- name: Install LocalSend for Linux
+  become: true
+  community.general.flatpak:
+    name: org.localsend.localsend_app
+  tags:
+    - install
+  when: ansible_system == "Linux"
+
+- name: Install LocalSend for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: localsend
+    state: present
+  tags:
+    - install
+  when: ansible_system == "Darwin"
+
+- name: Install LocalSend for Windows
+  community.windows.win_scoop:
+    global: true
+    name: localsend
+  tags:
+    - install
+  when: ansible_system == "Win32NT"

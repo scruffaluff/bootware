@@ -1,6 +1,7 @@
 # Alacritty
 
-Ansible role that installs [Alacritty](https://alacritty.org/) terminal.
+Ansible role that installs [Alacritty](https://alacritty.org/) terminal
+emulator.
 
 ## Requirements
 

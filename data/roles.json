@@ -218,6 +218,7 @@
     }
   },
   { "name": "lldb", "tests": ["lldb --version"] },
+  { "name": "localsend", "skip": [{ "os": "freebsd" }] },
   { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",
@@ -320,6 +321,7 @@
     }
   },
   { "name": "rclone", "tests": ["rclone --version"] },
+  { "name": "readest", "skip": [{ "os": "freebsd" }] },
   { "name": "readline" },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },

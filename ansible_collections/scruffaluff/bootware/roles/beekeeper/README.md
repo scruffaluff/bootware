@@ -1,7 +1,24 @@
 # Beekeeper
 
-Beekeeper is an Ansible role
+Ansible role that installs [Beekeeper Studio](https://www.beekeeperstudio.io)
+database client.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.beekeeper
+```

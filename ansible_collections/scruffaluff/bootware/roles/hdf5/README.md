@@ -1,7 +1,23 @@
 # Hdf5
 
-Hdf5 is an Ansible role
+Ansible role that installs Hdf5.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.hdf5
+```

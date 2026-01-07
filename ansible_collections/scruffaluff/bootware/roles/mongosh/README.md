@@ -1,7 +1,23 @@
 # MongoSh
 
-MongoSh is an Ansible role
+Ansible role that installs MongoSh.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.mongosh
+```
