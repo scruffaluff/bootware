@@ -251,13 +251,15 @@ jobs:
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
+        # Kdenlive role is skipped as of 01/07/2026 since Homebrew uses the
+        # wrong download link.
         run: >-
           bootware bootstrap --dev --no-passwd --extra-vars
-          '{"font_install":false}' --retries 3 --tags all,never
+          '{"font_install":false}' --retries 3 --skip kdenlive --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          test/e2e/roles.test.ts --arch arm64 macos
+          test/e2e/roles.test.ts --arch arm64 --skip kdenlive macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

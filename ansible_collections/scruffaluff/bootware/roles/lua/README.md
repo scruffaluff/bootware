@@ -1,6 +1,6 @@
 # Lua
 
-Ansible role that installs [Lua](https://www.lua.org/lua-l.html) language.
+Ansible role that installs [Lua](https://lua.org/lua-l.html) language.
 
 ## Requirements
 

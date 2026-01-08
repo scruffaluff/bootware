@@ -1,7 +1,7 @@
 # Python configuration file for building, dependencies, and tooling.
 #
 # For more information, visit
-# https://snarky.ca/what-the-heck-is-pyproject-toml/.
+# https://snarky.ca/what-the-heck-is-pyproject-toml.
 
 [build-system]
 build-backend = "hatchling.build"
@@ -9,12 +9,12 @@ requires = ["hatchling~=1.0"]
 
 [dependency-groups]
 dev = [
-  "ansible ~= 12.2",
-  "ansible-compat ~= 25.8",
-  "ansible-lint ~= 25.9; sys_platform != 'windows'",
-  "pytest ~= 8.4",
-  "ruff ~= 0.14.4",
-  "ty ~= 0.0",
+  "ansible ~= 13.2",
+  "ansible-compat ~= 25.12",
+  "ansible-lint ~= 25.12; sys_platform != 'windows'",
+  "pytest ~= 9.0",
+  "ruff ~= 0.14.10",
+  "ty ~= 0.0.10",
   "yamllint ~= 1.37",
 ]
 
@@ -28,8 +28,8 @@ keywords = []
 license = "MIT"
 name = "bootware"
 readme = "README.md"
-requires-python = ">=3.11.0,<4.0.0"
-version = "0.9.1"
+requires-python = ">=3.12.0,<4.0.0"
+version = "0.10.0"
 
 [tool.pytest.ini_options]
 addopts = "-sv"

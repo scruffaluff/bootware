@@ -20,7 +20,7 @@ ci: setup lint doc test-shell test-nushell test-python
 
 # Build distribution packages.
 [script("nu")]
-dist version="0.9.1":
+dist version="0.10.0":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
 
@@ -92,6 +92,11 @@ lint:
 [default]
 list:
   @just --list
+
+# Wrapper to Nushell.
+[no-exit-message]
+@nu *args:
+  nu {{args}}
 
 # Install development dependencies.
 [unix]
@@ -267,3 +272,8 @@ test-shell *args:
 test-shell:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
+
+# Wrapper to Uv.
+[no-exit-message]
+@uv *args:
+  uv {{args}}

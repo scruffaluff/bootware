@@ -2,7 +2,7 @@
 
 ## Configuration File
 
-Bootware uses the [YAML](https://yaml.org/) language for its configuration file.
+Bootware uses the [YAML](https://yaml.org) language for its configuration file.
 Bootware uses the first available path option as its configuration file.
 
 - `<path>` (argument to -c/--config command line flag)
