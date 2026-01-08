@@ -1,6 +1,6 @@
 # Sqlite
 
-Ansible role that installs Sqlite.
+Ansible role that installs [Sqlite](https://sqlite.org) database.
 
 ## Requirements
 

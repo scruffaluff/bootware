@@ -1,6 +1,7 @@
 # Image Magick
 
-Ansible role that installs Image Magick.
+Ansible role that installs [Image Magick](https://imagemagick.org) picture
+converter.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Wireshark
 
-Ansible role that installs Wireshark.
+Ansible role that installs Wireshark network analyzer.
 
 ## Requirements
 

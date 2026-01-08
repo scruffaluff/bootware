@@ -1,6 +1,6 @@
 # LLDB
 
-Ansible role that installs LLDB.
+Ansible role that installs [LLDB](https://lldb.llvm.org) debugger.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Helm
 
-Ansible role that installs Helm.
+Ansible role that installs [Helm](https://helm.sh) Kubernetes package manager.
 
 ## Requirements
 

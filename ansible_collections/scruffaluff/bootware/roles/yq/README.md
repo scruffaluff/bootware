@@ -1,6 +1,6 @@
 # Yq
 
-Ansible role that installs Yq.
+Ansible role that installs [Yq](https://mikefarah.gitbook.io/yq) YAML parser.
 
 ## Requirements
 

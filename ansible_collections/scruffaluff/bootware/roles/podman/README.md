@@ -1,6 +1,6 @@
 # Podman
 
-Ansible role that installs Podman.
+Ansible role that installs [Podman](https://podman.io) container platform.
 
 ## Requirements
 

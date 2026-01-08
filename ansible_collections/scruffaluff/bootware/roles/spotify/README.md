@@ -1,6 +1,6 @@
 # Spotify
 
-Ansible role that installs Spotify.
+Ansible role that installs [Spotify](https://spotify.com) music player.
 
 ## Requirements
 

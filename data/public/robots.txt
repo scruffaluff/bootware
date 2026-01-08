@@ -1,6 +1,6 @@
 # Site configuration file for web crawlers.
 #
-# For more information, visit https://www.robotstxt.org/robotstxt.html.
+# For more information, visit https://robotstxt.org/robotstxt.html.
 
 Allow: /
 User-Agent: *

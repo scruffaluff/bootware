@@ -1,6 +1,7 @@
 # Topgrade
 
-Ansible role that installs Topgrade.
+Ansible role that installs [Topgrade](https://github.com/topgrade-rs/topgrade)
+package updater.
 
 ## Requirements
 

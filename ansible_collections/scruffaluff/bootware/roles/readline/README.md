@@ -1,6 +1,7 @@
 # Readline
 
-Ansible role that configures Readline.
+Ansible role that configures [Readline](https://gnu.org/software/readline)
+configuration.
 
 ## Requirements
 

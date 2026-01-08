@@ -1,6 +1,6 @@
 # Beekeeper
 
-Ansible role that installs [Beekeeper Studio](https://www.beekeeperstudio.io)
+Ansible role that installs [Beekeeper Studio](https://beekeeperstudio.io)
 database client.
 
 ## Requirements

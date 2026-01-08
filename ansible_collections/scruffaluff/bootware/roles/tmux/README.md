@@ -1,6 +1,7 @@
 # Tmux
 
-Ansible role that installs Tmux.
+Ansible role that installs [Tmux](https://github.com/tmux/tmux) terminal
+multiplexer.
 
 ## Requirements
 

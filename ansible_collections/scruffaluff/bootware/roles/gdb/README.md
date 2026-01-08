@@ -1,6 +1,6 @@
 # GDB
 
-Ansible role that installs GDB.
+Ansible role that installs [GDB](https://sourceware.org/gdb) debugger.
 
 ## Requirements
 

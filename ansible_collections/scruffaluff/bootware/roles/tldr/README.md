@@ -1,6 +1,6 @@
 # Tldr
 
-Ansible role that installs Tldr.
+Ansible role that installs [Tldr](https://tldr.sh) cheatsheet interface.
 
 ## Requirements
 

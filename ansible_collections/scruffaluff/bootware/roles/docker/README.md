@@ -1,6 +1,6 @@
 # Docker
 
-Ansible role that installs [Docker](https://www.docker.com) container platform.
+Ansible role that installs [Docker](https://docker.com) container platform.
 
 ## Requirements
 

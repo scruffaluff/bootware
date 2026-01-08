@@ -1,6 +1,6 @@
 # Nushell
 
-Ansible role that installs Nushell.
+Ansible role that installs [Nushell](https://nushell.sh) shell.
 
 ## Requirements
 

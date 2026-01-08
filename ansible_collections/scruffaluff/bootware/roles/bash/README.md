@@ -1,6 +1,6 @@
 # Bash
 
-Ansible role that installs [Bash](https://www.gnu.org/software/bash) shell.
+Ansible role that installs [Bash](https://gnu.org/software/bash) shell.
 
 ## Requirements
 

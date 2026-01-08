@@ -1,6 +1,7 @@
 # Ripgrep
 
-Ansible role that installs Ripgrep.
+Ansible role that installs [Ripgrep](https://github.com/BurntSushi/ripgrep) text
+searcher.
 
 ## Requirements
 

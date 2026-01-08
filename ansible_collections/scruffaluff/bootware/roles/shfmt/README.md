@@ -1,6 +1,6 @@
 # Shfmt
 
-Ansible role that installs Shfmt.
+Ansible role that installs [Shfmt](https://github.com/mvdan/sh) shell formatter.
 
 ## Requirements
 

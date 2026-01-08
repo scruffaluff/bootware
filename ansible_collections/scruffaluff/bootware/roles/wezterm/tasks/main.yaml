@@ -1,5 +1,5 @@
 ---
-- name: Install Wez's terminal for FreeBSD
+- name: Install Wezterm for FreeBSD
   become: true
   community.general.pkgng:
     name: "{{ wezterm_package }}"
@@ -75,7 +75,7 @@
     - install
   when: ansible_pkg_mgr in ["dnf", "dnf5"]
 
-- name: Install Wez's terminal for Linux
+- name: Install Wezterm for Linux
   ansible.builtin.package:
     name: "{{ wezterm_package }}"
   become: true
@@ -83,7 +83,7 @@
     - install
   when: ansible_system == "Linux" and ansible_pkg_mgr not in ["apt"]
 
-- name: Install Wez's terminal for MacOS
+- name: Install Wezterm for MacOS
   community.general.homebrew_cask:
     accept_external_apps: true
     name: "{{ wezterm_package }}"
@@ -92,7 +92,7 @@
     - install
   when: ansible_system == "Darwin"
 
-- name: Install Wez's terminal for Windows
+- name: Install Wezterm for Windows
   community.windows.win_scoop:
     global: true
     name: "{{ wezterm_package }}"
@@ -100,7 +100,7 @@
     - install
   when: ansible_system == "Win32NT"
 
-- name: Create Wez's terminal configuration directory for Unix
+- name: Create Wezterm configuration directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
@@ -112,7 +112,7 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Create Wez's terminal configuration directory for Windows
+- name: Create Wezterm configuration directory for Windows
   ansible.windows.win_file:
     path: "{{ user_home }}\\.config\\wezterm"
     state: directory
@@ -120,7 +120,7 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Copy Wez's terminal configuration file for Unix
+- name: Copy Wezterm configuration file for Unix
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
     force: true
@@ -133,7 +133,7 @@
     - config
   when: ansible_system != "Win32NT"
 
-- name: Copy Wez's terminal configuration file for Windows
+- name: Copy Wezterm configuration file for Windows
   ansible.windows.win_template:
     dest: "{{ user_home }}\\.config\\wezterm\\wezterm.lua"
     force: true
@@ -143,7 +143,7 @@
     - config
   when: ansible_system == "Win32NT"
 
-- name: Set owner of Wez's terminal files for Windows
+- name: Set owner of Wezterm files for Windows
   ansible.windows.win_owner:
     path: "{{ user_home }}\\.config\\wezterm"
     recurse: true

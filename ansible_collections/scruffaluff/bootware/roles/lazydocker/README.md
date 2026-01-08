@@ -1,6 +1,8 @@
 # Lazydocker
 
-Ansible role that installs Lazydocker.
+Ansible role that installs
+[Lazydocker](https://github.com/jesseduffield/lazydocker) Docker terminal
+interface.
 
 ## Requirements
 

@@ -1,6 +1,7 @@
 # Kubeshark
 
-Ansible role that installs Kubeshark.
+Ansible role that installs [Kubeshark](https://www.kubehq.com) Kubernetes
+network analyzer.
 
 ## Requirements
 

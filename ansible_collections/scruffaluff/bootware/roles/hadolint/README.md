@@ -1,6 +1,7 @@
 # Hadolint
 
-Ansible role that installs Hadolint.
+Ansible role that installs [Hadolint](https://github.com/hadolint/hadolint)
+Dockerfile linter.
 
 ## Requirements
 

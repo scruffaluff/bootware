@@ -1,6 +1,6 @@
 # Lsd
 
-Ansible role that installs Lsd.
+Ansible role that installs [Lsd](https://github.com/lsd-rs/lsd) file lister.
 
 ## Requirements
 

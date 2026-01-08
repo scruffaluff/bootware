@@ -1,6 +1,7 @@
 # Libre Office
 
-Ansible role that installs Libre Office.
+Ansible role that installs [Libre Office](https://libreoffice.org) document
+suite.
 
 ## Requirements
 

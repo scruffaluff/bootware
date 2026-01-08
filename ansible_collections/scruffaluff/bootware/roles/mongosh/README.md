@@ -1,6 +1,7 @@
-# MongoSh
+# Mongo Shell
 
-Ansible role that installs MongoSh.
+Ansible role that installs
+[MongoDB Shell](https://mongodb.com/docs/mongodb-shell) database client.
 
 ## Requirements
 

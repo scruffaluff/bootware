@@ -1,6 +1,6 @@
 # OBS Studio
 
-Ansible role that installs OBS Studio.
+Ansible role that installs [OBS Studio](https://obsproject.com) video recorder.
 
 ## Requirements
 

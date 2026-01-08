@@ -1,6 +1,6 @@
 # Xh
 
-Ansible role that installs Xh.
+Ansible role that installs [Xh](https://github.com/ducaale/xh) HTTP client.
 
 ## Requirements
 

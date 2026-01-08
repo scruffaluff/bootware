@@ -1,6 +1,7 @@
 # Krew
 
-Ansible role that installs Krew.
+Ansible role that installs [Krew](https://krew.sigs.k8s.io) Kubectl plugin
+package manager.
 
 ## Requirements
 

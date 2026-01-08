@@ -1,6 +1,6 @@
 # Sops
 
-Ansible role that installs Sops.
+Ansible role that installs [Sops](https://getsops.io) secrets manager.
 
 ## Requirements
 

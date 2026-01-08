@@ -1,6 +1,7 @@
 # GitUI
 
-Ansible role that installs GitUI.
+Ansible role that installs [GitUI](https://github.com/gitui-org/gitui) Git
+terminal interface.
 
 ## Requirements
 

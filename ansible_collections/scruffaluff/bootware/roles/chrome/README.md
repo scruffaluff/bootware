@@ -1,6 +1,6 @@
 # Chrome
 
-Ansible role that installs [Google Chrome](https://www.google.com/chrome) web
+Ansible role that installs [Google Chrome](https://google.com/chrome) web
 browser.
 
 ## Requirements

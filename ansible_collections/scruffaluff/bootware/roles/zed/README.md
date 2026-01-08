@@ -1,6 +1,6 @@
 # Zed
 
-Ansible role that installs Zed.
+Ansible role that installs [Zed](https://zed.dev) text editor.
 
 ## Requirements
 

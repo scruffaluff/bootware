@@ -1,6 +1,6 @@
 # Htop
 
-Ansible role that installs Htop.
+Ansible role that installs [Htop](https://htop.dev) process monitor.
 
 ## Requirements
 

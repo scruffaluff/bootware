@@ -12,6 +12,7 @@ zed_extensions:
   html: true
   jinja2: true
   just: true
+  lua: true
   log: true
   nu: true
   powershell: true

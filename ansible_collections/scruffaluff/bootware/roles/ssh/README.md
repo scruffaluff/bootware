@@ -1,6 +1,6 @@
 # SSH
 
-Ansible role that installs SSH.
+Ansible role that installs [SSH](https://openssh.org) utilities.
 
 ## Requirements
 

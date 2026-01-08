@@ -1,6 +1,6 @@
 # Prettier
 
-Ansible role that installs Prettier.
+Ansible role that installs [Prettier](https://prettier.io) code formatter.
 
 ## Requirements
 

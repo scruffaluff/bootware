@@ -1,6 +1,7 @@
 # Tilt
 
-Ansible role that installs Tilt.
+Ansible role that installs [Tilt](https://tilt.dev) Kubernetes development
+interface.
 
 ## Requirements
 

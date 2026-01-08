@@ -1,6 +1,6 @@
 # Harper
 
-Ansible role that installs Harper.
+Ansible role that installs [Harper](https://writewithharper.com) spell checker.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Firefox
 
-Ansible role that installs [Firefox](https://www.firefox.com) web browser.
+Ansible role that installs [Firefox](https://firefox.com) web browser.
 
 ## Requirements
 

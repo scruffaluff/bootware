@@ -1,6 +1,7 @@
 # Tailscale
 
-Ansible role that installs Tailscale.
+Ansible role that installs [Tailscale](https://tailscale.com) virtual private
+network.
 
 ## Requirements
 

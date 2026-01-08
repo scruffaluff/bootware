@@ -1,6 +1,7 @@
 # Readest
 
-Ansible role that installs [Readest](https://readest.com) ebook reader.
+Ansible role that installs [Readest](https://readest.com) ebook reader ebook
+reader.
 
 ## Requirements
 

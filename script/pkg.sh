@@ -122,7 +122,7 @@ checksum() {
 # Build a Debian package.
 #
 # For a tutorial on building an DEB package, visit
-# https://www.debian.org/doc/manuals/debian-faq/pkg-basics.en.html.
+# https://debian.org/doc/manuals/debian-faq/pkg-basics.en.html.
 #######################################
 deb() {
   export version="${1}"

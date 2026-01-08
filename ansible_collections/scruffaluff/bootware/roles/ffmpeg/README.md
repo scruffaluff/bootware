@@ -1,6 +1,6 @@
 # FFmpeg
 
-Ansible role that installs [FFmpeg](https://www.ffmpeg.org) media converter.
+Ansible role that installs [FFmpeg](https://ffmpeg.org) media converter.
 
 ## Requirements
 

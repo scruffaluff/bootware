@@ -1,6 +1,7 @@
 # GDU
 
-Ansible role that installs GDU.
+Ansible role that installs [GDU](https://github.com/dundee/gdu) disk space
+analyzer.
 
 ## Requirements
 

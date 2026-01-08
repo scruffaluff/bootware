@@ -1,6 +1,6 @@
 # VLC
 
-Ansible role that installs VLC.
+Ansible role that installs [VLC](https://videolan.org/vlc) video player.
 
 ## Requirements
 

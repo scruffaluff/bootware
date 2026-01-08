@@ -1,6 +1,7 @@
 # K3d
 
-Ansible role that installs K3d.
+Ansible role that installs [K3d](https://k3d.io) Kubernetes development
+interface.
 
 ## Requirements
 

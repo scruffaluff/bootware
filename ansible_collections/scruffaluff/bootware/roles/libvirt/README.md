@@ -1,6 +1,6 @@
 # Libvirt
 
-Ansible role that installs Libvirt.
+Ansible role that installs [Libvirt](https://libvirt.org) virtualization API.
 
 ## Requirements
 

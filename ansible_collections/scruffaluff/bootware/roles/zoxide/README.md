@@ -1,6 +1,7 @@
 # Zoxide
 
-Ansible role that installs Zoxide.
+Ansible role that installs [Zoxide](https://github.com/ajeetdsouza/zoxide)
+directory jumper.
 
 ## Requirements
 

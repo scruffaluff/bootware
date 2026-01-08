@@ -1,6 +1,6 @@
 # Yazi
 
-Ansible role that installs Yazi.
+Ansible role that installs [Yazi](https://yazi-rs.github.io) file manager.
 
 ## Requirements
 

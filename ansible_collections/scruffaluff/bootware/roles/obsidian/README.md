@@ -1,6 +1,6 @@
 # Obsidian
 
-Ansible role that installs Obsidian.
+Ansible role that installs [Obsidian](https://obsidian.md) note taker.
 
 ## Requirements
 

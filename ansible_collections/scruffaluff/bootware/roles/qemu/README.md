@@ -1,6 +1,6 @@
 # Qemu
 
-Ansible role that installs Qemu.
+Ansible role that installs [Qemu](https://qemu.org) hardware virtualizer.
 
 ## Requirements
 

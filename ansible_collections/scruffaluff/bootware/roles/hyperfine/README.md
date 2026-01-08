@@ -1,6 +1,7 @@
 # Hyperfine
 
-Ansible role that installs Hyperfine.
+Ansible role that installs [Hyperfine](https://github.com/sharkdp/hyperfine)
+benchmarking tool.
 
 ## Requirements
 

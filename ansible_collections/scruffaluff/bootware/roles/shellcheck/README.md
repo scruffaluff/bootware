@@ -1,6 +1,6 @@
 # Shellcheck
 
-Ansible role that installs Shellcheck.
+Ansible role that installs [Shellcheck](https://shellcheck.net) shell linter.
 
 ## Requirements
 

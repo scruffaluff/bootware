@@ -1,6 +1,6 @@
 # Rclone
 
-Ansible role that installs Rclone.
+Ansible role that installs [Rclone](https://rclone.org) cloud storage utility.
 
 ## Requirements
 

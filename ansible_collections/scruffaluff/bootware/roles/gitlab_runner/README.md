@@ -1,6 +1,7 @@
-# Gitlab Runner
+# GitLab Runner
 
-Ansible role that installs Gitlab Runner.
+Ansible role that installs [GitLab Runner](https://docs.gitlab.com/runner) CI/CD
+manager.
 
 ## Requirements
 

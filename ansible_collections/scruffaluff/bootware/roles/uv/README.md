@@ -1,6 +1,7 @@
 # Uv
 
-Ansible role that installs Uv.
+Ansible role that installs [Uv](https://docs.astral.sh/uv) Python package
+manager.
 
 ## Requirements
 

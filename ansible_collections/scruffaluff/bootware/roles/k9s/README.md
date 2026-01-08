@@ -1,6 +1,6 @@
 # K9s
 
-Ansible role that installs K9s.
+Ansible role that installs [K9s](https://k9scli.io) Kubernetes manager.
 
 ## Requirements
 

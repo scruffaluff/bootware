@@ -1,6 +1,6 @@
 # Wezterm
 
-Ansible role that installs Wezterm.
+Ansible role that installs [Wezterm](https://wezterm.org) terminal emulator.
 
 ## Requirements
 

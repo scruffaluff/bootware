@@ -1,6 +1,6 @@
 # Usql
 
-Ansible role that installs Usql.
+Ansible role that installs [Usql](https://github.com/xo/usql) database client.
 
 ## Requirements
 

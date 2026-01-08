@@ -1,6 +1,7 @@
-# Age
+# LocalSend
 
-Ansible role that installs [LocalSend](https://localsend.org) file sharer.
+Ansible role that installs [LocalSend](https://localsend.org) file sharer file
+sharer.
 
 ## Requirements
 

@@ -1,6 +1,7 @@
 # Mkcert
 
-Ansible role that installs Mkcert.
+Ansible role that installs [Mkcert](https://github.com/FiloSottile/mkcert) web
+certificate generator.
 
 ## Requirements
 

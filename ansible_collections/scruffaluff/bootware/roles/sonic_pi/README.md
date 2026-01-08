@@ -1,6 +1,6 @@
 # Sonic Pi
 
-Ansible role that installs Sonic Pi.
+Ansible role that installs [Sonic Pi](https://sonic-pi.net) music coder.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Bitwig
 
-Ansible role that installs [Bitwig Studio](https://www.bitwig.com) audio
+Ansible role that installs [Bitwig Studio](https://bitwig.com) audio
 workstation.
 
 ## Requirements

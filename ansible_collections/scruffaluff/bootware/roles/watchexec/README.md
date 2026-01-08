@@ -1,6 +1,7 @@
 # Watchexec
 
-Ansible role that installs Watchexec.
+Ansible role that installs [Watchexec](https://github.com/watchexec/watchexec)
+file watcher.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Helix
 
-Ansible role that installs Helix.
+Ansible role that installs [Helix](https://helix-editor.com) text editor.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # PNPM
 
-Ansible role that installs PNPM.
+Ansible role that installs [PNPM](https://pnpm.io) Node package manager.
 
 ## Requirements
 

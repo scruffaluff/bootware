@@ -1,6 +1,6 @@
 # Just
 
-Ansible role that installs Just.
+Ansible role that installs [Just](https://just.systems) command runner.
 
 ## Requirements
 

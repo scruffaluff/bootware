@@ -79,7 +79,7 @@
       ansible.windows.win_get_url:
         dest: "{{ ansible_env.TEMP }}\\lldb\\python_embed.zip"
         url: >-
-          https://www.python.org/ftp/python/{{
+          https://python.org/ftp/python/{{
           debug_embed_python_bucket.json.version }}/python-{{
           debug_embed_python_bucket.json.version }}-embed-amd64.zip
 

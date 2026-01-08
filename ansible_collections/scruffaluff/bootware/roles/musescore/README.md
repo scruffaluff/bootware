@@ -1,6 +1,6 @@
 # MuseScore
 
-Ansible role that installs MuseScore.
+Ansible role that installs [MuseScore](https://musescore.org) music writer.
 
 ## Requirements
 

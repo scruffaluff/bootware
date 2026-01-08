@@ -1,6 +1,8 @@
-# Github Runner
+# GitHub Runner
 
-Ansible role that installs Github Runner.
+Ansible role that installs
+[GitHub Runner](https://docs.github.com/en/actions/concepts/runners/self-hosted-runners)
+CI/CD manager.
 
 ## Requirements
 

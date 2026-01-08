@@ -1,6 +1,6 @@
 # Jq
 
-Ansible role that installs Jq.
+Ansible role that installs [Jq](https://jqlang.org) JSON parser.
 
 ## Requirements
 

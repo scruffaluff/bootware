@@ -1,6 +1,7 @@
 # Samply
 
-Ansible role that installs Samply.
+Ansible role that installs [Samply](https://github.com/mstange/samply)
+benchmarking tool.
 
 ## Requirements
 

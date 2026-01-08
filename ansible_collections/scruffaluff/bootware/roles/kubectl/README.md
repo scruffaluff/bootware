@@ -1,6 +1,7 @@
 # Kubectl
 
-Ansible role that installs Kubectl.
+Ansible role that installs
+[Kubectl](https://kubernetes.io/docs/reference/kubectl) Kubernetes manager.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Git
 
-Ansible role that installs Git.
+Ansible role that installs [Git](https://git-scm.com) version control.
 
 ## Requirements
 

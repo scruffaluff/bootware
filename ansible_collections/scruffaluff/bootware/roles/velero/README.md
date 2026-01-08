@@ -1,6 +1,7 @@
 # Velero
 
-Ansible role that installs Velero.
+Ansible role that installs [Velero](https://velero.io) Kubernetes backup
+manager.
 
 ## Requirements
 

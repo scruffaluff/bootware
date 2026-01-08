@@ -1,6 +1,7 @@
 # Helmfile
 
-Ansible role that installs Helmfile.
+Ansible role that installs [Helmfile](https://helmfile.readthedocs.io) Helm
+chart manager.
 
 ## Requirements
 

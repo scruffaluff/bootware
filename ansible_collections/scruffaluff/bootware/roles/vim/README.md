@@ -1,6 +1,6 @@
 # Vim
 
-Ansible role that installs Vim.
+Ansible role that installs [Vim](https://vim.org) text editor.
 
 ## Requirements
 

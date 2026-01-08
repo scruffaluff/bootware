@@ -1,6 +1,6 @@
 # Restic
 
-Ansible role that installs Restic.
+Ansible role that installs [Restic](https://restic.net) backup tool.
 
 ## Requirements
 

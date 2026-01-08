@@ -1,6 +1,7 @@
 # Miniserve
 
-Ansible role that installs Miniserve.
+Ansible role that installs [Miniserve](https://github.com/svenstaro/miniserve)
+HTTP server.
 
 ## Requirements
 

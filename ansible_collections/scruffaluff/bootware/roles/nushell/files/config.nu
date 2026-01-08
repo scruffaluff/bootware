@@ -1,6 +1,6 @@
 # Nushell general configuration file.
 #
-# For more information, visit https://www.nushell.sh/book/configuration.html.
+# For more information, visit https://nushell.sh/book/configuration.html.
 
 # Private convenience functions.
 
@@ -25,7 +25,7 @@ def _autoload-scripts [...scripts: path] {
 # Generate Nushell color theme.
 #
 # Documented at
-# https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
+# https://nushell.sh/book/coloring_and_theming.html#color-configuration.
 def _color-theme [] {
     # Set solarized light theme variables based on
     # https://ethanschoonover.com/solarized/#the-values.
@@ -223,7 +223,7 @@ Enter 'all' to delete all the matching entries.
 # Expand alias for autocompletion.
 #
 # Based on logic from
-# https://www.nushell.sh/cookbook/external_completers.html#alias-completions.
+# https://nushell.sh/cookbook/external_completers.html#alias-completions.
 def _expand-alias [spans: list<string>] {
     let expansion = scope aliases
     | where name == $spans.0

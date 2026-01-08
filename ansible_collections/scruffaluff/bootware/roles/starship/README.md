@@ -1,6 +1,6 @@
 # Starship
 
-Ansible role that installs Starship.
+Ansible role that installs [Starship](https://starship.rs) shell prompt.
 
 ## Requirements
 

@@ -24,15 +24,15 @@ font_families:
     name: pt-mono
     patterns:
       - PT*.ttf
-    url: https://www.fontsquirrel.com/fonts/download/pt-mono
+    url: https://fontsquirrel.com/fonts/download/pt-mono
   - check: PTS55F.ttf
     name: pt-sans
     patterns:
       - PT*.ttf
-    url: https://www.fontsquirrel.com/fonts/download/pt-sans
+    url: https://fontsquirrel.com/fonts/download/pt-sans
   - check: PTF55F.ttf
     name: pt-serif
     patterns:
       - PT*.ttf
-    url: https://www.fontsquirrel.com/fonts/download/pt-serif
+    url: https://fontsquirrel.com/fonts/download/pt-serif
 font_install: true

@@ -1,6 +1,6 @@
 # Zellij
 
-Ansible role that installs Zellij.
+Ansible role that installs [Zellij](https://zellij.dev) terminal multiplexer.
 
 ## Requirements
 

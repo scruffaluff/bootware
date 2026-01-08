@@ -1,6 +1,7 @@
-# Hdf5
+# HDF5
 
-Ansible role that installs Hdf5.
+Ansible role that installs [HDF5](https://github.com/NanoComp/h5utils)
+serialization tools.
 
 ## Requirements
 

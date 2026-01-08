@@ -1,6 +1,7 @@
 # Kind
 
-Ansible role that installs Kind.
+Ansible role that installs [Kind](https://kind.sigs.k8s.io) Kubernetes
+development interface.
 
 ## Requirements
 

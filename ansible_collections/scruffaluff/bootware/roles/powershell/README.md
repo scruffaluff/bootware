@@ -1,6 +1,6 @@
 # Powershell
 
-Ansible role that installs Powershell.
+Ansible role that installs [Powershell](https://microsoft.com/powershell) shell.
 
 ## Requirements
 

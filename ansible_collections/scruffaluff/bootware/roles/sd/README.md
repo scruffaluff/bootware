@@ -1,6 +1,7 @@
 # Sd
 
-Ansible role that installs Sd.
+Ansible role that installs [Sd](https://github.com/chmln/sd) find and replace
+tool.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Scc
 
-Ansible role that installs Scc.
+Ansible role that installs [Scc](https://github.com/boyter/scc) code counter.
 
 ## Requirements
 

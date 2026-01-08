@@ -1,6 +1,7 @@
 # Glow
 
-Ansible role that installs Glow.
+Ansible role that installs [Glow](https://github.com/charmbracelet/glow)
+Markdown renderer.
 
 ## Requirements
 

@@ -1,8 +1,7 @@
 # Compass
 
 Ansible role that installs
-[MongoDB Compass](https://www.mongodb.com/products/tools/compass) database
-client.
+[MongoDB Compass](https://mongodb.com/products/tools/compass) database client.
 
 ## Requirements
 

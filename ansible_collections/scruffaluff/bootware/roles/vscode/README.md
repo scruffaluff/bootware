@@ -1,6 +1,6 @@
-# Vscode
+# VSCode
 
-Ansible role that installs Vscode.
+Ansible role that installs [VSCode](https://code.visualstudio.com) text editor.
 
 ## Requirements
 

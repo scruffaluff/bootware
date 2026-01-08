@@ -1,6 +1,6 @@
 # Node
 
-Ansible role that installs Node.
+Ansible role that installs [Node](https://nodejs.org) JavaScript runtime.
 
 ## Requirements
 

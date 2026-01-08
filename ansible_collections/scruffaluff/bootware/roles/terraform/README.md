@@ -1,6 +1,7 @@
 # Terraform
 
-Ansible role that installs Terraform.
+Ansible role that installs [Terraform](https://terraform.io) infrastructure
+automator.
 
 ## Requirements
 

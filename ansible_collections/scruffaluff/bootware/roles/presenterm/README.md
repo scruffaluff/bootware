@@ -1,6 +1,7 @@
 # Presenterm
 
-Ansible role that installs Presenterm.
+Ansible role that installs [Presenterm](https://mfontanini.github.io/presenterm)
+terminal slideshow viewer.
 
 ## Requirements
 

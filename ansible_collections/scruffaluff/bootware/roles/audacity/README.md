@@ -1,7 +1,6 @@
 # Audacity
 
-Ansible role that installs [Audacity](https://www.audacityteam.org) audio
-editor.
+Ansible role that installs [Audacity](https://audacityteam.org) audio editor.
 
 ## Requirements
 

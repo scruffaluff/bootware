@@ -1,6 +1,6 @@
 # Rust
 
-Ansible role that installs Rust.
+Ansible role that installs [Rust](https://rust-lang.org) language.
 
 ## Requirements
 

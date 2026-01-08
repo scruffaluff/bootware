@@ -25,7 +25,7 @@
         src: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}.zip"
 
     # Based on logic from
-    # https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
+    # https://alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
     # Do not quote $Patterns variable, otherwise it will be interpreted as a
     # string instead of a list.
     - name: Install fonts for Windows

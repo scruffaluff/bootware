@@ -1,6 +1,6 @@
 # Termshark
 
-Ansible role that installs Termshark.
+Ansible role that installs [Termshark](https://termshark.io) network analyzer.
 
 ## Requirements
 

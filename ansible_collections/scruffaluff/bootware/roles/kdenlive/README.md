@@ -1,6 +1,6 @@
 # Kdenlive
 
-Ansible role that installs Kdenlive.
+Ansible role that installs [Kdenlive](https://kdenlive.org) video editor.
 
 ## Requirements
 
