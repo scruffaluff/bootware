@@ -69,10 +69,13 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
     user = module.params["user"]
     if system == "Darwin":
         user_home = Path(f"/Users/{user}") if user else Path.home()
-        path = user_home / "Library/Application Support/Firefox/profiles.ini"
+        paths = [user_home / "Library/Application Support/Firefox/profiles.ini"]
     elif system in ["FreeBSD", "Linux"]:
         user_home = Path(f"/home/{user}") if user else Path.home()
-        path = user_home / ".mozilla/firefox/profiles.ini"
+        paths = [
+            user_home / ".mozilla/firefox/profiles.ini",
+            user_home / ".config/mozilla/firefox/profiles.ini",
+        ]
     else:
         module.fail_json(
             msg=f"Module does not support operating system '{system}'.",
@@ -80,16 +83,19 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
 
     # Firefox profiles database may not exist after initial Firefox install. If
     # so, try creating a default profile from the command line.
-    if not path.exists():
+    if not any(path.exists() for path in paths):
         subprocess.run(
             ["firefox", "--headless", "--createprofile", "default"],
             capture_output=True,
             check=True,
         )
 
-    if not path.exists():
+    for path in paths:
+        if path.exists():
+            break
+    else:
         module.fail_json(
-            msg=f"Firefox profiles database path '{path}' does not exist.",
+            msg=f"Firefox profiles database does not exist in {paths}.",
         )
     return path
 
