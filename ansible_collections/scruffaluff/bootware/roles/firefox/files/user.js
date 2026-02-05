@@ -53,6 +53,8 @@ user_pref("browser.newtabpage.activity-stream.system.showWeather", false);
 user_pref("browser.tabs.loadInBackground", true);
 // Disable detaching tab to a new window.
 user_pref("browser.tabs.allowTabDetach", false);
+// Enable tab split views.
+user_pref("browser.tabs.splitView.enabled", true);
 // Do not show most visited sites in Windows taskbar.
 user_pref("browser.taskbar.lists.frequent.enabled", false);
 // Do not show recently visited sites in Windows taskbar.
