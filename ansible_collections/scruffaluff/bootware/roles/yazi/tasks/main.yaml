@@ -193,7 +193,7 @@
     - config
     - config\plugins\smart-open.yazi
   tags:
-    - configconfig
+    - config
   when: ansible_system == "Win32NT"
 
 - name: Copy Yazi configuration files for Windows

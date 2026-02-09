@@ -113,7 +113,7 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_distribution =="Fedora" and gnome_desktop
+  when: ansible_distribution == "Fedora" and gnome_desktop
 
 - name: Change desktop settings for PopOS
   ansible.builtin.script: popos.sh

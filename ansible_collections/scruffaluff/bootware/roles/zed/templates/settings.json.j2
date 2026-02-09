@@ -74,6 +74,7 @@
     },
     "PowerShell": {
       "enable_language_server": false,
+      "tab_size": 4,
     },
     "Python": {
       "language_servers": ["ty", "!basedpyright", "..."],
@@ -101,13 +102,6 @@
         },
       },
     },
-    "ty": {
-      "settings": {
-        "completions": {
-          "autoImport": true,
-        },
-      },
-    },
   },
   "notification_panel": {
     "button": false,
@@ -127,6 +121,9 @@
     "sticky_scroll": false,
   },
   "restore_on_startup": "last_workspace",
+  "session": {
+    "trust_all_worktrees": true,
+  },
   "show_completions_on_input": false,
 {% if zed_remotes | length > 0 %}
   "ssh_connections": {{ zed_remotes | to_nice_json(indent=2) | indent(2) }},

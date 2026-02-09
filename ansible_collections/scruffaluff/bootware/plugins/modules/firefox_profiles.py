@@ -29,18 +29,18 @@ EXAMPLES = r"""
 
 RETURN = r"""
 ---
-path:
-  description: Firefox profile_paths
-  returned: always
-  sample:
-    - /home/user/.mozilla/firefox/8hs6hkt.default-release
-  type: list
+paths:
+  - description: Firefox profile_paths
+    returned: always
+    sample:
+        - /home/user/.mozilla/firefox/8hs6hkt.default-release
+    type: list
 """
 
 
 def main() -> None:
     """Find name and path of Firefox default profile for current user."""
-    result = {"changed": False, "name": "", "path": ""}
+    result = {"changed": False, "paths": []}
     module = AnsibleModule(
         argument_spec={"user": {"default": "", "required": False, "type": "str"}},
         supports_check_mode=True,

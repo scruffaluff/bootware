@@ -38,7 +38,7 @@ def test_drop_tokens(line: str, count: int, expected: str) -> None:
         ("ls %{src + 'foo'}", [Expr("src + 'foo'", 3, 17)]),
     ],
 )
-def test_find_exprs(line: str, expected: str) -> None:
+def test_find_exprs(line: str, expected: list[str]) -> None:
     """Find expressions in command lines."""
     actual = list(pdbrc.find_exprs(line))
     assert actual == expected
@@ -51,7 +51,11 @@ def test_find_exprs(line: str, expected: str) -> None:
         ("ls %val", {"val": "longpath"}, "ls longpath"),
         ("echo %{val + 4} hours", {}, "echo %{val + 4} hours"),
         ("echo %{val + 4} hours", {"val": 5}, "echo 9 hours"),
-        ("touch %val %name", {"name": "data", "val": True}, "touch True data"),
+        (
+            "touch %val %name",
+            {"name": "data search", "val": True},
+            "touch True 'data search'",
+        ),
     ],
 )
 def test_parse_exprs(line: str, locals_: dict[str, Any], expected: str) -> None:
