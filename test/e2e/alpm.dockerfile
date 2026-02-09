@@ -39,7 +39,7 @@ RUN pacman --noconfirm --refresh --sync --sysupgrade \
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Arch package.
-RUN sha512sum --check "bootware-${version}-0-any.pkg.tar.zst.sha512"
+RUN sha256sum --check "bootware-${version}-0-any.pkg.tar.zst.sha256"
 
 # Install Arch package.
 RUN pacman --noconfirm --upgrade "./bootware-${version}-0-any.pkg.tar.zst"

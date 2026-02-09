@@ -34,7 +34,7 @@ def deploy [
         ^$super mkdir -p $folder
         ^$super cp $file $dest
         if ($mode | is-not-empty) and $nu.os-info.name != "windows" {
-            sudo chmod $mode $dest
+            ^$super chmod $mode $dest
         }
     }
 }
@@ -168,7 +168,7 @@ def need-super [dest: directory global: bool] {
     }
     try { mkdir $dest } catch { return true }
     try { touch $"($dest)/.super_check" } catch { return true }
-    rm $"($dest)/.super_check" 
+    rm $"($dest)/.super_check"
     false
 }
 
@@ -191,7 +191,7 @@ def main [
             $"($env.LOCALAPPDATA)\\Programs\\Bootware"
         }
     } else {
-        if $global { "/usr/local/bin" } else { $"($env.HOME)/.local/bin" }
+        if $global { "/usr/local/bin" } else { $"(path-home)/.local/bin" }
     }
     let dest = $dest | default $dest_default | path expand
 
@@ -218,7 +218,7 @@ def path-home [] {
     if $nu.os-info.name == "windows" {
         $env.HOME? | default $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
     } else {
-        $env.HOME? 
+        $env.HOME?
     }
 }
 
@@ -241,6 +241,7 @@ if \(-not \($Path -like \"*$Dest*\"\)\) {
 
 # Add Bootware to system path in shell profile.
 def update-shell [dest: directory] {
+    let home = path-home
     let shell = $env.SHELL? | default "" | path basename
 
     let command = match $shell {
@@ -249,17 +250,17 @@ def update-shell [dest: directory] {
         _ => $"export PATH=\"($dest):${PATH}\""
     }
     let profile = match $shell {
-        "bash" => $"($env.HOME)/.bashrc"
-        "fish" => "($env.HOME)/.config/fish/config.fish"
+        "bash" => $"($home)/.bashrc"
+        "fish" => $"($home)/.config/fish/config.fish"
         "nu" => {
             if $nu.os-info.name == "macos" {
-                $"($env.HOME)/Library/Application Support/nushell/config.nu"
+                $"($home)/Library/Application Support/nushell/config.nu"
             } else {
-                $"$(env.HOME)/.config/nushell/config.nu"
+                $"($home)/.config/nushell/config.nu"
             }
         }
-        "zsh" => $"($env.HOME)/.zshrc"
-        _ => $"($env.HOME)/.profile"
+        "zsh" => $"($home)/.zshrc"
+        _ => $"($home)/.profile"
     }
 
     # Create profile parent directory and add export command to profile.

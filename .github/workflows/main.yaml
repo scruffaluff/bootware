@@ -228,15 +228,15 @@ jobs:
             github.ref_name }}/CHANGELOG.md) for more information.
           files: |
             build/dist/bootware_${{ github.ref_name }}_all.deb
-            build/dist/bootware_${{ github.ref_name }}_all.deb.sha512
+            build/dist/bootware_${{ github.ref_name }}_all.deb.sha256
             build/dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst
-            build/dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha512
+            build/dist/bootware-${{ github.ref_name }}-0-any.pkg.tar.zst.sha256
             build/dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm
-            build/dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha512
+            build/dist/bootware-${{ github.ref_name }}-0.fc33.noarch.rpm.sha256
             build/dist/bootware-${{ github.ref_name }}-r0.apk
-            build/dist/bootware-${{ github.ref_name }}-r0.apk.sha512
+            build/dist/bootware-${{ github.ref_name }}-r0.apk.sha256
             build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
-            build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha512
+            build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha256
           name: Bootware ${{ github.ref_name }}
           tag_name: ${{ github.ref }}
       # Homebrew formulas required the checksum of the GitHub release archive
@@ -250,8 +250,8 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           asset_content_type: text/plain
-          asset_name: bootware.rb.sha512
-          asset_path: build/dist/bootware.rb.sha512
+          asset_name: bootware.rb.sha256
+          asset_path: build/dist/bootware.rb.sha256
           upload_url: ${{ steps.release.outputs.upload_url }}
       - name: Upload Homebrew formula to release
         env:

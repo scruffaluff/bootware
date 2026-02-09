@@ -35,7 +35,7 @@ RUN apt-get --quiet --yes install libdigest-sha-perl tzdata
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Debian package.
-RUN shasum --check --algorithm 512 "bootware_${version?}_all.deb.sha512"
+RUN shasum --check --algorithm 256 "bootware_${version?}_all.deb.sha256"
 
 # Install Debian package.
 RUN apt-get install --quiet --yes "./bootware_${version?}_all.deb"

@@ -504,7 +504,7 @@ function Log($Message) {
 # Required when SSH private key lives in Windows file system, since its open
 # permissions cannot be changed.
 function MakeWSLKey($FilePath) {
-    $WSLFile = wsl mktemp --dry-run
+    $WSLFile = wsl mktemp -u
     wsl cp "$(WSLPath $FilePath)" $WSLFile
     wsl chmod 600 $WSLFile
     $WSLFile
@@ -842,7 +842,7 @@ function SetupWSL($Branch) {
     $Debug = $Global:Debug
     $WSLExe = Get-Command -ErrorAction SilentlyContinue wsl
     $MWSL = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-    $VMP = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    $VMP = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 
     if ((-not $WSLExe) -or ($MWSL.State -ne 'Enabled') -or ($VMP.State -ne 'Enabled')) {
         # Dism appears to require arguments in a specific order.
