@@ -11,11 +11,11 @@
 # shared object libraries.
 - name: Install HDF5 tools for Linux
   ansible.builtin.package:
-    name: "{{ 'hdf5-tools' if ansible_facts.pkg_mgr == 'apt' else 'hdf5' }}"
+    name: "{{ 'hdf5-tools' if system_pkg_mgr == 'apt' else 'hdf5' }}"
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install H5Dump for MacOS
   become: true

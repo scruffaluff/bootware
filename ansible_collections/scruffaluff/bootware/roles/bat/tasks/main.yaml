@@ -128,7 +128,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 # Bat uses Less configuration for keybindings. MacOS default version of Less is
 # too old to support keybindings.

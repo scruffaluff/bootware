@@ -5,7 +5,7 @@
     name: build-base
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install build tools for FreeBSD
   become: true
@@ -30,11 +30,11 @@
       - llvm
       - make
       - openocd
-      - "{{ 'pkgconf' if ansible_facts.pkg_mgr == 'apk' else 'pkg-config' }}"
+      - "{{ 'pkgconf' if system_pkg_mgr == 'apk' else 'pkg-config' }}"
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "opkg"
 
 # GDB support is temporarily disabled in Bootware for MacOS, since GDB is not
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
@@ -61,7 +61,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install build tools with Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:

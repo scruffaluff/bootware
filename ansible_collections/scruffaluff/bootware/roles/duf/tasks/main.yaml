@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Duf for FreeBSD
   become: true
@@ -26,7 +26,7 @@
   register: duf_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest Duf version for Linux
   ansible.builtin.uri:
@@ -37,8 +37,8 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
-    duf_linux is failed
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
+    failed
 
 - name: Create Duf temporary directory for Linux
   ansible.builtin.tempfile:
@@ -47,8 +47,8 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
-    duf_linux is failed
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
+    failed
 
 - name: Download Duf for Linux
   ansible.builtin.unarchive:
@@ -67,8 +67,8 @@
       amd64: x86_64
       arm64: arm64
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
-    duf_linux is failed
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
+    failed
 
 - name: Install Duf for Linux
   ansible.builtin.copy:
@@ -81,8 +81,8 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
-    duf_linux is failed
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
+    failed
 
 - name: Install Duf for MacOS
   become: true
@@ -108,5 +108,5 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
-    duf_linux is failed
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
+    failed

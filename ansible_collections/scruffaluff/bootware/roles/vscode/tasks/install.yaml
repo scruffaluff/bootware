@@ -8,7 +8,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.pkg_mgr == "apt" and ansible_facts.distribution != "Pop!_OS"
+    system_pkg_mgr == "apt" and ansible_facts.distribution != "Pop!_OS"
 
 - name: Add Microsoft GPG key for Fedora and Suse
   ansible.builtin.rpm_key:
@@ -16,7 +16,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Create VSCode temporary directory for Fedora
   ansible.builtin.tempfile:
@@ -24,7 +24,7 @@
   register: vscode_temp
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Set VSCode temporary directory permissions for Fedora
   ansible.builtin.file:
@@ -33,7 +33,7 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 # Package needs to be downloaded to a file with an rpm extension to prevent
 # confusion for Ansible DNF module.
@@ -46,7 +46,7 @@
       }}/stable
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install VSCode for Fedora
   ansible.builtin.dnf:
@@ -54,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install VSCode for MacOS
   community.general.homebrew_cask:
@@ -72,7 +72,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.pkg_mgr == "apt" and ansible_facts.distribution == "Pop!_OS"
+    system_pkg_mgr == "apt" and ansible_facts.distribution == "Pop!_OS"
 
 # Do not use Scoop for a global installation of VSCode. It ensures that there is
 # only one settings file for all users.
@@ -125,4 +125,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]

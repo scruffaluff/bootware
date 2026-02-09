@@ -9,7 +9,7 @@
 
 - name: Install Image Magick for Linux
   ansible.builtin.package:
-    name: "{{ image_magick_package.get(ansible_facts.pkg_mgr, 'imagemagick') }}"
+    name: "{{ image_magick_package.get(system_pkg_mgr, 'imagemagick') }}"
   become: true
   tags:
     - install
@@ -18,7 +18,6 @@
       apk: imagemagick
       apt: imagemagick
       dnf: ImageMagick
-      dnf5: ImageMagick
       pacman: imagemagick
       zypper: ImageMagick
   when: ansible_facts.system == "Linux"

@@ -106,7 +106,7 @@
   changed_when: false
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install essential packages for FreeBSD
   become: true

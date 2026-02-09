@@ -50,8 +50,8 @@
   tags:
     - install
   when: >-
-    (ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk") or
-    (ansible_facts.pkg_mgr == "apk" and system_architecture == "amd64")
+    (ansible_facts.system == "Linux" and system_pkg_mgr != "apk") or
+    (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
@@ -66,8 +66,8 @@
   tags:
     - install
   when: >-
-    (ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk") or
-    (ansible_facts.pkg_mgr == "apk" and system_architecture == "amd64")
+    (ansible_facts.system == "Linux" and system_pkg_mgr != "apk") or
+    (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for MacOS
   become: true

@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Kubectl for FreeBSD
   become: true
@@ -26,7 +26,7 @@
   register: kubectl_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest Kubectl version for Linux
   ansible.builtin.uri:
@@ -37,7 +37,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
     kubectl_linux is failed
 
 - name: Install Kubectl for Linux
@@ -52,7 +52,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk" and
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
     kubectl_linux is failed
 
 - name: Install Kubectl for MacOS

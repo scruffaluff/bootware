@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 # Ansible pkgng module is case sensitive to package names, but pkg cli is not.
 - name: Install ShellCheck for FreeBSD
@@ -22,14 +22,13 @@
 - name: Install ShellCheck for Linux
   ansible.builtin.package:
     name: >-
-      {{ 'ShellCheck' if ansible_facts.pkg_mgr in ['dnf', 'zypper'] else
-      'shellcheck' }}
+      {{ 'ShellCheck' if system_pkg_mgr in ['dnf', 'zypper'] else 'shellcheck'
+      }}
   become: true
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
-    "opkg"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install ShellCheck for MacOS
   become: true

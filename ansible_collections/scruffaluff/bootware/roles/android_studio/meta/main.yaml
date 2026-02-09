@@ -4,5 +4,5 @@ dependencies:
   - role: flatpak
     when: >-
       flatpak_role_executed is not defined and ansible_facts.system == "Linux"
-      and ansible_facts.pkg_mgr not in ["apt", "dnf", "dnf5"] and
-      system_architecture == "amd64"
+      and system_pkg_mgr not in ["apt", "dnf"] and system_architecture ==
+      "amd64"

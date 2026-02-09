@@ -13,7 +13,7 @@
     name: aws-cli
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Create AWS temporary directory for Linux
   ansible.builtin.tempfile:
@@ -21,7 +21,7 @@
   register: aws_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Download AWS CLI for Linux
   ansible.builtin.unarchive:
@@ -37,7 +37,7 @@
     aws_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install AWS CLI for Linux
   ansible.builtin.command:
@@ -47,7 +47,7 @@
   register: aws_install
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install AWS CLI for MacOS
   become: true
@@ -72,4 +72,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"

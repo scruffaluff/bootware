@@ -13,7 +13,7 @@
   ansible.builtin.package:
     name:
       - nodejs
-      - "{{ 'nodejs-npm' if ansible_facts.pkg_mgr in ['dnf'] else 'npm' }}"
+      - "{{ 'nodejs-npm' if system_pkg_mgr in ['dnf'] else 'npm' }}"
   become: true
   tags:
     - install
@@ -36,7 +36,7 @@
       - node-npm
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install Node for Windows
   community.windows.win_scoop:
@@ -106,13 +106,11 @@
   loop:
     - key: prefix
       line: >-
-        prefix = "{{ user_home | replace(node_backslash, '/') }}/.npm/global"
+        prefix = "{{ user_home | replace(backslash, '/') }}/.npm/global"
     - key: update-notifier
       line: update-notifier = false
   tags:
     - install
-  vars:
-    node_backslash: "\\"
   when: ansible_facts.system == "Win32NT"
 
 - name: Install Node applications for Unix

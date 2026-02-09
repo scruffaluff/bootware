@@ -17,7 +17,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
   become: true
@@ -36,7 +36,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Register Bash as a valid login shell for Unix
   ansible.builtin.lineinfile:
@@ -71,7 +71,7 @@
     name: shadow
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "apk" and user_login == "bash"
+  when: system_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Install Shadow for OpenWrt
   become: true
@@ -79,7 +79,7 @@
     name: shadow-usermod
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "opkg" and user_login == "bash"
+  when: system_pkg_mgr == "opkg" and user_login == "bash"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
@@ -90,7 +90,7 @@
   changed_when: true
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "apk" and user_login == "bash"
+  when: system_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Change user default shell to Bash for Unix
   ansible.builtin.user:
@@ -100,8 +100,8 @@
   tags:
     - config
   when: >-
-    ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "apk" and
-    user_login == "bash"
+    ansible_facts.system != "Win32NT" and system_pkg_mgr != "apk" and user_login
+    == "bash"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

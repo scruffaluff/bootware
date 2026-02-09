@@ -14,7 +14,7 @@
       - qemu-x86_64
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install QEMU packages for Arch
   become: true
@@ -29,7 +29,7 @@
       - qemu-user
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "pacman"
+  when: system_pkg_mgr == "pacman"
 
 - name: Install QEMU for Debian
   ansible.builtin.apt:
@@ -40,7 +40,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install QEMU for Fedora
   ansible.builtin.dnf:
@@ -53,7 +53,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 # FreeBSD "qemu" package is incompatible with "qemu-tools" package.
 - name: Install QEMU for FreeBSD
@@ -88,7 +88,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "zypper" and system_architecture == "amd64"
+  when: system_pkg_mgr == "zypper" and system_architecture == "amd64"
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:

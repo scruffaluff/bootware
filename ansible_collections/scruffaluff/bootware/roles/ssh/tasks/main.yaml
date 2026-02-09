@@ -10,7 +10,7 @@
 - name: Install SSH for Linux
   ansible.builtin.package:
     name:
-      - "{{ 'ssh' if ansible_facts.pkg_mgr == 'apt' else 'openssh' }}"
+      - "{{ 'ssh' if system_pkg_mgr == 'apt' else 'openssh' }}"
       - rsync
   become: true
   tags:

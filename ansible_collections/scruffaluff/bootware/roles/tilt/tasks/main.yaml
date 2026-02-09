@@ -34,9 +34,8 @@
     src: >-
       https://github.com/tilt-dev/tilt/releases/download/v{{
       tilt_formula.json.versions.stable }}/tilt.{{
-      tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if
-      ansible_facts.pkg_mgr == 'apk' else 'linux' }}.{{
-      tilt_arch[system_architecture] }}.tar.gz
+      tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if system_pkg_mgr
+      == 'apk' else 'linux' }}.{{ tilt_arch[system_architecture] }}.tar.gz
   tags:
     - install
   vars:

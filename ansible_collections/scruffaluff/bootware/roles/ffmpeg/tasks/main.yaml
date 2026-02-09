@@ -8,7 +8,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install FFmpeg for Fedora
   ansible.builtin.command:
@@ -18,7 +18,7 @@
   register: ffmpeg_install_fedora
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install FFmpeg for FreeBSD
   become: true
@@ -35,8 +35,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["dnf",
-    "dnf5"]
+    ansible_facts.system == "Linux" and system_pkg_mgr != "dnf"
 
 - name: Install FFmpeg for MacOS
   become: true

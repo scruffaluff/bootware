@@ -5,7 +5,7 @@
     name: gitlab-runner
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install GitLab Runner for Arch
   become: true
@@ -13,7 +13,7 @@
     name: gitlab-runner
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "pacman" and system_architecture == "amd64"
+  when: system_pkg_mgr == "pacman" and system_architecture == "amd64"
 
 - name: Install GitLab Runner for Debian
   ansible.builtin.apt:
@@ -25,7 +25,7 @@
       system_architecture }}.deb
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add GitLab GPG key for Fedora
   ansible.builtin.rpm_key:
@@ -33,7 +33,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "zypper"]
+  when: system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
@@ -47,7 +47,7 @@
       system_architecture }}.rpm
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install GitLab Runner for FreeBSD
   become: true
@@ -76,7 +76,7 @@
       system_architecture }}.rpm
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "zypper"
+  when: system_pkg_mgr == "zypper"
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:

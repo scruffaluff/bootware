@@ -102,7 +102,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install Git for Windows
   community.windows.win_scoop:

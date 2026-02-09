@@ -5,7 +5,7 @@
     name: gitui
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install GitUI for FreeBSD
   become: true
@@ -24,7 +24,7 @@
 #   register: gitui_linux
 #   tags:
 #     - install
-#   when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+#   when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest GitUI version for Linux
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
   register: gitui_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Create GitUI temporary directory for Linux
   ansible.builtin.tempfile:
@@ -42,7 +42,7 @@
   register: gitui_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
@@ -59,7 +59,7 @@
     gitui_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -71,7 +71,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
   become: true
@@ -147,4 +147,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"

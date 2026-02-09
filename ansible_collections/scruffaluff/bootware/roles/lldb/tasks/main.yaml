@@ -7,7 +7,7 @@
       - py3-lldb
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install LLDB for FreeBSD
   become: true
@@ -26,7 +26,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install LLDB for Linux
   ansible.builtin.package:
@@ -34,7 +34,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5", "pacman"]
+  when: system_pkg_mgr in ["dnf", "pacman"]
 
 # LLDB is included in LLVM Scoop package.
 - name: Install debuggers for Windows

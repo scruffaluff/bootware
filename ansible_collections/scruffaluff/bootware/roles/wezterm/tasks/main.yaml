@@ -13,7 +13,7 @@
   register: wezterm_temp
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Set Wezterm temporary directory permissions for Unix
   ansible.builtin.file:
@@ -22,7 +22,7 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Download Wezterm GPG key for Debian
   ansible.builtin.get_url:
@@ -32,7 +32,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
@@ -44,7 +44,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Wezterm repository for Debian
   ansible.builtin.apt_repository:
@@ -56,7 +56,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install Wezterm for Debian
   ansible.builtin.apt:
@@ -65,7 +65,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Wezterm repository for Fedora
   become: true
@@ -73,7 +73,7 @@
     name: wezfurlong/wezterm-nightly
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install Wezterm for Linux
   ansible.builtin.package:
@@ -81,7 +81,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apt"]
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apt"
 
 - name: Install Wezterm for MacOS
   community.general.homebrew_cask:
@@ -158,4 +158,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"

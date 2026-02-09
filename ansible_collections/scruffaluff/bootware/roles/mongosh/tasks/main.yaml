@@ -16,8 +16,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
-    "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "dnf"]
 
 - name: Download Mongo Shell for Linux
   ansible.builtin.unarchive:
@@ -30,8 +29,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
-    "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "dnf"]
 
 - name: Install Mongo Shell for Linux
   ansible.builtin.copy:
@@ -47,8 +45,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
-    "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "dnf"]
 
 - name: Install Mongo Shell for MacOS
   become: true
@@ -85,5 +82,4 @@
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["apk",
-    "dnf", "dnf5"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "dnf"]

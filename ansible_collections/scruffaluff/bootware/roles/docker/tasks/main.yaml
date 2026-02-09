@@ -5,7 +5,7 @@
     name: docker
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Docker for Arch
   become: true
@@ -13,7 +13,7 @@
     name: docker
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "pacman"
+  when: system_pkg_mgr == "pacman"
 
 - name: Install Docker repository dependencies for Debian
   ansible.builtin.apt:
@@ -25,7 +25,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Create Docker temporary directory for Debian
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: docker_temp
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Set Docker temporary directory permissions for Debian
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Download Docker GPG key for Debian
   ansible.builtin.get_url:
@@ -52,7 +52,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Docker GPG key for Debian
   ansible.builtin.command:
@@ -64,7 +64,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
@@ -80,7 +80,7 @@
   register: docker_debian
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Docker repository for Ubuntu
   ansible.builtin.apt_repository:
@@ -94,7 +94,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt" and docker_debian is failed
+  when: system_pkg_mgr == "apt" and docker_debian is failed
 
 - name: Install Docker for Debian
   ansible.builtin.apt:
@@ -106,7 +106,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add Docker repository for Fedora
   ansible.builtin.get_url:
@@ -116,7 +116,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install Docker for Fedora
   ansible.builtin.dnf:
@@ -127,7 +127,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install Docker for FreeBSD
   become: true
@@ -159,7 +159,7 @@
   register: docker_service
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Start Containerd on system boot for Alpine
   ansible.builtin.service:
@@ -169,7 +169,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
+  when: system_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Containerd on system boot for Linux
   ansible.builtin.systemd:
@@ -188,7 +188,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
+  when: system_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Start Docker on system boot for Linux
   ansible.builtin.systemd:
@@ -208,7 +208,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk" and docker_service.stat.exists
+  when: system_pkg_mgr == "apk" and docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
@@ -250,4 +250,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"

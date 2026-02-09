@@ -8,8 +8,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture ==
-    "amd64"
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Debian
   ansible.builtin.apt:
@@ -19,7 +18,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt" and system_architecture == "amd64"
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Fedora
   ansible.builtin.dnf:
@@ -31,7 +30,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
+    system_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
   community.general.homebrew_cask:

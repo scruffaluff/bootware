@@ -117,7 +117,7 @@
     name: shadow
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "apk" and user_login == "fish"
+  when: system_pkg_mgr == "apk" and user_login == "fish"
 
 - name: Install Shadow for OpenWrt
   become: true
@@ -125,7 +125,7 @@
     name: shadow-usermod
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "opkg" and user_login == "fish"
+  when: system_pkg_mgr == "opkg" and user_login == "fish"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
@@ -136,7 +136,7 @@
   changed_when: true
   tags:
     - config
-  when: ansible_facts.pkg_mgr == "apk" and user_login == "fish"
+  when: system_pkg_mgr == "apk" and user_login == "fish"
 
 - name: Change user default shell to Fish for Unix
   ansible.builtin.user:
@@ -146,8 +146,8 @@
   tags:
     - config
   when: >-
-    ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "apk" and
-    user_login == "fish"
+    ansible_facts.system != "Win32NT" and system_pkg_mgr != "apk" and user_login
+    == "fish"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

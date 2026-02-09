@@ -9,7 +9,7 @@
       - python3-dev
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Python for Arch
   become: true
@@ -20,7 +20,7 @@
       - python-pipx
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "pacman"
+  when: system_pkg_mgr == "pacman"
 
 - name: Install Python for Debian
   ansible.builtin.apt:
@@ -33,7 +33,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install Python for Fedora
   ansible.builtin.dnf:
@@ -45,7 +45,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 # Rust is required for installing many Python applications on FreeBSD.
 - name: Install Python for FreeBSD
@@ -81,7 +81,7 @@
       - python3-venv
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install Python for Suse
   become: true
@@ -92,7 +92,7 @@
       - python312-pipx
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "zypper"
+  when: system_pkg_mgr == "zypper"
 
 - name: Install Python for Windows
   community.windows.win_scoop:
@@ -156,7 +156,7 @@
   register: python_application_unix
   tags:
     - plugin
-  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
 
 - name: Install Python applications for Windows
   ansible.windows.win_shell: >-

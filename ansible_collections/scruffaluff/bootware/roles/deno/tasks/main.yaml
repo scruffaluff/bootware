@@ -7,7 +7,7 @@
     - install
   when: >-
     ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
-    "Linux" and system_libc == "gnu") or ansible_facts.pkg_mgr == "apk"
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Install Deno for Alpine
   become: true
@@ -15,7 +15,7 @@
     name: deno
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true
@@ -129,7 +129,7 @@
     - install
   when: >-
     ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
-    "Linux" and system_libc == "gnu") or ansible_facts.pkg_mgr == "apk"
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Install Deno shell completions for Unix
   ansible.builtin.copy:
@@ -149,7 +149,7 @@
     - install
   when: >-
     ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
-    "Linux" and system_libc == "gnu") or ansible_facts.pkg_mgr == "apk"
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Create Deno PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
@@ -179,4 +179,4 @@
     - install
   when: >-
     ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
-    "Linux" and system_libc == "gnu") or ansible_facts.pkg_mgr == "apk"
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"

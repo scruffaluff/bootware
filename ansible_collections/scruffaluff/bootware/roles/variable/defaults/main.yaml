@@ -1,4 +1,5 @@
 ---
+backslash: "\\"
 brew_prefix: >-
   {{ '/opt/homebrew' if ansible_facts.architecture in ['aarch64', 'arm64'] else
   '/usr/local' }}
@@ -36,7 +37,7 @@ github_api_token_: >-
 group_id_:
   Darwin: "{{ 'wheel' if user_id == 'root' else 'staff' }}"
   FreeBSD: "{{ 'wheel' if user_id == 'root' else user_id }}"
-  Linux: "{{ {'zypper': 'users'}.get(ansible_facts.pkg_mgr, user_id) }}"
+  Linux: "{{ {'zypper': 'users'}.get(system_pkg_mgr, user_id) }}"
 nushell_executable_:
   Darwin: "{{ brew_prefix }}/bin/nu"
   FreeBSD: /usr/local/bin/nu
@@ -53,7 +54,7 @@ nushell_user_vendor_autoload_:
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
 system_libc_:
-  Linux: "{{ 'musl' if ansible_facts.pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
+  Linux: "{{ 'musl' if system_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
   64-bit: amd64
   64bit: amd64
@@ -106,6 +107,7 @@ scoop_user_path: "{{ user_home }}\\scoop"
 system_architecture:
   "{{ system_architecture_.get(ansible_facts.architecture, '') }}"
 system_libc: "{{ system_libc_.get(ansible_facts.system, '') }}"
+system_pkg_mgr: "{{ ansible_facts.get('pkg_mgr', '').replace('dnf5', 'dnf') }}"
 user_login:
   "{{ 'powershell' if ansible_facts.system == 'Win32NT' else 'bash' }}"
 user_shell: nushell

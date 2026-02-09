@@ -9,7 +9,7 @@
 
 - name: Install SQLite for Linux
   ansible.builtin.package:
-    name: "{{ sqlite_package.get(ansible_facts.pkg_mgr, 'sqlite') }}"
+    name: "{{ sqlite_package.get(system_pkg_mgr, 'sqlite') }}"
   become: true
   tags:
     - install

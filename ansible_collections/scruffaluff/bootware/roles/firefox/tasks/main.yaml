@@ -4,7 +4,7 @@
   tags:
     - install
   when: >-
-    ansible_facts.pkg_mgr == "apt" and ansible_facts.distribution != "Ubuntu"
+    system_pkg_mgr == "apt" and ansible_facts.distribution != "Ubuntu"
 
 - name: Install Firefox for FreeBSD
   become: true
@@ -20,7 +20,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apt"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apt"
 
 - name: Install Firefox for MacOS
   community.general.homebrew_cask:

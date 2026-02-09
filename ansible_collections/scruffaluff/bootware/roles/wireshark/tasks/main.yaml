@@ -9,7 +9,7 @@
 
 - name: Install Wireshark for Linux
   ansible.builtin.package:
-    name: "{{ wireshark_package.get(ansible_facts.pkg_mgr, 'wireshark') }}"
+    name: "{{ wireshark_package.get(system_pkg_mgr, 'wireshark') }}"
   become: true
   tags:
     - install
@@ -18,7 +18,6 @@
       apk: wireshark
       apt: wireshark
       dnf: wireshark
-      dnf5: wireshark
       pacman: wireshark-qt
       zypper: wireshark-ui-qt
   when: ansible_facts.system == "Linux"
@@ -55,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
   ansible.builtin.command:
@@ -67,7 +66,7 @@
     DEBIAN_FRONTEND: noninteractive
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
   ansible.builtin.user:

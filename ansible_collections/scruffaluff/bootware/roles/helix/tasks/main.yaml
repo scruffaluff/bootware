@@ -60,7 +60,7 @@
 #   become: true
 #   tags:
 #     - install
-#   when: ansible_facts.pkg_mgr == "pacman" and helix_linux is success
+#   when: system_pkg_mgr == "pacman" and helix_linux is success
 
 - name: Create Helix temporary directory for Linux
   ansible.builtin.tempfile:
@@ -134,7 +134,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
 
 - name: Install Helix runtime files for Linux
   ansible.builtin.copy:
@@ -161,7 +161,7 @@
   become: true
   tags:
     - config
-  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
 
 - name: Copy Helix language file for Unix
   ansible.builtin.copy:
@@ -174,7 +174,7 @@
   become: true
   tags:
     - config
-  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
 
 - name: Create Helix configuration directories for Windows
   ansible.windows.win_file:

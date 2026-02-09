@@ -15,7 +15,7 @@
   register: bottom_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest Bottom version for Linux
   ansible.builtin.uri:

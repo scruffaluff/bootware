@@ -19,14 +19,12 @@
 - name: Install Android platform tools for Linux
   ansible.builtin.package:
     name: >-
-      "{{ 'android-sdk' if ansible_facts.pkg_mgr == 'apt' else 'android-tools'
-      }}"
+      "{{ 'android-sdk' if system_pkg_mgr == 'apt' else 'android-tools' }}"
   become: true
   tags:
     - install
   when: >-
-    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["opkg",
-    "zypper"]
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["opkg", "zypper"]
 
 # TODO: FIgure out how to configure android-clt for Windows so adb does not need
 # to be separately installed.

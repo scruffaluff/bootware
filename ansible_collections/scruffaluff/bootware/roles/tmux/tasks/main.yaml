@@ -7,7 +7,7 @@
     name: tmux
   tags:
     - install
-  when: ansible_facts.pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Tmux for FreeBSD
   become: true
@@ -27,7 +27,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ansible_facts.pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
   become: true
