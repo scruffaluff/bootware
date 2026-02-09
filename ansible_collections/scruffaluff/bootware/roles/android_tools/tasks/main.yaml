@@ -19,7 +19,7 @@
 - name: Install Android platform tools for Linux
   ansible.builtin.package:
     name: >-
-      "{{ 'android-sdk' if system_pkg_mgr == 'apt' else 'android-tools' }}"
+      {{ 'android-sdk' if system_pkg_mgr == 'apt' else 'android-tools' }}
   become: true
   tags:
     - install

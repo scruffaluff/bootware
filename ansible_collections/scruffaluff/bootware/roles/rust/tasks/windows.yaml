@@ -94,8 +94,8 @@
       }}\apps\rustup-msvc\current\.cargo\bin\cargo-binstall.exe
     force: true
     remote_src: true
-    src:
-      "{{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall\\cargo-binstall.exe"
+    src: >-
+      {{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall\\cargo-binstall.exe
   tags:
     - plugin
 

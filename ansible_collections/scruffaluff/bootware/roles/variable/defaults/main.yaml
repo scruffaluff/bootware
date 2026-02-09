@@ -73,8 +73,8 @@ bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
 fish_completion: >-
   {{ fish_completion_.get(ansible_facts.system, '/etc/fish/completions') }}
-fish_executable:
-  "{{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}"
+fish_executable: >-
+  {{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}
 fish_name: fish
 fish_user_completion: "{{ user_home }}/.config/fish/completions"
 fish_vendor_completion: >-
@@ -104,12 +104,12 @@ powershell_user_module_paths:
   - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
 scoop_path: C:\ProgramData\scoop
 scoop_user_path: "{{ user_home }}\\scoop"
-system_architecture:
-  "{{ system_architecture_.get(ansible_facts.architecture, '') }}"
+system_architecture: >-
+  {{ system_architecture_.get(ansible_facts.architecture, '') }}
 system_libc: "{{ system_libc_.get(ansible_facts.system, '') }}"
 system_pkg_mgr: "{{ ansible_facts.get('pkg_mgr', '').replace('dnf5', 'dnf') }}"
-user_login:
-  "{{ 'powershell' if ansible_facts.system == 'Win32NT' else 'bash' }}"
+user_login: >-
+  {{ 'powershell' if ansible_facts.system == 'Win32NT' else 'bash' }}
 user_shell: nushell
 user_shell_executable: >-
   {{ lookup("ansible.builtin.vars", user_shell + "_executable") }}
