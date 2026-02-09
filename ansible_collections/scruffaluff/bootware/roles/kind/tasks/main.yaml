@@ -7,7 +7,7 @@
   register: kind_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Kind for Linux
   ansible.builtin.get_url:
@@ -20,7 +20,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Kind for MacOS
   become: true
@@ -29,7 +29,7 @@
     name: kind
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Kind for Windows
   community.windows.win_scoop:
@@ -37,7 +37,7 @@
     name: kind
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Kind temporary directory for Unix
   ansible.builtin.tempfile:
@@ -45,7 +45,7 @@
   register: kind_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create Kind shell completions for Unix
   ansible.builtin.shell: >-
@@ -53,14 +53,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Kind shell completions for Unix
   ansible.builtin.copy:
@@ -78,7 +78,7 @@
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Kind temporary directory for Unix
   ansible.builtin.file:
@@ -86,4 +86,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

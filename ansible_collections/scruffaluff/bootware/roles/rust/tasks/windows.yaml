@@ -23,7 +23,7 @@
     CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   register: rust_toolchain_set
   tags:
     - install
@@ -36,7 +36,7 @@
     CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   loop: "{{ rust_components }}"
   register: rust_component_add
   tags:
@@ -50,7 +50,7 @@
     CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   loop: "{{ rust_targets }}"
   register: rust_target_add
   tags:
@@ -58,14 +58,14 @@
 
 - name: Create Rust temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\rust"
+    path: "{{ ansible_facts.env.TEMP }}\\rust"
     state: directory
   tags:
     - install
 
 - name: Download Cargo Binstall archive for Windows
   ansible.windows.win_get_url:
-    dest: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall.zip"
+    dest: "{{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall.zip"
     url: >-
       https://github.com/ryankurte/cargo-binstall/releases/download/v{{
       rust_binstall_formula.json.versions.stable
@@ -75,8 +75,8 @@
 
 - name: Decompress Cargo Binstall archive for Windows
   community.windows.win_unzip:
-    dest: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall"
-    src: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall.zip"
+    dest: "{{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall"
+    src: "{{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall.zip"
   tags:
     - plugin
 
@@ -94,7 +94,8 @@
       }}\apps\rustup-msvc\current\.cargo\bin\cargo-binstall.exe
     force: true
     remote_src: true
-    src: "{{ ansible_env.TEMP }}\\rust\\cargo_binstall\\cargo-binstall.exe"
+    src:
+      "{{ ansible_facts.env.TEMP }}\\rust\\cargo_binstall\\cargo-binstall.exe"
   tags:
     - plugin
 
@@ -106,7 +107,7 @@
     CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
       {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
-      ansible_env.Path }}
+      ansible_facts.env.Path }}
   loop: "{{ rust_applications }}"
   register: rust_binstall_package
   tags:
@@ -129,7 +130,7 @@
 
 - name: Remove Rust temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\rust"
+    path: "{{ ansible_facts.env.TEMP }}\\rust"
     state: absent
   tags:
     - install

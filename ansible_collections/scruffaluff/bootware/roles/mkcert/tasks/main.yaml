@@ -3,7 +3,7 @@
 # information, visit https://github.com/FiloSottile/mkcert#installation.
 - name: Install Mkcert dependencies for Linux
   ansible.builtin.package:
-    name: "{{ mkcert_dependencies.get(ansible_pkg_mgr, 'nss') }}"
+    name: "{{ mkcert_dependencies.get(ansible_facts.pkg_mgr, 'nss') }}"
   become: true
   tags:
     - install
@@ -16,7 +16,7 @@
       opkg: nss-utils
       pacman: nss
       zypper: mozilla-nss
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Mkcert for Linux
   ansible.builtin.package:
@@ -26,7 +26,7 @@
   register: mkcert_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Mkcert version for Linux
   ansible.builtin.uri:
@@ -36,7 +36,7 @@
   register: mkcert_formula
   tags:
     - install
-  when: ansible_system == "Linux" and mkcert_linux is failed
+  when: ansible_facts.system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for Linux
   ansible.builtin.get_url:
@@ -50,7 +50,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and mkcert_linux is failed
+  when: ansible_facts.system == "Linux" and mkcert_linux is failed
 
 - name: Install Mkcert for MacOS
   become: true
@@ -61,7 +61,7 @@
       - nss
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Mkcert for Windows
   community.windows.win_scoop:
@@ -69,4 +69,4 @@
     name: mkcert
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

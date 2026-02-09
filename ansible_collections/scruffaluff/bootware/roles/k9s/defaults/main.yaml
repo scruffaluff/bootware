@@ -3,4 +3,4 @@ k9s_config_:
   Darwin: "{{ user_home }}/Library/Application Support/k9s"
   Win32NT: "{{ user_home }}\\AppData\\Local\\k9s"
 k9s_config: >-
-  {{ k9s_config_.get(ansible_system, user_home + '/.config/k9s') }}
+  {{ k9s_config_.get(ansible_facts.system, user_home + '/.config/k9s') }}

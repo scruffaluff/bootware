@@ -8,7 +8,7 @@
       - git-lfs
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Git for Linux
   ansible.builtin.package:
@@ -18,7 +18,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Git Delta for Linux
   ansible.builtin.package:
@@ -28,7 +28,7 @@
   register: git_delta_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Git Delta version for Linux
   ansible.builtin.uri:
@@ -39,8 +39,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64") and git_delta_linux is failed
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64") and git_delta_linux is failed
 
 - name: Create Git temporary directory for Linux
   ansible.builtin.tempfile:
@@ -49,8 +49,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64") and git_delta_linux is failed
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64") and git_delta_linux is failed
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
@@ -65,8 +65,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64") and git_delta_linux is failed
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64") and git_delta_linux is failed
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
@@ -81,8 +81,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64") and git_delta_linux is failed
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64") and git_delta_linux is failed
 
 - name: Install Git for MacOS
   become: true
@@ -94,7 +94,7 @@
       - git-lfs
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Git HTTP for OpenWrt
   community.general.opkg:
@@ -102,7 +102,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: ansible_facts.pkg_mgr == "opkg"
 
 - name: Install Git for Windows
   community.windows.win_scoop:
@@ -114,7 +114,7 @@
       - posh-git
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Git configuration file for Unix
   ansible.builtin.template:
@@ -127,7 +127,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Git configuration file for Windows
   ansible.windows.win_template:
@@ -137,7 +137,7 @@
     src: gitconfig.j2
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
@@ -151,5 +151,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64") and git_delta_linux is failed
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64") and git_delta_linux is failed

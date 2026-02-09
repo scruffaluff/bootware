@@ -7,7 +7,7 @@
       - xdg-utils
   tags:
     - install
-  when: ansible_system == "FreeBSD" and gnome_desktop
+  when: ansible_facts.system == "FreeBSD" and gnome_desktop
 
 - name: Install desktop management dependencies for Linux
   ansible.builtin.package:
@@ -17,7 +17,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and gnome_desktop
+  when: ansible_facts.system == "Linux" and gnome_desktop
 
 - name: Add clipboard commands for Linux
   ansible.builtin.package:
@@ -26,7 +26,7 @@
   failed_when: false
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install desktop management dependencies for MacOS
   become: true
@@ -35,7 +35,7 @@
     name: duti
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
@@ -43,7 +43,7 @@
     name: powertoys
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create keyboard layout directory for MacOS
   ansible.builtin.file:
@@ -55,7 +55,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 # Custom keyboard layout disable special "alt" characters that interfere with
 # "alt" keybindings. Soluation was taken from
@@ -71,7 +71,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install GNOME extensions for GNOME desktops
   ansible.builtin.include_tasks:
@@ -81,7 +81,7 @@
     loop_var: gnome_extension
   tags:
     - install
-  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
+  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
@@ -89,7 +89,7 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
+  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
@@ -97,13 +97,13 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Change desktop settings for Windows
   ansible.builtin.script: windows.ps1
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 ##### Distribution specific desktop setting overrides. #####
 
@@ -113,7 +113,7 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_distribution == "Fedora" and gnome_desktop
+  when: ansible_facts.distribution == "Fedora" and gnome_desktop
 
 - name: Change desktop settings for PopOS
   ansible.builtin.script: popos.sh
@@ -121,7 +121,7 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_distribution == "Pop!_OS" and gnome_desktop
+  when: ansible_facts.distribution == "Pop!_OS" and gnome_desktop
 
 - name: Change desktop settings for Ubuntu
   ansible.builtin.script: ubuntu.sh
@@ -129,4 +129,4 @@
   become_user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_distribution == "Ubuntu" and gnome_desktop
+  when: ansible_facts.distribution == "Ubuntu" and gnome_desktop

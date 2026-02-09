@@ -5,7 +5,7 @@
     name: podman
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Podman for Linux
   ansible.builtin.package:
@@ -13,7 +13,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Podman for MacOS
   become: true
@@ -22,7 +22,7 @@
     name: podman
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Podman for Windows
   community.windows.win_scoop:
@@ -30,7 +30,7 @@
     name: podman
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Podman shell completions for Unix
   ansible.builtin.command:
@@ -38,7 +38,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - dest: "{{ bash_completion }}/podman"
       shell: bash
@@ -47,7 +47,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Podman PowerShell completions for Windows
   ansible.windows.win_command:
@@ -55,9 +55,9 @@
       podman completion powershell --file "{{ item }}/PodmanCompletion.psm1"
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

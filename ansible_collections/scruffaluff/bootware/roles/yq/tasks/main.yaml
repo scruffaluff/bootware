@@ -5,7 +5,7 @@
     name: go-yq
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Yq package in most distributions reaches version 4.0.0.
 # - name: Install Yq for Linux
@@ -16,7 +16,7 @@
 #   register: yq_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux"
+#   when: ansible_facts.system == "Linux"
 
 - name: Get latest Yq version for Linux
   ansible.builtin.uri:
@@ -26,7 +26,7 @@
   register: yq_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Yq for Linux
   ansible.builtin.get_url:
@@ -39,7 +39,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Yq for MacOS
   become: true
@@ -48,7 +48,7 @@
     name: yq
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
@@ -56,7 +56,7 @@
     name: yq
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Yq temporary directory for Linux
   ansible.builtin.tempfile:
@@ -64,7 +64,7 @@
   register: yq_temp
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Yq shell completions for Unix
   ansible.builtin.shell:
@@ -72,14 +72,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Yq shell completions for Unix
   ansible.builtin.copy:
@@ -97,7 +97,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Remove Yq temporary directory for Linux
   ansible.builtin.file:
@@ -105,4 +105,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"

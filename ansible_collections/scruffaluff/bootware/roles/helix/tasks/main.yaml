@@ -6,7 +6,7 @@
       ansible.builtin.version("2.33", ">") }}
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 # Several Linux Helix packages don't include the runtime files so GitHub release
 # needs to always be downloaded.
@@ -18,7 +18,7 @@
   register: helix_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Parse Helix download folder name
   ansible.builtin.set_fact:
@@ -29,7 +29,7 @@
       + system_libc }}
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Helix for FreeBSD
   become: true
@@ -37,7 +37,7 @@
     name: helix
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Helix package in all distributions reaches version 25.01.
 # - name: Install Helix for Linux
@@ -48,7 +48,7 @@
 #   register: helix_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux"
+#   when: ansible_facts.system == "Linux"
 #
 # - name: Make Helix command symlink for Arch
 #   ansible.builtin.file:
@@ -60,7 +60,7 @@
 #   become: true
 #   tags:
 #     - install
-#   when: ansible_pkg_mgr == "pacman" and helix_linux is success
+#   when: ansible_facts.pkg_mgr == "pacman" and helix_linux is success
 
 - name: Create Helix temporary directory for Linux
   ansible.builtin.tempfile:
@@ -68,7 +68,7 @@
   register: helix_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Helix temporary directory permissions for Linux
   ansible.builtin.file:
@@ -77,7 +77,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 # Uses third party release of Helix if on MUSL or older Glibc version.
 - name: Download Helix for Linux
@@ -93,7 +93,7 @@
       helix_formula.json.versions.stable + '/' + helix_folder + '.tar.xz' }}
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
@@ -105,7 +105,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Helix for MacOS
   become: true
@@ -114,7 +114,7 @@
     name: helix
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
@@ -122,7 +122,7 @@
     name: helix
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Helix configuration directory for Unix
   ansible.builtin.file:
@@ -134,7 +134,7 @@
   become: true
   tags:
     - install
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
 
 - name: Install Helix runtime files for Linux
   ansible.builtin.copy:
@@ -148,7 +148,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Copy Helix configuration file for Unix
   ansible.builtin.template:
@@ -161,7 +161,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
 
 - name: Copy Helix language file for Unix
   ansible.builtin.copy:
@@ -174,7 +174,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and ansible_facts.pkg_mgr != "opkg"
 
 - name: Create Helix configuration directories for Windows
   ansible.windows.win_file:
@@ -185,7 +185,7 @@
     - scoop\persist
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Helix configuration files for Windows
   ansible.windows.win_template:
@@ -197,7 +197,7 @@
     - scoop\persist
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Helix language files for Windows
   ansible.windows.win_copy:
@@ -209,7 +209,7 @@
     - scoop\persist
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Helix files for Windows
   ansible.windows.win_owner:
@@ -218,7 +218,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Helix temporary directory for Linux
   ansible.builtin.file:
@@ -226,4 +226,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

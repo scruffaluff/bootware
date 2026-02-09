@@ -5,7 +5,7 @@
     name: android-tools
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Android platform tools for MacOS
   community.general.homebrew_cask:
@@ -14,15 +14,19 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Android platform tools for Linux
   ansible.builtin.package:
-    name: "{{ 'android-sdk' if ansible_pkg_mgr == 'apt' else 'android-tools' }}"
+    name: >-
+      "{{ 'android-sdk' if ansible_facts.pkg_mgr == 'apt' else 'android-tools'
+      }}"
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["opkg", "zypper"]
+  when: >-
+    ansible_facts.system == "Linux" and ansible_facts.pkg_mgr not in ["opkg",
+    "zypper"]
 
 # TODO: FIgure out how to configure android-clt for Windows so adb does not need
 # to be separately installed.
@@ -34,4 +38,4 @@
       - android-clt
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

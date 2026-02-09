@@ -8,7 +8,7 @@ detachedHead = false
 [core]
 autocrlf = input
 editor = hx
-{% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
+{% if ansible_facts.system != "Linux" or ansible_facts.pkg_mgr != "apk" or system_architecture != "arm64" %}
 pager = delta
 {% endif %}
 
@@ -23,7 +23,7 @@ colorMoved = default
 [init]
 defaultBranch = main
 
-{% if ansible_system != "Linux" or ansible_pkg_mgr != "apk" or system_architecture != "arm64" %}
+{% if ansible_facts.system != "Linux" or ansible_facts.pkg_mgr != "apk" or system_architecture != "arm64" %}
 [interactive]
 diffFilter = delta --color-only
 {% endif %}

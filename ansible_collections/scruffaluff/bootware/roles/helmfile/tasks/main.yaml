@@ -5,7 +5,7 @@
   register: helmfile_temp
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Set Helmfile temporary directory permissions for Unix
   ansible.builtin.file:
@@ -14,7 +14,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Helmfile for FreeBSD
   become: true
@@ -22,7 +22,7 @@
     name: helmfile
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Helmfile for Linux
   ansible.builtin.package:
@@ -32,7 +32,7 @@
   register: helmfile_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Helmfile version for Linux
   ansible.builtin.uri:
@@ -42,7 +42,7 @@
   register: helmfile_formula
   tags:
     - install
-  when: ansible_system == "Linux" and helmfile_linux is failed
+  when: ansible_facts.system == "Linux" and helmfile_linux is failed
 
 - name: Download Helmfile for Linux
   ansible.builtin.unarchive:
@@ -56,7 +56,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and helmfile_linux is failed
+  when: ansible_facts.system == "Linux" and helmfile_linux is failed
 
 - name: Install Helmfile for Linux
   ansible.builtin.copy:
@@ -68,7 +68,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and helmfile_linux is failed
+  when: ansible_facts.system == "Linux" and helmfile_linux is failed
 
 - name: Install Helmfile for MacOS
   become: true
@@ -77,7 +77,7 @@
     name: helmfile
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Helmfile for Windows
   community.windows.win_scoop:
@@ -85,7 +85,7 @@
     name: helmfile
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Helmfile shell completions for Unix
   ansible.builtin.shell:
@@ -95,14 +95,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Helmfile shell completions for Unix
   ansible.builtin.copy:
@@ -120,7 +120,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Remove Helmfile temporary directory for Unix
   ansible.builtin.file:
@@ -128,4 +128,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"

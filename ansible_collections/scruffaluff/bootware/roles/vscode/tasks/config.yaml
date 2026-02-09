@@ -5,7 +5,7 @@
   register: vscode_settings_check_unix
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Check if VSCode settings file exists for Windows
   ansible.windows.win_stat:
@@ -13,7 +13,7 @@
   register: vscode_settings_check_windows
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set VSCode settings check
   ansible.builtin.set_fact:
@@ -58,7 +58,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Copy VSCode keybindings file for MacOS
   ansible.builtin.template:
@@ -72,7 +72,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Copy VSCode settings file for MacOS
   ansible.builtin.template:
@@ -86,7 +86,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Create VSCode user directory for Linux
   ansible.builtin.file:
@@ -98,7 +98,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Copy VSCode keybindings file for Linux
   ansible.builtin.template:
@@ -111,7 +111,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Copy VSCode settings file for Linux
   ansible.builtin.template:
@@ -124,7 +124,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create VSCode user directory for Windows
   ansible.windows.win_file:
@@ -132,7 +132,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy VSCode keybindings file for Windows
   ansible.windows.win_template:
@@ -141,7 +141,7 @@
     src: keybindings.json.j2
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy VSCode settings file for Windows
   ansible.windows.win_template:
@@ -151,4 +151,4 @@
     src: settings.json.j2
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

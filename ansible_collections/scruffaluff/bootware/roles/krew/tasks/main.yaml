@@ -7,7 +7,7 @@
   register: krew_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Krew temporary directory for Linux
   ansible.builtin.tempfile:
@@ -15,7 +15,7 @@
   register: krew_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Krew temporary directory permissions for Linux
   ansible.builtin.file:
@@ -24,7 +24,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Krew for Linux
   ansible.builtin.unarchive:
@@ -36,7 +36,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Krew for Linux
   ansible.builtin.command:
@@ -48,7 +48,7 @@
   register: krew_install
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Krew for MacOS
   become: true
@@ -57,7 +57,7 @@
     name: krew
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 # Krew does not yet work properly on Windows.
 # - name: Install Krew for Windows
@@ -65,7 +65,7 @@
 #     name: krew
 #   tags:
 #     - install
-#   when: ansible_system == "Win32NT"
+#   when: ansible_facts.system == "Win32NT"
 
 - name: Install Kubectl plugins for Unix
   ansible.builtin.command:
@@ -74,23 +74,23 @@
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_plugin_install.stdout"
   environment:
-    PATH: "{{ user_home }}/.krew/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ user_home }}/.krew/bin:{{ ansible_facts.env.PATH }}"
   loop: "{{ krew_plugins }}"
   register: krew_plugin_install
   tags:
     - plugin
-  when: ansible_system not in ["FreeBSD", "Win32NT"]
+  when: ansible_facts.system not in ["FreeBSD", "Win32NT"]
 # - name: Install Kubectl plugins for Windows
 #   ansible.windows.win_command:
 #     cmd: kubectl-krew install {{ item }}
 #   changed_when: "'Installed plugin' in krew_plugin_install.stdout"
 #   environment:
-#     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_env.Path }}"
+#     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_facts.env.Path }}"
 #   loop: "{{ krew_plugins }}"
 #   register: krew_plugin_install
 #   tags:
 #     - plugin
-#   when: ansible_system == "Win32NT"
+#   when: ansible_facts.system == "Win32NT"
 
 - name: Remove Krew temporary directory for Linux
   ansible.builtin.file:
@@ -98,4 +98,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

@@ -11,8 +11,8 @@ vscode_chrome_path_:
   Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   FreeBSD: /usr/local/bin/chrome
   Linux: >-
-    {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
-    }}
+    {{ vscode_chrome_path_linux_.get(ansible_facts.pkg_mgr,
+    '/usr/bin/google-chrome') }}
   Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
 vscode_path_linux_:
   apk: /usr/lib/code-oss/resources/app
@@ -21,8 +21,8 @@ vscode_path_:
   Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
   FreeBSD: /usr/local/share/code-oss/resources/app
   Linux: >-
-    {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
-    }}
+    {{ vscode_path_linux_.get(ansible_facts.pkg_mgr,
+    '/usr/share/code/resources/app') }}
   Win32NT: C:\Program Files\Microsoft VS Code\resources\app
 vscode_system_:
   Darwin: osx
@@ -35,8 +35,8 @@ vscode_user_path_:
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\VSCode\\User"
 
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
-vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
-vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscode_chrome_path: "{{ vscode_chrome_path_[ansible_facts.system] }}"
+vscode_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
 vscode_custom_html: |
   <style>
     .terminal.xterm {
@@ -82,7 +82,7 @@ vscode_extensions:
 vscode_font_size: "{{ font_size }}"
 vscode_install_customizations: true
 vscode_path: >-
-  {{ vscode_path_.get(ansible_system, '/usr/share/code/resources/app') }}
+  {{ vscode_path_.get(ansible_facts.system, '/usr/share/code/resources/app') }}
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -103,6 +103,7 @@ vscode_remote_extensions:
   - vscode-icons-team.vscode-icons
 vscode_remotes: {}
 vscode_style: true
-vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
+vscode_system: "{{ vscode_system_.get(ansible_facts.system, 'linux') }}"
 vscode_user_path: >-
-  {{ vscode_user_path_.get(ansible_system, user_home + '/.config/Code/User') }}
+  {{ vscode_user_path_.get(ansible_facts.system, user_home +
+  '/.config/Code/User') }}

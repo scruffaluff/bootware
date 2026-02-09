@@ -5,11 +5,11 @@
     name: sqlite3
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install SQLite for Linux
   ansible.builtin.package:
-    name: "{{ sqlite_package.get(ansible_pkg_mgr, 'sqlite') }}"
+    name: "{{ sqlite_package.get(ansible_facts.pkg_mgr, 'sqlite') }}"
   become: true
   tags:
     - install
@@ -17,7 +17,7 @@
     sqlite_package:
       apt: sqlite3
       opkg: sqlite3-cli
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install SQLite for MacOS
   become: true
@@ -26,7 +26,7 @@
     name: sqlite
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install SQLite for Windows
   community.windows.win_scoop:
@@ -34,7 +34,7 @@
     name: sqlite
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy SQLite settings file for Unix
   ansible.builtin.copy:
@@ -47,7 +47,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy SQLite settings file for Windows
   ansible.windows.win_copy:
@@ -56,7 +56,7 @@
     src: sqliterc
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of SQLite file for Windows
   ansible.windows.win_owner:
@@ -64,4 +64,4 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

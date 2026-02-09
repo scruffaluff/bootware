@@ -97,7 +97,7 @@ mods = "Control"
 [terminal.shell]
 args = ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"]
 program = "{{ user_shell_name }}"
-{% if ansible_system == "Darwin" %}
+{% if ansible_facts.system == "Darwin" %}
 
 [window]
 option_as_alt = "Both"

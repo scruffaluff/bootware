@@ -9,4 +9,4 @@ bloatware_linux_packages_:
     - PackageKit-command-not-found
 bloatware_linux_packages: >-
   {{ bloatware_linux_packages_.always +
-  bloatware_linux_packages_.get(ansible_pkg_mgr, []) }}
+  bloatware_linux_packages_.get(ansible_facts.pkg_mgr, []) }}

@@ -5,7 +5,7 @@
     name: xh
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Xh for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: xh_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Xh version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: xh_formula
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Create Xh temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: xh_temp
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Set Xh temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Download Xh for Linux
   ansible.builtin.unarchive:
@@ -55,7 +55,7 @@
       }}-{{ xh_arch }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Install Xh for Linux
   ansible.builtin.copy:
@@ -69,7 +69,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Install Xh for MacOS
   become: true
@@ -78,7 +78,7 @@
     name: xh
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Xh for Windows
   community.windows.win_scoop:
@@ -86,7 +86,7 @@
     name: xh
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Xh shell completions for Unix
   ansible.builtin.copy:
@@ -106,7 +106,7 @@
   tags:
     - completion
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed
 
 - name: Remove Xh temporary directory for Linux
   ansible.builtin.file:
@@ -114,4 +114,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and xh_linux is failed
+  when: ansible_facts.system == "Linux" and xh_linux is failed

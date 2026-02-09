@@ -7,7 +7,7 @@
   register: lazydocker_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Lazydocker temporary directory for Linux
   ansible.builtin.tempfile:
@@ -15,7 +15,7 @@
   register: lazydocker_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Lazydocker temporary directory permissions for Linux
   ansible.builtin.file:
@@ -24,7 +24,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Lazydocker for Linux
   ansible.builtin.unarchive:
@@ -42,7 +42,7 @@
     lazydocker_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Lazydocker for Linux
   ansible.builtin.copy:
@@ -54,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Lazydocker for MacOS
   become: true
@@ -63,7 +63,7 @@
     name: lazydocker
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Lazydocker for Windows
   community.windows.win_scoop:
@@ -71,7 +71,7 @@
     name: lazydocker
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Lazydocker temporary directory for Linux
   ansible.builtin.file:
@@ -79,4 +79,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

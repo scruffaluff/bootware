@@ -5,7 +5,7 @@
     name: net.sonic_pi.SonicPi
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Sonic Pi for MacOS
   community.general.homebrew_cask:
@@ -14,7 +14,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Sonic Pi for Windows
   community.windows.win_scoop:
@@ -22,4 +22,4 @@
     name: sonic-pi
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

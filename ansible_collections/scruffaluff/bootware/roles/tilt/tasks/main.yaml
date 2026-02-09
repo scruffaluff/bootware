@@ -7,7 +7,7 @@
   register: tilt_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Tilt temporary directory for Linux
   ansible.builtin.tempfile:
@@ -15,7 +15,7 @@
   register: tilt_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Tilt temporary directory permissions for Linux
   ansible.builtin.file:
@@ -24,7 +24,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Tilt for Linux
   ansible.builtin.unarchive:
@@ -34,15 +34,16 @@
     src: >-
       https://github.com/tilt-dev/tilt/releases/download/v{{
       tilt_formula.json.versions.stable }}/tilt.{{
-      tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if ansible_pkg_mgr
-      == 'apk' else 'linux' }}.{{ tilt_arch[system_architecture] }}.tar.gz
+      tilt_formula.json.versions.stable }}.{{ 'linux-alpine' if
+      ansible_facts.pkg_mgr == 'apk' else 'linux' }}.{{
+      tilt_arch[system_architecture] }}.tar.gz
   tags:
     - install
   vars:
     tilt_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Tilt for Linux
   ansible.builtin.copy:
@@ -54,7 +55,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Tilt for MacOS
   become: true
@@ -63,7 +64,7 @@
     name: tilt
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 # Do not use module win_scoop_bucket, since it does not properly capture output
 # and "scoop bucket add" fails if the bucket is already added.
@@ -72,14 +73,14 @@
     scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
   changed_when: "'bucket was added successfully' in tilt_bucket_add.stdout"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   failed_when: >-
     tilt_bucket_add.rc != 0 and 'bucket already exists' not in
     tilt_bucket_add.stdout
   register: tilt_bucket_add
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Tilt for Windows
   community.windows.win_scoop:
@@ -87,7 +88,7 @@
     name: tilt
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Tilt temporary directory for Linux
   ansible.builtin.file:
@@ -95,4 +96,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

@@ -23,5 +23,5 @@ zed_extensions:
 zed_font_size: "{{ font_size }}"
 zed_remotes: []
 zed_config_path: >-
-  {{ user_home + '\AppData\Roaming\Zed' if ansible_system == 'Win32NT' else
-  user_home + '/.config/zed' }}
+  {{ user_home + '\AppData\Roaming\Zed' if ansible_facts.system == 'Win32NT'
+  else user_home + '/.config/zed' }}

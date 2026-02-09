@@ -3,5 +3,5 @@ dependencies:
   - role: variable
   - role: bash
     when: >-
-      bash_role_executed is not defined and ansible_system in ["Darwin",
+      bash_role_executed is not defined and ansible_facts.system in ["Darwin",
       "Linux"]

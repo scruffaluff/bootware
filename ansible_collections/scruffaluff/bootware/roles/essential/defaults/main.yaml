@@ -69,4 +69,4 @@ essential_linux_packages_:
     - zip
 essential_linux_packages: >-
   {{ essential_linux_packages_.always +
-  essential_linux_packages_.get(ansible_pkg_mgr, []) }}
+  essential_linux_packages_.get(ansible_facts.pkg_mgr, []) }}
