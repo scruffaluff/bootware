@@ -7,7 +7,7 @@
       - bash-completion
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Bash for Linux
   ansible.builtin.package:
@@ -17,7 +17,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
   become: true
@@ -28,7 +28,7 @@
       - bash-completion@2
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Bash for OpenWrt
   ansible.builtin.package:
@@ -36,7 +36,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Register Bash as a valid login shell for Unix
   ansible.builtin.lineinfile:
@@ -47,7 +47,7 @@
   become: true
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Bash settings files for Unix
   ansible.builtin.copy:
@@ -63,7 +63,7 @@
     - bash_profile
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Shadow for Alpine
   become: true
@@ -71,7 +71,7 @@
     name: shadow
   tags:
     - config
-  when: ansible_pkg_mgr == "apk" and user_login == "bash"
+  when: system_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Install Shadow for OpenWrt
   become: true
@@ -79,7 +79,7 @@
     name: shadow-usermod
   tags:
     - config
-  when: ansible_pkg_mgr == "opkg" and user_login == "bash"
+  when: system_pkg_mgr == "opkg" and user_login == "bash"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
@@ -90,7 +90,7 @@
   changed_when: true
   tags:
     - config
-  when: ansible_pkg_mgr == "apk" and user_login == "bash"
+  when: system_pkg_mgr == "apk" and user_login == "bash"
 
 - name: Change user default shell to Bash for Unix
   ansible.builtin.user:
@@ -100,8 +100,8 @@
   tags:
     - config
   when: >-
-    ansible_system != "Win32NT" and ansible_pkg_mgr != "apk" and user_login ==
-    "bash"
+    ansible_facts.system != "Win32NT" and system_pkg_mgr != "apk" and user_login
+    == "bash"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

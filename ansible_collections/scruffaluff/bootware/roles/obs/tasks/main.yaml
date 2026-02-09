@@ -5,7 +5,7 @@
     name: obs-studio
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install OBS Studio for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: obs_linux
   tags:
     - install
-  when: ansible_system == "Linux" and system_architecture == "amd64"
+  when: ansible_facts.system == "Linux" and system_architecture == "amd64"
 
 - name: Install OBS Studio for Linux
   become: true
@@ -24,8 +24,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and system_architecture == "amd64" and obs_linux
-    is failed
+    ansible_facts.system == "Linux" and system_architecture == "amd64" and
+    obs_linux is failed
 
 - name: Install OBS Studio for MacOS
   community.general.homebrew_cask:
@@ -34,7 +34,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install OBS Studio for Windows
   community.windows.win_scoop:
@@ -42,4 +42,4 @@
     name: obs-studio
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

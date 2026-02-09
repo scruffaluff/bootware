@@ -6,8 +6,8 @@
   tags:
     - install
   when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+    ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Install Deno for Alpine
   become: true
@@ -15,7 +15,7 @@
     name: deno
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true
@@ -23,7 +23,7 @@
     name: deno
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Download Deno for Unix
   ansible.builtin.unarchive:
@@ -32,7 +32,7 @@
     remote_src: true
     src: >-
       https://github.com/denoland/deno/releases/latest/download/deno-{{
-      deno_arch[system_architecture] }}-{{ deno_env[ansible_system] }}.zip
+      deno_arch[system_architecture] }}-{{ deno_env[ansible_facts.system] }}.zip
   tags:
     - install
   vars:
@@ -43,8 +43,8 @@
       Darwin: apple-darwin
       Linux: unknown-linux-{{ system_libc }}
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
-    "gnu")
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    system_libc == "gnu")
 
 - name: Install Deno for Unix
   ansible.builtin.copy:
@@ -57,8 +57,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and system_libc ==
-    "gnu")
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    system_libc == "gnu")
 
 - name: Install Deno for Windows
   community.windows.win_scoop:
@@ -66,7 +66,7 @@
     name: deno
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 # Microsft File Explorer overrides any file assoications for ts files. So
 # extension tsx must be used instead.
@@ -90,9 +90,9 @@
       path: "HKLM:\\Software\\Classes\\tsxfile\\shell\\open\\command"
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
-# Since ansible_env.Path is fixed on play connection, using
+# Since ansible_facts.env.Path is fixed on play connection, using
 # ansible.windows.win_environment for PATHEXT in other roles will overwrite
 # changes made here. Thus ansible.windows.win_environment cannot be used to
 # extend PATHEXT.
@@ -112,7 +112,7 @@
   register: deno_pathext
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Deno shell completions for Unix
   ansible.builtin.shell:
@@ -120,7 +120,7 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
@@ -128,8 +128,8 @@
     - completion
     - install
   when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+    ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Install Deno shell completions for Unix
   ansible.builtin.copy:
@@ -148,8 +148,8 @@
     - completion
     - install
   when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+    ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"
 
 - name: Create Deno PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
@@ -159,12 +159,12 @@
     [System.IO.File]::WriteAllLines("{{ item }}\DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   loop: "{{ powershell_module_paths }}"
   tags:
     - completion
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
@@ -178,5 +178,5 @@
   tags:
     - install
   when: >-
-    ansible_system in ["Darwin", "FreeBSD"] or (ansible_system == "Linux" and
-    system_libc == "gnu") or ansible_pkg_mgr == "apk"
+    ansible_facts.system in ["Darwin", "FreeBSD"] or (ansible_facts.system ==
+    "Linux" and system_libc == "gnu") or system_pkg_mgr == "apk"

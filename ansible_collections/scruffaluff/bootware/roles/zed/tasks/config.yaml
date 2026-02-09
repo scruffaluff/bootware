@@ -5,7 +5,7 @@
   register: zed_settings_check_unix
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Check if Zed settings file exists for Windows
   ansible.windows.win_stat:
@@ -13,7 +13,7 @@
   register: zed_settings_check_windows
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set Zed settings check
   ansible.builtin.set_fact:
@@ -58,7 +58,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Zed settings files for Unix
   ansible.builtin.template:
@@ -74,7 +74,7 @@
     - settings
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Zed settings directory for Windows
   ansible.windows.win_file:
@@ -82,7 +82,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Zed settings files for Windows
   ansible.windows.win_template:
@@ -94,4 +94,4 @@
     - settings
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

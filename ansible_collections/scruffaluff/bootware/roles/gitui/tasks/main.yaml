@@ -5,7 +5,7 @@
     name: gitui
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install GitUI for FreeBSD
   become: true
@@ -13,7 +13,7 @@
     name: gitui
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when GitUI package in most distributions reaches version 0.25.0.
 # - name: Install GitUI for Linux
@@ -24,7 +24,7 @@
 #   register: gitui_linux
 #   tags:
 #     - install
-#   when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+#   when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest GitUI version for Linux
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
   register: gitui_formula
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Create GitUI temporary directory for Linux
   ansible.builtin.tempfile:
@@ -42,7 +42,7 @@
   register: gitui_temp
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Download GitUI for Linux
   ansible.builtin.unarchive:
@@ -59,7 +59,7 @@
     gitui_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
@@ -71,7 +71,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
   become: true
@@ -80,7 +80,7 @@
     name: gitui
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install GitUI for Windows
   community.windows.win_scoop:
@@ -88,7 +88,7 @@
     name: gitui
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create GitUI configuration directory for Unix
   ansible.builtin.file:
@@ -100,7 +100,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy GitUI configuration files for Unix
   ansible.builtin.copy:
@@ -113,7 +113,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create GitUI configuration directory for Windows
   ansible.windows.win_file:
@@ -121,7 +121,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy GitUI configuration files for Windows
   ansible.windows.win_copy:
@@ -130,7 +130,7 @@
     src: key_bindings.ron
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of GitUI files for Windows
   ansible.windows.win_owner:
@@ -139,7 +139,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove GitUI temporary directory for Linux
   ansible.builtin.file:
@@ -147,4 +147,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"

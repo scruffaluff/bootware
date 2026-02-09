@@ -2,14 +2,14 @@
 - name: Install VSCode
   ansible.builtin.import_tasks: install.yaml
   when: >-
-    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
-    ansible_pkg_mgr not in ["apk", "pacman"]
+    vscode_style and ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
+    system_pkg_mgr not in ["apk", "pacman"]
 
 - name: Configure VSCode user settings
   ansible.builtin.import_tasks: config.yaml
   when: >-
-    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
-    ansible_pkg_mgr not in ["apk", "pacman"]
+    vscode_style and ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
+    system_pkg_mgr not in ["apk", "pacman"]
 
 # TODO: Enable for Windows after implementing logic for finding dynamic
 # resources folder.
@@ -29,4 +29,4 @@
     - AppData\Roaming\VSCode
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

@@ -11,7 +11,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
 
 # Android Studio dependencies are specified at
 # https://developer.android.com/studio/install#64bit-libs.
@@ -24,7 +24,8 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
+  when: >-
+    system_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install Android Studio dependencies for MacOS
   become: true
@@ -33,7 +34,7 @@
     name: openjdk@17
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Add OpenJDK to Java virtual machine list for MacOS
   ansible.builtin.file:
@@ -45,7 +46,8 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Darwin" and ansible_architecture == "arm64"
+  when: >-
+    ansible_facts.system == "Darwin" and ansible_facts.architecture == "arm64"
 
 - name: Check if Android Studio is installed for Linux
   ansible.builtin.stat:
@@ -54,7 +56,7 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Get latest Android Studio version for Linux
   ansible.builtin.uri:
@@ -65,8 +67,8 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
-    and not android_studio_check.stat.exists
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64" and not
+    android_studio_check.stat.exists
 
 - name: Create Android Studio temporary directory for Linux
   ansible.builtin.tempfile:
@@ -75,8 +77,8 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
-    and not android_studio_check.stat.exists
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64" and not
+    android_studio_check.stat.exists
 
 # Using source build since virtual devices fail onFlatpak build.
 - name: Download Android Studio for Linux
@@ -91,8 +93,8 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
-    and not android_studio_check.stat.exists
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64" and not
+    android_studio_check.stat.exists
 
 - name: Install Android Studio for Linux
   ansible.builtin.copy:
@@ -105,8 +107,8 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
-    and not android_studio_check.stat.exists
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64" and not
+    android_studio_check.stat.exists
 
 - name: Install Android Studio desktop manifest for Linux
   ansible.builtin.copy:
@@ -118,7 +120,7 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install Android Studio for Linux
   become: true
@@ -127,8 +129,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr not in ["apt", "dnf", "dnf5"]
-    and system_architecture == "amd64"
+    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apt", "dnf"] and
+    system_architecture == "amd64"
 
 - name: Install Android Studio for MacOS
   community.general.homebrew_cask:
@@ -137,7 +139,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Android Studio for Windows
   community.windows.win_scoop:
@@ -145,7 +147,7 @@
     name: android-studio
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Android Studio temporary directory for Linux
   ansible.builtin.file:
@@ -154,5 +156,5 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
-    and not android_studio_check.stat.exists
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64" and not
+    android_studio_check.stat.exists

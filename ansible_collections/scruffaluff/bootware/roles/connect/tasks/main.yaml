@@ -7,8 +7,8 @@
 
 - name: Set connection variables if system is Windows
   ansible.builtin.set_fact:
-    ansible_pkg_mgr: scoop
     ansible_shell_type: powershell
+    system_pkg_mgr: scoop
   when: >-
     connect_powershell_version is success and 'PSEdition' in
     connect_powershell_version.stdout
@@ -19,7 +19,11 @@
 - name: Set become method for Alpine
   ansible.builtin.set_fact:
     ansible_become_method: doas
-  when: ansible_system == "Linux" and ansible_pkg_mgr == "apk"
+  # Variable system_pkg_mgr cannot be used since it is not defined until after
+  # this role.
+  when: >-
+    ansible_facts.system == "Linux" and ansible_facts.get("pkg_mgr", "") ==
+    "apk"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

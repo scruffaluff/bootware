@@ -39,15 +39,6 @@ essential_linux_packages_:
     - which
     - xz
     - zip
-  dnf5:
-    - dnf-plugins-core
-    - gnupg
-    - openssl
-    - openssl-devel
-    - p7zip
-    - which
-    - xz
-    - zip
   opkg:
     - which
     - xz
@@ -69,4 +60,4 @@ essential_linux_packages_:
     - zip
 essential_linux_packages: >-
   {{ essential_linux_packages_.always +
-  essential_linux_packages_.get(ansible_pkg_mgr, []) }}
+  essential_linux_packages_.get(system_pkg_mgr, []) }}

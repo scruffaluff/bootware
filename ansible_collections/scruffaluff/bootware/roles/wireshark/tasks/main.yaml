@@ -5,11 +5,11 @@
     name: wireshark
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Wireshark for Linux
   ansible.builtin.package:
-    name: "{{ wireshark_package.get(ansible_pkg_mgr, 'wireshark') }}"
+    name: "{{ wireshark_package.get(system_pkg_mgr, 'wireshark') }}"
   become: true
   tags:
     - install
@@ -18,10 +18,9 @@
       apk: wireshark
       apt: wireshark
       dnf: wireshark
-      dnf5: wireshark
       pacman: wireshark-qt
       zypper: wireshark-ui-qt
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 # Manual configuration of ChmodBPF is required for Wireshark by following the
 # instructions at
@@ -33,7 +32,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 # Manual install of NPCap is required as a Wireshark dependency. However, only
 # the paid version of NPCap supports automated installation. For more
@@ -44,7 +43,7 @@
     name: wireshark
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Configure Wireshark group for Debian
   ansible.builtin.debconf:
@@ -55,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
   ansible.builtin.command:
@@ -67,7 +66,7 @@
     DEBIAN_FRONTEND: noninteractive
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
   ansible.builtin.user:
@@ -78,4 +77,4 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

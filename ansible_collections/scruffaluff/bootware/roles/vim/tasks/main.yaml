@@ -5,7 +5,7 @@
     name: vim
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Vim for Linux
   ansible.builtin.package:
@@ -13,14 +13,14 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Vim for MacOS
   community.general.homebrew:
     name: vim
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Vim for Windows
   community.windows.win_scoop:
@@ -28,22 +28,22 @@
     name: vim
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Vim settings file for Unix
   ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.vimrc"
+    dest: "{{ ansible_facts.env.HOME }}/.vimrc"
     force: true
     mode: "644"
     src: vimrc
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Vim settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ ansible_env.HOME }}/_vimrc"
+    dest: "{{ ansible_facts.env.HOME }}/_vimrc"
     src: vimrc
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

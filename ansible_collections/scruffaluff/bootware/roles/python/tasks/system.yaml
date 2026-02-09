@@ -9,7 +9,7 @@
       - python3-dev
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Python for Arch
   become: true
@@ -20,7 +20,7 @@
       - python-pipx
   tags:
     - install
-  when: ansible_pkg_mgr == "pacman"
+  when: system_pkg_mgr == "pacman"
 
 - name: Install Python for Debian
   ansible.builtin.apt:
@@ -33,7 +33,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install Python for Fedora
   ansible.builtin.dnf:
@@ -45,7 +45,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 # Rust is required for installing many Python applications on FreeBSD.
 - name: Install Python for FreeBSD
@@ -58,7 +58,7 @@
       - rust
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Python for MacOS
   become: true
@@ -69,7 +69,7 @@
       - python3
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Python for OpenWrt
   become: true
@@ -81,7 +81,7 @@
       - python3-venv
   tags:
     - install
-  when: ansible_pkg_mgr == "opkg"
+  when: system_pkg_mgr == "opkg"
 
 - name: Install Python for Suse
   become: true
@@ -92,7 +92,7 @@
       - python312-pipx
   tags:
     - install
-  when: ansible_pkg_mgr == "zypper"
+  when: system_pkg_mgr == "zypper"
 
 - name: Install Python for Windows
   community.windows.win_scoop:
@@ -102,7 +102,7 @@
       - python
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Make Python symlinks for MacOS
   ansible.builtin.file:
@@ -117,7 +117,7 @@
     - python
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 # While Python Microsoft Store links are listed app execution aliases in Windows
 # settings, they are actually reparse point and require fsutil for permanent
@@ -137,7 +137,7 @@
     - python3.exe
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Python applications for Unix
   ansible.builtin.shell: # noqa command-instead-of-shell
@@ -151,12 +151,12 @@
   environment:
     PATH: >-
       {{ user_home }}/.local/bin:/opt/homebrew/bin:/usr/local/bin:{{
-      ansible_env.PATH }}
+      ansible_facts.env.PATH }}
   loop: "{{ python_applications }}"
   register: python_application_unix
   tags:
     - plugin
-  when: ansible_system != "Win32NT" and ansible_pkg_mgr != "opkg"
+  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
 
 - name: Install Python applications for Windows
   ansible.windows.win_shell: >-
@@ -165,12 +165,12 @@
     is defined else '? .' }})
   changed_when: "'already installed' not in python_application_windows.stderr"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_env.Path }}"
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
   loop: "{{ python_applications }}"
   register: python_application_windows
   tags:
     - plugin
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Python files for Windows
   ansible.builtin.include_tasks:
@@ -183,4 +183,4 @@
     loop_var: python_file
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

@@ -5,7 +5,7 @@
     name: bottom
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Bottom for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: bottom_linux
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest Bottom version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: bottom_formula
   tags:
     - install
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed
 
 - name: Create Bottom temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: bottom_temp
   tags:
     - install
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed
 
 - name: Set Bottom temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed
 
 - name: Download Bottom for Linux
   ansible.builtin.unarchive:
@@ -59,7 +59,7 @@
     bottom_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed
 
 - name: Install Bottom for Linux
   ansible.builtin.copy:
@@ -71,7 +71,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed
 
 - name: Install Bottom for MacOS
   become: true
@@ -80,7 +80,7 @@
     name: bottom
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Bottom for Windows
   community.windows.win_scoop:
@@ -88,7 +88,7 @@
     name: bottom
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Bottom settings directory for Unix
   ansible.builtin.file:
@@ -100,7 +100,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Bottom settings file for Unix
   ansible.builtin.copy:
@@ -113,7 +113,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Bottom settings directory for Windows
   ansible.windows.win_file:
@@ -121,7 +121,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Bottom settings file for Windows
   ansible.windows.win_copy:
@@ -130,7 +130,7 @@
     src: bottom.toml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Bottom files for Windows
   ansible.windows.win_owner:
@@ -139,7 +139,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Bottom temporary directory for Linux
   ansible.builtin.file:
@@ -147,4 +147,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and bottom_linux is failed
+  when: ansible_facts.system == "Linux" and bottom_linux is failed

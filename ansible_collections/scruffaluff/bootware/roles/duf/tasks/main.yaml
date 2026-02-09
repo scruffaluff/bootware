@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Duf for FreeBSD
   become: true
@@ -16,7 +16,7 @@
     name: duf
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Duf for Linux
   ansible.builtin.package:
@@ -26,7 +26,7 @@
   register: duf_linux
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr != "apk"
+  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
 - name: Get latest Duf version for Linux
   ansible.builtin.uri:
@@ -37,7 +37,7 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
     failed
 
 - name: Create Duf temporary directory for Linux
@@ -47,7 +47,7 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
     failed
 
 - name: Download Duf for Linux
@@ -67,7 +67,7 @@
       amd64: x86_64
       arm64: arm64
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
     failed
 
 - name: Install Duf for Linux
@@ -81,7 +81,7 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
     failed
 
 - name: Install Duf for MacOS
@@ -91,7 +91,7 @@
     name: duf
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Duf for Windows
   community.windows.win_scoop:
@@ -99,7 +99,7 @@
     name: duf
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Duf temporary directory for Linux
   ansible.builtin.file:
@@ -108,5 +108,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and duf_linux is
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and duf_linux is
     failed

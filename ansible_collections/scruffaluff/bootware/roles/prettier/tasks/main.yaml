@@ -11,7 +11,7 @@
   become: true
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Prettier for Windows
   ansible.windows.win_copy:
@@ -22,7 +22,7 @@
     force: true
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Prettier settings file for Unix
   ansible.builtin.copy:
@@ -35,7 +35,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Prettier settings file for Unix
   ansible.windows.win_copy:
@@ -44,7 +44,7 @@
     src: prettierrc.yaml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Prettier file for Windows
   ansible.windows.win_owner:
@@ -53,4 +53,4 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

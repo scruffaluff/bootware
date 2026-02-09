@@ -8,7 +8,7 @@
     update_cache: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Get latest FFSend version for Linux
   ansible.builtin.uri:
@@ -19,7 +19,7 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
     system_architecture == "amd64"
 
 # Static FFSend installation avoids OpenSSL compatibility issues on newer
@@ -37,7 +37,7 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and ansible_pkg_mgr != "apk" and
+    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
     system_architecture == "amd64"
 
 - name: Install FFSend for MacOS
@@ -47,7 +47,7 @@
     name: ffsend
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 # As of 10/31/2024, the FFSend Scoop package usually fails during installation
 # because Windows Defener considers the program to be a virus.
 # - name: Install FFSend for Windows
@@ -56,4 +56,4 @@
 #   name: ffsend
 # tags:
 #   - install
-# when: ansible_system == "Win32NT"
+# when: ansible_facts.system == "Win32NT"
