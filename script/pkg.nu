@@ -13,7 +13,7 @@ def "main ansible" [--version (-v): string = "0.10.0"] {
         uv run ansible-galaxy collection build --force --output-path
         build/dist ansible_collections/scruffaluff/bootware
     )
-    open $path | hash sha256 | save --force $"($path).sha512"
+    open $path | hash sha256 | save --force $"($path).sha256"
 }
 
 # Build Bootware packages.

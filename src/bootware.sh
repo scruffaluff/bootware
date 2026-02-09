@@ -876,7 +876,7 @@ setup_arch() {
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync base-devel
 
-    tmp_dir="$(mktemp --dry-run)"
+    tmp_dir="$(mktemp -u)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
     (cd "${tmp_dir}" && makepkg --install --noconfirm --syncdeps)
     yay --noconfirm --refresh --sync --sysupgrade

@@ -130,7 +130,7 @@ async function main(): Promise<void> {
   fs.copyFileSync("src/install.ps1", `${publicDir}/install.ps1`);
   fs.copyFileSync("src/install.sh", `${publicDir}/install.sh`);
 
-  writeSoftware(repoPath);
+  await writeSoftware(repoPath);
   vitepress.build(".");
 }
 

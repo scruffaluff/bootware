@@ -52,7 +52,7 @@ alpm() {
   (cd "${build}" && makepkg --install --noconfirm --syncdeps)
 
   mv "${build}/${file}" build/dist/
-  (cd build/dist && sha512sum "${file}" > "${file}.sha512")
+  (cd build/dist && sha256sum "${file}" > "${file}.sha256")
 }
 
 #######################################
@@ -110,9 +110,9 @@ checksum() {
   file="$(basename "${1}")"
 
   if command -v shasum > /dev/null 2>&1; then
-    (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
-  elif command -v sha512sum > /dev/null 2>&1; then
-    (cd "${folder}" && sha512sum "${file}" > "${file}.sha512")
+    (cd "${folder}" && shasum --algorithm 256 "${file}" > "${file}.sha256")
+  elif command -v sha256sum > /dev/null 2>&1; then
+    (cd "${folder}" && sha256sum "${file}" > "${file}.sha256")
   else
     error 'Unable to find a checksum command'
   fi

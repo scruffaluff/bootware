@@ -11,11 +11,13 @@
     vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
     ansible_pkg_mgr not in ["apk", "pacman"]
 
+# TODO: Enable for Windows after implementing logic for finding dynamic
+# resources folder.
 - name: Apply custom styles to VSCode
   ansible.builtin.import_tasks: style.yaml
   when: >-
-    vscode_style and ansible_system in ["Darwin", "Linux", "Win32NT"] and
-    ansible_pkg_mgr not in ["apk", "pacman"]
+    vscode_style and ansible_system in ["Darwin", "Linux"] and ansible_pkg_mgr
+    not in ["apk", "pacman"]
 
 - name: Set owner of VSCode files for Windows
   ansible.windows.win_owner:
