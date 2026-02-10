@@ -1267,14 +1267,14 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
-  local brew_prefix global_="${2}" os super="${1}" version="${3}"
+  local brew_prefix user_install="${2}" os super="${1}" version="${3}"
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}"
   local bash_url="${repo_url}/src/completion/bootware.bash"
   local fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
-  #  -z: Check if the string is empty.
-  if [ -z "${global_}" ]; then
+  #   -z: Check if string is empty.
+  if [ -z "${user_install}" ]; then
     if [ "$(uname -m)" = 'arm64' ]; then
       brew_prefix='/opt/homebrew'
     else

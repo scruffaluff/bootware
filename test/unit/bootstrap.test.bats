@@ -76,7 +76,7 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
 --check --timeout 60 --connection local playbook.yaml"
 }
 
-bootstrap_subcommand_does_not_set_snsible_environment_variable() { # @test
+bootstrap_subcommand_does_not_set_ansible_environment_variable() { # @test
   BATS_SOURCE_ONLY='true' source src/bootware.sh
   bootstrap
   assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ''

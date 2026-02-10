@@ -51,7 +51,7 @@
     remote_src: true
     src: >-
       https://github.com/FiloSottile/age/releases/download/v{{
-      age_formula.json.versions.stable }}//age-v{{
+      age_formula.json.versions.stable }}/age-v{{
       age_formula.json.versions.stable }}-linux-{{ system_architecture }}.tar.gz
   tags:
     - install

@@ -219,7 +219,7 @@ install_completions() {
     os="$(uname -s)"
 
     if [ "${os}" = 'Darwin' ]; then
-      arch="$(uname -m | sed s/aarch64/arm64/)"
+      arch="$(uname -m | sed 's/aarch64/arm64/')"
       if [ "${arch}" = 'arm64' ]; then
         brew_prefix='/opt/homebrew'
       else

@@ -168,7 +168,7 @@ def need-super [dest: directory global: bool] {
     }
     try { mkdir $dest } catch { return true }
     try { touch $"($dest)/.super_check" } catch { return true }
-    rm $"($dest)/.super_check"
+    rm  --force $"($dest)/.super_check"
     false
 }
 

@@ -19,7 +19,6 @@ export PSModulePath := if os() == "windows" {
 ci: setup lint doc test-shell test-nushell test-python
 
 # Build distribution packages.
-[script("nu")]
 dist version="0.10.0":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
@@ -43,10 +42,10 @@ format:
   $ProgressPreference = 'SilentlyContinue'
   $PSNativeCommandUseErrorActionPreference = $True
   npx prettier --write .
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting `
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Settings `
     CodeFormatting
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Settings CodeFormatting
   $Scripts = Get-ChildItem -Recurse -Filter *.ps1 -Path `
     ansible_collections, src, test
   foreach ($Script in $Scripts) {
@@ -78,9 +77,9 @@ lint:
 lint:
   npx prettier --check .
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
-    -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
+    -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
     -Settings data/config/script_analyzer.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings \

@@ -34,8 +34,8 @@ EOF
 # https://wiki.archlinux.org/title/creating_packages.
 #######################################
 alpm() {
+  version="${1}"
   file="bootware-${version}-0-any.pkg.tar.zst"
-  export version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p build/dist
@@ -43,6 +43,7 @@ alpm() {
   cp src/completion/bootware.man "${build}/bootware.1"
   cp src/bootware.sh "${build}/bootware"
 
+  export version="${version}"
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
@@ -62,7 +63,7 @@ alpm() {
 # https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package.
 #######################################
 apk() {
-  export version="${1}"
+  version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p build/dist "${HOME}/.abuild"
@@ -70,6 +71,7 @@ apk() {
   cp src/completion/bootware.man "${build}/bootware.1"
   cp src/bootware.sh "${build}/bootware"
 
+  export version="${version}"
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
@@ -114,7 +116,8 @@ checksum() {
   elif command -v sha256sum > /dev/null 2>&1; then
     (cd "${folder}" && sha256sum "${file}" > "${file}.sha256")
   else
-    error 'Unable to find a checksum command'
+    log --stderr 'error: Unable to find a checksum command.'
+    exit 1
   fi
 }
 
@@ -125,7 +128,7 @@ checksum() {
 # https://debian.org/doc/manuals/debian-faq/pkg-basics.en.html.
 #######################################
 deb() {
-  export version="${1}"
+  version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p "${build}/DEBIAN" "${build}/usr/share/bash-completion/completions" \
@@ -137,6 +140,7 @@ deb() {
   cp src/completion/bootware.man "${build}/usr/share/man/man1/bootware.1"
   cp src/bootware.sh "${build}/usr/bin/bootware"
 
+  export version="${version}"
   envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
   checksum "build/dist/bootware_${version}_all.deb"
@@ -188,7 +192,7 @@ log() {
 # https://rpm-packaging-guide.github.io/#packaging-software.
 #######################################
 rpm() {
-  export version="${1}"
+  version="${1}"
   build="${HOME}/rpmbuild"
   tmp_dir="$(mktemp --directory)"
   archive_dir="${tmp_dir}/bootware-${version}"
@@ -201,6 +205,7 @@ rpm() {
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 
+  export version="${version}"
   envsubst < data/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
   mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" build/dist/
