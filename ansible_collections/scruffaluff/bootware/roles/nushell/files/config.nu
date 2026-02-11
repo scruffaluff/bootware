@@ -522,6 +522,14 @@ def "history prune" [] {
     | ignore
 }
 
+# Wrapper for poweroff command with Windows support.
+def --wrapped poweroff [...args: string] {
+    match $nu.os-info.name {
+        "windows" => { powershell -command "Stop-Computer -Force" },
+        _ => { ^poweroff ...$args },
+    }
+}
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths
@@ -529,6 +537,14 @@ def --env prepend-paths [...paths: directory] {
     | where {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]
+}
+
+# Wrapper for reboot command with Windows support.
+def --wrapped reboot [...args: string] {
+    match $nu.os-info.name {
+        "windows" => { powershell -command "Restart-Computer -Force" },
+        _ => { ^reboot ...$args },
+    }
 }
 
 # Check if current shell is within a remote SSH session.
