@@ -138,7 +138,7 @@ setup:
   fi
   if ! command -v shellcheck > /dev/null 2>&1; then
     shellcheck_arch='{{arch()}}'
-    shellcheck_version="$(curl  --fail --location --show-error \
+    shellcheck_version="$(curl --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shellcheck.json |
       jq --exit-status --raw-output .versions.stable)"
     curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
@@ -148,7 +148,7 @@ setup:
   fi
   shellcheck --version
   if ! command -v shfmt > /dev/null 2>&1; then
-    shfmt_version="$(curl  --fail --location --show-error \
+    shfmt_version="$(curl --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shfmt.json |
       jq --exit-status --raw-output .versions.stable)"
     curl --fail --location --show-error --output .vendor/bin/shfmt \

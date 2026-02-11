@@ -238,30 +238,19 @@ jobs:
             build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz
             build/dist/scruffaluff-bootware-${{ github.ref_name }}.tar.gz.sha256
           name: Bootware ${{ github.ref_name }}
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
       # Homebrew formulas required the checksum of the GitHub release archive
       # and thus cannot be created before the release.
       - name: Build Homebrew formula
         run: >-
           just nu script/pkg.nu dist --version ${{ github.ref_name }} brew
-      - name: Upload Homebrew formula checksum to release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        uses: actions/upload-release-asset@v1
+      - name: Upload Homebrew formulas to release
+        uses: softprops/action-gh-release@v2
         with:
-          asset_content_type: text/plain
-          asset_name: bootware.rb.sha256
-          asset_path: build/dist/bootware.rb.sha256
-          upload_url: ${{ steps.release.outputs.upload_url }}
-      - name: Upload Homebrew formula to release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        uses: actions/upload-release-asset@v1
-        with:
-          asset_content_type: text/plain
-          asset_name: bootware.rb
-          asset_path: build/dist/bootware.rb
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          files: |
+            build/dist/bootware.rb.sha256
+            build/dist/bootware.rb
+          tag_name: ${{ github.ref_name }}
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60

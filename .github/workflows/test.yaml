@@ -88,7 +88,7 @@ jobs:
     env:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job ==  'arch' }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'arch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
@@ -220,7 +220,7 @@ jobs:
           run: |
             set -eu
             src/install.sh --global
-            install src/bootware.sh $(which bootware)
+            install src/bootware.sh "$(which bootware)"
             bootware setup
             bootware bootstrap --dev --no-passwd --extra-vars '{"font_install":false}' --retries 3 --skip gdu,node,security --tags all,never
             bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,gdu,libvirt,musescore,node,qemu,vlc freebsd'
@@ -245,7 +245,7 @@ jobs:
       - name: Install Bootware
         run: |
           src/install.sh --global
-          sudo install src/bootware.sh $(which bootware)
+          sudo install src/bootware.sh "$(which bootware)"
       - name: Install dependencies for Bootware
         run: bootware setup
       - name: Test bootstrapping
@@ -374,7 +374,7 @@ jobs:
           [System.IO.File]::WriteAllLines("$HOME\.bootware\config.yaml", 'font_install: false')
         shell: powershell
       # Docker role is skipped since it is already installed. Fzf role is
-      # skipped as of 09/20/2025 since the PSFzf TSL certificate is expired.
+      # skipped as of 09/20/2025 since the PSFzf TLS certificate is expired.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}

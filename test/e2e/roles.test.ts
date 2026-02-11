@@ -138,12 +138,12 @@ async function main(): Promise<void> {
   let roles = JSON.parse(await Deno.readTextFile(rolesPath));
 
   if (program.options.tags) {
-    const tags = program.options.tags.split(",");
+    const tags = program.options.tags?.split(",") ?? [];
     roles = roles.filter((role: RoleTest) => tags.includes(role.name));
   }
 
   if (program.options.skip) {
-    const skips = program.options.tags.split(",");
+    const skips = program.options.skip?.split(",") ?? [];
     roles = roles.filter((role: RoleTest) => !skips.includes(role.name));
   }
 
