@@ -35,21 +35,21 @@ Describe 'Roles' {
         $Actual | Should -Not -Contain 'podman'
     }
 
-    It 'Subommand never shows hidden roles' {
+    It 'Subcommand never shows hidden roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --tags never
         $Actual | Should -Contain 'podman'
         $Actual | Should -Not -Contain 'bash'
     }
 
-    It 'Subommand_skip_hides_desktop_roles' {
+    It 'Subcommand skip hides desktop roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --skip bash --tags sysadmin
         $Actual | Should -Contain 'deno'
         $Actual | Should -Not -Contain 'bash'
     }
 
-    It 'Subommand_tag_hides_desktop_roles' {
+    It 'Subcommand tag hides desktop roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --tags container
         $Actual | Should -Contain 'podman'

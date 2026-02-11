@@ -18,7 +18,6 @@ build_ignore:
   - PSScriptAnalyzerSettings.psd1
   - Thumbs.db
   - __pycache__
-  - completions
   - doc
   - node_modules
   - package-lock.json

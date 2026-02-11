@@ -40,7 +40,7 @@ def "main dist" [--version (-v): string = "0.10.0" ...packages: string] {
 # Run Bootware package tests in Docker.
 def "main test" [--version (-v): string = "0.10.0" ...packages: string] {
     # Brew package is skipped until new release that matches repository
-    # reoganization.
+    # reorganization.
     let packages_ = if ($packages | is-empty) {
         ["alpm" "apk" "deb" "rpm"]
     } else {

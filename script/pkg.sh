@@ -53,7 +53,7 @@ alpm() {
   (cd "${build}" && makepkg --install --noconfirm --syncdeps)
 
   mv "${build}/${file}" build/dist/
-  (cd build/dist && sha256sum "${file}" > "${file}.sha256")
+  (cd build/dist && checksum "${file}")
 }
 
 #######################################
@@ -156,7 +156,7 @@ deb() {
 #   Message argument.
 #######################################
 log() {
-  local file='1' newline="\n" text=''
+  file='1' newline="\n" text=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -208,8 +208,8 @@ rpm() {
   export version="${version}"
   envsubst < data/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
-  mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" build/dist/
-  checksum "build/dist/bootware-${version}-0.fc33.noarch.rpm"
+  mv "${build}/RPMS/noarch/bootware-${version}-"*".noarch.rpm" build/dist/
+  checksum "build/dist/bootware-${version}-"*".noarch.rpm"
   rm -fr "${build}" "${tmp_dir}"
 }
 

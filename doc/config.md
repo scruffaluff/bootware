@@ -27,6 +27,6 @@ Several Bootware options can also be specified with environment variables.
 
 ## Command Line
 
-Many Bootware features can controlled directly fron the command line. For a list
-of options, execute `bootware --help` or `bootware <subcommand> --help` for a
-subcommand's specific options.
+Many Bootware features can be controlled directly from the command line. For a
+list of options, execute `bootware --help` or `bootware <subcommand> --help` for
+a subcommand's specific options.

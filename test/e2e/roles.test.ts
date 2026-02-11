@@ -21,7 +21,7 @@ interface RoleTest {
 
 /**
  * Check if operating system is a Linux distribution.
- * @param {Object} system - The host operating system.
+ * @param {Object} distro - The host operating system.
  * @return {boolean} Whether the system is a Linux distribution
  */
 function isLinux(distro: string): boolean {
@@ -62,7 +62,7 @@ function shouldSkip(system: Dict, conditions?: Array<Dict>): boolean {
 }
 
 /**
- * Execute tests for the successfull installation of a role.
+ * Execute tests for the successful installation of a role.
  * @param system - The host architecture and os information.
  * @param role - Testing information for a role.
  */
@@ -93,7 +93,7 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
       if (!result.success) {
         error = true;
         console.log("-> fail\n");
-        console.error(decoder.decode(await result.stderr));
+        console.error(decoder.decode(result.stderr));
       }
     }
 
@@ -108,7 +108,7 @@ async function testRole(system: Dict, role: RoleTest): Promise<boolean> {
 }
 
 async function main(): Promise<void> {
-  const defaultArch = {
+  const defaultArch: string = {
     aarch64: "arm64",
     x86_64: "amd64",
   }[Deno.build.arch];
@@ -138,15 +138,13 @@ async function main(): Promise<void> {
   let roles = JSON.parse(await Deno.readTextFile(rolesPath));
 
   if (program.options.tags) {
-    roles = roles.filter((role: RoleTest) =>
-      program.options.tags.includes(role.name)
-    );
+    const tags = program.options.tags.split(",");
+    roles = roles.filter((role: RoleTest) => tags.includes(role.name));
   }
 
   if (program.options.skip) {
-    roles = roles.filter(
-      (role: RoleTest) => !program.options.skip.includes(role.name)
-    );
+    const skips = program.options.tags.split(",");
+    roles = roles.filter((role: RoleTest) => !skips.includes(role.name));
   }
 
   let error = false;

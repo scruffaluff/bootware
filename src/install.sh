@@ -39,7 +39,7 @@ EOF
 #   SHELL
 #######################################
 configure_shell() {
-  local dst_dir="${1}"
+  local dst_dir="${1}" export_cmd shell_name
   export_cmd="export PATH=\"${dst_dir}:\${PATH}\""
   shell_name="$(basename "${SHELL:-}")"
 

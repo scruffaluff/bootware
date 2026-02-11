@@ -38,7 +38,7 @@ def test_drop_tokens(line: str, count: int, expected: str) -> None:
         ("ls %{src + 'foo'}", [Expr("src + 'foo'", 3, 17)]),
     ],
 )
-def test_find_exprs(line: str, expected: list[str]) -> None:
+def test_find_exprs(line: str, expected: list[Expr]) -> None:
     """Find expressions in command lines."""
     actual = list(pdbrc.find_exprs(line))
     assert actual == expected

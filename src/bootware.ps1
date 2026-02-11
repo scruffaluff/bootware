@@ -17,7 +17,7 @@ $ProgressPreference = 'SilentlyContinue'
     Justification = 'Variable is a standard PowerShell setting.'
 )]
 $PSNativeCommandArgumentPassing = 'Legacy'
-# Exit immediately when an native executable encounters an error.
+# Exit immediately when a native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
 # Show CLI help information.
@@ -111,6 +111,7 @@ Usage: bootware roles [OPTIONS]
 
 Options:
   -h, --help              Print help information.
+  -s, --skip <TAG-LIST>   Ansible playbook tags to skip.
   -t, --tags <TAG-LIST>   Ansible playbook tags to select.
 '@
         }
@@ -996,8 +997,8 @@ function UpdateCompletion($Version) {
     $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
-        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
-        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
+        "$HOME\Documents\PowerShell\Modules"
+        "$HOME\Documents\WindowsPowerShell\Modules"
     )
     foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
