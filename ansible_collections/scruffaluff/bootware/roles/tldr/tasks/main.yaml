@@ -44,7 +44,7 @@
     - install
   when: ansible_facts.system == "Darwin"
 
-- name: Install TDLR for Windows
+- name: Install TLDR for Windows
   community.windows.win_scoop:
     global: true
     name: tealdeer

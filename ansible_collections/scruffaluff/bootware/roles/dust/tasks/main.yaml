@@ -63,6 +63,8 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Dust for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: dust
   tags:

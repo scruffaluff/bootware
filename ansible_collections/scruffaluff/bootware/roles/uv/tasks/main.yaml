@@ -104,7 +104,7 @@
       )
       Write-Output 'PATHEXT updated'
     }
-  changed_when: "'PATHEXT updated' in uv_pathext"
+  changed_when: "'PATHEXT updated' in uv_pathext.stdout"
   register: uv_pathext
   tags:
     - install

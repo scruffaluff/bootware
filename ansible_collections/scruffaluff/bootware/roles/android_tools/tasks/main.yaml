@@ -26,7 +26,7 @@
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr not in ["opkg", "zypper"]
 
-# TODO: FIgure out how to configure android-clt for Windows so adb does not need
+# TODO: Figure out how to configure android-clt for Windows so adb does not need
 # to be separately installed.
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:

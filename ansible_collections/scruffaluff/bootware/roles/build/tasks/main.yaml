@@ -40,6 +40,8 @@
 # available for Apple silicon. Visit https://formulae.brew.sh/formula/gdb for
 # status. Mold is Brew installable on MacOS, but does not work on MacOS.
 - name: Install build tools for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
       - cmake

@@ -37,7 +37,7 @@
     - config
   when: ansible_facts.system != "Win32NT"
 
-- name: Copy Prettier settings file for Unix
+- name: Copy Prettier settings file for Windows
   ansible.windows.win_copy:
     dest: "{{ user_home }}\\.prettierrc.yaml"
     force: true

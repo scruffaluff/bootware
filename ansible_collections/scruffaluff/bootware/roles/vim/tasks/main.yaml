@@ -16,6 +16,8 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Vim for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: vim
   tags:

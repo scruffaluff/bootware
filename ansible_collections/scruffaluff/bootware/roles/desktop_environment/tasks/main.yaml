@@ -58,7 +58,7 @@
   when: ansible_facts.system == "Darwin"
 
 # Custom keyboard layout disable special "alt" characters that interfere with
-# "alt" keybindings. Soluation was taken from
+# "alt" keybindings. Solution was taken from
 # https://stackoverflow.com/a/16019737.
 - name: Copy keyboard layout for MacOS
   ansible.builtin.copy:

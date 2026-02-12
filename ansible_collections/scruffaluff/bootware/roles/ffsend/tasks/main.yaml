@@ -49,7 +49,7 @@
     - install
   when: ansible_facts.system == "Darwin"
 # As of 10/31/2024, the FFSend Scoop package usually fails during installation
-# because Windows Defener considers the program to be a virus.
+# because Windows Defender considers the program to be a virus.
 # - name: Install FFSend for Windows
 # community.windows.win_scoop:
 #   global: true

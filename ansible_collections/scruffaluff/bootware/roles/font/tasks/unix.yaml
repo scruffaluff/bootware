@@ -28,6 +28,15 @@
     - install
   when: not font_check_unix.stat.exists
 
+- name: Set font temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "777"
+    path: "{{ font_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: not font_check_unix.stat.exists
+
 - name: Install fonts for Unix
   tags:
     - install
@@ -38,13 +47,13 @@
         mode: "777"
         path: "{{ font_temp.path }}/{{ font_family.name }}"
         state: directory
+
     - name: Download fonts for Unix
       ansible.builtin.unarchive:
         dest: "{{ font_temp.path }}/{{ font_family.name }}"
         mode: "777"
         remote_src: true
         src: "{{ font_family.url }}"
-      become: true
 
     - name: Find font files for Unix
       ansible.builtin.find:

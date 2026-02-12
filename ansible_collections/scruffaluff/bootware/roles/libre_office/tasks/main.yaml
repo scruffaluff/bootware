@@ -9,7 +9,7 @@
 
 - name: Install Libre Office for Linux
   ansible.builtin.package:
-    name: ripgrep
+    name: libreoffice
   become: true
   tags:
     - install

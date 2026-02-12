@@ -55,7 +55,7 @@
               $Font = "$Font (TrueType)"
             }
           }
-          Copy-Item -Destination "{{ font_folder }}\$($Font.Name)" -Path "$File"
+          Copy-Item -Destination "{{ font_folder }}\$($File.Name)" -Path "$File"
           New-ItemProperty -Force `
             -Name "$Font" `
             -Path 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts' `

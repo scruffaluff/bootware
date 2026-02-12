@@ -105,7 +105,7 @@
       )
       Write-Output 'PATHEXT updated'
     }
-  changed_when: "'PATHEXT updated' in deno_pathext"
+  changed_when: "'PATHEXT updated' in deno_pathext.stdout"
   loop:
     - JS
     - TSX

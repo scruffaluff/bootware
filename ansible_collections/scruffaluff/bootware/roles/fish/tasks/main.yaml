@@ -133,7 +133,8 @@
   ansible.builtin.command:
     cmd: chsh -s {{ fish_executable }} {{ user_id }}
   become: true
-  changed_when: true
+  changed_when: "'no changes made' not in fish_chsh.stderr"
+  register: fish_chsh
   tags:
     - config
   when: system_pkg_mgr == "apk" and user_login == "fish"

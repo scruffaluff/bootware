@@ -42,7 +42,7 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-- name: Create Chafa temporary directory for Linux
+- name: Create Chafa temporary directory for Unix
   ansible.builtin.tempfile:
     state: directory
   register: chafa_temp
@@ -50,7 +50,7 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-- name: Set Chafa temporary directory permissions for Linux
+- name: Set Chafa temporary directory permissions for Unix
   ansible.builtin.file:
     mode: "755"
     path: "{{ chafa_temp.path }}"
@@ -87,7 +87,7 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-- name: Remove Chafa temporary directory for Linux
+- name: Remove Chafa temporary directory for Unix
   ansible.builtin.file:
     path: "{{ chafa_temp.path }}"
     state: absent

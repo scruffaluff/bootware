@@ -128,7 +128,7 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-- name: Enable GitHub passwordless doas for Unix
+- name: Enable GitLab passwordless doas for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless doas for gitlab-runner user.
@@ -154,7 +154,7 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-- name: Enable GitHub Runner passwordless sudo for Unix
+- name: Enable GitLab Runner passwordless sudo for Unix
   ansible.builtin.blockinfile:
     block: |
       # Enable passwordless sudo for gitlab-runner user.

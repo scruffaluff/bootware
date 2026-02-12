@@ -81,7 +81,7 @@
 
 - name: Install Nushell for MacOS
   become: true
-  become_user: "{{ user_id }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: nushell
   tags:
@@ -244,7 +244,8 @@
   ansible.builtin.command:
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
   become: true
-  changed_when: true
+  changed_when: "'no changes made' not in nushell_chsh.stderr"
+  register: nushell_chsh
   tags:
     - config
   when: system_pkg_mgr == "apk" and user_login == "nushell"
