@@ -756,13 +756,6 @@ $env.MINISERVE_INDEX = "index.html"
 
 # Python settings.
 
-# Add Jupyter Lab alias.
-def --wrapped jupylab [...args] {
-    (
-        uv --quiet tool run --from jupyterlab --with
-        bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab ...$args
-    )
-}
 # Add Python debugger alias.
 alias pdb = python3 -m pdb
 

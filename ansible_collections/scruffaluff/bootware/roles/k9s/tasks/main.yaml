@@ -113,13 +113,13 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-    src: "{{ item.source }}"
+    src: "{{ item.src }}"
   become: true
   loop:
     - dest: config.yaml
-      source: config.yaml
+      src: config.yaml
     - dest: skins/solarized_light.yaml
-      source: skin.yaml
+      src: skin.yaml
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -128,12 +128,12 @@
   ansible.windows.win_copy:
     dest: "{{ k9s_config }}\\{{ item.dest }}"
     force: true
-    src: "{{ item.source }}"
+    src: "{{ item.src }}"
   loop:
     - dest: config.yaml
-      source: config.yaml
+      src: config.yaml
     - dest: skins\solarized_light.yaml
-      source: skin.yaml
+      src: skin.yaml
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

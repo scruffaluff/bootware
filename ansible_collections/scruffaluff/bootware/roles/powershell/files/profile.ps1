@@ -355,19 +355,6 @@ if ($Tty) {
 
 # Python settings.
 
-# Add Jupyter Lab alias.
-function jupylab() {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSUseConsistentWhitespace',
-        '',
-        Justification = 'Space after comma is incorrect for Uv parameters.',
-        Scope = 'Function'
-    )]
-    param()
-
-    uv tool run --from jupyterlab --with `
-        bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab $Args
-}
 # Add Python debugger alias.
 function pdb() {
     python3 -m pdb $Args

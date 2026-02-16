@@ -140,12 +140,12 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-- name: Create Nushell configuration directory for MacOS
+- name: Create Nushell settings directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/Library/Application Support/nushell"
+    path: "{{ nushell_user_autoload }}"
     state: directory
   become: true
   tags:
@@ -167,14 +167,17 @@
     - config
   when: ansible_facts.system == "Darwin"
 
-- name: Create Nushell configuration directory for Unix
+- name: Create Nushell settings directories for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ user_home }}/.config/nushell"
+    path: "{{ item }}"
     state: directory
   become: true
+  loop:
+    - "{{ user_home }}/.config/nushell"
+    - "{{ nushell_user_autoload }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"]
@@ -196,7 +199,7 @@
 
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
+    path: "{{ nushell_user_autoload }}"
     state: directory
   tags:
     - config

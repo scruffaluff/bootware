@@ -445,9 +445,6 @@ set --export MINISERVE_INDEX index.html
 
 # Python settings.
 
-# Add Jupyter Lab alias.
-alias jupylab \
-    'uv --quiet tool run --from jupyterlab --with bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 

@@ -43,16 +43,21 @@ nushell_executable_:
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
   Win32NT: C:\ProgramData\scoop\shims\nu.exe
-nushell_vendor_autoload_:
-  Darwin: /Library/Application Support/nushell/vendor/autoload
-  FreeBSD: /usr/local/share/nushell/vendor/autoload
-  Linux: /usr/local/share/nushell/vendor/autoload
-  Win32NT: C:\ProgramData\nushell\vendor\autoload
+nushell_user_autoload_:
+  Darwin: "{{ user_home }}/Library/Application Support/nushell/autoload"
+  FreeBSD: "{{ user_home }}/.local/share/nushell/autoload"
+  Linux: "{{ user_home }}/.local/share/nushell/autoload"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\autoload"
 nushell_user_vendor_autoload_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
+nushell_vendor_autoload_:
+  Darwin: /Library/Application Support/nushell/vendor/autoload
+  FreeBSD: /usr/local/share/nushell/vendor/autoload
+  Linux: /usr/local/share/nushell/vendor/autoload
+  Win32NT: C:\ProgramData\nushell\vendor\autoload
 system_libc_:
   Linux: "{{ 'musl' if system_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
@@ -88,12 +93,15 @@ group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
 nushell_executable: >-
   {{  nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
 nushell_name: nu
-nushell_vendor_autoload: >-
-  {{  nushell_vendor_autoload_.get(ansible_facts.system,
-  '/usr/local/share/nushell/vendor/autoload') }}
+nushell_user_autoload: >-
+  {{  nushell_user_autoload_.get(ansible_facts.system, user_home +
+  '.local/share/nushell/autoload') }}
 nushell_user_vendor_autoload: >-
   {{  nushell_user_vendor_autoload_.get(ansible_facts.system, user_home +
   '.local/share/nushell/vendor/autoload') }}
+nushell_vendor_autoload: >-
+  {{  nushell_vendor_autoload_.get(ansible_facts.system,
+  '/usr/local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 powershell_name: pwsh
 powershell_module_paths:
