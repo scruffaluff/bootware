@@ -1,0 +1,7 @@
+/* Custom Marimo theme with all AI elements disabled. */
+
+*:has(> svg.lucide-bot),
+*:has(> svg.lucide-message-circle-question-mark),
+*:has(> svg.lucide-sparkles) {
+  display: none;
+}

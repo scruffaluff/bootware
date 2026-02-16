@@ -1,0 +1,23 @@
+# Configuration file for Marimo.
+#
+# For more information, visit https://docs.marimo.io/guides/configuration.
+
+[display]
+custom_css = ["{{ user_home }}/.config/marimo/marimo.css"]
+
+[formatting]
+line_length = 80
+
+[keymap.overrides]
+"cell.complete" = "Ctrl-i"
+"cell.toggleComment" = "Ctrl-/"
+"completion.moveDown" = "Ctrl-n"
+"completion.moveUp" = "Ctrl-p"
+
+[language_servers.pylsp]
+enabled = false
+enable_mypy = false
+enable_ruff = true
+
+[language_servers.ty]
+enabled = true
