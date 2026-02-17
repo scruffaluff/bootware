@@ -57,7 +57,7 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -96,7 +96,7 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -133,7 +133,7 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -168,7 +168,7 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -198,7 +198,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Test installation, setup, and bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
@@ -241,7 +241,7 @@ jobs:
       - name: Free disk space
         run: rm -fr "${HOME}/Library/Android" "${HOME}/Library/Developer"
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Bootware
         run: |
           src/install.sh --global
@@ -278,7 +278,7 @@ jobs:
         with:
           tool-cache: true
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -322,7 +322,7 @@ jobs:
           }
         shell: powershell
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: Vampire/setup-wsl@v6
         with:
           # Setup WSL uses the version 11 for Debian which has an out of date

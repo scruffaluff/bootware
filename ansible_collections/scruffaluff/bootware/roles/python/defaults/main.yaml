@@ -6,6 +6,7 @@ python_applications:
     extras:
       - bokeh
       - librosa
+      - manim
       - numpy
       - polars
       - scipy
@@ -13,7 +14,6 @@ python_applications:
       - torch
   - name: marimo[sandbox,sql]
     extras:
-      - altair
       - nbformat
       - pytest
       - ruff
