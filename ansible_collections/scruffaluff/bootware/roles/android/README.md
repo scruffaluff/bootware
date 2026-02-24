@@ -1,4 +1,4 @@
-# Android Tools
+# Android
 
 Ansible role that installs
 [Android platform tools](https://developer.android.com/tools/releases/platform-tools).
@@ -20,5 +20,5 @@ None.
 ```yaml
 - hosts: all
   roles:
-    - scruffaluff.bootware.android_tools
+    - scruffaluff.bootware.android
 ```

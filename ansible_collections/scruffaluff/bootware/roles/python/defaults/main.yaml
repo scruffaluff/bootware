@@ -11,10 +11,9 @@ python_applications:
       - polars
       - scipy
       - soundfile
-      - torch
+      - tsdownsample
   - name: marimo[sandbox,sql]
     extras:
-      - nbformat
       - pytest
       - ruff
       - ty

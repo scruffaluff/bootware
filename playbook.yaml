@@ -89,26 +89,15 @@
         - never
         - terminal
 
-    - name: Install Android Studio
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - android_studio
-            - never
-        name: scruffaluff.bootware.android_studio
-      tags:
-        - android_studio
-        - never
-
     - name: Install Android platform tools
       ansible.builtin.include_role:
         apply:
           tags:
-            - android_tools
+            - android
             - never
-        name: scruffaluff.bootware.android_tools
+        name: scruffaluff.bootware.android
       tags:
-        - android_tools
+        - android
         - never
 
     - name: Install Audacity audio editor

@@ -5,11 +5,7 @@
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
   {
-    "name": "android_studio",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }]
-  },
-  {
-    "name": "android_tools",
+    "name": "android",
     "skip": [{ "os": "openwrt" }, { "os": "suse" }],
     "tests": ["adb --version"]
   },
