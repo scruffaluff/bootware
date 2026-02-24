@@ -1,12 +1,12 @@
 ---
 python_applications:
   - "jinja2-cli[toml,yaml,xml]"
-  - "black[jupyter]"
   - cookiecutter
-  - jupytext
-  - name: poetry
+  - name: jupyterlab
+  - name: marimo[sandbox,sql]
     extras:
-      - poetry-plugin-shell
-      - poetry-plugin-up
+      - pytest
+      - ruff
+      - ty
   - ruff
   - ty

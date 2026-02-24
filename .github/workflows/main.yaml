@@ -58,9 +58,9 @@ jobs:
           fromJson('["macos","ubuntu","windows"]') }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .vendor
@@ -99,9 +99,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .vendor
@@ -140,9 +140,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .vendor
@@ -162,7 +162,7 @@ jobs:
       - name: Build documentation
         run: just setup doc
       - name: Upload documentation
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           name: pages
           path: build/site
@@ -185,9 +185,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .vendor

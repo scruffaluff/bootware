@@ -140,11 +140,10 @@
   when: ansible_facts.system == "Win32NT"
 
 - name: Install Python applications for Unix
-  ansible.builtin.shell: # noqa command-instead-of-shell
+  ansible.builtin.command:
     cmd: >-
-      pipx install {{ item.name if item.name is defined else item }}{{ ' && pipx
-      inject ' + item.name + ' ' + (item.extras | join(' ')) if item.extras is
-      defined else '' }}
+      uv tool install{{ ' --with ' + item.extras | join(',') if item.extras is
+        defined else '' }} {{ item.name if item.name is defined else item }}
   become: true
   become_user: "{{ user_id }}"
   changed_when: "'already installed' not in python_application_unix.stderr"
@@ -160,9 +159,8 @@
 
 - name: Install Python applications for Windows
   ansible.windows.win_shell: >-
-    (pipx install {{ item.name if item.name is defined else item }}) -And ({{
-    'pipx inject ' + item.name + ' ' + (item.extras | join(' ')) if item.extras
-    is defined else '? .' }})
+    uv tool install{{ ' --with ' + item.extras | join(',') if item.extras is
+    defined else '' }} {{ item.name if item.name is defined else item }}
   changed_when: "'already installed' not in python_application_windows.stderr"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"

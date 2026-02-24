@@ -64,6 +64,7 @@ vscode_extensions:
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - leanprover.lean4
+  - marimo-team.vscode-marimo
   - mechatroner.rainbow-csv
   - mhutchie.git-graph
   - ms-playwright.playwright
