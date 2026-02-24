@@ -3,15 +3,6 @@ python_applications:
   - "jinja2-cli[toml,yaml,xml]"
   - cookiecutter
   - name: jupyterlab
-    extras:
-      - bokeh
-      - librosa
-      - manim
-      - numpy
-      - polars
-      - scipy
-      - soundfile
-      - tsdownsample
   - name: marimo[sandbox,sql]
     extras:
       - pytest
