@@ -15,36 +15,82 @@
     - install
   when: system_pkg_mgr == "pacman" and system_architecture == "amd64"
 
+- name: Check if GitLab Runner is installed for Linux
+  ansible.builtin.stat:
+    path: "{{ gitlab_runner_path[system_pkg_mgr] }}"
+  register: gitlab_runner_stat
+  tags:
+    - install
+  vars:
+    gitlab_runner_path:
+      apt: /usr/bin/gitlab-runner
+      dnf: /usr/sbin/gitlab-runner
+      zypper: /usr/sbin/gitlab-runner
+  when: system_pkg_mgr in ["apt", "dnf", "zypper"]
+
+- name: Create GitLab Runner temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: gitlab_runner_temp
+  tags:
+    - install
+  when: >-
+    system_pkg_mgr in ["apt", "dnf", "zypper"] and not
+    gitlab_runner_stat.stat.exists
+
+- name: Set GitLab Runner temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ gitlab_runner_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: >-
+    system_pkg_mgr in ["apt", "dnf", "zypper"] and not
+    gitlab_runner_stat.stat.exists
+
+- name: Download GitLab Runner setup script for Linux
+  ansible.builtin.get_url:
+    dest: "{{ gitlab_runner_temp.path }}/script.sh"
+    mode: "755"
+    url: >-
+      https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.{{
+      gitlab_runner_pkg[system_pkg_mgr] }}.sh
+  tags:
+    - install
+  vars:
+    gitlab_runner_pkg:
+      apt: deb
+      dnf: rpm
+      zypper: rpm
+  when: >-
+    system_pkg_mgr in ["apt", "dnf", "zypper"] and not
+    gitlab_runner_stat.stat.exists
+
+- name: Run GitLab Runner setup script for Linux
+  ansible.builtin.command:
+    cmd: "{{ gitlab_runner_temp.path }}/script.sh"
+  become: true
+  changed_when: "'Nothing to do' not in gitlab_runner_setup.stdout"
+  register: gitlab_runner_setup
+  tags:
+    - install
+  when: >-
+    system_pkg_mgr in ["apt", "dnf", "zypper"] and not
+    gitlab_runner_stat.stat.exists
+
 - name: Install GitLab Runner for Debian
   ansible.builtin.apt:
-    deb: "{{ item }}"
+    name: gitlab-runner
   become: true
-  loop:
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner-helper-images.deb
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/deb/gitlab-runner_{{
-      system_architecture }}.deb
   tags:
     - install
   when: system_pkg_mgr == "apt"
 
-- name: Add GitLab GPG key for Fedora
-  ansible.builtin.rpm_key:
-    key: https://packages.gitlab.com/runner/gitlab-runner/gpgkey/runner-gitlab-runner-49F16C5CC3A0F81F.pub.gpg
-  become: true
-  tags:
-    - install
-  when: system_pkg_mgr in ["dnf", "zypper"]
-
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
-    # GitLab GPG key is frequently mismatched with GitLab runner package.
-    disable_gpg_check: true
-    name: "{{ item }}"
+    name: gitlab-runner
   become: true
-  loop:
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
-      system_architecture }}.rpm
   tags:
     - install
   when: system_pkg_mgr == "dnf"
@@ -69,11 +115,7 @@
 - name: Install GitLab Runner for Suse
   become: true
   community.general.zypper:
-    name: "{{ item }}"
-  loop:
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner-helper-images.rpm
-    - https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/rpm/gitlab-runner_{{
-      system_architecture }}.rpm
+    name: gitlab-runner
   tags:
     - install
   when: system_pkg_mgr == "zypper"
@@ -171,3 +213,13 @@
     - install
   when: >-
     ansible_facts.system != "Win32NT" and gitlab_runner_sudo_available.rc == 0
+
+- name: Remove GitLab Runner temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ gitlab_runner_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: >-
+    system_pkg_mgr in ["apt", "dnf", "zypper"] and not
+    gitlab_runner_stat.stat.exists
