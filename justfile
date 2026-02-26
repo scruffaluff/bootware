@@ -4,7 +4,7 @@
 
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
-  join(justfile_directory(), ".vendor\\bin;") + env("Path")
+  join(justfile_directory(), ".vendor\\bin;") + env("PATH")
 } else {
   justfile_directory() / ".vendor/bin:" + justfile_directory() /
   ".vendor/lib/bats-core/bin:" + env("PATH")

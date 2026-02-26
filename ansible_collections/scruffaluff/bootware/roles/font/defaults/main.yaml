@@ -20,19 +20,19 @@ font_families:
     patterns:
       - FiraSans-*.ttf
     url: https://github.com/mozilla/Fira/archive/4.202.zip
-  - check: PTM55FT.ttf
+  - check: pt-mono-latin-400-normal.ttf
     name: pt-mono
     patterns:
-      - PT*.ttf
-    url: https://fontsquirrel.com/fonts/download/pt-mono
-  - check: PTS55F.ttf
+      - pt-mono-*.ttf
+    url: https://api.fontsource.org/v1/download/pt-mono
+  - check: pt-sans-latin-400-normal.ttf
     name: pt-sans
     patterns:
-      - PT*.ttf
-    url: https://fontsquirrel.com/fonts/download/pt-sans
-  - check: PTF55F.ttf
+      - pt-sans-*.ttf
+    url: https://api.fontsource.org/v1/download/pt-sans
+  - check: pt-serif-latin-400-normal.ttf
     name: pt-serif
     patterns:
-      - PT*.ttf
-    url: https://fontsquirrel.com/fonts/download/pt-serif
+      - pt-serif-*.ttf
+    url: https://api.fontsource.org/v1/download/pt-serif
 font_install: true
