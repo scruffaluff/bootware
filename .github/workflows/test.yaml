@@ -64,13 +64,12 @@ jobs:
         uses: docker/setup-buildx-action@v3
         # GDU role is skipped since the Alpine package is broken as of
         # 08/29/2025. Helix role is skipped since the
-        # https://github.com/zydou/helix repository for MUSL builds is behind
-        # the upstream repository as 07/18/2025.
+        # https://github.com/zydou/helix repository for MUSL builds is often
+        # behind the upstream repository as 07/18/2025.
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra={"font_install":false}
             skip=gdu,helix,spotify
             test=true
           context: .
@@ -83,12 +82,14 @@ jobs:
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
+  # Arch test is disabled as of 02/25/2026 since the AUR crashes when used in
+  # GitHub workflows. The AUR works locally.
   arch:
     name: Test bootstrapping software for Arch Linux
     env:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'arch' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'arch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space
@@ -104,11 +105,11 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          # Libvirt test fails in GitHub workflow as of 01/18/2025 due to a "No
-          # module named 'gi'" Python error. The test passes when run locally.
+          # Libvirt is disabled since its test fails in GitHub workflows as of
+          # 01/18/2025 due to a "No module named 'gi'" Python error. The test
+          # passes when run locally.
           build-args: |
-            extra={"font_install":false}
-            skip=libvirt,spotify,usql
+            skip=libvirt,spotify
             test=true
           context: .
           file: test/e2e/arch.dockerfile
@@ -142,7 +143,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra={"font_install":false}
             skip=spotify
             test=true
           context: .
@@ -176,8 +176,10 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
+          # Usql is disabled since its test fails in GitHub workflows as of
+          # 02/25/2026 due to a "signal arrived during cgo execution" error. The
+          # test passes when run locally.
           build-args: |
-            extra={"font_install":false}
             skip=spotify,usql
             test=true
           context: .
@@ -209,21 +211,19 @@ jobs:
             pkg update -f
             pkg install --yes curl
           release: "15.0"
-          # Gdu is skipped as 07/20/2025 it is not available in FreeBSD 14.3
-          # yet. Node is skipped since Mermaid CLI fails during installation as
-          # of 07/20/2025. Security role is skipped since it breaks the
+          # Security role is skipped since it breaks the
           # freebsd-vm action's Rsync connection by enforcing stricter SSH
           # rules. Audacity and Musescore tests are skipped in FreeBSD VM since
           # they require a display connection. VLibvirt and QEMU tests are
           # skipped since the packages are broken on FreeBSD 14.3 as of
-          # 07/20/2025. LC test is skipped since it cannot run as root.
+          # 07/20/2025. VLC test is skipped since it cannot run as root.
           run: |
             set -eu
             src/install.sh --global
             install src/bootware.sh "$(which bootware)"
             bootware setup
-            bootware bootstrap --dev --no-passwd --extra-vars '{"font_install":false}' --retries 3 --skip gdu,node,security --tags all,never
-            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,gdu,libvirt,musescore,node,qemu,vlc freebsd'
+            bootware bootstrap --dev --no-passwd --retries 3 --skip security --tags all,never
+            bash -c 'source $HOME/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,libvirt,musescore,qemu,vlc freebsd'
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
       # freebsd` and `cd /root/work/bootware/bootware`.
@@ -248,18 +248,18 @@ jobs:
           sudo install src/bootware.sh "$(which bootware)"
       - name: Install dependencies for Bootware
         run: bootware setup
+      # Usql is disabled since its Homebrew formula crashes during installation
+      # as of 02/25/2026.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
-        # Kdenlive role is skipped as of 01/07/2026 since Homebrew uses the
-        # wrong download link.
         run: >-
-          bootware bootstrap --dev --no-passwd --extra-vars
-          '{"font_install":false}' --retries 3 --skip kdenlive --tags all,never
+          bootware bootstrap --dev --no-passwd --retries 3 --skip usql --tags
+          all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          test/e2e/roles.test.ts --arch arm64 --skip kdenlive macos
+          test/e2e/roles.test.ts --arch arm64 --skip usql macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
@@ -287,7 +287,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            extra={"font_install":false}
             skip=spotify
             test=true
           context: .
@@ -371,16 +370,14 @@ jobs:
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
           bootware config --empty
-          [System.IO.File]::WriteAllLines("$HOME\.bootware\config.yaml", 'font_install: false')
         shell: powershell
-      # Docker role is skipped since it is already installed. Fzf role is
-      # skipped as of 09/20/2025 since the PSFzf TLS certificate is expired.
+      # Docker role is skipped since it is already installed.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bootware;$Env:Path"
-          bootware bootstrap --dev --no-setup --extra-vars '{"font_install":false}' --retries 3 --skip docker,fzf --tags all,never
+          bootware bootstrap --dev --no-setup --retries 3 --skip docker --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
@@ -393,7 +390,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,fzf,lldb,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,lldb,rust windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
