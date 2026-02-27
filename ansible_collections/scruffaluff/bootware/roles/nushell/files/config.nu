@@ -761,6 +761,12 @@ alias pdb = python3 -m pdb
 
 # Make Poetry create virtual environments inside projects.
 $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
+# Disable Python history.
+$env.PYTHON_HISTORY = if $nu.os-info.name == "windows" {
+    "NUL"
+} else {
+    "/dev/null"
+}
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 

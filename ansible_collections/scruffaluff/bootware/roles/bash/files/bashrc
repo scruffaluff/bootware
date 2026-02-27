@@ -138,6 +138,8 @@ tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
 # System settings.
 
+# Disable Bash history.
+unset HISTFILE
 # Set terminal environment variable if empty.
 export TERM="${TERM:-xterm-256color}"
 
@@ -350,6 +352,8 @@ alias pdb='python3 -m pdb'
 
 # Make Poetry create virtual environments inside projects.
 export POETRY_VIRTUALENVS_IN_PROJECT='true'
+# Disable Python history.
+export PYTHON_HISTORY='/dev/null'
 # Fix Poetry package install issue on headless systems.
 export PYTHON_KEYRING_BACKEND='keyring.backends.fail.Keyring'
 

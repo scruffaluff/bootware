@@ -5,6 +5,7 @@
 *.bak
 *.log
 *.tar.gz
+*.swp
 *.xml
 .DS_Store
 .classpath/

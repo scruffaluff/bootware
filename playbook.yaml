@@ -1996,7 +1996,7 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - destkop
+            - desktop
             - editor
             - zed
         name: scruffaluff.bootware.zed

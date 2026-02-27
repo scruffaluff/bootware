@@ -14,6 +14,7 @@ set number " Show line numbers.
 set ruler " Show row and column rulers.
 set showmatch " Highlight matching braces.
 set statusline=\ %f\ %m%=%l:%c\ \ %{&fileformat}\ 
+set viminfofile=NONE " Disable Vim history.
 set wildmenu " Enable tab completion menu in command prompt.
 
 " Enable syntax highlighting if supported.
@@ -46,4 +47,3 @@ inoremap <A-k> <C-o>k
 inoremap <A-l> <C-o>l
 inoremap <A-;> <C-o>;
 vmap y ygv<Esc> " Yank text without moving cursor.
-

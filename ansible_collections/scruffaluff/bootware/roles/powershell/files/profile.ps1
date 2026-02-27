@@ -362,6 +362,8 @@ function pdb() {
 
 # Make Poetry create virtual environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
+# Disable Python history.
+$Env:PYTHON_HISTORY = 'NUL'
 # Fix Poetry package install issue on headless systems.
 $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 
