@@ -31,11 +31,11 @@ essential_linux_packages_:
     - xz-utils
     - zip
   dnf:
+    - 7zip
     - dnf-plugins-core
     - gnupg
     - openssl
     - openssl-devel
-    - p7zip
     - which
     - xz
     - zip
@@ -50,10 +50,10 @@ essential_linux_packages_:
     - xz
     - zip
   zypper:
+    - 7zip
     - gnupg
     - libopenssl-devel
     - openssl
-    - p7zip
     - python3-dnf
     - which
     - xz
