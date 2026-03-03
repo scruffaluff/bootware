@@ -1,4 +1,4 @@
-"""Custom filters for VSCode."""
+"""Custom filters."""
 
 import base64
 import hashlib
@@ -6,7 +6,7 @@ from collections.abc import Callable
 
 
 class FilterModule:
-    """Custom filters for VSCode."""
+    """Custom filters."""
 
     def filters(self) -> dict[str, Callable]:
         """Generate table of filters."""

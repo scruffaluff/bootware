@@ -1,21 +1,21 @@
 #!/usr/bin/env nu
 
+const arch_default = $nu.os-info.arch | str replace "x86_64" "amd64"
+ | str replace "aarch64" "arm64"
+
 # Run all container end to end tests for an architecture.
 def main [
-    --arch (-a): string = "" # Chip architecture
+    --arch (-a): string = ($arch_default) # Chip architecture
     --cache (-c) # Use container cache
     --dists (-d): string = "alpine,arch,debian,fedora,ubuntu" # Linux distributions list
+    --extra (-e): string = "" # Extra variables for Ansible
     --skip (-s): string = "none" # Ansible roles to skip
     --tags (-t): string = "all,never" # Ansible roles to keep
 ] {
     const script = path self
     cd ($script | path dirname --num-levels 2)
 
-    let arch = if ($arch | is-empty) {
-        match $nu.os-info.arch { "aarch64" => "arm64", "x86_64" => "amd64" }
-    } else {
-        $arch
-    }
+    let arch = if ($arch | is-empty) { $arch_default } else { $arch }
     let args = if $cache { [] } else { ["--no-cache"] }
     let dists_ = $dists | split row ","
     let runner = if (which podman | is-empty) { "docker" } else { "podman" }
@@ -24,8 +24,8 @@ def main [
         (
             ^$runner build ...$args --file $"test/e2e/($dist).dockerfile" --tag
             $"docker.io/scruffaluff/bootware:($dist)" --platform
-            $"linux/($arch)" . --build-arg $"skip=($skip)" --build-arg
-            $"tags=($tags)" --build-arg test=true
+            $"linux/($arch)" . --build-arg $"extra=($extra)" --build-arg
+            $"skip=($skip)" --build-arg $"tags=($tags)" --build-arg test=true
         )
         print $"End to end test ($dist) passed."
     }

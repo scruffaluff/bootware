@@ -2,16 +2,15 @@
 #
 # For more information, visit https://just.systems.
 
-set unstable := true
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
-  join(justfile_dir(), ".vendor\\bin;") + env("Path")
+  join(justfile_directory(), ".vendor\\bin;") + env("PATH")
 } else {
-  justfile_dir() / ".vendor/bin:" + justfile_dir() / 
+  justfile_directory() / ".vendor/bin:" + justfile_directory() /
   ".vendor/lib/bats-core/bin:" + env("PATH")
 }
 export PSModulePath := if os() == "windows" {
-  join(justfile_dir(), ".vendor\\lib\\powershell\\modules;") + 
+  join(justfile_directory(), ".vendor\\lib\\powershell\\modules;") +
   env("PSModulePath", "")
 } else { "" }
 
@@ -19,8 +18,7 @@ export PSModulePath := if os() == "windows" {
 ci: setup lint doc test-shell test-nushell test-python
 
 # Build distribution packages.
-[script("nu")]
-dist version="0.9.1":
+dist version="0.10.0":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
 
@@ -30,10 +28,10 @@ doc:
 
 # Fix code formatting.
 [unix]
-format:
-  npx prettier --write .
+format +paths=".":
+  npx prettier --write {{paths}}
   shfmt --write ansible_collections script src test
-  uv run ruff format .
+  uv run ruff format {{paths}}
 
 # Fix code formatting.
 [windows]
@@ -43,10 +41,10 @@ format:
   $ProgressPreference = 'SilentlyContinue'
   $PSNativeCommandUseErrorActionPreference = $True
   npx prettier --write .
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Setting `
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path ansible_collections -Settings `
     CodeFormatting
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Setting CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path src -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -Fix -Recurse -Path test -Settings CodeFormatting
   $Scripts = Get-ChildItem -Recurse -Filter *.ps1 -Path `
     ansible_collections, src, test
   foreach ($Script in $Scripts) {
@@ -71,16 +69,16 @@ lint:
   done
   uv run ansible-lint ansible_collections playbook.yaml
   uv run ruff check .
-  uv run mypy .
+  uv run ty check .
 
 # Run code analyses.
 [windows]
 lint:
   npx prettier --check .
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
-    -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Setting CodeFormatting
-  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Setting CodeFormatting
+    -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings CodeFormatting
+  Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings CodeFormatting
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ansible_collections \
     -Settings data/config/script_analyzer.psd1
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path src -Settings \
@@ -92,6 +90,11 @@ lint:
 [default]
 list:
   @just --list
+
+# Wrapper to Nushell.
+[no-exit-message]
+@nu *args:
+  nu {{args}}
 
 # Install development dependencies.
 [unix]
@@ -107,66 +110,78 @@ setup:
     echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
     exit 1
   fi
+  echo "Using Node $(node --version)."
+  echo "Using NPM $(npm --version)."
   if ! command -v nu > /dev/null 2>&1; then
+    echo 'Installing Nushell.'
     curl --fail --location --show-error \
       https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
       --preserve-env --dest .vendor/bin
   fi
-  echo "Nushell $(nu --version)"
+  echo "Using Nushell $(nu --version)."
   if ! command -v uv > /dev/null 2>&1; then
+    echo 'Installing Uv.'
     curl --fail --location --show-error \
       https://scruffaluff.github.io/picoware/install/uv.sh | sh -s -- \
       --preserve-env --dest .vendor/bin
   fi
-  uv --version
+  echo "Using $(uv --version)."
   for spec in 'assert:v2.1.0' 'core:v1.11.1' 'file:v0.4.0' 'support:v0.3.0'; do
+    bats_check=''
     pkg="${spec%:*}"
     tag="${spec#*:}"
     if [ ! -d ".vendor/lib/bats-${pkg}" ]; then
+      if [ -z "${bats_check}" ]; then
+        echo 'Installing Bats.'
+        bats_check='1'
+      fi
       git clone -c advice.detachedHead=false --branch "${tag}" --depth 1 \
         "https://github.com/bats-core/bats-${pkg}.git" ".vendor/lib/bats-${pkg}"
     fi
   done
-  bats --version
+  echo "Using $(bats --version)."
   if [ ! -d .vendor/lib/nutest ]; then
+    echo 'Installing Nutest.'
     git clone -c advice.detachedHead=false --branch main \
       --depth 1 https://github.com/vyadh/nutest.git .vendor/lib/nutest
   fi
+  echo "Using Nutest $(git -C .vendor/lib/nutest rev-parse HEAD)."
   if ! command -v shellcheck > /dev/null 2>&1; then
-    shellcheck_arch="$(uname -m | sed 's/amd64/x86_64/;s/x64/x86_64/;s/arm64/aarch64/')"
-    shellcheck_version="$(curl  --fail --location --show-error \
+    echo 'Installing ShellCheck.'
+    shellcheck_arch='{{arch()}}'
+    shellcheck_version="$(curl --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shellcheck.json |
       jq --exit-status --raw-output .versions.stable)"
     curl --fail --location --show-error --output /tmp/shellcheck.tar.xz \
-    https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.${shellcheck_arch}.tar.xz
+      "https://github.com/koalaman/shellcheck/releases/download/v${shellcheck_version}/shellcheck-v${shellcheck_version}.${os}.${shellcheck_arch}.tar.xz"
     tar fx /tmp/shellcheck.tar.xz -C /tmp
     install "/tmp/shellcheck-v${shellcheck_version}/shellcheck" .vendor/bin/
   fi
-  shellcheck --version
+  echo "Using $(shellcheck --version)."
   if ! command -v shfmt > /dev/null 2>&1; then
-    shfmt_arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
-    shfmt_version="$(curl  --fail --location --show-error \
+    echo 'Installing Shfmt.'
+    shfmt_version="$(curl --fail --location --show-error \
       https://formulae.brew.sh/api/formula/shfmt.json |
       jq --exit-status --raw-output .versions.stable)"
     curl --fail --location --show-error --output .vendor/bin/shfmt \
-      "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${shfmt_arch}"
+      "https://github.com/mvdan/sh/releases/download/v${shfmt_version}/shfmt_v${shfmt_version}_${os}_${arch}"
     chmod 755 .vendor/bin/shfmt
   fi
-  echo "Shfmt version $(shfmt --version)"
+  echo "Using Shfmt $(shfmt --version)."
   if ! command -v yq > /dev/null 2>&1; then
+    echo 'Installing Yq.'
     curl --fail --location --show-error --output .vendor/bin/yq \
       "https://github.com/mikefarah/yq/releases/latest/download/yq_${os}_${arch}"
     chmod 755 .vendor/bin/yq
   fi
-  yq --version
-  node --version
-  npm --version
+  echo "Using $(yq --version)."
+  echo 'Installing packages with NPM and Uv.'
   if [ -n "${JUST_INIT:-}" ]; then
     npm install
-    uv sync --locked
+    uv sync
   else
     npm ci
-    uv sync
+    uv sync --locked
   fi
 
 # Install development dependencies.
@@ -180,23 +195,28 @@ setup:
   $ModulePath = '.vendor\lib\powershell\modules'
   New-Item -Force -ItemType Directory -Path $ModulePath | Out-Null
   if (-not (
-    (Get-Command -ErrorAction SilentlyContinue node) -And 
+    (Get-Command -ErrorAction SilentlyContinue node) -And
     (Get-Command -ErrorAction SilentlyContinue npm)
   )) {
     Write-Error 'Error: Unable to find NodeJS and NPM.'
     Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
     Exit 1
   }
+  Write-Output "Using Node $(node --version)"
+  Write-Output "Using NPM $(npm --version)"
   if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
+    Write-Output 'Installing Nushell.'
     $NushellScript = Invoke-WebRequest -UseBasicParsing -Uri `
       https://scruffaluff.github.io/picoware/install/nushell.ps1
     Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
-  Write-Output "Nushell $(nu --version)"
+  Write-Output "Using Nushell $(nu --version)"
   if (-not (Test-Path -Path .vendor/lib/nutest -PathType Container)) {
+    Write-Output 'Installing Nutest.'
     git clone -c advice.detachedHead=false --branch main --depth 1 `
       https://github.com/vyadh/nutest.git .vendor/lib/nutest
   }
+  Write-Output "Using Nutest $(git -C .vendor/lib/nutest rev-parse HEAD)."
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are
@@ -206,25 +226,31 @@ setup:
   Get-PackageProvider -Force Nuget | Out-Null
   if (
     -not (Get-Module -ListAvailable -FullyQualifiedName `
-    @{ModuleName = "PSScriptAnalyzer"; ModuleVersion = "1.0.0" })
+    @{ModuleName = 'PSScriptAnalyzer'; ModuleVersion = '1.0.0' })
   ) {
+    Write-Output 'Installing PSScriptAnalyzer.'
     Find-Module -MinimumVersion 1.0.0 -Name PSScriptAnalyzer | Save-Module `
       -Force -Path $ModulePath
   }
+  Write-Output "Using PSScriptAnalyzer $((Get-Module -ListAvailable `
+    PSScriptAnalyzer | Select-Object -First 1).Version)."
   if (
     -not (Get-Module -ListAvailable -FullyQualifiedName `
-    @{ModuleName = "Pester"; ModuleVersion = "5.0.0" })
+    @{ModuleName = 'Pester'; ModuleVersion = '5.0.0' })
   ) {
+    Write-Output 'Installing Pester.'
     Find-Module -MinimumVersion 5.0.0 -Name Pester | Save-Module -Force -Path `
       $ModulePath
   }
+  Write-Output "Using Pester $((Get-Module -ListAvailable Pester | `
+    Select-Object -First 1).Version)."
   if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
+    Write-Output 'Installing Yq.'
     Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `
       "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_$Arch.exe"
   }
-  yq --version
-  node --version
-  npm --version
+  Write-Output "Using $(yq --version)."
+  Write-Output 'Installing packages with NPM and Uv.'
   if ("$Env:JUST_INIT") {
     npm install
   }
@@ -268,3 +294,7 @@ test-shell:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
 
+# Wrapper to Uv.
+[no-exit-message]
+@uv *args:
+  uv {{args}}

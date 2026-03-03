@@ -11,4 +11,4 @@ watchexec_env_:
   Linux: unknown-linux-{{ watchexec_libc }}
   Win32NT: pc-windows-msvc
 watchexec_arch: "{{ watchexec_arch_[system_architecture] }}"
-watchexec_env: "{{ watchexec_env_.get(ansible_system, 'unknown') }}"
+watchexec_env: "{{ watchexec_env_.get(ansible_facts.system, 'unknown') }}"

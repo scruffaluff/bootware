@@ -2,4 +2,4 @@
 wezterm_font_size: "{{ font_size }}"
 wezterm_package: wezterm
 wezterm_wayland: true
-wezterm_window_decorations: true
+wezterm_window_decorations: "{{ not wayland_desktop }}"

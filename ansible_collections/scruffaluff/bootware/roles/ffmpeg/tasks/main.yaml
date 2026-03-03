@@ -4,11 +4,11 @@
     disable_gpg_check: true
     name: >-
       https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{
-      ansible_distribution_major_version }}.noarch.rpm
+      ansible_facts.distribution_major_version }}.noarch.rpm
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install FFmpeg for Fedora
   ansible.builtin.command:
@@ -18,7 +18,7 @@
   register: ffmpeg_install_fedora
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Install FFmpeg for FreeBSD
   become: true
@@ -26,7 +26,7 @@
     name: ffmpeg
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install FFmpeg for Linux
   ansible.builtin.package:
@@ -34,7 +34,8 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ansible_pkg_mgr not in ["dnf", "dnf5"]
+  when: >-
+    ansible_facts.system == "Linux" and system_pkg_mgr != "dnf"
 
 - name: Install FFmpeg for MacOS
   become: true
@@ -43,7 +44,7 @@
     name: ffmpeg
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install FFmpeg for Windows
   community.windows.win_scoop:
@@ -51,4 +52,4 @@
     name: ffmpeg
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

@@ -29,18 +29,18 @@ EXAMPLES = r"""
 
 RETURN = r"""
 ---
-path:
-  description: Firefox profile_paths
-  returned: always
-  sample:
-    - /home/user/.mozilla/firefox/8hs6hkt.default-release
-  type: list
+paths:
+  - description: Firefox profile_paths
+    returned: always
+    sample:
+        - /home/user/.mozilla/firefox/8hs6hkt.default-release
+    type: list
 """
 
 
 def main() -> None:
     """Find name and path of Firefox default profile for current user."""
-    result = {"changed": False, "name": "", "path": ""}
+    result = {"changed": False, "paths": []}
     module = AnsibleModule(
         argument_spec={"user": {"default": "", "required": False, "type": "str"}},
         supports_check_mode=True,
@@ -58,7 +58,6 @@ def main() -> None:
                 "Unable to parse default Firefox profile from profiles database"
                 f" at '{database}'. Error: {exception}"
             ),
-            **result,
         )
 
     result["paths"] = [str(database.parent / path) for path in paths]
@@ -70,10 +69,13 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
     user = module.params["user"]
     if system == "Darwin":
         user_home = Path(f"/Users/{user}") if user else Path.home()
-        path = user_home / "Library/Application Support/Firefox/profiles.ini"
+        paths = [user_home / "Library/Application Support/Firefox/profiles.ini"]
     elif system in ["FreeBSD", "Linux"]:
         user_home = Path(f"/home/{user}") if user else Path.home()
-        path = user_home / ".mozilla/firefox/profiles.ini"
+        paths = [
+            user_home / ".mozilla/firefox/profiles.ini",
+            user_home / ".config/mozilla/firefox/profiles.ini",
+        ]
     else:
         module.fail_json(
             msg=f"Module does not support operating system '{system}'.",
@@ -81,16 +83,19 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
 
     # Firefox profiles database may not exist after initial Firefox install. If
     # so, try creating a default profile from the command line.
-    if not path.exists():
+    if not any(path.exists() for path in paths):
         subprocess.run(
             ["firefox", "--headless", "--createprofile", "default"],
             capture_output=True,
             check=True,
         )
 
-    if not path.exists():
+    for path in paths:
+        if path.exists():
+            break
+    else:
         module.fail_json(
-            msg=f"Firefox profiles database path '{path}' does not exist.",
+            msg=f"Firefox profiles database does not exist in {paths}.",
         )
     return path
 
@@ -115,7 +120,7 @@ def profiles_paths(module: AnsibleModule, path: Path) -> list[str]:
         elif data.get("locked") and "default" in data:
             paths.append(data["default"])
 
-    snap_path = Path.home() / "snap"
+    snap_path = Path(f"/home/{module.params['user']}/snap")
     return [path for path in set(paths) if not Path(path).is_relative_to(snap_path)]
 
 

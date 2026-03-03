@@ -523,6 +523,11 @@
     "when": "!panelFocus"
   },
   {
+    "command": "workbench.action.moveEditorToNextGroup",
+    "key": "ctrl+\\",
+    "when": "!panelFocus"
+  },
+  {
     "command": "workbench.action.navigateBack",
     "key": "ctrl+[",
     "when": "!panelFocus"
@@ -552,7 +557,7 @@
     "key": "ctrl+tab",
     "when": "!panelFocus"
   },
-{% if ansible_system == "Darwin" %}
+{% if ansible_facts.system == "Darwin" %}
   {
     "command": "workbench.action.openEditorAtIndex1",
     "key": "cmd+1",
@@ -627,11 +632,6 @@
   },
   { "command": "workbench.action.replaceInFiles", "key": "ctrl+shift+h" },
   { "command": "workbench.action.showCommands", "key": "ctrl+shift+p" },
-  {
-    "command": "workbench.action.splitEditor",
-    "key": "ctrl+\\",
-    "when": "editorFocus"
-  },
   {
     "command": "workbench.action.terminal.focus",
     "key": "ctrl+shift+s",

@@ -28,6 +28,8 @@ skip_list:
   # variable naming is consistent for all other files by commenting the next
   # line.
   - var-naming[no-role-prefix]
+  # Lint variable naming rules are incompatible with Ansible naming patterns.
+  - var-naming[pattern]
   # Prettier already enforces line length, so YamlLint only complains about long
   # URLs.
   - yaml[line-length]

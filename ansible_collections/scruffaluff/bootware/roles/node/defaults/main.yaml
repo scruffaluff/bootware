@@ -1,7 +1,6 @@
 ---
 node_applications:
   - "@mermaid-js/mermaid-cli"
-  - "@taplo/cli"
   - "@vue/language-server"
   - bash-language-server
   - lean-language-server
@@ -10,6 +9,7 @@ node_applications:
   - speed-test
   - speedscope
   - taze
+  - tombi
   - typescript-language-server
   - vls
   - vscode-langservers-extracted

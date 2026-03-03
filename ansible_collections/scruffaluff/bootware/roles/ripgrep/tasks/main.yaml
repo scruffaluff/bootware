@@ -5,7 +5,7 @@
     name: ripgrep
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Ripgrep for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: ripgrep_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Ripgrep version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: ripgrep_formula
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Create Ripgrep temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: ripgrep_temp
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Set Ripgrep temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Download Ripgrep for Linux
   ansible.builtin.unarchive:
@@ -56,7 +56,7 @@
       }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for Linux
   ansible.builtin.copy:
@@ -70,7 +70,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Install Ripgrep for MacOS
   become: true
@@ -79,7 +79,7 @@
     name: ripgrep
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Ripgrep for Windows
   community.windows.win_scoop:
@@ -87,7 +87,7 @@
     name: ripgrep
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Ripgrep shell completions for Unix
   ansible.builtin.copy:
@@ -107,7 +107,7 @@
   tags:
     - completion
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
 
 - name: Copy Ripgrep settings file for Unix
   ansible.builtin.copy:
@@ -120,7 +120,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Ripgrep settings file for Windows
   ansible.windows.win_copy:
@@ -129,7 +129,7 @@
     src: ripgreprc
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Ripgrep file for Windows
   ansible.windows.win_owner:
@@ -137,7 +137,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Ripgrep temporary directory for Linux
   ansible.builtin.file:
@@ -145,4 +145,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and ripgrep_linux is failed
+  when: ansible_facts.system == "Linux" and ripgrep_linux is failed

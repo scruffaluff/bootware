@@ -10,7 +10,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy ignore file for Windows
   ansible.windows.win_copy:
@@ -19,7 +19,7 @@
     src: ignore
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of ignore file for Windows
   ansible.windows.win_owner:
@@ -27,4 +27,4 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

@@ -1,19 +1,22 @@
 # Docker configuration file for ignoring paths while collecting context.
 #
 # For more information, visit
-# https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/.
+# https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2.
 
+*.bak
+*.dockerfile
+*.log
 .DS_Store
+.classpath/
 .env
 .git/
 .github/
 .gitignore
+.localized
 .mypy_cache/
 .pytest_cache/
 .venv/
-*.bak
-*.dockerfile
-*.log
+Thumbs.db
 ansible_collections/*
 node_modules/
 !ansible_collections/scruffaluff

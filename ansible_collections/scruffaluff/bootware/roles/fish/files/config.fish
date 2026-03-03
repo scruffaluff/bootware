@@ -445,14 +445,13 @@ set --export MINISERVE_INDEX index.html
 
 # Python settings.
 
-# Add Jupyter Lab alias.
-alias jupylab \
-    'uv --quiet tool run --from jupyterlab --with bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab'
 # Add Python debugger alias.
 alias pdb 'python3 -m pdb'
 
 # Make Poetry create virtual environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT true
+# Disable Python history.
+set --export PYTHON_HISTORY /dev/null
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 

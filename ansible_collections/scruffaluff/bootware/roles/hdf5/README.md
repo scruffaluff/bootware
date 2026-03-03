@@ -1,7 +1,24 @@
-# Hdf5
+# HDF5
 
-Hdf5 is an Ansible role
+Ansible role that installs [HDF5](https://github.com/NanoComp/h5utils)
+serialization tools.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.hdf5
+```

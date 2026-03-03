@@ -42,8 +42,8 @@ Enable shell debug traces
 .BR \-h ", " \-\-help
 Print help information
 .TP
-.BR \-h ", " \-\-version
-Print vesrion information
+.BR \-v ", " \-\-version
+Print version information
 
 .SH COMMANDS
 Use "bootware -h" or "bootware \-\-help" to get an overview of available
@@ -75,4 +75,4 @@ Copyright © 2021-Present Macklan Weinstein. Bootware is distributed under the
 MIT license.
 
 .SH SEE ALSO
-Full documentation is available at <https://scruffaluff.github.io/bootware>. 
+Full documentation is available at <https://scruffaluff.github.io/bootware>.

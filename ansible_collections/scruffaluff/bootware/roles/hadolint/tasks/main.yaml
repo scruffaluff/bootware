@@ -7,7 +7,7 @@
   register: hadolint_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Hadolint version for Linux
   ansible.builtin.uri:
@@ -17,7 +17,7 @@
   register: hadolint_formula
   tags:
     - install
-  when: ansible_system == "Linux" and hadolint_linux is failed
+  when: ansible_facts.system == "Linux" and hadolint_linux is failed
 
 - name: Install Hadolint for Linux
   ansible.builtin.get_url:
@@ -35,7 +35,7 @@
     hadolint_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux" and hadolint_linux is failed
+  when: ansible_facts.system == "Linux" and hadolint_linux is failed
 
 - name: Install Hadolint for MacOS
   become: true
@@ -44,7 +44,7 @@
     name: hadolint
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Hadolint for Windows
   community.windows.win_scoop:
@@ -52,4 +52,4 @@
     name: hadolint
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

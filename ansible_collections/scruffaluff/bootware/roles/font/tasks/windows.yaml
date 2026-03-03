@@ -11,21 +11,21 @@
   block:
     - name: Create font temporary directory for Windows
       ansible.windows.win_file:
-        path: "{{ ansible_env.TEMP }}\\font"
+        path: "{{ ansible_facts.env.TEMP }}\\font"
         state: directory
 
     - name: Download font archives for Windows
       ansible.windows.win_get_url:
-        dest: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}.zip"
+        dest: "{{ ansible_facts.env.TEMP }}\\font\\{{ font_family.name }}.zip"
         url: "{{ font_family.url }}"
 
     - name: Decompress font archives for Windows
       community.windows.win_unzip:
-        dest: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}"
-        src: "{{ ansible_env.TEMP }}\\font\\{{ font_family.name }}.zip"
+        dest: "{{ ansible_facts.env.TEMP }}\\font\\{{ font_family.name }}"
+        src: "{{ ansible_facts.env.TEMP }}\\font\\{{ font_family.name }}.zip"
 
     # Based on logic from
-    # https://www.alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
+    # https://alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
     # Do not quote $Patterns variable, otherwise it will be interpreted as a
     # string instead of a list.
     - name: Install fonts for Windows
@@ -34,7 +34,7 @@
         $PSNativeCommandUseErrorActionPreference = $True
         [System.Reflection.Assembly]::LoadWithPartialName('PresentationFramework')
         Add-Type -PassThru -AssemblyName PresentationFramework | Out-Null
-        $Folder = '{{ ansible_env.TEMP }}\font\{{ font_family.name }}'
+        $Folder = '{{ ansible_facts.env.TEMP }}\font\{{ font_family.name }}'
         $Patterns = {{ font_family.patterns | map('quote') | join(',') }}
         ForEach ($File in Get-ChildItem -Recurse -Include $Patterns -Path $Folder) {
           $Glyph = [System.Windows.Media.GlyphTypeface]::new($File.FullName)
@@ -55,7 +55,7 @@
               $Font = "$Font (TrueType)"
             }
           }
-          Copy-Item -Destination "{{ font_folder }}\$($Font.Name)" -Path "$File"
+          Copy-Item -Destination "{{ font_folder }}\$($File.Name)" -Path "$File"
           New-ItemProperty -Force `
             -Name "$Font" `
             -Path 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts' `
@@ -66,5 +66,5 @@
 
 - name: Remove font temporary directory for Windows
   ansible.windows.win_file:
-    path: "{{ ansible_env.TEMP }}\\font"
+    path: "{{ ansible_facts.env.TEMP }}\\font"
     state: absent

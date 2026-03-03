@@ -5,11 +5,11 @@
     name: termshark
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Wireshark CLI for Linux
   ansible.builtin.package:
-    name: "{{ termshark_package.get(ansible_pkg_mgr, 'tshark') }}"
+    name: "{{ termshark_package.get(system_pkg_mgr, 'tshark') }}"
   become: true
   tags:
     - install
@@ -18,10 +18,9 @@
       apk: tshark
       apt: tshark
       dnf: wireshark-cli
-      dnf5: wireshark-cli
       pacman: wireshark-cli
       zypper: wireshark
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Termshark version for Linux
   ansible.builtin.uri:
@@ -31,7 +30,7 @@
   register: termshark_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Termshark temporary directory for Linux
   ansible.builtin.tempfile:
@@ -39,7 +38,7 @@
   register: termshark_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Termshark temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +47,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Termshark for Linux
   ansible.builtin.unarchive:
@@ -62,7 +61,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Termshark for Linux
   ansible.builtin.copy:
@@ -77,7 +76,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 # Do not install the Wireshark formula. It conflicts with the Wireshark cask.
 - name: Install Termshark for MacOS
@@ -87,7 +86,7 @@
     name: termshark
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
@@ -95,7 +94,7 @@
     name: termshark
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Configure Wireshark group for Debian
   ansible.builtin.debconf:
@@ -106,7 +105,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
   ansible.builtin.command:
@@ -118,7 +117,7 @@
     DEBIAN_FRONTEND: noninteractive
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
   ansible.builtin.user:
@@ -129,7 +128,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Termshark configuration directory for Unix
   ansible.builtin.file:
@@ -141,7 +140,7 @@
   become: true
   tags:
     - config
-  when: ansible_system not in ["Darwin", "Win32NT"]
+  when: ansible_facts.system not in ["Darwin", "Win32NT"]
 
 - name: Create Termshark configuration directory for MacOS
   ansible.builtin.file:
@@ -153,7 +152,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Create Termshark configuration directory for Windows
   ansible.windows.win_file:
@@ -161,7 +160,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Termshark configuration file for Unix
   ansible.builtin.copy:
@@ -174,7 +173,7 @@
   become: true
   tags:
     - config
-  when: ansible_system not in ["Darwin", "Win32NT"]
+  when: ansible_facts.system not in ["Darwin", "Win32NT"]
 
 - name: Copy Termshark configuration file for MacOS
   ansible.builtin.copy:
@@ -187,7 +186,7 @@
   become: true
   tags:
     - config
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Copy Termshark configuration file for Windows
   ansible.windows.win_copy:
@@ -196,7 +195,7 @@
     src: termshark.toml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Termshark files for Windows
   ansible.windows.win_owner:
@@ -205,7 +204,7 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Termshark temporary directory for Linux
   ansible.builtin.file:
@@ -213,4 +212,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

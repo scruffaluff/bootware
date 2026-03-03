@@ -1,6 +1,6 @@
 # Nushell general configuration file.
 #
-# For more information, visit https://www.nushell.sh/book/configuration.html.
+# For more information, visit https://nushell.sh/book/configuration.html.
 
 # Private convenience functions.
 
@@ -25,7 +25,7 @@ def _autoload-scripts [...scripts: path] {
 # Generate Nushell color theme.
 #
 # Documented at
-# https://www.nushell.sh/book/coloring_and_theming.html#color-configuration.
+# https://nushell.sh/book/coloring_and_theming.html#color-configuration.
 def _color-theme [] {
     # Set solarized light theme variables based on
     # https://ethanschoonover.com/solarized/#the-values.
@@ -223,17 +223,17 @@ Enter 'all' to delete all the matching entries.
 # Expand alias for autocompletion.
 #
 # Based on logic from
-# https://www.nushell.sh/cookbook/external_completers.html#alias-completions.
+# https://nushell.sh/cookbook/external_completers.html#alias-completions.
 def _expand-alias [spans: list<string>] {
-    let expanded_alias = scope aliases
+    let expansion = scope aliases
     | where name == $spans.0
     | get --optional 0
     | get --optional expansion
 
-    if $expanded_alias != null  {
-        $spans | skip 1 | prepend ($expanded_alias | split row " " | take 1)
-    } else {
+    if $expansion == null  {
         $spans
+    } else {
+        $spans | skip 1 | prepend ($expansion | split row " " | take 1)
     }
 }
 
@@ -522,6 +522,14 @@ def "history prune" [] {
     | ignore
 }
 
+# Wrapper for poweroff command with Windows support.
+def --wrapped poweroff [...args: string] {
+    match $nu.os-info.name {
+        "windows" => { powershell -command "Stop-Computer -Force" },
+        _ => { ^poweroff ...$args },
+    }
+}
+
 # Prepend existing directories that are not in the system path.
 def --env prepend-paths [...paths: directory] {
     $env.PATH = $paths
@@ -529,6 +537,14 @@ def --env prepend-paths [...paths: directory] {
     | where {|path| ($path | path type) == "dir" and not ($path in $env.PATH) }
     | reverse
     | [...$in ...$env.PATH]
+}
+
+# Wrapper for reboot command with Windows support.
+def --wrapped reboot [...args: string] {
+    match $nu.os-info.name {
+        "windows" => { powershell -command "Restart-Computer -Force" },
+        _ => { ^reboot ...$args },
+    }
 }
 
 # Check if current shell is within a remote SSH session.
@@ -740,18 +756,17 @@ $env.MINISERVE_INDEX = "index.html"
 
 # Python settings.
 
-# Add Jupyter Lab alias.
-def --wrapped jupylab [...args] {
-    (
-        uv --quiet tool run --from jupyterlab --with
-        bokeh,librosa,numpy,polars,soundfile,scipy jupyter-lab ...$args
-    )
-}
 # Add Python debugger alias.
 alias pdb = python3 -m pdb
 
 # Make Poetry create virtual environments inside projects.
 $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
+# Disable Python history.
+$env.PYTHON_HISTORY = if $nu.os-info.name == "windows" {
+    "NUL"
+} else {
+    "/dev/null"
+}
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 

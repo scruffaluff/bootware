@@ -1,6 +1,6 @@
 # Topgrade configuration file for updating system packages.
 #
-# For more infomation, visit
+# For more information, visit
 # https://github.com/topgrade-rs/topgrade/blob/main/config.example.toml.
 
 [brew]
@@ -8,11 +8,12 @@ greedy_cask = true
 
 [misc]
 assume_yes = true
-{% if ansible_system in ["Darwin", "Win32NT"] %}
+{% if ansible_facts.system in ["Darwin", "Win32NT"] %}
 disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "system", "uv"]
 {% else %}
 disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "uv"]
 {% endif %}
 no_retry = true
+no_self_update = true
 notify_each_step = false
 skip_notify = true

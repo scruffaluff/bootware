@@ -3,4 +3,25 @@ zed_arch_:
   amd64: x86_64
   arm64: aarch64
 zed_arch: "{{ zed_arch_[system_architecture] }}"
+zed_extensions:
+  deno: true
+  dockerfile: true
+  emmet: true
+  fish: true
+  harper: true
+  html: true
+  jinja2: true
+  just: true
+  lua: true
+  log: true
+  nu: true
+  powershell: true
+  rainbow-csv: true
+  solarized: true
+  toml: true
+  vue: true
 zed_font_size: "{{ font_size }}"
+zed_remotes: []
+zed_config_path: >-
+  {{ user_home + '\AppData\Roaming\Zed' if ansible_facts.system == 'Win32NT'
+  else user_home + '/.config/zed' }}

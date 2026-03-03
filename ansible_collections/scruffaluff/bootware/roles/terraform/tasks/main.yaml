@@ -5,7 +5,7 @@
     name: terraform
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Terraform for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: terraform_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Terraform version for Unix
   ansible.builtin.uri:
@@ -27,8 +27,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
-    is failed)
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    terraform_linux is failed)
 
 - name: Create Terraform temporary directory for Unix
   ansible.builtin.tempfile:
@@ -37,8 +37,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
-    is failed)
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    terraform_linux is failed)
 
 - name: Download Terraform for Unix
   ansible.builtin.unarchive:
@@ -48,13 +48,13 @@
     src: >-
       https://releases.hashicorp.com/terraform/{{
       terraform_release.json.tag_name[1:] }}/terraform_{{
-      terraform_release.json.tag_name[1:] }}_{{ ansible_system | lower }}_{{
-      system_architecture }}.zip
+      terraform_release.json.tag_name[1:] }}_{{ ansible_facts.system | lower
+      }}_{{ system_architecture }}.zip
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
-    is failed)
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    terraform_linux is failed)
 
 - name: Install Terraform for Unix
   ansible.builtin.copy:
@@ -67,8 +67,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
-    is failed)
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    terraform_linux is failed)
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
@@ -76,7 +76,7 @@
     name: terraform
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Terraform temporary directory for Unix
   ansible.builtin.file:
@@ -85,5 +85,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Darwin" or (ansible_system == "Linux" and terraform_linux
-    is failed)
+    ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
+    terraform_linux is failed)

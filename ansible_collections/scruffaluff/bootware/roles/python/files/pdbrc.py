@@ -401,12 +401,9 @@ def parse_exprs(pdb: Pdb, line: str) -> str:
             result = str(eval(expr.expr, curframe(pdb).f_globals, pdb.curframe_locals))
         except Exception:  # noqa: S112
             continue
-        line = (
-            line[: expr.start + offset]
-            + shlex.quote(result)
-            + line[expr.stop + offset :]
-        )
-        offset += len(result) - expr.stop + expr.start
+        insert = shlex.quote(result)
+        line = line[: expr.start + offset] + insert + line[expr.stop + offset :]
+        offset += len(insert) - expr.stop + expr.start
     return line
 
 

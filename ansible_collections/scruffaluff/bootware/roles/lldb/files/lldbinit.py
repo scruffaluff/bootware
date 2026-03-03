@@ -17,7 +17,7 @@ def cmd_cb(
     interpreter = debugger.GetCommandInterpreter()
     interpreter.HandleCommand(f"b {command}", result)
     if result.Succeeded():
-        match = re.match(r"^Breakpoint (\d):.*", result.GetOutput())
+        match = re.match(r"^Breakpoint (\d+):.*", result.GetOutput())
         if match is None:
             return
 

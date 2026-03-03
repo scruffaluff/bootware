@@ -5,11 +5,7 @@
   },
   { "name": "alacritty", "tests": ["alacritty --version"] },
   {
-    "name": "android_studio",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "openwrt" }]
-  },
-  {
-    "name": "android_tools",
+    "name": "android",
     "skip": [{ "os": "openwrt" }, { "os": "suse" }],
     "tests": ["adb --version"]
   },
@@ -61,10 +57,10 @@
   },
   { "name": "desktop_environment" },
   { "name": "dive", "tests": ["dive --version"] },
-  { "name": "dust", "tests": ["dust --version"] },
-  { "name": "doctl", "tests": ["doctl version"] },
   { "name": "docker", "tests": ["docker --version", "docker compose --help"] },
+  { "name": "doctl", "tests": ["doctl version"] },
   { "name": "duf", "tests": ["duf --version"] },
+  { "name": "dust", "tests": ["dust --version"] },
   { "name": "fastfetch", "tests": ["fastfetch --version"] },
   { "name": "fd", "tests": ["fd --version"] },
   { "name": "ffmpeg", "tests": ["ffmpeg -version"] },
@@ -220,6 +216,7 @@
     }
   },
   { "name": "lldb", "tests": ["lldb --version"] },
+  { "name": "localsend", "skip": [{ "os": "freebsd" }] },
   { "name": "lsd", "tests": ["lsd --version"] },
   {
     "name": "lua",
@@ -322,6 +319,7 @@
     }
   },
   { "name": "rclone", "tests": ["rclone --version"] },
+  { "name": "readest", "skip": [{ "os": "freebsd" }] },
   { "name": "readline" },
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
@@ -422,11 +420,6 @@
     "name": "vscode",
     "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
     "tests": ["code --version"]
-  },
-  {
-    "name": "vscodium",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
-    "tests": ["codium --version"]
   },
   {
     "name": "watchexec",

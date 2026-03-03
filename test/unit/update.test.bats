@@ -40,7 +40,7 @@ curl --fail --location --show-error --silent \
 https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/completion/bootware.fish"
 }
 
-functon_update_uses_sudo_when_destination_is_not_writable() { # @test
+function_update_uses_sudo_when_destination_is_not_writable() { # @test
   BATS_SOURCE_ONLY='true' source src/bootware.sh
   find_super() {
     echo 'sudo'

@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.22.2 AS build
+FROM docker.io/alpine:3 AS build
 
 ARG version
 
@@ -39,7 +39,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/alpine:3.22.2
+FROM docker.io/alpine:3
 
 ARG version
 
@@ -52,7 +52,7 @@ COPY --from=build /bootware/alpine.rsa.pub /etc/apk/keys/alpine.rsa.pub
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Alpine package.
-RUN shasum --check --algorithm 512 "bootware-${version?}-r0.apk.sha512"
+RUN shasum --check --algorithm 256 "bootware-${version?}-r0.apk.sha256"
 
 # Install Alpine package.
 RUN apk add "./bootware-${version?}-r0.apk"

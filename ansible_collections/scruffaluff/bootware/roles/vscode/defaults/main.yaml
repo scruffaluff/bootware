@@ -11,9 +11,10 @@ vscode_chrome_path_:
   Darwin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
   FreeBSD: /usr/local/bin/chrome
   Linux: >-
-    {{ vscode_chrome_path_linux_.get(ansible_pkg_mgr, '/usr/bin/google-chrome')
+    {{ vscode_chrome_path_linux_.get(system_pkg_mgr, '/usr/bin/google-chrome')
     }}
-  Win32NT: "{{ scoop_path }}\\shims\\chrome.exe"
+  Win32NT: >-
+    {{ (scoop_path | replace(backslash, '/')) + '/shims/chrome.exe' }}
 vscode_path_linux_:
   apk: /usr/lib/code-oss/resources/app
   pacman: /opt/visual-studio-code/resources/app
@@ -21,17 +22,22 @@ vscode_path_:
   Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
   FreeBSD: /usr/local/share/code-oss/resources/app
   Linux: >-
-    {{ vscode_path_linux_.get(ansible_pkg_mgr, '/usr/share/code/resources/app')
+    {{ vscode_path_linux_.get(system_pkg_mgr, '/usr/share/code/resources/app')
     }}
   Win32NT: C:\Program Files\Microsoft VS Code\resources\app
 vscode_system_:
   Darwin: osx
   Linux: linux
   Win32NT: windows
+vscode_user_path_:
+  Darwin: "{{ user_home }}/Library/Application Support/Code/User"
+  FreeBSD: "{{ user_home }}/.config/Code/User"
+  Linux: "{{ user_home }}/.config/Code/User"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\VSCode\\User"
 
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
-vscode_chrome_path: "{{ vscode_chrome_path_[ansible_system] }}"
-vscode_ctrl_key: "{{ 'cmd' if ansible_system == 'Darwin' else 'ctrl' }}"
+vscode_chrome_path: "{{ vscode_chrome_path_[ansible_facts.system] }}"
+vscode_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
 vscode_custom_html: |
   <style>
     .terminal.xterm {
@@ -42,6 +48,7 @@ vscode_extensions:
   - 13xforever.language-x86-64-assembly
   - alefragnani.bookmarks
   - antfu.vite
+  - astral-sh.ty
   - bierner.markdown-mermaid
   - bmalehorn.vscode-fish
   - bradlc.vscode-tailwindcss
@@ -55,13 +62,12 @@ vscode_extensions:
   - esbenp.prettier-vscode
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
-  - grapecity.gc-excelviewer
   - james-yu.latex-workshop
   - leanprover.lean4
+  - marimo-team.vscode-marimo
+  - mechatroner.rainbow-csv
   - mhutchie.git-graph
   - ms-playwright.playwright
-  - ms-python.mypy-type-checker
-  - ms-python.python
   - ms-vscode-remote.vscode-remote-extensionpack
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
@@ -77,7 +83,8 @@ vscode_extensions:
   - vue.volar
 vscode_font_size: "{{ font_size }}"
 vscode_install_customizations: true
-vscode_path: "{{ vscode_path_[ansible_system] }}"
+vscode_path: >-
+  {{ vscode_path_.get(ansible_facts.system, '/usr/share/code/resources/app') }}
 vscode_remote_extensions:
   - alefragnani.bookmarks
   - bierner.markdown-mermaid
@@ -87,6 +94,7 @@ vscode_remote_extensions:
   - elijah-potter.harper
   - foxundermoon.shell-format
   - james-yu.latex-workshop
+  - mechatroner.rainbow-csv
   - mhutchie.git-graph
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
@@ -95,5 +103,9 @@ vscode_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
+vscode_remotes: {}
 vscode_style: true
-vscode_system: "{{ vscode_system_.get(ansible_system, 'linux') }}"
+vscode_system: "{{ vscode_system_.get(ansible_facts.system, 'linux') }}"
+vscode_user_path: >-
+  {{ vscode_user_path_.get(ansible_facts.system, user_home +
+  '/.config/Code/User') }}

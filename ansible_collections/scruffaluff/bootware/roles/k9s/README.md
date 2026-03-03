@@ -1,7 +1,23 @@
 # K9s
 
-K9s is an Ansible role
+Ansible role that installs [K9s](https://k9scli.io) Kubernetes manager.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.k9s
+```

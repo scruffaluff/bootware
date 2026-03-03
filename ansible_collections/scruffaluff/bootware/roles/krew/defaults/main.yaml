@@ -12,4 +12,4 @@ krew_plugins_:
     - ns
   Win32NT: []
 krew_plugins: >-
-  {{ krew_plugins_.always + krew_plugins_.get(ansible_system, []) }}
+  {{ krew_plugins_.always + krew_plugins_.get(ansible_facts.system, []) }}

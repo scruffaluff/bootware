@@ -1,16 +1,17 @@
 # Configuration file for ignore paths.
 
-__pycache__/
+.DS_Store
 .benchmarks/
 .cache/
+.classpath/
 .deno/
-.DS_Store
 .dvc/
 .git/
 .hg/
 .hypothesis/
 .ipynb_checkpoints/
 .jj/
+.localized
 .mypy_cache/
 .obsidian/
 .pytest_cache/
@@ -21,6 +22,8 @@ __pycache__/
 .vendor/
 .venv/
 .vitepress/cache/
+Thumbs.db
+__pycache__/
 buck-out/
 node_modules/
 target/

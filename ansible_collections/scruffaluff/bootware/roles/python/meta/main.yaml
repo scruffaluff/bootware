@@ -1,3 +1,5 @@
 ---
 dependencies:
   - role: variable
+  - role: uv
+    when: python_applications | length > 0

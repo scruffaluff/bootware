@@ -48,7 +48,7 @@
       ansible.builtin.get_url:
         dest: "{{ window_manager_forge_temp.path }}/forge_extension.zip"
         mode: "644"
-        url:
+        url: >-
           https://extensions.gnome.org{{
           window_manager_forge_release.json.download_url }}
       tags:

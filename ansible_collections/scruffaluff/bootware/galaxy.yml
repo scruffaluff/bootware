@@ -7,19 +7,21 @@
 authors:
   - Macklan Weinstein <macklan.weinstein@gmail.com>
 build_ignore:
-  - __pycache__
   - .DS_Store
+  - .classpath
   - .dockerignore
   - .editorconfig
   - .github
+  - .localized
   - .shellcheckrc
   - .venv
-  - completions
+  - PSScriptAnalyzerSettings.psd1
+  - Thumbs.db
+  - __pycache__
   - doc
   - node_modules
   - package-lock.json
   - package.json
-  - PSScriptAnalyzerSettings.psd1
   - pyproject.toml
   - script
   - test
@@ -30,18 +32,18 @@ dependencies:
   community.general: ">=4.0.0"
   community.windows: ">=1.9.0"
 description: software installers
-documentation: http://scruffaluff.github.io/bootware
-homepage: http://github.com/scruffaluff/bootware
-issues: http://github.com/scruffaluff/bootware/issues
+documentation: https://scruffaluff.github.io/bootware
+homepage: https://github.com/scruffaluff/bootware
+issues: https://github.com/scruffaluff/bootware/issues
 license:
   - MIT
 name: bootware
 namespace: scruffaluff
 readme: README.md
-repository: http://github.com/scruffaluff/bootware
+repository: https://github.com/scruffaluff/bootware
 tags:
   - install
   - linux
   - tools
   - windows
-version: "0.9.1"
+version: "0.10.0"

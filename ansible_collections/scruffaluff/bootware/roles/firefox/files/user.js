@@ -8,6 +8,18 @@ user_pref("app.shield.optoutstudies.enabled", false);
 user_pref("browser.aboutConfig.showWarning", false);
 // Disable initial welcome page.
 user_pref("browser.aboutwelcome.enabled", false);
+// Block artificial intelligence features.
+user_pref("browser.ai.control.default", "blocked");
+// Block artificial intelligence features.
+user_pref("browser.ai.control.linkPreviewKeyPoints", "blocked");
+// Block artificial intelligence features.
+user_pref("browser.ai.control.pdfjsAltText", "blocked");
+// Block artificial intelligence features.
+user_pref("browser.ai.control.sidebarChatbot", "blocked");
+// Block artificial intelligence features.
+user_pref("browser.ai.control.smartTabGroups", "blocked");
+// Block artificial intelligence features.
+user_pref("browser.ai.control.translations", "blocked");
 // Enable enhanced tracking protection.
 user_pref("browser.contentblocking.category", "strict");
 // Hide Mozilla VPN recommendations.
@@ -22,14 +34,26 @@ user_pref("browser.formfill.enable", false);
 user_pref("browser.ml.chat.enabled", false);
 // Disable machine learning chat menu.
 user_pref("browser.ml.chat.menu", false);
+// Disable machine learning chat page.
+user_pref("browser.ml.chat.page", false);
+// Disable machine learning chat page features.
+user_pref("browser.ml.chat.page.footerBadge", false);
+// Disable machine learning chat page features.
+user_pref("browser.ml.chat.page.menuBadge", false);
 // Disable machine learning chat shortcuts.
 user_pref("browser.ml.chat.shortcuts", false);
 // Disable machine learning chat sidebar.
 user_pref("browser.ml.chat.sidebar", false);
 // Disable machine learning.
 user_pref("browser.ml.enabled", false);
+// Disable machine learning.
+user_pref("browser.ml.inference.enabled", false);
 // Disable machine learning link previews.
 user_pref("browser.ml.linkPreview.enabled", false);
+// Disable machine learning assistance.
+user_pref("browser.ml.pageAssist.enabled", false);
+// Disable machine learning assistance.
+user_pref("browser.ml.smartAssist.enabled", false);
 // Remove news stories recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 // Remove weather status recommendations from homepage.
@@ -53,12 +77,20 @@ user_pref("browser.newtabpage.activity-stream.system.showWeather", false);
 user_pref("browser.tabs.loadInBackground", true);
 // Disable detaching tab to a new window.
 user_pref("browser.tabs.allowTabDetach", false);
+// Disable artificial intelligence tab recommendations.
+user_pref("browser.tabs.groups.smart.enabled", false);
+// Disable artificial intelligence tab recommendations.
+user_pref("browser.tabs.groups.smart.userEnabled", false);
+// Enable tab split views.
+user_pref("browser.tabs.splitView.enabled", true);
 // Do not show most visited sites in Windows taskbar.
 user_pref("browser.taskbar.lists.frequent.enabled", false);
 // Do not show recently visited sites in Windows taskbar.
 user_pref("browser.taskbar.lists.recent.enabled", false);
 // Show bookmarks bar in toolbar.
 user_pref("browser.toolbars.bookmarks.visibility", "always");
+// Disable page translations.
+user_pref("browser.translations.enable", false);
 // Disable automatic translation popups.
 user_pref("browser.translations.automaticallyPopup", false);
 // Enable bookmarks suggestions in search bar.
@@ -95,6 +127,8 @@ user_pref("extensions.pocket.enabled", false);
 user_pref("extensions.formautofill.addresses.enabled", false);
 // Disable auto filling credit cards.
 user_pref("extensions.formautofill.creditCards.enabled", false);
+// Block artificial intelligence extensions.
+user_pref("extensions.ml.enabled", false);
 // Disable notifications about web pages entering fullscreen mode.
 user_pref("full-screen-api.warning.timeout", 0);
 // Disable audio and video autoplay.
@@ -109,6 +143,12 @@ user_pref("media.eme.enabled", true);
 user_pref("network.protocol-handler.external.mailto", false);
 // Set default zoom for PDFs to page width.
 user_pref("pdfjs.defaultZoomValue", "page-width");
+// Disable PDF artificial intelligence features.
+user_pref("pdfjs.enableAltText", false);
+// Disable PDF artificial intelligence features.
+user_pref("pdfjs.enableAltTextModelDownload", false);
+// Disable PDF artificial intelligence features.
+user_pref("pdfjs.enableGuessAltText", false);
 // Prevent sites from asking to send notifications.
 user_pref("permissions.default.desktop-notification", 2);
 // Prevent sites from asking for location.

@@ -5,7 +5,7 @@
   register: velero_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Set Velero temporary directory permissions for Unix
   ansible.builtin.file:
@@ -14,7 +14,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Velero for Linux
   ansible.builtin.package:
@@ -24,7 +24,7 @@
   register: velero_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Velero version for Linux
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
   register: velero_formula
   tags:
     - install
-  when: ansible_system == "Linux" and velero_linux is failed
+  when: ansible_facts.system == "Linux" and velero_linux is failed
 
 - name: Download Velero for Linux
   ansible.builtin.unarchive:
@@ -48,7 +48,7 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and velero_linux is failed
+  when: ansible_facts.system == "Linux" and velero_linux is failed
 
 - name: Install Velero for Linux
   ansible.builtin.copy:
@@ -62,7 +62,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and velero_linux is failed
+  when: ansible_facts.system == "Linux" and velero_linux is failed
 
 - name: Install Velero for MacOS
   become: true
@@ -71,7 +71,7 @@
     name: velero
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Velero for Windows
   community.windows.win_scoop:
@@ -79,7 +79,7 @@
     name: velero
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Velero shell completions for Unix
   ansible.builtin.shell:
@@ -87,14 +87,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Velero shell completions for Unix
   ansible.builtin.copy:
@@ -112,7 +112,7 @@
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Velero temporary directory for Unix
   ansible.builtin.file:
@@ -120,4 +120,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

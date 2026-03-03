@@ -4,13 +4,13 @@
     cmd: ldd --version
   register: glibc_version_text
   changed_when: false
-  when: ansible_system == "Linux" and system_libc == "gnu"
+  when: ansible_facts.system == "Linux" and system_libc == "gnu"
 
 - name: Parse system Glibc version
   ansible.builtin.set_fact:
     glibc_version: >-
       {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
-  when: ansible_system == "Linux" and system_libc == "gnu"
+  when: ansible_facts.system == "Linux" and system_libc == "gnu"
 
 - name: Check if GNOME shell is installed
   ansible.builtin.stat:
@@ -19,7 +19,7 @@
     - /usr/bin/gnome-shell
     - /usr/local/bin/gnome-shell
   register: gnome_desktop_stat
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Mark if GNOME desktop is installed
   ansible.builtin.set_fact:
@@ -28,7 +28,7 @@
     # a string.
     gnome_desktop: >-
       {{ (gnome_desktop_stat.results | map(attribute='stat.exists')) is any }}
-  when: ansible_system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Find GNOME version for GNOME desktops
   ansible.builtin.command:
@@ -37,25 +37,25 @@
   become_user: "{{ user_id }}"
   changed_when: false
   register: gnome_version_text
-  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
+  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Parse GNOME version for GNOME desktops
   ansible.builtin.set_fact:
     gnome_version: >-
       {{ gnome_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
-  when: ansible_system in ["FreeBSD", "Linux"] and gnome_desktop
+  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
 
 - name: Check if systemd is available for Linux
   ansible.builtin.stat:
     path: /usr/bin/systemctl
   register: systemd_stat
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Mark if Systemd is available for Linux
   ansible.builtin.set_fact:
     cacheable: true
     systemd: "{{ systemd_stat.stat.exists }}"
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

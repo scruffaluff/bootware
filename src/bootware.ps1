@@ -17,7 +17,7 @@ $ProgressPreference = 'SilentlyContinue'
     Justification = 'Variable is a standard PowerShell setting.'
 )]
 $PSNativeCommandArgumentPassing = 'Legacy'
-# Exit immediately when an native executable encounters an error.
+# Exit immediately when a native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
 # Show CLI help information.
@@ -111,6 +111,7 @@ Usage: bootware roles [OPTIONS]
 
 Options:
   -h, --help              Print help information.
+  -s, --skip <TAG-LIST>   Ansible playbook tags to skip.
   -t, --tags <TAG-LIST>   Ansible playbook tags to select.
 '@
         }
@@ -426,7 +427,7 @@ function Config() {
         # Do not use Write-Output. On PowerShell 5, it will add a byte order
         # marker to the file, which makes WSL Ansible throw UTF-8 errors.
         # Solution was taken from https://stackoverflow.com/a/32951824.
-        [System.IO.File]::WriteAllLines($DstFile, 'font_size: 14')
+        [System.IO.File]::WriteAllLines($DstFile, 'super_passwordless: false')
     }
     else {
         Log "Downloading configuration file to '$DstFile'."
@@ -504,7 +505,7 @@ function Log($Message) {
 # Required when SSH private key lives in Windows file system, since its open
 # permissions cannot be changed.
 function MakeWSLKey($FilePath) {
-    $WSLFile = wsl mktemp --dry-run
+    $WSLFile = wsl mktemp -u
     wsl cp "$(WSLPath $FilePath)" $WSLFile
     wsl chmod 600 $WSLFile
     $WSLFile
@@ -842,7 +843,7 @@ function SetupWSL($Branch) {
     $Debug = $Global:Debug
     $WSLExe = Get-Command -ErrorAction SilentlyContinue wsl
     $MWSL = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-    $VMP = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    $VMP = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 
     if ((-not $WSLExe) -or ($MWSL.State -ne 'Enabled') -or ($VMP.State -ne 'Enabled')) {
         # Dism appears to require arguments in a specific order.
@@ -996,8 +997,8 @@ function UpdateCompletion($Version) {
     $PowerShellURL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version/src/completion/bootware.psm1"
 
     $Paths = @(
-        "$HOME\Documents\PowerShell\Modules\BootwareCompletion"
-        "$HOME\Documents\WindowsPowerShell\Modules\BootwareCompletion"
+        "$HOME\Documents\PowerShell\Modules"
+        "$HOME\Documents\WindowsPowerShell\Modules"
     )
     foreach ($Path in $Paths) {
         New-Item -Force -ItemType Directory -Path $Path | Out-Null
@@ -1008,7 +1009,7 @@ function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 function Version() {
-    Write-Output 'Bootware 0.9.1'
+    Write-Output 'Bootware 0.10.0'
 }
 
 # Convert path to WSL relative path.

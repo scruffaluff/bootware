@@ -1,16 +1,16 @@
 --- @sync entry
 
--- Yazi plugin to customized open keybindings.
+-- Yazi plugin to customize open keybindings.
 --
 -- Based on logic https://yazi-rs.github.io/docs/tips/#smart-enter.
 
 local function entry()
     local path = cx.active.current.hovered
     if path and path.cha.is_dir then
-		ya.manager_emit("enter", {})
-		ya.manager_emit("quit", {})
+        ya.emit("mgr:enter", {})
+        ya.emit("mgr:quit", {})
     else
-		ya.manager_emit("open", { hovered = true })
+        ya.emit("mgr:open", { hovered = true })
     end
 end
 

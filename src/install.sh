@@ -39,7 +39,7 @@ EOF
 #   SHELL
 #######################################
 configure_shell() {
-  local dst_dir="${1}"
+  local dst_dir="${1}" export_cmd shell_name
   export_cmd="export PATH=\"${dst_dir}:\${PATH}\""
   shell_name="$(basename "${SHELL:-}")"
 
@@ -219,7 +219,7 @@ install_completions() {
     os="$(uname -s)"
 
     if [ "${os}" = 'Darwin' ]; then
-      arch="$(uname -m | sed s/aarch64/arm64/)"
+      arch="$(uname -m | sed 's/aarch64/arm64/')"
       if [ "${arch}" = 'arm64' ]; then
         brew_prefix='/opt/homebrew'
       else

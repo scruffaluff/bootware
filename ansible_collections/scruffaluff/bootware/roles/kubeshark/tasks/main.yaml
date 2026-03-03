@@ -8,7 +8,7 @@
   register: kubeshark_release_unix
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Kubeshark for Unix
   ansible.builtin.get_url:
@@ -17,12 +17,12 @@
     mode: "755"
     url: >-
       https://github.com/kubeshark/kubeshark/releases/download/{{
-      kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_system |
-      lower }}_{{ system_architecture }}
+      kubeshark_release_unix.json.tag_name }}/kubeshark_{{ ansible_facts.system
+      | lower }}_{{ system_architecture }}
   become: true
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Get latest Kubeshark version for Windows
   ansible.windows.win_uri:
@@ -33,7 +33,7 @@
   register: kubeshark_release_windows
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Kubeshark program directory for Windows
   ansible.windows.win_file:
@@ -41,7 +41,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Add Kubeshark to system path for Windows
   ansible.windows.win_path:
@@ -49,7 +49,7 @@
     scope: machine
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Kubeshark for Windows
   ansible.windows.win_get_url:
@@ -59,7 +59,7 @@
       kubeshark_release_windows.json.tag_name }}/kubeshark.exe
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Kubeshark temporary directory for Unix
   ansible.builtin.tempfile:
@@ -67,7 +67,7 @@
   register: kubeshark_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create Kubeshark shell completions for Unix
   ansible.builtin.shell:
@@ -77,14 +77,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Kubeshark shell completions for Unix
   ansible.builtin.copy:
@@ -102,7 +102,7 @@
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Kubeshark temporary directory for Unix
   ansible.builtin.file:
@@ -110,4 +110,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

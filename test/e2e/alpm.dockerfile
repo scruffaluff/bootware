@@ -1,4 +1,4 @@
-FROM docker.io/archlinux:base-20251019.0.436919 AS build
+FROM docker.io/archlinux:latest AS build
 
 ARG version
 
@@ -28,7 +28,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/archlinux:base-20251019.0.436919
+FROM docker.io/archlinux
 
 ARG version
 
@@ -39,7 +39,7 @@ RUN pacman --noconfirm --refresh --sync --sysupgrade \
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Arch package.
-RUN sha512sum --check "bootware-${version}-0-any.pkg.tar.zst.sha512"
+RUN sha256sum --check "bootware-${version}-0-any.pkg.tar.zst.sha256"
 
 # Install Arch package.
 RUN pacman --noconfirm --upgrade "./bootware-${version}-0-any.pkg.tar.zst"

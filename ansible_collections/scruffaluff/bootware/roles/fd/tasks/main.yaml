@@ -5,7 +5,7 @@
     name: fd-find
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Get latest Fd version for Linux
   ansible.builtin.uri:
@@ -15,7 +15,7 @@
   register: fd_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Create Fd temporary directory for Linux
   ansible.builtin.tempfile:
@@ -23,7 +23,7 @@
   register: fd_temp
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Set Fd temporary directory permissions for Linux
   ansible.builtin.file:
@@ -32,7 +32,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Fd for Linux
   ansible.builtin.unarchive:
@@ -45,7 +45,7 @@
       }}-{{ fd_arch }}-unknown-linux-{{ fd_libc }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Fd for Linux
   ansible.builtin.copy:
@@ -59,7 +59,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Fd for MacOS
   become: true
@@ -68,7 +68,7 @@
     name: fd
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Fd for Windows
   community.windows.win_scoop:
@@ -76,7 +76,7 @@
     name: fd
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Fd shell completions for Linux
   ansible.builtin.copy:
@@ -96,7 +96,7 @@
   tags:
     - completion
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Remove Fd temporary directory for Linux
   ansible.builtin.file:
@@ -104,4 +104,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"

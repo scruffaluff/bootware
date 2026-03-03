@@ -18,7 +18,7 @@ Describe 'Config' {
         $Env:BOOTWARE_NOLOG = 'true'
 
         & $Bootware config --source 'https://example.com/config.yaml'
-        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+        Assert-MockCalled Invoke-WebRequest -Scope It -Times 1 -ParameterFilter {
             $OutFile -eq "$HOME\.bootware\config.yaml" -and
             $Uri -eq 'https://example.com/config.yaml'
         }
@@ -28,7 +28,7 @@ Describe 'Config' {
         $Env:BOOTWARE_NOLOG = 'true'
 
         & $Bootware config --source https://fakedomain.com
-        Assert-MockCalled Invoke-WebRequest -Times 1 -ParameterFilter {
+        Assert-MockCalled Invoke-WebRequest -Scope It -Times 1 -ParameterFilter {
             $OutFile -eq "$HOME\.bootware\config.yaml" -and
             $Uri -eq 'https://fakedomain.com'
         }

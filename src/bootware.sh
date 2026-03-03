@@ -105,6 +105,7 @@ Usage: bootware roles [OPTIONS]
 
 Options:
   -h, --help              Print help information.
+  -s, --skip <TAG-LIST>   Ansible playbook tags to skip.
   -t, --tags <TAG-LIST>   Ansible playbook tags to select.
   -u, --url <URL>         URL of playbook repository.
 EOF
@@ -354,8 +355,6 @@ bootstrap() {
   export ANSIBLE_DEPRECATION_WARNINGS='false'
   # Disable Ansible Pull warnings about parsing the local hostname.
   export ANSIBLE_HOST_PATTERN_MISMATCH='ignore'
-  # Use legacy style Ansible facts.
-  export ANSIBLE_INJECT_FACT_VARS='true'
   # Disable file optimizations that can conflict with become operations.
   export ANSIBLE_PIPELINING='false'
   # Disable warnings about implicit Python interpreter selection.
@@ -368,7 +367,6 @@ bootstrap() {
   # shellcheck disable=SC2086
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
-    ${checkout:+--checkout "${checkout}"} \
     --extra-vars "@${config_path}" \
     ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
@@ -545,7 +543,9 @@ find_super() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if command -v doas > /dev/null 2>&1; then
+  if [ "$(id -u)" -eq 0 ]; then
+    echo ''
+  elif command -v doas > /dev/null 2>&1; then
     echo 'doas'
   elif command -v sudo > /dev/null 2>&1; then
     echo 'sudo'
@@ -582,7 +582,7 @@ install_yq() {
   # Do not use long form flags for uname. They are not supported on some
   # systems.
   arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
-  os="$(uname -s)"
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
   # Get latest Yq version.
   #
@@ -876,7 +876,7 @@ setup_arch() {
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
     ${super:+"${super}"} pacman --noconfirm --sync base-devel
 
-    tmp_dir="$(mktemp --dry-run)"
+    tmp_dir="$(mktemp -u)"
     git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
     (cd "${tmp_dir}" && makepkg --install --noconfirm --syncdeps)
     yay --noconfirm --refresh --sync --sysupgrade
@@ -1047,7 +1047,7 @@ setup_freebsd() {
 setup_linux() {
   local super="${1:-}"
 
-  # Install dependencies for Bootware base on available package manager.
+  # Install dependencies for Bootware based on available package manager.
   #
   # Flags:
   #   -v: Only show file path of command.
@@ -1269,14 +1269,14 @@ update() {
 #   GitHub version reference.
 #######################################
 update_completions() {
-  local brew_prefix global_="${2}" os super="${1}" version="${3}"
+  local brew_prefix user_install="${2}" os super="${1}" version="${3}"
   local repo_url="https://raw.githubusercontent.com/scruffaluff/bootware/${version}"
   local bash_url="${repo_url}/src/completion/bootware.bash"
   local fish_url="${repo_url}/src/completion/bootware.fish"
 
   # Flags:
-  #  -z: Check if the string is empty.
-  if [ -z "${global_}" ]; then
+  #   -z: Check if string is empty.
+  if [ -z "${user_install}" ]; then
     if [ "$(uname -m)" = 'arm64' ]; then
       brew_prefix='/opt/homebrew'
     else
@@ -1314,7 +1314,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.9.1'
+  echo 'Bootware 0.10.0'
 }
 
 #######################################

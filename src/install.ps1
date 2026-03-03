@@ -10,7 +10,7 @@
 $ErrorActionPreference = 'Stop'
 # Disable progress bar for PowerShell cmdlets.
 $ProgressPreference = 'SilentlyContinue'
-# Exit immediately when an native executable encounters an error.
+# Exit immediately when a native executable encounters an error.
 $PSNativeCommandUseErrorActionPreference = $True
 
 # Show CLI help information.
@@ -31,7 +31,7 @@ Options:
 }
 
 # Download and install Bootware.
-function InstallBootware($TargetEnv, $Version, $DestDir, $Script, $PreserveEnv) {
+function InstallBootware($TargetEnv, $Version, $DestDir, $PreserveEnv) {
     $URL = "https://raw.githubusercontent.com/scruffaluff/bootware/$Version"
 
     Log "Installing Bootware to '$DestDir\bootware.ps1'."
@@ -168,7 +168,7 @@ Restart this script from an administrator console or install to a user directory
         exit 1
     }
 
-    InstallBootware $TargetEnv $Version $DestDir $Script $PreserveEnv
+    InstallBootware $TargetEnv $Version $DestDir $PreserveEnv
 }
 
 # Only run Main if invoked as script. Otherwise import functions as library.

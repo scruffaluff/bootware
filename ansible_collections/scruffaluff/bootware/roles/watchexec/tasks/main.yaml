@@ -7,7 +7,7 @@
   register: watchexec_formula
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create Watchexec temporary directory for Unix
   ansible.builtin.tempfile:
@@ -15,7 +15,7 @@
   register: watchexec_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Set Watchexec temporary directory permissions for Unix
   ansible.builtin.file:
@@ -24,7 +24,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Download Watchexec for Unix
   ansible.builtin.unarchive:
@@ -38,7 +38,7 @@
       watchexec_env }}.tar.xz
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Watchexec for Linux
   ansible.builtin.package:
@@ -48,7 +48,7 @@
   register: watchexec_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Watchexec for Linux
   ansible.builtin.copy:
@@ -63,7 +63,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and watchexec_linux is failed
+  when: ansible_facts.system == "Linux" and watchexec_linux is failed
 
 - name: Install Watchexec for MacOS
   become: true
@@ -72,7 +72,7 @@
     name: watchexec
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Watchexec for Windows
   community.windows.win_scoop:
@@ -80,7 +80,7 @@
     name: watchexec
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Watchexec shell completions for Unix
   ansible.builtin.copy:
@@ -101,7 +101,7 @@
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Watchexec temporary directory for Unix
   ansible.builtin.file:
@@ -109,4 +109,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

@@ -5,7 +5,7 @@
     name: fastfetch
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Fastfetch for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: fastfetch_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Fastfetch version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: fastfetch_formula
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed
 
 - name: Create Fastfetch temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: fastfetch_temp
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed
 
 - name: Set Fastfetch temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed
 
 - name: Download Fastfetch for Linux
   ansible.builtin.unarchive:
@@ -55,7 +55,7 @@
       system_architecture }}.tar.gz
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed
 
 - name: Install Fastfetch for Linux
   ansible.builtin.copy:
@@ -69,7 +69,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed
 
 - name: Install Fastfetch for MacOS
   become: true
@@ -78,7 +78,7 @@
     name: fastfetch
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Fastfetch for Windows
   community.windows.win_scoop:
@@ -86,7 +86,7 @@
     name: fastfetch
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Fastfetch temporary directory for Linux
   ansible.builtin.file:
@@ -94,4 +94,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and fastfetch_linux is failed
+  when: ansible_facts.system == "Linux" and fastfetch_linux is failed

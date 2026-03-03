@@ -4,7 +4,7 @@
 def main [] {}
 
 # Build Bootware Ansible collection.
-def "main ansible" [--version (-v): string = "0.9.1"] {
+def "main ansible" [--version (-v): string = "0.10.0"] {
     let path = $"build/dist/scruffaluff-bootware-($version).tar.gz"
     mkdir build/dist
 
@@ -13,14 +13,14 @@ def "main ansible" [--version (-v): string = "0.9.1"] {
         uv run ansible-galaxy collection build --force --output-path
         build/dist ansible_collections/scruffaluff/bootware
     )
-    open $path | hash sha256 | save --force $"($path).sha512"
+    open $path | hash sha256 | save --force $"($path).sha256"
 }
 
 # Build Bootware packages.
 def "main build" [] {}
 
 # Build Bootware packages for distribution.
-def "main dist" [--version (-v): string = "0.9.1" ...packages: string] {
+def "main dist" [--version (-v): string = "0.10.0" ...packages: string] {
     let packages_ = if ($packages | is-empty) {
         ["alpm" "apk" "brew" "deb" "rpm"]
     } else {
@@ -38,9 +38,9 @@ def "main dist" [--version (-v): string = "0.9.1" ...packages: string] {
 }
 
 # Run Bootware package tests in Docker.
-def "main test" [--version (-v): string = "0.9.1" ...packages: string] {
+def "main test" [--version (-v): string = "0.10.0" ...packages: string] {
     # Brew package is skipped until new release that matches repository
-    # reoganization.
+    # reorganization.
     let packages_ = if ($packages | is-empty) {
         ["alpm" "apk" "deb" "rpm"]
     } else {

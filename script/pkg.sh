@@ -34,8 +34,8 @@ EOF
 # https://wiki.archlinux.org/title/creating_packages.
 #######################################
 alpm() {
+  version="${1}"
   file="bootware-${version}-0-any.pkg.tar.zst"
-  export version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p build/dist
@@ -43,6 +43,7 @@ alpm() {
   cp src/completion/bootware.man "${build}/bootware.1"
   cp src/bootware.sh "${build}/bootware"
 
+  export version="${version}"
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
@@ -52,7 +53,7 @@ alpm() {
   (cd "${build}" && makepkg --install --noconfirm --syncdeps)
 
   mv "${build}/${file}" build/dist/
-  (cd build/dist && sha512sum "${file}" > "${file}.sha512")
+  (cd build/dist && checksum "${file}")
 }
 
 #######################################
@@ -62,7 +63,7 @@ alpm() {
 # https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package.
 #######################################
 apk() {
-  export version="${1}"
+  version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p build/dist "${HOME}/.abuild"
@@ -70,6 +71,7 @@ apk() {
   cp src/completion/bootware.man "${build}/bootware.1"
   cp src/bootware.sh "${build}/bootware"
 
+  export version="${version}"
   # Single quotes around variable is intentional to inform envsubst which
   # patterns to replace in the template.
   # shellcheck disable=SC2016
@@ -110,11 +112,12 @@ checksum() {
   file="$(basename "${1}")"
 
   if command -v shasum > /dev/null 2>&1; then
-    (cd "${folder}" && shasum --algorithm 512 "${file}" > "${file}.sha512")
-  elif command -v sha512sum > /dev/null 2>&1; then
-    (cd "${folder}" && sha512sum "${file}" > "${file}.sha512")
+    (cd "${folder}" && shasum --algorithm 256 "${file}" > "${file}.sha256")
+  elif command -v sha256sum > /dev/null 2>&1; then
+    (cd "${folder}" && sha256sum "${file}" > "${file}.sha256")
   else
-    error 'Unable to find a checksum command'
+    log --stderr 'error: Unable to find a checksum command.'
+    exit 1
   fi
 }
 
@@ -122,10 +125,10 @@ checksum() {
 # Build a Debian package.
 #
 # For a tutorial on building an DEB package, visit
-# https://www.debian.org/doc/manuals/debian-faq/pkg-basics.en.html.
+# https://debian.org/doc/manuals/debian-faq/pkg-basics.en.html.
 #######################################
 deb() {
-  export version="${1}"
+  version="${1}"
   build="$(mktemp --directory)"
 
   mkdir -p "${build}/DEBIAN" "${build}/usr/share/bash-completion/completions" \
@@ -137,6 +140,7 @@ deb() {
   cp src/completion/bootware.man "${build}/usr/share/man/man1/bootware.1"
   cp src/bootware.sh "${build}/usr/bin/bootware"
 
+  export version="${version}"
   envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
   checksum "build/dist/bootware_${version}_all.deb"
@@ -152,7 +156,7 @@ deb() {
 #   Message argument.
 #######################################
 log() {
-  local file='1' newline="\n" text=''
+  file='1' newline="\n" text=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -188,7 +192,7 @@ log() {
 # https://rpm-packaging-guide.github.io/#packaging-software.
 #######################################
 rpm() {
-  export version="${1}"
+  version="${1}"
   build="${HOME}/rpmbuild"
   tmp_dir="$(mktemp --directory)"
   archive_dir="${tmp_dir}/bootware-${version}"
@@ -201,10 +205,11 @@ rpm() {
   tar czf "bootware-${version}.tar.gz" -C "${tmp_dir}" .
   mv "bootware-${version}.tar.gz" "${build}/SOURCES/"
 
+  export version="${version}"
   envsubst < data/templates/bootware.spec.tmpl > "${build}/SPECS/bootware.spec"
   rpmbuild -ba "${build}/SPECS/bootware.spec"
-  mv "${build}/RPMS/noarch/bootware-${version}-0.fc33.noarch.rpm" build/dist/
-  checksum "build/dist/bootware-${version}-0.fc33.noarch.rpm"
+  mv "${build}/RPMS/noarch/bootware-${version}-"*".noarch.rpm" build/dist/
+  checksum "build/dist/bootware-${version}-"*".noarch.rpm"
   rm -fr "${build}" "${tmp_dir}"
 }
 
@@ -212,7 +217,7 @@ rpm() {
 # Script entrypoint.
 #######################################
 main() {
-  version='0.9.1'
+  version='0.10.0'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do

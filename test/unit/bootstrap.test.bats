@@ -38,7 +38,7 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --inventory 127.0.0.1, --extra-vars connect_role_executed=false \
---start-at-task Install Deno JavaScript and TypeScript runtime --connection \
+--start-at-task Install Deno JavaScript runtime --connection \
 local playbook.yaml"
 }
 
@@ -76,7 +76,7 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
 --check --timeout 60 --connection local playbook.yaml"
 }
 
-bootstrap_subcommand_does_not_set_snsible_environment_variable() { # @test
+bootstrap_subcommand_does_not_set_ansible_environment_variable() { # @test
   BATS_SOURCE_ONLY='true' source src/bootware.sh
   bootstrap
   assert_equal "${ANSIBLE_ENABLE_TASK_DEBUGGER:-}" ''
@@ -114,6 +114,6 @@ bootstrap_subcommand_uses_local_copy_during_start_at_task() { # @test
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --inventory 127.0.0.1, --extra-vars connect_role_executed=false \
---start-at-task Install Deno JavaScript and TypeScript runtime --connection \
+--start-at-task Install Deno JavaScript runtime --connection \
 local ${tmp_dir}/playbook.yaml"
 }

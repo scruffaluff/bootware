@@ -9,7 +9,7 @@
       - virt-viewer
   tags:
     - install
-  when: ansible_pkg_mgr == "apk"
+  when: system_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch
   become: true
@@ -23,7 +23,7 @@
       - virt-viewer
   tags:
     - install
-  when: ansible_pkg_mgr == "pacman"
+  when: system_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian
   ansible.builtin.apt:
@@ -40,7 +40,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt"
+  when: system_pkg_mgr == "apt"
 
 - name: Install Libvirt for FreeBSD
   become: true
@@ -52,7 +52,7 @@
       - virt-viewer
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Libvirt for Fedora
   ansible.builtin.package:
@@ -70,14 +70,14 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"]
+  when: system_pkg_mgr == "dnf"
 
 - name: Tap Virt Viewer for MacOS
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Virt Viewer for MacOS
   become: true
@@ -86,7 +86,7 @@
     name: virt-viewer
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Libvirt for MacOS
   become: true
@@ -100,7 +100,7 @@
       - virt-manager
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Libvirt for Suse
   ansible.builtin.package:
@@ -117,7 +117,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "zypper"
+  when: system_pkg_mgr == "zypper"
 
 - name: Install Libvirt for Windows
   community.windows.win_scoop:
@@ -125,4 +125,4 @@
     name: virt-viewer
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

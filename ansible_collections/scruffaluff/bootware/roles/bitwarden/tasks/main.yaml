@@ -1,11 +1,48 @@
 ---
+- name: Get latest Bitwarden version for Debian and Fedora
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/bitwarden.json
+  register: bitwarden_cask
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+
+# DEB and RPM packages are preferred on Linux since the Flatpak package does not
+# have access to biometrics.
+- name: Install Bitwarden for Debian
+  ansible.builtin.apt:
+    deb: >-
+      https://github.com/bitwarden/clients/releases/download/desktop-v{{
+      bitwarden_cask.json.version }}/Bitwarden-{{ bitwarden_cask.json.version
+      }}-amd64.deb
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+
+- name: Install Bitwarden for Fedora
+  ansible.builtin.dnf:
+    disable_gpg_check: true
+    name: >-
+      https://github.com/bitwarden/clients/releases/download/desktop-v{{
+      bitwarden_cask.json.version }}/Bitwarden-{{ bitwarden_cask.json.version
+      }}-x86_64.rpm
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf" and system_architecture == "amd64"
+
 - name: Install Bitwarden for Linux
   become: true
   community.general.flatpak:
     name: com.bitwarden.desktop
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: >-
+    ansible_facts.system == "Linux" and (system_pkg_mgr not in ["apt", "dnf"] or
+    system_architecture != "amd64")
 
 - name: Install Bitwarden for MacOS
   community.general.homebrew_cask:
@@ -14,7 +51,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Bitwarden for Windows
   community.windows.win_scoop:
@@ -22,4 +59,4 @@
     name: bitwarden
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

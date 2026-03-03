@@ -1,7 +1,7 @@
 # Ansible playbook for Bootware.
 #
 # For more information, visit
-# https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook.
+# https://redhat.com/en/topics/automation/what-is-an-ansible-playbook.
 
 ---
 - name: Install software with Bootware
@@ -76,7 +76,7 @@
         - sysadmin
         - wsl
 
-    - name: Install Alacritty terminal
+    - name: Install Alacritty terminal emulator
       ansible.builtin.include_role:
         apply:
           tags:
@@ -89,26 +89,15 @@
         - never
         - terminal
 
-    - name: Install Android Studio
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - android_studio
-            - never
-        name: scruffaluff.bootware.android_studio
-      tags:
-        - android_studio
-        - never
-
     - name: Install Android platform tools
       ansible.builtin.include_role:
         apply:
           tags:
-            - android_tools
+            - android
             - never
-        name: scruffaluff.bootware.android_tools
+        name: scruffaluff.bootware.android
       tags:
-        - android_tools
+        - android
         - never
 
     - name: Install Audacity audio editor
@@ -198,7 +187,7 @@
         - sysadmin
         - wsl
 
-    - name: Install Beekeeper database client
+    - name: Install Beekeeper Studio database client
       ansible.builtin.include_role:
         apply:
           tags:
@@ -325,7 +314,7 @@
         - chrome
         - never
 
-    - name: Install MongoDB Compass database graphical client
+    - name: Install MongoDB Compass database client
       ansible.builtin.include_role:
         apply:
           tags:
@@ -338,7 +327,7 @@
         - database
         - desktop
 
-    - name: Install Croc secure file transfer
+    - name: Install Croc file sharer
       ansible.builtin.include_role:
         apply:
           tags:
@@ -368,7 +357,7 @@
         - database
         - dbeaver
 
-    - name: Install Deno JavaScript and TypeScript runtime
+    - name: Install Deno JavaScript runtime
       ansible.builtin.include_role:
         apply:
           tags:
@@ -397,6 +386,23 @@
       tags:
         - desktop_environment
         - desktop
+
+    - name: Install Dive container image explorer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - container
+            - desktop
+            - dive
+            - server
+            - wsl
+        name: scruffaluff.bootware.dive
+      tags:
+        - container
+        - desktop
+        - dive
+        - server
+        - wsl
 
     - name: Install Docker container platform
       ansible.builtin.include_role:
@@ -428,24 +434,7 @@
         - server
         - wsl
 
-    - name: Install Dive container image explorer
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - container
-            - desktop
-            - dive
-            - server
-            - wsl
-        name: scruffaluff.bootware.dive
-      tags:
-        - container
-        - desktop
-        - dive
-        - server
-        - wsl
-
-    - name: Install Duf device usage analyzer
+    - name: Install Duf disk usage analyzer
       ansible.builtin.include_role:
         apply:
           tags:
@@ -462,7 +451,7 @@
         - sysadmin
         - wsl
 
-    - name: Install Dust disk space analyzer
+    - name: Install Dust disk usage analyzer
       ansible.builtin.include_role:
         apply:
           tags:
@@ -528,7 +517,7 @@
         - server
         - wsl
 
-    - name: Install FFSend secure file sharer
+    - name: Install FFSend file sharer
       ansible.builtin.include_role:
         apply:
           tags:
@@ -684,7 +673,7 @@
         - vcs
         - wsl
 
-    - name: Install GitHub Runner
+    - name: Install GitHub Runner CI/CD manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -695,7 +684,7 @@
         - github_runner
         - never
 
-    - name: Install GitLab runner
+    - name: Install GitLab Runner CI/CD manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -706,7 +695,7 @@
         - gitlab_runner
         - never
 
-    - name: Install GitUI Git manager
+    - name: Install GitUI Git terminal interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -723,7 +712,7 @@
         - vcs
         - wsl
 
-    - name: Install Glow
+    - name: Install Glow Markdown renderer
       ansible.builtin.include_role:
         apply:
           tags:
@@ -774,7 +763,7 @@
         - sysadmin
         - wsl
 
-    - name: Install HDF5 file serialization tools
+    - name: Install HDF5 serialization tools
       ansible.builtin.include_role:
         apply:
           tags:
@@ -789,7 +778,7 @@
         - server
         - wsl
 
-    - name: Install Helix terminal text editor
+    - name: Install Helix text editor
       ansible.builtin.include_role:
         apply:
           tags:
@@ -808,7 +797,7 @@
         - sysadmin
         - wsl
 
-    - name: Install Helm Kubernetes manager
+    - name: Install Helm Kubernetes package manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -825,7 +814,7 @@
         - server
         - wsl
 
-    - name: Install Helmfile Kubernetes Helm deployment tool
+    - name: Install Helmfile Helm chart manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -874,7 +863,7 @@
         - server
         - wsl
 
-    - name: Install ignore file
+    - name: Configure ignore files
       ansible.builtin.include_role:
         apply:
           tags:
@@ -970,7 +959,7 @@
         - sysadmin
         - wsl
 
-    - name: Install K3d Kubernetes development cluster manager
+    - name: Install K3d Kubernetes development interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1019,7 +1008,7 @@
         - kdenlive
         - video
 
-    - name: Install Kind Kubernetes development cluster manager
+    - name: Install Kind Kubernetes development interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1085,7 +1074,7 @@
         - kubeshark
         - never
 
-    - name: Install Lazydocker Docker manager
+    - name: Install Lazydocker Docker terminal interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1102,7 +1091,7 @@
         - server
         - wsl
 
-    - name: Install Libre Office document writing suite
+    - name: Install Libre Office document suite
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1144,6 +1133,19 @@
         - lldb
         - server
         - wsl
+
+    - name: Install LocalSend file sharer
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - localsend
+            - share
+        name: scruffaluff.bootware.localsend
+      tags:
+        - desktop
+        - localsend
+        - share
 
     - name: Install Lsd file lister
       ansible.builtin.include_role:
@@ -1290,7 +1292,7 @@
         - obs
         - video
 
-    - name: Install Obsidian note taking application
+    - name: Install Obsidian note taker
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1446,7 +1448,18 @@
         - sysadmin
         - wsl
 
-    - name: Install Readline configuration
+    - name: Install Readest ebook reader
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - readest
+        name: scruffaluff.bootware.readest
+      tags:
+        - desktop
+        - readest
+
+    - name: Configure Readline configuration
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1529,7 +1542,7 @@
         - server
         - wsl
 
-    - name: Install Scc code line counter
+    - name: Install Scc code counter
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1606,7 +1619,7 @@
         - shfmt
         - wsl
 
-    - name: Install Sonic Pi music coding environment
+    - name: Install Sonic Pi music coder
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1619,7 +1632,7 @@
         - music
         - sonic_pi
 
-    - name: Install Sops secrets editor
+    - name: Install Sops secrets manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1743,7 +1756,7 @@
         - never
         - termshark
 
-    - name: Install Terraform infrastructure as code software
+    - name: Install Terraform infrastructure automator
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1758,7 +1771,7 @@
         - terraform
         - wsl
 
-    - name: Install Tilt Kubernetes development suite
+    - name: Install Tilt Kubernetes development interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1775,7 +1788,7 @@
         - tilt
         - wsl
 
-    - name: Install TLDR documentation collection
+    - name: Install TLDR cheatsheet interface
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1820,7 +1833,7 @@
         - topgrade
         - wsl
 
-    - name: Install USQL
+    - name: Install USQL database client
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1856,7 +1869,7 @@
         - uv
         - wsl
 
-    - name: Install Velero backup manager for Kubernetes
+    - name: Install Velero Kubernetes backup manager
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1895,27 +1908,14 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - editor
+            - never
             - vscode
         name: scruffaluff.bootware.vscode
       tags:
-        - desktop
-        - editor
-        - vscode
-
-    - name: Install VSCodium text editor
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - editor
-            - never
-            - vscodium
-        name: scruffaluff.bootware.vscodium
-      tags:
         - editor
         - never
-        - vscodium
+        - vscode
 
     - name: Install Watchexec file watcher
       ansible.builtin.include_role:
@@ -1934,7 +1934,7 @@
         - watchexec
         - wsl
 
-    - name: Install Wez's terminal
+    - name: Install Wezterm terminal emulator
       ansible.builtin.include_role:
         apply:
           tags:
@@ -1988,7 +1988,7 @@
         - wsl
         - xh
 
-    - name: Install Yazi terminal file manager
+    - name: Install Yazi file manager
       ansible.builtin.include_role:
         apply:
           tags:

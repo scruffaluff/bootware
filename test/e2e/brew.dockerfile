@@ -38,7 +38,7 @@ RUN sudo -E apt-get --quiet --yes install libdigest-sha-perl tzdata
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Homebrew package.
-RUN shasum --check --algorithm 512 bootware.rb.sha512
+RUN shasum --check --algorithm 256 bootware.rb.sha256
 
 # Install Homebrew package.
 RUN brew install --build-from-source ./bootware.rb

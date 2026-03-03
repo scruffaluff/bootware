@@ -5,7 +5,7 @@
     name: croc
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install Croc for Linux
   ansible.builtin.package:
@@ -15,7 +15,7 @@
   register: croc_linux
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Get latest Croc version for Linux
   ansible.builtin.uri:
@@ -25,7 +25,7 @@
   register: croc_formula
   tags:
     - install
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed
 
 - name: Create Croc temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +33,7 @@
   register: croc_temp
   tags:
     - install
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed
 
 - name: Set Croc temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +42,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed
 
 - name: Download Croc for Linux
   ansible.builtin.unarchive:
@@ -60,7 +60,7 @@
     croc_arch:
       amd64: 64bit
       arm64: ARM64
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed
 
 - name: Install Croc for Linux
   ansible.builtin.copy:
@@ -72,7 +72,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed
 
 - name: Install Croc for MacOS
   become: true
@@ -81,7 +81,7 @@
     name: croc
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
@@ -89,7 +89,7 @@
     name: croc
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Add Croc Firewall rules for Windows
   community.windows.win_firewall_rule:
@@ -114,7 +114,7 @@
       protocol: udp
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Croc temporary directory for Linux
   ansible.builtin.file:
@@ -122,4 +122,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Linux" and croc_linux is failed
+  when: ansible_facts.system == "Linux" and croc_linux is failed

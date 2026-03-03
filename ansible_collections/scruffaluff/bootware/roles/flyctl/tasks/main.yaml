@@ -5,7 +5,7 @@
   register: flyctl_temp
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Set Flyctl temporary directory permissions for Unix
   ansible.builtin.file:
@@ -14,7 +14,7 @@
     state: directory
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Get latest Flyctl version for Linux
   ansible.builtin.uri:
@@ -24,7 +24,7 @@
   register: flyctl_formula
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Download Flyctl for Linux
   ansible.builtin.unarchive:
@@ -42,7 +42,7 @@
     flyctl_arch:
       amd64: x86_64
       arm64: arm64
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Flyctl for Linux
   ansible.builtin.copy:
@@ -54,7 +54,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Flyctl for MacOS
   become: true
@@ -63,7 +63,7 @@
     name: flyctl
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Flyctl for Windows
   community.windows.win_scoop:
@@ -71,7 +71,7 @@
     name: flyctl
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Flyctl shell completions for Unix
   ansible.builtin.shell:
@@ -79,14 +79,14 @@
   become: true
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_env.PATH }}
+    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Install Flyctl shell completions for Unix
   ansible.builtin.copy:
@@ -104,7 +104,7 @@
   tags:
     - completion
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Remove Flyctl temporary directory for Unix
   ansible.builtin.file:
@@ -112,4 +112,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system in ["Darwin", "Linux"]
+  when: ansible_facts.system in ["Darwin", "Linux"]

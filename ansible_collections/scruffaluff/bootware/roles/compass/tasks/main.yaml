@@ -8,7 +8,7 @@
   tags:
     - install
   when: >-
-    ansible_pkg_mgr in ["apt", "dnf", "dnf5"] and system_architecture == "amd64"
+    system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Debian
   ansible.builtin.apt:
@@ -18,7 +18,7 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr == "apt" and system_architecture == "amd64"
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass For Fedora
   ansible.builtin.dnf:
@@ -29,7 +29,8 @@
   become: true
   tags:
     - install
-  when: ansible_pkg_mgr in ["dnf", "dnf5"] and system_architecture == "amd64"
+  when: >-
+    system_pkg_mgr == "dnf" and system_architecture == "amd64"
 
 - name: Install MongoDB Compass for MacOS
   community.general.homebrew_cask:
@@ -38,7 +39,7 @@
     state: present
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Get latest MongoDB Compass version for Windows
   ansible.windows.win_uri:
@@ -48,7 +49,7 @@
   register: compass_cask_windows
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install MongoDB Compass for Windows
   ansible.windows.win_package:
@@ -57,4 +58,4 @@
       compass_cask_windows.json.version }}-win32-x64.msi
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"

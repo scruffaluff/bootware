@@ -1,7 +1,23 @@
-# Windown Manager
+# Window Manager
 
-Window Manager is an Ansible role
+Ansible role that installs tiling window managers.
 
 ## Requirements
 
+None.
+
 ## Role Variables
+
+None.
+
+## Dependencies
+
+None.
+
+## Example Playbook
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.window_manager
+```

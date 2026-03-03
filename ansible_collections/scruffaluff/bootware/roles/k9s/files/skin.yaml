@@ -1,6 +1,6 @@
 # K9s solarized light skin file.
 #
-# For more information, visit https://k9scli.io/topics/skins/.
+# For more information, visit https://k9scli.io/topics/skins.
 
 ---
 foreground: &foreground "#657b83"

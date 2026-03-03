@@ -1,4 +1,4 @@
-FROM docker.io/debian:13.2 AS build
+FROM docker.io/debian:13 AS build
 
 ARG version
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/debian:13.2
+FROM docker.io/debian:13
 
 ARG version
 ENV DEBIAN_FRONTEND=noninteractive
@@ -35,7 +35,7 @@ RUN apt-get --quiet --yes install libdigest-sha-perl tzdata
 COPY --from=build /bootware/build/dist/ .
 
 # Verify checksum for Debian package.
-RUN shasum --check --algorithm 512 "bootware_${version?}_all.deb.sha512"
+RUN shasum --check --algorithm 256 "bootware_${version?}_all.deb.sha256"
 
 # Install Debian package.
 RUN apt-get install --quiet --yes "./bootware_${version?}_all.deb"

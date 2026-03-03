@@ -19,3 +19,4 @@ L back-line-force
 
 #env
 LESS = --ignore-case
+LESSHISTFILE = -

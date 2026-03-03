@@ -1,11 +1,11 @@
 ---
 - name: Install Rust for Unix
   ansible.builtin.import_tasks: unix.yaml
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Rust for Windows
   ansible.builtin.import_tasks: windows.yaml
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Rust Analyzer for FreeBSD
   become: true
@@ -13,7 +13,7 @@
     name: rust-analyzer
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Create Rust temporary directory for Linux
   ansible.builtin.tempfile:
@@ -22,8 +22,8 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64")
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64")
 
 - name: Download Rust Analyzer for Linux
   ansible.builtin.get_url:
@@ -40,8 +40,8 @@
       amd64: x86_64
       arm64: aarch64
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64")
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64")
 
 - name: Decompress Rust Analyzer for Linux
   ansible.builtin.command:
@@ -50,8 +50,8 @@
   tags:
     - install
   when: >-
-    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
-    == "apk" and system_architecture == "amd64")
+    (ansible_facts.system == "Linux" and system_pkg_mgr != "apk") or
+    (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for Linux
   ansible.builtin.copy:
@@ -66,8 +66,8 @@
   tags:
     - install
   when: >-
-    (ansible_system == "Linux" and ansible_pkg_mgr != "apk") or (ansible_pkg_mgr
-    == "apk" and system_architecture == "amd64")
+    (ansible_facts.system == "Linux" and system_pkg_mgr != "apk") or
+    (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for MacOS
   become: true
@@ -76,7 +76,7 @@
     name: rust-analyzer
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
@@ -84,7 +84,7 @@
     name: rust-analyzer
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 # The default Rust Analyzer installed by Rustup doesn't work and complains.
 # According to https://github.com/rust-lang/rust-analyzer/issues/14776, the
@@ -96,7 +96,7 @@
   become: true
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Remove default Rust Analyzer for Windows
   ansible.windows.win_file:
@@ -105,7 +105,7 @@
     state: absent
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Rust temporary directory for Linux
   ansible.builtin.file:
@@ -114,5 +114,5 @@
   tags:
     - install
   when: >-
-    ansible_system == "Linux" and (system_libc == "gnu" or system_architecture
-    == "amd64")
+    ansible_facts.system == "Linux" and (system_libc == "gnu" or
+    system_architecture == "amd64")

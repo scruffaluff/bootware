@@ -7,7 +7,7 @@
   register: lsd_formula
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Lsd for FreeBSD
   become: true
@@ -15,7 +15,7 @@
     name: lsd
   tags:
     - install
-  when: ansible_system == "FreeBSD"
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Create Lsd temporary directory for Unix
   ansible.builtin.tempfile:
@@ -23,7 +23,7 @@
   register: lsd_temp
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Download Lsd for Unix
   ansible.builtin.unarchive:
@@ -37,7 +37,7 @@
       lsd_libc }}.tar.gz
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Lsd for Linux
   ansible.builtin.copy:
@@ -51,7 +51,7 @@
   become: true
   tags:
     - install
-  when: ansible_system == "Linux"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Lsd for MacOS
   become: true
@@ -60,7 +60,7 @@
     name: lsd
   tags:
     - install
-  when: ansible_system == "Darwin"
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Lsd for Windows
   community.windows.win_scoop:
@@ -68,7 +68,7 @@
     name: lsd
   tags:
     - install
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Lsd shell completions for Unix
   ansible.builtin.copy:
@@ -89,7 +89,7 @@
   tags:
     - completion
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Ls colors file for Unix
   ansible.builtin.copy:
@@ -102,7 +102,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Ls colors file for Windows
   ansible.windows.win_copy:
@@ -111,7 +111,7 @@
     src: ls_colors
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Lsd configuration directory for Unix
   ansible.builtin.file:
@@ -123,7 +123,7 @@
   become: true
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Lsd configuration files for Unix
   ansible.builtin.copy:
@@ -139,7 +139,7 @@
     - config.yaml
   tags:
     - config
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Lsd configuration directory for Windows
   ansible.windows.win_file:
@@ -147,7 +147,7 @@
     state: directory
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Copy Lsd configuration files for Windows
   ansible.windows.win_copy:
@@ -159,7 +159,7 @@
     - config.yaml
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Set owner of Lsd files for Windows
   ansible.windows.win_owner:
@@ -171,7 +171,7 @@
     - AppData\\Roaming\\lsd
   tags:
     - config
-  when: ansible_system == "Win32NT"
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Lsd temporary directory for Unix
   ansible.builtin.file:
@@ -179,4 +179,4 @@
     state: absent
   tags:
     - install
-  when: ansible_system != "Win32NT"
+  when: ansible_facts.system != "Win32NT"

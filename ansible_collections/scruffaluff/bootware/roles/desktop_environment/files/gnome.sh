@@ -80,12 +80,12 @@ gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt><Control>Up"]'
 gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
 
 # File extension settings.
-xdg-mime default code.desktop application/json
-xdg-mime default code.desktop application/x-sh
-xdg-mime default code.desktop application/xml
-xdg-mime default code.desktop text/css
-xdg-mime default code.desktop text/csv
-xdg-mime default code.desktop text/plain
+xdg-mime default zed.desktop application/json
+xdg-mime default zed.desktop application/x-sh
+xdg-mime default zed.desktop application/xml
+xdg-mime default zed.desktop text/css
+xdg-mime default zed.desktop text/csv
+xdg-mime default zed.desktop text/plain
 xdg-mime default firefox.desktop image/avif
 xdg-mime default firefox.desktop image/gif
 xdg-mime default firefox.desktop image/webp
