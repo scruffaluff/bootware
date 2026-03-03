@@ -69,6 +69,7 @@ system_architecture_:
   riscv64: riscv64
   x64: amd64
   x86_64: amd64
+
 bash_completion: >-
   {{ bash_completion_.get(ansible_facts.system,
   '/usr/share/bash-completion/completions') }}
@@ -91,16 +92,16 @@ github_api_headers: >-
   {} }}
 group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
 nushell_executable: >-
-  {{  nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
+  {{ nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
 nushell_name: nu
 nushell_user_autoload: >-
-  {{  nushell_user_autoload_.get(ansible_facts.system, user_home +
+  {{ nushell_user_autoload_.get(ansible_facts.system, user_home +
   '.local/share/nushell/autoload') }}
 nushell_user_vendor_autoload: >-
-  {{  nushell_user_vendor_autoload_.get(ansible_facts.system, user_home +
+  {{ nushell_user_vendor_autoload_.get(ansible_facts.system, user_home +
   '.local/share/nushell/vendor/autoload') }}
 nushell_vendor_autoload: >-
-  {{  nushell_vendor_autoload_.get(ansible_facts.system,
+  {{ nushell_vendor_autoload_.get(ansible_facts.system,
   '/usr/local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 powershell_name: pwsh
@@ -123,3 +124,6 @@ user_shell_executable: >-
   {{ lookup("ansible.builtin.vars", user_shell + "_executable") }}
 user_shell_name: >-
   {{ lookup("ansible.builtin.vars", user_shell + "_name") }}
+wayland_desktop: >-
+  {{ 'wayland' in (['DESKTOP_SESSION', 'WAYLAND_DISPLAY', 'XDG_SESSION_TYPE'] |
+  map('extract', ansible_facts.env) | map('default', '') | join(' ')) }}
