@@ -11,7 +11,10 @@
       "ctrl-shift-down": "workspace::SwapPaneLeft",
       "ctrl-shift-e": "project_panel::ToggleFocus",
       "ctrl-shift-f": "pane::DeploySearch",
-      "ctrl-shift-h": ["action::Sequence", ["pane::DeploySearch", "search::ToggleReplace"]],
+      "ctrl-shift-h": [
+        "action::Sequence",
+        ["pane::DeploySearch", "search::ToggleReplace"]
+      ],
       "ctrl-shift-j": "pane::ActivatePreviousItem",
       "ctrl-shift-k": "workspace::ActivatePreviousPane",
       "ctrl-shift-l": "workspace::ActivateNextPane",
@@ -44,7 +47,7 @@
       "alt-q": "editor::Rewrap",
       "alt-w": "editor::DeleteToNextWordEnd",
       "ctrl-.": "editor::ToggleCodeActions",
-      "ctrl-/": ["editor::ToggleComments", {"advance_downwards": false}],
+      "ctrl-/": ["editor::ToggleComments", { "advance_downwards": false }],
       "ctrl->": "outline::Toggle",
       "ctrl-\\": "pane::SplitAndMoveRight",
       "ctrl-a": "editor::MoveToBeginningOfLine",
@@ -55,6 +58,7 @@
       "ctrl-h": "buffer_search::DeployReplace",
       "ctrl-i": "editor::ShowCompletions",
       "ctrl-left": "editor::MoveToPreviousSubwordStart",
+      "ctrl-q": null,
       "ctrl-right": "editor::MoveToNextSubwordEnd",
       "ctrl-shift-enter": "editor::NewlineAbove",
       "ctrl-shift-s": "terminal_panel::ToggleFocus",
@@ -91,6 +95,14 @@
   },
   {
     "bindings": {
+      "ctrl-.": ["terminal::SendText", "\ue001"],
+      "ctrl-/": ["terminal::SendText", "\ue004"],
+      "ctrl-;": ["terminal::SendText", "\ue000"],
+      "ctrl-[": ["terminal::SendText", "\ue002"],
+      "ctrl-\\": ["terminal::SendText", "\ue005"],
+      "ctrl-]": ["terminal::SendText", "\ue003"],
+      "ctrl-i": ["terminal::SendText", "\ue006"],
+      "ctrl-j": ["terminal::SendText", "\ue007"],
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
       "ctrl-shift-n": "pane::SplitRight",
@@ -98,6 +110,13 @@
       "ctrl-shift-t": "workspace::NewTerminal"
     },
     "context": "Terminal"
+  },
+  {
+    "bindings": {
+      "ctrl-b": null,
+      "ctrl-j": null
+    },
+    "context": "Workspace"
   },
   {
     "bindings": {

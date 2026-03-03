@@ -126,4 +126,4 @@ user_shell_name: >-
   {{ lookup("ansible.builtin.vars", user_shell + "_name") }}
 wayland_desktop: >-
   {{ 'wayland' in (['DESKTOP_SESSION', 'WAYLAND_DISPLAY', 'XDG_SESSION_TYPE'] |
-  map('extract', ansible_facts.env) | map('default', '') | join(' ' )) }}
+  map('extract', ansible_facts.env) | map('default', '') | join(' ')) }}
