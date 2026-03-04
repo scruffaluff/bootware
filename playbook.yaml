@@ -1844,6 +1844,17 @@
         - topgrade
         - wsl
 
+    - name: Install Typst typesetter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - typst
+            - never
+        name: scruffaluff.bootware.typst
+      tags:
+        - typst
+        - never
+
     - name: Install USQL database client
       ansible.builtin.include_role:
         apply:

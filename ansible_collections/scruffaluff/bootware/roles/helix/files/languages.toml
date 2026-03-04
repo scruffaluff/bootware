@@ -115,6 +115,12 @@ formatter = { command = "prettier", args = ["--parser", "typescript"] }
 language-servers = ["typescript-language-server", "harper"]
 
 [[language]]
+name = "typst"
+auto-format = true
+formatter = { command = "typstyle" }
+language-servers = ["tinymist"]
+
+[[language]]
 name = "yaml"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "yaml"] }
@@ -135,6 +141,9 @@ ToDoHyphen = false
 [language-server.ruff]
 args = ["server"]
 command = "ruff"
+
+[language-server.tinymist]
+command = "tinymist"
 
 [language-server.ty]
 args = ["server"]

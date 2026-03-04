@@ -69,6 +69,7 @@ vscode_extensions:
   - mhutchie.git-graph
   - ms-playwright.playwright
   - ms-vscode-remote.vscode-remote-extensionpack
+  - myriad-dreamin.tinymist
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
   - rust-lang.rust-analyzer

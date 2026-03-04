@@ -1,0 +1,155 @@
+---
+- name: Install Typst for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - typst
+      - typstyle
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
+- name: Get latest Typst version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/typst.json
+  register: typst_formula
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Get latest Typstyle version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/typstyle.json
+  register: typstyle_formula
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Get latest Tinymist version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/tinymist.json
+  register: tinymist_formula
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Create Typst temporary directory for Linux
+  ansible.builtin.tempfile:
+    state: directory
+  register: typst_temp
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Set Typst temporary directory permissions for Linux
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ typst_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Download Typst for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ typst_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/typst/typst/releases/download/v{{
+      typst_formula.json.versions.stable }}/typst-{{ typst_arch
+      }}-unknown-linux-musl.tar.xz
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Install Typst for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/typst
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ typst_temp.path }}/typst-{{ typst_arch }}-unknown-linux-musl/typst
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Install Typstyle for Linux
+  ansible.builtin.get_url:
+    dest: /usr/local/bin/typstyle
+    force: true
+    mode: "755"
+    url: >-
+      https://github.com/typstyle-rs/typstyle/releases/download/v{{
+      typstyle_formula.json.versions.stable }}/typstyle-{{ typst_arch
+      }}-unknown-linux-{{ system_libc }}
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Download Tinymist for Linux
+  ansible.builtin.unarchive:
+    dest: "{{ typst_temp.path }}"
+    mode: "777"
+    remote_src: true
+    src: >-
+      https://github.com/Myriad-Dreamin/tinymist/releases/download/v{{
+      tinymist_formula.json.versions.stable }}/tinymist-{{ typst_arch
+      }}-unknown-linux-{{ system_libc }}.tar.gz
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Install Tinymist for Linux
+  ansible.builtin.copy:
+    dest: /usr/local/bin/tinymist
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ typst_temp.path }}/tinymist-{{ typst_arch }}-unknown-linux-{{
+      system_libc }}/tinymist
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+- name: Install Typst for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name:
+      - tinymist
+      - typst
+      - typstyle
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Install Typst for Windows
+  community.windows.win_scoop:
+    global: true
+    name:
+      - tinymist
+      - typst
+      - typstyle
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Remove Typst temporary directory for Linux
+  ansible.builtin.file:
+    path: "{{ typst_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
