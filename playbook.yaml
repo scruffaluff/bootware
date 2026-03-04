@@ -1074,6 +1074,17 @@
         - kubeshark
         - never
 
+    - name: Install Latex typesetter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - latex
+            - never
+        name: scruffaluff.bootware.latex
+      tags:
+        - latex
+        - never
+
     - name: Install Lazydocker Docker terminal interface
       ansible.builtin.include_role:
         apply:

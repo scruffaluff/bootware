@@ -2,6 +2,10 @@ FROM docker.io/archlinux
 
 ARG TARGETARCH
 
+# Disable pacman sandboxing to prevent "switching to sandbox user 'alpm' failed"
+# errors.
+RUN printf '[options]\nDisableSandbox\n' >> /etc/pacman.conf
+
 # Install Curl and Sudo.
 RUN pacman --noconfirm --refresh --sync --sysupgrade \
     && pacman --noconfirm --sync curl sudo

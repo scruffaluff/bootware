@@ -2,6 +2,10 @@ FROM docker.io/archlinux:latest AS build
 
 ARG version
 
+# Disable pacman sandboxing to prevent "switching to sandbox user 'alpm' failed"
+# errors.
+RUN printf '[options]\nDisableSandbox\n' >> /etc/pacman.conf
+
 RUN pacman --noconfirm --refresh --sync --sysupgrade \
     && pacman --noconfirm --sync base-devel pacman-contrib perl
 

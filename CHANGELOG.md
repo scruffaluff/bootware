@@ -7,6 +7,10 @@ see the commit logs. The format is based on
 
 ## Unreleased
 
+### Added
+
+- Jujutsu and Latex roles.
+
 ### Removed
 
 - Android Studio role.
