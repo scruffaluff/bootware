@@ -1,0 +1,10 @@
+# JJUI configuration file.
+#
+# For more information, visit
+# https://idursun.github.io/jjui/Configuration.html.
+
+[keys]
+down = ["down", "j"]
+jump_to_children = ["L"]
+jump_to_parent = ["K"]
+up = ["up", "k"]
