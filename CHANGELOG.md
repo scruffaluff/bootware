@@ -9,7 +9,7 @@ see the commit logs. The format is based on
 
 ### Added
 
-- Jujutsu and Latex roles.
+- Jujutsu, Latex, and Typst roles.
 
 ### Removed
 

@@ -12,6 +12,7 @@ zed_extensions:
   html: true
   jinja2: true
   just: true
+  latex: true
   lua: true
   log: true
   nu: true
@@ -19,6 +20,7 @@ zed_extensions:
   rainbow-csv: true
   solarized: true
   toml: true
+  typst: true
   vue: true
 zed_font_size: "{{ font_size }}"
 zed_remotes: []

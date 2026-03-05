@@ -398,6 +398,7 @@
   { "name": "tldr", "tests": ["tldr --version"] },
   { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
   { "name": "topgrade", "tests": ["topgrade --version"] },
+  { "name": "typst", "tests": ["typst --version"] },
   { "name": "usql", "tests": ["usql --version"] },
   { "name": "uv", "tests": ["uv --version"] },
   {

@@ -1,0 +1,5 @@
+---
+typst_arch_:
+  amd64: x86_64
+  arm64: aarch64
+typst_arch: "{{ typst_arch_[system_architecture] }}"
