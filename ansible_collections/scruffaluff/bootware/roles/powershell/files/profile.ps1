@@ -346,13 +346,6 @@ if (Get-Command -ErrorAction SilentlyContinue lsd) {
 # Serve index file if available.
 $Env:MINISERVE_INDEX = 'index.html'
 
-# Podman settings.
-
-# Load Podman completions if interactive and available.
-if ($Tty) {
-    Import-Module -ErrorAction SilentlyContinue PodmanCompletion
-}
-
 # Python settings.
 
 # Add Python debugger alias.

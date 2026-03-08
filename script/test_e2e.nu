@@ -18,11 +18,10 @@ def main [
     let arch = if ($arch | is-empty) { $arch_default } else { $arch }
     let args = if $cache { [] } else { ["--no-cache"] }
     let dists_ = $dists | split row ","
-    let runner = if (which podman | is-empty) { "docker" } else { "podman" }
 
     for $dist in $dists_ {
         (
-            ^$runner build ...$args --file $"test/e2e/($dist).dockerfile" --tag
+            docker build ...$args --file $"test/e2e/($dist).dockerfile" --tag
             $"docker.io/scruffaluff/bootware:($dist)" --platform
             $"linux/($arch)" . --build-arg $"extra=($extra)" --build-arg
             $"skip=($skip)" --build-arg $"tags=($tags)" --build-arg test=true

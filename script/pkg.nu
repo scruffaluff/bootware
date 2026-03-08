@@ -26,11 +26,10 @@ def "main dist" [--version (-v): string = "0.10.0" ...packages: string] {
     } else {
         $packages
     }
-    let runner = if (which podman | is-empty) { "docker" } else { "podman" }
 
     for $package in $packages_ {
         (
-            ^$runner build --build-arg $"version=($version)" --file
+            docker build --build-arg $"version=($version)" --file
             $"test/e2e/($package).dockerfile" --output build/dist --target dist
             .
         )
@@ -46,11 +45,10 @@ def "main test" [--version (-v): string = "0.10.0" ...packages: string] {
     } else {
         $packages
     }
-    let runner = if (which podman | is-empty) { "docker" } else { "podman" }
 
     for $package in $packages_ {
         (
-            ^$runner build --build-arg $"version=($version)" --file
+            docker build --build-arg $"version=($version)" --file
             $"test/e2e/($package).dockerfile" --tag
             $"scruffaluff/bootware:($package)" .
         )

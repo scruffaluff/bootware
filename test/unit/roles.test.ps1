@@ -32,13 +32,13 @@ Describe 'Roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles
         $Actual | Should -Contain 'wezterm'
-        $Actual | Should -Not -Contain 'podman'
+        $Actual | Should -Not -Contain 'wireshark'
     }
 
     It 'Subcommand never shows hidden roles' {
         $Env:BOOTWARE_NOLOG = ''
         $Actual = & $Bootware roles --tags never
-        $Actual | Should -Contain 'podman'
+        $Actual | Should -Contain 'wireshark'
         $Actual | Should -Not -Contain 'bash'
     }
 
@@ -51,8 +51,8 @@ Describe 'Roles' {
 
     It 'Subcommand tag hides desktop roles' {
         $Env:BOOTWARE_NOLOG = ''
-        $Actual = & $Bootware roles --tags container
-        $Actual | Should -Contain 'podman'
+        $Actual = & $Bootware roles --tags network
+        $Actual | Should -Contain 'wireshark'
         $Actual | Should -Not -Contain 'wezterm'
     }
 }

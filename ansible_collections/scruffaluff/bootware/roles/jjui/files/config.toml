@@ -4,7 +4,18 @@
 # https://idursun.github.io/jjui/Configuration.html.
 
 [keys]
-down = ["down", "j"]
+down = ["down", "k"]
+exec_jj = ["!"]
 jump_to_children = ["L"]
 jump_to_parent = ["K"]
-up = ["up", "k"]
+up = ["up", "l"]
+
+[keys.details]
+close = ["left","j"]
+mode = ["right",";"]
+
+[keys.diff_view]
+left = ["left", "j"]
+right = ["right", ";"]
+scroll_down = ["down", "k"]
+scroll_up = ["up", "l"]

@@ -2,6 +2,8 @@
 - name: Check if Doas is available for Unix
   ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
   changed_when: false
+  environment:
+    PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   failed_when: false
   register: super_doas_available
   when: ansible_facts.system != "Win32NT"
@@ -18,6 +20,8 @@
     path: /etc/doas.d/doas.conf
     validate: doas -C %s
   become: true
+  environment:
+    PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when: >-
     super_passwordless and ansible_facts.system != "Win32NT" and
     super_doas_available.rc == 0
@@ -25,6 +29,8 @@
 - name: Check if Sudo is available for Unix
   ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
   changed_when: false
+  environment:
+    PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   failed_when: false
   register: super_sudo_available
   when: ansible_facts.system != "Win32NT"
@@ -46,6 +52,8 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
+  environment:
+    PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when: ansible_facts.system != "Win32NT" and super_sudo_available.rc == 0
 
 - name: Enable passwordless sudo for Unix
@@ -62,6 +70,8 @@
     path: /etc/sudoers
     validate: visudo --check --file %s
   become: true
+  environment:
+    PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when: >-
     super_passwordless and ansible_facts.system != "Win32NT" and
     super_sudo_available.rc == 0

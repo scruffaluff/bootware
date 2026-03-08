@@ -262,7 +262,6 @@
     }
   },
   { "name": "obsidian" },
-  { "name": "podman", "tests": ["podman --version"] },
   {
     "name": "pnpm",
     "skip": [{ "os": "freebsd" }],

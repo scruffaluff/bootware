@@ -1333,19 +1333,6 @@
         - server
         - wsl
 
-    - name: Install Podman container platform
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - container
-            - podman
-            - never
-        name: scruffaluff.bootware.podman
-      tags:
-        - container
-        - podman
-        - never
-
     - name: Install PowerShell shell
       ansible.builtin.include_role:
         apply:

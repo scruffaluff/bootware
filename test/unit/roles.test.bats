@@ -31,13 +31,13 @@ roles_subcommand_default_hides_never_roles() { # @test
   run bash src/bootware.sh roles
   assert_success
   assert_output --partial 'wezterm'
-  refute_output --partial 'podman'
+  refute_output --partial 'wireshark'
 }
 
 roles_subcommand_never_shows_hidden_roles() { # @test
   run bash src/bootware.sh roles --tags never
   assert_success
-  assert_output --partial 'podman'
+  assert_output --partial 'wireshark'
   refute_output --partial 'bash'
 }
 
@@ -49,8 +49,8 @@ roles_subcommand_skip_hides_desktop_roles() { # @test
 }
 
 roles_subcommand_tag_hides_desktop_roles() { # @test
-  run bash src/bootware.sh roles --tags container
+  run bash src/bootware.sh roles --tags network
   assert_success
-  assert_output --partial 'podman'
+  assert_output --partial 'wireshark'
   refute_output --partial 'wezterm'
 }

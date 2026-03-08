@@ -13,7 +13,7 @@ see the commit logs. The format is based on
 
 ### Removed
 
-- Android Studio role.
+- Android Studio and Podman roles.
 
 ## 0.10.0 - 2026-01-07
 
