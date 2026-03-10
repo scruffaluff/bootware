@@ -138,10 +138,13 @@
   when: ansible_facts.system == "FreeBSD"
 
 - name: Install Docker for MacOS
-  community.general.homebrew_cask:
-    accept_external_apps: true
-    name: docker
-    state: present
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name:
+      - colima
+      - docker
+      - docker-buildx
   tags:
     - install
   when: ansible_facts.system == "Darwin"
@@ -198,6 +201,30 @@
   tags:
     - install
   when: ansible_facts.system == "Linux" and systemd
+
+- name: Create Docker plugins directory for MacOS
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.docker/cli-plugins"
+    state: directory
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Configure Docker Buildx plugin for MacOS
+  ansible.builtin.file:
+    src: "{{ brew_prefix }}/bin/docker-buildx"
+    dest: "{{ user_home }}/.docker/cli-plugins/docker-buildx"
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
 
 - name: Add user to Docker group for Alpine
   ansible.builtin.user:

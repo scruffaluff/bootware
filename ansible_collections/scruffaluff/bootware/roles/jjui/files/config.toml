@@ -3,19 +3,237 @@
 # For more information, visit
 # https://idursun.github.io/jjui/Configuration.html.
 
-[keys]
-down = ["down", "k"]
-exec_jj = ["!"]
-jump_to_children = ["L"]
-jump_to_parent = ["K"]
-up = ["up", "l"]
+[[bindings]]
+action = "bookmarks.move_down"
+key = ["down", "k"]
+scope = "bookmarks"
 
-[keys.details]
-close = ["left","j"]
-mode = ["right",";"]
+[[bindings]]
+action = "bookmarks.move_up"
+key = ["up", "l"]
+scope = "bookmarks"
 
-[keys.diff_view]
-left = ["left", "j"]
-right = ["right", ";"]
-scroll_down = ["down", "k"]
-scroll_up = ["up", "l"]
+[[bindings]]
+action = "choose.move_down"
+key = ["down", "k"]
+scope = "choose"
+
+[[bindings]]
+action = "choose.move_up"
+key = ["up", "l"]
+scope = "choose"
+
+[[bindings]]
+action = "command_history.move_down"
+key = ["down", "k"]
+scope = "command_history"
+
+[[bindings]]
+action = "command_history.move_up"
+key = ["up", "l"]
+scope = "command_history"
+
+[[bindings]]
+action = "diff.left"
+key = ["left", "j"]
+scope = "diff"
+
+[[bindings]]
+action = "diff.right"
+key = ["right", ";"]
+scope = "diff"
+
+[[bindings]]
+action = "diff.scroll_down"
+key = ["down", "k"]
+scope = "diff"
+
+[[bindings]]
+action = "diff.scroll_up"
+key = ["up", "l"]
+scope = "diff"
+
+[[bindings]]
+action = "git.move_down"
+key = ["down", "k"]
+scope = "git"
+
+[[bindings]]
+action = "git.move_up"
+key = ["up", "l"]
+scope = "git"
+
+[[bindings]]
+action = "help.scroll_down"
+key = ["down", "k"]
+scope = "help"
+
+[[bindings]]
+action = "help.scroll_up"
+key = ["up", "l"]
+scope = "help"
+
+[[bindings]]
+action = "oplog.move_down"
+key = ["down", "k"]
+scope = "oplog"
+
+[[bindings]]
+action = "oplog.move_up"
+key = ["up", "l"]
+scope = "oplog"
+
+[[bindings]]
+action = "redo.next"
+key = [";"]
+scope = "redo"
+
+[[bindings]]
+action = "redo.prev"
+key = ["j"]
+scope = "redo"
+
+[[bindings]]
+action = "revisions.details.cancel"
+key = ["esc", "left", "j"]
+scope = "revisions.details"
+
+[[bindings]]
+action = "revisions.details.confirmation.next"
+key = ["right", ";"]
+scope = "revisions.details.confirmation"
+
+[[bindings]]
+action = "revisions.details.confirmation.prev"
+key = ["left", "j"]
+scope = "revisions.details.confirmation"
+
+[[bindings]]
+action = "revisions.details.move_down"
+key = ["down", "k"]
+scope = "revisions.details"
+
+[[bindings]]
+action = "revisions.details.move_up"
+key = ["up", "l"]
+scope = "revisions.details"
+
+[[bindings]]
+action = "revisions.evolog.move_down"
+key = ["down", "k"]
+scope = "revisions.evolog"
+
+[[bindings]]
+action = "revisions.evolog.move_up"
+key = ["up", "l"]
+scope = "revisions.evolog"
+
+[[bindings]]
+action = "revisions.jump_to_children"
+key = ["shift+l"]
+scope = "revisions"
+
+[[bindings]]
+action = "revisions.jump_to_parent"
+key = ["shift+k"]
+scope = "revisions"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.rebase"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.squash"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.revert"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.duplicate"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.abandon"
+
+[[bindings]]
+action = "revisions.move_down"
+key = ["down", "k"]
+scope = "revisions.set_parents"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.rebase"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.squash"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.revert"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.duplicate"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.abandon"
+
+[[bindings]]
+action = "revisions.move_up"
+key = ["up", "l"]
+scope = "revisions.set_parents"
+
+[[bindings]]
+action = "revisions.open_details"
+key = ["right", ";"]
+scope = "revisions"
+
+[[bindings]]
+action = "revset.edit"
+key = ["shift+;"]
+scope = "revisions"
+
+[[bindings]]
+action = "ui.preview_expand"
+key = ["ctrl+j"]
+scope = "ui.preview"
+
+[[bindings]]
+action = "ui.preview_shrink"
+key = ["ctrl+;"]
+scope = "ui.preview"
+
+[[bindings]]
+action = "undo.next"
+key = [";"]
+scope = "undo"
+
+[[bindings]]
+action = "undo.prev"
+key = ["j"]
+scope = "undo"
