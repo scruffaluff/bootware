@@ -1,5 +1,7 @@
 # Installation
 
+## Shell Scripts
+
 Bootware is invoked by shell scripts on the user's computer. The following
 command will download the shell scripts and add them to the system path.
 
@@ -57,4 +59,24 @@ command will update the security policy for the current user.
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+## Ansible Collection
+
+Bootware is also available as an Ansible collection at
+[Ansible Galaxy](https://galaxy.ansible.com/ui/repo/published/scruffaluff/bootware/)
+, which can be installed with command
+`ansible-galaxy collection install scruffaluff.bootware`.
+
+The following playbook example runs a few of the Bootware roles and can be
+executed with command
+`ansible-playbook --connection local --inventory 127.0.0.1, playbook.yaml`.
+
+```yaml
+- hosts: all
+  roles:
+    - scruffaluff.bootware.age
+    - scruffaluff.bootware.bat
+    - scruffaluff.bootware.sops
+    - scruffaluff.bootware.xh
 ```

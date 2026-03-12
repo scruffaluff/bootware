@@ -3,11 +3,12 @@
 ![](https://img.shields.io/github/license/scruffaluff/bootware)
 ![](https://img.shields.io/github/repo-size/scruffaluff/bootware)
 
-Bootware is a set of shell scripts for bootstrapping software installations with
-Ansible. Bootware makes it easy to install software, settings, and configuration
-files for a new computer by providing uniform commands to install Ansible and
-execute playbooks for the local computer. Bootware requires no dependencies and
-works on FreeBSD, Linux, MacOS, and Windows operating systems.
+Bootware is a set of shell scripts and Ansible roles for bootstrapping software
+installations with Ansible. Bootware makes it easy to install software,
+settings, and configuration files for a new computer by providing uniform
+commands to install Ansible and execute playbooks for the local computer.
+Bootware requires no dependencies and works on FreeBSD, Linux, MacOS, and
+Windows operating systems.
 
 Bootware is designed for my personal usage, but can be configured for anyone to
 use. All the Bootware default settings point to this repository, but most

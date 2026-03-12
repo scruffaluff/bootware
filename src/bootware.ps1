@@ -1009,7 +1009,7 @@ function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 function Version() {
-    Write-Output 'Bootware 0.10.0'
+    Write-Output 'Bootware 0.10.1'
 }
 
 # Convert path to WSL relative path.
