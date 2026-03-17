@@ -68,6 +68,10 @@ Register-ArgumentCompleter -CommandName 'bootware' -ScriptBlock {
                 [CompletionResult]::new('--source', '--source', [CompletionResultType]::ParameterName, 'URL to configuration file')
                 break
             }
+            'bootware;facts' {
+                [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
+                break
+            }
             'bootware;roles' {
                 [CompletionResult]::new('--help', '--help', [CompletionResultType]::ParameterName, 'Print help information')
                 [CompletionResult]::new('--tags', '--tags', [CompletionResultType]::ParameterName, 'Ansible playbook tags to select in quotes')

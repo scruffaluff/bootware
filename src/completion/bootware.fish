@@ -10,6 +10,7 @@ complete -c bootware -n __fish_use_subcommand -s v -l version -d 'Print version 
 
 complete -c bootware -n __fish_use_subcommand -a bootstrap -d 'Bootstrap install computer software'
 complete -c bootware -n __fish_use_subcommand -a config -d 'Generate Bootware configuration file'
+complete -c bootware -n __fish_use_subcommand -a facts -d 'Gather facts about hosts'
 complete -c bootware -n __fish_use_subcommand -a roles -d 'List all Bootware roles'
 complete -c bootware -n __fish_use_subcommand -a setup -d 'Install dependencies for Bootware'
 complete -c bootware -n __fish_use_subcommand -a uninstall -d 'Remove Bootware files'
@@ -42,6 +43,8 @@ complete -c bootware -n '__fish_seen_subcommand_from config' -Fr -s d -l dest -d
 complete -c bootware -n '__fish_seen_subcommand_from config' -s e -l empty -d 'Write empty configuration file'
 complete -c bootware -n '__fish_seen_subcommand_from config' -s h -l help -d 'Print help information'
 complete -c bootware -n '__fish_seen_subcommand_from config' -x -s s -l source -d 'URL to configuration file'
+
+complete -c bootware -n '__fish_seen_subcommand_from facts' -s h -l help -d 'Print help information'
 
 complete -c bootware -n '__fish_seen_subcommand_from roles' -s h -l help -d 'Print help information'
 complete -c bootware -n '__fish_seen_subcommand_from roles' -x -s t -l tags -d 'Ansible playbook tags to select'

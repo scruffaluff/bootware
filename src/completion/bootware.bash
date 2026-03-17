@@ -7,4 +7,4 @@
 #
 # Flags:
 #   -W <WORDS>: Add words as completion subcommands.
-complete -W 'bootstrap config roles setup uninstall update' bootware
+complete -W 'bootstrap config facts roles setup uninstall update' bootware

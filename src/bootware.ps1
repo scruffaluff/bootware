@@ -70,6 +70,16 @@ Options:
   -s, --source <URL>    URL to configuration file.
 '@
         }
+        'facts' {
+            Write-Output @'
+Gather facts about hosts.
+
+Usage: bootware facts [OPTIONS]
+
+Options:
+  -h, --help              Print help information.
+'@
+        }
         'main' {
             Write-Output @'
 Bootstrapping software installer.
@@ -84,6 +94,7 @@ Options:
 Subcommands:
   bootstrap   Bootstrap install computer software.
   config      Generate Bootware configuration file.
+  facts       Gather facts about hosts.
   roles       List all Bootware roles.
   setup       Install dependencies for Bootware.
   uninstall   Remove Bootware files.
@@ -433,6 +444,28 @@ function Config() {
         Log "Downloading configuration file to '$DstFile'."
         Invoke-WebRequest -UseBasicParsing -OutFile $DstFile -Uri $SrcURL
     }
+}
+
+# Subcommand to gather facts about hosts.
+function Config() {
+    $ArgIdx = 0
+    $Inventory = ''
+
+    while ($ArgIdx -lt $Args[0].Count) {
+        switch ($Args[0][$ArgIdx]) {
+            { $_ -in '-h', '--help' } {
+                Usage 'facts'
+                exit 0
+            }
+            Default {
+                $Inventory = $Args[0][$ArgIdx]
+                $ArgIdx += 1
+                break
+            }
+        }
+    }
+
+    wsl bootware facts $Inventory
 }
 
 # Find path of Bootware configuration file.
@@ -1009,7 +1042,7 @@ function UpdateCompletion($Version) {
 
 # Print Bootware version string.
 function Version() {
-    Write-Output 'Bootware 0.10.1'
+    Write-Output 'Bootware 0.10.2'
 }
 
 # Convert path to WSL relative path.
@@ -1055,6 +1088,11 @@ function Main() {
             'config' {
                 $ArgIdx += 1
                 Config @(GetParameters $Args[0] $ArgIdx)
+                exit 0
+            }
+            'facts' {
+                $ArgIdx += 1
+                Facts @(GetParameters $Args[0] $ArgIdx)
                 exit 0
             }
             'roles' {

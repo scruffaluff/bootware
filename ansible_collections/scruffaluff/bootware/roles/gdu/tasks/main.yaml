@@ -96,6 +96,20 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+# Homebrew GDU package installs GDU as command "gdu-go" since coreutils package
+# installs the command "gdu".
+- name: Make GDU command symlink for MacOS
+  ansible.builtin.file:
+    src: "{{ brew_prefix }}/bin/gdu-go"
+    dest: /usr/local/bin/gdu
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
 - name: Remove GDU temporary directory for Linux
   ansible.builtin.file:
     path: "{{ gdu_temp.path }}"

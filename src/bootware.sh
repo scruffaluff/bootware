@@ -64,6 +64,16 @@ Options:
   -s, --source <URL>    URL to configuration file.
 EOF
       ;;
+    facts)
+      cat 1>&2 << EOF
+Gather facts about hosts.
+
+Usage: bootware facts [OPTIONS] <INVENTORY>
+
+Options:
+  -h, --help            Print help information.
+EOF
+      ;;
     main)
       cat 1>&2 << EOF
 Bootstrapping software installer.
@@ -78,6 +88,7 @@ Options:
 Subcommands:
   bootstrap   Bootstrap install computer software.
   config      Generate Bootware configuration file.
+  facts       Gather facts about hosts.
   roles       List all Bootware roles.
   setup       Install dependencies for Bootware.
   uninstall   Remove Bootware files.
@@ -440,6 +451,52 @@ config() {
     log "Downloading configuration file to ${dst_file}."
     fetch --dest "${dst_file}" "${src_url}"
   fi
+}
+
+#######################################
+# Subcommand to gather facts about hosts.
+#######################################
+facts() {
+  local inventory=''
+
+  # Parse command line arguments.
+  while [ "${#}" -gt 0 ]; do
+    case "${1}" in
+      -h | --help)
+        usage 'facts'
+        exit 0
+        ;;
+      *)
+        inventory="${1}"
+        shift 1
+        ;;
+    esac
+  done
+
+  # Disable Ansible deprecation warnings.
+  export ANSIBLE_DEPRECATION_WARNINGS='false'
+  # Disable Ansible warnings about no parsed inventory.
+  export ANSIBLE_INVENTORY_UNPARSED_WARNING='false'
+  # Disable Ansible warnings about implicit localhost inventory.
+  export ANSIBLE_LOCALHOST_WARNING='false'
+  # Disable warnings about implicit Python interpreter selection.
+  export ANSIBLE_PYTHON_INTERPRETER='auto_silent'
+
+  case "${inventory}" in
+    '')
+      log --stderr 'error: Cannot gather facts for an empty inventory.'
+      exit 1
+      ;;
+    127.0.0.1 | 127.0.0.1, | localhost | localhost,)
+      ansible --module-name ansible.builtin.gather_facts 127.0.0.1
+      ;;
+    *,*)
+      ansible --inventory "${inventory}" --module-name ansible.builtin.gather_facts all
+      ;;
+    *)
+      ansible --inventory "${inventory}," --module-name ansible.builtin.gather_facts all
+      ;;
+  esac
 }
 
 #######################################
@@ -1314,7 +1371,7 @@ update_completions() {
 #   Bootware version string.
 #######################################
 version() {
-  echo 'Bootware 0.10.1'
+  echo 'Bootware 0.10.2'
 }
 
 #######################################
@@ -1344,6 +1401,11 @@ main() {
       config)
         shift 1
         config "$@"
+        exit 0
+        ;;
+      facts)
+        shift 1
+        facts "$@"
         exit 0
         ;;
       roles)

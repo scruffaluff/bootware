@@ -121,7 +121,7 @@
 - name: Make Bat command symlink for Debian
   ansible.builtin.file:
     src: /usr/bin/batcat
-    dest: /usr/bin/bat
+    dest: /usr/local/bin/bat
     force: true
     mode: "755"
     state: link
