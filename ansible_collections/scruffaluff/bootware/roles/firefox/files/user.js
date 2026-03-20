@@ -56,12 +56,12 @@ user_pref("browser.ml.pageAssist.enabled", false);
 user_pref("browser.ml.smartAssist.enabled", false);
 // Remove news stories recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
-// Remove weather status recommendations from homepage.
-user_pref("browser.newtabpage.activity-stream.feeds.weatherfeed", false);
 // Disable telemetry.
 user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
 // Remove top sites recommendations from homepage.
 user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
+// Remove weather status recommendations from homepage.
+user_pref("browser.newtabpage.activity-stream.feeds.weatherfeed", false);
 // Remove Pocket recommendations from homepage.
 user_pref(
   "browser.newtabpage.activity-stream.section.highlights.includePocket",
@@ -89,10 +89,10 @@ user_pref("browser.taskbar.lists.frequent.enabled", false);
 user_pref("browser.taskbar.lists.recent.enabled", false);
 // Show bookmarks bar in toolbar.
 user_pref("browser.toolbars.bookmarks.visibility", "always");
-// Disable page translations.
-user_pref("browser.translations.enable", false);
 // Disable automatic translation popups.
 user_pref("browser.translations.automaticallyPopup", false);
+// Disable page translations.
+user_pref("browser.translations.enable", false);
 // Enable bookmarks suggestions in search bar.
 user_pref("browser.urlbar.suggest.bookmark", true);
 // Enable search engine suggestions in search bar.
@@ -100,7 +100,9 @@ user_pref("browser.urlbar.suggest.engines", true);
 // Disable history suggestions in search bar.
 user_pref("browser.urlbar.suggest.history", false);
 // Disable open tab suggestions in search bar.
-user_pref("browser.urlbar.suggest.openpage", true);
+user_pref("browser.urlbar.suggest.openpage", false);
+// Disable brand suggestions in search bar.
+user_pref("browser.urlbar.suggest.quicksuggest.all", false);
 // Disable partner suggestions in search bar.
 user_pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
 // Disable sponsored suggestions in search bar.
@@ -117,6 +119,8 @@ user_pref("browser.warnOnQuitShortcut", false);
 user_pref("datareporting.healthreport.uploadEnabled", false);
 // Disable data reporting.
 user_pref("datareporting.policy.dataSubmissionEnabled", false);
+// Disable data reporting uploads.
+user_pref("datareporting.usage.uploadEnabled", false);
 // Disable website advertising preferences telemetry.
 user_pref("dom.private-attribution.submission.enabled", false);
 // Enable HTTPS only mode.
@@ -159,6 +163,8 @@ user_pref("permissions.default.xr", 2);
 user_pref("privacy.clearOnShutdown.downloads", true);
 // Send sites do not track header in HTTP requests.
 user_pref("privacy.donottrackheader.enabled", true);
+// Enable fingerprinting protection.
+user_pref("privacy.fingerprintingProtection", true);
 // Send sites no consent message to selling personal information.
 user_pref("privacy.globalprivacycontrol.enabled", true);
 // Strip tracking queries from URLs.

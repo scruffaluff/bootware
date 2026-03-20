@@ -96,6 +96,11 @@
     "tests": ["flyctl version"]
   },
   { "name": "font" },
+  {
+    "name": "fwupd",
+    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "tests": ["fwupdmgr --help"]
+  },
   { "name": "fzf", "tests": ["fzf --version"] },
   {
     "name": "gdb",

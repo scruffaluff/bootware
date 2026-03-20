@@ -10,6 +10,7 @@ see the commit logs. The format is based on
 ### Added
 
 - Facts subcommand.
+- Fwupd role.
 
 ## 0.10.1 - 2026-03-11
 

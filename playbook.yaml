@@ -605,6 +605,17 @@
         - desktop
         - font
 
+    - name: Install Fwupd firmware service
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - fwupd
+        name: scruffaluff.bootware.fwupd
+      tags:
+        - desktop
+        - fwupd
+
     - name: Install FzF fuzzy searcher
       ansible.builtin.include_role:
         apply:

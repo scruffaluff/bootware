@@ -63,6 +63,7 @@ vscode_extensions:
   - firefox-devtools.vscode-firefox-debug
   - foxundermoon.shell-format
   - james-yu.latex-workshop
+  - kdl-org.kdl
   - leanprover.lean4
   - marimo-team.vscode-marimo
   - mechatroner.rainbow-csv

@@ -447,7 +447,7 @@ function Config() {
 }
 
 # Subcommand to gather facts about hosts.
-function Config() {
+function Facts() {
     $ArgIdx = 0
     $Inventory = ''
 

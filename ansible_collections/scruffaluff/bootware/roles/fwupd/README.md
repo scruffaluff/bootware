@@ -1,6 +1,6 @@
 # Flatpak
 
-Ansible role that installs [Flatpak](https://flatpak.org) packages.
+Ansible role that installs [Fwupd](https://fwupd.org/) firmware service.
 
 ## Requirements
 
@@ -19,5 +19,5 @@ None.
 ```yaml
 - hosts: all
   roles:
-    - scruffaluff.bootware.flatpak
+    - scruffaluff.bootware.fwupd
 ```

@@ -5,8 +5,8 @@
   ansible.windows.win_uri:
     method: GET
     return_content: true
-    url: https://formulae.brew.sh/api/cask/powershell.json
-  register: powershell_cask
+    url: https://formulae.brew.sh/api/formula/powershell.json
+  register: powershell_formula
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -19,8 +19,9 @@
       - REGISTER_MANIFEST=1
     path: >-
       https://github.com/PowerShell/PowerShell/releases/download/v{{
-      powershell_cask.json.version }}/PowerShell-{{ powershell_cask.json.version
-      }}-win-{{ powershell_arch[system_architecture] }}.msi
+      powershell_formula.json.versions.stable }}/PowerShell-{{
+      powershell_formula.json.versions.stable }}-win-{{
+      powershell_arch[system_architecture] }}.msi
   tags:
     - install
   vars:

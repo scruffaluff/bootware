@@ -1,0 +1,9 @@
+---
+- name: Install Fwupd for Linux
+  ansible.builtin.package:
+    name: fwupd
+    state: present
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"

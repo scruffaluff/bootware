@@ -88,8 +88,8 @@ lint:
 
 # List all commands available in justfile.
 [default]
-list:
-  @just --list
+@list:
+  just --list
 
 # Wrapper to Nushell.
 [no-exit-message]
