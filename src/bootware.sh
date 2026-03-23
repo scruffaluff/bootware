@@ -641,6 +641,13 @@ install_yq() {
   arch="$(uname -m | sed 's/x86_64/amd64/;s/x64/amd64/;s/aarch64/arm64/')"
   os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
+  # Handle special FreeBSD case.
+  if [ "${os}" = 'freebsd' ]; then
+    ${super} pkg update
+    ${super} pkg install --yes yq
+    return
+  fi
+
   # Get latest Yq version.
   #
   # Flags:

@@ -1,21 +1,21 @@
 ---
-- name: Create Fzf temporary directory for Unix
+- name: Install FzF for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: fzf
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
+- name: Create Fzf temporary directory for Linux
   ansible.builtin.tempfile:
     state: directory
   register: fzf_temp
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system == "Linux"
 
 # TODO: Renable when Fzf package in most distributions reaches version 0.48.0.
-# - name: Install FzF for FreeBSD
-#   become: true
-#   community.general.pkgng:
-#     name: fzf
-#   tags:
-#     - install
-#   when: ansible_facts.system == "FreeBSD"
-#
 # - name: Install Fzf for Linux
 #   ansible.builtin.package:
 #     name: fzf
@@ -26,7 +26,7 @@
 #     - install
 #   when: ansible_facts.system == "Linux"
 
-- name: Get latest Fzf version for Unix
+- name: Get latest Fzf version for Linux
   ansible.builtin.uri:
     method: GET
     return_content: true
@@ -34,14 +34,14 @@
   register: fzf_formula
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system == "Linux"
 
 # Some of the Fzf releases have a "v" in the name while others do not.
 #
 # The ignore_errors, loop, and vars allow for trying mutliple URLs and breaking
 # the loop if a URL succeeds. Since ignore_errors is false on the last loop
 # item, the task will fail if none of the URLs work.
-- name: Download Fzf for Unix
+- name: Download Fzf for Linux
   ansible.builtin.unarchive:
     dest: "{{ fzf_temp.path }}"
     mode: "777"
@@ -49,8 +49,7 @@
     src: >-
       https://github.com/junegunn/fzf/releases/download/{{ item }}{{
       fzf_formula.json.versions.stable }}/fzf-{{
-      fzf_formula.json.versions.stable }}-{{ ansible_facts.system | lower }}_{{
-      system_architecture }}.tar.gz
+      fzf_formula.json.versions.stable }}-linux_{{ system_architecture }}.tar.gz
   ignore_errors: "{{ item != 'v' }}"
   loop:
     - ""
@@ -62,9 +61,9 @@
     fzf_unarchive_run: >-
       {{ (fzf_unarchive_result is failed) if fzf_unarchive_result is defined
       else true }}
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and fzf_unarchive_run
+  when: ansible_facts.system == "Linux" and fzf_unarchive_run
 
-- name: Install Fzf for Unix
+- name: Install Fzf for Linux
   ansible.builtin.copy:
     dest: /usr/local/bin/fzf
     force: true
@@ -74,7 +73,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system == "Linux"
 
 - name: Install FzF for MacOS
   become: true
@@ -102,10 +101,10 @@
     cacheable: true
     fzf_role_executed: true
 
-- name: Remove Fzf temporary directory for Unix
+- name: Remove Fzf temporary directory for Linux
   ansible.builtin.file:
     path: "{{ fzf_temp.path }}"
     state: absent
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when: ansible_facts.system == "Linux"

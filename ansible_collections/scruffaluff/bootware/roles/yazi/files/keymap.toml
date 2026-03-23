@@ -5,13 +5,15 @@
 # For more information, visit
 # https://yazi-rs.github.io/docs/configuration/keymap.
 
+"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
+
 [help]
 prepend_keymap = [
   { desc = "Move cursor down", on = "k", run = "arrow 1" },
   { desc = "Move cursor down 5 lines", on = "K", run = "arrow 5" },
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
   { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
-  { desc = "Open help", on = "<A-h>", run = "help" },
+  { desc = "Close the help", on = "<A-h>", run = "escape" },
 ]
 
 [input]
@@ -49,6 +51,7 @@ prepend_keymap = [
   { desc = "Hide or show preview", on = "T", run = "plugin toggle-pane min-preview" },
   { desc = "Run a shell command", on = "s", run = "shell --interactive" },
   { desc = "Run a blocking shell command", on = "S", run = "shell --block --interactive" },
+  { desc = "Spot hovered file", on = "\ue006", run = "spot" },
   { desc = "Zoom in", on = "+", run = "plugin zoom 1" },
   { desc = "Zoom out", on = "-", run = "plugin zoom -1" },
   { desc = "Open help", on = "<A-h>", run = "help" },
@@ -87,6 +90,16 @@ prepend_keymap = [
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
   { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
   { desc = "Open help", on = "<A-h>", run = "help" },
+]
+
+[spot]
+prepend_keymap = [
+  { desc = "Swipe to previous file", on = "j", run = "swipe prev" },
+  { desc = "Next line", on = "k", run = "arrow next" },
+  { desc = "Previous line", on = "l", run = "arrow prev" },
+  { desc = "Swipe to next file", on = ";", run = "swipe next" },
+  { desc = "Open help", on = "<A-h>", run = "help" },
+  { desc = "Close the spot", on = "\ue006", run = "close" },
 ]
 
 [tasks]
