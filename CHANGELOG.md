@@ -11,6 +11,7 @@ see the commit logs. The format is based on
 
 - Facts subcommand.
 - Fwupd role.
+- Zellij support for Windows.
 
 ## 0.10.1 - 2026-03-11
 

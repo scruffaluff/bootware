@@ -82,6 +82,14 @@
     - install
   when: ansible_facts.system == "Darwin"
 
+- name: Install Zellij for Windows
+  community.windows.win_scoop:
+    global: true
+    name: zellij
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
 - name: Create Zellij shell completions for Unix
   ansible.builtin.shell:
     cmd: >-
@@ -162,6 +170,40 @@
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
+
+- name: Create Zellij settings directories for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\AppData\\Roaming\\zellij\\{{ item }}"
+    state: directory
+  loop:
+    - config
+    - config\layouts
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Zellij settings file for Windows
+  ansible.windows.win_template:
+    dest: "{{ user_home }}\\AppData\\Roaming\\zellij\\config\\config.kdl"
+    force: true
+    src: config.kdl.j2
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Zellij layout files for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\AppData\\Roaming\\zellij\\config\\{{ item.dest }}"
+    force: true
+    src: "{{ item.src }}"
+  loop:
+    - dest: layouts\layout.kdl
+      src: layout.kdl
+    - dest: layouts\layout.swap.kdl
+      src: layout.swap.kdl
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Zellij temporary directory for Unix
   ansible.builtin.file:

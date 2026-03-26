@@ -674,6 +674,7 @@
             - desktop
             - git
             - server
+            - sysadmin
             - vcs
             - wsl
         name: scruffaluff.bootware.git
@@ -681,6 +682,7 @@
         - desktop
         - git
         - server
+        - sysadmin
         - vcs
         - wsl
 
