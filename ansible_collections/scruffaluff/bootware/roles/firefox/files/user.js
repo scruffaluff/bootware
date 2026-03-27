@@ -121,6 +121,8 @@ user_pref("datareporting.healthreport.uploadEnabled", false);
 user_pref("datareporting.policy.dataSubmissionEnabled", false);
 // Disable data reporting uploads.
 user_pref("datareporting.usage.uploadEnabled", false);
+// Disable notifications about unsaved page changes.
+user_pref("dom.disable_beforeunload", true);
 // Disable website advertising preferences telemetry.
 user_pref("dom.private-attribution.submission.enabled", false);
 // Enable HTTPS only mode.

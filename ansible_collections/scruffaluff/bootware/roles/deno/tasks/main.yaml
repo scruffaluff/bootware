@@ -69,7 +69,7 @@
   when: ansible_facts.system == "Win32NT"
 
 # Microsft File Explorer overrides any file assoications for ts files. So
-# extension tsx must be used instead.
+# extension mts must be used instead.
 - name: Register JavaScript and TypeScript files as executables for Windows
   ansible.windows.win_regedit:
     data: "{{ item.data }}"
@@ -82,12 +82,18 @@
         "{{ scoop_path }}\shims\deno.exe" run --allow-all --no-config --quiet
         --node-modules-dir=none "%1" %*
       path: "HKLM:\\Software\\Classes\\jsfile\\shell\\open\\command"
-    - data: tsxfile
-      path: "HKLM:\\Software\\Classes\\.tsx"
+    - data: mjsfile
+      path: "HKLM:\\Software\\Classes\\.mjs"
     - data: >-
         "{{ scoop_path }}\shims\deno.exe" run --allow-all --no-config --quiet
         --node-modules-dir=none "%1" %*
-      path: "HKLM:\\Software\\Classes\\tsxfile\\shell\\open\\command"
+      path: "HKLM:\\Software\\Classes\\mjsfile\\shell\\open\\command"
+    - data: mtsfile
+      path: "HKLM:\\Software\\Classes\\.mts"
+    - data: >-
+        "{{ scoop_path }}\shims\deno.exe" run --allow-all --no-config --quiet
+        --node-modules-dir=none "%1" %*
+      path: "HKLM:\\Software\\Classes\\mtsfile\\shell\\open\\command"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -108,7 +114,8 @@
   changed_when: "'PATHEXT updated' in deno_pathext.stdout"
   loop:
     - JS
-    - TSX
+    - MJS
+    - MTS
   register: deno_pathext
   tags:
     - install

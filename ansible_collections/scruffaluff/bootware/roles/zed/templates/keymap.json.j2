@@ -5,6 +5,7 @@
 [
   {
     "bindings": {
+      "{{ zed_ctrl_key }}-shift-c": null,
       "ctrl-:": "pane::ActivateNextItem",
       "ctrl-shift-a": "workspace::ToggleLeftDock",
       "ctrl-shift-d": "debug_panel::ToggleFocus",
@@ -32,9 +33,9 @@
   },
   {
     "bindings": {
-      "ctrl-shift-d": "debugger::Start"
+      "ctrl-shift-d": "debugger::Start",
     },
-    "context": "DebugPanel"
+    "context": "DebugPanel",
   },
   {
     "bindings": {
@@ -46,6 +47,8 @@
       "alt-l": "editor::MoveUp",
       "alt-q": "editor::Rewrap",
       "alt-w": "editor::DeleteToNextWordEnd",
+      "{{ zed_ctrl_key }}-q": null,
+      "{{ zed_ctrl_key }}-space": null,
       "ctrl-.": "editor::ToggleCodeActions",
       "ctrl-/": ["editor::ToggleComments", { "advance_downwards": false }],
       "ctrl->": "outline::Toggle",
@@ -60,40 +63,38 @@
       "ctrl-h": "buffer_search::DeployReplace",
       "ctrl-i": "editor::ShowCompletions",
       "ctrl-left": "editor::MoveToPreviousSubwordStart",
-      "ctrl-q": null,
       "ctrl-right": "editor::MoveToNextSubwordEnd",
       "ctrl-shift-enter": "editor::NewlineAbove",
       "ctrl-shift-s": "terminal_panel::ToggleFocus",
-      "ctrl-space": null,
       "ctrl-u": "editor::DeleteToBeginningOfLine",
       "ctrl-up": "editor::AddSelectionAbove",
       "ctrl-w": "editor::DeleteToPreviousWordStart",
       "ctrl-{": "editor::GoToPreviousHunk",
       "ctrl-}": "editor::GoToHunk",
       "shift-left": "editor::MoveToPreviousWordStart",
-      "shift-right": "editor::MoveToNextWordEnd"
+      "shift-right": "editor::MoveToNextWordEnd",
     },
-    "context": "Editor"
+    "context": "Editor",
   },
   {
     "bindings": {
-      "alt-tab": null
+      "alt-tab": null,
     },
-    "context": "Onboarding"
+    "context": "Onboarding",
   },
   {
     "bindings": {
       "ctrl-[": "pane::GoBack",
-      "ctrl-]": "pane::GoForward"
+      "ctrl-]": "pane::GoForward",
     },
-    "context": "Pane"
+    "context": "Pane",
   },
   {
     "bindings": {
       "ctrl-n": "project_panel::NewFile",
-      "ctrl-shift-n": "project_panel::NewDirectory"
+      "ctrl-shift-n": "project_panel::NewDirectory",
     },
-    "context": "ProjectPanel"
+    "context": "ProjectPanel",
   },
   {
     "bindings": {
@@ -109,28 +110,29 @@
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
       "ctrl-shift-n": "pane::SplitRight",
       "ctrl-shift-s": "terminal_panel::ToggleFocus",
-      "ctrl-shift-t": "workspace::NewTerminal"
+      "ctrl-shift-t": "workspace::NewTerminal",
     },
-    "context": "Terminal"
+    "context": "Terminal",
   },
   {
     "bindings": {
-      "ctrl-b": null,
-      "ctrl-j": null
+      "{{ zed_ctrl_key }}-b": null,
+      "{{ zed_ctrl_key }}-j": null,
     },
-    "context": "Workspace"
+    "context": "Workspace",
   },
   {
     "bindings": {
-      "ctrl-shift-d": "debug_panel::ToggleFocus"
+      "ctrl-shift-d": "debug_panel::ToggleFocus",
     },
-    "context": "!DebugPanel"
+    "context": "!DebugPanel",
   },
   {
     "bindings": {
-      "ctrl-shift-t": "terminal_panel::ToggleFocus"
+      "{{ zed_ctrl_key }}-shift-c": null,
+      "ctrl-shift-t": "terminal_panel::ToggleFocus",
     },
-    "context": "!Terminal"
+    "context": "!Terminal",
   },
   {
     "bindings": {
@@ -139,8 +141,8 @@
       "alt-o": "debugger::StepOut",
       "alt-q": "debugger::Stop",
       "alt-r": "debugger::Restart",
-      "alt-s": "debugger::StepInto"
+      "alt-s": "debugger::StepInto",
     },
-    "context": "debugger_stopped"
+    "context": "debugger_stopped",
   }
 ]
