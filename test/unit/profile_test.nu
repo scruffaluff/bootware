@@ -17,7 +17,7 @@ export def --env --wrapped "commandline set-cursor" [...args: string] {
     $args | str join ""
     | save --force $"($env.NUTEST_TMPDIR)/commandline_setcursor"
 }
-def --wrapped fzf [...args: string] { $env.NUTEST_FZF }
+def --wrapped fzf [...args: path] { $env.NUTEST_FZF }
 
 @test
 def "_cut-path-left cases" [] {

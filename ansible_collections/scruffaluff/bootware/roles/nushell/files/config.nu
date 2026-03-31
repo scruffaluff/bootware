@@ -324,7 +324,8 @@ def carapace-complete [spans: list<string>] {
 }
 
 # Wrapper for chown command with Windows support.
-def --wrapped chown [...args: string] {
+@complete external
+def --wrapped chown [...args: path] {
     match $nu.os-info.name {
         "windows" => {
             let args_ = $args | where {|arg|
@@ -523,6 +524,7 @@ def "history prune" [] {
 }
 
 # Wrapper for poweroff command with Windows support.
+@complete external
 def --wrapped poweroff [...args: string] {
     match $nu.os-info.name {
         "windows" => { powershell -command "Stop-Computer -Force" },
@@ -540,6 +542,7 @@ def --env prepend-paths [...paths: directory] {
 }
 
 # Wrapper for reboot command with Windows support.
+@complete external
 def --wrapped reboot [...args: string] {
     match $nu.os-info.name {
         "windows" => { powershell -command "Restart-Computer -Force" },
@@ -667,16 +670,28 @@ alias lzd = lazydocker
 # Fd settings.
 
 # Always have Fd read available gitignore files.
-alias fd = ^fd --no-require-git
+@complete external
+def --wrapped fd [...args: path] {
+    ^fd --no-require-git ...$args
+}
 # Add edit alias for interactive Fd.
 alias fde = ^fdi --edit
 
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
-alias ffmpeg = ^ffmpeg -hide_banner -stats -loglevel error
-alias ffplay = ^ffplay -hide_banner -loglevel error
-alias ffprobe = ^ffprobe -hide_banner
+@complete external
+def --wrapped ffmpeg [...args: path] {
+    ^ffmpeg -hide_banner -stats -loglevel error
+}
+@complete external
+def --wrapped ffplay [...args: path] {
+    ^ffplay -hide_banner -loglevel error
+}
+@complete external
+def --wrapped ffprobe [...args: path] {
+    ^ffprobe -hide_banner
+}
 
 # Fzf settings.
 
@@ -814,7 +829,10 @@ alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Add alias for Rsync with progress bars and ignored files.
-alias rsync = ^rsync --partial --progress --filter ":- .gitignore"
+@complete external
+def --wrapped rsync [...args: path] {
+    ^rsync --partial --progress --filter ":- .gitignore" ...$args
+}
 
 # Configure prompt if interactive.
 if $nu.is-interactive {
@@ -1107,7 +1125,7 @@ prepend-paths "/usr/share/code/bin" \
 $env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 
 # Yazi wrapper to change directory on program exit.
-def --env --wrapped yz [...args] {
+def --env --wrapped yz [...args: path] {
   let tmp_file = mktemp --tmpdir
   yazi --cwd-file $tmp_file ...$args
 
