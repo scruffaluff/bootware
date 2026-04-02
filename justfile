@@ -15,7 +15,7 @@ export PSModulePath := if os() == "windows" {
 } else { "" }
 
 # Execute CI workflow commands.
-ci: setup lint doc test-shell test-nushell test-python
+ci: setup lint doc test-sh test-nu test-py
 
 # Build distribution packages.
 dist version="0.10.2":
@@ -259,14 +259,14 @@ setup:
   }
 
 # Run test suites.
-test: test-shell test-nushell test-python test-pkg test-e2e
+test: test-sh test-nu test-py test-pkg test-e2e
 
 # Run end to end test suite.
 test-e2e *args:
   nu script/test_e2e.nu {{args}}
 
 # Run Nushell test suite.
-test-nushell *args:
+test-nu *args:
   nu --commands \
     "use .vendor/lib/nutest/nutest run-tests; run-tests --fail --path test {{args}}"
 
@@ -276,21 +276,21 @@ test-pkg *args:
 
 # Run Python test suite.
 [unix]
-test-python *args:
+test-py *args:
   uv run pytest test {{args}}
 
 # Run Python test suite.
 [windows]
-test-python *args:
+test-py *args:
 
 # Run unit test suite.
 [unix]
-test-shell *args:
+test-sh *args:
   bats --recursive test {{args}}
 
 # Run unit test suite.
 [windows]
-test-shell:
+test-sh:
   Invoke-Pester -CI -Output Detailed -Path \
     $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
 

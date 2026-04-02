@@ -85,11 +85,9 @@ disabled = true
 [helm]
 disabled = true
 
-# Default hostname style does not render properly in the VSCode solarized theme.
 [hostname]
 ssh_only = false
 ssh_symbol = ""
-style = "fg:#859900"
 
 [java]
 disabled = true
