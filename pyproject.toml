@@ -4,8 +4,8 @@
 # https://snarky.ca/what-the-heck-is-pyproject-toml.
 
 [build-system]
-build-backend = "hatchling.build"
-requires = ["hatchling~=1.0"]
+build-backend = "uv_build"
+requires = ["uv-build~=0.11"]
 
 [dependency-groups]
 dev = [

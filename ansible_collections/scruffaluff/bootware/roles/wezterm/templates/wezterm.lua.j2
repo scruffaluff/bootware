@@ -4,9 +4,17 @@
 
 local wezterm = require 'wezterm'
 
+function dark_mode()
+  local mode = 'Light'
+  if wezterm.gui then
+    mode = wezterm.gui.get_appearance()
+  end
+  return string.find(mode, 'Dark')
+end
+
 local config = wezterm.config_builder()
 config.audible_bell = 'Disabled'
-config.color_scheme = 'Builtin Solarized Light'
+config.color_scheme = dark_mode() and 'Builtin Solarized Dark' or 'Builtin Solarized Light'
 config.colors = {
   scrollbar_thumb = '#fdf6e3',
   tab_bar = {

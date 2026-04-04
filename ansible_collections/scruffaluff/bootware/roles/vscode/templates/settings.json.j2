@@ -45,7 +45,7 @@
   "editor.stickyScroll.enabled": false,
   "editor.suggestOnTriggerCharacters": false,
   "editor.wordBasedSuggestions": "off",
-  "editor.tabSize": 4,
+  "editor.tabSize": 2,
   "editor.unicodeHighlight.allowedCharacters": {
     "❯": true
   },
@@ -200,10 +200,10 @@
   "vite.autoStart": false,
   "vsicons.dontShowNewVersionMessage": true,
   "vue.editor.templateInterpolationDecorators": false,
+  "window.autoDetectColorScheme": true,
   "window.commandCenter": false,
   "window.confirmSaveUntitledWorkspace": false,
   "workbench.activityBar.location": "bottom",
-  "workbench.colorTheme": "Solarized Light",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.focusRecentEditorAfterClose": false,
   "workbench.editor.untitled.labelFormat": "name",
@@ -218,6 +218,8 @@
     "*.wav": "wavPreview.audioPreview"
   },
   "workbench.iconTheme": "vscode-icons",
+  "workbench.preferredDarkColorTheme": "Solarized Dark",
+  "workbench.preferredLightColorTheme": "Solarized Light",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.startupEditor": "welcomePage",
   "workbench.statusBar.visible": true,
@@ -226,12 +228,10 @@
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[dockercompose]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[dockerfile]": {
     "editor.defaultFormatter": null,
@@ -240,21 +240,17 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    }
+    },
+    "editor.tabSize": 4
   },
   "[fish]": {
     "editor.tabSize": 4
   },
-  "[helm]": {
-    "editor.tabSize": 2
-  },
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -262,8 +258,7 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
-    "editor.tabSize": 2
+    }
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -271,40 +266,44 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
-    "editor.tabSize": 2
+    }
   },
   "[just]": {
-    "editor.defaultFormatter": "nefrob.vscode-just-syntax",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "nefrob.vscode-just-syntax"
+  },
+  "[kdl]": {
+    "editor.tabSize": 4
   },
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false,
     "editor.quickSuggestions": {
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
-    "editor.tabSize": 2
+    }
+  },
+  "[nushell]": {
+    "editor.tabSize": 4
+  },
+  "[powershell]": {
+    "editor.tabSize": 4
   },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.rulers": [88]
-  },
-  "[ruby]": {
-    "editor.tabSize": 2
+    "editor.rulers": [88],
+    "editor.tabSize": 4
   },
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
-    "editor.rulers": [100]
+    "editor.rulers": [100],
+    "editor.tabSize": 4
   },
   "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "[snippets]": {
     "editor.quickSuggestions": {
@@ -314,32 +313,26 @@
     }
   },
   "[svelte]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[tailwindcss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[toml]": {
-    "editor.formatOnSave": false,
-    "editor.tabSize": 2
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[xml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -347,7 +340,6 @@
       "comments": "off",
       "other": "off",
       "strings": "off"
-    },
-    "editor.tabSize": 2
+    }
   }
 }

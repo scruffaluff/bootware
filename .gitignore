@@ -16,9 +16,11 @@
 .lock
 .mypy_cache/
 .pytest_cache/
+.ropeproject/
 .vagrant/
 .venv/
 .vscode/
+.zed/
 /.vendor/
 /.vitepress/.temp/
 /.vitepress/cache/

@@ -15,10 +15,12 @@
 .mypy_cache/
 .obsidian/
 .pytest_cache/
+.ropeproject/
 .ruff_cache/
 .sl/
 .svn/
 .tox/
+.ty_cache/
 .vendor/
 .venv/
 .vitepress/cache/
