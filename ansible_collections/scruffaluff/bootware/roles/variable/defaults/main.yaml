@@ -77,6 +77,24 @@ bash_executable: "{{ bash_executable_.get(ansible_facts.system, '/bin/bash') }}"
 bash_name: bash
 bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
+color:
+  base00: "#657b83"
+  base01: "#586e75"
+  base02: "#073642"
+  base03: "#002b36"
+  base0: "#839496"
+  base1: "#93a1a1"
+  base2: "#eee8d5"
+  base3: "#fdf6e3"
+  blue: "#268bd2"
+  cyan: "#2aa198"
+  green: "#859900"
+  magenta: "#d33682"
+  orange: "#cb4b16"
+  red: "#dc322f"
+  theme: light
+  violet: "#6c71c4"
+  yellow: "#b58900"
 fish_completion: >-
   {{ fish_completion_.get(ansible_facts.system, '/etc/fish/completions') }}
 fish_executable: >-
@@ -117,6 +135,32 @@ system_architecture: >-
   {{ system_architecture_.get(ansible_facts.architecture, '') }}
 system_libc: "{{ system_libc_.get(ansible_facts.system, '') }}"
 system_pkg_mgr: "{{ ansible_facts.get('pkg_mgr', '').replace('dnf5', 'dnf') }}"
+theme:
+  dark:
+    black: "{{ color.base03 }}"
+    blue: "{{ color.base0 }}"
+    cyan: "{{ color.base1 }}"
+    green: "{{ color.base01 }}"
+    magenta: "{{ color.violet }}"
+    orange: "{{ color.red }}"
+    red: "{{ color.orange }}"
+    violet: "{{ color.magenta }}"
+    white: "{{ color.base3 }}"
+    yellow: "{{ color.base00 }}"
+  default: "{{ theme[color.theme] }}"
+  light:
+    background: "{{ color.base3 }}"
+    black: "{{ color.base02 }}"
+    blue: "{{ color.blue }}"
+    cyan: "{{ color.cyan }}"
+    foreground: "{{ color.base2 }}"
+    green: "{{ color.green }}"
+    magenta: "{{ color.magenta }}"
+    orange: "{{ color.orange }}"
+    red: "{{ color.red }}"
+    violet: "{{ color.violet }}"
+    white: "{{ color.base2 }}"
+    yellow: "{{ color.yellow }}"
 user_login: >-
   {{ 'powershell' if ansible_facts.system == 'Win32NT' else 'bash' }}
 user_shell: nushell

@@ -197,7 +197,7 @@ def do_shell(self: Pdb, line: str) -> None:
     Execute command or start interactive default shell session.
     """  # noqa: D415
     line_ = parse_exprs(self, line)
-    arguments = list(map(os.path.expanduser, shlex.split(line_.strip())))
+    arguments = list(map(str, map(os.path.expanduser, shlex.split(line_.strip()))))
     shell(arguments)
 
 
