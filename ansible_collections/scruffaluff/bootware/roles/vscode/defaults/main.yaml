@@ -105,7 +105,6 @@ vscode_remote_extensions:
   - thenuprojectcontributors.vscode-nushell-lang
   - timonwong.shellcheck
   - vscode-icons-team.vscode-icons
-vscode_remotes: {}
 vscode_style: true
 vscode_system: "{{ vscode_system_.get(ansible_facts.system, 'linux') }}"
 vscode_user_path: >-
