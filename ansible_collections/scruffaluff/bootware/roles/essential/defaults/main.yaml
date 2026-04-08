@@ -9,6 +9,7 @@ essential_linux_packages_:
     - gzip
     - tar
     - unzip
+    - zstd
   apk:
     - 7zip
     - gnupg

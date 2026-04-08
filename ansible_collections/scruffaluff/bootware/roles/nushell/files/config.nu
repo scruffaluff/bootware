@@ -670,28 +670,16 @@ alias lzd = lazydocker
 # Fd settings.
 
 # Always have Fd read available gitignore files.
-@complete external
-def --wrapped fd [...args: path] {
-    ^fd --no-require-git ...$args
-}
+alias fd = fd --no-require-git
 # Add edit alias for interactive Fd.
-alias fde = ^fdi --edit
+alias fde = fdi --edit
 
 # FFmpeg settings.
 
 # Disable verbose FFmpeg banners.
-@complete external
-def --wrapped ffmpeg [...args: path] {
-    ^ffmpeg -hide_banner -stats -loglevel error
-}
-@complete external
-def --wrapped ffplay [...args: path] {
-    ^ffplay -hide_banner -loglevel error
-}
-@complete external
-def --wrapped ffprobe [...args: path] {
-    ^ffprobe -hide_banner
-}
+alias ffmpeg = ffmpeg -hide_banner -stats -loglevel error
+alias ffplay = ffplay -hide_banner -loglevel error
+alias ffprobe = ffprobe -hide_banner
 
 # Fzf settings.
 
@@ -809,7 +797,7 @@ $env.RCLONE_STATS_ONE_LINE = "true"
 # Ripgrep settings.
 
 # Add edit alias for interactive Ripgrep.
-alias rge = ^rgi --edit
+alias rge = rgi --edit
 # Set Ripgrep settings file location.
 $env.RIPGREP_CONFIG_PATH = $"($env.HOME)/.ripgreprc"
 
@@ -829,10 +817,7 @@ alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Add alias for Rsync with progress bars and ignored files.
-@complete external
-def --wrapped rsync [...args: path] {
-    ^rsync --partial --progress --filter ":- .gitignore" ...$args
-}
+alias rsync = rsync --partial --progress --filter ":- .gitignore"
 
 # Configure prompt if interactive.
 if $nu.is-interactive {

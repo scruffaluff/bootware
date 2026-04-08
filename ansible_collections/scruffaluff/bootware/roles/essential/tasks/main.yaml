@@ -119,6 +119,7 @@
       - gzip
       - unzip
       - zip
+      - zstd
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"
@@ -145,6 +146,7 @@
       - unzip
       - xz
       - zip
+      - zstd
   tags:
     - install
   when: ansible_facts.system == "Darwin"
@@ -162,6 +164,7 @@
       - vcredist
       - xz
       - zip
+      - zstd
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
