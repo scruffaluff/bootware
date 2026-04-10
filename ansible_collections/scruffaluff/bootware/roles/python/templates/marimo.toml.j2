@@ -2,6 +2,9 @@
 #
 # For more information, visit https://docs.marimo.io/guides/configuration.
 
+[ai]
+inline_tooltip = false
+
 [display]
 custom_css = ["{{ user_home }}/.config/marimo/marimo.css"]
 
@@ -13,7 +16,9 @@ line_length = 80
 [keymap.overrides]
 "cell.cellActions" = "Alt-Ctrl-Shift-q"
 "cell.complete" = "Ctrl-i"
+"cell.foldAll" = "Alt-Ctrl-Shift-q"
 "cell.toggleComment" = "Ctrl-/"
+"cell.unfoldAll" = "Alt-Ctrl-Shift-q"
 "completion.moveDown" = "Ctrl-n"
 "completion.moveUp" = "Ctrl-p"
 "global.interrupt" = "Alt-Ctrl-Shift-q"

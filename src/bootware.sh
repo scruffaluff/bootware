@@ -72,6 +72,7 @@ Usage: bootware facts [OPTIONS] <INVENTORY>
 
 Options:
   -h, --help            Print help information.
+      --no-setup        Skip Bootware dependency installation.
 EOF
       ;;
     main)
@@ -458,6 +459,7 @@ config() {
 #######################################
 facts() {
   local inventory=''
+  local no_setup="${BOOTWARE_NOSETUP:-}"
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -466,12 +468,24 @@ facts() {
         usage 'facts'
         exit 0
         ;;
+      --no-setup)
+        no_setup='true'
+        shift 1
+        ;;
       *)
         inventory="${1}"
         shift 1
         ;;
     esac
   done
+
+  # Check if Bootware setup should be run.
+  #
+  # Flags:
+  #   -z: Check if the string is empty.
+  if [ -z "${no_setup:-}" ]; then
+    setup
+  fi
 
   # Disable Ansible deprecation warnings.
   export ANSIBLE_DEPRECATION_WARNINGS='false'

@@ -5,7 +5,9 @@
 [
   {
     "bindings": {
-      "{{ zed_ctrl_key }}-shift-c": null,
+{% if ansible_facts.system == "Darwin" %}
+      "cmd-shift-c": null,
+{% endif %}
       "ctrl-:": "pane::ActivateNextItem",
       "ctrl-shift-a": "workspace::ToggleLeftDock",
       "ctrl-shift-d": "debug_panel::ToggleFocus",
@@ -129,7 +131,6 @@
   },
   {
     "bindings": {
-      "{{ zed_ctrl_key }}-shift-c": null,
       "ctrl-shift-t": "terminal_panel::ToggleFocus",
     },
     "context": "!Terminal",
