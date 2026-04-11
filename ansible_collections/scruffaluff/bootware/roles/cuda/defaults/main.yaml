@@ -1,0 +1,9 @@
+---
+cuda_arch_:
+  amd64: x86_64
+  arm64: sbsa
+cuda_arch: "{{ cuda_arch_[system_architecture] }}"
+cuda_distribution: >-
+  {{ ansible_facts.distribution | lower }}{{ (ansible_facts.distribution_version
+  if ansible_facts.distribution == "Ubuntu" else
+  ansible_facts.distribution_major_version) | replace('.', '') }}
