@@ -1534,6 +1534,19 @@
         - sysadmin
         - wsl
 
+    - name: Install ROCm GPU toolkit
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - gpu
+            - never
+            - rocm
+        name: scruffaluff.bootware.rocm
+      tags:
+        - gpu
+        - never
+        - rocm
+
     - name: Install Rust language
       ansible.builtin.include_role:
         apply:

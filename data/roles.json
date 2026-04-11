@@ -334,6 +334,11 @@
   { "name": "restic", "tests": ["restic version"] },
   { "name": "ripgrep", "tests": ["rg --version"] },
   {
+    "name": "rocm",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "macos" }],
+    "tests": ["rocminfo --help"]
+  },
+  {
     "name": "rust",
     "tests": ["cargo --version", "rustc --version", "rust-analyzer --version"]
   },
