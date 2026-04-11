@@ -49,6 +49,11 @@
   },
   { "name": "compass" },
   { "name": "croc", "tests": ["croc --version"] },
+  {
+    "name": "cuda",
+    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "macos" }],
+    "tests": ["nvcc --version"]
+  },
   { "name": "dbeaver" },
   {
     "name": "deno",

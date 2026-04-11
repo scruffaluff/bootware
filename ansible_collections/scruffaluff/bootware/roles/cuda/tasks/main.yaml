@@ -1,0 +1,49 @@
+---
+- name: Install CUDA toolkit for Arch
+  become: true
+  community.general.pacman:
+    name: cuda
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Install CUDA keyring for Debian
+  ansible.builtin.apt:
+    deb: >-
+      https://developer.download.nvidia.com/compute/cuda/repos/{{
+      cuda_distribution }}/{{ cuda_arch }}/cuda-keyring_1.1-1_all.deb
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "apt"
+
+- name: Install CUDA repository for Fedora
+  ansible.builtin.get_url:
+    dest: /etc/yum.repos.d/cuda.repo
+    mode: "644"
+    url: >-
+      https://developer.download.nvidia.com/compute/cuda/repos/{{
+      cuda_distribution }}/{{ cuda_arch }}/cuda-{{ cuda_distribution }}.repo
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"
+
+- name: Install CUDA toolkit for Linux
+  ansible.builtin.package:
+    name:
+      - cuda-toolkit
+      - cuda-drivers
+    update_cache: true
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Install CUDA toolkit for Windows
+  community.windows.win_scoop:
+    global: true
+    name: cuda
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"

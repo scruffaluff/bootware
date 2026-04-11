@@ -10,7 +10,7 @@ see the commit logs. The format is based on
 ### Added
 
 - Facts subcommand.
-- Fwupd role.
+- CUDA and Fwupd roles.
 - Zellij support for Windows.
 
 ## 0.10.1 - 2026-03-11

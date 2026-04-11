@@ -332,6 +332,11 @@ else if type -q wl-copy
     alias cbpaste wl-paste
 end
 
+# CUDA settings.
+
+# Add CUDA binaries to system path.
+prepend-paths /usr/local/cuda/bin
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.

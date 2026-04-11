@@ -657,6 +657,11 @@ def --wrapped cbpaste [...args: string] {
     }
 }
 
+# CUDA settings.
+
+# Add CUDA binaries to system path.
+prepend-paths /usr/local/cuda/bin
+
 # Docker settings.
 
 # Ensure newer Docker features are enabled.
