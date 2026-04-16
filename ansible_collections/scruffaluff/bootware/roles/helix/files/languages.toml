@@ -43,18 +43,17 @@ language-servers = ["typescript-language-server", "harper"]
 
 [[language]]
 name = "jsonc"
-file-types = []
-
-[[language]]
-name = "jsonc"
 auto-format = true
 file-types = [
-  "json",
   "jsonc",
-  { glob = "{t,j}sconfig.json" },
+  { glob = ".devcontainer.json" },
+  { glob = ".vscode/*.json" },
+  { glob = ".zed/*.json" },
   { glob = "bun.lock" },
+  { glob = "devcontainer.json" },
+  { glob = "{j,t}sconfig.json" },
 ]
-formatter = { command = "prettier", args = ["--parser", "json"] }
+formatter = { command = "prettier", args = ["--parser", "jsonc"] }
 language-servers = ["vscode-json-language-server", "harper"]
 
 [[language]]

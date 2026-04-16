@@ -35,6 +35,10 @@ append_keymap = [
     "c",
     "m",
   ], run = "plugin chmod" },
+  { desc = "Jump to directory via fzf", on = [
+    "g",
+    "s",
+  ], run = "plugin fzf-dir" },
   { desc = "Jump to a directory via zoxide", on = [
     "g",
     "z",
@@ -81,6 +85,10 @@ prepend_keymap = [
     "f",
     "Z",
   ], run = "plugin fr rg" },
+  { on = [
+    "g",
+    "c",
+  ], run = "noop" },
   { on = [
     "g",
     "<Space>",

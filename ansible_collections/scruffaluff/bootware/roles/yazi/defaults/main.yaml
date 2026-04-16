@@ -11,5 +11,4 @@ yazi_plugins:
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:smart-filter
   - yazi-rs/plugins:toggle-pane
-  - yazi-rs/plugins:vcs-files
   - yazi-rs/plugins:zoom

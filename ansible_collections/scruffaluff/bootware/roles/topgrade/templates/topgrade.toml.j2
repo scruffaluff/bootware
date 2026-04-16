@@ -9,9 +9,9 @@ greedy_cask = true
 [misc]
 assume_yes = true
 {% if ansible_facts.system in ["Darwin", "Win32NT"] %}
-disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "system", "uv"]
+disable = ["certbot", "containers", "gem", "git_repos", "helix", "helm", "ruby_gems", "skills", "system", "uv"]
 {% else %}
-disable = ["certbot", "containers", "gem", "git_repos", "helm", "ruby_gems", "uv"]
+disable = ["certbot", "containers", "gem", "git_repos", "helix", "helm", "ruby_gems", "skills", "uv"]
 {% endif %}
 no_retry = true
 no_self_update = true

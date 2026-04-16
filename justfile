@@ -94,7 +94,7 @@ lint:
 # Wrapper to Nushell.
 [no-exit-message]
 @nu *args:
-  nu {{args}}
+  nu --commands "{{args}}"
 
 # Install development dependencies.
 [unix]

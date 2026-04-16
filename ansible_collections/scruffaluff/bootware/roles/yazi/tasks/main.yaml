@@ -158,6 +158,7 @@
   become: true
   loop:
     - yazi
+    - yazi/plugins/fzf-dir.yazi
     - yazi/plugins/smart-open.yazi
   tags:
     - config
@@ -179,6 +180,8 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
+    - dest: plugins/fzf-dir.yazi/main.lua
+      src: fzf_dir.lua
     - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
   tags:
@@ -191,6 +194,7 @@
     state: directory
   loop:
     - config
+    - config\plugins\fzf-dir.yazi
     - config\plugins\smart-open.yazi
   tags:
     - config
@@ -208,6 +212,8 @@
       src: theme.toml
     - dest: yazi.toml
       src: yazi.toml
+    - dest: plugins/fzf-dir.yazi/main.lua
+      src: fzf_dir.lua
     - dest: plugins/smart-open.yazi/main.lua
       src: smart_open.lua
   tags:
