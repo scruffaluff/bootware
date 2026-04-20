@@ -70,3 +70,28 @@
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
+
+# Services need to be removed before they can be blocked since Ansible cannot
+# directly replace one file type with another, i.e. directory to file.
+- name: Remove Google Chrome services for Unix
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ chrome_services }}"
+  tags:
+    - install
+  when: ansible_facts.system != "Win32NT"
+
+- name: Block Google Chrome services for Unix
+  ansible.builtin.file:
+    group: nogroup
+    mode: "000"
+    owner: nobody
+    path: "{{ item }}"
+    state: touch
+  become: true
+  loop: "{{ chrome_services }}"
+  tags:
+    - install
+  when: ansible_facts.system != "Win32NT"

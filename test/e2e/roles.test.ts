@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 
 // Execute shell commands to test binaries installed from roles.
-import { Command } from "jsr:@cliffy/command@1.0.0-rc.7";
+import { Command } from "jsr:@cliffy/command@1.0.0";
 import * as path from "jsr:@std/path";
 import * as write_all from "jsr:@std/io/write-all";
 

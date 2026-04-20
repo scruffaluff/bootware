@@ -70,7 +70,7 @@ jobs:
             ${{ runner.os }}-npm_${{ hashFiles('package-lock.json') }}-uv_${{
             hashFiles('uv.lock') }}
       - name: Install Node interpreter
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
       - if: ${{ runner.os == 'Windows' }}
@@ -113,7 +113,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Install Node interpreter
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
       - name: Install Just
@@ -156,7 +156,7 @@ jobs:
           curl -LSfs https://scruffaluff.github.io/picoware/install/just.sh | sh
           -s -- --global
       - name: Install Node interpreter
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
       - name: Build documentation
@@ -205,7 +205,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Install Node interpreter
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
       - name: Install development dependencies
