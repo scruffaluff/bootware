@@ -1,0 +1,9 @@
+---
+chrome_services_:
+  Darwin:
+    - "{{ user_home }}/Library/Application Support/Google/GoogleUpdater"
+    - "{{ user_home }}/Library/LaunchAgents/com.google.GoogleUpdater.wake.plist"
+    - "{{ user_home }}/Library/LaunchAgents/com.google.keystone.agent.plist"
+    - "{{ user_home }}/Library/LaunchAgents/com.google.keystone.xpcservice.plist"
+    - "{{ user_home }}/Library/Google/GoogleSoftwareUpdate"
+chrome_services: "{{ chrome_services_.get(ansible_facts.system, []) }}"
