@@ -140,6 +140,8 @@ tty="$([[ "$-" =~ 'i' ]] && echo 'true' || echo '')"
 
 # Disable Bash history.
 unset HISTFILE
+# Request removal from analytics tracking.
+export DO_NOT_TRACK='true'
 # Set terminal environment variable if empty.
 export TERM="${TERM:-xterm-256color}"
 
@@ -464,6 +466,8 @@ export DENO_NO_UPDATE_CHECK='true'
 # Add Deno binaries to system path.
 prepend-paths "${HOME}/.deno/bin"
 
+# Disable Node history.
+export NODE_REPL_HISTORY=''
 # Add NPM global binaries to system path.
 prepend-paths "${HOME}/.npm/global/bin"
 

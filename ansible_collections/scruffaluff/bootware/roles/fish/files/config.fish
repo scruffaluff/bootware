@@ -234,6 +234,8 @@ end
 
 # System settings.
 
+# Request removal from analytics tracking.
+set --export DO_NOT_TRACK true
 # Set terminal environment variable if empty.
 #
 # Flags:
@@ -623,6 +625,8 @@ set --export DENO_NO_UPDATE_CHECK true
 # Add Deno binaries to system path.
 prepend-paths "$HOME/.deno/bin"
 
+# Disable Node history.
+set --export NODE_REPL_HISTORY ''
 # Add NPM global binaries to system path.
 prepend-paths "$HOME/.npm/global/bin"
 

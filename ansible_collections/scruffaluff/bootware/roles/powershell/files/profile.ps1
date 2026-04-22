@@ -166,10 +166,11 @@ $Tty = -not [System.Console]::IsOutputRedirected
 $Env:Path = [Environment]::GetEnvironmentVariable('Path', 'User').TrimEnd(';') `
     + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine')
 
+# Request removal from analytics tracking.
+$Env:DO_NOT_TRACK = 'true'
 # Add standard Unix environment variables for Windows.
 $Env:HOME = "$($Env:HOMEDRIVE)$($Env:HOMEPATH)"
 $Env:USER = $Env:USERNAME
-
 # Set terminal environment variable if empty.
 if (-not ($TERM)) {
     $Env:TERM = 'xterm-256color'
@@ -652,6 +653,8 @@ if ($Tty) {
 # Disable Deno update messages.
 $Env:DENO_NO_UPDATE_CHECK = 'true'
 
+# Disable Node history.
+$Env:NODE_REPL_HISTORY = ''
 # Set PNPM home directory.
 $Env:PNPM_HOME = "$HOME\AppData\Local\pnpm"
 

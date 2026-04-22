@@ -90,7 +90,7 @@ jobs:
     env:
       DOCKER_BUILD_SUMMARY: "false"
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'arch' }}
+      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'arch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Free disk space

@@ -565,7 +565,8 @@ if $nu.os-info.name == "windows" {
     $env.HOME = $env.HOME?
     $env.USER = $env.USER?
 }
-
+# Request removal from analytics tracking.
+$env.DO_NOT_TRACK = "true"
 # Set terminal environment variable if empty.
 if ($env.TERM? | is-empty) {
     $env.TERM = "xterm-256color"
@@ -1092,6 +1093,8 @@ $env.DENO_NO_UPDATE_CHECK = "true"
 # Add Deno binaries to system path.
 prepend-paths $"($env.HOME)/.deno/bin"
 
+# Disable Node history.
+$env.NODE_REPL_HISTORY = ""
 # Add NPM global binaries to system path.
 prepend-paths $"($env.HOME)/.npm/global/bin"
 
