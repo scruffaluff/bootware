@@ -5,10 +5,11 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com), and this project adheres to
 [Semantic Versioning](https://semver.org).
 
-## Unreleased
+## 0.10.2 - 2026-04-22
 
 ### Added
 
+- Docker image.
 - Facts subcommand.
 - CUDA and Fwupd roles.
 - Zellij support for Windows.

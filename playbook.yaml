@@ -654,6 +654,7 @@
             - desktop
             - gdb
             - server
+            - sysadmin
             - wsl
         name: scruffaluff.bootware.gdb
       tags:
@@ -661,6 +662,7 @@
         - desktop
         - gdb
         - server
+        - sysadmin
         - wsl
 
     - name: Install GDU disk space analyzer
@@ -728,6 +730,7 @@
             - desktop
             - gitui
             - server
+            - sysadmin
             - vcs
             - wsl
         name: scruffaluff.bootware.gitui
@@ -735,6 +738,7 @@
         - desktop
         - gitui
         - server
+        - sysadmin
         - vcs
         - wsl
 
@@ -1162,6 +1166,7 @@
             - desktop
             - lldb
             - server
+            - sysadmin
             - wsl
         name: scruffaluff.bootware.lldb
       tags:
@@ -1169,6 +1174,7 @@
         - desktop
         - lldb
         - server
+        - sysadmin
         - wsl
 
     - name: Install LocalSend file sharer
@@ -1225,12 +1231,14 @@
             - desktop
             - miniserve
             - server
+            - sysadmin
             - wsl
         name: scruffaluff.bootware.miniserve
       tags:
         - desktop
         - miniserve
         - server
+        - sysadmin
         - wsl
 
     - name: Install Mkcert web certificate generator
@@ -1743,16 +1751,12 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
-            - server
+            - never
             - super
-            - wsl
         name: scruffaluff.bootware.super
       tags:
-        - desktop
-        - server
+        - never
         - super
-        - wsl
 
     - name: Install Tailscale virtual private network
       ansible.builtin.include_role:

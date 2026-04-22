@@ -251,6 +251,23 @@ jobs:
             build/dist/bootware.rb.sha256
             build/dist/bootware.rb
           tag_name: ${{ github.ref_name }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ vars.DOCKER_HUB_USERNAME }}
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          platforms: |
+            linux/amd64
+            linux/arm64
+          push: true
+          tags: |
+            docker.io/scruffaluff/bootware:${{ github.ref_name }}
+            docker.io/scruffaluff/bootware:latest
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
