@@ -1,0 +1,13 @@
+{
+  "diagnostics.disable": ["redefined-local"],
+  "diagnostics.globals": [
+    "Command",
+    "Err",
+    "Url",
+    "cha",
+    "cx",
+    "fs",
+    "ui",
+    "ya"
+  ]
+}

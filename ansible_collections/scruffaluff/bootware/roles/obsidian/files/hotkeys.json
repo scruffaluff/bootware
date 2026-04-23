@@ -14,13 +14,13 @@
   "app:open-help": [
     {
       "key": "H",
-      "modifiers": ["Mod", "Shift"]
+      "modifiers": ["Ctrl", "Shift"]
     }
   ],
   "app:toggle-right-sidebar": [
     {
       "key": "R",
-      "modifiers": ["Mod", "Shift"]
+      "modifiers": ["Ctrl", "Shift"]
     }
   ],
   "command-palette:open": [
@@ -32,13 +32,13 @@
   "editor:add-cursor-above": [
     {
       "key": "ArrowUp",
-      "modifiers": ["Mod"]
+      "modifiers": ["Ctrl"]
     }
   ],
   "editor:add-cursor-below": [
     {
       "key": "ArrowDown",
-      "modifiers": ["Mod"]
+      "modifiers": ["Ctrl"]
     }
   ],
   "editor:insert-link": [],
@@ -95,20 +95,20 @@
   "switcher:open": [
     {
       "key": "O",
-      "modifiers": ["Mod", "Shift"]
+      "modifiers": ["Ctrl", "Shift"]
     }
   ],
   "workspace:close": [
     {
       "key": "W",
-      "modifiers": ["Mod", "Shift"]
+      "modifiers": ["Ctrl", "Shift"]
     }
   ],
   "workspace:close-window": [],
   "workspace:new-tab": [
     {
       "key": "T",
-      "modifiers": ["Mod", "Shift"]
+      "modifiers": ["Ctrl", "Shift"]
     }
   ],
   "workspace:next-tab": [
@@ -134,7 +134,7 @@
   "workspace:split-vertical": [
     {
       "key": "\\",
-      "modifiers": ["Mod"]
+      "modifiers": ["Ctrl"]
     }
   ],
   "workspace:undo-close-pane": []

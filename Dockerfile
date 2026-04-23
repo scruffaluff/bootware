@@ -18,14 +18,15 @@ RUN useradd --create-home --no-log-init debian \
 
 ENV HOME=/home/debian USER=debian
 USER debian
+WORKDIR /home/debian
 
 # Install Bootware.
 RUN curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- \
   --global && clear-cache
 
 # Run Bootware bootstrapping.
-RUN bootware bootstrap --no-passwd --retries 3 --tags \
-  build,node,pnpm,python,rust,super,sysadmin && clear-cache
+RUN bootware bootstrap --no-passwd --extra-vars super_passwordless=true \
+  --retries 3 --tags build,node,pnpm,python,rust,sysadmin && clear-cache
 
 # Install Picoware scripts.
 RUN curl -LSfs https://scruffaluff.github.io/picoware/install/scripts.sh | sh \

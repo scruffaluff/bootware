@@ -1751,12 +1751,18 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - never
+            - desktop
+            - server
             - super
+            - sysadmin
+            - wsl
         name: scruffaluff.bootware.super
       tags:
-        - never
+        - desktop
+        - server
         - super
+        - sysadmin
+        - wsl
 
     - name: Install Tailscale virtual private network
       ansible.builtin.include_role:
