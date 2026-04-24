@@ -1,7 +1,7 @@
 FROM docker.io/ubuntu:24.04
 
 ARG TARGETARCH
-ARG version=0.10.2
+ARG version=0.10.3
 
 # Install Ansible Curl and Sudo.
 RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing \

@@ -5,6 +5,20 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com), and this project adheres to
 [Semantic Versioning](https://semver.org).
 
+## 0.10.3 - 2026-04-25
+
+### Added
+
+- Expanded Obsidian settings.
+
+### Changed
+
+- Merged Yazi and Yz commands.
+
+### Fixed
+
+- Docker image working directory.
+
 ## 0.10.2 - 2026-04-22
 
 ### Added

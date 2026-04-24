@@ -18,7 +18,7 @@ export PSModulePath := if os() == "windows" {
 ci: setup lint doc test-sh test-nu test-py
 
 # Build distribution packages.
-dist version="0.10.2":
+dist version="0.10.3":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
 
