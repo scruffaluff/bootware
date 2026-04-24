@@ -38,6 +38,7 @@ Options:
       --install-group <GROUP>     Remote group to install software for.
       --install-user <USER>       Remote user to install software for.
   -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses.
+  -l, --local                     Install for local user when possible.
       --no-passwd                 Do not ask for user password.
       --no-setup                  Skip Bootware dependency installation.
       --password <PASSWORD>       Remote user login password.

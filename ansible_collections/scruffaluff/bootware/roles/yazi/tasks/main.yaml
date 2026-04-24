@@ -63,14 +63,14 @@
 
 - name: Install Yazi for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/{{ item }}
+    dest: "{{ local_bin }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{
       item }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - ya
     - yazi
@@ -79,7 +79,7 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Yazi for MacOS
-  become: true
+  become: "{{ user_id != brew_user }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yazi
@@ -89,7 +89,7 @@
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - file
       - yazi
@@ -106,7 +106,7 @@
     src: >-
       {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
       }}/completions/yazi.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
@@ -120,11 +120,11 @@
 - name: Install Yazi plugins for Unix
   ansible.builtin.command:
     cmd: ya pkg add {{ item }}
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   become_user: "{{ user_id }}"
   changed_when: "'Deploying package' in yazi_plugin_install.stdout"
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: /opt/homebrew/bin:{{ local_bin }}:{{ ansible_facts.env.PATH }}
   failed_when: >-
     yazi_plugin_install.rc != 0 and 'already exists' not in
     yazi_plugin_install.stderr
@@ -155,7 +155,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/{{ item }}"
     state: directory
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - yazi
     - yazi/plugins/fzf-dir.yazi
@@ -172,7 +172,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - dest: keymap.toml
       src: keymap.toml

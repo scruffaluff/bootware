@@ -58,7 +58,7 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - "{{ fish_user_completion }}"
     - "{{ user_home }}/.config/fish/functions"
@@ -74,7 +74,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: config.fish
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -85,7 +85,7 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
   register: fish_fisher_install
@@ -99,7 +99,7 @@
       source {{ user_home }}/.config/fish/config.fish
       fisher install {{ item }}
     executable: "{{ fish_executable }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installing' in fish_plugin_install.stdout"
   loop: "{{ fish_plugins }}"
@@ -113,7 +113,7 @@
 - name: Change user default shell to Fish for Alpine
   ansible.builtin.command:
     cmd: chsh -s {{ fish_executable }} {{ user_id }}
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   changed_when: "'no changes made' not in fish_chsh.stderr"
   register: fish_chsh
   tags:
@@ -124,7 +124,7 @@
   ansible.builtin.user:
     name: "{{ user_id }}"
     shell: "{{ fish_executable }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   tags:
     - config
   when: >-

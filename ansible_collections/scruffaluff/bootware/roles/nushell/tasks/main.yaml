@@ -5,7 +5,7 @@
     name: shadow
   tags:
     - install
-  when: system_pkg_mgr == "apk" and user_login == "nushell"
+  when: system_install and system_pkg_mgr == "apk" and user_login == "nushell"
 
 - name: Install Shadow for OpenWrt
   become: true
@@ -13,7 +13,7 @@
     name: shadow-usermod
   tags:
     - install
-  when: system_pkg_mgr == "opkg" and user_login == "nushell"
+  when: system_install and system_pkg_mgr == "opkg" and user_login == "nushell"
 
 - name: Install Nushell for FreeBSD
   become: true
@@ -31,7 +31,7 @@
   register: nushell_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when: system_install and ansible_facts.system == "Linux"
 
 - name: Get latest Nushell version for Linux
   ansible.builtin.uri:
@@ -41,7 +41,9 @@
   register: nushell_formula_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: >-
+    ansible_facts.system == "Linux" and (not system_install or nushell_linux is
+    failed)
 
 - name: Create Nushell temporary directory for Linux
   ansible.builtin.tempfile:
@@ -49,7 +51,9 @@
   register: nushell_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: >-
+    ansible_facts.system == "Linux" and (not system_install or nushell_linux is
+    failed)
 
 - name: Set Nushell temporary directory permissions for Linux
   ansible.builtin.file:
@@ -58,7 +62,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: >-
+    ansible_facts.system == "Linux" and (not system_install or nushell_linux is
+    failed)
 
 - name: Download Nushell for Linux
   ansible.builtin.unarchive:
@@ -72,18 +78,22 @@
       }}-unknown-linux-{{ nushell_libc }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: >-
+    ansible_facts.system == "Linux" and (not system_install or nushell_linux is
+    failed)
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
-    dest: /usr/bin/{{ item }}
+    dest: >-
+      {{ '/usr/bin/' + item if system_install else user_home + '/.local/bin/' +
+      item }}
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ nushell_temp.path }}/nu-{{ nushell_formula_linux.json.versions.stable
       }}-{{ nushell_arch }}-unknown-linux-{{ nushell_libc }}/{{ item }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - nu
     - nu_plugin_formats
@@ -93,10 +103,12 @@
     - nu_plugin_query
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: >-
+    ansible_facts.system == "Linux" and (not system_install or nushell_linux is
+    failed)
 
 - name: Install Nushell for MacOS
-  become: true
+  become: "{{ user_id != brew_user }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: nushell
@@ -121,7 +133,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when: system_install and ansible_facts.system != "Win32NT"
 
 - name: Register Nushell files as executables for Windows
   ansible.windows.win_regedit:
@@ -176,7 +188,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - config.nu
   tags:
@@ -190,7 +202,7 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - "{{ user_home }}/.config/nushell"
     - "{{ nushell_user_autoload }}"
@@ -206,7 +218,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   loop:
     - config.nu
   tags:
@@ -246,7 +258,7 @@
 - name: Change user default shell to Nushell for Alpine
   ansible.builtin.command:
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   changed_when: "'no changes made' not in nushell_chsh.stderr"
   register: nushell_chsh
   tags:
@@ -257,7 +269,7 @@
   ansible.builtin.user:
     name: "{{ user_id }}"
     shell: "{{ nushell_executable }}"
-  become: true
+  become: "{{ user_id != ansible_facts.user_id }}"
   tags:
     - config
   when: >-

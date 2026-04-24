@@ -3,6 +3,7 @@ backslash: "\\"
 brew_prefix: >-
   {{ '/opt/homebrew' if ansible_facts.architecture in ['aarch64', 'arm64'] else
   '/usr/local' }}
+system_install: true
 user_id: "{{ ansible_facts.user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
@@ -91,6 +92,8 @@ github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
 group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
+local_bin: >-
+  {{ '/usr/local/bin' if system_install else user_home + '/.local/bin' }}
 nushell_executable: >-
   {{ nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
 nushell_name: nu

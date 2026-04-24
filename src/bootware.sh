@@ -32,6 +32,7 @@ Options:
       --install-group <GROUP>     Remote group to install software for.
       --install-user <USER>       Remote user to install software for.
   -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses.
+  -l, --local                     Install for local user when possible.
       --no-passwd                 Do not ask for user password.
       --no-setup                  Skip Bootware dependency installation.
       --password <PASSWORD>       Remote user login password.
@@ -181,6 +182,7 @@ bootstrap() {
   local connection='local'
   local arg_idx=0
   local install_group
+  local install_local
   local install_user
   local inventory='127.0.0.1,'
   local no_setup="${BOOTWARE_NOSETUP:-}"
@@ -247,6 +249,10 @@ bootstrap() {
       --install-user)
         install_user="${2}"
         shift 2
+        ;;
+      -l | --local)
+        install_local='true'
+        shift 1
         ;;
       --no-passwd)
         ask_passwd=''
@@ -384,6 +390,7 @@ bootstrap() {
     ${passwd:+--extra-vars "ansible_password=${passwd}"} \
     ${port:+--extra-vars "ansible_ssh_port=${port}"} \
     ${install_group:+--extra-vars "group_id=${install_group}"} \
+    ${install_local:+--extra-vars '{"system_install":false}'} \
     ${install_user:+--extra-vars "user_id=${install_user}"} \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
