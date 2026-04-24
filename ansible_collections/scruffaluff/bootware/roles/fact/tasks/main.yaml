@@ -33,8 +33,6 @@
 - name: Find GNOME version for GNOME desktops
   ansible.builtin.command:
     cmd: gnome-shell --version
-  become: true
-  become_user: "{{ user_id }}"
   changed_when: false
   register: gnome_version_text
   when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop

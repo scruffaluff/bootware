@@ -664,9 +664,9 @@ $Env:PNPM_HOME = "$HOME\AppData\Local\pnpm"
 $Env:YAZI_ZOXIDE_OPTS = "$Env:FZF_BASE_OPTS --preview-window hidden"
 
 # Yazi wrapper to change directory on program exit.
-function yz() {
+function yazi() {
     $Tmp = [System.IO.Path]::GetTempFileName()
-    yazi --cwd-file $Tmp $Args
+    & yazi --cwd-file $Tmp $Args
     $Cwd = Get-Content -Path $Tmp
     if (($Cwd) -and ($Cwd -ne $PWD.Path)) {
         Set-Location $Cwd

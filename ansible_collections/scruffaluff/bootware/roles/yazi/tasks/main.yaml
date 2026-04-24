@@ -20,7 +20,7 @@
     - install
   when: ansible_facts.system == "Linux"
 
-# Disabled since many package manager include an incomplete version of Yazi.
+# Disabled since many package managers include an incomplete version of Yazi.
 # - name: Install Yazi for Linux
 #   ansible.builtin.package:
 #     name: yazi

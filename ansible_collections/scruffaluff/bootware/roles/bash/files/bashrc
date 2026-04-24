@@ -494,10 +494,10 @@ export YAZI_ZOXIDE_OPTS="${FZF_BASE_OPTS} --preview-window hidden"
 #
 # Flags:
 #   -n: Check if string is nonempty.
-yz() {
+yazi() {
   local cwd='' tmp=''
   tmp="$(mktemp)"
-  yazi --cwd-file "${tmp}" "$@"
+  command yazi --cwd-file "${tmp}" "$@"
   cwd="$(cat "${tmp}")"
   if [[ -n "${cwd}" && "${cwd}" != "${PWD}" ]]; then
     # shellcheck disable=SC2164

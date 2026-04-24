@@ -1,4 +1,20 @@
 ---
+- name: Install Shadow for Alpine
+  become: true
+  community.general.apk:
+    name: shadow
+  tags:
+    - install
+  when: system_pkg_mgr == "apk" and user_login == "bash"
+
+- name: Install Shadow for OpenWrt
+  become: true
+  community.general.opkg:
+    name: shadow-usermod
+  tags:
+    - install
+  when: system_pkg_mgr == "opkg" and user_login == "bash"
+
 - name: Install Bash for FreeBSD
   become: true
   community.general.pkgng:
@@ -64,22 +80,6 @@
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
-
-- name: Install Shadow for Alpine
-  become: true
-  community.general.apk:
-    name: shadow
-  tags:
-    - config
-  when: system_pkg_mgr == "apk" and user_login == "bash"
-
-- name: Install Shadow for OpenWrt
-  become: true
-  community.general.opkg:
-    name: shadow-usermod
-  tags:
-    - config
-  when: system_pkg_mgr == "opkg" and user_login == "bash"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.

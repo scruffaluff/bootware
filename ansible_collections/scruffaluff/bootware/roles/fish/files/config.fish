@@ -653,9 +653,9 @@ set --export YAZI_ZOXIDE_OPTS "$FZF_BASE_OPTS --preview-window hidden"
 #
 # Flags:
 #   -n: Check if string is nonempty.
-function yz
+function yazi
     set --function tmp (mktemp)
-    yazi --cwd-file $tmp $argv
+    command yazi --cwd-file $tmp $argv
     set --function cwd (cat $tmp)
 
     # Quotes are necessary for the if statement to ensure that the test function

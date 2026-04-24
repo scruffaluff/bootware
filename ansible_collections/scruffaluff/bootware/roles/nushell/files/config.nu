@@ -1118,9 +1118,9 @@ prepend-paths "/usr/share/code/bin" \
 $env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 
 # Yazi wrapper to change directory on program exit.
-def --env --wrapped yz [...args: path] {
+def --env --wrapped yazi [...args: path] {
   let tmp_file = mktemp --tmpdir
-  yazi --cwd-file $tmp_file ...$args
+  ^yazi --cwd-file $tmp_file ...$args
 
   let cwd = open $tmp_file
   if ($cwd | is-not-empty) and $cwd != $env.PWD {

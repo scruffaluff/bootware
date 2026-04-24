@@ -1,4 +1,20 @@
 ---
+- name: Install Shadow for Alpine
+  become: true
+  community.general.apk:
+    name: shadow
+  tags:
+    - install
+  when: system_pkg_mgr == "apk" and user_login == "fish"
+
+- name: Install Shadow for OpenWrt
+  become: true
+  community.general.opkg:
+    name: shadow-usermod
+  tags:
+    - install
+  when: system_pkg_mgr == "opkg" and user_login == "fish"
+
 - name: Install Fish for FreeBSD
   become: true
   community.general.pkgng:
@@ -33,21 +49,6 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
-
-- name: Get installed Fish version for Unix
-  ansible.builtin.command:
-    cmd: fish --version
-  changed_when: false
-  environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
-  register: fish_version_text
-  when: ansible_facts.system != "Win32NT"
-
-- name: Parse Fish version
-  ansible.builtin.set_fact:
-    fish_version: >-
-      {{ fish_version_text.stdout | regex_search('(\d+\.)+\d+') }}
   when: ansible_facts.system != "Win32NT"
 
 - name: Create Fish user directories for Unix
@@ -90,9 +91,7 @@
   register: fish_fisher_install
   tags:
     - install
-  when: >-
-    ansible_facts.system != "Win32NT" and fish_version is
-    ansible.builtin.version("3.0", ">=")
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Fish plugins for Unix
   ansible.builtin.shell:
@@ -107,25 +106,7 @@
   register: fish_plugin_install
   tags:
     - config
-  when: >-
-    ansible_facts.system != "Win32NT" and fish_version is
-    ansible.builtin.version("3.0", ">=")
-
-- name: Install Shadow for Alpine
-  become: true
-  community.general.apk:
-    name: shadow
-  tags:
-    - config
-  when: system_pkg_mgr == "apk" and user_login == "fish"
-
-- name: Install Shadow for OpenWrt
-  become: true
-  community.general.opkg:
-    name: shadow-usermod
-  tags:
-    - config
-  when: system_pkg_mgr == "opkg" and user_login == "fish"
+  when: ansible_facts.system != "Win32NT"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.

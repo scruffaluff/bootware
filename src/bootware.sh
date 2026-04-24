@@ -332,7 +332,7 @@ bootstrap() {
         ".[0].tasks[] | select(.\"ansible.builtin.include_role\".name == \"scruffaluff.bootware.${start_role}\") | .name" \
         "${playbook}"
     )"
-    set -- "$@" '--extra-vars' 'connect_role_executed=false' '--start-at-task' \
+    set -- "$@" '--extra-vars' '{"connect_role_executed":false}' '--start-at-task' \
       "${start_task}"
   fi
 
