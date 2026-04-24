@@ -666,7 +666,7 @@ $Env:YAZI_ZOXIDE_OPTS = "$Env:FZF_BASE_OPTS --preview-window hidden"
 # Yazi wrapper to change directory on program exit.
 function yazi() {
     $Tmp = [System.IO.Path]::GetTempFileName()
-    & yazi --cwd-file $Tmp $Args
+    yazi.exe --cwd-file $Tmp $Args
     $Cwd = Get-Content -Path $Tmp
     if (($Cwd) -and ($Cwd -ne $PWD.Path)) {
         Set-Location $Cwd
