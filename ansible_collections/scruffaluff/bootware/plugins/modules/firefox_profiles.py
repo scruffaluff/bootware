@@ -60,7 +60,7 @@ def main() -> None:
             ),
         )
 
-    result["paths"] = [str(database.parent / path) for path in paths]
+    result["paths"] = list(map(str, paths))
     module.exit_json(**result)
 
 
@@ -100,8 +100,12 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
     return path
 
 
-def profiles_paths(module: AnsibleModule, path: Path) -> list[str]:
-    """Parse default profile from Firefox profiles file."""
+def profiles_paths(module: AnsibleModule, path: Path) -> list[Path]:
+    """Parse default profile from Firefox profiles folder and database."""
+    folder = path.parent
+    snap_path = Path(f"/home/{module.params['user']}/snap")
+    paths = [path for path in (folder / "Profiles").iterdir() if path.is_dir()]
+
     parser = ConfigParser()
     try:
         parser.read(path)
@@ -113,15 +117,19 @@ def profiles_paths(module: AnsibleModule, path: Path) -> list[str]:
             )
         )
 
-    paths = []
     for section, data in parser.items():
         if section.startswith("Profile") and "path" in data:
-            paths.append(data["path"])
+            path_ = Path(data["path"])
         elif data.get("locked") and "default" in data:
-            paths.append(data["default"])
+            path_ = Path(data["default"])
+        else:
+            continue
 
-    snap_path = Path(f"/home/{module.params['user']}/snap")
-    return [path for path in set(paths) if not Path(path).is_relative_to(snap_path)]
+        path = path_ if path_.is_absolute() else folder / path_
+        if path not in paths and not path.is_relative_to(snap_path):
+            paths.append(path)
+
+    return paths
 
 
 if __name__ == "__main__":

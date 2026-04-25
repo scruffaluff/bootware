@@ -34,7 +34,7 @@ function ReadIni($File) {
 }
 
 # Script entrypoint.
-function DefaultProfile($Module) {
+function Main($Module) {
     $User = $Module.Params.user
     if ($User) {
         $UserHome = "C:\Users\$User"
@@ -44,15 +44,19 @@ function DefaultProfile($Module) {
     }
     $AppData = "$UserHome\AppData\Roaming"
 
+    $Paths = @()
     if (Test-Path "$UserHome\scoop\persist\firefox\profile") {
-        $Paths = @("$UserHome\scoop\persist\firefox\profile")
+        $Paths += "$UserHome\scoop\persist\firefox\profile"
     }
-    else {
-        $Paths = @()
+    if (Test-Path "$AppData\Mozilla\Firefox\Profiles") {
+        foreach ($File in Get-ChildItem -Path "$AppData\Mozilla\Firefox\Profiles") {
+            if (Test-Path -Path $File -PathType Container) {
+                $Paths += $File.FullName
+            }
+        }
     }
-    $ProfilesPath = "$AppData\Mozilla\Firefox\profiles.ini"
 
-    $Parser = ReadIni $ProfilesPath
+    $Parser = ReadIni "$AppData\Mozilla\Firefox\profiles.ini"
     foreach ($Section in $Parser.Keys) {
         $Keys = $Parser[$Section].Keys
         if (($Section -like 'Profile*') -and ($Keys -contains 'Path')) {
@@ -87,6 +91,6 @@ if ($MyInvocation.InvocationName -ne '.') {
     }
 
     $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)
-    $Module = DefaultProfile $Module
+    $Module = Main $Module
     Write-Output $Module
 }

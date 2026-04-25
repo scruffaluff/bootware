@@ -1,6 +1,6 @@
 {
   "audio-recorder": true,
-  "backlink": true,
+  "backlink": false,
   "bases": true,
   "bookmarks": true,
   "canvas": true,

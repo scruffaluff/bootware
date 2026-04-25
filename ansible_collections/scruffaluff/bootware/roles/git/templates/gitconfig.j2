@@ -5,6 +5,16 @@
 [advice]
 detachedHead = false
 
+[alias]
+alias = config --get-regexp ^alias
+amend = commit --amend
+edit = !$EDITOR $(git status --porcelain | awk '{print $2}')
+head = diff HEAD
+list = log --oneline
+search = !git rev-list --all | xargs git grep --fixed-strings
+state = status --branch --short
+uncommit = reset --soft HEAD^
+
 [core]
 autocrlf = input
 editor = hx
