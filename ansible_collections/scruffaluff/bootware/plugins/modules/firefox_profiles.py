@@ -104,7 +104,9 @@ def profiles_paths(module: AnsibleModule, path: Path) -> list[Path]:
     """Parse default profile from Firefox profiles folder and database."""
     folder = path.parent
     snap_path = Path(f"/home/{module.params['user']}/snap")
-    paths = [path for path in (folder / "Profiles").iterdir() if path.is_dir()]
+    paths = []
+    if (folder / "Profiles").exists():
+        paths += [path for path in (folder / "Profiles").iterdir() if path.is_dir()]
 
     parser = ConfigParser()
     try:
