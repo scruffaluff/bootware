@@ -5,8 +5,6 @@
 # For more information, visit
 # https://yazi-rs.github.io/docs/configuration/keymap.
 
-"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
-
 [help]
 prepend_keymap = [
   { desc = "Move cursor down", on = "k", run = "arrow 1" },
