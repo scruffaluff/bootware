@@ -655,8 +655,6 @@ $Env:DENO_NO_UPDATE_CHECK = 'true'
 
 # Disable Node history.
 $Env:NODE_REPL_HISTORY = ''
-# Set PNPM home directory.
-$Env:PNPM_HOME = "$HOME\AppData\Local\pnpm"
 
 # Yazi settings.
 

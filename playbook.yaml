@@ -1350,23 +1350,6 @@
         - editor
         - obsidian
 
-    - name: Install PNPM Node package manager
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - language
-            - pnpm
-            - server
-            - wsl
-        name: scruffaluff.bootware.pnpm
-      tags:
-        - desktop
-        - language
-        - pnpm
-        - server
-        - wsl
-
     - name: Install PowerShell shell
       ansible.builtin.include_role:
         apply:

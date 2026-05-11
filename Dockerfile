@@ -26,7 +26,7 @@ RUN curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- \
 
 # Run Bootware bootstrapping.
 RUN bootware bootstrap --no-passwd --extra-vars '{"super_passwordless":true}' \
-  --retries 3 --tags build,node,pnpm,python,rust,sysadmin && clear-cache
+  --retries 3 --tags build,node,python,rust,sysadmin && clear-cache
 
 # Install Picoware scripts.
 RUN curl -LSfs https://scruffaluff.github.io/picoware/install/scripts.sh | sh \
