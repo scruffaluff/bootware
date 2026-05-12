@@ -38,6 +38,19 @@ formatter = { command = "shfmt", args = [
 [[language]]
 name = "javascript"
 auto-format = true
+file-types = [
+  "cjs",
+  "es6",
+  "gs",
+  "js",
+  "mjs",
+  "pac",
+  "rules",
+  "str",
+  "strudel",
+  { glob = ".node_repl_history" },
+  { glob = "jakefile" },
+]
 formatter = { command = "prettier", args = ["--parser", "typescript"] }
 language-servers = ["typescript-language-server", "harper"]
 

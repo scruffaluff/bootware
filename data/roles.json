@@ -107,11 +107,7 @@
     "tests": ["fwupdmgr --help"]
   },
   { "name": "fzf", "tests": ["fzf --version"] },
-  {
-    "name": "gdb",
-    "skip": [{ "os": "macos" }],
-    "tests": ["gdb --version"]
-  },
+  { "name": "gdb", "tests": ["gdb --version"] },
   {
     "name": "gdu",
     "tests": {

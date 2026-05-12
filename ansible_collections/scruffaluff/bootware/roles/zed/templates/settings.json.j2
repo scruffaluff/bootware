@@ -47,6 +47,9 @@
       "show_avatar": false,
     },
   },
+  "git_panel": {
+    "dock": "left",
+  },
   "indent_guides": {
     "coloring": "indent_aware",
   },
@@ -59,6 +62,12 @@
     "enabled": false,
   },
   "languages": {
+    "C": {
+      "tab_size": 4,
+    },
+    "C++": {
+      "tab_size": 4,
+    },
     "Dockerfile": {
       "tab_size": 4,
     },
@@ -109,6 +118,9 @@
     },
   },
   "on_last_window_closed": "quit_app",
+  "outline_panel": {
+    "dock": "left",
+  },
   "prettier": {
     "arrowParens": "always",
     "proseWrap": "always",
@@ -120,6 +132,7 @@
   "profiles": {{ zed_profiles | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "project_panel": {
+    "dock": "left",
     "sticky_scroll": false,
   },
   "restore_on_startup": "last_workspace",
