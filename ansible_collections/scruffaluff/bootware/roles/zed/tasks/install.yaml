@@ -18,16 +18,6 @@
     - install
   when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
 
-- name: Check if Zed is installed for Linux
-  ansible.builtin.stat:
-    path: /usr/local/share/applications/dev.zed.Zed.desktop
-  register: zed_check
-  tags:
-    - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed
-
 - name: Get latest Zed version for Linux
   ansible.builtin.uri:
     method: GET
@@ -38,7 +28,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Create Zed temporary directory for Linux
   ansible.builtin.tempfile:
@@ -48,7 +38,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Set Zed temporary directory permissions for Linux
   ansible.builtin.file:
@@ -59,7 +49,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Download Zed for Linux
   ansible.builtin.unarchive:
@@ -73,7 +63,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Install Zed for Linux
   ansible.builtin.copy:
@@ -90,7 +80,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Add Zed symlink for Linux
   ansible.builtin.file:
@@ -104,7 +94,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Install Zed desktop manifest for Linux
   ansible.builtin.copy:
@@ -117,7 +107,7 @@
     - install
   when: >-
     ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and zed_linux is
-    failed and not zed_check.stat.exists
+    failed
 
 - name: Install Zed for MacOS
   become: true

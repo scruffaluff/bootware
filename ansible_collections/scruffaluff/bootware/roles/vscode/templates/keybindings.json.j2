@@ -465,9 +465,9 @@
     "when": "inDebugMode"
   },
   {
-    "command": "workbench.action.debug.start",
+    "command": "workbench.panel.repl.view.focus",
     "key": "ctrl+shift+d",
-    "when": "debuggersAvailable && activeViewlet == 'workbench.view.debug' && !inDebugMode"
+    "when": "debuggersAvailable && activeViewlet == 'workbench.view.debug'",
   },
   {
     "command": "workbench.action.debug.stepInto",
@@ -746,13 +746,9 @@
     "when": "!panelFocus && activePanel == 'workbench.panel.repl'"
   },
   {
-    "command": "workbench.panel.repl.view.focus",
-    "key": "ctrl+shift+y"
-  },
-  {
     "command": "workbench.view.debug",
     "key": "ctrl+shift+d",
-    "when": "activeViewlet != 'workbench.view.debug' || inDebugMode"
+    "when": "activeViewlet != 'workbench.view.debug'"
   },
   {
     "command": "workbench.view.explorer",
