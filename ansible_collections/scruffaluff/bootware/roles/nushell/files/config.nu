@@ -249,6 +249,17 @@ def _paste-cwd [] {
     }
 }
 
+# Paste help flag into the commandline.
+def _paste-help [] {
+    let line = commandline | str replace --regex " --help$" ""
+
+    if $line == (commandline) {
+        commandline edit --replace $"($line) --help"
+    } else {
+        commandline edit --replace $line
+    }
+}
+
 # Paste pipe to system pager command into the commandline.
 def _paste-pager [] {
     let pager = $env.PAGER? | default "less"
@@ -879,7 +890,7 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { name: help_menu send: menu }
+            event: { cmd: _paste-help send: executehostcommand }
             keycode: char_h
             mode: [emacs vi_insert vi_normal]
             modifier: alt

@@ -54,6 +54,20 @@ function _paste_cwd
     end
 end
 
+# Paste help flag into the commandline.
+function _paste_help
+    set --function line (commandline | string collect)
+    set --function command ' --help'
+    set --function query (string escape --style regex $command)
+
+    set --function newline (string replace --regex "$query\$" '' $line)
+    if test $line = $newline
+        commandline --append $command
+    else
+        commandline --replace $newline
+    end
+end
+
 # Paste pipe to system pager command into the commandline.
 #
 # Flags:
@@ -525,6 +539,7 @@ if test -n $tty
         bind \eb backward-word
         bind \ec _paste_cwd
         bind \ef forward-word
+        bind \eh _paste_help
         bind \ej backward-char
         bind \ep _paste_pager
         bind \ew kill-bigword

@@ -18,6 +18,16 @@ _fzf_path_preview() {
   fi
 }
 
+# Paste help flag into the commandline.
+_paste_help() {
+  local command=' --help'
+  if [[ "${READLINE_LINE}" == *"${command}" ]]; then
+    READLINE_LINE="${READLINE_LINE/%${command}/}"
+  else
+    READLINE_LINE="${READLINE_LINE}${command}"
+  fi
+}
+
 # Paste pipe to system pager command into the commandline.
 _paste_pager() {
   local program="${PAGER:-less}"
@@ -435,7 +445,8 @@ if [[ -n "${tty}" ]]; then
     source-files '/usr/share/bash-completion/bash_completion'
   fi
 
-  # Add common Fish keybindings to Bash.
+  # Add text insertion keybindings to Bash.
+  bind -x '"\eh": _paste_help'
   bind -x '"\ep": _paste_pager'
   bind -x '"\es": _paste_sudo'
 fi

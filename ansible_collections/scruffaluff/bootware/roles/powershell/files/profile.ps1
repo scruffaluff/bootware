@@ -509,6 +509,20 @@ if ($Tty -and (Get-Module -ListAvailable -Name PSReadLine)) {
         }
     }
     Set-PSReadLineKeyHandler -Chord Alt+e ViEditVisually
+    Set-PSReadLineKeyHandler -Chord Alt+h -ScriptBlock {
+        $Line = $Null
+        $Cursor = $Null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([Ref]$Line, [Ref]$Cursor)
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+
+        $StripLine = $Line -replace ' --help$', ''
+        if ($StripLine.Length -lt $Line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($StripLine)
+        }
+        else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$Line --help")
+        }
+    }
     Set-PSReadLineKeyHandler -Chord Alt+p -ScriptBlock {
         if ($Env:PAGER) {
             $Pager = $Env:PAGER

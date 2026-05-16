@@ -3,5 +3,11 @@
 # For more information, visit https://lldb.llvm.org/index.html.
 
 settings set interpreter.echo-commands false
+settings set interpreter.prompt-on-quit false
+settings set interpreter.save-session-on-quit true
+settings set interpreter.save-transcript true
+settings set show-autosuggestion true
+settings set show-inline-diagnostics true
+settings set use-external-editor true
 
 command script import ~/.config/pyrc/lldbinit.py

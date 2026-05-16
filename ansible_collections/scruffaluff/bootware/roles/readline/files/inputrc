@@ -59,3 +59,6 @@ tab: menu-complete
 # Use Control+Left and Control+Right to jump backwards and forwards.
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
+
+# Text insertion keybindings.
+"\eh": "\C-ahelp \C-e"

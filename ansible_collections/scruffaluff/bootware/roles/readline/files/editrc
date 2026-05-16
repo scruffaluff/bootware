@@ -33,3 +33,6 @@ bind "^[[1;2C" em-next-word
 # Use Control+Left and Control+Right to jump backwards and forwards.
 bind "^[[1;5D" ed-prev-word
 bind "^[[1;5C" em-next-word
+
+# Text insertion keybindings.
+bind -s "^[h" "^ahelp ^e"

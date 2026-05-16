@@ -249,18 +249,19 @@ jobs:
           sudo install src/bootware.sh "$(which bootware)"
       - name: Install dependencies for Bootware
         run: bootware setup
-      # Usql is disabled since its Homebrew formula crashes during installation
-      # as of 02/25/2026.
+      # Kdenlive is disabled since its Homebrew formula crashes during
+      # installation as of 05/15/2026. Usql is disabled since its Homebrew
+      # formula crashes during installation as of 02/25/2026.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --skip usql --tags
-          all,never
+          bootware bootstrap --dev --no-passwd --retries 3 --skip kdenlive,usql
+          --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          test/e2e/roles.test.ts --arch arm64 --skip usql macos
+          test/e2e/roles.test.ts --arch arm64 --skip kdenlive,usql macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
