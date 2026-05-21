@@ -324,7 +324,7 @@ Get-ChildItem ($path) | ForEach-Object {
 "
         | from csv
     } else {
-        error make { msg: "wacls is only defined for Windows" }
+        error make "wacls is only defined for Windows"
     }
 }
 

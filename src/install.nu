@@ -44,18 +44,16 @@ def find-super [] {
     if (is-admin) {
         ""
     } else if $nu.os-info.name == "windows" {
-        error make { msg: ("
+        error make ("
 System level installation requires an administrator console.
 Restart this script from an administrator console or install to a user directory.
-"
-            | str trim)
-        }
+        " | str trim)
     } else if (which doas | is-not-empty) {
         "doas"
     } else if (which sudo | is-not-empty) {
         "sudo"
     } else {
-        error make { msg: "Unable to find a command for super user elevation." }
+        error make "Unable to find a command for super user elevation."
     }
 }
 
