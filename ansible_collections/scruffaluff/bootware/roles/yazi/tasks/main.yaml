@@ -176,6 +176,8 @@
   loop:
     - dest: keymap.toml
       src: keymap.toml
+    - dest: init.lua
+      src: init.lua
     - dest: theme.toml
       src: theme.toml
     - dest: yazi.toml
@@ -208,6 +210,8 @@
   loop:
     - dest: keymap.toml
       src: keymap.toml
+    - dest: init.lua
+      src: init.lua
     - dest: theme.toml
       src: theme.toml
     - dest: yazi.toml

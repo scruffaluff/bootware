@@ -30,6 +30,7 @@ doc:
 [unix]
 format +paths=".":
   npx prettier --write {{paths}}
+  npx @johnnymorganz/stylua-bin {{paths}}
   shfmt --write ansible_collections script src test
   uv run ruff format {{paths}}
 
@@ -62,6 +63,7 @@ lint:
   #!/usr/bin/env sh
   set -eu
   npx prettier --check .
+  npx @johnnymorganz/stylua-bin --check .
   shfmt --diff ansible_collections script src test
   files="$(find ansible_collections script src test -name '*.bats' -or -name '*.sh')"
   for file in ${files}; do
@@ -176,7 +178,7 @@ setup:
   fi
   echo "Using $(yq --version)."
   echo 'Installing packages with NPM and Uv.'
-  if [ -n "${JUST_INIT:-}" ]; then
+  if [ -n "${INIT:-}" ]; then
     npm install
     uv sync
   else
@@ -251,7 +253,7 @@ setup:
   }
   Write-Output "Using $(yq --version)."
   Write-Output 'Installing packages with NPM and Uv.'
-  if ("$Env:JUST_INIT") {
+  if ("$Env:INIT") {
     npm install
   }
   else {

@@ -8,7 +8,11 @@ yazi_libc: >-
   ansible.builtin.version("2.38", ">") else 'musl' }}
 yazi_plugins:
   - lpnh/fr
+  - Rolv-Apneseth/starship
   - yazi-rs/plugins:chmod
+  - yazi-rs/plugins:full-border
+  - yazi-rs/plugins:git
+  - yazi-rs/plugins:piper
   - yazi-rs/plugins:smart-filter
   - yazi-rs/plugins:toggle-pane
   - yazi-rs/plugins:zoom

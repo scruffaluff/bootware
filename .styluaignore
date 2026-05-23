@@ -1,0 +1,17 @@
+# StyLua configuration file for ignoring paths.
+#
+# For more information, visit https://prettier.io/docs/en/ignore.html.
+
+.git/
+.mypy_cache/
+.pytest_cache/
+.venv/
+/.vendor/
+/.vitepress/cache/
+/.vitepress/dist/
+/build/
+/data/public/
+ansible_collections/*
+node_modules/
+tmp/
+!ansible_collections/scruffaluff

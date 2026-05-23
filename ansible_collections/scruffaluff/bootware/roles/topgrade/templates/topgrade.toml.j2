@@ -8,10 +8,47 @@ greedy_cask = true
 
 [misc]
 assume_yes = true
-{% if ansible_facts.system in ["Darwin", "Win32NT"] %}
-disable = ["certbot", "containers", "gem", "git_repos", "helix", "helm", "ruby_gems", "skills", "system", "uv"]
+{% if ansible_facts.system in "Darwin" %}
+disable = [
+  "certbot",
+  "containers",
+  "gem",
+  "git_repos",
+  "helix",
+  "helm",
+  "ruby_gems",
+  "skills",
+  "system",
+  "uv",
+]
+{% elif ansible_facts.system == "Win32NT" %}
+disable = [
+  "certbot",
+  "containers",
+  "gem",
+  "git_repos",
+  "helix",
+  "helm",
+  "microsoft_office",
+  "microsoft_store",
+  "ruby_gems",
+  "skills",
+  "system",
+  "winget",
+  "uv",
+]
 {% else %}
-disable = ["certbot", "containers", "gem", "git_repos", "helix", "helm", "ruby_gems", "skills", "uv"]
+disable = [
+  "certbot",
+  "containers",
+  "gem",
+  "git_repos",
+  "helix",
+  "helm",
+  "ruby_gems",
+  "skills",
+  "uv",
+]
 {% endif %}
 no_retry = true
 no_self_update = true

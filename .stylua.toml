@@ -1,0 +1,9 @@
+# StyLua configuration file for formatting Lua code.
+#
+# For more information, visit https://github.com/JohnnyMorganz/StyLua#options.
+
+indent_type = "Spaces"
+quote_style = "ForceDouble"
+
+[sort_requires]
+enabled = true

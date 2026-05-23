@@ -36,6 +36,16 @@ sound = [
 [plugin]
 preloaders = []
 
+[[plugin.prepend_fetchers]]
+group = "git"
+run = "git"
+url = "*"
+
+[[plugin.prepend_fetchers]]
+group = "git"
+run = "git"
+url = "*/"
+
 [preview]
 max_height = 2160
 max_width = 4096
