@@ -1760,19 +1760,6 @@
         - server
         - tailscale
 
-    - name: Install Termshark network analyzer
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - network
-            - never
-            - termshark
-        name: scruffaluff.bootware.termshark
-      tags:
-        - network
-        - never
-        - termshark
-
     - name: Install Terraform infrastructure automator
       ansible.builtin.include_role:
         apply:

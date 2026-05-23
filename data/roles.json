@@ -3,10 +3,20 @@
     "name": "age",
     "tests": ["age --version", "age-keygen --version"]
   },
-  { "name": "alacritty", "tests": ["alacritty --version"] },
+  {
+    "name": "alacritty",
+    "tests": ["alacritty --version"]
+  },
   {
     "name": "android",
-    "skip": [{ "os": "openwrt" }, { "os": "suse" }],
+    "skip": [
+      {
+        "os": "openwrt"
+      },
+      {
+        "os": "suse"
+      }
+    ],
     "tests": ["adb --version"]
   },
   {
@@ -18,25 +28,80 @@
       "windows": ["scoop prefix audacity"]
     }
   },
-  { "name": "audio", "tests": ["play --version"] },
-  { "name": "aws", "tests": ["aws --version"] },
+  {
+    "name": "audio",
+    "tests": ["play --version"]
+  },
+  {
+    "name": "aws",
+    "tests": ["aws --version"]
+  },
   {
     "name": "bash",
-    "skip": [{ "os": "windows" }],
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["bash --version"]
   },
-  { "name": "bat", "tests": ["bat --version"] },
-  { "name": "beekeeper", "skip": [{ "os": "freebsd" }] },
-  { "name": "bitwarden", "skip": [{ "os": "freebsd" }] },
-  { "name": "bitwig", "skip": [{ "os": "freebsd" }] },
-  { "name": "build" },
-  { "name": "bottom", "tests": ["btm --version"] },
-  { "name": "caffeine" },
-  { "name": "carapace", "tests": ["carapace --version"] },
-  { "name": "chafa", "tests": ["chafa --version"] },
+  {
+    "name": "bat",
+    "tests": ["bat --version"]
+  },
+  {
+    "name": "beekeeper",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
+    "name": "bitwarden",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
+    "name": "bitwig",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
+    "name": "build"
+  },
+  {
+    "name": "bottom",
+    "tests": ["btm --version"]
+  },
+  {
+    "name": "caffeine"
+  },
+  {
+    "name": "carapace",
+    "tests": ["carapace --version"]
+  },
+  {
+    "name": "chafa",
+    "tests": ["chafa --version"]
+  },
   {
     "name": "chrome",
-    "skip": [{ "arch": "arm64", "os": "linux" }, { "os": "alpine" }],
+    "skip": [
+      {
+        "arch": "arm64",
+        "os": "linux"
+      },
+      {
+        "os": "alpine"
+      }
+    ],
     "tests": {
       "arch": ["chromium --version"],
       "freebsd": ["chrome --version"],
@@ -47,34 +112,88 @@
       "windows": ["scoop prefix googlechrome"]
     }
   },
-  { "name": "compass" },
-  { "name": "croc", "tests": ["croc --version"] },
+  {
+    "name": "compass"
+  },
+  {
+    "name": "croc",
+    "tests": ["croc --version"]
+  },
   {
     "name": "cuda",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "macos" }],
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "macos"
+      }
+    ],
     "tests": ["nvcc --version"]
   },
-  { "name": "dbeaver" },
+  {
+    "name": "dbeaver"
+  },
   {
     "name": "deno",
-    "skip": [{ "os": "openwrt" }],
+    "skip": [
+      {
+        "os": "openwrt"
+      }
+    ],
     "tests": ["deno --version"]
   },
-  { "name": "desktop_environment" },
-  { "name": "dive", "tests": ["dive --version"] },
-  { "name": "docker", "tests": ["docker --version", "docker compose --help"] },
-  { "name": "doctl", "tests": ["doctl version"] },
-  { "name": "duf", "tests": ["duf --version"] },
-  { "name": "dust", "tests": ["dust --version"] },
-  { "name": "fastfetch", "tests": ["fastfetch --version"] },
-  { "name": "fd", "tests": ["fd --version"] },
-  { "name": "ffmpeg", "tests": ["ffmpeg -version"] },
+  {
+    "name": "desktop_environment"
+  },
+  {
+    "name": "dive",
+    "tests": ["dive --version"]
+  },
+  {
+    "name": "docker",
+    "tests": ["docker --version", "docker compose --help"]
+  },
+  {
+    "name": "doctl",
+    "tests": ["doctl version"]
+  },
+  {
+    "name": "duf",
+    "tests": ["duf --version"]
+  },
+  {
+    "name": "dust",
+    "tests": ["dust --version"]
+  },
+  {
+    "name": "fastfetch",
+    "tests": ["fastfetch --version"]
+  },
+  {
+    "name": "fd",
+    "tests": ["fd --version"]
+  },
+  {
+    "name": "ffmpeg",
+    "tests": ["ffmpeg -version"]
+  },
   {
     "name": "ffsend",
     "skip": [
-      { "arch": "arm64", "os": "linux" },
-      { "os": "freebsd" },
-      { "os": "windows" }
+      {
+        "arch": "arm64",
+        "os": "linux"
+      },
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "windows"
+      }
     ],
     "tests": ["ffsend --version"]
   },
@@ -87,27 +206,63 @@
   },
   {
     "name": "fish",
-    "skip": [{ "os": "windows" }],
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["fish --version"]
   },
   {
     "name": "flatpak",
-    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "macos"
+      },
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["flatpak --version"]
   },
   {
     "name": "flyctl",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["flyctl version"]
   },
-  { "name": "font" },
+  {
+    "name": "font"
+  },
   {
     "name": "fwupd",
-    "skip": [{ "os": "freebsd" }, { "os": "macos" }, { "os": "windows" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "macos"
+      },
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["fwupdmgr --help"]
   },
-  { "name": "fzf", "tests": ["fzf --version"] },
-  { "name": "gdb", "tests": ["gdb --version"] },
+  {
+    "name": "fzf",
+    "tests": ["fzf --version"]
+  },
+  {
+    "name": "gdb",
+    "tests": ["gdb --version"]
+  },
   {
     "name": "gdu",
     "tests": {
@@ -121,40 +276,116 @@
   },
   {
     "name": "github_runner",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": []
   },
-  { "name": "gitlab_runner", "tests": ["gitlab-runner --version"] },
-  { "name": "gitui", "tests": ["gitui --version"] },
-  { "name": "glow", "tests": ["glow --version"] },
+  {
+    "name": "gitlab_runner",
+    "tests": ["gitlab-runner --version"]
+  },
+  {
+    "name": "gitui",
+    "tests": ["gitui --version"]
+  },
+  {
+    "name": "glow",
+    "tests": ["glow --version"]
+  },
   {
     "name": "hdf5",
-    "skip": [{ "os": "alpine" }, { "os": "windows" }],
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["h5dump --version", "h5ls --version"]
   },
   {
     "name": "hadolint",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["hadolint --version"]
   },
-  { "name": "harper", "tests": ["harper-ls --version"] },
-  { "name": "helix", "skip": [{ "os": "openwrt" }], "tests": ["hx --version"] },
-  { "name": "helm", "tests": ["helm version --short"] },
-  { "name": "helmfile", "tests": ["helmfile --version"] },
+  {
+    "name": "harper",
+    "tests": ["harper-ls --version"]
+  },
+  {
+    "name": "helix",
+    "skip": [
+      {
+        "os": "openwrt"
+      }
+    ],
+    "tests": ["hx --version"]
+  },
+  {
+    "name": "helm",
+    "tests": ["helm version --short"]
+  },
+  {
+    "name": "helmfile",
+    "tests": ["helmfile --version"]
+  },
   {
     "name": "htop",
-    "skip": [{ "os": "windows" }],
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["htop --version"]
   },
-  { "name": "hyperfine", "tests": ["hyperfine --version"] },
-  { "name": "ignore" },
-  { "name": "image_magick", "tests": ["magick --version"] },
-  { "name": "jjui", "tests": ["jjui --version"] },
-  { "name": "jq", "tests": ["jq --version"] },
-  { "name": "jujutsu", "tests": ["jj --version"] },
-  { "name": "just", "tests": ["just --version"] },
-  { "name": "k3d", "skip": [{ "os": "freebsd" }], "tests": ["k3d --version"] },
-  { "name": "k9s", "tests": ["k9s version"] },
+  {
+    "name": "hyperfine",
+    "tests": ["hyperfine --version"]
+  },
+  {
+    "name": "ignore"
+  },
+  {
+    "name": "image_magick",
+    "tests": ["magick --version"]
+  },
+  {
+    "name": "jjui",
+    "tests": ["jjui --version"]
+  },
+  {
+    "name": "jq",
+    "tests": ["jq --version"]
+  },
+  {
+    "name": "jujutsu",
+    "tests": ["jj --version"]
+  },
+  {
+    "name": "just",
+    "tests": ["just --version"]
+  },
+  {
+    "name": "k3d",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
+    "tests": ["k3d --version"]
+  },
+  {
+    "name": "k9s",
+    "tests": ["k9s version"]
+  },
   {
     "name": "kdenlive",
     "tests": {
@@ -166,24 +397,49 @@
   },
   {
     "name": "kind",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["kind --version"]
   },
   {
     "name": "krew",
-    "skip": [{ "os": "freebsd" }, { "os": "windows" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["kubectl-krew version"]
   },
-  { "name": "kubectl", "tests": ["kubectl version --client"] },
+  {
+    "name": "kubectl",
+    "tests": ["kubectl version --client"]
+  },
   {
     "name": "kubeshark",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["kubeshark version"]
   },
-  { "name": "latex", "tests": ["latex --version"] },
+  {
+    "name": "latex",
+    "tests": ["latex --version"]
+  },
   {
     "name": "lazydocker",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["lazydocker --version"]
   },
   {
@@ -222,9 +478,22 @@
       "windows": ["virt-viewer --version"]
     }
   },
-  { "name": "lldb", "tests": ["lldb --version"] },
-  { "name": "localsend", "skip": [{ "os": "freebsd" }] },
-  { "name": "lsd", "tests": ["lsd --version"] },
+  {
+    "name": "lldb",
+    "tests": ["lldb --version"]
+  },
+  {
+    "name": "localsend",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
+    "name": "lsd",
+    "tests": ["lsd --version"]
+  },
   {
     "name": "lua",
     "tests": {
@@ -233,15 +502,32 @@
       "freebsd": ["lua54 -v"]
     }
   },
-  { "name": "miniserve", "tests": ["miniserve --version"] },
+  {
+    "name": "miniserve",
+    "tests": ["miniserve --version"]
+  },
   {
     "name": "mkcert",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["mkcert --version"]
   },
   {
     "name": "mongosh",
-    "skip": [{ "os": "alpine" }, { "os": "fedora" }, { "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "fedora"
+      },
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["mongosh --version"]
   },
   {
@@ -255,11 +541,22 @@
       "windows": ["scoop prefix musescore"]
     }
   },
-  { "name": "node", "tests": ["node --version", "npm --version"] },
-  { "name": "nushell", "tests": ["nu --version"] },
+  {
+    "name": "node",
+    "tests": ["node --version", "npm --version"]
+  },
+  {
+    "name": "nushell",
+    "tests": ["nu --version"]
+  },
   {
     "name": "obs",
-    "skip": [{ "arch": "arm64", "os": "linux" }],
+    "skip": [
+      {
+        "arch": "arm64",
+        "os": "linux"
+      }
+    ],
     "tests": {
       "freebsd": ["obs --version"],
       "linux": ["obs --version || flatpak info com.obsproject.Studio"],
@@ -267,23 +564,45 @@
       "windows": ["scoop prefix obs-studio"]
     }
   },
-  { "name": "obsidian" },
+  {
+    "name": "obsidian"
+  },
   {
     "name": "powershell",
-    "skip": [{ "os": "freebsd" }, { "os": "linux" }, { "os": "macos" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "linux"
+      },
+      {
+        "os": "macos"
+      }
+    ],
     "tests": ["pwsh --version"]
   },
   {
     "name": "presenterm",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["presenterm --version"]
   },
   {
     "name": "prettier",
-    "skip": [{ "os": "openwrt" }],
+    "skip": [
+      {
+        "os": "openwrt"
+      }
+    ],
     "tests": ["prettier --version"]
   },
-  { "name": "prune" },
+  {
+    "name": "prune"
+  },
   {
     "name": "python",
     "tests": {
@@ -293,7 +612,12 @@
   },
   {
     "name": "qemu",
-    "skip": [{ "arch": "arm64", "os": "suse" }],
+    "skip": [
+      {
+        "arch": "arm64",
+        "os": "suse"
+      }
+    ],
     "tests": {
       "default": [
         "qemu-img --version",
@@ -319,36 +643,82 @@
       ]
     }
   },
-  { "name": "rclone", "tests": ["rclone --version"] },
-  { "name": "readest", "skip": [{ "os": "freebsd" }] },
-  { "name": "readline" },
-  { "name": "restic", "tests": ["restic version"] },
-  { "name": "ripgrep", "tests": ["rg --version"] },
+  {
+    "name": "rclone",
+    "tests": ["rclone --version"]
+  },
+  {
+    "name": "readest",
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
+    "name": "readline"
+  },
+  {
+    "name": "restic",
+    "tests": ["restic version"]
+  },
+  {
+    "name": "ripgrep",
+    "tests": ["rg --version"]
+  },
   {
     "name": "rust",
     "tests": ["cargo --version", "rustc --version", "rust-analyzer --version"]
   },
   {
     "name": "samply",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["samply --version"]
   },
-  { "name": "scc", "tests": ["scc --version"] },
-  { "name": "sd", "tests": ["sd --version"] },
+  {
+    "name": "scc",
+    "tests": ["scc --version"]
+  },
+  {
+    "name": "sd",
+    "tests": ["sd --version"]
+  },
   {
     "name": "shellcheck",
-    "skip": [{ "os": "openwrt" }, { "os": "windows" }],
+    "skip": [
+      {
+        "os": "openwrt"
+      },
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["shellcheck --version"]
   },
   {
     "name": "shfmt",
-    "skip": [{ "os": "windows" }],
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["shfmt --version"]
   },
-  { "name": "sops", "tests": ["sops --version"] },
+  {
+    "name": "sops",
+    "tests": ["sops --version"]
+  },
   {
     "name": "sonic_pi",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": {
       "linux": ["flatpak info net.sonic_pi.SonicPi"],
       "macos": [],
@@ -357,14 +727,21 @@
   },
   {
     "name": "spotify",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": {
       "linux": ["flatpak info com.spotify.Client"],
       "macos": ["/Applications/Spotify.app/Contents/MacOS/Spotify --version"],
       "windows": ["scoop prefix spotify"]
     }
   },
-  { "name": "sqlite", "tests": ["sqlite3 --version"] },
+  {
+    "name": "sqlite",
+    "tests": ["sqlite3 --version"]
+  },
   {
     "name": "ssh",
     "tests": {
@@ -372,8 +749,13 @@
       "windows": ["ssh -V"]
     }
   },
-  { "name": "starship", "tests": ["starship --version"] },
-  { "name": "super" },
+  {
+    "name": "starship",
+    "tests": ["starship --version"]
+  },
+  {
+    "name": "super"
+  },
   {
     "name": "tailscale",
     "tests": {
@@ -383,27 +765,54 @@
     }
   },
   {
-    "name": "termshark",
-    "tests": {
-      "freebsd": ["tshark --version"],
-      "default": ["termshark --version", "tshark --version"]
-    }
+    "name": "terraform",
+    "tests": ["terraform --version"]
   },
-  { "name": "terraform", "tests": ["terraform --version"] },
   {
     "name": "tilt",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["tilt version"]
   },
-  { "name": "tldr", "tests": ["tldr --version"] },
-  { "name": "tmux", "skip": [{ "os": "windows" }], "tests": ["tmux -V"] },
-  { "name": "topgrade", "tests": ["topgrade --version"] },
-  { "name": "typst", "tests": ["typst --version"] },
-  { "name": "usql", "tests": ["usql --version"] },
-  { "name": "uv", "tests": ["uv --version"] },
+  {
+    "name": "tldr",
+    "tests": ["tldr --version"]
+  },
+  {
+    "name": "tmux",
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
+    "tests": ["tmux -V"]
+  },
+  {
+    "name": "topgrade",
+    "tests": ["topgrade --version"]
+  },
+  {
+    "name": "typst",
+    "tests": ["typst --version"]
+  },
+  {
+    "name": "usql",
+    "tests": ["usql --version"]
+  },
+  {
+    "name": "uv",
+    "tests": ["uv --version"]
+  },
   {
     "name": "velero",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["velero help"]
   },
   {
@@ -420,37 +829,84 @@
   },
   {
     "name": "vscode",
-    "skip": [{ "os": "alpine" }, { "os": "arch" }, { "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "arch"
+      },
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["code --version"]
   },
   {
     "name": "watchexec",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["watchexec --version"]
   },
-  { "name": "wezterm", "tests": ["wezterm --version"] },
-  { "name": "window_manager" },
+  {
+    "name": "wezterm",
+    "tests": ["wezterm --version"]
+  },
+  {
+    "name": "window_manager"
+  },
   {
     "name": "wireshark",
-    "skip": [{ "os": "macos" }],
+    "skip": [
+      {
+        "os": "macos"
+      }
+    ],
     "tests": ["wireshark --version"]
   },
-  { "name": "xh", "tests": ["xh --version"] },
+  {
+    "name": "xh",
+    "tests": ["xh --version"]
+  },
   {
     "name": "yazi",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["yazi --version"]
   },
-  { "name": "yq", "tests": ["yq --version"] },
+  {
+    "name": "yq",
+    "tests": ["yq --version"]
+  },
   {
     "name": "zed",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["zed --version"]
   },
   {
     "name": "zellij",
-    "skip": [{ "os": "windows" }],
+    "skip": [
+      {
+        "os": "windows"
+      }
+    ],
     "tests": ["zellij --version"]
   },
-  { "name": "zoxide", "tests": ["zoxide --version"] }
+  {
+    "name": "zoxide",
+    "tests": ["zoxide --version"]
+  }
 ]

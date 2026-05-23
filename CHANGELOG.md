@@ -9,7 +9,7 @@ see the commit logs. The format is based on
 
 ### Removed
 
-- Pnpm role.
+- Pnpm and Termshark roles.
 
 ## 0.10.3 - 2026-04-25
 
