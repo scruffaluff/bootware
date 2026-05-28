@@ -541,6 +541,8 @@ if test -n $tty
         bind \ef forward-word
         bind \eh _paste_help
         bind \ej backward-char
+        bind \ek down-line
+        bind \el up-line
         bind \ep _paste_pager
         bind \ew kill-bigword
         bind \ex _delete_commandline_from_history

@@ -852,7 +852,7 @@ $env.config = {
     history: { file_format: "sqlite" isolation: true }
     keybindings: [
         {
-            event: { edit: moveright }
+            event: { until: [{ send: menuright } { edit: moveright }] }
             keycode: "char_;"
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -896,8 +896,20 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { edit: moveleft }
+            event: { until: [{ send: menuleft } { edit: moveleft }] }
             keycode: char_j
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
+            event: { send: menudown }
+            keycode: char_k
+            mode: [emacs vi_insert vi_normal]
+            modifier: alt
+        }
+        {
+            event: { send: menuup }
+            keycode: char_l
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
