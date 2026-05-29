@@ -181,6 +181,7 @@ setup:
   if [ -n "${INIT:-}" ]; then
     npm install
     uv sync
+    just format
   else
     npm ci
     uv sync --locked
@@ -255,6 +256,7 @@ setup:
   Write-Output 'Installing packages with NPM and Uv.'
   if ("$Env:INIT") {
     npm install
+    just format
   }
   else {
     npm ci

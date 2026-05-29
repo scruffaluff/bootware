@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 #
-# Configure desktop settings for MacOS. To get nested settings in XML format use
-# command `defaults export <domain> -`.
+# Configure MuseScore settings for MacOS.
 
 # Exit immediately if a command exits or pipes a non-zero return code.
 #
