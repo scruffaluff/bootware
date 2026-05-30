@@ -60,10 +60,10 @@ auto-format = true
 file-types = [
   "jsonc",
   { glob = "**/.devcontainer/*.json" },
-  { glob = "**/.vscode/*.json" },
-  { glob = "**/.zed/*.json" },
-  { glob = "{j,t}sconfig.json" },
+  { glob = "**/{.vscode,User}/*.json" },
+  { glob = "**/{.zed,zed}/*.json" },
   { glob = "bun.lock" },
+  { glob = "{j,t}sconfig.json" },
 ]
 formatter = { command = "prettier", args = ["--parser", "jsonc"] }
 language-servers = ["vscode-json-language-server", "harper"]

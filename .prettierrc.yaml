@@ -7,10 +7,14 @@ arrowParens: always
 endOfLine: auto
 overrides:
   - files:
+      - "*.jsonc"
+      - "{j,t}sconfig.json"
+      - .devcontainer/*.json
       - .vscode/*.json
       - .zed/*.json
     options:
       parser: jsonc
+      trailingComma: none
 printWidth: 80
 proseWrap: always
 semi: true

@@ -8,10 +8,13 @@ endOfLine: auto
 overrides:
   - files:
       - "**/.devcontainer/*.json"
-      - "**/.vscode/*.json"
-      - "**/.zed/*.json"
+      - "**/{.vscode,User}/*.json"
+      - "**/{.zed,zed}/*.json"
+      - "*.jsonc"
+      - "{j,t}sconfig.json"
     options:
       parser: jsonc
+      trailingComma: none
 printWidth: 80
 proseWrap: always
 semi: true
