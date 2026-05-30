@@ -4,10 +4,12 @@
 
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 export PATH := if os() == "windows" {
-  join(justfile_directory(), ".vendor\\bin;") + env("PATH")
+  join(justfile_directory(), ".vendor\\bin;") + join(justfile_directory(),
+  ".vendor\\lib\\node\\bin;") + env("PATH")
 } else {
   justfile_directory() / ".vendor/bin:" + justfile_directory() /
-  ".vendor/lib/bats-core/bin:" + env("PATH")
+  ".vendor/lib/bats-core/bin:" + justfile_directory() /
+  ".vendor/lib/node/bin:" + env("PATH")
 }
 export PSModulePath := if os() == "windows" {
   join(justfile_directory(), ".vendor\\lib\\powershell\\modules;") +
@@ -99,35 +101,70 @@ lint:
   nu --commands "{{args}}"
 
 # Install development dependencies.
+[script("nu")]
+setup: _setup
+  let arch = match $nu.os-info.arch { "aarch64" => "arm64", $x => $x }
+  let archive = if $nu.os-info.name == "windows" { ".zip" } else { ".tar.gz" }
+  let ext = if $nu.os-info.name == "windows" { ".exe" } else { "" }
+  let os = match $nu.os-info.name { "macos" => "darwin", $x => $x }
+  if (which node | is-empty) or (which npm | is-empty) {
+    let arch = match $arch { "x86_64" => "x64", $x => $x }
+    let os = match $os { "windows" => "win", $x => $x }
+    let version = http get https://nodejs.org/download/release/index.json
+    | where lts != false | get 0.version
+    let target = $"node-($version)-($os)-($arch)"
+    print "Installing Node."
+    let temp = mktemp --directory --tmpdir
+    http get $"https://nodejs.org/dist/($version)/($target)($archive)"
+    | save --force $"($temp)/node($archive)"
+    if $os == "windows" {
+      unzip -d $temp $"($temp)/node($archive)"
+    } else {
+      tar fx $"($temp)/node($archive)" -C $temp
+    }
+    mv $"($temp)/($target)" .vendor/lib/node
+  }
+  if not (".vendor/lib/nutest" | path exists) {
+    print "Installing Nutest."
+    (
+      git clone -c advice.detachedHead=false --branch main
+      --depth 1 https://github.com/vyadh/nutest.git .vendor/lib/nutest
+    )
+  }
+  print $"Using Nutest (git -C .vendor/lib/nutest rev-parse HEAD)."
+  if (which uv | is-empty) {
+    print "Installing Uv."
+    http get https://scruffaluff.github.io/picoware/install/uv.nu
+    | nu -c $"($in | decode); main --preserve-env --dest .vendor/bin"
+  }
+  print $"Using (uv --version)."
+  if (which yq | is-empty) {
+    let arch = match $arch { "x86_64" => "amd64", $x => $x }
+    print "Installing Yq."
+    http get $"https://github.com/mikefarah/yq/releases/latest/download/yq_($os)_($arch)"
+    | save --force .vendor/bin/yq
+    if $os != "windows" {
+      chmod 755 .vendor/bin/yq
+    }
+  }
+  print $"Using (yq --version)."
+  print "Installing packages with NPM and Uv."
+  if ($env.INIT? | into bool --relaxed) {
+    npm install
+    if $os == "windows" { uv sync }
+    just format
+  } else {
+    npm ci
+    if $os == "windows" { uv sync --locked }
+  }
+
 [unix]
-setup:
+_setup:
   #!/usr/bin/env sh
   set -eu
   arch='{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
   os='{{replace(os(), "macos", "darwin")}}'
   mkdir -p .vendor/bin .vendor/lib
-  if ! command -v node > /dev/null 2>&1 || ! command -v npm > /dev/null 2>&1;
-  then
-    echo 'Error: Unable to find NodeJS and NPM.' >&2
-    echo 'Install NodeJS, https://nodejs.org, manually before continuing.' >&2
-    exit 1
-  fi
-  echo "Using Node $(node --version)."
-  echo "Using NPM $(npm --version)."
-  if ! command -v nu > /dev/null 2>&1; then
-    echo 'Installing Nushell.'
-    curl --fail --location --show-error \
-      https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
-      --preserve-env --dest .vendor/bin
-  fi
-  echo "Using Nushell $(nu --version)."
-  if ! command -v uv > /dev/null 2>&1; then
-    echo 'Installing Uv.'
-    curl --fail --location --show-error \
-      https://scruffaluff.github.io/picoware/install/uv.sh | sh -s -- \
-      --preserve-env --dest .vendor/bin
-  fi
-  echo "Using $(uv --version)."
   for spec in 'assert:v2.1.0' 'core:v1.11.1' 'file:v0.4.0' 'support:v0.3.0'; do
     bats_check=''
     pkg="${spec%:*}"
@@ -142,12 +179,13 @@ setup:
     fi
   done
   echo "Using $(bats --version)."
-  if [ ! -d .vendor/lib/nutest ]; then
-    echo 'Installing Nutest.'
-    git clone -c advice.detachedHead=false --branch main \
-      --depth 1 https://github.com/vyadh/nutest.git .vendor/lib/nutest
+  if ! command -v nu > /dev/null 2>&1; then
+    echo 'Installing Nushell.'
+    curl --fail --location --show-error \
+      https://scruffaluff.github.io/picoware/install/nushell.sh | sh -s -- \
+      --preserve-env --dest .vendor/bin
   fi
-  echo "Using Nutest $(git -C .vendor/lib/nutest rev-parse HEAD)."
+  echo "Using Nushell $(nu --version)."
   if ! command -v shellcheck > /dev/null 2>&1; then
     echo 'Installing ShellCheck.'
     shellcheck_arch='{{arch()}}'
@@ -170,25 +208,9 @@ setup:
     chmod 755 .vendor/bin/shfmt
   fi
   echo "Using Shfmt $(shfmt --version)."
-  if ! command -v yq > /dev/null 2>&1; then
-    echo 'Installing Yq.'
-    curl --fail --location --show-error --output .vendor/bin/yq \
-      "https://github.com/mikefarah/yq/releases/latest/download/yq_${os}_${arch}"
-    chmod 755 .vendor/bin/yq
-  fi
-  echo "Using $(yq --version)."
-  echo 'Installing packages with NPM and Uv.'
-  if [ -n "${INIT:-}" ]; then
-    npm install
-    uv sync
-  else
-    npm ci
-    uv sync --locked
-  fi
 
-# Install development dependencies.
 [windows]
-setup:
+_setup:
   #!powershell.exe
   $ErrorActionPreference = 'Stop'
   $ProgressPreference = 'SilentlyContinue'
@@ -196,16 +218,6 @@ setup:
   $Arch = '{{replace(replace(arch(), "x86_64", "amd64"), "aarch64", "arm64")}}'
   $ModulePath = '.vendor\lib\powershell\modules'
   New-Item -Force -ItemType Directory -Path $ModulePath | Out-Null
-  if (-not (
-    (Get-Command -ErrorAction SilentlyContinue node) -And
-    (Get-Command -ErrorAction SilentlyContinue npm)
-  )) {
-    Write-Error 'Error: Unable to find NodeJS and NPM.'
-    Write-Error 'Install NodeJS, https://nodejs.org, manually before continuing.'
-    Exit 1
-  }
-  Write-Output "Using Node $(node --version)"
-  Write-Output "Using NPM $(npm --version)"
   if (-not (Get-Command -ErrorAction SilentlyContinue nu)) {
     Write-Output 'Installing Nushell.'
     $NushellScript = Invoke-WebRequest -UseBasicParsing -Uri `
@@ -213,12 +225,6 @@ setup:
     Invoke-Expression "& { $NushellScript } --preserve-env --dest .vendor/bin"
   }
   Write-Output "Using Nushell $(nu --version)"
-  if (-not (Test-Path -Path .vendor/lib/nutest -PathType Container)) {
-    Write-Output 'Installing Nutest.'
-    git clone -c advice.detachedHead=false --branch main --depth 1 `
-      https://github.com/vyadh/nutest.git .vendor/lib/nutest
-  }
-  Write-Output "Using Nutest $(git -C .vendor/lib/nutest rev-parse HEAD)."
   # If executing task from PowerShell Core, error such as "'Install-Module'
   # command was found in the module 'PowerShellGet', but the module could not be
   # loaded" unless earlier versions of PackageManagement and PowerShellGet are
@@ -246,19 +252,6 @@ setup:
   }
   Write-Output "Using Pester $((Get-Module -ListAvailable Pester | `
     Select-Object -First 1).Version)."
-  if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
-    Write-Output 'Installing Yq.'
-    Invoke-WebRequest -UseBasicParsing -OutFile .vendor/bin/yq.exe -Uri `
-      "https://github.com/mikefarah/yq/releases/latest/download/yq_windows_$Arch.exe"
-  }
-  Write-Output "Using $(yq --version)."
-  Write-Output 'Installing packages with NPM and Uv.'
-  if ("$Env:INIT") {
-    npm install
-  }
-  else {
-    npm ci
-  }
 
 # Run test suites.
 test: test-sh test-nu test-py test-pkg test-e2e
@@ -268,9 +261,10 @@ test-e2e *args:
   nu script/test_e2e.nu {{args}}
 
 # Run Nushell test suite.
+[script("nu")]
 test-nu *args:
-  nu --commands \
-    "use .vendor/lib/nutest/nutest run-tests; run-tests --fail --path test {{args}}"
+  use "{{replace(justfile_directory(), '\', '/') / '.vendor/lib/nutest/nutest'}}" run-tests
+  run-tests --fail --path test {{args}}
 
 # Run packaging test suite.
 test-pkg *args:

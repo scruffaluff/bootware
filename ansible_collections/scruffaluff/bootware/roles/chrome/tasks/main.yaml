@@ -107,3 +107,59 @@
   tags:
     - install
   when: ansible_facts.system != "Win32NT"
+
+# Chrome features are documented at https://chromeenterprise.google/policies.
+- name: Set Google Chrome features for MacOS
+  ansible.builtin.script: macos.sh
+  become: true
+  become_user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_facts.system == "Darwin"
+
+- name: Create Google Chrome preferences directories for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: /etc/opt/chrome/policies/managed
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system not in ["Darwin", "Win32NT"]
+
+- name: Set Google Chrome features for Unix
+  ansible.builtin.get_url:
+    dest: /etc/opt/chrome/policies/managed/managed_policies.json
+    mode: "644"
+    url: https://raw.githubusercontent.com/corbindavenport/just-the-browser/refs/heads/main/chrome/managed_policies.json
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system not in ["Darwin", "Win32NT"]
+
+- name: Set Google Chrome features for Windows
+  ansible.windows.win_regedit:
+    data: "{{ item.data }}"
+    name: "{{ item.name }}"
+    path: HKLM:\SOFTWARE\Policies\Google\Chrome
+    type: dword
+  loop:
+    - data: 1
+      name: AIModeSettings
+    - data: 2
+      name: CreateThemesSettings
+    - data: 2
+      name: DevToolsGenAiSettings
+    - data: 2
+      name: HelpMeWriteSettings
+    - data: 1
+      name: GeminiSettings
+    - data: 1
+      name: GenAILocalFoundationalModelSettings
+    - data: 2
+      name: HistorySearchSettings
+    - data: 2
+      name: TabCompareSettings
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

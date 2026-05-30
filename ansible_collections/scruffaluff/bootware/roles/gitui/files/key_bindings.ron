@@ -4,7 +4,6 @@
 // https://github.com/extrawurst/gitui/blob/master/KEY_CONFIG.md.
 
 (
-    exit_popup: Some(( code: Char('h'), modifiers: "")),
     move_down: Some(( code: Char('k'), modifiers: "")),
     move_left: Some(( code: Char('j'), modifiers: "")),
     move_right: Some(( code: Char(';'), modifiers: "")),

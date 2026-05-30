@@ -59,12 +59,11 @@ name = "jsonc"
 auto-format = true
 file-types = [
   "jsonc",
-  { glob = ".devcontainer.json" },
-  { glob = ".vscode/*.json" },
-  { glob = ".zed/*.json" },
-  { glob = "bun.lock" },
-  { glob = "devcontainer.json" },
+  { glob = "**/.devcontainer/*.json" },
+  { glob = "**/.vscode/*.json" },
+  { glob = "**/.zed/*.json" },
   { glob = "{j,t}sconfig.json" },
+  { glob = "bun.lock" },
 ]
 formatter = { command = "prettier", args = ["--parser", "jsonc"] }
 language-servers = ["vscode-json-language-server", "harper"]
