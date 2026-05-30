@@ -5,6 +5,12 @@
 ---
 arrowParens: always
 endOfLine: auto
+overrides:
+  - files:
+      - .vscode/*.json
+      - .zed/*.json
+    options:
+      parser: jsonc
 printWidth: 80
 proseWrap: always
 semi: true
