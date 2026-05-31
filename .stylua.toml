@@ -2,8 +2,9 @@
 #
 # For more information, visit https://github.com/JohnnyMorganz/StyLua#options.
 
+indent_width = 2
 indent_type = "Spaces"
-quote_style = "ForceDouble"
+quote_style = "ForceSingle"
 
 [sort_requires]
 enabled = true

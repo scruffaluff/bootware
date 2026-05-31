@@ -131,7 +131,8 @@ function fzf-path-widget
     set --function cwd "$PWD"
     set --function token (commandline --current-token)
     set --function argument \
-        (string replace '~' "$HOME" (string trim --chars '"\'' $token))
+        (string replace '\ ' ' ' (string replace '~' "$HOME" \
+        (string trim --chars '"\'' $token)))
 
     # Build Fzf search from current token or exit early if invalid.
     set --function search_dir

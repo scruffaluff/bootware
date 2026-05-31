@@ -358,51 +358,60 @@ def --wrapped chown [...args: path] {
 
 # Get the current argument under the cursor.
 def "commandline argument" [] {
-    mut breakout = false
-    mut chars = []
+    mut arg = []
+    let chars = commandline | split chars
     let cursor = commandline get-cursor
-    let line = commandline
-    mut match = false
+    mut found = false
+    mut index = 0
+    let length = commandline | str length
+    let quotes = ["'" '"' "`"]
+    mut quote = ""
     mut start = 0
     mut stop = 0
-    mut whitespace = false
 
-    for elem in ($line | split chars | enumerate) {
-        if $elem.index == $cursor {
-            $match = true
-        }
+    for char in $chars {
+        let noquote = ($quote | is-empty)
+        let whitespace = ($char | str trim | is-empty)
+        $found = $found or $index == $cursor
 
-        if ($elem.item | str trim | is-empty) {
-            if $whitespace {
-                $chars = []
-                $start = $elem.index
-            } else {
-                $whitespace = true
-            }
-
-            if $match {
-                $stop = $elem.index
-                $breakout = true
-                break
-            }
+        # If whitespace is encountered after the cursor is found and no quote
+        # is unmatched, then current word is the argument under the
+        # cursor. Thus break from loop.
+        if $found and $noquote and $whitespace {
+            $stop = $index
+            break
+        # Start or finish quote matching. After finishing quote matching
+        # continue character list until next whitespace.
+        } else if $char in $quotes {
+            $quote = (
+                if $noquote { $char } else if $char == $quote { "" }
+                else { $quote }
+            )
+            $arg = [...$arg $char]
+        # If whitespace is encountered before the cursor is found and no quote
+        # is unmatched, then current word cannot be the argument under the
+        # cursor. Thus reset character list and move start index to next
+        # character.
+        } else if $whitespace and $noquote {
+            $arg = []
+            $start = $index + 1
         } else {
-            if $whitespace {
-                $whitespace = false
-                $chars = []
-                $start = $elem.index
-            }
-            $chars = [...$chars $elem.item]
+            $arg = [...$arg $char]
         }
+
+        $index += 1
     }
 
-    if not $breakout {
-        if $whitespace {
-            $chars = []
-            $start = $line | str length
+    if $index == $length {
+        # If full loop was executed and last character is whitespace, then no
+        # argument was found.
+        if ($chars | is-empty) or ($chars | last | str trim | is-empty) {
+            $arg = []
+            $start = $length
         }
-        $stop = $line | str length
+        $stop = $length
     }
-    { start: $start stop: $stop token: ($chars | str join) }
+    { start: $start stop: $stop token: ($arg | str join) }
 }
 
 # Complete commandline argument with Fish.
@@ -467,7 +476,16 @@ def fzf-path-widget [] {
     $env.FZF_DEFAULT_OPTS = $"($env.FZF_DEFAULT_OPTS?) ($env.FZF_CTRL_T_OPTS?)"
 
     let arg = commandline argument
-    mut token = $arg.token
+    let char = $arg.token | split chars | first
+    let quoted = (
+        $char == ($arg.token | split chars | last) and $char in ["'" '"' "`"]
+    )
+    mut token = if $quoted {
+        $arg.token  | str substring 1..-2
+    } else {
+        $arg.token
+    }
+
 
     # Build Fzf search from current token or exit early if invalid.
     mut search = { dir: "" query: "" }
@@ -504,14 +522,15 @@ def fzf-path-widget [] {
         return
     }
 
-    # Add quotes if path contains a space.
+    # Add quotes if path is noquoted and contains a space.
     mut full_path = $token | path join $path
-    if ($full_path | str contains " ") {
+    if $quoted {
+        $full_path = $"($char)($full_path)($char)"
+    } else if ($full_path | str contains " ") {
         $full_path = $"`($full_path)`"
     }
 
     # Insert selection and update cursor to end of path.
-
     let chars = commandline | split chars
     let edit = [
         ...($chars | take $arg.start)

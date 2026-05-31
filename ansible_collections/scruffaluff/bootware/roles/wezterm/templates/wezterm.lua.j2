@@ -2,7 +2,7 @@
 --
 -- For more information, visit https://wezfurlong.org/wezterm/config/files.html.
 
-local wezterm = require 'wezterm'
+local wezterm = require('wezterm')
 
 function dark_mode()
   local mode = 'Light'
@@ -26,6 +26,8 @@ config.colors = {
     new_tab_hover = { bg_color = '#c6c6c6', fg_color = '#3a3a3a' },
   },
 }
+config.command_palette_bg_color = '#eee8d5'
+config.command_palette_fg_color = '#073642'
 config.default_cursor_style = 'SteadyBar'
 config.default_prog = { '{{ user_shell_name }}', '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
 config.enable_kitty_keyboard = true
@@ -33,7 +35,7 @@ config.enable_scroll_bar = true
 {% if not wezterm_wayland %}
 config.enable_wayland = false
 {% endif %}
-config.font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Regular' }
+config.font = wezterm.font({ family = 'FiraCode Nerd Font', weight = 'Regular' })
 config.font_size = {{ wezterm_font_size }}
 config.keys = {
   { action = wezterm.action.ActivatePaneDirection('Left'), key = 'k', mods = 'CTRL|SHIFT' },
@@ -64,10 +66,9 @@ config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
 config.window_frame = {
   active_titlebar_bg = '#e6e6e6',
   font_size = {{ wezterm_font_size }},
-  font = wezterm.font { family = 'FiraCode Nerd Font', weight = 'Bold' },
+  font = wezterm.font({ family = 'FiraCode Nerd Font', weight = 'Bold' }),
   inactive_titlebar_bg = '#e6e6e6',
 }
 config.window_padding = { top = 0 }
 
 return config
-

@@ -54,3 +54,8 @@ no_retry = true
 no_self_update = true
 notify_each_step = false
 skip_notify = true
+{% if ansible_facts.system in "Darwin" -%}
+
+[post_commands]
+"Unquarantine Casks" = "sudo xattr -cr /Applications"
+{% endif -%}

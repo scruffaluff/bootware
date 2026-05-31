@@ -50,6 +50,9 @@ def "commandline argument cases" [] {
         [cursor expected line];
         [0 {start: 0 stop: 3 token: "vim" } "vim"]
         [5 {start: 4 stop: 8 token: "path" } "vim path"]
+        [5 {start: 4 stop: 9 token: "pa'th" } "vim pa'th"]
+        [8 {start: 4 stop: 16 token: "`space path`" } "vim `space path`"]
+        [8 {start: 3 stop: 15 token: `'quote"path'` } `vi 'quote"path' file`]
         [4 {start: 4 stop: 4 token: "" } "vim  path"]
     ] {
         $env.NUTEST_COMMANDLINE = $case.line
@@ -73,6 +76,7 @@ def "fzf-path-widget cases" [] {
         [6 { cursor: 9 line: " vim path" } "path" " vim foo"]
         [4 { cursor: 8 line: "vim path  foo" } "path" "vim   foo"]
         [8 { cursor: 13 line: "vim  src/path test" } "path" "vim  src/fa test"]
+        [9 { cursor: 15 line: "vim  `src/path` test" } "path" "vim  `src/fa` test"]
     ] {
         $env.NUTEST_COMMANDLINE = $case.line
         $env.NUTEST_COMMANDLINE_GETCURSOR = $case.cursor | into string
