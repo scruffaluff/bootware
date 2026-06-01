@@ -309,11 +309,6 @@
   },
   {
     "name": "hadolint",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
     "tests": ["hadolint --version"]
   },
   {
@@ -406,14 +401,7 @@
   },
   {
     "name": "krew",
-    "skip": [
-      {
-        "os": "freebsd"
-      },
-      {
-        "os": "windows"
-      }
-    ],
+    "skip": [{ "os": "freebsd" }],
     "tests": ["kubectl-krew version"]
   },
   {
@@ -829,17 +817,7 @@
   },
   {
     "name": "vscode",
-    "skip": [
-      {
-        "os": "alpine"
-      },
-      {
-        "os": "arch"
-      },
-      {
-        "os": "freebsd"
-      }
-    ],
+    "skip": [{ "os": "alpine" }],
     "tests": ["code --version"]
   },
   {
@@ -873,14 +851,6 @@
   },
   {
     "name": "yazi",
-    "skip": [
-      {
-        "os": "alpine"
-      },
-      {
-        "os": "freebsd"
-      }
-    ],
     "tests": ["yazi --version"]
   },
   {
@@ -889,22 +859,9 @@
   },
   {
     "name": "zed",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
     "tests": ["zed --version"]
   },
-  {
-    "name": "zellij",
-    "skip": [
-      {
-        "os": "windows"
-      }
-    ],
-    "tests": ["zellij --version"]
-  },
+  { "name": "zellij", "tests": ["zellij --version"] },
   {
     "name": "zoxide",
     "tests": ["zoxide --version"]

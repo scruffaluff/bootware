@@ -59,13 +59,12 @@
     - install
   when: ansible_facts.system == "Darwin"
 
-# Krew does not yet work properly on Windows.
-# - name: Install Krew for Windows
-#   community.windows.win_scoop:
-#     name: krew
-#   tags:
-#     - install
-#   when: ansible_facts.system == "Win32NT"
+- name: Install Krew for Windows
+  community.windows.win_scoop:
+    name: krew
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
 
 - name: Install Kubectl plugins for Unix
   ansible.builtin.command:
@@ -80,17 +79,18 @@
   tags:
     - plugin
   when: ansible_facts.system not in ["FreeBSD", "Win32NT"]
-# - name: Install Kubectl plugins for Windows
-#   ansible.windows.win_command:
-#     cmd: kubectl-krew install {{ item }}
-#   changed_when: "'Installed plugin' in krew_plugin_install.stdout"
-#   environment:
-#     Path: "{{ user_home }}\\.krew\\bin;{{ ansible_facts.env.Path }}"
-#   loop: "{{ krew_plugins }}"
-#   register: krew_plugin_install
-#   tags:
-#     - plugin
-#   when: ansible_facts.system == "Win32NT"
+
+- name: Install Kubectl plugins for Windows
+  ansible.windows.win_command:
+    cmd: kubectl-krew install {{ item }}
+  changed_when: "'Installed plugin' in krew_plugin_install.stdout"
+  environment:
+    Path: "{{ user_home }}\\.krew\\bin;{{ ansible_facts.env.Path }}"
+  loop: "{{ krew_plugins }}"
+  register: krew_plugin_install
+  tags:
+    - plugin
+  when: ansible_facts.system == "Win32NT"
 
 - name: Remove Krew temporary directory for Linux
   ansible.builtin.file:

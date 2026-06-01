@@ -1,4 +1,12 @@
 ---
+- name: Install VSCode for Arch
+  become: true
+  community.general.pacman:
+    name: code
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
 - name: Install VSCode for Debian
   ansible.builtin.apt:
     deb: >-
@@ -55,6 +63,14 @@
   tags:
     - install
   when: system_pkg_mgr in ["dnf", "zypper"]
+
+- name: Install VSCode for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: vscode
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
 
 - name: Install VSCode for MacOS
   community.general.homebrew_cask:

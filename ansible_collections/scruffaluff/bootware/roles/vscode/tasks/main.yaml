@@ -1,23 +1,15 @@
 ---
 - name: Install VSCode
   ansible.builtin.import_tasks: install.yaml
-  when: >-
-    vscode_style and ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
-    system_pkg_mgr not in ["apk", "pacman"]
+  when: system_pkg_mgr != "apk"
 
 - name: Configure VSCode user settings
   ansible.builtin.import_tasks: config.yaml
-  when: >-
-    vscode_style and ansible_facts.system in ["Darwin", "Linux", "Win32NT"] and
-    system_pkg_mgr not in ["apk", "pacman"]
+  when: system_pkg_mgr != "apk"
 
-# TODO: Enable for Windows after implementing logic for finding dynamic
-# resources folder.
 - name: Apply custom styles to VSCode
   ansible.builtin.import_tasks: style.yaml
-  when: >-
-    vscode_style and ansible_facts.system in ["Darwin", "Linux"] and
-    ansible_facts.pkg_mgr not in ["apk", "pacman"]
+  when: vscode_style and system_pkg_mgr != "apk"
 
 - name: Set owner of VSCode files for Windows
   ansible.windows.win_owner:

@@ -4,10 +4,6 @@ rust_applications_:
     - cargo-audit
     - cargo-bloat
     - cargo-cache
-    - cargo-edit
-    - cargo-make
-    - cargo-update
-    - cargo-watch
     - cross
     - rust-script
   Darwin:
