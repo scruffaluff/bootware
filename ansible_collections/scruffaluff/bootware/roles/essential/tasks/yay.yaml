@@ -1,0 +1,62 @@
+- name: Get latest Yay version for Arch
+  ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/Jguer/yay/releases/latest
+  register: essential_yay_release
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Create Yay temporary directory for Arch
+  ansible.builtin.tempfile:
+    state: directory
+  register: essential_temp
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Set Yay temporary directory permissions for Arch
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ essential_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Download Yay for Arch
+  ansible.builtin.unarchive:
+    dest: "{{ essential_temp.path }}"
+    mode: "755"
+    remote_src: true
+    src: >-
+      https://github.com/Jguer/yay/releases/download/{{
+      essential_yay_release.json.tag_name }}/yay_{{
+      essential_yay_release.json.tag_name[1:] }}_{{ essential_yay_arch }}.tar.gz
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Install Yay for Arch
+  ansible.builtin.copy:
+    dest: /usr/sbin/yay
+    force: true
+    mode: "755"
+    remote_src: true
+    src: >-
+      {{ essential_temp.path }}/yay_{{ essential_yay_release.json.tag_name[1:]
+      }}_{{ essential_yay_arch }}/yay
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Update Yay package list for Arch
+  ansible.builtin.command:
+    cmd: yay --noconfirm --refresh --sync --sysupgrade
+  changed_when: true
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"

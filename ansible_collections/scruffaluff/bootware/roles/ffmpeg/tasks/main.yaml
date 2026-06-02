@@ -1,15 +1,4 @@
 ---
-- name: Install RPM Fusion for Fedora
-  ansible.builtin.dnf:
-    disable_gpg_check: true
-    name: >-
-      https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{
-      ansible_facts.distribution_major_version }}.noarch.rpm
-  become: true
-  tags:
-    - install
-  when: system_pkg_mgr == "dnf"
-
 - name: Install FFmpeg for Fedora
   ansible.builtin.command:
     cmd: dnf swap --allowerasing --assumeyes ffmpeg-free ffmpeg

@@ -28,6 +28,8 @@ config.colors = {
 }
 config.command_palette_bg_color = '#eee8d5'
 config.command_palette_fg_color = '#073642'
+config.command_palette_font = wezterm.font({ family = 'FiraCode Nerd Font', weight = 'Regular' })
+config.command_palette_font_size = {{ wezterm_font_size }}
 config.default_cursor_style = 'SteadyBar'
 config.default_prog = { '{{ user_shell_name }}', '{{ "-NoLogo" if user_shell == "powershell" else "--login" }}' }
 config.enable_kitty_keyboard = true

@@ -1,8 +1,8 @@
 ---
 - name: Install VSCode for Arch
-  become: true
-  community.general.pacman:
-    name: code
+  ansible.builtin.command:
+    cmd: yay --noconfirm --sync visual-studio-code-bin
+    creates: /usr/sbin/code
   tags:
     - install
   when: system_pkg_mgr == "pacman"
@@ -68,6 +68,18 @@
   become: true
   community.general.pkgng:
     name: vscode
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
+- name: Make VSCode symlink for FreeBSD
+  ansible.builtin.file:
+    src: /usr/local/bin/code-oss
+    dest: /usr/local/bin/code
+    force: true
+    mode: "755"
+    state: link
+  become: true
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"

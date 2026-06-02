@@ -58,9 +58,8 @@
     - install
   when: system_pkg_mgr == "apt"
 
-- name: Install Wezterm for Debian
+- name: Install Apt cache for Debian
   ansible.builtin.apt:
-    name: "{{ wezterm_package }}"
     update_cache: true
   become: true
   tags:
@@ -81,7 +80,7 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apt"
+  when: ansible_facts.system == "Linux"
 
 - name: Install Wezterm for MacOS
   community.general.homebrew_cask:

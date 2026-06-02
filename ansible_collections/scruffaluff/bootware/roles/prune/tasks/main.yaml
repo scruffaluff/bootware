@@ -1,10 +1,20 @@
 ---
-- name: Remove bloatware packages for Linux
+- name: Prune packages for Linux
   ansible.builtin.package:
     name: "{{ item }}"
     state: absent
   become: true
-  loop: "{{ bloatware_linux_packages }}"
+  loop: "{{ prune_linux_packages }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
+
+- name: Prune Copr repositories for Fedora
+  become: true
+  community.general.copr:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ prune_copr_repositories }}"
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"

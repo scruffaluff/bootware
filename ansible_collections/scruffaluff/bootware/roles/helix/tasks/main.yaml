@@ -50,7 +50,7 @@
 #     - install
 #   when: ansible_facts.system == "Linux"
 #
-# - name: Make Helix command symlink for Arch
+# - name: Make Helix symlink for Arch
 #   ansible.builtin.file:
 #     src: /usr/sbin/helix
 #     dest: /usr/sbin/hx
