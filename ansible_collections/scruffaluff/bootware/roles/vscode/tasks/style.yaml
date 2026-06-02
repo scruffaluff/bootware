@@ -1,4 +1,26 @@
 ---
+# The Chocolatey installation of VSCode moves the application files into a
+# dynamically named folder like "8761a5560c" and thus requires a search.
+- name: Find VSCode resources folder for Windows
+  ansible.windows.win_find:
+    depth: 2
+    file_type: directory
+    paths: "{{ vscode_path }}"
+    patterns: resources
+    recurse: true
+  register: vscode_path_search
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Update VSCode path for Widnows
+  ansible.builtin.set_fact:
+    vscode_path: >-
+      {{ vscode_path_search.files[0].path + '\app' }}
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
 - name: Check if newer VSCode Electron structure is available for Unix
   ansible.builtin.stat:
     path: "{{ vscode_path }}/out/vs/code/electron-browser"

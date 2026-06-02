@@ -1,12 +1,30 @@
 ---
-python_applications:
-  - "jinja2-cli[toml,yaml,xml]"
-  - cookiecutter
-  - name: jupyterlab
-  - name: marimo[sandbox,sql]
-    extras:
-      - pytest
-      - ruff
-      - ty
-  - ruff
-  - ty
+python_applications_:
+  always:
+    - "jinja2-cli[toml,yaml,xml]"
+    - cookiecutter
+    - jupyterlab
+    - ruff
+    - ty
+  Darwin:
+    - name: marimo[sandbox,sql]
+      extras:
+        - pytest
+        - ruff
+        - ty
+  FreeBSD: []
+  Linux:
+    - name: marimo[sandbox,sql]
+      extras:
+        - pytest
+        - ruff
+        - ty
+  Win32NT:
+    - name: marimo[sandbox,sql]
+      extras:
+        - pytest
+        - ruff
+        - ty
+python_applications: >-
+  {{ python_applications_.always +
+  python_applications_.get(ansible_facts.system, []) }}

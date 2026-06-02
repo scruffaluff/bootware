@@ -1,4 +1,14 @@
 ---
+# While MongoSH is listed on FreeBSD ports, it not available on FReeBSD as
+# 06/01/2026.
+# - name: Install Mongo Shell for FreeBSD
+#   become: true
+#   community.general.pkgng:
+#     name: mongosh
+#   tags:
+#     - install
+#   when: ansible_facts.system == "FreeBSD"
+
 - name: Get latest Mongo Shell version for Linux
   ansible.builtin.uri:
     method: GET

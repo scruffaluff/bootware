@@ -8,6 +8,14 @@
 #     - install
 #   when: system_pkg_mgr == "apk"
 
+- name: Install Zed for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: zed-editor
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
 - name: Install Zed for Linux
   ansible.builtin.package:
     name: zed

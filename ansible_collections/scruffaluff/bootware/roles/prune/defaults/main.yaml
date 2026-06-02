@@ -1,5 +1,5 @@
 ---
-bloatware_linux_packages_:
+prune_linux_packages_:
   always: []
   apk:
     - command-not-found
@@ -7,6 +7,8 @@ bloatware_linux_packages_:
     - command-not-found
   dnf:
     - PackageKit-command-not-found
-bloatware_linux_packages: >-
-  {{ bloatware_linux_packages_.always +
-  bloatware_linux_packages_.get(system_pkg_mgr, []) }}
+prune_copr_repositories:
+  - phracek/PyCharm
+prune_linux_packages: >-
+  {{ prune_linux_packages_.always + prune_linux_packages_.get(system_pkg_mgr,
+  []) }}

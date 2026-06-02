@@ -949,17 +949,6 @@ setup_arch() {
     log "Installed $(jq --version)."
   fi
 
-  if ! command -v yay > /dev/null 2>&1; then
-    log 'Installing Yay package manager'
-    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${super:+"${super}"} pacman --noconfirm --sync base-devel
-
-    tmp_dir="$(mktemp -u)"
-    git clone --depth 1 'https://aur.archlinux.org/yay.git' "${tmp_dir}"
-    (cd "${tmp_dir}" && makepkg --install --noconfirm --syncdeps)
-    yay --noconfirm --refresh --sync --sysupgrade
-  fi
-
   if ! command -v yq > /dev/null 2>&1; then
     log 'Installing Yq.'
     install_yq "${1}"

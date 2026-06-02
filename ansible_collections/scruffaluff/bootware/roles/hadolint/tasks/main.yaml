@@ -1,4 +1,12 @@
 ---
+- name: Install Hadolint for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: hs-hadolint
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
 - name: Install Hadolint for Linux
   ansible.builtin.package:
     name: hadolint

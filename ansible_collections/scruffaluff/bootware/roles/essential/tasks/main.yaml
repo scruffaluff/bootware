@@ -1,4 +1,15 @@
 ---
+- name: Install RPM Fusion for Fedora
+  ansible.builtin.dnf:
+    disable_gpg_check: true
+    name: >-
+      https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{
+      ansible_facts.distribution_major_version }}.noarch.rpm
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"
+
 - name: Create Homebrew user for MacOS
   ansible.builtin.user:
     name: "{{ brew_user }}"
@@ -168,6 +179,16 @@
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
+
+- name: Check if Yay is installed for Arch
+  ansible.builtin.stat:
+    path: /usr/sbin/yay
+  register: essential_yay_stat
+  when: system_pkg_mgr == "pacman"
+
+- name: Install Yay for Arch
+  ansible.builtin.import_tasks: yay.yaml
+  when: system_pkg_mgr == "pacman" and not essential_yay_stat.stat.exists
 
 - name: Create Scoop user folder for Windows
   ansible.windows.win_file:

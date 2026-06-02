@@ -12,9 +12,7 @@
 - name: Install Tmux for FreeBSD
   become: true
   community.general.pkgng:
-    name:
-      - tmate
-      - tmux
+    name: tmux
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"

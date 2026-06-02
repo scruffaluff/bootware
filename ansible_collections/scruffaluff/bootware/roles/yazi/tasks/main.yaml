@@ -10,6 +10,14 @@
     - install
   when: ansible_facts.system == "Darwin"
 
+- name: Install Yazi for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: yazi
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
 - name: Get latest Yazi version for Linux
   ansible.builtin.uri:
     method: GET
@@ -132,7 +140,7 @@
   register: yazi_plugin_install
   tags:
     - plugin
-  when: ansible_facts.system in ["Darwin", "Linux"]
+  when: ansible_facts.system != "Win32NT"
 
 - name: Install Yazi plugins for Windows
   ansible.windows.win_shell: ya pkg add {{ item }}
@@ -162,7 +170,7 @@
     - yazi/plugins/smart-open.yazi
   tags:
     - config
-  when: ansible_facts.system in ["Darwin", "Linux"]
+  when: ansible_facts.system != "Win32NT"
 
 - name: Copy Yazi configuration files for Unix
   ansible.builtin.copy:
@@ -188,7 +196,7 @@
       src: smart_open.lua
   tags:
     - config
-  when: ansible_facts.system in ["Darwin", "Linux"]
+  when: ansible_facts.system != "Win32NT"
 
 - name: Create Yazi configuration directories for Windows
   ansible.windows.win_file:

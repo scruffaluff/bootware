@@ -118,7 +118,7 @@
 
 # Debian Bat package installs Bat as command "batcat" since another package
 # installs the command "bat".
-- name: Make Bat command symlink for Debian
+- name: Make Bat symlink for Debian
   ansible.builtin.file:
     src: /usr/bin/batcat
     dest: /usr/local/bin/bat
@@ -156,7 +156,7 @@
 # VSCode remote terminals for MacOS automatically prepend folders to the system
 # path, which makes the /usr/bin/less appear before the /opt/homebrew/bin/less.
 # Luckily /usr/local/bin still appears before /usr/bin.
-- name: Make less command symlink for MacOS
+- name: Make less symlink for MacOS
   ansible.builtin.file:
     src: /opt/homebrew/bin/less
     dest: /usr/local/bin/less
