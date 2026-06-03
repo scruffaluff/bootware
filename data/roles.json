@@ -166,10 +166,6 @@
     "tests": ["duf --version"]
   },
   {
-    "name": "dust",
-    "tests": ["dust --version"]
-  },
-  {
     "name": "fastfetch",
     "tests": ["fastfetch --version"]
   },
@@ -227,15 +223,6 @@
       }
     ],
     "tests": ["flatpak --version"]
-  },
-  {
-    "name": "flyctl",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
-    "tests": ["flyctl version"]
   },
   {
     "name": "font"
@@ -333,15 +320,6 @@
     "tests": ["helmfile --version"]
   },
   {
-    "name": "htop",
-    "skip": [
-      {
-        "os": "windows"
-      }
-    ],
-    "tests": ["htop --version"]
-  },
-  {
     "name": "hyperfine",
     "tests": ["hyperfine --version"]
   },
@@ -401,7 +379,11 @@
   },
   {
     "name": "krew",
-    "skip": [{ "os": "freebsd" }],
+    "skip": [
+      {
+        "os": "freebsd"
+      }
+    ],
     "tests": ["kubectl-krew version"]
   },
   {
@@ -409,26 +391,8 @@
     "tests": ["kubectl version --client"]
   },
   {
-    "name": "kubeshark",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
-    "tests": ["kubeshark version"]
-  },
-  {
     "name": "latex",
     "tests": ["latex --version"]
-  },
-  {
-    "name": "lazydocker",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
-    "tests": ["lazydocker --version"]
   },
   {
     "name": "libre_office",
@@ -502,21 +466,6 @@
       }
     ],
     "tests": ["mkcert --version"]
-  },
-  {
-    "name": "mongosh",
-    "skip": [
-      {
-        "os": "alpine"
-      },
-      {
-        "os": "fedora"
-      },
-      {
-        "os": "freebsd"
-      }
-    ],
-    "tests": ["mongosh --version"]
   },
   {
     "name": "musescore",
@@ -795,15 +744,6 @@
     "tests": ["uv --version"]
   },
   {
-    "name": "velero",
-    "skip": [
-      {
-        "os": "freebsd"
-      }
-    ],
-    "tests": ["velero help"]
-  },
-  {
     "name": "vim",
     "tests": ["vim --version"]
   },
@@ -817,7 +757,11 @@
   },
   {
     "name": "vscode",
-    "skip": [{ "os": "alpine" }],
+    "skip": [
+      {
+        "os": "alpine"
+      }
+    ],
     "tests": ["code --version"]
   },
   {
@@ -861,7 +805,10 @@
     "name": "zed",
     "tests": ["zed --version"]
   },
-  { "name": "zellij", "tests": ["zellij --version"] },
+  {
+    "name": "zellij",
+    "tests": ["zellij --version"]
+  },
   {
     "name": "zoxide",
     "tests": ["zoxide --version"]

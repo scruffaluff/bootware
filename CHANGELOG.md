@@ -5,11 +5,28 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com), and this project adheres to
 [Semantic Versioning](https://semver.org).
 
-## Unreleased
+## 0.10.4 - 2026-06-02
+
+### Added
+
+- Git aliases.
+- Git and Starship plugins to Yazi.
+- Yay installation via Ansible tasks.
+
+### Changed
+
+- Disabled AI features in Google Chrome.
+- Improved LLDB config.
+- Improved Wezterm styling.
+
+### Fixed
+
+- JSONC editor integration.
 
 ### Removed
 
-- Pnpm and Termshark roles.
+- Dust, Flyctl, Htop, Kubeshark, Lazydocker, Mongosh, Pnpm, Termshark, and
+  Velero roles.
 
 ## 0.10.3 - 2026-04-25
 

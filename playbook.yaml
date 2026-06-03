@@ -464,23 +464,6 @@
         - sysadmin
         - wsl
 
-    - name: Install Dust disk usage analyzer
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - dust
-            - server
-            - sysadmin
-            - wsl
-        name: scruffaluff.bootware.dust
-      tags:
-        - desktop
-        - dust
-        - server
-        - sysadmin
-        - wsl
-
     - name: Install Fastfetch system information finder
       ansible.builtin.include_role:
         apply:
@@ -589,23 +572,6 @@
       tags:
         - desktop
         - flatpak
-
-    - name: Install FlyIO development tools
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - cloud
-            - desktop
-            - flyctl
-            - server
-            - wsl
-        name: scruffaluff.bootware.flyctl
-      tags:
-        - cloud
-        - desktop
-        - flyctl
-        - server
-        - wsl
 
     - name: Install fonts
       ansible.builtin.include_role:
@@ -861,23 +827,6 @@
         - server
         - wsl
 
-    - name: Install Htop process monitor
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop
-            - htop
-            - server
-            - sysadmin
-            - wsl
-        name: scruffaluff.bootware.htop
-      tags:
-        - desktop
-        - htop
-        - server
-        - sysadmin
-        - wsl
-
     - name: Install Hyperfine benchmarking tool
       ansible.builtin.include_role:
         apply:
@@ -929,18 +878,14 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
             - jjui
-            - server
+            - never
             - vcs
-            - wsl
         name: scruffaluff.bootware.jjui
       tags:
-        - desktop
         - jjui
-        - server
+        - never
         - vcs
-        - wsl
 
     - name: Install Jq JSON parser
       ansible.builtin.include_role:
@@ -1091,19 +1036,6 @@
         - server
         - wsl
 
-    - name: Install Kubeshark Kubernetes network analyzer
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - kubernetes
-            - kubeshark
-            - never
-        name: scruffaluff.bootware.kubeshark
-      tags:
-        - kubernetes
-        - kubeshark
-        - never
-
     - name: Install Latex typesetter
       ansible.builtin.include_role:
         apply:
@@ -1114,23 +1046,6 @@
       tags:
         - latex
         - never
-
-    - name: Install Lazydocker Docker terminal interface
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - container
-            - desktop
-            - lazydocker
-            - server
-            - wsl
-        name: scruffaluff.bootware.lazydocker
-      tags:
-        - container
-        - desktop
-        - lazydocker
-        - server
-        - wsl
 
     - name: Install Libre Office document suite
       ansible.builtin.include_role:
@@ -1255,23 +1170,6 @@
         - desktop
         - mkcert
         - network
-        - server
-        - wsl
-
-    - name: Install MongoDB database client
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - database
-            - desktop
-            - mongosh
-            - server
-            - wsl
-        name: scruffaluff.bootware.mongosh
-      tags:
-        - database
-        - desktop
-        - mongosh
         - server
         - wsl
 
@@ -1751,13 +1649,11 @@
       ansible.builtin.include_role:
         apply:
           tags:
-            - desktop
-            - server
+            - never
             - tailscale
         name: scruffaluff.bootware.tailscale
       tags:
-        - desktop
-        - server
+        - never
         - tailscale
 
     - name: Install Terraform infrastructure automator
@@ -1887,19 +1783,6 @@
         - sysadmin
         - uv
         - wsl
-
-    - name: Install Velero Kubernetes backup manager
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - kubernetes
-            - never
-            - velero
-        name: scruffaluff.bootware.velero
-      tags:
-        - kubernetes
-        - never
-        - velero
 
     - name: Install Vim text editor
       ansible.builtin.include_role:
