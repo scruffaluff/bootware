@@ -1,7 +1,7 @@
 FROM docker.io/ubuntu:24.04
 
 ARG TARGETARCH
-ARG version=0.10.3
+ARG version=0.10.4
 
 # Install Ansible Curl and Sudo.
 RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing \
@@ -61,5 +61,5 @@ ARG test
 # Flags:
 #   -n: Check if string is nonempty.
 RUN if [ -n "${test}" ]; then \
-  bash -l -c "test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} ubuntu"; \
+  bash -l -c "deno run --allow-read --allow-run test/e2e/roles.test.ts --arch ${TARGETARCH} ${skip:+--skip $skip} ${tags:+--tags $tags} ubuntu"; \
   fi

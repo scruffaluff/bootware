@@ -1,7 +1,8 @@
 #!/usr/bin/env nu
 
-const arch_default = $nu.os-info.arch | str replace "x86_64" "amd64"
- | str replace "aarch64" "arm64"
+const arch_default = $nu.os-info.arch
+| str replace "x86_64" "amd64"
+| str replace "aarch64" "arm64"
 
 # Run all container end to end tests for an architecture.
 def main [

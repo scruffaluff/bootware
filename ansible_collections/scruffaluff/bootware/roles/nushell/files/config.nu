@@ -93,7 +93,7 @@ def _color-theme [] {
         header: $green
         hints: $base0
         int: $violet
-        leading_trailing_space_bg: { attr: "n" }
+        leading_trailing_space_bg: {attr: "n"}
         list: $cyan
         nothing: $red
         range: $yellow
@@ -124,7 +124,7 @@ def _color-theme [] {
         shape_list: $cyan
         shape_literal: $blue
         shape_match_pattern: $green
-        shape_matching_brackets: { attr: "u" }
+        shape_matching_brackets: {attr: "u"}
         shape_nothing: $red
         shape_operator: $yellow
         shape_or: $violet
@@ -137,7 +137,7 @@ def _color-theme [] {
         shape_string_interpolation: $cyan
         shape_string: $green
         shape_table: $blue
-        shape_vardecl: { attr: "u" fg: $blue }
+        shape_vardecl: {attr: "u", fg: $blue}
         shape_variable: $violet
         string: $green
     }
@@ -213,7 +213,9 @@ Enter 'all' to delete all the matching entries.
         }
     }
 
-    let ids = history --long | where command in $selections | get item_id
+    let ids = history --long
+    | where command in $selections
+    | get item_id
     | str join ","
     let statement = $"delete from history where id in \(($ids)\)"
     open $nu.history-path | query db $statement
@@ -230,7 +232,7 @@ def _expand-alias [spans: list<string>] {
     | get --optional 0
     | get --optional expansion
 
-    if $expansion == null  {
+    if $expansion == null {
         $spans
     } else {
         $spans | skip 1 | prepend ($expansion | split row " " | take 1)
@@ -338,7 +340,7 @@ def carapace-complete [spans: list<string>] {
 @complete external
 def --wrapped chown [...args: path] {
     match $nu.os-info.name {
-        "windows" => {
+        windows => {
             let args_ = $args | where {|arg|
                 not ($arg in ["-R", "--recursive"])
             }
@@ -351,8 +353,8 @@ def --wrapped chown [...args: path] {
             } else {
                 _wchown $args_.0 ...($args_ | skip 1)
             }
-        },
-        _ => { ^chown ...$args },
+        }
+        _ => { ^chown ...$args }
     }
 }
 
@@ -370,8 +372,8 @@ def "commandline argument" [] {
     mut stop = 0
 
     for char in $chars {
-        let noquote = ($quote | is-empty)
-        let whitespace = ($char | str trim | is-empty)
+        let noquote = $quote | is-empty
+        let whitespace = $char | str trim | is-empty
         $found = $found or $index == $cursor
 
         # If whitespace is encountered after the cursor is found and no quote
@@ -380,19 +382,19 @@ def "commandline argument" [] {
         if $found and $noquote and $whitespace {
             $stop = $index
             break
-        # Start or finish quote matching. After finishing quote matching
-        # continue character list until next whitespace.
         } else if $char in $quotes {
+            # Start or finish quote matching. After finishing quote matching
+            # continue character list until next whitespace.
             $quote = (
                 if $noquote { $char } else if $char == $quote { "" }
                 else { $quote }
             )
             $arg = [...$arg $char]
-        # If whitespace is encountered before the cursor is found and no quote
-        # is unmatched, then current word cannot be the argument under the
-        # cursor. Thus reset character list and move start index to next
-        # character.
         } else if $whitespace and $noquote {
+            # If whitespace is encountered before the cursor is found and no quote
+            # is unmatched, then current word cannot be the argument under the
+            # cursor. Thus reset character list and move start index to next
+            # character.
             $arg = []
             $start = $index + 1
         } else {
@@ -411,7 +413,11 @@ def "commandline argument" [] {
         }
         $stop = $length
     }
-    { start: $start stop: $stop token: ($arg | str join) }
+    {
+        start: $start
+        stop: $stop
+        token: ($arg | str join)
+    }
 }
 
 # Complete commandline argument with Fish.
@@ -481,14 +487,13 @@ def fzf-path-widget [] {
         $char == ($arg.token | split chars | last) and $char in ["'" '"' "`"]
     )
     mut token = if $quoted {
-        $arg.token  | str substring 1..-2
+        $arg.token | str substring 1..-2
     } else {
         $arg.token
     }
 
-
     # Build Fzf search from current token or exit early if invalid.
-    mut search = { dir: "" query: "" }
+    mut search = {dir: "", query: ""}
     if ($token | is-empty) {
         $search.dir = "."
     } else if ($token | path type) == "dir" {
@@ -557,8 +562,8 @@ def "history prune" [] {
 @complete external
 def --wrapped poweroff [...args: string] {
     match $nu.os-info.name {
-        "windows" => { powershell -command "Stop-Computer -Force" },
-        _ => { ^poweroff ...$args },
+        windows => { powershell -command "Stop-Computer -Force" }
+        _ => { ^poweroff ...$args }
     }
 }
 
@@ -575,8 +580,8 @@ def --env prepend-paths [...paths: directory] {
 @complete external
 def --wrapped reboot [...args: string] {
     match $nu.os-info.name {
-        "windows" => { powershell -command "Restart-Computer -Force" },
-        _ => { ^reboot ...$args },
+        windows => { powershell -command "Restart-Computer -Force" }
+        _ => { ^reboot ...$args }
     }
 }
 
@@ -660,31 +665,31 @@ $env.CARAPACE_MERGEFLAGS = "1"
 # does not support conditional defintions.
 def --wrapped cbcopy [...args: string] {
     match $nu.os-info.name {
-        "macos" => { pbcopy ...$args },
-        "windows" => {
+        macos => { pbcopy ...$args }
+        windows => {
             let text = if ($in | is-empty) {
                 echo ...$args | str join " "
             } else {
                 $in
             }
             powershell -command $"Set-Clipboard '($text)'"
-        },
+        }
         _ => {
             if (which wl-copy | is-not-empty) {
                 wl-copy ...$args
             }
-        },
+        }
     }
 }
 def --wrapped cbpaste [...args: string] {
     match $nu.os-info.name {
-        "macos" => { pbpaste ...$args },
-        "windows" => { powershell -command Get-Clipboard },
+        macos => { pbpaste ...$args }
+        windows => { powershell -command Get-Clipboard }
         _ => {
             if (which wl-paste | is-not-empty) {
                 wl-paste ...$args
             }
-        },
+        }
     }
 }
 
@@ -867,29 +872,34 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color-theme)
-    completions: { algorithm: "substring" }
-    history: { file_format: "sqlite" isolation: true }
+    completions: {algorithm: "substring"}
+    history: {file_format: "sqlite", isolation: true}
     keybindings: [
         {
-            event: { until: [{ send: menuright } { edit: moveright }] }
+            event: {
+                until: [
+                    {send: menuright}
+                    {edit: moveright}
+                ]
+            }
             keycode: "char_;"
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { edit: movewordleft }
+            event: {edit: movewordleft}
             keycode: char_b
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { cmd: _paste-cwd send: executehostcommand }
+            event: {cmd: _paste-cwd, send: executehostcommand}
             keycode: char_c
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { send: openeditor }
+            event: {send: openeditor}
             keycode: char_e
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -897,10 +907,10 @@ $env.config = {
         {
             event: {
                 until: [
-                    { send: historyhintwordcomplete }
+                    {send: historyhintwordcomplete}
                     [
-                        { edit: movewordrightend }
-                        { edit: moveright }
+                        {edit: movewordrightend}
+                        {edit: moveright}
                     ]
                 ]
             }
@@ -909,55 +919,60 @@ $env.config = {
             modifier: alt
         }
         {
-            event: { cmd: _paste-help send: executehostcommand }
+            event: {cmd: _paste-help, send: executehostcommand}
             keycode: char_h
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { until: [{ send: menuleft } { edit: moveleft }] }
+            event: {
+                until: [
+                    {send: menuleft}
+                    {edit: moveleft}
+                ]
+            }
             keycode: char_j
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { send: menudown }
+            event: {send: menudown}
             keycode: char_k
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { send: menuup }
+            event: {send: menuup}
             keycode: char_l
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { cmd: _paste-pager send: executehostcommand }
+            event: {cmd: _paste-pager, send: executehostcommand}
             keycode: char_p
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { cmd: _paste-super send: executehostcommand }
+            event: {cmd: _paste-super, send: executehostcommand}
             keycode: char_s
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { edit: cutbigwordright }
+            event: {edit: cutbigwordright}
             keycode: char_w
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { cmd: _delete-from-history send: executehostcommand }
+            event: {cmd: _delete-from-history, send: executehostcommand}
             keycode: char_x
             mode: [emacs vi_insert vi_normal]
             modifier: alt
         }
         {
-            event: { edit: undo }
+            event: {edit: undo}
             keycode: char_z
             mode: [emacs vi_insert vi_normal]
             modifier: alt
@@ -969,13 +984,18 @@ $env.config = {
             modifier: control
         }
         {
-            event: { cmd: fzf-path-widget send: executehostcommand }
+            event: {cmd: fzf-path-widget, send: executehostcommand}
             keycode: char_f
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
         {
-            event: { until: [{ send: menunext } { send: down }] }
+            event: {
+                until: [
+                    {send: menunext}
+                    {send: down}
+                ]
+            }
             keycode: char_n
             mode: [emacs vi_insert vi_normal]
             modifier: control
@@ -987,25 +1007,30 @@ $env.config = {
             modifier: control
         }
         {
-            event: { until: [{ send: menuprevious } { send: up }] }
+            event: {
+                until: [
+                    {send: menuprevious}
+                    {send: up}
+                ]
+            }
             keycode: char_p
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
         {
-            event: { cmd: fzf-history-widget send: executehostcommand }
+            event: {cmd: fzf-history-widget, send: executehostcommand}
             keycode: char_r
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
         {
-            event: { cmd: _cut-path-left send: executehostcommand }
+            event: {cmd: _cut-path-left, send: executehostcommand}
             keycode: char_w
             mode: [emacs vi_insert vi_normal]
             modifier: control
         }
         {
-            event: { cmd: "commandline | cbcopy" send: executehostcommand }
+            event: {cmd: "commandline | cbcopy", send: executehostcommand}
             keycode: char_x
             mode: [emacs vi_insert vi_normal]
             modifier: control
@@ -1013,8 +1038,8 @@ $env.config = {
         {
             event: {
                 until: [
-                    { name: completion_menu send: menu }
-                    { send: menunext }
+                    {name: completion_menu, send: menu}
+                    {send: menunext}
                 ]
             }
             keycode: char_ue006
@@ -1022,7 +1047,7 @@ $env.config = {
             modifier: none
         }
         {
-            event: { edit: movebigwordleft }
+            event: {edit: movebigwordleft}
             keycode: left
             mode: [emacs vi_insert vi_normal]
             modifier: shift
@@ -1030,10 +1055,10 @@ $env.config = {
         {
             event: {
                 until: [
-                    { send: historyhintwordcomplete }
+                    {send: historyhintwordcomplete}
                     [
-                        { edit: movebigwordrightend }
-                        { edit: moveright }
+                        {edit: movebigwordrightend}
+                        {edit: moveright}
                     ]
                 ]
             }
@@ -1042,13 +1067,13 @@ $env.config = {
             modifier: shift
         }
         {
-            event: { edit: redo }
+            event: {edit: redo}
             keycode: char_z
             mode: [emacs vi_insert vi_normal]
             modifier: shift_alt
         }
     ]
-    ls: { clickable_links: true use_ls_colors: true }
+    ls: {clickable_links: true, use_ls_colors: true}
     menus: [
         {
             marker: ""
@@ -1143,8 +1168,10 @@ prepend-paths $"($env.HOME)/.npm/global/bin"
 # Visual Studio Code settings.
 
 # Add Visual Studio Code binaries to system path.
-prepend-paths "/usr/share/code/bin" \
+(
+    prepend-paths "/usr/share/code/bin"
     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+)
 
 # Yazi settings.
 
@@ -1153,14 +1180,14 @@ $env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 
 # Yazi wrapper to change directory on program exit.
 def --env --wrapped yazi [...args: path] {
-  let tmp_file = mktemp --tmpdir
-  ^yazi --cwd-file $tmp_file ...$args
+    let tmp_file = mktemp --tmpdir
+    ^yazi --cwd-file $tmp_file ...$args
 
-  let cwd = open $tmp_file
-  if ($cwd | is-not-empty) and $cwd != $env.PWD {
-    cd $cwd
-  }
-  rm $tmp_file
+    let cwd = open $tmp_file
+    if ($cwd | is-not-empty) and $cwd != $env.PWD {
+        cd $cwd
+    }
+    rm $tmp_file
 }
 
 # Zoxide settings.

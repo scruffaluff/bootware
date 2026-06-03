@@ -88,7 +88,8 @@ def install [super: string dest: directory version: string] {
 @echo off
 powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 '
-        | str trim --left | save --force $"($dest)/bootware.cmd"
+        | str trim --left
+        | save --force $"($dest)/bootware.cmd"
     }
 }
 
@@ -120,11 +121,11 @@ def install-completions [super: string global: bool version: string] {
         }
     } else if $global {
         let dest = match $nu.os-info.name {
-            "freebsd" => {
+            freebsd => {
                 bash: "/usr/local/share/bash-completion/completions/bootware"
                 fish: "/usr/local/etc/fish/completions/bootware.fish"
-             }
-            "macos" => {
+            }
+            macos => {
                 let prefix = if $nu.os-info.arch == "aarch64" {
                     "/opt/homebrew"
                 } else {
@@ -166,7 +167,7 @@ def need-super [dest: directory global: bool] {
     }
     try { mkdir $dest } catch { return true }
     try { touch $"($dest)/.super_check" } catch { return true }
-    rm  --force $"($dest)/.super_check"
+    rm --force $"($dest)/.super_check"
     false
 }
 
@@ -194,7 +195,7 @@ def main [
     let dest = $dest | default $dest_default | path expand
 
     let system = need-super $dest $global
-    let super = if ($system) { find-super } else { "" }
+    let super = if $system { find-super } else { "" }
 
     log $"Installing Bootware to '($dest)'."
     install $super $dest $version
@@ -243,21 +244,21 @@ def update-shell [dest: directory] {
     let shell = $env.SHELL? | default "" | path basename
 
     let command = match $shell {
-        "fish" => $"set --export PATH \"($dest)\" $PATH"
-        "nu" => $"$env.PATH = [\"($dest)\" ...$env.PATH]"
+        fish => $"set --export PATH \"($dest)\" $PATH"
+        nu => $"$env.PATH = [\"($dest)\" ...$env.PATH]"
         _ => $"export PATH=\"($dest):${PATH}\""
     }
     let profile = match $shell {
-        "bash" => $"($home)/.bashrc"
-        "fish" => $"($home)/.config/fish/config.fish"
-        "nu" => {
+        bash => $"($home)/.bashrc"
+        fish => $"($home)/.config/fish/config.fish"
+        nu => {
             if $nu.os-info.name == "macos" {
                 $"($home)/Library/Application Support/nushell/config.nu"
             } else {
                 $"($home)/.config/nushell/config.nu"
             }
         }
-        "zsh" => $"($home)/.zshrc"
+        zsh => $"($home)/.zshrc"
         _ => $"($home)/.profile"
     }
 

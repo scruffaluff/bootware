@@ -20,7 +20,7 @@ export PSModulePath := if os() == "windows" {
 ci: setup lint doc test-sh test-nu test-py
 
 # Build distribution packages.
-dist version="0.10.3":
+dist version="0.10.4":
   nu script/pkg.nu ansible --version {{version}}
   nu script/pkg.nu dist --version {{version}} alpm apk deb rpm
 
@@ -103,13 +103,13 @@ lint:
 # Install development dependencies.
 [script("nu")]
 setup: _setup
-  let arch = match $nu.os-info.arch { "aarch64" => "arm64", $x => $x }
+  let arch = match $nu.os-info.arch { aarch64 => "arm64", $x => $x }
   let archive = if $nu.os-info.name == "windows" { ".zip" } else { ".tar.gz" }
   let ext = if $nu.os-info.name == "windows" { ".exe" } else { "" }
-  let os = match $nu.os-info.name { "macos" => "darwin", $x => $x }
+  let os = match $nu.os-info.name { macos => "darwin", $x => $x }
   if (which node | is-empty) or (which npm | is-empty) {
-    let arch = match $arch { "x86_64" => "x64", $x => $x }
-    let os = match $os { "windows" => "win", $x => $x }
+    let arch = match $arch { x86_64 => "x64", $x => $x }
+    let os = match $os { windows => "win", $x => $x }
     let version = http get https://nodejs.org/download/release/index.json
     | where lts != false | get 0.version
     let target = $"node-($version)-($os)-($arch)"
@@ -139,10 +139,10 @@ setup: _setup
   }
   print $"Using (uv --version)."
   if (which yq | is-empty) {
-    let arch = match $arch { "x86_64" => "amd64", $x => $x }
+    let arch = match $arch { x86_64 => "amd64", $x => $x }
     print "Installing Yq."
-    http get $"https://github.com/mikefarah/yq/releases/latest/download/yq_($os)_($arch)"
-    | save --force .vendor/bin/yq
+    http get $"https://github.com/mikefarah/yq/releases/latest/download/yq_($os)_($arch)($ext)"
+    | save --force $".vendor/bin/yq($ext)"
     if $os != "windows" {
       chmod 755 .vendor/bin/yq
     }

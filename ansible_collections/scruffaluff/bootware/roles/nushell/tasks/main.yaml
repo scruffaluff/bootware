@@ -23,15 +23,16 @@
     - install
   when: ansible_facts.system == "FreeBSD"
 
-- name: Install Nushell for Linux
-  ansible.builtin.package:
-    name: nushell
-  become: true
-  ignore_errors: true
-  register: nushell_linux
-  tags:
-    - install
-  when: ansible_facts.system == "Linux"
+# Disabled since many package managers include an outdated version of Nushell.
+# - name: Install Nushell for Linux
+#   ansible.builtin.package:
+#     name: nushell
+#   become: true
+#   ignore_errors: true
+#   register: nushell_linux
+#   tags:
+#     - install
+#   when: ansible_facts.system == "Linux"
 
 - name: Get latest Nushell version for Linux
   ansible.builtin.uri:
@@ -41,7 +42,7 @@
   register: nushell_formula_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"
 
 - name: Create Nushell temporary directory for Linux
   ansible.builtin.tempfile:
@@ -49,7 +50,7 @@
   register: nushell_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"
 
 - name: Set Nushell temporary directory permissions for Linux
   ansible.builtin.file:
@@ -58,7 +59,7 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"
 
 - name: Download Nushell for Linux
   ansible.builtin.unarchive:
@@ -72,7 +73,7 @@
       }}-unknown-linux-{{ nushell_libc }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
@@ -93,7 +94,7 @@
     - nu_plugin_query
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"
 
 - name: Install Nushell for MacOS
   become: true
@@ -280,4 +281,4 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and nushell_linux is failed
+  when: ansible_facts.system == "Linux"

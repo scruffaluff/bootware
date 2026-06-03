@@ -223,7 +223,7 @@ jobs:
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
             bootware bootstrap --dev --no-passwd --retries 3 --skip security --tags all,never
-            bash -c 'source /home/freebsd/.bashrc && test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore freebsd'
+            bash -c 'source /home/freebsd/.bashrc && deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore freebsd'
             EOF
           usesh: true
       # To login into the FreeBSD VM from the MacOS runner, execute `ssh -t
@@ -261,7 +261,7 @@ jobs:
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          test/e2e/roles.test.ts --arch arm64 --skip kdenlive,usql macos
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch arm64 --skip kdenlive,usql macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
