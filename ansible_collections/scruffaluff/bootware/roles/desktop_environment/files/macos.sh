@@ -38,6 +38,9 @@ defaults write com.apple.doc wvous-br-corner -int 0
 # Remove widgets from desktop.
 defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
 defaults write com.apple.WindowManager StandardHideWidgets -bool true
+# Speed up Mission Control animations.
+defaults write com.apple.dock expose-animation-duration -float 0
+defaults write com.apple.dock missioncontrol-animation-duration -float 0
 
 # Dock and menu bar settings.
 
@@ -61,51 +64,11 @@ defaults write com.apple.TextInputMenu visible -bool false
 
 # File extension settings.
 
-duti -s dev.zed.Zed bak all
-duti -s dev.zed.Zed bash all
-duti -s dev.zed.Zed c all
-duti -s dev.zed.Zed cfg all
-duti -s dev.zed.Zed class all
-duti -s dev.zed.Zed cpp all
-duti -s dev.zed.Zed cs all
-duti -s dev.zed.Zed css all
-duti -s dev.zed.Zed csv all
-duti -s dev.zed.Zed dockerignore all
-duti -s dev.zed.Zed env all
-duti -s dev.zed.Zed fish all
-duti -s dev.zed.Zed go all
-duti -s dev.zed.Zed h all
-duti -s dev.zed.Zed hpp all
-duti -s dev.zed.Zed ini all
-duti -s dev.zed.Zed java all
-duti -s dev.zed.Zed jl all
-duti -s dev.zed.Zed js all
-duti -s dev.zed.Zed json all
-duti -s dev.zed.Zed jsx all
-duti -s dev.zed.Zed justfile all
-duti -s dev.zed.Zed log all
-duti -s dev.zed.Zed lua all
-duti -s dev.zed.Zed md all
-duti -s dev.zed.Zed nu all
-duti -s dev.zed.Zed ps1 all
-duti -s dev.zed.Zed py all
-duti -s dev.zed.Zed rb all
-duti -s dev.zed.Zed rs all
-duti -s dev.zed.Zed sh all
-duti -s dev.zed.Zed sql all
-duti -s dev.zed.Zed svelte all
-duti -s dev.zed.Zed swift all
-duti -s dev.zed.Zed tf all
-duti -s dev.zed.Zed tmp all
-duti -s dev.zed.Zed toml all
-duti -s dev.zed.Zed ts all
-duti -s dev.zed.Zed tsv all
-duti -s dev.zed.Zed tsx all
-duti -s dev.zed.Zed txt all
-duti -s dev.zed.Zed vue all
-duti -s dev.zed.Zed xml all
-duti -s dev.zed.Zed yaml all
-duti -s dev.zed.Zed yml all
+for ext in bak bash c cfg class cpp css csv dockerignore env fish go h hpp ini \
+  java jl js json jsx justfile log lua md nu ps1 py rb rs sh sql svelte swift \
+  tf tmp toml ts tsv tsx txt vue xml yaml yml; do
+  duti -s dev.zed.Zed "${ext}" all 2> /dev/null || true
+done
 duti -s org.libreoffice.script doc all
 duti -s org.libreoffice.script docx all
 duti -s org.libreoffice.script ppt all
@@ -117,7 +80,6 @@ duti -s org.mozilla.firefox gif all
 duti -s org.mozilla.firefox webp all
 duti -s org.videolan.vlc aac all
 duti -s org.videolan.vlc aiff all
-duti -s org.videolan.vlc alac all
 duti -s org.videolan.vlc avi all
 duti -s org.videolan.vlc flac all
 duti -s org.videolan.vlc flv all
@@ -179,7 +141,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 33
     </dict>
   </dict>
 '
-# Change Mission Control key binding to `Ctrl+Option+Up`.
+# Change Mission Control key binding to `Cmd+Ctrl+Up`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32 '
   <dict>
     <key>enabled</key><true/>
@@ -189,12 +151,12 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32
       <array>
         <integer>65535</integer>
         <integer>126</integer>
-        <integer>11272192</integer>
+        <integer>9699328</integer>
       </array>
     </dict>
   </dict>
 '
-# Change move workspace left key binding to `Ctrl+Option+J`.
+# Change move workspace left key binding to `Cmd+Ctrl+J`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
   <dict>
     <key>enabled</key><true/>
@@ -204,7 +166,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79
       <array>
         <integer>106</integer>
         <integer>38</integer>
-        <integer>786432</integer>
+        <integer>1310720</integer>
       </array>
     </dict>
   </dict>
@@ -218,12 +180,12 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80
       <array>
         <integer>106</integer>
         <integer>38</integer>
-        <integer>917504</integer>
+        <integer>1441792</integer>
       </array>
     </dict>
   </dict>
 '
-# Change move workspace right key binding to `Ctrl+Option+Semicolon`.
+# Change move workspace right key binding to `Cmd+Ctrl+Semicolon`.
 defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
   <dict>
     <key>enabled</key><true/>
@@ -233,7 +195,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81
       <array>
         <integer>59</integer>
         <integer>41</integer>
-        <integer>786432</integer>
+        <integer>1310720</integer>
       </array>
     </dict>
   </dict>
@@ -247,7 +209,7 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82
       <array>
         <integer>59</integer>
         <integer>41</integer>
-        <integer>917504</integer>
+        <integer>1441792</integer>
       </array>
     </dict>
   </dict>

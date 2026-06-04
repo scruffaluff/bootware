@@ -5,7 +5,7 @@
 {
   "agent": {
     "button": false,
-    "enabled": false,
+    "enabled": false
   },
 {% if zed_extensions | length > 0 %}
   "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},
@@ -15,12 +15,12 @@
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": {{ zed_font_size }},
   "collaboration_panel": {
-    "button": false,
+    "button": false
   },
   "cursor_shape": "bar",
   "diagnostics": {
     "inline": {
-      "enabled": false,
+      "enabled": false
     },
   },
   "disable_ai": true,
@@ -35,7 +35,7 @@
     "**/.settings",
     "**/.sl",
     "**/.svn",
-    "**/Thumbs.db",
+    "**/Thumbs.db"
   ],
   "file_types": {
     "Fish": ["*.fish"],
@@ -44,68 +44,72 @@
       "**/{.vscode,User}/*.json",
       "**/{.zed,Zed}/*.json",
       "*.jsonc",
-      "{j,t}sconfig.json",
+      "{j,t}sconfig.json"
     ],
     "Nu": ["*.nu"],
-    "Shell Script": ["*.bats", ".*.bash", ".env", "*.sh"],
+    "Shell Script": ["*.bats", ".*.bash", ".env", "*.sh"]
   },
   "git": {
     "blame": {
-      "show_avatar": false,
+      "show_avatar": false
     },
   },
   "git_panel": {
-    "dock": "left",
+    "dock": "left"
+  },
+  "icon_theme": {
+    "dark": "Colored Zed Icons Theme Dark",
+    "light": "Colored Zed Icons Theme Light"
   },
   "indent_guides": {
-    "coloring": "indent_aware",
+    "coloring": "indent_aware"
   },
   "inlay_hints": {
     "enabled": false,
-    "show_background": false,
+    "show_background": false
   },
   "inline_code_actions": false,
   "jsx_tag_auto_close": {
-    "enabled": false,
+    "enabled": false
   },
   "languages": {
     "C": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "C++": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Dockerfile": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Fish": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Just": {
-      "format_on_save": "off",
+      "format_on_save": "off"
     },
     "Kdl": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Markdown": {
-      "format_on_save": "off",
+      "format_on_save": "off"
     },
     "Nu": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "PowerShell": {
       "enable_language_server": false,
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Python": {
       "language_servers": ["ruff", "ty"],
-      "tab_size": 4,
+      "tab_size": 4
     },
     "Rust": {
-      "tab_size": 4,
+      "tab_size": 4
     },
     "TOML": {
-      "format_on_save": "off",
+      "format_on_save": "off"
     },
   },
   "lsp": {
@@ -118,49 +122,49 @@
             "ExpandTimeShorthands": false,
             "NeedToNoun": false,
             "SentenceCapitalization": false,
-            "ToDoHyphen": false,
-          },
-        },
-      },
-    },
+            "ToDoHyphen": false
+          }
+        }
+      }
+    }
   },
   "on_last_window_closed": "quit_app",
   "outline_panel": {
-    "dock": "left",
+    "dock": "left"
   },
   "prettier": {
     "arrowParens": "always",
     "proseWrap": "always",
     "semi": true,
     "singleQuote": false,
-    "trailingComma": "es5",
+    "trailingComma": "es5"
   },
 {% if zed_profiles | length > 0 %}
   "profiles": {{ zed_profiles | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "project_panel": {
     "dock": "left",
-    "sticky_scroll": false,
+    "sticky_scroll": false
   },
   "restore_on_startup": "last_workspace",
   "session": {
-    "trust_all_worktrees": true,
+    "trust_all_worktrees": true
   },
   "show_completions_on_input": false,
 {% if zed_remotes | length > 0 %}
   "ssh_connections": {{ zed_remotes | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
   "status_bar": {
-    "line_endings_button": true,
+    "line_endings_button": true
   },
   "tab_size": 2,
   "tabs": {
     "file_icons": true,
-    "git_status": true,
+    "git_status": true
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false,
+    "metrics": false
   },
   "terminal": {
     "cursor_shape": "bar",
@@ -172,32 +176,32 @@
     "shell": {
       "with_arguments": {
         "args": ["--login"],
-        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_name' ) }}",
-      },
+        "program": "{{ lookup('ansible.builtin.vars', user_shell + '_name' ) }}"
+      }
     },
     "toolbar": {
-      "breadcrumbs": false,
+      "breadcrumbs": false
     },
-    "working_directory": "current_project_directory",
+    "working_directory": "current_project_directory"
   },
   "theme": {
     "dark": "Solarized Dark",
-    "light": "Solarized Light",
+    "light": "Solarized Light"
   },
   "theme_overrides": {
     "Solarized Light": {
-      "text.muted": "#586e75",
+      "text.muted": "#586e75"
     },
   },
   "title_bar": {
     "show_onboarding_banner": false,
     "show_sign_in": false,
     "show_user_picture": false,
-    "show_menus": true,
+    "show_menus": true
   },
   "toolbar": {
     "agent_review": false,
-    "code_actions": true,
+    "code_actions": true
   },
   "ui_font_family": "Fira Sans",
   "ui_font_size": {{ zed_font_size }},
@@ -207,11 +211,11 @@
   "windows": {
     "languages": {
       "Fish": {
-        "enable_language_server": false,
+        "enable_language_server": false
       },
       "PowerShell": {
-        "enable_language_server": true,
-      },
-    },
-  },
+        "enable_language_server": true
+      }
+    }
+  }
 }
