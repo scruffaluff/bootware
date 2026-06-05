@@ -353,6 +353,10 @@ $Env:MINISERVE_INDEX = 'index.html'
 function pdb() {
     python3 -m pdb $Args
 }
+# Add Uv tool alias.
+function uvx() {
+    uv tool run $Args
+}
 
 # Make Poetry create virtual environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
@@ -664,6 +668,10 @@ if ($Tty) {
 
 # Typescript settings.
 
+# Add Deno run alias.
+function denox() {
+    deno run --allow-all --no-config --quiet --node-modules-dir=none $Args
+}
 # Disable Deno update messages.
 $Env:DENO_NO_UPDATE_CHECK = 'true'
 

@@ -74,7 +74,9 @@
 # Service directory must be created before file operations.
 - name: Create Google Chrome services directories for Unix
   ansible.builtin.file:
+    group: "{{ group_id }}"
     mode: "700"
+    owner: "{{ user_id }}"
     path: "{{ item | dirname }}"
     state: directory
   become: true

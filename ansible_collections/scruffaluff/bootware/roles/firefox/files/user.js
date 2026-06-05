@@ -111,6 +111,8 @@ user_pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
 user_pref("browser.urlbar.suggest.topsites", false);
 // Disable weather suggestions in search bar.
 user_pref("browser.urlbar.suggest.weather", false);
+// Disable Firefox VPN promotions.
+user_pref("browser.vpn_promo.enabled", false);
 // Don't warning on quitting Firefox.
 user_pref("browser.warnOnQuit", false);
 // Don't warning on quitting Firefox.

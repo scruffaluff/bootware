@@ -802,6 +802,8 @@ $env.MINISERVE_INDEX = "index.html"
 
 # Add Python debugger alias.
 alias pdb = python3 -m pdb
+# Add Uv tool alias.
+alias uvx = uv tool run
 
 # Make Poetry create virtual environments inside projects.
 $env.POETRY_VIRTUALENVS_IN_PROJECT = "true"
@@ -1155,6 +1157,8 @@ $env.STARSHIP_LOG = "error"
 
 # TypeScript settings.
 
+# Add Deno run alias.
+alias denox = deno run --allow-all --no-config --quiet --node-modules-dir=none
 # Disable Deno update messages.
 $env.DENO_NO_UPDATE_CHECK = "true"
 # Add Deno binaries to system path.

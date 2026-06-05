@@ -87,6 +87,8 @@
   ansible.builtin.script: gnome.sh
   become: true
   become_user: "{{ user_id }}"
+  environment:
+    BOOTWARE_FONT_SIZE: "{{ font_size }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
@@ -104,29 +106,3 @@
   tags:
     - config
   when: ansible_facts.system == "Win32NT"
-
-##### Distribution specific desktop setting overrides. #####
-
-- name: Change desktop settings for Fedora
-  ansible.builtin.script: fedora.sh
-  become: true
-  become_user: "{{ user_id }}"
-  tags:
-    - config
-  when: ansible_facts.distribution == "Fedora" and gnome_desktop
-
-- name: Change desktop settings for PopOS
-  ansible.builtin.script: popos.sh
-  become: true
-  become_user: "{{ user_id }}"
-  tags:
-    - config
-  when: ansible_facts.distribution == "Pop!_OS" and gnome_desktop
-
-- name: Change desktop settings for Ubuntu
-  ansible.builtin.script: ubuntu.sh
-  become: true
-  become_user: "{{ user_id }}"
-  tags:
-    - config
-  when: ansible_facts.distribution == "Ubuntu" and gnome_desktop

@@ -17,7 +17,7 @@ export PSModulePath := if os() == "windows" {
 } else { "" }
 
 # Execute CI workflow commands.
-ci: setup lint doc test-sh test-nu test-py
+ci: setup lint test-sh test-nu test-py doc
 
 # Build distribution packages.
 dist version="0.10.4":
