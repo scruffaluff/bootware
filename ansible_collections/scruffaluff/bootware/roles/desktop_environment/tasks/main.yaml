@@ -88,7 +88,7 @@
   become: true
   become_user: "{{ user_id }}"
   environment:
-    BOOTWARE_FONT_SIZE: "{{ font_size }}"
+    BOOTWARE_FONT_SIZE: "{{ system_font_size }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop

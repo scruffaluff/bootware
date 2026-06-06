@@ -147,7 +147,6 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}\\AppData\\Roaming\\VSCode\\User\\settings.json"
     force: true
-    owner: "{{ user_id }}"
     src: settings.json.j2
   tags:
     - config

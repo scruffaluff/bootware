@@ -33,4 +33,4 @@ zed_extensions:
   toml: true
   typst: true
   vue: true
-zed_font_size: "{{ font_size }}"
+zed_font_size: "{{ editor_font_size }}"

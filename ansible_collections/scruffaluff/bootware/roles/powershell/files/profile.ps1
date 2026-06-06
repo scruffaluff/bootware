@@ -172,7 +172,7 @@ $Env:DO_NOT_TRACK = 'true'
 $Env:HOME = "$($Env:HOMEDRIVE)$($Env:HOMEPATH)"
 $Env:USER = $Env:USERNAME
 # Set terminal environment variable if empty.
-if (-not ($TERM)) {
+if (-not ($Env:TERM)) {
     $Env:TERM = 'xterm-256color'
 }
 
@@ -180,17 +180,16 @@ if (-not ($TERM)) {
 
 # Autostart Zellij or connect to existing session if within Alacritty terminal.
 # For more information, visit https://zellij.dev/documentation/integration.html.
-if ($Tty -and ($Env:TERM -eq 'alacritty') -and (-not ($TERM_PROGRAM))) {
+if ($Tty -and ($Env:TERM -eq 'alacritty') -and (-not ($Env:TERM_PROGRAM))) {
     if (
-        (Get-Command -ErrorAction SilentlyContinue zellij) -and
-        (-not $(ssh-session))
+        (-not ($Env:ZELLIJ)) -and (-not $(ssh-session)) -and
+        (Get-Command -ErrorAction SilentlyContinue zellij)
     ) {
         # Attach to a default session if it exists.
         $Env:ZELLIJ_AUTO_ATTACH = 'true'
         # Exit the shell when Zellij exits.
         $Env:ZELLIJ_AUTO_EXIT = 'true'
-        # TODO: Uncomment when Zellij gains Windows support.
-        # Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
+        Invoke-Expression (& { (zellij setup --generate-auto-start powershell | Out-String) })
     }
 
     # Switch TERM variable to avoid "alacritty: unknown terminal type" errors

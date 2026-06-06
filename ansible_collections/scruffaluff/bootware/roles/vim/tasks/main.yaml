@@ -34,17 +34,20 @@
 
 - name: Copy Vim settings file for Unix
   ansible.builtin.copy:
-    dest: "{{ ansible_facts.env.HOME }}/.vimrc"
+    dest: "{{ user_home }}/.vimrc"
     force: true
+    group: "{{ group_id }}"
     mode: "644"
+    owner: "{{ user_id }}"
     src: vimrc
+  become: true
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
 
 - name: Copy Vim settings files for Windows
   ansible.windows.win_copy:
-    dest: "{{ ansible_facts.env.HOME }}/_vimrc"
+    dest: "{{ user_home }}/_vimrc"
     src: vimrc
   tags:
     - config

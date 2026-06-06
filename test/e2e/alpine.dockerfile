@@ -46,11 +46,9 @@ RUN bootware bootstrap --dev --no-passwd \
 COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
-# Ensure Bash and Node are installed.
-RUN command -v bash > /dev/null \
-    || doas apk add bash \
-    && command -v deno > /dev/null \
-    || doas apk add deno
+# Ensure Bash and Deno are installed.
+RUN if ! command -v bash > /dev/null; then doas apk add bash; fi \
+    && if ! command -v deno > /dev/null; then doas apk add deno; fi
 
 ARG test
 

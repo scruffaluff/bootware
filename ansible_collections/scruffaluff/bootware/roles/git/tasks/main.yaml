@@ -133,7 +133,6 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}/.gitconfig"
     force: true
-    owner: "{{ user_id }}"
     src: gitconfig.j2
   tags:
     - config

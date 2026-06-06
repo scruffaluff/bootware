@@ -136,7 +136,6 @@
   ansible.windows.win_template:
     dest: "{{ user_home }}\\.config\\wezterm\\wezterm.lua"
     force: true
-    owner: "{{ user_id }}"
     src: wezterm.lua.j2
   tags:
     - config

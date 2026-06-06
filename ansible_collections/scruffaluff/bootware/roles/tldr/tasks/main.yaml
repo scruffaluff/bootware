@@ -23,16 +23,16 @@
     force: true
     mode: "755"
     url: >-
-      https://github.com/dbrgn/tealdeer/releases/download/v{{
+      https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/tealdeer-linux-{{
-      tldr_arch[system_architecture] }}
+      tldr_arch[system_architecture] }}-musl
   become: true
   tags:
     - install
   vars:
     tldr_arch:
-      amd64: x86_64-musl
-      arm64: arm-musleabihf
+      amd64: x86_64
+      arm64: aarch64
   when: ansible_facts.system == "Linux"
 
 - name: Install TLDR for MacOS
@@ -57,7 +57,7 @@
     dest: "{{ item.dest }}"
     mode: "644"
     url: >-
-      https://github.com/dbrgn/tealdeer/releases/download/v{{
+      https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/completions_{{ item.shell }}
   become: true
   loop:

@@ -8,9 +8,10 @@ greedy_cask = true
 
 [misc]
 assume_yes = true
-{% if ansible_facts.system in "Darwin" %}
+{% if ansible_facts.system == "Darwin" %}
 disable = [
   "certbot",
+  "colima",
   "containers",
   "gem",
   "git_repos",

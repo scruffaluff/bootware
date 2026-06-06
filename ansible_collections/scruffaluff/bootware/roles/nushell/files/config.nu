@@ -14,7 +14,7 @@ def _autoload-scripts [...scripts: path] {
         if ($source | path exists) and not ($dest | path exists) {
             if $nu.os-info.name == "windows" {
                 # Soft links require admin permissions unlike hard links.
-                mklink /H $dest $source | ignore
+                cmd /c $"mklink /H '($dest)' '($source)'"
             } else {
                 ln -s $source $dest
             }
@@ -59,8 +59,6 @@ def _color-theme [] {
         custom: $base03
         date: {|| (date now) - $in |
             if $in < 1hr {
-                $red
-            } else if $in < 6hr {
                 $red
             } else if $in < 1day {
                 $yellow
@@ -292,7 +290,9 @@ def _wchown [
     owner: string # User account to give ownership
     ...files: path # File or directory to modify
 ] {
+    let owner = $owner | str replace "'" "''"
     for file in $files {
+        let file = $file | str replace "'" "''"
         powershell -command $"
 $Account = New-Object -TypeName System.Security.Principal.NTAccount `
     -ArgumentList '($owner)'
@@ -318,15 +318,16 @@ def acls [
     path: path = "." # File or directory
 ] {
     if $nu.os-info.name == "windows" {
+        let path = $path | str replace "'" "''"
         powershell -command $"
-Get-ChildItem ($path) | ForEach-Object {
+Get-ChildItem '($path)' | ForEach-Object {
     $ACL = Get-Acl $_.FullName
     [PSCustomObject]@{ name = $_.Name; owner = $ACL.Owner }
 } | ConvertTo-Csv -NoTypeInformation
 "
         | from csv
     } else {
-        error make "wacls is only defined for Windows"
+        error make "acls is only defined for Windows"
     }
 }
 
@@ -440,7 +441,7 @@ def fish-complete [spans: list<string>] {
     } | str replace --all "'" "\\'" | str replace --all "`" "\\'" | str join ' '
     let expands = $expands | where {|expand| $expand.full != null }
 
-    fish --command $"complete '--do-complete=($command)'"
+    fish --command $"complete \"--do-complete=($command)\""
     | from tsv --flexible --noheaders --no-infer
     | rename value description
     | update value {|row|
@@ -630,7 +631,8 @@ if (
     # https://github.com/vercel/hyper/issues/3762.
     if (
         "ZELLIJ" not-in $env and not (ssh-session) and
-        $env.LOGNAME? == $env.USER and (which "zellij" | is-not-empty)
+        ($env.LOGNAME? == $env.USER or $nu.os-info.name == "windows")
+        and (which "zellij" | is-not-empty)
     ) {
         with-env { SHELL: $nu.current-exe } { zellij attach --create }
         # Close parent shell after Zellij exits.
@@ -672,6 +674,7 @@ def --wrapped cbcopy [...args: string] {
             } else {
                 $in
             }
+            | str replace "'" "''"
             powershell -command $"Set-Clipboard '($text)'"
         }
         _ => {
@@ -818,7 +821,7 @@ $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
 # Make numerical compute libraries findable for MacOS.
 if $nu.os-info.name == "macos" {
-    let brew_prefix = if ("/opt/homebrew" | path exists) {
+    if ("/opt/homebrew" | path exists) {
         $env.OPENBLAS = "/opt/homebrew/opt/openblas"
     } else {
         $env.OPENBLAS = "/usr/local/opt/openblas"

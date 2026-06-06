@@ -105,7 +105,7 @@ vscode_custom_html: |
 vscode_extensions: >-
   {{ vscode_oss_extensions_ if ansible_facts.system == 'FreeBSD' else
   vscode_extensions_ }}
-vscode_font_size: "{{ font_size }}"
+vscode_font_size: "{{ editor_font_size }}"
 vscode_install_customizations: true
 vscode_path: >-
   {{ vscode_path_.get(ansible_facts.system, '/usr/share/code/resources/app') }}

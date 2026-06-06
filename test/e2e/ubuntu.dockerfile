@@ -47,12 +47,10 @@ RUN until ansible-playbook --connection local --inventory localhost, ${extra:+--
 COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
-# Ensure Bash and Node are installed.
-RUN command -v bash > /dev/null \
-  || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes bash \
-  && command -v deno > /dev/null \
-  || sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes unzip \
-  && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | sh -s -- --global
+# Ensure Bash and Deno are installed.
+RUN if ! command -v bash > /dev/null; then sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes bash; fi \
+  && if ! command -v deno > /dev/null; then sudo DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes unzip \
+  && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | bash -s -- --global; fi
 
 ARG test
 

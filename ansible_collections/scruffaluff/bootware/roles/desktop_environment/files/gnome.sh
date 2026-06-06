@@ -81,6 +81,9 @@ gsettings set org.freedesktop.ibus.panel.emoji hotkey []
 gsettings set org.freedesktop.ibus.panel.emoji unicode-hotkey []
 gsettings set org.gnome.desktop.wm.keybindings activate-window-menu []
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 []
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source []
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward []
+gsettings set org.gnome.mutter.wayland.keybindings restore-shortcuts []
 gsettings set org.gnome.settings-daemon.plugins.media-keys home []
 gsettings set org.gnome.shell.keybindings open-new-window-application-1 []
 gsettings set org.gnome.shell.keybindings open-new-window-application-2 []
@@ -102,8 +105,10 @@ gsettings set org.gnome.shell.keybindings switch-to-application-8 []
 gsettings set org.gnome.shell.keybindings switch-to-application-9 []
 gsettings set org.gnome.shell.keybindings toggle-message-tray []
 gsettings set org.gnome.shell.keybindings toggle-quick-settings []
+gsettings set org.gnome.desktop.wm.keybindings minimize []
 
 # Change system keybindings.
+gsettings set org.gnome.desktop.wm.keybindings maximize '["<Super>Up"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-down '["<Control><Shift><Super>Down"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-left '["<Control><Shift><Super>Left"]'
 gsettings set org.gnome.desktop.wm.keybindings move-to-monitor-right '["<Control><Shift><Super>Right"]'
@@ -124,8 +129,10 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down '["<Cont
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left '["<Control><Super>J"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right '["<Control><Super>Semicolon"]'
 gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up '["<Control><Super>L"]'
-gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space"]'
-gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Control><Super>Space"]'
+gsettings set org.gnome.desktop.wm.keybindings unmaximize '["<Super>Down"]'
+gsettings set org.gnome.settings-daemon.plugins.media-keys home '["<Alt><Super>Space"]'
+gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver '["<Super>Escape"]'
+gsettings set org.gnome.shell.keybindings toggle-overview '["<Alt>Space","<Super>Space"]'
 
 # Change system theme.
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'

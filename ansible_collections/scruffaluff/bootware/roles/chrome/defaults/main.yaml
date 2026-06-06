@@ -6,4 +6,14 @@ chrome_services_:
     - "{{ user_home }}/Library/LaunchAgents/com.google.keystone.agent.plist"
     - "{{ user_home }}/Library/LaunchAgents/com.google.keystone.xpcservice.plist"
     - "{{ user_home }}/Library/Google/GoogleSoftwareUpdate"
+# Chrome policies are documented at https://chromeenterprise.google/policies.
+chrome_policies:
+  AIModeSettings: 1
+  CreateThemesSettings: 2
+  DevToolsGenAiSettings: 2
+  HelpMeWriteSettings: 2
+  GeminiSettings: 1
+  GenAILocalFoundationalModelSettings: 1
+  HistorySearchSettings: 2
+  TabCompareSettings: 2
 chrome_services: "{{ chrome_services_.get(ansible_facts.system, []) }}"
