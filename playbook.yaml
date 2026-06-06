@@ -995,7 +995,7 @@
             - wsl
         name: scruffaluff.bootware.kind
       tags:
-        - destkop
+        - desktop
         - container
         - kind
         - kubernetes

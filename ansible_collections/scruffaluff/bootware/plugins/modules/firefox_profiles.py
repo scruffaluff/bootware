@@ -100,9 +100,9 @@ def profiles_database(module: AnsibleModule, system: str) -> Path:
     return path
 
 
-def profiles_paths(module: AnsibleModule, path: Path) -> list[Path]:
+def profiles_paths(module: AnsibleModule, database: Path) -> list[Path]:
     """Parse default profile from Firefox profiles folder and database."""
-    folder = path.parent
+    folder = database.parent
     snap_path = Path(f"/home/{module.params['user']}/snap")
     paths = []
     if (folder / "Profiles").exists():
@@ -110,12 +110,12 @@ def profiles_paths(module: AnsibleModule, path: Path) -> list[Path]:
 
     parser = ConfigParser()
     try:
-        parser.read(path)
+        parser.read(database)
     except OSError as exception:
         module.fail_json(
             msg=(
                 "Unable to read default Firefox profile from profiles database"
-                f" at '{path}'. Error: {exception}"
+                f" at '{database}'. Error: {exception}"
             )
         )
 

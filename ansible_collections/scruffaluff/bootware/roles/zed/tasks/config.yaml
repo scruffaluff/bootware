@@ -42,7 +42,7 @@
 - name: Set Zed remotes
   ansible.builtin.set_fact:
     zed_profiles: >-
-      {{ zed_profiles | default(zed_settings.get('profiles', {})) }}
+      {{ zed_profiles | default(zed_settings.get('profiles', zed_profiles_)) }}
     zed_remotes: >-
       {{ zed_remotes | default(zed_settings.get('ssh_connections', [])) }}
   tags:

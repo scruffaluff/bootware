@@ -27,129 +27,129 @@ general:
 keybindings:
   # Change focus to a workspace defined in the workspaces config.
   - bindings:
-      - alt+control+1
+      - control+lwin+1
     commands:
       - focus --workspace 1
   - bindings:
-      - alt+control+2
+      - control+lwin+2
     commands:
       - focus --workspace 2
   - bindings:
-      - alt+control+3
+      - control+lwin+3
     commands:
       - focus --workspace 3
   - bindings:
-      - alt+control+4
+      - control+lwin+4
     commands:
       - focus --workspace 4
   - bindings:
-      - alt+control+5
+      - control+lwin+5
     commands:
       - focus --workspace 5
   - bindings:
-      - alt+control+6
+      - control+lwin+6
     commands:
       - focus --workspace 6
   - bindings:
-      - alt+control+7
+      - control+lwin+7
     commands:
       - focus --workspace 7
   - bindings:
-      - alt+control+8
+      - control+lwin+8
     commands:
       - focus --workspace 8
   # Close focused window.
   - bindings:
-      - alt+shift+q
+      - lwin+shift+q
     commands:
       - close
   # Kill GlazeWM process safely.
   - bindings:
-      - alt+control+shift+q
+      - control+lwin+shift+q
     commands:
       - wm-exit
   # Re-evaluate configuration file.
   - bindings:
-      - alt+control+shift+r
+      - control+lwin+shift+r
     commands:
       - wm-reload-config
   # Change tiling direction for next new window.
   - bindings:
-      - alt+shift+oem_open_brackets
-      - alt+shift+oem_close_brackets
+      - lwin+shift+oem_open_brackets
+      - lwin+shift+oem_close_brackets
     commands:
       - toggle-tiling-direction
   # Change the focused window to be floating or tiling.
   - bindings:
-      - alt+shift+f
+      - lwin+shift+f
     commands:
       - toggle-floating --centered
   # Change focused window to be maximized or unmaximized.
   - bindings:
-      - alt+shift+m
+      - lwin+shift+m
     commands:
       - toggle-fullscreen
   # Shift focus in a given direction.
   - bindings:
-      - alt+shift+k
+      - lwin+shift+k
     commands:
       - focus --direction down
   - bindings:
-      - alt+shift+j
+      - lwin+shift+j
     commands:
       - focus --direction left
   - bindings:
-      - alt+shift+oem_semicolon
+      - lwin+shift+oem_semicolon
     commands:
       - focus --direction right
   - bindings:
-      - alt+shift+l
+      - lwin+shift+l
     commands:
       - focus --direction up
   # Move focused window in a given direction.
   - bindings:
-      - alt+shift+down
+      - lwin+shift+down
     commands:
       - move --direction down
   - bindings:
-      - alt+shift+left
+      - lwin+shift+left
     commands:
       - move --direction left
   - bindings:
-      - alt+shift+right
+      - lwin+shift+right
     commands:
       - move --direction right
   - bindings:
-      - alt+shift+up
+      - lwin+shift+up
     commands:
       - move --direction up
   # Shift focus --workspace in a give direction.
   - bindings:
-      - alt+control+oem_semicolon
+      - control+lwin+oem_semicolon
     commands:
       - focus --next-active-workspace
   - bindings:
-      - alt+control+j
+      - control+lwin+j
     commands:
       - focus --prev-active-workspace
   # Move focused workspace to a monitor in a given direction.
   - bindings:
-      - alt+control+left
+      - control+lwin+left
     commands:
       - move --workspace 1
       - focus --workspace 1
   - bindings:
-      - alt+control+right
+      - control+lwin+right
     commands:
       - move --workspace 2
       - focus --workspace 2
   # Move focused workspace to a monitor in a given direction.
   - bindings:
-      - alt+control+shift+left
+      - control+lwin+shift+left
     commands:
       - move-workspace --direction left
   - bindings:
-      - alt+control+shift+right
+      - control+lwin+shift+right
     commands:
       - move-workspace --direction right
 

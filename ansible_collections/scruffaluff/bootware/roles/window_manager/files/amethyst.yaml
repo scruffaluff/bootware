@@ -47,18 +47,18 @@ layouts:
 
 # First modifier key combination.
 mod1:
-  - option
+  - command
   - shift
 
 # Second modifier key combination.
 mod2:
+  - command
   - control
-  - option
 
 # Third modifier key combination.
 mod3:
+  - command
   - control
-  - option
   - shift
 
 mouse-follows-focus: true

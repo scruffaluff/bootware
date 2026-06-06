@@ -74,7 +74,9 @@
 # Service directory must be created before file operations.
 - name: Create Google Chrome services directories for Unix
   ansible.builtin.file:
+    group: "{{ group_id }}"
     mode: "700"
+    owner: "{{ user_id }}"
     path: "{{ item | dirname }}"
     state: directory
   become: true
@@ -108,16 +110,18 @@
     - install
   when: ansible_facts.system != "Win32NT"
 
-# Chrome features are documented at https://chromeenterprise.google/policies.
-- name: Set Google Chrome features for MacOS
-  ansible.builtin.script: macos.sh
+- name: Set Google Chrome policies for MacOS
+  ansible.builtin.command:
+    cmd: defaults write com.google.Chrome {{ item.key }} -int {{ item.value }}
   become: true
   become_user: "{{ user_id }}"
+  changed_when: true
+  loop: "{{ chrome_policies | dict2items }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
 
-- name: Create Google Chrome preferences directories for Unix
+- name: Create Google Chrome policies directory for Unix
   ansible.builtin.file:
     mode: "755"
     path: /etc/opt/chrome/policies/managed
@@ -127,39 +131,24 @@
     - config
   when: ansible_facts.system not in ["Darwin", "Win32NT"]
 
-- name: Set Google Chrome features for Unix
-  ansible.builtin.get_url:
+- name: Set Google Chrome policies for Unix
+  ansible.builtin.copy:
+    content: "{{ chrome_policies | to_nice_json(indent=2) }}"
     dest: /etc/opt/chrome/policies/managed/managed_policies.json
+    force: true
     mode: "644"
-    url: https://raw.githubusercontent.com/corbindavenport/just-the-browser/refs/heads/main/chrome/managed_policies.json
   become: true
   tags:
     - config
   when: ansible_facts.system not in ["Darwin", "Win32NT"]
 
-- name: Set Google Chrome features for Windows
+- name: Set Google Chrome policies for Windows
   ansible.windows.win_regedit:
-    data: "{{ item.data }}"
-    name: "{{ item.name }}"
+    data: "{{ item.value }}"
+    name: "{{ item.key }}"
     path: HKLM:\SOFTWARE\Policies\Google\Chrome
     type: dword
-  loop:
-    - data: 1
-      name: AIModeSettings
-    - data: 2
-      name: CreateThemesSettings
-    - data: 2
-      name: DevToolsGenAiSettings
-    - data: 2
-      name: HelpMeWriteSettings
-    - data: 1
-      name: GeminiSettings
-    - data: 1
-      name: GenAILocalFoundationalModelSettings
-    - data: 2
-      name: HistorySearchSettings
-    - data: 2
-      name: TabCompareSettings
+  loop: "{{ chrome_policies | dict2items }}"
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

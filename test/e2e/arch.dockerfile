@@ -51,11 +51,9 @@ COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Deno are installed.
-RUN command -v bash > /dev/null \
-    || sudo pacman --noconfirm --sync bash \
-    && command -v deno > /dev/null \
-    || sudo pacman --noconfirm --sync unzip \
-    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | sh -s -- --global
+RUN if ! command -v bash > /dev/null; then sudo pacman --noconfirm --sync bash; fi \
+    && if ! command -v deno > /dev/null; then sudo pacman --noconfirm --sync unzip \
+    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | bash -s -- --global; fi
 
 ARG test
 

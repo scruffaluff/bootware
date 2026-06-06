@@ -156,7 +156,7 @@ deb() {
 #   Message argument.
 #######################################
 log() {
-  file='1' newline="\n" text=''
+  local file='1' newline="\n" text=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do

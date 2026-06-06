@@ -1,2 +1,2 @@
 ---
-alacritty_font_size: "{{ font_size }}"
+alacritty_font_size: "{{ terminal_font_size }}"

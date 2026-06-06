@@ -53,12 +53,10 @@ RUN bootware bootstrap --dev --no-passwd \
 COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
-# Ensure Bash and Node are installed.
-RUN command -v bash > /dev/null \
-    || sudo dnf install --assumeyes bash \
-    && command -v deno > /dev/null \
-    || sudo dnf install --assumeyes unzip \
-    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | sh -s -- --global
+# Ensure Bash and Deno are installed.
+RUN if ! command -v bash > /dev/null; then sudo dnf install --assumeyes bash; fi \
+    && if ! command -v deno > /dev/null; then sudo dnf install --assumeyes unzip \
+    && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | bash -s -- --global; fi
 
 ARG test
 

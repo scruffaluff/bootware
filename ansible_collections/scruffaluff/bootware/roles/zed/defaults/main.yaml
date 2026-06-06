@@ -2,12 +2,17 @@
 zed_arch_:
   amd64: x86_64
   arm64: aarch64
+zed_profiles_:
+  helix:
+    settings:
+      helix_mode: true
 zed_arch: "{{ zed_arch_[system_architecture] }}"
 zed_config_path: >-
   {{ user_home + '\AppData\Roaming\Zed' if ansible_facts.system == 'Win32NT'
   else user_home + '/.config/zed' }}
 zed_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
 zed_extensions:
+  colored-zed-icons-theme: true
   deno: true
   dockerfile: true
   emmet: true
@@ -28,4 +33,4 @@ zed_extensions:
   toml: true
   typst: true
   vue: true
-zed_font_size: "{{ font_size }}"
+zed_font_size: "{{ editor_font_size }}"

@@ -10,6 +10,7 @@
 {% endif %}
       "ctrl-:": "pane::ActivateNextItem",
       "ctrl-q": null,
+      "ctrl-alt-p": "settings_profile_selector::Toggle",
       "ctrl-shift-a": "workspace::ToggleLeftDock",
       "ctrl-shift-d": "debug_panel::ToggleFocus",
       "ctrl-shift-down": "workspace::SwapPaneLeft",
@@ -69,29 +70,38 @@
       "ctrl-{": "editor::GoToPreviousHunk",
       "ctrl-}": "editor::GoToHunk",
       "shift-left": "editor::MoveToPreviousWordStart",
-      "shift-right": "editor::MoveToNextWordEnd",
+      "shift-right": "editor::MoveToNextWordEnd"
     },
-    "context": "Editor",
+    "context": "Editor"
   },
   {
     "bindings": {
-      "alt-tab": null,
+      "alt-tab": null
     },
-    "context": "Onboarding",
+    "context": "Onboarding"
   },
   {
     "bindings": {
       "ctrl-[": "pane::GoBack",
       "ctrl-]": "pane::GoForward",
+      "ctrl-!": ["pane::ActivateItem", 0],
+      "ctrl-@": ["pane::ActivateItem", 1],
+      "ctrl-#": ["pane::ActivateItem", 2],
+      "ctrl-$": ["pane::ActivateItem", 3],
+      "ctrl-%": ["pane::ActivateItem", 4],
+      "ctrl-^": ["pane::ActivateItem", 5],
+      "ctrl-&": ["pane::ActivateItem", 6],
+      "ctrl-*": ["pane::ActivateItem", 7],
+      "ctrl-(": ["pane::ActivateItem", 8],
     },
-    "context": "Pane",
+    "context": "Pane"
   },
   {
     "bindings": {
       "ctrl-n": "project_panel::NewFile",
-      "ctrl-shift-n": "project_panel::NewDirectory",
+      "ctrl-shift-n": "project_panel::NewDirectory"
     },
-    "context": "ProjectPanel",
+    "context": "ProjectPanel"
   },
   {
     "bindings": {
@@ -105,30 +115,32 @@
       "ctrl-j": ["terminal::SendText", "\ue007"],
       "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       "ctrl-p": ["terminal::SendKeystroke", "ctrl-p"],
+      "ctrl-s": null,
       "ctrl-shift-n": "pane::SplitRight",
       "ctrl-shift-s": "terminal_panel::ToggleFocus",
-      "ctrl-shift-t": "workspace::NewTerminal",
+      "ctrl-shift-t": "workspace::NewTerminal"
     },
-    "context": "Terminal",
+    "context": "Terminal"
   },
   {
     "bindings": {
       "{{ zed_ctrl_key }}-b": null,
-      "{{ zed_ctrl_key }}-j": null,
+      "{{ zed_ctrl_key }}-j": null
     },
-    "context": "Workspace",
+    "context": "Workspace"
   },
   {
     "bindings": {
-      "ctrl-shift-d": "debug_panel::ToggleFocus",
+      "ctrl-shift-d": "debug_panel::ToggleFocus"
     },
-    "context": "!DebugPanel",
+    "context": "!DebugPanel"
   },
   {
     "bindings": {
-      "ctrl-shift-t": "terminal_panel::ToggleFocus",
+      "ctrl-shift-c": null,
+      "ctrl-shift-t": "terminal_panel::ToggleFocus"
     },
-    "context": "!Terminal",
+    "context": "!Terminal"
   },
   {
     "bindings": {
@@ -137,8 +149,35 @@
       "alt-o": "debugger::StepOut",
       "alt-q": "debugger::Stop",
       "alt-r": "debugger::Restart",
-      "alt-s": "debugger::StepInto",
+      "alt-s": "debugger::StepInto"
     },
-    "context": "debugger_stopped",
+    "context": "debugger_stopped"
+  },
+  {
+    "bindings": {
+      ";": "vim::Right",
+      "h": null,
+      "j": "vim::Left",
+      "k": "vim::Down",
+      "l": "vim::Up"
+    },
+    "context": "VimControl && !menu"
+  },
+  {
+    "bindings": {
+      ";": "vim::Right",
+      "h": null,
+      "j": "vim::Left",
+      "k": "vim::Down",
+      "l": "vim::Up",
+      "ctrl-s": "workspace::Save"
+    },
+    "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu"
+  },
+  {
+    "bindings": {
+      "ctrl-s": "workspace::Save"
+    },
+    "context": "Editor && (vim_mode == helix_insert || vim_mode == helix_normal || vim_mode == helix_select)"
   }
 ]

@@ -60,7 +60,7 @@
 
 - name: Install Ripgrep for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/ripgrep
+    dest: /usr/local/bin/rg
     force: true
     mode: "755"
     remote_src: true
