@@ -73,12 +73,6 @@
       "modifiers": ["Ctrl"]
     }
   ],
-  "file-explorer:new-file": [
-    {
-      "key": "N",
-      "modifiers": ["Ctrl", "Shift"]
-    }
-  ],
   "file-explorer:new-file-in-new-pane": [],
   "file-explorer:open": [
     {
@@ -92,10 +86,20 @@
       "modifiers": ["Ctrl", "Shift"]
     }
   ],
+  "markdown:toggle-preview": [],
   "switcher:open": [
     {
       "key": "O",
       "modifiers": ["Ctrl", "Shift"]
+    }
+  ],
+  "terminal:clear-terminal": [],
+  "terminal:close-terminal": [],
+  "terminal:find-in-terminal": [],
+  "terminal:open-terminal.default.current": [
+    {
+      "modifiers": ["Mod", "Shift"],
+      "key": "T"
     }
   ],
   "workspace:close": [
@@ -107,7 +111,7 @@
   "workspace:close-window": [],
   "workspace:new-tab": [
     {
-      "key": "T",
+      "key": "N",
       "modifiers": ["Ctrl", "Shift"]
     }
   ],

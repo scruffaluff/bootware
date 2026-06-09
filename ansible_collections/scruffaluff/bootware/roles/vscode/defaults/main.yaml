@@ -70,7 +70,6 @@ vscode_oss_remote_extensions_:
   - vscode-icons-team.vscode-icons
 vscode_path_linux_:
   apk: /usr/lib/code-oss/resources/app
-  pacman: /opt/visual-studio-code/resources/app
 vscode_path_:
   Darwin: /Applications/Visual Studio Code.app/Contents/Resources/app
   FreeBSD: /usr/local/share/code-oss/resources/app

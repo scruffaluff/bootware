@@ -1,0 +1,7 @@
+{
+  "folder": "data",
+  "fontAssetsPath": "data/font",
+  "scriptFolderPath": "data/scripts",
+  "showNewVersionNotification": true,
+  "templateFilePath": "data/template.excalidraw"
+}

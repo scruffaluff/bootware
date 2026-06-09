@@ -73,6 +73,8 @@ user_pref("browser.newtabpage.activity-stream.telemetry", false);
 user_pref("browser.newtabpage.activity-stream.showWeather", false);
 // Disable weather status suggestions from system recommendations.
 user_pref("browser.newtabpage.activity-stream.system.showWeather", false);
+// Use Firefox home as homepage.
+user_pref("browser.startup.homepage", "about:home");
 // Stay on current tab after opening link in new tab.
 user_pref("browser.tabs.loadInBackground", true);
 // Disable detaching tab to a new window.

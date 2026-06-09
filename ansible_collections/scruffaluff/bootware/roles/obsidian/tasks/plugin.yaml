@@ -1,0 +1,97 @@
+---
+- name: Check if Obsidian plugin settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ plugin.dest }}"
+  register: obsidian_plugin_check_unix
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Check if Obsidian plugin settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ plugin.dest }}"
+  register: obsidian_plugin_check_windows
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set Obsidian plugin settings check
+  ansible.builtin.set_fact:
+    obsidian_plugin_check: >-
+      {{ obsidian_plugin_check_unix if not 'skipped' in
+      obsidian_plugin_check_unix else obsidian_plugin_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of current Obsidian plugin settings file
+  ansible.builtin.slurp:
+    src: "{{ plugin.dest }}"
+  register: obsidian_plugin_dest_file
+  tags:
+    - config
+  when: obsidian_plugin_check.stat.exists
+
+- name: Parse current Obsidian plugin settings
+  ansible.builtin.set_fact:
+    obsidian_plugin_dest_settings: >-
+      {{ {} if 'skipped' in obsidian_plugin_dest_file else
+      obsidian_plugin_dest_file['content'] | b64decode | from_json }}
+  tags:
+    - config
+
+- name: Load Obsidian plugin overrides
+  ansible.builtin.include_vars:
+    file: "{{ plugin.src }}"
+    name: obsidian_plugin_src_settings
+  tags:
+    - config
+
+- name: Set Obsidian plugin settings
+  ansible.builtin.set_fact:
+    obsidian_plugin_settings: >-
+      {{ obsidian_plugin_dest_settings | combine(obsidian_plugin_src_settings,
+      recursive=True) }}
+  tags:
+    - config
+
+- name: Create Obsidian plugin settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ plugin.dest | dirname  }}"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Copy Obsidian plugin settings for Unix
+  ansible.builtin.copy:
+    content: "{{ obsidian_plugin_settings | to_nice_json(indent=2) }}"
+    dest: "{{ plugin.dest }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Create Obsidian plugin settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ plugin.dest | dirname }}"
+    state: directory
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Obsidian plugin settings for Windows
+  ansible.windows.win_copy:
+    conten: "{{ obsidian_plugin_settings | to_nice_json(indent=2) }}"
+    dest: "{{ plugin.dest }}"
+    force: true
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

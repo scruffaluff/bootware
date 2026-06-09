@@ -79,6 +79,7 @@
     - backlink.json
     - community-plugins.json
     - core-plugins.json
+    - daily-notes.json
     - hotkeys.json
     - webviewer.json
   tags:
@@ -100,6 +101,24 @@
   tags:
     - config
   when: ansible_facts.system == "Win32NT" and obsidian_vault is defined
+
+- name: Configure Obsidian plugins
+  ansible.builtin.include_tasks:
+    file: plugin.yaml
+  loop:
+    - dest: >-
+        {{ obsidian_vault
+        }}/.obsidian/plugins/obsidian-excalidraw-plugin/data.json
+      src: excalidraw.json
+    - dest: "{{ obsidian_vault }}/.obsidian/plugins/tasknotes/data.json"
+      src: tasknotes.json
+    - dest: "{{ obsidian_vault }}/.obsidian/plugins/terminal/data.json"
+      src: terminal.json
+  loop_control:
+    loop_var: plugin
+  tags:
+    - config
+  when: obsidian_vault is defined
 
 - name: Set owner of Obsidian files for Windows
   ansible.windows.win_owner:

@@ -1,0 +1,60 @@
+{
+  "archiveFolder": ".archive/task",
+  "autoCreateDefaultBasesFiles": false,
+  "calendarViewSettings": {
+    "defaultView": "timeGridWeek",
+    "firstDay": 0,
+    "showWeekends": true,
+    "timeFormat": "12"
+  },
+  "checkForUpdatesOnStartup": false,
+  "commandFileMapping": {
+    "open-advanced-calendar-view": "view/calendar.base",
+    "open-agenda-view": "view/agenda.base",
+    "open-kanban-view": "view/kanban.base",
+    "open-tasks-view": "view/task.base",
+    "relationships": "view/relationship.base"
+  },
+  "customFilenameTemplate": "{{ '{{' }}titleSnake{{ '}}' }}",
+  "customStatuses": [
+    {
+      "id": "open",
+      "value": "todo",
+      "label": "Todo",
+      "color": "#808080",
+      "isCompleted": false,
+      "excludeFromCycle": false,
+      "order": 0,
+      "autoArchive": false,
+      "autoArchiveDelay": 5
+    },
+    {
+      "id": "in-progress",
+      "value": "current",
+      "label": "Current",
+      "color": "#0066cc",
+      "isCompleted": false,
+      "excludeFromCycle": false,
+      "order": 1,
+      "autoArchive": false,
+      "autoArchiveDelay": 5
+    },
+    {
+      "id": "done",
+      "value": "done",
+      "label": "Done",
+      "color": "#00aa00",
+      "isCompleted": true,
+      "excludeFromCycle": false,
+      "order": 2,
+      "autoArchive": false,
+      "autoArchiveDelay": 5
+    }
+  ],
+  "defaultTaskStatus": "todo",
+  "pomodoroNotifications": false,
+  "showReleaseNotesOnUpdate": false,
+  "storeTitleInFilename": false,
+  "taskFilenameFormat": "custom",
+  "tasksFolder": "task"
+}
