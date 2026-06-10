@@ -2,11 +2,11 @@
 #
 # For more information, visit https://linux.die.net/man/1/lesskey.
 
-j noaction
+j left-scroll
 J noaction
 ^j noaction
 ^J noaction
-\ej noaction
+\ej left-scroll
 \eJ noaction
 k forw-line
 K forw-line-force
@@ -16,6 +16,8 @@ l back-line
 L back-line-force
 \el back-line
 \eL back-line-force
+; right-scroll
+\e; right-scroll
 
 #env
 LESS = --ignore-case

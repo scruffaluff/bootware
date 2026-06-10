@@ -1,4 +1,8 @@
 {
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": true
+  },
   "devDependencies": {
     "@johnnymorganz/stylua-bin": "^2.5.2",
     "@types/mustache": "^4.2.6",

@@ -1,17 +1,22 @@
 ---
-- name: Query host for PowerShell information
-  ansible.builtin.raw: echo $PSVersionTable
+# Check based on https://stackoverflow.com/a/34480405.
+- name: Query host for Windows shell information
+  ansible.builtin.raw: >-
+    (dir 2>&1 *`|echo commandprompt);&<# rem #>echo powershell
   changed_when: false
-  ignore_errors: true
-  register: connect_powershell_version
+  failed_when: false
+  register: connect_windows_shell
 
 - name: Set connection variables if system is Windows
   ansible.builtin.set_fact:
-    ansible_shell_type: powershell
+    ansible_shell_type: >-
+      {{ 'cmd' if 'commandprompt' in connect_windows_shell.stdout else
+      'powershell' }}
     system_pkg_mgr: scoop
   when: >-
-    connect_powershell_version is success and 'PSEdition' in
-    connect_powershell_version.stdout
+    connect_windows_shell.rc == 0 and ('commandprompt' in
+    connect_windows_shell.stdout or 'powershell' in
+    connect_windows_shell.stdout)
 
 - name: Gather facts about system
   ansible.builtin.gather_facts: {}

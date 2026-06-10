@@ -59,7 +59,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ plugin.dest | dirname  }}"
+    path: "{{ plugin.dest | dirname }}"
     state: directory
   become: true
   tags:

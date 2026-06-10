@@ -18,7 +18,7 @@
 - name: Install Nushell for FreeBSD
   become: true
   community.general.pkgng:
-    name: nushell
+    name: "{{ ['nushell'] + nushell_plugins }}"
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"
@@ -85,13 +85,7 @@
       {{ nushell_temp.path }}/nu-{{ nushell_formula_linux.json.versions.stable
       }}-{{ nushell_arch }}-unknown-linux-{{ nushell_libc }}/{{ item }}
   become: true
-  loop:
-    - nu
-    - nu_plugin_formats
-    - nu_plugin_gstat
-    - nu_plugin_inc
-    - nu_plugin_polars
-    - nu_plugin_query
+  loop: "{{ ['nu'] + nushell_plugins }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
@@ -155,6 +149,30 @@
   register: nushell_pathext
   tags:
     - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Register Nushell plugins for Unix
+  ansible.builtin.command:
+    cmd: >-
+      nu --commands 'plugin add "{{ nushell_executable | dirname }}/{{ item }}"'
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: true
+  loop: "{{ nushell_plugins }}"
+  tags:
+    - plugin
+  when: ansible_facts.system != "Win32NT"
+
+- name: Register Nushell plugins for Windows
+  ansible.windows.win_command:
+    cmd: |
+      nu --commands "plugin add '{{ scoop_path }}\apps\nu\current\{{ item }}.exe'"
+  changed_when: true
+  environment:
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+  loop: "{{ nushell_plugins }}"
+  tags:
+    - plugin
   when: ansible_facts.system == "Win32NT"
 
 - name: Create Nushell settings directory for MacOS
@@ -233,15 +251,6 @@
     - config
   when: ansible_facts.system == "Win32NT"
 
-- name: Set owner of Nushell files for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
-    recurse: true
-    user: "{{ user_id }}"
-  tags:
-    - config
-  when: ansible_facts.system == "Win32NT"
-
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
 - name: Change user default shell to Nushell for Alpine
@@ -282,3 +291,12 @@
   tags:
     - install
   when: ansible_facts.system == "Linux"
+
+- name: Set owner of Nushell files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Roaming\\nushell"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

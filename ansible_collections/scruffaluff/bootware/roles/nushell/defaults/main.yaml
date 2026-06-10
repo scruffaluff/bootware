@@ -6,3 +6,9 @@ nushell_arch: "{{ nushell_arch_[system_architecture] }}"
 nushell_libc: >-
   {{ 'gnu' if glibc_version is defined and glibc_version is
   ansible.builtin.version("2.35", ">") else 'musl' }}
+nushell_plugins:
+  - nu_plugin_formats
+  - nu_plugin_gstat
+  - nu_plugin_inc
+  - nu_plugin_polars
+  - nu_plugin_query
