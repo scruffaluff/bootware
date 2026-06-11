@@ -127,22 +127,15 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 # Keyboard settings.
 
 # Disable application windows `Ctrl+Down` key binding.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 33 '
-  <dict>
-    <key>enabled</key><false/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>65535</integer>
-        <integer>125</integer>
-        <integer>865072</integer>
-      </array>
-    </dict>
-  </dict>
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 33 '
+<dict><key>enabled</key><false/></dict>
+'
+# Disable quick note `Fn+Q` key binding.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 190 '
+<dict><key>enabled</key><false/></dict>
 '
 # Change Mission Control key binding to `Cmd+Ctrl+Up`.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32 '
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 32 '
   <dict>
     <key>enabled</key><true/>
     <key>value</key><dict>
@@ -156,63 +149,183 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 32
     </dict>
   </dict>
 '
-# Change move workspace left key binding to `Cmd+Ctrl+J`.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 79 '
-  <dict>
-    <key>enabled</key><true/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>106</integer>
-        <integer>38</integer>
-        <integer>1310720</integer>
-      </array>
-    </dict>
+# Change focus workspace left key binding to `Cmd+Ctrl+J`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 79 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>106</integer>
+      <integer>38</integer>
+      <integer>1310720</integer>
+    </array>
   </dict>
+</dict>
 '
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 80 '
-  <dict>
-    <key>enabled</key><true/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>106</integer>
-        <integer>38</integer>
-        <integer>1441792</integer>
-      </array>
-    </dict>
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 80 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>106</integer>
+      <integer>38</integer>
+      <integer>1441792</integer>
+    </array>
   </dict>
+</dict>
 '
-# Change move workspace right key binding to `Cmd+Ctrl+Semicolon`.
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 81 '
-  <dict>
-    <key>enabled</key><true/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>59</integer>
-        <integer>41</integer>
-        <integer>1310720</integer>
-      </array>
-    </dict>
+# Change focus workspace right key binding to `Cmd+Ctrl+Semicolon`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 81 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>59</integer>
+      <integer>41</integer>
+      <integer>1310720</integer>
+    </array>
   </dict>
+</dict>
 '
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 82 '
-  <dict>
-    <key>enabled</key><true/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>59</integer>
-        <integer>41</integer>
-        <integer>1441792</integer>
-      </array>
-    </dict>
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 82 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>59</integer>
+      <integer>41</integer>
+      <integer>1441792</integer>
+    </array>
   </dict>
+</dict>
+'
+# Change focus workspace 1 key binding to `Cmd+Ctrl+1`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 118 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>18</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 2 key binding to `Cmd+Ctrl+2`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 119 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>19</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 3 key binding to `Cmd+Ctrl+3`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 120 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>20</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 4 key binding to `Cmd+Ctrl+4`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 121 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>21</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 5 key binding to `Cmd+Ctrl+5`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 122 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>22</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 6 key binding to `Cmd+Ctrl+6`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 123 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>23</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 7 key binding to `Cmd+Ctrl+7`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 124 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>24</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
+'
+# Change focus workspace 8 key binding to `Cmd+Ctrl+8`.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 125 '
+<dict>
+  <key>enabled</key><true/>
+  <key>value</key><dict>
+    <key>type</key><string>standard</string>
+    <key>parameters</key>
+    <array>
+      <integer>65535</integer>
+      <integer>25</integer>
+      <integer>1310720</integer>
+    </array>
+  </dict>
+</dict>
 '
 # Disable extra bindings for function key.
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0
