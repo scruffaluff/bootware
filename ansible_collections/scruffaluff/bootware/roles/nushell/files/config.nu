@@ -1187,14 +1187,21 @@ $env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 
 # Yazi wrapper to change directory on program exit.
 def --env --wrapped yazi [...args: path] {
-    let tmp_file = mktemp --tmpdir
-    ^yazi --cwd-file $tmp_file ...$args
+    let $dirs = $args | where { ($in | path type) == "dir" }
+    let $src = $dirs | first | default $env.PWD
+    let args = if ($dirs | is-empty) { [...$args $src] } else { $args }
 
-    let cwd = open $tmp_file
-    if ($cwd | is-not-empty) and $cwd != $env.PWD {
-        cd $cwd
+    let temp = mktemp --tmpdir
+    cd ($temp | path dirname)
+    ^yazi --cwd-file $temp ...$args
+    let dest = open $temp | default $src | path expand
+
+    if $dest == ($temp | path dirname | path expand) {
+        cd $src
+    } else {
+        cd $dest
     }
-    rm $tmp_file
+    rm $temp
 }
 
 # Zoxide settings.
