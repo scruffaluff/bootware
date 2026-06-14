@@ -11,7 +11,8 @@ prepend_keymap = [
   { desc = "Move cursor down 5 lines", on = "K", run = "arrow 5" },
   { desc = "Move cursor up", on = "l", run = "arrow -1" },
   { desc = "Move cursor up 5 lines", on = "L", run = "arrow -5" },
-  { desc = "Close the help", on = "<A-h>", run = "escape" },
+  { desc = "Close help", on = "q", run = "escape" },
+  { desc = "Close help", on = "<A-h>", run = "escape" },
 ]
 
 [input]
@@ -57,6 +58,34 @@ prepend_keymap = [
   { desc = "Hide or show preview", on = "T", run = "plugin toggle-pane min-preview" },
   { desc = "Run a shell command", on = "s", run = "shell --interactive" },
   { desc = "Run a blocking shell command", on = "S", run = "shell --block --interactive" },
+  { desc = "Switch to previous tab", on = [
+    "t",
+    "j",
+  ], run = "tab_switch -1 --relative" },
+  { desc = "Create a new tab in CWD", on = [
+    "t",
+    "n",
+  ], run = "tab_create --current" },
+  { on = [
+    "t",
+    "t",
+  ], run = "noop" },
+  { desc = "Rename current tab", on = [
+    "t",
+    "r",
+  ], run = "tab_rename --interactive" },
+  { desc = "Switch to next tab", on = [
+    "t",
+    ";",
+  ], run = "tab_switch 1 --relative" },
+  { desc = "Swap current tab with previous tab", on = [
+    "t",
+    "<Left>",
+  ], run = "tab_swap -1" },
+  { desc = "Swap current tab with next tab", on = [
+    "t",
+    "<Right>",
+  ], run = "tab_swap 1" },
   { desc = "Spot hovered file", on = "\ue006", run = "spot" },
   { desc = "Zoom in", on = "+", run = "plugin zoom 1" },
   { desc = "Zoom out", on = "-", run = "plugin zoom -1" },

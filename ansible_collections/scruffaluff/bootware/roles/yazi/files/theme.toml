@@ -5,7 +5,7 @@
 # For more information, visit
 # https://yazi-rs.github.io/docs/configuration/theme.
 
-[completion]
+[cmp]
 border = { fg = "#268bd2" }
 
 [confirm]
@@ -25,7 +25,9 @@ rules = [
 ]
 
 [help]
+desc = { fg = "#657b83" }
 footer = { bg = "#fdf6e3", fg = "#002b36" }
+hovered = { bg = "#eee8d5", bold = true }
 on = { fg = "#2aa198" }
 run = { fg = "#d33682" }
 
@@ -62,6 +64,12 @@ title_warn = { fg = "#b58900" }
 active = { bold = true, fg = "#d33682" }
 border = { fg = "#268bd2" }
 
+[spot]
+border = { fg = "#268bd2" }
+tbl_cell = { fg = "#b58900", reversed = true }
+tbl_col = { fg = "#268bd2" }
+title = { fg = "#268bd2" }
+
 [status]
 perm_exec = { fg = "#859900" }
 perm_read = { fg = "#b58900" }
@@ -71,6 +79,10 @@ perm_write = { fg = "#dc322f" }
 progress_error = { bg = "#002b36", fg = "#dc322f" }
 progress_normal = { bg = "#002b36", fg = "#268bd2" }
 
+[tabs]
+active = { bg = "#268bd2", bold = true }
+inactive = { bg = "#eee8d5", fg = "#268bd2" }
+
 [tasks]
 border = { fg = "#268bd2" }
 hovered = { fg = "#d33682", underline = true }
@@ -78,6 +90,6 @@ hovered = { fg = "#d33682", underline = true }
 [which]
 cand = { fg = "#2aa198" }
 desc = { fg = "#d33682" }
-mask = { bg = "#002b36" }
+mask = { bg = "#eee8d5" }
 rest = { fg = "#586e75" }
 separator_style = { fg = "#586e75" }

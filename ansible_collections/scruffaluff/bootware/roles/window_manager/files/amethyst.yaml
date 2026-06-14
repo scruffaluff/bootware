@@ -46,7 +46,7 @@ mod3:
 mouse-follows-focus: true
 relaunch-amethyst:
   key: r
-  mod: mod3
+  mod: mod2
 select-fullscreen-layout:
   key: m
   mod: mod1
@@ -147,6 +147,21 @@ shrink-main:
   mod: mod4
 # Swap focused window with the main window.
 swap-main:
+  key: "!"
+  mod: mod4
+throw-screen-1:
+  key: "!"
+  mod: mod4
+throw-screen-2:
+  key: "!"
+  mod: mod4
+throw-screen-3:
+  key: "!"
+  mod: mod4
+throw-screen-4:
+  key: "!"
+  mod: mod4
+throw-screen-5:
   key: "!"
   mod: mod4
 toggle-focus-follows-mouse:
