@@ -103,11 +103,11 @@ prepend_keymap = [
   { desc = "Search file name via fd", on = [
     "f",
     "s",
-  ], run = "search fd" },
+  ], run = "search --via=fd" },
   { desc = "Search file content via rg", on = [
     "f",
     "S",
-  ], run = "search rg" },
+  ], run = "search --vida=rg" },
   { desc = "Search file content via fzf", on = [
     "f",
     "Z",
