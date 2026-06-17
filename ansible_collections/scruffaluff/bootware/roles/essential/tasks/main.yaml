@@ -90,13 +90,16 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+# Sometimes Scoop does not initially configure the Mingit shim and thus its full
+# path must be added to the system path.
 - name: Add essential Scoop buckets for Windows
   ansible.windows.win_shell: scoop bucket add {{ item }}
   changed_when: >-
     'bucket was added successfully' in essential_scoop_bucket.stdout
   environment:
     Path: >-
-      {{ user_home }}\\scoop\\shims;C:\\ProgramData\\scoop\\shims;{{
+      {{ user_home }}\\scoop\\apps\\mingit\\current\\cmd;{{ user_home
+      }}\\scoop\\shims;C:\\ProgramData\\scoop\\apps\\mingit\\current\\cmd;C:\\ProgramData\\scoop\\shims;{{
       ansible_facts.env.Path }}
   failed_when: >-
     essential_scoop_bucket.rc != 0 and 'bucket already exists' not in
