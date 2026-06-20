@@ -65,7 +65,12 @@ file-types = [
   { glob = "bun.lock" },
   { glob = "{j,t}sconfig.json" },
 ]
-formatter = { command = "prettier", args = ["--parser", "jsonc"] }
+formatter = { command = "prettier", args = [
+  "--parser",
+  "jsonc",
+  "--trailing-comma",
+  "none",
+] }
 language-servers = ["vscode-json-language-server", "harper"]
 
 [[language]]

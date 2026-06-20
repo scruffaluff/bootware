@@ -14,7 +14,9 @@ def _autoload-scripts [...scripts: path] {
         if ($source | path exists) and not ($dest | path exists) {
             if $nu.os-info.name == "windows" {
                 # Soft links require admin permissions unlike hard links.
-                cmd /c $"mklink /H '($dest)' '($source)'"
+                powershell -command $"
+New-Item -ItemType HardLink -Path '($dest)' -Target '($source)' | Out-Null
+"
             } else {
                 ln -s $source $dest
             }

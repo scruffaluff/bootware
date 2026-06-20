@@ -87,7 +87,7 @@ if ($MyInvocation.InvocationName -ne '.') {
         options             = @{
             user = @{ default = ''; required = $False; type = 'str' }
         }
-        supports_check_mode = $true
+        supports_check_mode = $True
     }
 
     $Module = [Ansible.Basic.AnsibleModule]::Create($Args, $Spec)

@@ -83,7 +83,7 @@ function mkdir() {
     $ArgIdx = 0
     while ($ArgIdx -lt $Args.Count) {
         if (-not (Test-Path -Path $Args[$ArgIdx])) {
-            New-Item -ItemType Directory $Args[$ArgIdx] | Out-Null
+            New-Item -ItemType Directory -Path $Args[$ArgIdx] | Out-Null
         }
         $ArgIdx += 1
     }

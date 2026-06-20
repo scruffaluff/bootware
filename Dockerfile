@@ -8,7 +8,7 @@ RUN apt-get update --ignore-missing && apt-get install --quiet --yes curl \
   sudo && apt-get clean --yes
 
 # Install Picoware Bash scripts.
-RUN curl -LSfs https://scruffaluff.github.io/picoware/install/scripts.sh | sh \
+RUN curl -LSfs https://scruffaluff.github.io/picoware/install/script.sh | sh \
   -s -- --global clear-cache trsync tscp tssh && clear-cache
 
 # Create non-priviledged user and grant user passwordless sudo.
@@ -29,7 +29,7 @@ RUN bootware bootstrap --no-passwd --extra-vars '{"super_passwordless":true}' \
   --retries 3 --tags build,node,python,rust,sysadmin && clear-cache
 
 # Install Picoware scripts.
-RUN curl -LSfs https://scruffaluff.github.io/picoware/install/scripts.sh | sh \
+RUN curl -LSfs https://scruffaluff.github.io/picoware/install/script.sh | sh \
   -s -- --global fdi rgi rstash && clear-cache
 
 # Set Nushell as container entrypoint.
