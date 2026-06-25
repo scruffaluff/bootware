@@ -713,6 +713,6 @@ Remove-Variable -Name Tty
 if (Test-Path "$HOME\.env.ps1") {
     . "$HOME\.env.ps1"
 }
-if (Test-Path "$HOME\.secrets.ps1") {
-    . "$HOME\.secrets.ps1"
+if (Test-Path "$HOME\.secret.ps1") {
+    . "$HOME\.secret.ps1"
 }

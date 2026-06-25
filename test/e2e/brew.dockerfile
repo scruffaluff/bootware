@@ -41,7 +41,7 @@ COPY --from=build /bootware/build/dist/ .
 RUN shasum --check --algorithm 256 bootware.rb.sha256
 
 # Install Homebrew package.
-RUN brew install --build-from-source ./bootware.rb
+RUN brew install --yes --build-from-source ./bootware.rb
 
 # Test package was installed successfully.
 RUN bootware --help

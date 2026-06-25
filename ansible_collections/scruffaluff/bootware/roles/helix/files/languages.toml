@@ -11,7 +11,7 @@ file-types = [
   ".bash_profile",
   ".bashrc",
   ".profile",
-  ".secrets",
+  ".secret",
   ".zlogin",
   ".zlogout",
   ".zprofile",

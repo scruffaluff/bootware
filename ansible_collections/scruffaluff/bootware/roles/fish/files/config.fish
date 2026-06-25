@@ -706,6 +706,6 @@ set --erase tty
 # Flags:
 #   -q: Only check for exit status by supressing output.
 if type -q bass
-    source-bash-files "$HOME/.env" "$HOME/.secrets"
+    source-bash-files "$HOME/.env" "$HOME/.secret"
 end
-source-files "$HOME/.env.fish" "$HOME/.secrets.fish"
+source-files "$HOME/.env.fish" "$HOME/.secret.fish"

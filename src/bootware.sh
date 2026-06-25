@@ -1169,25 +1169,25 @@ setup_macos() {
 
   if ! command -v ansible > /dev/null 2>&1; then
     log 'Installing Ansible.'
-    brew install ansible
+    brew install --yes ansible
     log "Installed $(ansible --version)."
   fi
 
   if ! command -v git > /dev/null 2>&1; then
     log 'Installing Git.'
-    brew install git
+    brew install --yes git
     log "Installed $(git --version)."
   fi
 
   if ! command -v jq > /dev/null 2>&1; then
     log 'Installing Jq.'
-    brew install jq
+    brew install --yes jq
     log "Installed $(jq --version)."
   fi
 
   if ! command -v yq > /dev/null 2>&1; then
     log 'Installing Yq.'
-    brew install yq
+    brew install --yes yq
     log "Installed $(yq --version)."
   fi
 }

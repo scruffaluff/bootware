@@ -1230,4 +1230,4 @@ $env._ZO_FZF_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 # User settings.
 
 # Move user aliases, secrets, and variables to the user autoload folder.
-_autoload-scripts $"($env.HOME)/.env.nu" $"($env.HOME)/.secrets.nu"
+_autoload-scripts $"($env.HOME)/.env.nu" $"($env.HOME)/.secret.nu"

@@ -536,5 +536,5 @@ unset tty
 # User settings.
 
 # Load user aliases, secrets, and variables.
-source-files "${HOME}/.env" "${HOME}/.secrets" "${HOME}/.env.bash" \
-  "${HOME}/.secrets.bash"
+source-files "${HOME}/.env" "${HOME}/.secret" "${HOME}/.env.bash" \
+  "${HOME}/.secret.bash"
