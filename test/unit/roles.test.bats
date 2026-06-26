@@ -11,15 +11,15 @@ setup() {
 }
 
 roles_subcommand_applies_all_tag() { # @test
-  run bash src/bootware.sh roles --tags all,never
+  run bash src/bootware.sh ${DEBUG:+--debug} roles --tags all,never
   assert_success
   assert_output --partial 'chrome'
   assert_output --partial 'firefox'
 }
 
 roles_subcommand_applies_multiple_tags() { # @test
-  run bash src/bootware.sh roles --skip firefox,language --tags \
-    browser,server
+  run bash src/bootware.sh ${DEBUG:+--debug} roles --skip firefox,language \
+    --tags browser,server
   assert_success
   assert_output --partial 'build'
   assert_output --partial 'chrome'
@@ -28,28 +28,28 @@ roles_subcommand_applies_multiple_tags() { # @test
 }
 
 roles_subcommand_default_hides_never_roles() { # @test
-  run bash src/bootware.sh roles
+  run bash src/bootware.sh ${DEBUG:+--debug} roles
   assert_success
   assert_output --partial 'wezterm'
   refute_output --partial 'wireshark'
 }
 
 roles_subcommand_never_shows_hidden_roles() { # @test
-  run bash src/bootware.sh roles --tags never
+  run bash src/bootware.sh ${DEBUG:+--debug} roles --tags never
   assert_success
   assert_output --partial 'wireshark'
   refute_output --partial 'bash'
 }
 
 roles_subcommand_skip_hides_desktop_roles() { # @test
-  run bash src/bootware.sh roles --skip bash --tags sysadmin
+  run bash src/bootware.sh ${DEBUG:+--debug} roles --skip bash --tags sysadmin
   assert_success
   assert_output --partial 'deno'
   refute_output --partial 'bash'
 }
 
 roles_subcommand_tag_hides_desktop_roles() { # @test
-  run bash src/bootware.sh roles --tags network
+  run bash src/bootware.sh ${DEBUG:+--debug} roles --tags network
   assert_success
   assert_output --partial 'wireshark'
   refute_output --partial 'wezterm'

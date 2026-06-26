@@ -16,7 +16,7 @@ export PSModulePath := if os() == "windows" {
   env("PSModulePath", "")
 } else { "" }
 
-# Execute CI workflow commands.
+# Run continuous integration pipeline.
 ci: setup lint test-sh test-nu test-py doc
 
 # Build distribution packages.
@@ -28,7 +28,7 @@ dist version="0.10.4":
 doc:
   npx tsx script/doc.ts
 
-# Fix code formatting.
+# Format project files.
 [unix]
 format +paths=".":
   npx prettier --write {{paths}}
@@ -36,7 +36,7 @@ format +paths=".":
   shfmt --write ansible_collections script src test
   uv run ruff format {{paths}}
 
-# Fix code formatting.
+# Format project files.
 [windows]
 format:
   #!powershell.exe
@@ -59,7 +59,7 @@ format:
 install *args:
   nu src/install.nu --version {{justfile_directory()}} {{args}}
 
-# Run code analyses.
+# Analyze files for issues.
 [unix]
 lint:
   #!/usr/bin/env sh
@@ -75,7 +75,7 @@ lint:
   uv run ruff check .
   uv run ty check .
 
-# Run code analyses.
+# Analyze files for issues.
 [windows]
 lint:
   npx prettier --check .
@@ -90,17 +90,17 @@ lint:
   Invoke-ScriptAnalyzer -EnableExit -Recurse -Path test -Settings \
     data/config/script_analyzer.psd1
 
-# List all commands available in justfile.
+# List available commands.
 [default]
 @list:
   just --list
 
-# Wrapper to Nushell.
+# Run Nushell in project environment.
 [no-exit-message]
-@nu *args:
+@nu *args="nu --login":
   nu --commands "{{args}}"
 
-# Install development dependencies.
+# Install development tools and dependencies.
 [script("nu")]
 setup: _setup
   let arch = match $nu.os-info.arch { aarch64 => "arm64", $x => $x }
@@ -151,11 +151,11 @@ setup: _setup
   print "Installing packages with NPM and Uv."
   if ($env.INIT? | into bool --relaxed) {
     npm install
-    if $os == "windows" { uv sync }
+    uv sync
     just format
   } else {
     npm ci
-    if $os == "windows" { uv sync --locked }
+    uv sync --locked
   }
 
 [unix]
@@ -253,44 +253,63 @@ _setup:
   Write-Output "Using Pester $((Get-Module -ListAvailable Pester | `
     Select-Object -First 1).Version)."
 
-# Run test suites.
+# Run tests (use DEBUG=1 for debugger).
 test: test-sh test-nu test-py test-pkg test-e2e
 
-# Run end to end test suite.
+# Run end to end tests.
 test-e2e *args:
   nu script/test_e2e.nu {{args}}
 
-# Run Nushell test suite.
+# Run Nushell tests (use DEBUG=1 for debugger).
 [script("nu")]
-test-nu *args:
+test-nu *args="--path test":
   use "{{replace(justfile_directory(), '\', '/') / '.vendor/lib/nutest/nutest'}}" run-tests
-  run-tests --fail --path test {{args}}
+  if ($env.DEBUG? | into bool --relaxed) {
+    with-env { NU_BACKTRACE: "1" } {
+      run-tests --fail --display table {{args}}
+    }
+  } else {
+    run-tests --fail --display table {{args}}
+  }
 
-# Run packaging test suite.
+# Run packaging tests.
 test-pkg *args:
   nu script/pkg.nu test {{args}}
 
-# Run Python test suite.
-[unix]
-test-py *args:
-  uv run pytest test {{args}}
+# Run Python tests (use DEBUG=1 for debugger).
+[script("nu")]
+test-py *args="test":
+  if ($env.DEBUG? | into bool --relaxed) {
+    uv run pytest test --pdb {{args}}
+  } else {
+    uv run pytest test {{args}}
+  }
 
-# Run Python test suite.
+# Run Bash tests (use DEBUG=1 for debugger).
+[unix]
+test-sh *args="test":
+  #!/usr/bin/env sh
+  if [ -n "${DEBUG:-}" ]; then
+    bats --recursive --trace {{args}}
+  else
+    bats --recursive {{args}}
+  fi
+
+# Run PowerShell tests (use DEBUG=1 for debugger).
 [windows]
-test-py *args:
-
-# Run unit test suite.
-[unix]
 test-sh *args:
-  bats --recursive test {{args}}
-
-# Run unit test suite.
-[windows]
-test-sh:
-  Invoke-Pester -CI -Output Detailed -Path \
-    $(Get-ChildItem -Recurse -Filter *.test.ps1 -Path test).FullName
-
-# Wrapper to Uv.
-[no-exit-message]
-@uv *args:
-  uv {{args}}
+  #!powershell.exe
+  $ErrorActionPreference = 'Stop'
+  $ProgressPreference = 'SilentlyContinue'
+  $PSNativeCommandUseErrorActionPreference = $True
+  Import-Module Pester
+  $Config = [PesterConfiguration]::Default
+  $Config.Run = @{ Exit = $True; Path = 'test'; TestExtension = '.test.ps1' }
+  $Config.Output.Verbosity = 'Detailed'
+  if ($Env:DEBUG) {
+    $Config.Output = @{
+      Verbosity = [PesterConfigurationOutput]::Diagnostic;
+      StackTraceVerbosity = [PesterConfigurationStackTraceVerbosity]::Full;
+    }
+  }
+  Invoke-Pester -Configuration $Config {{args}}

@@ -27,7 +27,7 @@ update_subcommand_passes_bootware_executable_path_to_curl() { # @test
   bootware() { :; }
   export -f bootware
 
-  run bash src/bootware.sh update --version develop
+  run bash src/bootware.sh ${DEBUG:+--debug} update --version develop
   assert_success
   assert_output "curl --fail --location --show-error --silent \
 --output $(realpath "${BATS_TEST_DIRNAME}"/../../src/bootware.sh) \

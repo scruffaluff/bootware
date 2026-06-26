@@ -73,8 +73,21 @@
   when: system_pkg_mgr == "dnf"
 
 - name: Tap Virt Viewer for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Trust Virt Viewer tap for MacOS
+  ansible.builtin.command:
+    cmd: brew trust jeffreywildman/homebrew-virt-manager
+  become: true
+  become_user: "{{ brew_user }}"
+  changed_when: "'Already trusted tap' not in libvirt_tap_trust.stdout"
+  register: libvirt_tap_trust
   tags:
     - install
   when: ansible_facts.system == "Darwin"

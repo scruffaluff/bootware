@@ -34,7 +34,8 @@ bootstrap_subcommand_finds_first_task_associated_with_role() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash src/bootware.sh bootstrap --dev --start-at-role deno
+  run bash src/bootware.sh ${DEBUG:+--debug} bootstrap --dev --start-at-role \
+    deno
   assert_success
   assert_output "ansible-playbook --extra-vars @${HOME}/.bootware/config.yaml \
 --inventory 127.0.0.1, --extra-vars {\"connect_role_executed\":false} \
@@ -47,7 +48,7 @@ bootstrap_subcommand_passes_pull_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash src/bootware.sh bootstrap
+  run bash src/bootware.sh ${DEBUG:+--debug} bootstrap
   assert_success
   assert_output "ansible-pull --extra-vars @${HOME}/.bootware/config.yaml \
 --inventory 127.0.0.1, --url https://github.com/scruffaluff/bootware.git \
@@ -58,7 +59,7 @@ bootstrap_subcommand_passes_dev_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash src/bootware.sh bootstrap --dev --tags none
+  run bash src/bootware.sh ${DEBUG:+--debug} bootstrap --dev --tags none
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \
@@ -69,7 +70,8 @@ bootstrap_subcommand_passes_extra_arguments_to_ansible() { # @test
   export BOOTWARE_SKIP=''
   export BOOTWARE_TAGS=''
 
-  run bash src/bootware.sh bootstrap --check --dev --tags none --timeout 60
+  run bash src/bootware.sh ${DEBUG:+--debug} bootstrap --check --dev --tags \
+    none --timeout 60
   assert_success
   assert_output "ansible-playbook --ask-become-pass \
 --extra-vars @${HOME}/.bootware/config.yaml --inventory 127.0.0.1, --tags none \

@@ -64,8 +64,21 @@
   when: ansible_facts.system == "Linux"
 
 - name: Tap Usql for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
   community.general.homebrew_tap:
     name: xo/xo
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Usql tap for MacOS
+  ansible.builtin.command:
+    cmd: brew trust xo/xo
+  become: true
+  become_user: "{{ brew_user }}"
+  changed_when: "'Already trusted tap' not in usql_tap_trust.stdout"
+  register: usql_tap_trust
   tags:
     - install
   when: ansible_facts.system == "Darwin"

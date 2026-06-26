@@ -14,7 +14,7 @@ setup() {
 }
 
 bootware_throws_error_for_unknown_subcommand() { # @test
-  run bash src/bootware.sh notasubcommand
+  run bash src/bootware.sh ${DEBUG:+--debug} notasubcommand
   assert_failure 2
   assert_output --partial "No such subcommand or option 'notasubcommand'"
 }
