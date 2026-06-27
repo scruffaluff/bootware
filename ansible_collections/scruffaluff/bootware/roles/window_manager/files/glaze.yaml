@@ -70,7 +70,7 @@ keybindings:
       - wm-exit
   # Re-evaluate configuration file.
   - bindings:
-      - control+lwin+shift+r
+      - control+lwin+r
     commands:
       - wm-reload-config
   # Change tiling direction for next new window.
@@ -94,18 +94,22 @@ keybindings:
       - lwin+shift+k
     commands:
       - focus --direction down
+      - wm-cycle-focus
   - bindings:
       - lwin+shift+j
     commands:
       - focus --direction left
+      - wm-cycle-focus
   - bindings:
       - lwin+shift+oem_semicolon
     commands:
       - focus --direction right
+      - wm-cycle-focus
   - bindings:
       - lwin+shift+l
     commands:
       - focus --direction up
+      - wm-cycle-focus
   # Move focused window in a given direction.
   - bindings:
       - lwin+shift+down

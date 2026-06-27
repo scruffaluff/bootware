@@ -168,7 +168,7 @@
     user: "{{ user_id }}"
   loop:
     - .ls_colors
-    - AppData\\Roaming\\lsd
+    - AppData\Roaming\lsd
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

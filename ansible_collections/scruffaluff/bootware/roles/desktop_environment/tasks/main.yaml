@@ -106,3 +106,32 @@
   tags:
     - config
   when: ansible_facts.system == "Win32NT"
+
+- name: Create PowerToys keyboard directory for Windows
+  ansible.windows.win_file:
+    path: >-
+      {{ user_home }}\AppData\Local\Microsoft\PowerToys\Keyboard Manager
+    state: directory
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy PowerToys keyboard files for Windows
+  ansible.windows.win_copy:
+    dest: >-
+      {{ user_home }}\AppData\Local\Microsoft\PowerToys\Keyboard
+      Manager\settings.json
+    force: true
+    src: keyboard_manager.json
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set owner of PowerToys files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\AppData\\Local\\Microsoft\\PowerToys"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

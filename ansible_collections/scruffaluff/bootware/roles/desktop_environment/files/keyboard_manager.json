@@ -1,0 +1,29 @@
+{
+  "remapKeys": {
+    "inProcess": []
+  },
+  "remapKeysToText": {
+    "inProcess": []
+  },
+  "remapShortcuts": {
+    "appSpecific": [],
+    "global": [
+      {
+        "exactMatch": false,
+        "newRemapKeys": "91",
+        "operationType": 0,
+        "originalKeys": "164;32"
+      },
+      {
+        "exactMatch": false,
+        "newRemapKeys": "91;76",
+        "operationType": 0,
+        "originalKeys": "91;27"
+      }
+    ]
+  },
+  "remapShortcutsToText": {
+    "appSpecific": [],
+    "global": []
+  }
+}

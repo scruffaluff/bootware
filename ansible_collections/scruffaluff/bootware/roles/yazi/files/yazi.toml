@@ -34,17 +34,18 @@ sound = [
 ]
 
 [plugin]
+append_previewers = [
+  { mime = "audio/*", run = "file" },
+  { run = "file", url = "*.{a,bin,dll,dylib,exe,o,pyc,pyo,so,whl}" },
+  { run = "code", url = "*" },
+]
 preloaders = []
-
-[[plugin.prepend_fetchers]]
-group = "git"
-run = "git"
-url = "*"
-
-[[plugin.prepend_fetchers]]
-group = "git"
-run = "git"
-url = "*/"
+prepend_fetchers = [
+  { group = "git", run = "git", url = "*/" },
+  { group = "git", run = "git", url = "*" },
+  { group = "mime", prio = "high", run = "mime-ext.local", url = "local://*" },
+  { group = "mime", prio = "high", run = "mime-ext.remote", url = "remote://*" },
+]
 
 [preview]
 max_height = 2160

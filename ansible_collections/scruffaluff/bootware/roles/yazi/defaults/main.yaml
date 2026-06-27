@@ -13,6 +13,7 @@ yazi_plugins:
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:full-border
   - yazi-rs/plugins:git
+  - yazi-rs/plugins:mime-ext
   - yazi-rs/plugins:piper
   - yazi-rs/plugins:smart-filter
   - yazi-rs/plugins:toggle-pane

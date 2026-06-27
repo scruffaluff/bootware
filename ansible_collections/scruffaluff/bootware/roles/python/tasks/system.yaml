@@ -52,8 +52,8 @@
   become: true
   community.general.pkgng:
     name:
-      - py311-pip
-      - py311-pipx
+      - py312-pip
+      - py312-pipx
       - python3
       - rust
   tags:

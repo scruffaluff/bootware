@@ -2,7 +2,7 @@
 - name: Install AWS CLI for FreeBSD
   become: true
   community.general.pkgng:
-    name: py311-awscli
+    name: py312-awscli
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"

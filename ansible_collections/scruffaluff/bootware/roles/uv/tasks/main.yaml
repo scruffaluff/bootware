@@ -76,6 +76,26 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+- name: Override Scoop custom Uv settings for Windows
+  ansible.windows.win_environment:
+    level: user
+    name: "{{ item.name }}"
+    value: "{{ user_home }}\\AppData\\Local\\uv\\{{ item.value }}"
+  loop:
+    - name: UV_CACHE_DIR
+      value: cache
+    - name: UV_PYTHON_BIN_DIR
+      value: python\shims
+    - name: UV_PYTHON_INSTALL_DIR
+      value: python\versions
+    - name: UV_TOOL_BIN_DIR
+      value: tool\shims
+    - name: UV_TOOL_DIR
+      value: tool\versions
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
 - name: Register Python files as executables for Windows
   ansible.windows.win_regedit:
     data: "{{ item.data }}"

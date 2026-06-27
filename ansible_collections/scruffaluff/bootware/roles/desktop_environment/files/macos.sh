@@ -64,36 +64,20 @@ defaults write com.apple.TextInputMenu visible -bool false
 
 # File extension settings.
 
-for ext in bak bash c cfg class cpp css csv dockerignore env fish go h hpp ini \
-  java jl js json jsx justfile log lua md nu ps1 py rb rs sh sql svelte swift \
-  tf tmp toml ts tsv tsx txt vue xml yaml yml; do
+for ext in bak bash c cfg class cpp css csv dockerignore env fish go h hpp \
+  ini java jl js json jsx justfile log lua md nu ps1 py rb rs sh sql svelte \
+  swift tf tmp toml ts tsv tsx txt vue xml yaml yml; do
   duti -s dev.zed.Zed "${ext}" all 2> /dev/null || true
 done
-duti -s org.libreoffice.script doc all
-duti -s org.libreoffice.script docx all
-duti -s org.libreoffice.script ppt all
-duti -s org.libreoffice.script pptx all
-duti -s org.libreoffice.script xls all
-duti -s org.libreoffice.script xlsx all
-duti -s org.mozilla.firefox avif all
-duti -s org.mozilla.firefox gif all
-duti -s org.mozilla.firefox webp all
-duti -s org.videolan.vlc aac all
-duti -s org.videolan.vlc aiff all
-duti -s org.videolan.vlc avi all
-duti -s org.videolan.vlc flac all
-duti -s org.videolan.vlc flv all
-duti -s org.videolan.vlc m4a all
-duti -s org.videolan.vlc m4v all
-duti -s org.videolan.vlc mkv all
-duti -s org.videolan.vlc mov all
-duti -s org.videolan.vlc mp3 all
-duti -s org.videolan.vlc mp4 all
-duti -s org.videolan.vlc ogg all
-duti -s org.videolan.vlc wav all
-duti -s org.videolan.vlc webm all
-duti -s org.videolan.vlc wma all
-duti -s org.videolan.vlc wmv all
+for ext in doc docx ppt pptx xls xlsx; do
+  duti -s org.libreoffice.script "${ext}" all 2> /dev/null || true
+done
+for ext in avif gif webp; do
+  duti -s org.mozilla.firefox "${ext}" all 2> /dev/null || true
+done
+for ext in aac aiff avi flac flv m4a m4v mkv mov mp3 mp4 ogg wav webm wma wmv; do
+  duti -s org.videolan.vlc "${ext}" all 2> /dev/null || true
+done
 
 # Finder settings.
 

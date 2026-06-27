@@ -89,7 +89,7 @@
 
 - name: Copy Obsidian plugin settings for Windows
   ansible.windows.win_copy:
-    conten: "{{ obsidian_plugin_settings | to_nice_json(indent=2) }}"
+    content: "{{ obsidian_plugin_settings | to_nice_json(indent=2) }}"
     dest: "{{ plugin.dest }}"
     force: true
   tags:

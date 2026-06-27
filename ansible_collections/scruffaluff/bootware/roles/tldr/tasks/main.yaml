@@ -52,6 +52,15 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+- name: Override Scoop custom TLDR settings for Windows
+  ansible.windows.win_environment:
+    level: user
+    name: TEALDEER_CONFIG_DIR
+    value: "{{ user_home }}\\AppData\\Roaming\\tldr"
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
 - name: Install TLDR shell completions for Unix
   ansible.builtin.get_url:
     dest: "{{ item.dest }}"
