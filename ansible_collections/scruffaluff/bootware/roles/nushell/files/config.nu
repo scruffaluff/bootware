@@ -1140,17 +1140,22 @@ $env.config = {
 }
 
 # Enable external completions if available.
-#
-# Prefer Fish completions over Carapace since they are more extensive and
-# use fuzzy searching.
-if (which "fish" | is-not-empty) {
+if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     $env.config.completions.external = {
-        completer: {|spans| fish-complete $spans }
+        completer: {|spans|
+            carapace-complete $spans
+            | default --empty { fish-complete $spans }
+        }
         enable: true
     }
 } else if (which "carapace" | is-not-empty) {
     $env.config.completions.external = {
         completer: {|spans| carapace-complete $spans }
+        enable: true
+    }
+} else if (which "fish" | is-not-empty) {
+    $env.config.completions.external = {
+        completer: {|spans| fish-complete $spans }
         enable: true
     }
 }

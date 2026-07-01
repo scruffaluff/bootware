@@ -6,6 +6,7 @@
 ratio = [0, 1, 2]
 
 [open]
+append_rules = [{ url = "*", use = "edit" }]
 prepend_rules = [
   { mime = "audio/*", use = [
     "sound",
