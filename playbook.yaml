@@ -742,6 +742,19 @@
         - server
         - wsl
 
+    - name: Install Handy text to speech converter
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - handy
+            - never
+        name: scruffaluff.bootware.handy
+      tags:
+        - desktop
+        - handy
+        - never
+
     - name: Install Harper spell checker
       ansible.builtin.include_role:
         apply:

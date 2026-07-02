@@ -114,6 +114,18 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 33 '
 <dict><key>enabled</key><false/></dict>
 '
+# Disable character viewer `Ctrl+Cmd+Space` key binding by remapping.
+# shellcheck disable=SC2016
+defaults write 'Apple Global Domain' NSUserKeyEquivalents -dict-add \
+  'Emoji & Symbols' '@~^$0'
+# Disable the select previous input source `Ctrl+Space` key binding.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 '
+<dict><key>enabled</key><false/></dict>
+'
+# Disable the select next input source `Ctrl+Alt+Space` key binding.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 61 '
+<dict><key>enabled</key><false/></dict>
+'
 # Disable quick note `Fn+Q` key binding.
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 190 '
 <dict><key>enabled</key><false/></dict>

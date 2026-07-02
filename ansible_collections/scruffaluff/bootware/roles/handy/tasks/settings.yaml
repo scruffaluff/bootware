@@ -1,0 +1,96 @@
+---
+- name: Check if Handy settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ handy_settings_path }}"
+  register: handy_settings_check_unix
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Check if Handy settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ handy_settings_path }}"
+  register: handy_settings_check_windows
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set Handy settings check
+  ansible.builtin.set_fact:
+    handy_settings_check: >-
+      {{ handy_settings_check_unix if not 'skipped' in handy_settings_check_unix
+      else handy_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of current Handy settings file
+  ansible.builtin.slurp:
+    src: "{{ handy_settings_path }}"
+  register: handy_settings_file
+  tags:
+    - config
+  when: handy_settings_check.stat.exists
+
+- name: Parse current Handy settings
+  ansible.builtin.set_fact:
+    handy_settings_dest: >-
+      {{ {} if 'skipped' in handy_settings_file else
+      handy_settings_file['content'] | b64decode | from_json }}
+  tags:
+    - config
+
+- name: Load Handy settings overrides
+  ansible.builtin.include_vars:
+    file: settings.json
+    name: handy_settings_src
+  tags:
+    - config
+
+- name: Set Handy settings
+  ansible.builtin.set_fact:
+    handy_settings: >-
+      {{ handy_settings_dest | combine(handy_settings_src, recursive=True) }}
+  tags:
+    - config
+
+- name: Create Handy settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ handy_settings_path | dirname }}"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Copy Handy settings for Unix
+  ansible.builtin.copy:
+    content: "{{ handy_settings | to_nice_json(indent=2) }}"
+    dest: "{{ handy_settings_path }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "644"
+    owner: "{{ user_id }}"
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Create Handy settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ handy_settings_path | dirname }}"
+    state: directory
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Handy settings for Windows
+  ansible.windows.win_copy:
+    content: "{{ handy_settings | to_nice_json(indent=2) }}"
+    dest: "{{ handy_settings_path }}"
+    force: true
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

@@ -100,6 +100,16 @@ lint:
 @nu *args="nu --login":
   nu --commands "{{args}}"
 
+# Run project (use DEBUG=1 for debugger).
+[no-exit-message, unix]
+@run *args:
+  src/bootware.sh {{args}}
+
+# Run project (use DEBUG=1 for debugger).
+[no-exit-message, windows]
+@run *args:
+  src/bootware.ps1 {{args}}
+
 # Install development tools and dependencies.
 [script("nu")]
 setup: _setup

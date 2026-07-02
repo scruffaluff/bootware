@@ -283,6 +283,20 @@
     "tests": ["glow --version"]
   },
   {
+    "name": "handy",
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "arch"
+      },
+      {
+        "os": "freebsd"
+      }
+    ]
+  },
+  {
     "name": "hdf5",
     "skip": [
       {
