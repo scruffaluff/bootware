@@ -1,0 +1,9 @@
+---
+handy_settings_path_:
+  Darwin: >-
+    {{ user_home }}/Library/Application
+    Support/com.pais.handy/settings_store.json
+  Win32NT: "{{ user_home }}/AppData/Roaming/com.pais.handy/settings_store.json"
+handy_settings_path:
+  "{{ handy_settings_path_.get(ansible_facts.system, user_home +
+  '.config/com.pais.handy/settings_store.json') }}"

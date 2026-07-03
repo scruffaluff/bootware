@@ -468,6 +468,10 @@ def fish-complete [spans: list<string>] {
 
 # Complete commandline argument with interactive history search.
 def fzf-history-widget [] {
+    if (history | is-empty) {
+        return
+    }
+
     let history = history | get command | reverse | uniq | to text
     let selection = (
         $history | fzf --query (commandline) --scheme history

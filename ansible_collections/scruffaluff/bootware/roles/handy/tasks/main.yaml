@@ -1,0 +1,71 @@
+---
+- name: Get latest Handy version for Debian and Fedora
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/cask/handy.json
+  register: handy_cask
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Install Handy dependencies for Debian and Fedora
+  ansible.builtin.package:
+    name: wtype
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Install Handy for Debian
+  ansible.builtin.apt:
+    deb: >-
+      https://github.com/cjpais/Handy/releases/download/v{{
+      handy_cask.json.version }}/Handy_{{ handy_cask.json.version }}_{{
+      system_architecture }}.deb
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "apt"
+
+- name: Install Handy for Fedora
+  ansible.builtin.dnf:
+    disable_gpg_check: true
+    name: >-
+      https://github.com/cjpais/Handy/releases/download/v{{
+      handy_cask.json.version }}/Handy-{{ handy_cask.json.version }}-1.{{
+      handy_arch[system_architecture] }}.rpm
+  become: true
+  tags:
+    - install
+  vars:
+    handy_arch:
+      amd64: x86_64
+      arm64: aarch64
+  when: system_pkg_mgr == "dnf"
+
+- name: Install Handy for MacOS
+  community.general.homebrew_cask:
+    accept_external_apps: true
+    name: handy
+    state: present
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Install Handy for Windows
+  community.windows.win_scoop:
+    global: true
+    name: handy
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Configure Handy settings
+  ansible.builtin.include_tasks:
+    file: settings.yaml
+  tags:
+    - config
+  when: >-
+    ansible_facts.system in ["Darwin", "Win32NT"] or system_pkg_mgr in ["apt",
+    "dnf"]

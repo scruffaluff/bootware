@@ -1,0 +1,25 @@
+{
+  "settings": {
+    "always_on_microphone": false,
+    "append_trailing_space": false,
+    "audio_feedback": false,
+    "bindings": {
+      "transcribe": {
+        "current_binding": "ctrl+{{ 'command' if ansible_facts.system == 'Darwin' else 'super' }}+space"
+      }
+    },
+    "clipboard_handling": "dont_modify",
+    "model_unload_timeout": "min2",
+    "mute_while_recording": false,
+    "onboarding_completed": true,
+    "overlay_position": "top",
+    "overlay_style": "minimal",
+    "paste_method": "{{ 'ctrl+v' if ansible_facts.system == 'Darwin' else 'direct' }}",
+    "push_to_talk": true,
+    "show_tray_icon": true,
+    "show_whats_new_on_update": false,
+    "start_hidden": true,
+    "update_checks_enabled": false,
+    "vad_enabled": true
+  }
+}
