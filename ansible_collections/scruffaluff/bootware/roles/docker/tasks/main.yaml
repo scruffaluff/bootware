@@ -132,7 +132,10 @@
 - name: Install Docker for FreeBSD
   become: true
   community.general.pkgng:
-    name: docker
+    name:
+      - docker-buildx
+      - docker-cli
+      - docker-compose
   tags:
     - install
   when: ansible_facts.system == "FreeBSD"

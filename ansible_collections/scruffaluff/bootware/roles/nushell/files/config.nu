@@ -179,7 +179,7 @@ For example '7 10..15 35 788..812'.
 Enter 'all' to delete all the matching entries.
 "
 
-    let text = try {
+    let text: string = try {
         input "Delete which entries? "
     } catch {
         print "\n\nCancelling the delete!\n"
@@ -1199,7 +1199,7 @@ $env.YAZI_ZOXIDE_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 # Yazi wrapper to change directory on program exit.
 def --env --wrapped yazi [...args: path] {
     # Expand paths arguments to absolute paths.
-    mut src = null
+    mut src: oneof<string, nothing> = null
     mut $params = []
     for arg in $args {
         let arg = if ($arg | path exists) {
