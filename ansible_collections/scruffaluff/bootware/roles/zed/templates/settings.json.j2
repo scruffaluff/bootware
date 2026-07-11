@@ -5,7 +5,11 @@
 {
   "agent": {
     "button": false,
-    "enabled": false
+    "default_profile": "ask",
+    "dock": "right",
+    "enabled": false,
+    "show_turn_stats": true,
+    "sidebar_side": "right"
   },
 {% if zed_extensions | length > 0 %}
   "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},
@@ -22,10 +26,14 @@
   "diagnostics": {
     "inline": {
       "enabled": false
-    },
+    }
   },
   "diff_view_style": "unified",
   "disable_ai": true,
+  "edit_predictions": {
+    "allow_data_collection": "no",
+    "provider": "none"
+  },
   "extend_comment_on_newline": false,
   "file_scan_exclusions": [
     "**/.DS_Store",
@@ -54,7 +62,7 @@
   "git": {
     "blame": {
       "show_avatar": false
-    },
+    }
   },
   "git_panel": {
     "dock": "left"
@@ -112,7 +120,7 @@
     },
     "TOML": {
       "format_on_save": "off"
-    },
+    }
   },
   "lsp": {
     "harper-ls": {
@@ -153,6 +161,7 @@
     "trust_all_worktrees": true
   },
   "show_completions_on_input": false,
+  "show_edit_predictions": false,
 {% if zed_remotes | length > 0 %}
   "ssh_connections": {{ zed_remotes | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
@@ -193,7 +202,7 @@
   "theme_overrides": {
     "Solarized Light": {
       "text.muted": "#586e75"
-    },
+    }
   },
   "title_bar": {
     "show_onboarding_banner": false,

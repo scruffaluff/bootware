@@ -275,11 +275,11 @@ test-e2e *args:
 test-nu *args="--path test":
   use "{{replace(justfile_directory(), '\', '/') / '.vendor/lib/nutest/nutest'}}" run-tests
   if ($env.DEBUG? | into bool --relaxed) {
-    with-env { NU_BACKTRACE: "1" } {
-      run-tests --fail --display table {{args}}
+    with-env {NU_BACKTRACE: "1"} {
+      run-tests --fail {{args}}
     }
   } else {
-    run-tests --fail --display table {{args}}
+    run-tests --fail {{args}}
   }
 
 # Run packaging tests.

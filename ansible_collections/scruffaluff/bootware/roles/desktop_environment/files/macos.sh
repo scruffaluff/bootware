@@ -41,6 +41,8 @@ defaults write com.apple.WindowManager StandardHideWidgets -bool true
 # Speed up Mission Control animations.
 defaults write com.apple.dock expose-animation-duration -float 0
 defaults write com.apple.dock missioncontrol-animation-duration -float 0
+# Save screenshots to Pictures folder
+defaults write com.apple.screencapture location -string "${HOME}/Pictures"
 
 # Dock and menu bar settings.
 
@@ -89,12 +91,14 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write com.apple.finder FXDefaultSearchScope -string SCcf
 # Disable file extension change warning.
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-# Show items in Finder via icon view.
-defaults write com.apple.finder FXPreferredViewStyle -string icnv
+# Show items in Finder via list view.
+defaults write com.apple.finder FXPreferredViewStyle -string nlsv
 # Remove trash items older than 30 days.
 defaults write com.apple.finder FXRemoveOldTrashItems -bool true
 # Sort items in Finder by name.
 defaults write com.apple.finder FXPreferredGroupBy Name
+# Show folders before files in Finder.
+defaults write com.apple.finder FXSortFoldersFirst -bool true
 # Show path bar in Finder folder window.
 defaults write com.apple.finder ShowPathbar -bool true
 # Hide recent tags from Finder sidebar.
@@ -105,6 +109,8 @@ defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 defaults write com.apple.finder ShowStatusBar -bool true
 # Show file extensions in Finder.
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+# Show hidden files in file open dialogs.
+defaults write NSGlobalDomain AppleShowAllFiles -bool true
 # Do not autosave files to iCloud.
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 

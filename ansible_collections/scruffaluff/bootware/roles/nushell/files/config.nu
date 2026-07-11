@@ -156,7 +156,7 @@ def _cut-path-left [] {
     let update = $first
     | str replace --regex "[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$" ""
     commandline edit --replace $"($update)($second)"
-    commandline set-cursor ($update | str length)
+    commandline set-cursor ($update | str length --chars)
 }
 
 # Prompt user to remove current command from Nushell history.
@@ -368,7 +368,7 @@ def "commandline argument" [] {
     let cursor = commandline get-cursor
     mut found = false
     mut index = 0
-    let length = commandline | str length
+    let length = commandline | str length --chars
     let quotes = ["'" '"' "`"]
     mut quote = ""
     mut start = 0
@@ -550,7 +550,7 @@ def fzf-path-widget [] {
         ...($chars | skip $arg.stop)
     ] | str join
     commandline edit --replace $edit
-    commandline set-cursor ($arg.start + ($full_path | str length))
+    commandline set-cursor ($arg.start + ($full_path | str length --chars))
 }
 
 # Open Nushell history file with default editor.
@@ -640,7 +640,7 @@ if (
         ($env.LOGNAME? == $env.USER or $nu.os-info.name == "windows")
         and (which "zellij" | is-not-empty)
     ) {
-        with-env { SHELL: $nu.current-exe } { zellij attach --create }
+        with-env {SHELL: $nu.current-exe } { zellij attach --create }
         # Close parent shell after Zellij exits.
         exit
     }

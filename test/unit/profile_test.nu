@@ -6,16 +6,19 @@ use std/testing *
 source ../../ansible_collections/scruffaluff/bootware/roles/nushell/files/config.nu
 
 # Test mocks.
-export def commandline [] { $env.NUTEST_COMMANDLINE }
-export def --env --wrapped "commandline edit" [--replace ...args: string] {
-    $args | str join "" | save --force $"($env.NUTEST_TMPDIR)/commandline_edit"
+export def commandline []: nothing -> string { $env.NUTEST_COMMANDLINE }
+export def --env "commandline edit" [
+    --accept (-A) --append (-a) --insert (-i) --replace (-r) str: string
+] {
+    $str | save --force $"($env.NUTEST_TMPDIR)/commandline_edit"
 }
-export def "commandline get-cursor" [] {
+export def "commandline get-cursor" []: nothing -> int {
     $env.NUTEST_COMMANDLINE_GETCURSOR | into int
 }
-export def --env --wrapped "commandline set-cursor" [...args: string] {
-    $args | str join ""
-    | save --force $"($env.NUTEST_TMPDIR)/commandline_setcursor"
+export def --env "commandline set-cursor" [
+    --end (-e) pos: int
+] {
+    $pos | save --force $"($env.NUTEST_TMPDIR)/commandline_setcursor"
 }
 def --wrapped fzf [...args: path] { $env.NUTEST_FZF }
 
@@ -48,12 +51,12 @@ def "_cut-path-left cases" [] {
 def "commandline argument cases" [] {
     for case in [
         [cursor expected line];
-        [0 {start: 0 stop: 3 token: "vim" } "vim"]
-        [5 {start: 4 stop: 8 token: "path" } "vim path"]
-        [5 {start: 4 stop: 9 token: "pa'th" } "vim pa'th"]
-        [8 {start: 4 stop: 16 token: "`space path`" } "vim `space path`"]
-        [8 {start: 3 stop: 15 token: `'quote"path'` } `vi 'quote"path' file`]
-        [4 {start: 4 stop: 4 token: "" } "vim  path"]
+        [0 {start: 0 stop: 3 token: "vim"} "vim"]
+        [5 {start: 4 stop: 8 token: "path"} "vim path"]
+        [5 {start: 4 stop: 9 token: "pa'th"} "vim pa'th"]
+        [8 {start: 4 stop: 16 token: "`space path`"} "vim `space path`"]
+        [8 {start: 3 stop: 15 token: `'quote"path'`} `vi 'quote"path' file`]
+        [4 {start: 4 stop: 4 token: ""} "vim  path"]
     ] {
         $env.NUTEST_COMMANDLINE = $case.line
         $env.NUTEST_COMMANDLINE_GETCURSOR = $case.cursor | into string
@@ -69,14 +72,14 @@ def "fzf-path-widget cases" [] {
 
     for case in [
         [cursor expected fzf line];
-        [0 { cursor: 8 line: "src/path" } "src/path" ""]
-        [4 { cursor: 8 line: "vim path" } "path" "vim "]
-        [4 { cursor: 8 line: "vim path " } "path" "vim  "]
-        [3 { cursor: 7 line: "   file " } "file" "    "]
-        [6 { cursor: 9 line: " vim path" } "path" " vim foo"]
-        [4 { cursor: 8 line: "vim path  foo" } "path" "vim   foo"]
-        [8 { cursor: 13 line: "vim  src/path test" } "path" "vim  src/fa test"]
-        [9 { cursor: 15 line: "vim  `src/path` test" } "path" "vim  `src/fa` test"]
+        [0 {cursor: 8 line: "src/path"} "src/path" ""]
+        [4 {cursor: 8 line: "vim path"} "path" "vim "]
+        [4 {cursor: 8 line: "vim path "} "path" "vim  "]
+        [3 {cursor: 7 line: "   file "} "file" "    "]
+        [6 {cursor: 9 line: " vim path"} "path" " vim foo"]
+        [4 {cursor: 8 line: "vim path  foo"} "path" "vim   foo"]
+        [8 {cursor: 13 line: "vim  src/path test"} "path" "vim  src/fa test"]
+        [9 {cursor: 15 line: "vim  `src/path` test"} "path" "vim  `src/fa` test"]
     ] {
         $env.NUTEST_COMMANDLINE = $case.line
         $env.NUTEST_COMMANDLINE_GETCURSOR = $case.cursor | into string
