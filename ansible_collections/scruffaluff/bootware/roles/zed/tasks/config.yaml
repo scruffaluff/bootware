@@ -35,7 +35,8 @@
   ansible.builtin.set_fact:
     zed_settings: >-
       {{ {} if 'skipped' in zed_settings_file else zed_settings_file['content']
-      | b64decode | regex_replace('//.*', '') | from_yaml }}
+      | b64decode | regex_replace('^\s*//.*$', '', multiline=True) | from_yaml
+      }}
   tags:
     - config
 

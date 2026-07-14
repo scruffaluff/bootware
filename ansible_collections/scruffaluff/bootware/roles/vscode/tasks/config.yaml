@@ -35,8 +35,8 @@
   ansible.builtin.set_fact:
     vscode_settings: >-
       {{ {} if 'skipped' in vscode_settings_file else
-      vscode_settings_file['content'] | b64decode | regex_replace('//.*', '') |
-      from_yaml }}
+      vscode_settings_file['content'] | b64decode | regex_replace('^\s*//.*$',
+      '', multiline=True) | from_yaml }}
   tags:
     - config
 

@@ -63,7 +63,7 @@
 
 - name: Configure Handy settings
   ansible.builtin.include_tasks:
-    file: settings.yaml
+    file: config.yaml
   tags:
     - config
   when: >-
