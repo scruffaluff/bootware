@@ -70,8 +70,8 @@
   chocolatey.chocolatey.win_chocolatey:
     name:
       - dotnetcore-sdk
-      - visualstudio2022buildtools
-      - visualstudio2022-workload-vctools
+      - visualstudio2026buildtools
+      - visualstudio2026-workload-vctools
       - windows-sdk-10.1
   tags:
     - install

@@ -479,7 +479,7 @@ set --export PYTHON_HISTORY /dev/null
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
-# Make numerical compute libraries findable on MacOS.
+# Add numerical compute libraries to system path for MacOS.
 if test $os = Darwin
     if test -d /opt/homebrew
         set --export OPENBLAS /opt/homebrew/opt/openblas

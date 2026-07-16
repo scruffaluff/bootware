@@ -130,6 +130,14 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+- name: Add Uv shims to path for Windows
+  ansible.windows.win_path:
+    elements: "{{ user_home }}\\AppData\\Local\\uv\\tool\\shims"
+    scope: user
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
 # Uv Nushell completions are disabled since they break help flags for
 # subprocesses.
 - name: Create Uv shell completions for Unix

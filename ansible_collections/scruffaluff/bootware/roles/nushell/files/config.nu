@@ -825,7 +825,7 @@ $env.PYTHON_HISTORY = if $nu.os-info.name == "windows" {
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
-# Make numerical compute libraries findable for MacOS.
+# Add numerical compute libraries to system path for MacOS.
 if $nu.os-info.name == "macos" {
     if ("/opt/homebrew" | path exists) {
         $env.OPENBLAS = "/opt/homebrew/opt/openblas"
