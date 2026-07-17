@@ -341,7 +341,7 @@ jobs:
       - name: Install Bootware
         run: |
           src\install.ps1 --global --version ${{ steps.branch.outputs.current_branch }}
-          Copy-Item -Destination 'C:\Program Files\Bootware\bootware.ps1' -Path src/bootware.ps1
+          Copy-Item -Destination 'C:\Program Files\Bin\bootware.ps1' -Path src/bootware.ps1
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. Default shell must be older
@@ -350,7 +350,7 @@ jobs:
       # role.
       - name: Install dependencies for Bootware
         run: |
-          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          $Env:Path = "C:\Program Files\Bin;$Env:Path"
           bootware setup --checkout ${{ steps.branch.outputs.current_branch }}
           New-ItemProperty `
             -Force `
@@ -373,7 +373,7 @@ jobs:
         shell: powershell
       - name: Copy Bootware configuration file
         run: |
-          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          $Env:Path = "C:\Program Files\Bin;$Env:Path"
           bootware config --empty
         shell: powershell
       # Docker role is skipped since it is already installed. Latex role is skipped
@@ -382,7 +382,7 @@ jobs:
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
-          $Env:Path = "C:\Program Files\Bootware;$Env:Path"
+          $Env:Path = "C:\Program Files\Bin;$Env:Path"
           bootware bootstrap --dev --no-setup --retries 3 --skip docker,latex --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.

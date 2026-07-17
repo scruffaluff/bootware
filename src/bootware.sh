@@ -119,7 +119,7 @@ Options:
   -h, --help              Print help information.
   -s, --skip <TAG-LIST>   Ansible playbook tags to skip.
   -t, --tags <TAG-LIST>   Ansible playbook tags to select.
-  -u, --url <URL>         URL of playbook repository.
+  -u, --url <URL>         URL of playbook.
 EOF
       ;;
     setup)
@@ -721,11 +721,9 @@ log() {
 # Subcommand to list all Bootware roles.
 #######################################
 roles() {
-  local modified
-  local repo_dir
   local skip=''
   local tags=''
-  local url="${BOOTWARE_URL:-https://github.com/scruffaluff/bootware.git}"
+  local url='https://raw.githubusercontent.com/scruffaluff/bootware/refs/heads/main/playbook.yaml'
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -754,28 +752,6 @@ roles() {
     esac
   done
 
-  # Do not use long form flags for mkdir. They are not supported on some
-  # systems.
-  #
-  # Flags:
-  #   -d: Check if path is a directory.
-  mkdir -p "${HOME}/.cache/bootware"
-  repo_dir="${HOME}/.cache/bootware/repo"
-
-  # Update repository if more than a day since last modification.
-  if [ -d "${repo_dir}" ]; then
-    # GNU and BSD versions of stat use different flags.
-    modified="$(
-      stat -c %Y "${repo_dir}" 2> /dev/null || stat -f %m "${repo_dir}"
-    )"
-    if [ "$(($(date +%s) - modified))" -gt 86400 ]; then
-      rm -fr "${repo_dir}"
-      git clone --depth 1 "${url}" "${repo_dir}" > /dev/null 2>&1
-    fi
-  else
-    git clone --depth 1 "${url}" "${repo_dir}" > /dev/null 2>&1
-  fi
-
   case "${tags}," in
     *all,*)
       contains="((map(. != \"never\") | all) or (map(. == \"$(echo "${tags}" | sed 's/,/\") | any) or (map(. == \"/g')\") | any))"
@@ -799,7 +775,7 @@ roles() {
   fi
 
   format='."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
-  yq "${filter} | ${format}" "${repo_dir}/playbook.yaml"
+  fetch "${url}" | yq "${filter} | ${format}"
 }
 
 #######################################

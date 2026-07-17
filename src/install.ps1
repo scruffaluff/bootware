@@ -112,7 +112,7 @@ function Main() {
             }
             { $_ -in '-g', '--global' } {
                 if (-not $DestDir) {
-                    $DestDir = 'C:\Program Files\Bootware'
+                    $DestDir = 'C:\Program Files\Bin'
                 }
                 $ArgIdx += 1
                 break
@@ -147,7 +147,7 @@ function Main() {
 
     # Create destination folder if it does not exist for Resolve-Path.
     if (-not $DestDir) {
-        $DestDir = "$Env:LocalAppData\Programs\Bootware"
+        $DestDir = "$Env:LocalAppData\Programs\Bin"
     }
     New-Item -Force -ItemType Directory -Path $DestDir | Out-Null
 

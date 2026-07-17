@@ -29,7 +29,7 @@ Describe 'Install' {
 
         & $Install --preserve-env --version develop
         Assert-MockCalled Invoke-WebRequest -Scope It -Times 1 -ParameterFilter {
-            $OutFile -eq "$Env:LocalAppData\Programs\Bootware\bootware.ps1" -and
+            $OutFile -eq "$Env:LocalAppData\Programs\Bin\bootware.ps1" -and
             $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/develop/src/bootware.ps1'
         }
     }

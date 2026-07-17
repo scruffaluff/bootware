@@ -23,12 +23,12 @@ Describe 'Bootstrap' {
         $Playbook = "$(Get-Location)\playbook.yaml"
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + "192.48.16.0 --playbook $(WSLPath $Playbook) " `
-            + "--private-key `$HOME/.ssh/bootware --skip none " `
+            + "192.48.16.0 --private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
             + '--extra-vars connect_role_executed=false ' `
-            + '--start-at-task Install Deno JavaScript runtime'
+            + '--start-at-task Install Deno JavaScript runtime ' `
+            + "--playbook $(WSLPath $Playbook)"
 
         $Actual = & $Bootware bootstrap --start-at-role deno --playbook $Playbook
         $Actual | Should -Be $Expected
@@ -38,10 +38,10 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip none " `
+            + '192.48.16.0 --private-key $HOME/.ssh/bootware --skip none ' `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags desktop " `
-            + "--user $Env:UserName"
+            + "--user $Env:UserName --playbook " `
+            + '/mnt/c/Fake/path/repo/playbook.yaml'
 
         $Actual = & $Bootware bootstrap --playbook C:/Fake\path/repo/playbook.yaml
         $Actual | Should -Be $Expected
@@ -51,10 +51,10 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip python " `
+            + '192.48.16.0 --private-key $HOME/.ssh/bootware --skip python ' `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd --user $Env:UserName --debug"
+            + "--tags fd --user $Env:UserName --debug " `
+            + '--playbook /mnt/c/Fake/path/repo/playbook.yaml'
 
         $Actual = & $Bootware bootstrap --debug --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python --tags fd
@@ -65,10 +65,10 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip rust " `
-            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags fd --user $Env:UserName"
+            + '192.48.16.0 --private-key $HOME/.ssh/bootware --skip rust ' `
+            + "--ssh-extra-args '-o StrictHostKeyChecking=no' --tags fd " `
+            + "--user $Env:UserName --playbook " `
+            + '/mnt/c/Fake/path/repo/playbook.yaml'
 
         $Actual = & $Bootware bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip rust --tags fd
@@ -79,10 +79,10 @@ Describe 'Bootstrap' {
         $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
             + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + '192.48.16.0 --playbook /mnt/c/Fake/path/repo/playbook.yaml ' `
-            + "--private-key `$HOME/.ssh/bootware --skip python " `
+            + '192.48.16.0 --private-key $HOME/.ssh/bootware --skip python ' `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags lsd --user $Env:UserName --timeout 60"
+            + "--tags lsd --user $Env:UserName --timeout 60 " `
+            + "--playbook /mnt/c/Fake/path/repo/playbook.yaml"
 
         $Actual = & $Bootware bootstrap --playbook `
             C:/Fake\path/repo/playbook.yaml --skip python --timeout 60 `

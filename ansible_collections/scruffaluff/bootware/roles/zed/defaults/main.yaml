@@ -25,6 +25,7 @@ zed_extensions:
   latex: true
   lua: true
   log: true
+  make: true
   neocmake: true
   nu: true
   powershell: true

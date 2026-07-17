@@ -124,6 +124,7 @@ Options:
   -h, --help              Print help information.
   -s, --skip <TAG-LIST>   Ansible playbook tags to skip.
   -t, --tags <TAG-LIST>   Ansible playbook tags to select.
+  -u, --url <URL>         URL of playbook.
 '@
         }
         'setup' {
@@ -137,7 +138,6 @@ Options:
   -h, --help             Print help information.
       --checkout <REF>   Git reference to run against.
   --no-wsl               Do not configure WSL.
-  -u, --url <URL>        URL of playbook repository.
 '@
         }
         'uninstall' {
@@ -175,11 +175,10 @@ function Bootstrap() {
     $Debug = $Global:Debug
     $ExtraArgs = @()
     $Inventory = ''
-    $Playbook = "$PSScriptRoot\repo\playbook.yaml"
+    $Playbook = ''
     $Remote = $False
     $Skip = 'none'
     $Tags = 'desktop'
-    $URL = 'https://github.com/scruffaluff/bootware.git'
     $UseSetup = $True
     $User = $Env:UserName
 
@@ -243,11 +242,6 @@ function Bootstrap() {
                 $ArgIdx += 2
                 break
             }
-            { $_ -in '-u', '--url' } {
-                $URL = $Args[0][$ArgIdx + 1]
-                $ArgIdx += 2
-                break
-            }
             '--user' {
                 $User = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
@@ -262,9 +256,7 @@ function Bootstrap() {
     }
 
     if ($UseSetup) {
-        $Params = @()
-        $Params += '--url', $URL
-        Setup $Params
+        Setup
     }
     elseif (-not (Get-Command -ErrorAction SilentlyContinue wsl)) {
         throw 'Error: The WSL needs to be setup before bootstrapping'
@@ -298,7 +290,9 @@ function Bootstrap() {
     if (-not $Remote) {
         $Inventory = FindRelativeIP
     }
-    $PlaybookPath = WSLPath $Playbook
+    if ($Playbook) {
+        $ExtraArgs += @('--playbook', $(WSLPath $Playbook))
+    }
 
     # Home variable cannot be wrapped in brackets in case the default WSL shell
     # is Fish. Have not found a way to optionally include arguments in
@@ -310,7 +304,6 @@ function Bootstrap() {
         wsl bootware --debug bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --skip $Skip `
             --tags $Tags `
             --user $User `
@@ -320,7 +313,6 @@ function Bootstrap() {
         wsl bootware --debug bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --tags $Tags `
             --skip $Skip `
             --user $User
@@ -329,7 +321,6 @@ function Bootstrap() {
         wsl bootware bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --skip $Skip `
             --tags $Tags `
             --user $User `
@@ -339,7 +330,6 @@ function Bootstrap() {
         wsl bootware bootstrap `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --skip $Skip `
             --tags $Tags `
             --user $User
@@ -348,7 +338,6 @@ function Bootstrap() {
         wsl bootware --debug bootstrap --no-passwd `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --private-key "`$HOME/.ssh/bootware" `
             --skip $Skip `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
@@ -360,7 +349,6 @@ function Bootstrap() {
         wsl bootware --debug bootstrap --no-passwd `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --private-key "`$HOME/.ssh/bootware" `
             --skip $Skip `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
@@ -371,7 +359,6 @@ function Bootstrap() {
         wsl bootware bootstrap --no-passwd `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --private-key "`$HOME/.ssh/bootware" `
             --skip $Skip `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
@@ -383,7 +370,6 @@ function Bootstrap() {
         wsl bootware bootstrap --no-passwd `
             --config $WSLConfigPath `
             --inventory $Inventory `
-            --playbook $PlaybookPath `
             --private-key "`$HOME/.ssh/bootware" `
             --skip $Skip `
             --ssh-extra-args "'-o StrictHostKeyChecking=no'" `
@@ -557,7 +543,7 @@ function RemoteScript($URL) {
 # Subcommand to list all Bootware roles.
 function Roles() {
     $ArgIdx = 0
-    $Playbook = ''
+    $Playbook = 'https://raw.githubusercontent.com/scruffaluff/bootware/refs/heads/main/playbook.yaml'
     $Skip = ''
     $Tags = ''
 
@@ -574,6 +560,11 @@ function Roles() {
             }
             { $_ -in '-t', '--tags' } {
                 $Tags = $Args[0][$ArgIdx + 1] -join ','
+                $ArgIdx += 2
+                break
+            }
+            { $_ -in '-u', '--url' } {
+                $Playbook = $Args[0][$ArgIdx + 1]
                 $ArgIdx += 2
                 break
             }
@@ -610,26 +601,18 @@ function Roles() {
     $Format = '."ansible.builtin.include_role".name  | sub("scruffaluff.bootware.", "")'
     $Command = "$Filter | $Format"
 
-    if (Test-Path -Path "$PSScriptRoot\repo\playbook.yaml" -PathType Leaf) {
-        $Playbook = "$PSScriptRoot\repo\playbook.yaml"
-    }
-    elseif (Test-Path -Path 'playbook.yaml' -PathType Leaf) {
-        $Playbook = 'playbook.yaml'
-    }
-    else {
-        throw 'Unable to find Bootware playbook.'
-    }
-
     # Special quoting is required for the command due to PowerShell shenanigans.
     # For more information, visit https://github.com/mikefarah/yq/issues/747.
-    Get-Content "$Playbook" | yq --exit-status $($Command -replace '"', '\"')
+    Invoke-WebRequest -UseBasicParsing -Uri $Playbook |
+        Select-Object -Expand Content |
+        yq --exit-status $($Command -replace '"', '\"')
 }
 
 # Subcommand to configure bootstrapping services and utilities.
 function Setup() {
+    $Arch = $Env:PROCESSOR_ARCHITECTURE.ToLower()
     $ArgIdx = 0
     $Branch = 'main'
-    $URL = 'https://github.com/scruffaluff/bootware.git'
     $WSL = $True
 
     while ($ArgIdx -lt $Args[0].Count) {
@@ -648,11 +631,6 @@ function Setup() {
                 $ArgIdx += 1
                 break
             }
-            { $_ -in '-u', '--url' } {
-                $URL = $Args[0][$ArgIdx + 1]
-                $ArgIdx += 2
-                break
-            }
             Default {
                 Log "error: No such option '$($Args[0][$ArgIdx])'."
                 Log "Run 'bootware setup --help' for usage."
@@ -669,74 +647,22 @@ Restart this script from an administrator console to continue.
         exit 1
     }
 
-    # Install Chocolatey package manager.
-    if (-not (Get-Command -ErrorAction SilentlyContinue choco)) {
-        Log 'Downloading Chocolatey package manager.'
-        RemoteScript 'https://chocolatey.org/install.ps1'
-    }
-
-    # Install Scoop package manager.
-    if (-not (Get-Command -ErrorAction SilentlyContinue scoop)) {
-        Log 'Downloading Scoop package manager.'
-        # Scoop disallows installation from an admin console by default. For
-        # more information, visit
-        # https://github.com/ScoopInstaller/Install#for-admin.
-        if (IsAdministrator) {
-            $ScoopInstaller = [System.IO.Path]::GetTempFileName() `
-                -replace '.tmp', '.ps1'
-            Invoke-WebRequest -UseBasicParsing -OutFile $ScoopInstaller `
-                -Uri 'get.scoop.sh'
-            & $ScoopInstaller -RunAsAdmin
-            Remove-Item -Force -Path $ScoopInstaller
-        }
-        else {
-            RemoteScript 'https://get.scoop.sh'
-        }
-
-        # Add Scoop shims to system path.
-        $Path = [Environment]::GetEnvironmentVariable('Path', 'Machine')
-        $GlobalShims = 'C:\ProgramData\scoop\shims'
-        if (-not ($Path -like "*$GlobalShims*")) {
-            [System.Environment]::SetEnvironmentVariable(
-                'Path', "$GlobalShims;$Path", 'Machine'
-            )
-        }
-        $Path = [Environment]::GetEnvironmentVariable('Path', 'User')
-        $UserShims = "$HOME\scoop\shims"
-        if (-not ($Path -like "*$UserShims*")) {
-            [System.Environment]::SetEnvironmentVariable(
-                'Path', "$UserShims;$Path", 'User'
-            )
-        }
-    }
-
-    # Git is required for adding Scoop buckets.
-    if (-not (Get-Command -ErrorAction SilentlyContinue git)) {
-        Log 'Installing Git.'
-        scoop install mingit
-        Log "Installed $(git --version)."
+    if (-not (Get-Command -ErrorAction SilentlyContinue jq)) {
+        Log 'Installing Jq.'
+        Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot\jq.exe" -Uri `
+            "https://github.com/jqlang/jq/releases/latest/download/jq-windows-$Arch.exe"
+        Log "Installed $(jq --version)."
     }
 
     if (-not (Get-Command -ErrorAction SilentlyContinue yq)) {
         Log 'Installing Yq.'
-        scoop install yq
+        $Response = Invoke-WebRequest -UseBasicParsing -Uri `
+            https://formulae.brew.sh/api/formula/yq.json
+        $Version = "$Response" | jq --exit-status --raw-output `
+            '.versions.stable'
+        Invoke-WebRequest -UseBasicParsing -OutFile "$PSScriptRoot\yq.exe" -Uri `
+            "https://github.com/mikefarah/yq/releases/download/v$Version/yq_windows_$Arch.exe"
         Log "Installed $(yq --version)."
-    }
-
-    $ScoopBuckets = scoop bucket list
-    foreach ($Bucket in @('extras', 'main', 'versions')) {
-        if ($Bucket -notin $ScoopBuckets.Name) {
-            scoop bucket add $Bucket
-        }
-    }
-
-    $RepoPath = "$PSScriptRoot\repo"
-    if (-not (Test-Path -Path $RepoPath -PathType Any)) {
-        git clone `
-            --single-branch `
-            --branch $Branch `
-            --depth 1 $URL `
-            $RepoPath
     }
 
     # WSL version 1 requires the Windows host SSH server to be initialized
@@ -753,7 +679,7 @@ Restart this script from an administrator console to continue.
 
 # Create SSH keys to connect to Windows host and scan for fingerprints.
 function SetupSSHKeys {
-    $SetupSSHKeysComplete = "$PSScriptRoot\.setup_ssh_keys"
+    $SetupSSHKeysComplete = 'C:\ProgramData\Bootware\setup_ssh_keys'
     if (-not (Test-Path -Path $SetupSSHKeysComplete -PathType Leaf)) {
         Log 'Generating SSH keys.'
 
@@ -797,6 +723,8 @@ function SetupSSHKeys {
             -Path "$Env:ProgramData\ssh\sshd_config" `
             -Value 'PasswordAuthentication no'
 
+        New-Item -Force -ItemType Directory -Path $(Split-Path -Parent -Path `
+                $SetupSSHKeysComplete) | Out-Null
         New-Item -ItemType File -Path $SetupSSHKeysComplete | Out-Null
         Log 'Completed SSH key configuration.'
     }
@@ -807,7 +735,7 @@ function SetupSSHKeys {
 # Based on documentation from
 # https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse.
 function SetupSSHServer() {
-    $SetupSSHServerComplete = "$PSScriptRoot\.setup_ssh_server"
+    $SetupSSHServerComplete = 'C:\ProgramData\Bootware\setup_ssh_server'
     if (-not (Test-Path -Path $SetupSSHServerComplete -PathType Leaf)) {
         Log 'Setting up OpenSSH server.'
 
@@ -862,6 +790,8 @@ function SetupSSHServer() {
             /Grant 'SYSTEM:F' `
             /Inheritance:r
 
+        New-Item -Force -ItemType Directory -Path $(Split-Path -Parent -Path `
+                $SetupSSHServerComplete) | Out-Null
         New-Item -ItemType File -Path $SetupSSHServerComplete | Out-Null
     }
 
@@ -969,7 +899,8 @@ function Uninstall() {
         }
     }
 
-    Remove-Item -Force -Recurse -Path $PSScriptRoot
+    Remove-Item -Force -Path "$PSScriptRoot\bootware.cmd"
+    Remove-Item -Force -Path "$PSScriptRoot\bootware.ps1"
     Log 'Uninstalled Bootware.'
 }
 
@@ -1014,12 +945,6 @@ function Update() {
                 wsl bootware update --version $Version `> /dev/null
             }
         }
-    }
-
-    # Update playbook repository.
-    $RepoPath = "$PSScriptRoot\repo"
-    if (Test-Path -Path $RepoPath -PathType Container) {
-        git -C $RepoPath pull
     }
 
     Log "Updated to $(bootware --version)."
