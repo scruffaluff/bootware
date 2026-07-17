@@ -1223,10 +1223,13 @@ def --env --wrapped yazi [...args: path] {
     let dest = open $log
 
     # Change to Yazi saved destination unless it is the temporary folder.
-    if ($dest | is-empty) or $dest == $temp {
-        cd $src
-    } else {
+    if (
+        ($dest | path exists) and ($dest | path type) == "dir" and $dest !=
+        $temp
+    ) {
         cd $dest
+    } else {
+        cd $src
     }
     rm $log
 }

@@ -107,7 +107,7 @@ prepend_keymap = [
   { desc = "Search file content via rg", on = [
     "f",
     "S",
-  ], run = "search --vida=rg" },
+  ], run = "search --via=rg" },
   { desc = "Search file content via fzf", on = [
     "f",
     "Z",

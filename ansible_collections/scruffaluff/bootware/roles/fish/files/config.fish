@@ -666,7 +666,7 @@ set --export YAZI_ZOXIDE_OPTS "$FZF_BASE_OPTS --preview-window hidden"
 # Yazi wrapper to change directory on program exit.
 #
 # Flags:
-#   -n: Check if string is nonempty.
+#   -d: Check if path is a directory.
 function yazi
     set --function tmp (mktemp)
     command yazi --cwd-file $tmp $argv
@@ -674,7 +674,7 @@ function yazi
 
     # Quotes are necessary for the if statement to ensure that the test function
     # always receives the correct number of arguments.
-    if test -n "$cwd"; and test "$cwd" != "$PWD"
+    if test -d "$cwd"; and test "$cwd" != "$PWD"
         cd $cwd
     end
     rm $tmp

@@ -687,7 +687,7 @@ function yazi() {
     $Tmp = [System.IO.Path]::GetTempFileName()
     yazi.exe --cwd-file $Tmp $Args
     $Cwd = Get-Content -Path $Tmp
-    if (($Cwd) -and ($Cwd -ne $PWD.Path)) {
+    if ((Test-Path -Path $Cwd -PathType Container) -and ($Cwd -ne $PWD.Path)) {
         Set-Location $Cwd
     }
     Remove-Item $Tmp
