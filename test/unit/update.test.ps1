@@ -29,7 +29,7 @@ Describe 'Update' {
         )
     }
 
-    It 'Subcommand passes args to Invoke-WebRequest and Git' {
+    It 'Subcommand passes args to Invoke-WebRequest' {
         if (Get-Command -ErrorAction SilentlyContinue bootware) {
             Mock bootware { '' }
         }
@@ -39,14 +39,11 @@ Describe 'Update' {
 
         $Env:BOOTWARE_NOLOG = 'true'
         $BootwareDir = Split-Path -Parent $Bootware
-        $Expected = "git -C $BootwareDir\repo pull"
 
-        $Actual = & $Bootware update --version main
+        & $Bootware update --version main
         Assert-MockCalled Invoke-WebRequest -Scope It -Times 1 -ParameterFilter {
             $OutFile -eq "$BootwareDir\bootware.ps1" -and
             $Uri -eq 'https://raw.githubusercontent.com/scruffaluff/bootware/main/src/bootware.ps1'
         }
-
-        $Actual | Should -Be $Expected
     }
 }

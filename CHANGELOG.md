@@ -5,6 +5,27 @@ see the commit logs. The format is based on
 [Keep a Changelog](https://keepachangelog.com), and this project adheres to
 [Semantic Versioning](https://semver.org).
 
+## Unreleased
+
+### Added
+
+- Handy role.
+
+### Changed
+
+- Shell secrets file name.
+- Window management keybindings.
+
+### Fixed
+
+- Comment stripping in VSCode and Zed config parsing.
+- Improved Yazi mime parsing speed.
+- Yazi change directory check.
+
+### Removed
+
+- Roles command dependency on copy of repository.
+
 ## 0.10.4 - 2026-06-02
 
 ### Added

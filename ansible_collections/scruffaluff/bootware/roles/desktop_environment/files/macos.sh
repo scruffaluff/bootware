@@ -87,6 +87,9 @@ done
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Show hidden files in Finder.
 defaults write com.apple.finder AppleShowAllFiles -bool true
+# Increase icon size for list view in Finder.
+defaults write com.apple.finder FK_DefaultListViewSettings -dict-add \
+  iconSize 16
 # Use only the current folder for Finder searches.
 defaults write com.apple.finder FXDefaultSearchScope -string SCcf
 # Disable file extension change warning.
