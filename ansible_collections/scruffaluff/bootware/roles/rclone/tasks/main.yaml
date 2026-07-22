@@ -32,3 +32,12 @@
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
+
+- name: Override Scoop custom Rclone configuration for Windows
+  ansible.windows.win_environment:
+    level: user
+    name: RCLONE_CONFIG
+    value: "{{ user_home }}\\AppData\\Roaming\\rclone\\rclone.conf"
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"

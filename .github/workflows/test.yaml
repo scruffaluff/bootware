@@ -212,10 +212,10 @@ jobs:
             echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/bootware
           release: "15.0"
           # Security role is skipped since it breaks the freebsd-vm action's
-          # Rsync connection by enforcing stricter SSH rules. VSCode role is
-          # skipped since it intermittently disappears from the FreeBSD package
-          # registry. Audacity and Musescore tests are skipped in FreeBSD VM
-          # since they require a display connection.
+          # Rsync connection by enforcing stricter SSH rules. Chrome, VSCode,
+          # and Wireshark roles are skipped since they intermittently disappear
+          # from the FreeBSD package registry. Audacity and Musescore tests are
+          # skipped in FreeBSD VM since they require a display connection.
           run: |
             su - freebsd -c sh << EOF
             set -eu
@@ -223,8 +223,8 @@ jobs:
             src/install.sh --global
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip security,vscode --tags all,never
-            bash -c 'source /home/freebsd/.bashrc && deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip audacity,musescore,vscode freebsd'
+            bootware bootstrap --dev --no-passwd --retries 3 --skip chrome,security,vscode,wireshark --tags all,never
+            bash -c 'source /home/freebsd/.bashrc && deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip audacity,chrome,musescore,vscode,wireshark freebsd'
             EOF
           usesh: true
       # To login into the FreeBSD VM from the host runner, execute `ssh -t
@@ -254,17 +254,20 @@ jobs:
         run: bootware setup
       # Kdenlive is disabled since its Homebrew formula crashes during
       # installation as of 05/15/2026. Usql is disabled since its Homebrew
-      # formula crashes during installation as of 02/25/2026.
+      # formula crashes during installation as of 02/25/2026. Wezterm is
+      # disabled since its Homebrew cask crashes during installation as of
+      # 07/23/2026.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
+          HOMEBREW_NO_REQUIRE_TAP_TRUST: "1"
         run: >-
-          bootware bootstrap --dev --no-passwd --retries 3 --skip kdenlive,usql
-          --tags all,never
+          bootware bootstrap --dev --no-passwd --retries 3 --skip
+          kdenlive,usql,wezterm --tags all,never
       - name: Test installed binaries for roles
         run: |
           source ${HOME}/.bashrc
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch arm64 --skip kdenlive,usql macos
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch arm64 --skip kdenlive,usql,wezterm macos
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
@@ -376,14 +379,15 @@ jobs:
           $Env:Path = "C:\Program Files\Bin;$Env:Path"
           bootware config --empty
         shell: powershell
-      # Docker role is skipped since it is already installed. Latex role is skipped
-      # since it fails in workflows but passes locally as of 06/01/2026.
+      # Docker role is skipped since it is already installed. Image Magick,
+      # Latex, and Zed roles are skipped since it fails in workflows but passes
+      # locally as of 06/01/2026.
       - name: Test bootstrapping
         env:
           BOOTWARE_GITHUB_TOKEN: ${{ github.token }}
         run: |
           $Env:Path = "C:\Program Files\Bin;$Env:Path"
-          bootware bootstrap --dev --no-setup --retries 3 --skip docker,latex --tags all,never
+          bootware bootstrap --dev --no-setup --retries 3 --skip docker,image_magick,latex,zed --tags all,never
         shell: powershell
       # The GitHub Windows server does not seem to update its path correctly.
       # Appears to work on other Windows servers. LLDB test is skipped since it
@@ -396,7 +400,7 @@ jobs:
           $Env:Path = "C:\Program Files\Datree;C:\Program Files\Deno\bin;$Env:Path"
           $Env:Path = "C:\ProgramData\scoop\shims;$HOME\.krew\bin;$HOME\scoop\shims;$Env:Path"
           $Env:Path = "$HOME\scoop\apps\qemu\current;$Env:LocalAppData\Programs\mongosh;$Env:Path"
-          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,latex,lldb,rust windows
+          deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip docker,image_magick,latex,lldb,rust,zed windows
       - if: ${{ always() && inputs.debug }}
         name: Launch Tmate session if debug enabled
         timeout-minutes: 60
