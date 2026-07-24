@@ -161,8 +161,6 @@ user_pref("pdfjs.enableAltTextModelDownload", false);
 user_pref("pdfjs.enableGuessAltText", false);
 // Prevent sites from asking to send notifications.
 user_pref("permissions.default.desktop-notification", 2);
-// Prevent sites from asking for location.
-user_pref("permissions.default.geo", 2);
 // Prevent sites from asking to connect to virtual reality devices.
 user_pref("permissions.default.xr", 2);
 // Clear downloads list on browser close.

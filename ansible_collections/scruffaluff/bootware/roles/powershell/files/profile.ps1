@@ -357,6 +357,8 @@ function uvx() {
     uv tool run $Args
 }
 
+# Prevent newer Marimo version messages.
+$Env:MARIMO_SKIP_UPDATE_CHECK = '1'
 # Make Poetry create virtual environments inside projects.
 $Env:POETRY_VIRTUALENVS_IN_PROJECT = 'true'
 # Disable Python history.

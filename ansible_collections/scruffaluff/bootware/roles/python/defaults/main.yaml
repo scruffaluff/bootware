@@ -10,6 +10,7 @@ python_applications_:
     - name: marimo[sandbox,sql]
       extras:
         - pytest
+        - python-lsp-server
         - ruff
         - ty
   FreeBSD: []
@@ -17,12 +18,14 @@ python_applications_:
     - name: marimo[sandbox,sql]
       extras:
         - pytest
+        - python-lsp-server
         - ruff
         - ty
   Win32NT:
     - name: marimo[sandbox,sql]
       extras:
         - pytest
+        - python-lsp-server
         - ruff
         - ty
 python_applications: >-

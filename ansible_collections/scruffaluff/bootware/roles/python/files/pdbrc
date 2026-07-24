@@ -20,3 +20,6 @@ if "os" not in _namespace: del os
 if "pdb" not in _namespace: del pdb
 if "sys" not in _namespace: del sys
 del _, _namespace, pdbrc
+
+# Convenience aliases.
+alias db debug %*

@@ -3,10 +3,17 @@
 # For more information, visit https://docs.marimo.io/guides/configuration.
 
 [ai]
+enabled = false
 inline_tooltip = false
+
+[diagnostics]
+enabled = true
 
 [display]
 custom_css = ["{{ user_home }}/.config/marimo/marimo.css"]
+
+[experimental]
+debugger = true
 
 [formatting]
 line_length = 80
@@ -14,27 +21,45 @@ line_length = 80
 # Marimo does not yet provide a way to disable keybindings so
 # "Alt-Ctrl-Shift-q" is used instead.
 [keymap.overrides]
-"cell.cellActions" = "Alt-Ctrl-Shift-q"
+"cell.aiCompletion" = "Alt-Ctrl-Shift-q"
+"cell.cellActions" = ""
 "cell.complete" = "Ctrl-i"
+"cell.createBelow" = "Alt-n"
+"cell.findAndReplace" = "Ctrl-f"
 "cell.foldAll" = "Alt-Ctrl-Shift-q"
+"cell.format" = "Alt-Ctrl-Shift-q"
+"cell.goToDefinition" = "Alt-d"
+"cell.signatureHelp" = "Alt-h"
 "cell.toggleComment" = "Ctrl-/"
 "cell.unfoldAll" = "Alt-Ctrl-Shift-q"
+"cell.viewAsMarkdown" = "Alt-m"
 "completion.moveDown" = "Ctrl-n"
 "completion.moveUp" = "Ctrl-p"
+"global.commandPalette" = "Alt-p"
+"global.formatAll" = "Alt-Ctrl-Shift-q"
+"global.hideCode" = "Ctrl-."
 "global.interrupt" = "Alt-Ctrl-Shift-q"
+"global.showHelp" = "Ctrl-Shift-h"
 "global.toggleMinimap" = "Alt-Ctrl-Shift-q"
+"global.togglePanel" = "Ctrl-j"
+"global.toggleTerminal" = "Ctrl-Shift-t"
+"markdown.bold" = "Ctrl-b"
+"markdown.italic" = "Ctrl-i"
+"markdown.link" = "Ctrl-k"
 
 [language_servers.pylsp]
 enabled = true
 enable_mypy = false
 enable_ruff = true
 
-# Disable Ty integration until it is stable.
 [language_servers.ty]
-enabled = false
+enabled = true
 
 [save]
 format_on_save = false
 
 [runtime]
+auto_reload = "lazy"
+on_cell_change = "lazy"
 output_max_bytes = 1000000000
+skip_update_check = true

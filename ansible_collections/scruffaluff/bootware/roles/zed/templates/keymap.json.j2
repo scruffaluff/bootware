@@ -29,11 +29,16 @@
       "ctrl-shift-o": "file_finder::Toggle",
       "ctrl-shift-p": "command_palette::Toggle",
       "ctrl-shift-right": "pane::SwapItemRight",
-      "ctrl-shift-t": "terminal_panel::ToggleFocus",
       "ctrl-shift-up": "workspace::SwapPaneRight",
       "ctrl-shift-w": "pane::CloseActiveItem",
       "ctrl-shift-x": "workspace::ToggleBottomDock"
     }
+  },
+  {
+    "bindings": {
+      "ctrl-shift-s": "debug_panel::ToggleFocus"
+    },
+    "context": "DebugPanel"
   },
   {
     "bindings": {
@@ -63,7 +68,6 @@
       "ctrl-left": "editor::MoveToPreviousSubwordStart",
       "ctrl-right": "editor::MoveToNextSubwordEnd",
       "ctrl-shift-enter": "editor::NewlineAbove",
-      "ctrl-shift-s": "terminal_panel::ToggleFocus",
       "ctrl-u": "editor::DeleteToBeginningOfLine",
       "ctrl-up": "editor::AddSelectionAbove",
       "ctrl-w": "editor::DeleteToPreviousWordStart",
@@ -138,10 +142,22 @@
   },
   {
     "bindings": {
+      "ctrl-shift-s": "debug_panel::ToggleFocus"
+    },
+    "context": "!DebugPanel && bottom_dock == DebugPanel"
+  },
+  {
+    "bindings": {
       "ctrl-shift-c": null,
       "ctrl-shift-t": "terminal_panel::ToggleFocus"
     },
     "context": "!Terminal"
+  },
+  {
+    "bindings": {
+      "ctrl-shift-s": "terminal_panel::ToggleFocus"
+    },
+    "context": "!Terminal && bottom_dock == TerminalPanel"
   },
   {
     "bindings": {

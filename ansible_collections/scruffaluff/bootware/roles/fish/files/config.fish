@@ -472,6 +472,8 @@ alias pdb 'python3 -m pdb'
 # Add Uv tool alias.
 alias uvx 'uv tool run'
 
+# Prevent newer Marimo version messages.
+set --export MARIMO_SKIP_UPDATE_CHECK 1
 # Make Poetry create virtual environments inside projects.
 set --export POETRY_VIRTUALENVS_IN_PROJECT true
 # Disable Python history.
