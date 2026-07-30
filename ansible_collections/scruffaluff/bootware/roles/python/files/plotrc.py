@@ -10,7 +10,8 @@ import itertools
 import subprocess
 import sys
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Self, cast
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     from types import ModuleType
@@ -26,7 +27,9 @@ class Range:
     stop: float = float("-inf")
     fixed: bool = False
 
-    def __iadd__(self, other: tuple[float, float]) -> Self:
+    # Quoted return type is used instead of Self to support older Python
+    # versions, such as LLDB's 3.9.
+    def __iadd__(self, other: tuple[float, float]) -> "Range":  # noqa: PYI034, UP037
         """Expand bounds if necessary."""
         if not self.fixed:
             self.start = min(other[0], self.start)
@@ -60,16 +63,33 @@ def flatten(array: Array) -> Array:
 @functools.cache
 def import_libraries(*names: str) -> ModuleType | tuple[ModuleType]:
     """Import library and install if necessary."""
+    version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    target = str(Path.home() / f".config/pyrc/venv/python{version}")
+    if target not in sys.path:
+        sys.path.append(target)
+        importlib.invalidate_caches()
+
     libraries = []
     for name in names:
         try:
             library = importlib.import_module(name)
         except ModuleNotFoundError:
             package = name.split(".")[0]
-            subprocess.run([sys.executable, "-m", "ensurepip"], check=True)
             subprocess.run(
-                [sys.executable, "-m", "pip", "install", package], check=True
+                [
+                    "uv",
+                    "--no-config",
+                    "pip",
+                    "install",
+                    "--python",
+                    version,
+                    "--target",
+                    target,
+                    package,
+                ],
+                check=True,
             )
+            importlib.invalidate_caches()
             library = importlib.import_module(name)
         libraries.append(library)
     if len(libraries) == 1:

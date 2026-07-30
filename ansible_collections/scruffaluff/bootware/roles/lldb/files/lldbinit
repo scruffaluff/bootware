@@ -4,7 +4,6 @@
 
 settings set interpreter.echo-commands false
 settings set interpreter.prompt-on-quit false
-settings set interpreter.save-session-on-quit true
 settings set interpreter.save-transcript true
 settings set show-autosuggestion true
 settings set show-inline-diagnostics true
