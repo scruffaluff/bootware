@@ -120,8 +120,8 @@
   loop:
     - dest: .lldbinit
       src: lldbinit
-    - dest: .config/pyrc/lldbinit.py
-      src: lldbinit.py
+    - dest: .config/pyrc/lldbrc.py
+      src: lldbrc.py
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -134,8 +134,8 @@
   loop:
     - dest: .lldbinit
       src: lldbinit
-    - dest: .config\pyrc\lldbinit.py
-      src: lldbinit.py
+    - dest: .config\pyrc\lldbrc.py
+      src: lldbrc.py
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

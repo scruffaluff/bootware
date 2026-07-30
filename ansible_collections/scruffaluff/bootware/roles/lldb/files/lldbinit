@@ -11,4 +11,4 @@ settings set show-inline-diagnostics true
 settings set target.load-cwd-lldbinit true
 settings set use-external-editor true
 
-command script import ~/.config/pyrc/lldbinit.py
+command script import ~/.config/pyrc/lldbrc.py

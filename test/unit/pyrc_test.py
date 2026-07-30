@@ -10,8 +10,8 @@ import pytest
 
 repo_path = Path(__file__).parents[2]
 sys.path.append(str(repo_path / "ansible_collections/scruffaluff/bootware"))
-from roles.python.files import pdbrc  # noqa: E402
-from roles.python.files.pdbrc import Expr, Parser  # noqa: E402
+from roles.python.files import dbgrc  # noqa: E402
+from roles.python.files.dbgrc import Expr, Parser  # noqa: E402
 
 
 @pytest.mark.parametrize(
@@ -26,7 +26,7 @@ from roles.python.files.pdbrc import Expr, Parser  # noqa: E402
 def test_drop_tokens(line: str, count: int, expected: str) -> None:
     """Remove tokens from start of line."""
     tokens = shlex.split(line)[:count]
-    actual = pdbrc.drop_tokens(tokens, line)
+    actual = dbgrc.drop_tokens(tokens, line)
     assert actual == expected
 
 
@@ -40,7 +40,7 @@ def test_drop_tokens(line: str, count: int, expected: str) -> None:
 )
 def test_find_exprs(line: str, expected: list[Expr]) -> None:
     """Find expressions in command lines."""
-    actual = list(pdbrc.find_exprs(line))
+    actual = list(dbgrc.find_exprs(line))
     assert actual == expected
 
 
@@ -63,7 +63,7 @@ def test_parse_exprs(line: str, locals_: dict[str, Any], expected: str) -> None:
     pdb = SimpleNamespace(
         curframe=SimpleNamespace(f_globals=None), curframe_locals=locals_
     )
-    actual = pdbrc.parse_exprs(pdb, line)
+    actual = dbgrc.parse_exprs(pdb, line)
     assert actual == expected
 
 
