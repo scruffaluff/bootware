@@ -96,7 +96,6 @@ powershell -NoProfile -ExecutionPolicy RemoteSigned -File "%~dnp0.ps1" %*
 # Install completion scripts for Bootware.
 def install-completions [super: string global: bool version: string] {
     let quiet = $env.BOOTWARE_NOLOG? | into bool --relaxed
-    let home = path-home
     let source = if ($version | path exists) {
         $"($version)/src/completion/bootware"
     } else {
@@ -111,8 +110,8 @@ def install-completions [super: string global: bool version: string] {
             ]
         } else {
             [
-                $'($home)\Documents\PowerShell\Modules'
-                $'($home)\Documents\WindowsPowerShell\Modules'
+                $'($nu.home-dir)\Documents\PowerShell\Modules'
+                $'($nu.home-dir)\Documents\WindowsPowerShell\Modules'
             ]
         }
 
@@ -151,11 +150,11 @@ def install-completions [super: string global: bool version: string] {
     } else {
         (
             deploy --mode 644 $"($source).bash"
-            $"($home)/.local/share/bash-completion/completions/bootware"
+            $"($nu.home-dir)/.local/share/bash-completion/completions/bootware"
         )
         (
             deploy --mode 644 $"($source).fish"
-            $"($home)/.config/fish/completions/bootware.fish"
+            $"($nu.home-dir)/.config/fish/completions/bootware.fish"
         )
     }
 }
@@ -190,7 +189,7 @@ def main [
             $"($env.LOCALAPPDATA)\\Programs\\Bootware"
         }
     } else {
-        if $global { "/usr/local/bin" } else { $"(path-home)/.local/bin" }
+        if $global { "/usr/local/bin" } else { $"($nu.home-dir)/.local/bin" }
     }
     let dest = $dest | default $dest_default | path expand
 
@@ -212,15 +211,6 @@ def main [
     log $"Installed (bootware --version)."
 }
 
-# Get user home folder.
-def path-home [] {
-    if $nu.os-info.name == "windows" {
-        $env.HOME? | default $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
-    } else {
-        $env.HOME?
-    }
-}
-
 # Add destination path to Windows environment path.
 def update-path [dest: directory global: bool] {
     let target = if $global { "Machine" } else { "User" }
@@ -240,7 +230,6 @@ if \(-not \($Path -like \"*$Dest*\"\)\) {
 
 # Add Bootware to system path in shell profile.
 def update-shell [dest: directory] {
-    let home = path-home
     let shell = $env.SHELL? | default "" | path basename
 
     let command = match $shell {
@@ -249,17 +238,17 @@ def update-shell [dest: directory] {
         _ => $"export PATH=\"($dest):${PATH}\""
     }
     let profile = match $shell {
-        bash => $"($home)/.bashrc"
-        fish => $"($home)/.config/fish/config.fish"
+        bash => $"($nu.home-dir)/.bashrc"
+        fish => $"($nu.home-dir)/.config/fish/config.fish"
         nu => {
             if $nu.os-info.name == "macos" {
-                $"($home)/Library/Application Support/nushell/config.nu"
+                $"($nu.home-dir)/Library/Application Support/nushell/config.nu"
             } else {
-                $"($home)/.config/nushell/config.nu"
+                $"($nu.home-dir)/.config/nushell/config.nu"
             }
         }
-        zsh => $"($home)/.zshrc"
-        _ => $"($home)/.profile"
+        zsh => $"($nu.home-dir)/.zshrc"
+        _ => $"($nu.home-dir)/.profile"
     }
 
     # Create profile parent directory and add export command to profile.

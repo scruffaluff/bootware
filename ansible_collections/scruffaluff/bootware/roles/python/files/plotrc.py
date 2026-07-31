@@ -290,7 +290,7 @@ def spectrum(
     """Plot audio frequency spectrum."""
     palette = palette_cycle()
     ticks = spectrum_ticks()
-    x_range, y_range = Range(), Range(20, 20_000, True)
+    x_range, y_range = Range(20, 20_000, True), Range()
 
     figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
