@@ -1,17 +1,26 @@
 """Tests for Pyrc custom modules."""
 
+# ruff: noqa: E402, PLC0415
+
 import shlex
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from unittest import mock
+from unittest.mock import MagicMock, Mock
 
 import pytest
 
 repo_path = Path(__file__).parents[2]
-sys.path.append(str(repo_path / "ansible_collections/scruffaluff/bootware"))
-from roles.python.files import dbgrc  # noqa: E402
-from roles.python.files.dbgrc import Expr, Parser  # noqa: E402
+sys.path.append(
+    str(repo_path / "ansible_collections/scruffaluff/bootware/roles/lldb/files")
+)
+sys.path.append(
+    str(repo_path / "ansible_collections/scruffaluff/bootware/roles/python/files")
+)
+import dbgrc
+from dbgrc import Expr, Parser
 
 
 @pytest.mark.parametrize(
@@ -82,3 +91,95 @@ def test_parse_line(line: str, expected: str) -> None:
     parser.add_argument("-p", "--path", default=None)
     rest, _ = parser.parse_line(line)
     assert rest == expected
+
+
+@pytest.mark.parametrize(
+    ("type_"),
+    [
+        "&[f64]",
+        "alloc::boxed::Box<[bool], alloc::alloc::Global>",
+        "alloc::vec::Vec<alloc::string::String, alloc::alloc::Global>",
+        "int[5]",
+        "std::__1::list<char, std::__1::allocator<float> >",
+        "std::array",
+        "std::vector<int>",
+    ],
+)
+def test_to_py_array(type_: str) -> None:
+    """Python conversion uses list for array types."""
+    variable = SimpleNamespace(
+        children=[], name="list", type=SimpleNamespace(name=type_), value=[1, 4, 6]
+    )
+    with mock.patch.dict(
+        "sys.modules",
+        {
+            "lldb": Mock(
+                SBCommandReturnObject=MagicMock(),
+                SBDebugger=MagicMock(),
+                SBFrame=MagicMock(),
+                SBValue=MagicMock(),
+            )
+        },
+    ):
+        import lldbrc
+
+        pyvar = lldbrc.to_py(variable)
+    actual = type(pyvar)
+    assert actual is list
+
+
+@pytest.mark.parametrize(
+    ("type_"),
+    ["sint", "float64_", "long long double", "signed float"],
+)
+def test_to_py_error(type_: str) -> None:
+    """Python conversion fails on bad types."""
+    variable = SimpleNamespace(name=type_, type=SimpleNamespace(name=type_), value=None)
+    with mock.patch.dict(
+        "sys.modules",
+        {
+            "lldb": Mock(
+                SBCommandReturnObject=MagicMock(),
+                SBDebugger=MagicMock(),
+                SBFrame=MagicMock(),
+                SBValue=MagicMock(),
+            )
+        },
+    ):
+        import lldbrc
+
+        with pytest.raises(TypeError, match="Unsupported type"):
+            lldbrc.to_py(variable)
+
+
+@pytest.mark.parametrize(
+    ("type_", "expected"),
+    [
+        ("bfloat16_t", float),
+        ("double", float),
+        ("float", float),
+        ("float32_t", float),
+        ("int", int),
+        ("long double", float),
+        ("unsigned int", int),
+    ],
+)
+def test_to_py_number(type_: str, expected: str) -> None:
+    """Python conversion uses correct types."""
+    variable = SimpleNamespace(name="0", type=SimpleNamespace(name=type_), value=0)
+    with mock.patch.dict(
+        "sys.modules",
+        {
+            "lldb": Mock(
+                SBCommandReturnObject=MagicMock(),
+                SBDebugger=MagicMock(),
+                SBFrame=MagicMock(),
+                SBValue=MagicMock(),
+            )
+        },
+    ):
+        import lldbrc
+
+        pyvar = lldbrc.to_py(variable)
+    actual = type(pyvar)
+    assert actual is expected

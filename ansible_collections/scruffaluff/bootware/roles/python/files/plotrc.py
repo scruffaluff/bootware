@@ -1,5 +1,7 @@
 """Python plotting utilities."""
 
+# ruff: noqa: ANN401
+
 from __future__ import annotations
 
 import dataclasses
@@ -46,11 +48,43 @@ def decibel(signal: Array) -> Array:
 
     Avoids passing zeros to log10 by replacing them with the datatype epsilon.
     """
-    numpy = import_libraries("numpy")
+    numpy = dyport("numpy")
 
     epsilon = numpy.finfo(signal.dtype).eps
     amplitude = numpy.maximum(numpy.abs(signal), epsilon)
     return 20 * numpy.log10(amplitude)
+
+
+@functools.cache
+def dyport(name: str) -> ModuleType:
+    """Import library and install if necessary."""
+    version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    target = str(Path.home() / f".config/pyrc/venv/python{version}")
+    if target not in sys.path:
+        sys.path.append(target)
+        importlib.invalidate_caches()
+
+    try:
+        library = importlib.import_module(name)
+    except ModuleNotFoundError:
+        package = name.split(".", maxsplit=1)[0]
+        subprocess.run(
+            [
+                "uv",
+                "--no-config",
+                "pip",
+                "install",
+                "--python",
+                version,
+                "--target",
+                target,
+                package,
+            ],
+            check=True,
+        )
+        importlib.invalidate_caches()
+        library = importlib.import_module(name)
+    return library
 
 
 def flatten(array: Array) -> Array:
@@ -60,52 +94,15 @@ def flatten(array: Array) -> Array:
     return array
 
 
-@functools.cache
-def import_libraries(*names: str) -> ModuleType | tuple[ModuleType]:
-    """Import library and install if necessary."""
-    version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    target = str(Path.home() / f".config/pyrc/venv/python{version}")
-    if target not in sys.path:
-        sys.path.append(target)
-        importlib.invalidate_caches()
-
-    libraries = []
-    for name in names:
-        try:
-            library = importlib.import_module(name)
-        except ModuleNotFoundError:
-            package = name.split(".")[0]
-            subprocess.run(
-                [
-                    "uv",
-                    "--no-config",
-                    "pip",
-                    "install",
-                    "--python",
-                    version,
-                    "--target",
-                    target,
-                    package,
-                ],
-                check=True,
-            )
-            importlib.invalidate_caches()
-            library = importlib.import_module(name)
-        libraries.append(library)
-    if len(libraries) == 1:
-        return libraries[0]
-    return tuple(libraries)
-
-
 def line(
     *signals: Array, overlay: bool = True, x: Array | None = None, **kwargs: Any
 ) -> None:
     """Plot line."""
-    numpy = import_libraries("numpy")
+    numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
 
     palette = palette_cycle()
     x_range, y_range = Range(), Range()
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
 
     for index, signal in enumerate(signals):
@@ -132,7 +129,7 @@ def line(
             axis.set_xlim(x_range.start, x_range.stop)
         if y_range.valid():
             axis.set_ylim(y_range.start, y_range.stop)
-    figure.show()
+    pyplot.show(block=True)
 
 
 def palette_cycle() -> itertools.cycle:
@@ -161,10 +158,11 @@ def phase(
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency phase."""
+    pyplot = dyport("matplotlib.pyplot")
     palette = palette_cycle()
     x_range, y_range = Range(), Range(20, 20_000)
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Phase (rad)")
     ticks = spectrum_ticks()
@@ -195,14 +193,14 @@ def phase(
             axis.set_xlim(x_range.start, x_range.stop)
         if y_range.valid():
             axis.set_ylim(y_range.start, y_range.stop)
-    figure.show()
+    pyplot.show(block=True)
 
 
 def signal_phase(
     signal: Array | dict[str, Any], rate: int | None = None, x: Array | None = None
 ) -> tuple[Array, Array]:
     """Extract frequency phase from signal dictionary."""
-    numpy = import_libraries("numpy")
+    numpy = dyport("numpy")
 
     if isinstance(signal, dict):
         signal = cast("dict[str, Any]", signal)
@@ -233,7 +231,7 @@ def signal_spectrum(
     x: Array | None = None,
 ) -> tuple[Array, Array]:
     """Extract frequency spectrum from signal dictionary."""
-    numpy = import_libraries("numpy")
+    numpy = dyport("numpy")
 
     if isinstance(signal, dict):
         signal = cast("dict[str, Any]", signal)
@@ -259,7 +257,7 @@ def signal_waveform(
     x: Array | None = None,
 ) -> tuple[Array, Array]:
     """Extract waveform from signal dictionary."""
-    numpy = import_libraries("numpy")
+    numpy = dyport("numpy")
 
     if isinstance(signal, dict):
         signal = cast("dict[str, Any]", signal)
@@ -288,11 +286,12 @@ def spectrum(
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency spectrum."""
+    pyplot = dyport("matplotlib.pyplot")
     palette = palette_cycle()
     ticks = spectrum_ticks()
     x_range, y_range = Range(20, 20_000, True), Range()
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Volume (dB)")
 
@@ -323,12 +322,12 @@ def spectrum(
             axis.set_xlim(x_range.start, x_range.stop)
         if y_range.valid():
             axis.set_ylim(y_range.start, y_range.stop)
-    figure.show()
+    pyplot.show(block=True)
 
 
 def spectrum_ticks() -> tuple[list[float], list[str]]:
     """Generate frequency spectrum plot ticks as octaves centered at 440Hz."""
-    numpy = import_libraries("numpy")
+    numpy = dyport("numpy")
 
     ticks = 440 * 2.0 ** numpy.arange(-4, 6)
     labels = [f"{tick:g}" if tick < 1_000 else f"{tick / 1_000:g}k" for tick in ticks]
@@ -337,11 +336,11 @@ def spectrum_ticks() -> tuple[list[float], list[str]]:
 
 def subplots(*args: Any, **kwargs: Any) -> tuple[Any, Any]:
     """Wrapper for Matplotlib subplots."""
-    pyplot = import_libraries("matplotlib.pyplot")
+    pyplot = dyport("matplotlib.pyplot")
     return pyplot.subplots(*args, figsize=(12, 6), layout="compressed", **kwargs)
 
 
-def var_name(var: Any) -> str:  # noqa: ANN401
+def var_name(var: Any) -> str:
     """Trace variable name in calling scope."""
     vars_ = inspect.currentframe().f_back.f_back.f_locals.items()
     return next(name for name, value in vars_ if value is var)
@@ -355,10 +354,11 @@ def waveform(
     **kwargs: Any,
 ) -> None:
     """Plot audio waveform."""
+    pyplot = dyport("matplotlib.pyplot")
     palette = palette_cycle()
     x_range, y_range = Range(), Range(-1, 1, True)
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Amplitude")
 
@@ -386,4 +386,4 @@ def waveform(
             axis.set_xlim(x_range.start, x_range.stop)
         if y_range.valid():
             axis.set_ylim(y_range.start, y_range.stop)
-    figure.show()
+    pyplot.show(block=True)

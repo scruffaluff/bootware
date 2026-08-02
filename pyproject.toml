@@ -49,6 +49,7 @@ flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
   "COM",     # Rule conflicts with formatter.
+  "CPY001",  # Copyright notices are not required.
   "FBT",     # Boolean function arguments are acceptable.
   "FIX",     # Todo comments are acceptable.
   "ICN",     # Import abbreviations reduce readability.
@@ -57,6 +58,7 @@ ignore = [
   "S101",    # Assert statements are standard for test functions.
   "S603",    # Rule warns about using subprocess commands without a solution.
   "S607",    # Partial paths for process executables is more cross platform.
+  "SIM105",  # Try except pass blocks are faster than contextlib supress.
   "T201",    # Print statements are acceptable for CLI applications.
   "T203",    # Print statements are acceptable for CLI applications.
   "TD",      # Todo formatting is excessive for personal projects.

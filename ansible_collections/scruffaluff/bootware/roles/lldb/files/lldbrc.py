@@ -4,25 +4,30 @@
 
 from __future__ import annotations
 
+import re
 import shlex
 import subprocess
-from collections.abc import Sequence
+from pprint import pprint
 from subprocess import CalledProcessError
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import dbgrc
-import lldb
 import plotrc
 from dbgrc import Parser
-from lldb import SBCommandReturnObject, SBDebugger
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
+from lldb import (
+    SBCommandReturnObject,
+    SBDebugger,
+    SBExecutionContext,
+    SBFrame,
+    SBValue,
+    eReturnStatusFailed,
+)
 
 
 def cmd_nushell(
     debugger: SBDebugger,
     command: str,
+    exe_ctx: SBExecutionContext,
     result: SBCommandReturnObject,
     internal_dict: dict,
 ) -> None:
@@ -35,48 +40,66 @@ def cmd_nushell(
     try:
         subprocess.run(cmd, check=True, cwd=args.cwd)
     except (CalledProcessError, FileNotFoundError) as exception:
-        print(exception)
+        result.SetError(str(exception))
+        result.SetStatus(eReturnStatusFailed)
 
 
-def cmd_plot(
+def cmd_py(
     debugger: SBDebugger,
     command: str,
+    exe_ctx: SBExecutionContext,
     result: SBCommandReturnObject,
     internal_dict: dict,
 ) -> None:
-    """Plot vector as line with Matplotlib."""
-    target = debugger.GetSelectedTarget()
-    frame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
-    var = frame.FindVariable(command.strip())
-    if var.GetError().Success():
-        array = []
-        for idx in range(var.GetNumChildren()):
-            child = var.GetChildAtIndex(idx, lldb.eNoDynamicValues, True)
-            array.append(float(child.GetValue()))
-        plotrc.line(array)
+    """Execute Python expression with frame variables."""
+    frame = current_frame(debugger)
+    variables = find_vars(frame)
+    try:
+        eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)
+    except Exception as exception:
+        result.SetError(str(exception))
+        result.SetStatus(eReturnStatusFailed)
+
+
+def cmd_pytype(
+    debugger: SBDebugger,
+    command: str,
+    exe_ctx: SBExecutionContext,
+    result: SBCommandReturnObject,
+    internal_dict: dict,
+) -> None:
+    """Print variable type as it appears to Python."""
+    name = command.strip()
+    frame = current_frame(debugger)
+    variable = frame.FindVariable(name)
+    if variable.error.success:
+        print(variable.type.name)
     else:
-        result.SetError(f"could not find variable: {command.strip()}")
-        result.SetStatus(lldb.eReturnStatusErrorMessage)
+        result.SetError(f"Unable to find variable '{name}'.")
+        result.SetStatus(eReturnStatusFailed)
 
 
-def find_vars(debugger: SBDebugger) -> dict[str, Any]:
-    """Find all variables in the current stack frame."""
+def current_frame(debugger: SBDebugger) -> SBFrame:
+    """Get current stack frame in debugger."""
     target = debugger.GetSelectedTarget()
-    frame = target.GetProcess().GetSelectedThread().GetSelectedFrame()
+    return target.GetProcess().GetSelectedThread().GetSelectedFrame()
+
+
+def find_vars(frame: SBFrame) -> dict[str, Any]:
+    """Find all variables in the current stack frame."""
     variables = {}
-    for variable in frame.GetVariables(True, True, True, True):
-        name = variable.GetName()
-        value = variable.GetSummary()
-        if value is None:
-            variables[name] = variable.GetValue()
-        else:
-            variables[name] = value.strip('"')
+    for variable in frame.variables:
+        try:
+            variables[variable.name] = to_py(variable)
+        except TypeError:
+            pass
     return variables
 
 
 def parse_exprs(debugger: SBDebugger, line: str) -> str:
     """Parse and possibly execute command line expressions."""
-    variables = find_vars(debugger)
+    frame = current_frame(debugger)
+    variables = find_vars(frame)
     offset = 0
     for expr in dbgrc.find_exprs(line):
         try:
@@ -89,12 +112,34 @@ def parse_exprs(debugger: SBDebugger, line: str) -> str:
     return line
 
 
-def seq_get(lst: Sequence[Any], pos: int, default: Any) -> Any:
-    """Safe implementation of get for sequences."""
-    try:
-        return lst[pos]
-    except IndexError:
-        return default
+def to_py(variable: SBValue) -> Any:
+    """Convert program type to Python type."""
+    type_ = variable.type.name
+
+    if re.fullmatch(
+        r"^(((un)?signed\s+)?(short\s+|(long\s+){1,2})?int"
+        r"|u?int\d+_(fast_|least_)?t|ptrdiff_t|s?size_t)$",
+        type_,
+    ):
+        return int(variable.value)
+    if re.match(r"^(float|(long\s+)?double|b?float\d+_t)$", type_):
+        return float(variable.value)
+    if type_ == "bool":
+        return variable.value == "true"
+    if type_ == "std::nullptr_t":
+        return None
+    if re.match(
+        r"^(.*\[(f|i|u)\d+\]|"
+        r"(alloc|core|std)::.*::(Box|Slice|Vec|VecDeque).*"
+        r"|std::(.*::)?(array|deque|list|vector).*)$",
+        type_,
+    ):
+        return [to_py(child) for child in variable.children]
+    if variable.value is not None:
+        return variable.value
+
+    msg = f"Unsupported type '{variable.type.name}' for '{variable.name}'."
+    raise TypeError(msg)
 
 
 def __lldb_init_module(debugger: SBDebugger, internal_dict: dict) -> None:
@@ -107,6 +152,10 @@ def __lldb_init_module(debugger: SBDebugger, internal_dict: dict) -> None:
         result,
     )
     interpreter.HandleCommand(
-        "command script add --function lldbrc.cmd_plot plot",
+        "command script add --function lldbrc.cmd_py py",
+        result,
+    )
+    interpreter.HandleCommand(
+        "command script add --function lldbrc.cmd_pytype pytype",
         result,
     )
