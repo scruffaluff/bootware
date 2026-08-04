@@ -35,14 +35,14 @@ class Expr(NamedTuple):
 
 
 class Parser(ArgumentParser):
-    """Argument parser for PDB commands."""
+    """Argument parser for debugger commands."""
 
     def __init__(self) -> None:
         """Create a new Parser instance."""
         super().__init__(exit_on_error=False)
 
     def parse_line(self, line: str) -> tuple[str, Namespace]:
-        """Parse line for PDB command."""
+        """Parse line for debugger command."""
         index = 0
         previous = False
         tokens = shlex.split(line)
@@ -188,7 +188,7 @@ def error(message: str | Exception) -> None:
 
 
 def find_exprs(line: str) -> Iterator[Expr]:  # noqa: C901
-    """Find Python variables starting with % or expressions surrounded by %{}."""
+    """Find variables starting with % or expressions surrounded by %{}."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
     index = 0

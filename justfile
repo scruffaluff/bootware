@@ -72,7 +72,7 @@ lint:
     shellcheck "${file}"
   done
   uv run ansible-lint ansible_collections playbook.yaml
-  uv run ruff check .
+  uv run ruff check --config pyproject.toml .
   uv run ty check .
 
 # Analyze files for issues.

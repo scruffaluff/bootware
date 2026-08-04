@@ -1,0 +1,17 @@
+# Matplotlib configuration file for styling plots.
+#
+# For more information, visit
+# https://matplotlib.org/stable/users/explain/customizing.html.
+
+figure.autolayout: True
+figure.figsize: 12, 6
+font.monospace: Fira Code
+font.sans-serif: Fira Sans
+font.serif: PT Serif
+interactive: True
+keymap.back: j, left, MouseButton.BACK
+keymap.forward: ;, right, MouseButton.FORWARD
+keymap.help: h
+keymap.home: r
+keymap.zoom: o, z
+savefig.directory: ~/Pictures

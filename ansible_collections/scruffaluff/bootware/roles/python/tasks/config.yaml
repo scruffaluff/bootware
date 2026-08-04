@@ -82,11 +82,44 @@
     - config
   when: ansible_facts.system == "Win32NT"
 
-- name: Set owner of Jupyter files for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\.jupyter"
-    recurse: true
-    user: "{{ user_id }}"
+- name: Create Matplotlib settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.matplotlib"
+    state: directory
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Create Matplotlib settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\.matplotlib"
+    state: directory
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Matplotlib settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.matplotlib/matplotlibrc"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: matplotlibrc
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Copy Matplotlib settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\.matplotlib\\matplotlibrc"
+    force: true
+    src: matplotlibrc
   tags:
     - config
   when: ansible_facts.system == "Win32NT"
@@ -215,18 +248,6 @@
     - config
   when: ansible_facts.system == "Win32NT"
 
-- name: Set owner of Python files for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\{{ item }}"
-    recurse: true
-    user: "{{ user_id }}"
-  loop:
-    - .pdbrc
-    - .config\pyrc
-  tags:
-    - config
-  when: ansible_facts.system == "Win32NT"
-
 - name: Create Ruff settings directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"
@@ -269,11 +290,18 @@
     - config
   when: ansible_facts.system == "Win32NT"
 
-- name: Set owner of Ruff files for Windows
+- name: Set owner of Python files for Windows
   ansible.windows.win_owner:
-    path: "{{ user_home }}\\AppData\\Roaming\\ruff"
+    path: "{{ user_home }}\\{{ item }}"
     recurse: true
     user: "{{ user_id }}"
+  loop:
+    - .config\marimo
+    - .config\pyrc
+    - .jupyter
+    - .matplotlib
+    - .pdbrc
+    - AppData\Roaming\ruff
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

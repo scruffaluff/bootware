@@ -8,12 +8,13 @@ detachedHead = false
 [alias]
 alias = config --get-regexp ^alias
 amend = commit --amend
+cancel = reset --soft HEAD^
 edit = !$EDITOR $(git status --porcelain | awk '{print $2}')
 head = diff HEAD
 list = log --oneline
 search = !git rev-list --all | xargs git grep --fixed-strings
+squash = "!f() { git reset --soft HEAD~$1 && git commit; }; f"
 state = status --branch --short
-uncommit = reset --soft HEAD^
 
 [core]
 autocrlf = input

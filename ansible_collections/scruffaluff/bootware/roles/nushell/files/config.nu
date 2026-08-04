@@ -241,7 +241,7 @@ def _expand-alias [spans: list<string>] {
 
 # Paste current working directory into the commandline.
 def _paste-cwd [] {
-    let cwd = $"($env.PWD)/" | str replace $env.HOME "~"
+    let cwd = $"($env.PWD)/" | str replace $nu.home-dir "~"
     let line = commandline | str replace $cwd ""
 
     if $line == (commandline) {
@@ -600,13 +600,8 @@ def ssh-session [] {
 # System settings.
 
 # Ensure standard Unix environment variables are defined.
-if $nu.os-info.name == "windows" {
-    $env.HOME = $env.HOME? | default $"($env.HOMEDRIVE?)($env.HOMEPATH?)"
-    $env.USER = $env.USER? | default $env.USERNAME?
-} else {
-    $env.HOME = $env.HOME?
-    $env.USER = $env.USER?
-}
+$env.HOME = $env.HOME? | default $nu.home-dir
+$env.USER = $env.USER? | default $env.USERNAME?
 # Request removal from analytics tracking.
 $env.DO_NOT_TRACK = "true"
 # Set terminal environment variable if empty.
@@ -620,7 +615,7 @@ if ($env.TERM? | is-empty) {
 # since some ARM systems might have slower emulated AMD copies of programs.
 (
     prepend-paths "/usr/sbin" "/usr/local/bin" "/opt/homebrew/sbin"
-    "/opt/homebrew/bin" $"($env.HOME)/.local/bin"
+    "/opt/homebrew/bin" $"($nu.home-dir)/.local/bin"
 )
 
 # Alacritty settings.
@@ -790,7 +785,7 @@ alias jt = just --global-justfile
 # Kubernetes settings.
 
 # Add Kubectl plugins to system path.
-prepend-paths $"($env.HOME)/.krew/bin"
+prepend-paths $"($nu.home-dir)/.krew/bin"
 
 # Lsd settings.
 
@@ -798,8 +793,8 @@ prepend-paths $"($env.HOME)/.krew/bin"
 #
 # Uses output of command "vivid generate solarized-light" from
 # https://github.com/sharkdp/vivid.
-if ($"($env.HOME)/.ls_colors" | path exists) {
-    $env.LS_COLORS = open $"($env.HOME)/.ls_colors"
+if ($"($nu.home-dir)/.ls_colors" | path exists) {
+    $env.LS_COLORS = open $"($nu.home-dir)/.ls_colors"
 }
 
 # Miniserve settings.
@@ -853,7 +848,7 @@ $env.RCLONE_STATS_ONE_LINE = "true"
 # Add edit alias for interactive Ripgrep.
 alias rge = rgi --edit
 # Set Ripgrep settings file location.
-$env.RIPGREP_CONFIG_PATH = $"($env.HOME)/.ripgreprc"
+$env.RIPGREP_CONFIG_PATH = $"($nu.home-dir)/.ripgreprc"
 
 # Rust settings.
 
@@ -862,7 +857,7 @@ alias rgd = rust-gdb --quiet
 alias rld = rust-lldb --source-quietly
 
 # Add Rust binaries to system path.
-prepend-paths $"($env.HOME)/.cargo/bin"
+prepend-paths $"($nu.home-dir)/.cargo/bin"
 
 # Shell settings.
 
@@ -1178,12 +1173,12 @@ alias denox = deno run --allow-all --no-config --quiet --node-modules-dir=none
 # Disable Deno update messages.
 $env.DENO_NO_UPDATE_CHECK = "true"
 # Add Deno binaries to system path.
-prepend-paths $"($env.HOME)/.deno/bin"
+prepend-paths $"($nu.home-dir)/.deno/bin"
 
 # Disable Node history.
 $env.NODE_REPL_HISTORY = ""
 # Add NPM global binaries to system path.
-prepend-paths $"($env.HOME)/.npm/global/bin"
+prepend-paths $"($nu.home-dir)/.npm/global/bin"
 
 # Visual Studio Code settings.
 
@@ -1244,4 +1239,4 @@ $env._ZO_FZF_OPTS = $"($env.FZF_BASE_OPTS) --preview-window hidden"
 # User settings.
 
 # Move user aliases, secrets, and variables to the user autoload folder.
-_autoload-scripts $"($env.HOME)/.env.nu" $"($env.HOME)/.secret.nu"
+_autoload-scripts $"($nu.home-dir)/.env.nu" $"($nu.home-dir)/.secret.nu"
