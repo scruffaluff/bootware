@@ -72,7 +72,7 @@ lint:
     shellcheck "${file}"
   done
   uv run ansible-lint ansible_collections playbook.yaml
-  uv run ruff check .
+  uv run ruff check --config pyproject.toml .
   uv run ty check .
 
 # Analyze files for issues.
@@ -166,11 +166,6 @@ setup: _setup
   } else {
     npm ci
     uv sync --locked
-  }
-  # Add LLDB modules to virtual environment for LSP integration.
-  if (which lldb | is-not-empty) {
-    let site = uv run python -c "import site; print(site.getsitepackages()[0])"
-    cp --recursive $"(lldb --python-path)/lldb" $"($site)/"
   }
 
 [unix]
