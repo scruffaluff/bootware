@@ -5,11 +5,10 @@
 from __future__ import annotations
 
 import re
-import shlex
 import subprocess
 from pprint import pprint
 from subprocess import CalledProcessError
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import dbgrc
 import plotrc
@@ -23,6 +22,35 @@ from lldb import (
     eReturnStatusFailed,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+
+CPP_INT_RE = (
+    r"((un)?signed\s+)?(short\s+|(long\s+){1,2})?int"
+    r"|u?int\d+_(fast_|least_)?t|ptrdiff_t|s?size_t"
+)
+CPP_FLT_RE = r"float|(long\s+)?double|b?float\d+_t"
+CPP_NUL_RE = r"std::nullptr_t"
+CPP_STR_RE = (
+    r"char\[\d+\]|const char \*"
+    r"|std::([\w:]+::)?(u\d+)?string(_type|_view)?"
+)
+CPP_WRP_RE = r"std::([\w:]+::)filesystem::path|.*&"
+CPP_ARR_RE = (
+    f"({CPP_INT_RE}|{CPP_FLT_RE})\\[\\d+\\]"
+    r"|std::([\w:]+::)?(array|deque|list|vector).*"
+)
+RS_INT_RE = r"(i|u)\d+"
+RS_FLT_RE = r"f\d+"
+RS_NUL_RE = r"\(\)"
+RS_STR_RE = r"&?(str|std::path::Path(Buf)?|([\w:]+::)?(Os)?String)|unsigned char \*"
+RS_WRP_RE = r"alloc::boxed::Box.*|.*\*"
+RS_ARR_RE = (
+    f"&?\\[({RS_INT_RE}|{RS_FLT_RE})\\]"
+    r"|(alloc|core|std)::([\w:]+::)?(Slice|Vec|VecDeque).*"
+)
+
 
 def cmd_nushell(
     debugger: SBDebugger,
@@ -32,11 +60,13 @@ def cmd_nushell(
     internal_dict: dict,
 ) -> None:
     """Execute Nushell expression or start interactive session."""
-    line = parse_exprs(debugger, command)
+    frame = current_frame(debugger)
+    line = dbgrc.parse_exprs(var_lookup(frame), command)
     parser = Parser()
     parser.add_argument("-c", "--cwd", default=None)
     rest, args = parser.parse_line(line)
     cmd = ["nu", "--login", "--commands", rest] if rest else ["nu", "--login"]
+
     try:
         subprocess.run(cmd, check=True, cwd=args.cwd)
     except (CalledProcessError, FileNotFoundError) as exception:
@@ -53,7 +83,7 @@ def cmd_py(
 ) -> None:
     """Execute Python expression with frame variables."""
     frame = current_frame(debugger)
-    variables = find_vars(frame)
+    variables = dbgrc.find_vars(var_lookup(frame), command)
     try:
         eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)
     except Exception as exception:
@@ -85,61 +115,48 @@ def current_frame(debugger: SBDebugger) -> SBFrame:
     return target.GetProcess().GetSelectedThread().GetSelectedFrame()
 
 
-def find_vars(frame: SBFrame) -> dict[str, Any]:
-    """Find all variables in the current stack frame."""
-    variables = {}
-    for variable in frame.variables:
-        try:
-            variables[variable.name] = to_py(variable)
-        except TypeError:
-            pass
-    return variables
-
-
-def parse_exprs(debugger: SBDebugger, line: str) -> str:
-    """Parse and possibly execute command line expressions."""
-    frame = current_frame(debugger)
-    variables = find_vars(frame)
-    offset = 0
-    for expr in dbgrc.find_exprs(line):
-        try:
-            result = str(eval(expr.expr, {}, variables))
-        except Exception:  # noqa: S112
-            continue
-        insert = shlex.quote(result)
-        line = line[: expr.start + offset] + insert + line[expr.stop + offset :]
-        offset += len(insert) - expr.stop + expr.start
-    return line
-
-
-def to_py(variable: SBValue) -> Any:
+# Function requires many cases to handle possible variable types.
+def to_py(variable: SBValue) -> Any:  # noqa: PLR0911
     """Convert program type to Python type."""
     type_ = variable.type.name
 
-    if re.fullmatch(
-        r"^(((un)?signed\s+)?(short\s+|(long\s+){1,2})?int"
-        r"|u?int\d+_(fast_|least_)?t|ptrdiff_t|s?size_t)$",
-        type_,
-    ):
-        return int(variable.value)
-    if re.match(r"^(float|(long\s+)?double|b?float\d+_t)$", type_):
-        return float(variable.value)
     if type_ == "bool":
         return variable.value == "true"
-    if type_ == "std::nullptr_t":
+    if re.match(f"^{CPP_NUL_RE}|{RS_NUL_RE}$", type_):
         return None
-    if re.match(
-        r"^(.*\[(f|i|u)\d+\]|"
-        r"(alloc|core|std)::.*::(Box|Slice|Vec|VecDeque).*"
-        r"|std::(.*::)?(array|deque|list|vector).*)$",
-        type_,
-    ):
+    if re.match(f"^({CPP_INT_RE}|{RS_INT_RE})$", type_):
+        return int(variable.value)
+    if re.match(f"^({CPP_FLT_RE}|{RS_FLT_RE})$", type_):
+        return float(variable.value)
+    if re.match(f"^({CPP_STR_RE}|{RS_STR_RE})$", type_):
+        return variable.GetSummary().strip('"')
+    if re.match(f"^({CPP_ARR_RE}|{RS_ARR_RE})$", type_):
         return [to_py(child) for child in variable.children]
+    if re.match(f"^({CPP_WRP_RE}|{RS_WRP_RE})$", type_):
+        # Dereference variable for inner content.
+        return to_py(variable.children[0])
     if variable.value is not None:
         return variable.value
 
-    msg = f"Unsupported type '{variable.type.name}' for '{variable.name}'."
+    msg = f"Unsupported type '{type_}' for '{variable.name}'."
     raise TypeError(msg)
+
+
+def var_lookup(frame: SBFrame) -> Callable[[str], Any]:
+    """Generate a variable lookup function for a debugger frame."""
+
+    def lookup(name: str) -> Any:
+        variable = frame.FindVariable(name)
+        if variable.error.success:
+            try:
+                return to_py(variable)
+            except TypeError as error:
+                msg = f"Unable to convert variable '{name}' into a Python type."
+                raise ValueError(msg) from error
+        msg = f"Unable to find variable '{name}'."
+        raise ValueError(msg)
+
+    return lookup
 
 
 def __lldb_init_module(debugger: SBDebugger, internal_dict: dict) -> None:

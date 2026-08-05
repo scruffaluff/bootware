@@ -1,6 +1,6 @@
 """Tests for Pyrc custom modules."""
 
-# ruff: noqa: E402, PLC0415
+# ruff: noqa: E402
 
 import shlex
 import sys
@@ -19,7 +19,24 @@ sys.path.append(
 sys.path.append(
     str(repo_path / "ansible_collections/scruffaluff/bootware/roles/python/files")
 )
+patch = mock.patch.dict(
+    "sys.modules",
+    {
+        "lldb": Mock(
+            SBCommandReturnObject=MagicMock(),
+            SBDebugger=MagicMock(),
+            SBExecutionContext=MagicMock(),
+            SBFrame=MagicMock(),
+            SBValue=MagicMock(),
+            eReturnStatusFailed=MagicMock(),
+        )
+    },
+)
+patch.start()
+
 import dbgrc
+import lldbrc
+import pdbrc
 from dbgrc import Expr, Parser
 
 
@@ -70,9 +87,9 @@ def test_find_exprs(line: str, expected: list[Expr]) -> None:
 def test_parse_exprs(line: str, locals_: dict[str, Any], expected: str) -> None:
     """Evaluation expressions from command lines."""
     pdb = SimpleNamespace(
-        curframe=SimpleNamespace(f_globals=None), curframe_locals=locals_
+        curframe=SimpleNamespace(f_globals={}), curframe_locals=locals_
     )
-    actual = dbgrc.parse_exprs(pdb, line)
+    actual = dbgrc.parse_exprs(pdbrc.var_lookup(pdb), line)
     assert actual == expected
 
 
@@ -97,7 +114,6 @@ def test_parse_line(line: str, expected: str) -> None:
     ("type_"),
     [
         "&[f64]",
-        "alloc::boxed::Box<[bool], alloc::alloc::Global>",
         "alloc::vec::Vec<alloc::string::String, alloc::alloc::Global>",
         "int[5]",
         "std::__1::list<char, std::__1::allocator<float> >",
@@ -106,24 +122,11 @@ def test_parse_line(line: str, expected: str) -> None:
     ],
 )
 def test_to_py_array(type_: str) -> None:
-    """Python conversion uses list for array types."""
+    """Python conversion uses correct array types."""
     variable = SimpleNamespace(
         children=[], name="list", type=SimpleNamespace(name=type_), value=[1, 4, 6]
     )
-    with mock.patch.dict(
-        "sys.modules",
-        {
-            "lldb": Mock(
-                SBCommandReturnObject=MagicMock(),
-                SBDebugger=MagicMock(),
-                SBFrame=MagicMock(),
-                SBValue=MagicMock(),
-            )
-        },
-    ):
-        import lldbrc
-
-        pyvar = lldbrc.to_py(variable)
+    pyvar = lldbrc.to_py(variable)
     actual = type(pyvar)
     assert actual is list
 
@@ -135,21 +138,8 @@ def test_to_py_array(type_: str) -> None:
 def test_to_py_error(type_: str) -> None:
     """Python conversion fails on bad types."""
     variable = SimpleNamespace(name=type_, type=SimpleNamespace(name=type_), value=None)
-    with mock.patch.dict(
-        "sys.modules",
-        {
-            "lldb": Mock(
-                SBCommandReturnObject=MagicMock(),
-                SBDebugger=MagicMock(),
-                SBFrame=MagicMock(),
-                SBValue=MagicMock(),
-            )
-        },
-    ):
-        import lldbrc
-
-        with pytest.raises(TypeError, match="Unsupported type"):
-            lldbrc.to_py(variable)
+    with pytest.raises(TypeError, match="Unsupported type"):
+        lldbrc.to_py(variable)
 
 
 @pytest.mark.parametrize(
@@ -165,21 +155,34 @@ def test_to_py_error(type_: str) -> None:
     ],
 )
 def test_to_py_number(type_: str, expected: str) -> None:
-    """Python conversion uses correct types."""
+    """Python conversion uses correct number types."""
     variable = SimpleNamespace(name="0", type=SimpleNamespace(name=type_), value=0)
-    with mock.patch.dict(
-        "sys.modules",
-        {
-            "lldb": Mock(
-                SBCommandReturnObject=MagicMock(),
-                SBDebugger=MagicMock(),
-                SBFrame=MagicMock(),
-                SBValue=MagicMock(),
-            )
-        },
-    ):
-        import lldbrc
-
-        pyvar = lldbrc.to_py(variable)
+    pyvar = lldbrc.to_py(variable)
     actual = type(pyvar)
     assert actual is expected
+
+
+@pytest.mark.parametrize(
+    ("type_"),
+    [
+        "const char *",
+        "std::__1::string",
+        "std::__1::string_view",
+        "char[7]",
+        "&str",
+        "alloc::string::String",
+        "std::path::PathBuf",
+        "std::ffi::os_str::OsString",
+    ],
+)
+def test_to_py_string(type_: str) -> None:
+    """Python conversion uses correct string types."""
+    variable = SimpleNamespace(
+        GetSummary=lambda: "string",
+        name="string",
+        type=SimpleNamespace(name=type_),
+        value="string",
+    )
+    pyvar = lldbrc.to_py(variable)
+    actual = type(pyvar)
+    assert actual is str

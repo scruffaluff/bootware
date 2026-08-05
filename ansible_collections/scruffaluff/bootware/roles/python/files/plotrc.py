@@ -5,18 +5,12 @@
 from __future__ import annotations
 
 import dataclasses
-import functools
-import importlib
 import inspect
 import itertools
-import subprocess
-import sys
 from collections.abc import Sequence
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
-if TYPE_CHECKING:
-    from types import ModuleType
+from dbgrc import dyport
 
 Array = Sequence[float]
 
@@ -55,38 +49,6 @@ def decibel(signal: Array) -> Array:
     return 20 * numpy.log10(amplitude)
 
 
-@functools.cache
-def dyport(name: str) -> ModuleType:
-    """Import library and install if necessary."""
-    version = f"{sys.version_info.major}.{sys.version_info.minor}"
-    target = str(Path.home() / f".config/pyrc/venv/python{version}")
-    if target not in sys.path:
-        sys.path.append(target)
-        importlib.invalidate_caches()
-
-    try:
-        library = importlib.import_module(name)
-    except ModuleNotFoundError:
-        package = name.split(".", maxsplit=1)[0]
-        subprocess.run(
-            [
-                "uv",
-                "--no-config",
-                "pip",
-                "install",
-                "--python",
-                version,
-                "--target",
-                target,
-                package,
-            ],
-            check=True,
-        )
-        importlib.invalidate_caches()
-        library = importlib.import_module(name)
-    return library
-
-
 def flatten(array: Array) -> Array:
     """Convert array to one dimensional form."""
     if array.ndim > 1:
@@ -112,8 +74,7 @@ def line(
             label = signal.pop("label", None)
         else:
             color = next(palette)
-            label = var_name(signal)
-
+            label = var_name(signal, str(index))
         y = numpy.asarray(signal)
         x = numpy.arange(len(y)) if x is None else numpy.asarray(x)
         x_range += (x[0], x[-1])
@@ -174,7 +135,7 @@ def phase(
             label = signal.pop("label", None)
         else:
             color = next(palette)
-            label = var_name(signal)
+            label = var_name(signal, str(index))
 
         x, y = signal_phase(signal, rate, x)
         y_range += (y.min(), y.max())
@@ -302,7 +263,7 @@ def spectrum(
             label = signal.pop("label", None)
         else:
             color = next(palette)
-            label = var_name(signal)
+            label = var_name(signal, str(index))
 
         x, y = signal_spectrum(signal, rate, x)
         y_range += (y.min(), y.max())
@@ -340,10 +301,13 @@ def subplots(*args: Any, **kwargs: Any) -> tuple[Any, Any]:
     return pyplot.subplots(*args, figsize=(12, 6), layout="compressed", **kwargs)
 
 
-def var_name(var: Any) -> str:
+def var_name(var: Any, default: str = "") -> str:
     """Trace variable name in calling scope."""
     vars_ = inspect.currentframe().f_back.f_back.f_locals.items()
-    return next(name for name, value in vars_ if value is var)
+    try:
+        return next(name for name, value in vars_ if value is var)
+    except StopIteration:
+        return default
 
 
 def waveform(
@@ -369,7 +333,7 @@ def waveform(
             label = signal.pop("label", None)
         else:
             color = next(palette)
-            label = var_name(signal)
+            label = var_name(signal, str(index))
 
         x, y = signal_waveform(signal, rate, x)
         x_range += (x[0], x[-1])

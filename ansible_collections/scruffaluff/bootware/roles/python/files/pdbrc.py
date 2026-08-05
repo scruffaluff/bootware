@@ -7,14 +7,14 @@ from __future__ import annotations
 import os
 import shlex
 import traceback
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 import dbgrc
 
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pdb import Pdb
-    from types import TracebackType
+    from types import FrameType, TracebackType
 
 
 def break_exception(self: Pdb) -> Callable:
@@ -30,6 +30,11 @@ def break_exception(self: Pdb) -> Callable:
         self.pm()
 
     return excepthook
+
+
+def curframe(pdb: Pdb) -> FrameType:
+    """Attribute accessor wrapper to satisfy type checkers."""
+    return cast("FrameType", pdb.curframe)
 
 
 def do_cat(self: Pdb, line: str) -> None:
@@ -100,7 +105,7 @@ def do_nushell(self: Pdb, line: str) -> None:
 
     Execute Nushell expression or start interactive session.
     """
-    line_ = dbgrc.parse_exprs(self, line)
+    line_ = dbgrc.parse_exprs(var_lookup(self), line)
     parser = dbgrc.Parser()
     parser.add_argument("-c", "--cwd", default=None)
     rest, args = parser.parse_line(line_)
@@ -112,7 +117,7 @@ def do_shell(self: Pdb, line: str) -> None:
 
     Execute command or start interactive default shell session.
     """
-    line_ = dbgrc.parse_exprs(self, line)
+    line_ = dbgrc.parse_exprs(var_lookup(self), line)
     arguments = list(map(str, map(os.path.expanduser, shlex.split(line_.strip()))))
     dbgrc.shell(arguments)
 
@@ -144,3 +149,17 @@ def setup(pdb: Pdb) -> None:
     pdb.do_shell = do_shell
     pdb.do_sl = do_steplist
     pdb.do_steplist = do_steplist
+
+
+def var_lookup(pdb: Pdb) -> Callable[[str], Any]:
+    """Generate a variable lookup function for a debugger frame."""
+
+    def lookup(name: str) -> Any:  # noqa: ANN401
+        if name in pdb.curframe_locals:
+            return pdb.curframe_locals[name]
+        if name in curframe(pdb).f_globals:
+            return curframe(pdb).f_globals[name]
+        msg = f"Unable to find variable '{name}'."
+        raise ValueError(msg)
+
+    return lookup

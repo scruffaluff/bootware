@@ -4,6 +4,9 @@
 
 from __future__ import annotations
 
+import ast
+import functools
+import importlib
 import inspect
 import itertools
 import os
@@ -15,6 +18,8 @@ import sys
 import tempfile
 import traceback
 from argparse import ArgumentError, ArgumentParser
+from ast import Load, Name
+from collections.abc import Callable
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any, NamedTuple, cast
@@ -23,7 +28,7 @@ if TYPE_CHECKING:
     from argparse import Namespace
     from collections.abc import Callable, Iterator, Sequence
     from pdb import Pdb
-    from types import FrameType, TracebackType
+    from types import ModuleType, TracebackType
 
 
 class Expr(NamedTuple):
@@ -111,11 +116,6 @@ def catalog(
     return pprint.pformat(object_)
 
 
-def curframe(pdb: Pdb) -> FrameType:
-    """Attribute accessor wrapper to satisfy Mypy."""
-    return cast("FrameType", pdb.curframe)
-
-
 def doc(object_: Any) -> None:
     """Print object signature and documentation in default pager."""
     docstring = inspect.getdoc(object_)
@@ -148,6 +148,38 @@ def drop_tokens(tokens: list[str], line: str) -> str:
         while not list_get(line, position, " ").isspace():
             position += 1
     return line[position:].lstrip()
+
+
+@functools.cache
+def dyport(name: str) -> ModuleType:
+    """Import library and install if necessary."""
+    version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    target = str(Path.home() / f".config/pyrc/venv/python{version}")
+    if target not in sys.path:
+        sys.path.append(target)
+        importlib.invalidate_caches()
+
+    try:
+        library = importlib.import_module(name)
+    except ModuleNotFoundError:
+        package = name.split(".", maxsplit=1)[0]
+        subprocess.run(
+            [
+                "uv",
+                "--no-config",
+                "pip",
+                "install",
+                "--python",
+                version,
+                "--target",
+                target,
+                package,
+            ],
+            check=True,
+        )
+        importlib.invalidate_caches()
+        library = importlib.import_module(name)
+    return library
 
 
 def edit(object_: Any = None, frame: Any = None) -> None:
@@ -237,6 +269,24 @@ def find_source(type_: type) -> tuple[str, int]:
     return file, line
 
 
+def find_vars(lookup: Callable[[str], Any], expression: str) -> dict[str, Any]:
+    """Extract variables and their values from a Python expression."""
+    tree = ast.parse(expression, mode="eval")
+    seen = set()
+    variables = {}
+
+    for node in ast.walk(tree):
+        name = getattr(node, "id", "")
+        if name not in seen and isinstance(node, Name) and isinstance(node.ctx, Load):
+            seen.add(name)
+            try:
+                variables[name] = lookup(name)
+            except ValueError:
+                pass
+
+    return variables
+
+
 def is_type(value: Any) -> bool:
     """Check if value is a type or variable."""
     return any(
@@ -290,19 +340,13 @@ def parent_shell() -> str:
     return os.environ.get("SHELL", default)
 
 
-def parse(pdb: Pdb, input_: str) -> Any:
-    """Parse and possibly execute command line input."""
-    if input_.strip():
-        return eval(input_, curframe(pdb).f_globals, pdb.curframe_locals)
-    return None
-
-
-def parse_exprs(pdb: Pdb, line: str) -> str:
+def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
     """Parse and possibly execute command line expressions."""
     offset = 0
     for expr in find_exprs(line):
+        variables = find_vars(lookup, expr.expr)
         try:
-            result = str(eval(expr.expr, curframe(pdb).f_globals, pdb.curframe_locals))
+            result = str(eval(expr.expr, {}, variables))
         except Exception:  # noqa: S112
             continue
         insert = shlex.quote(result)
