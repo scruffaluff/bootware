@@ -7,12 +7,14 @@ from __future__ import annotations
 import dataclasses
 import inspect
 import itertools
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from typing import Any, cast
 
-from dbgrc import dyport
+import pyrc
+from pyrc import dyport
 
 Array = Sequence[float]
+Signal = Array | tuple[Array, Array] | dict[str, Any]
 
 
 @dataclasses.dataclass
@@ -57,40 +59,34 @@ def flatten(array: Array) -> Array:
 
 
 def line(
-    *signals: Array, overlay: bool = True, x: Array | None = None, **kwargs: Any
-) -> None:
+    *signals: Signal,
+    overlay: bool = True,
+    show: bool = True,
+    x: Array | None = None,
+    **kwargs: Any,
+) -> Any:
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
 
-    palette = palette_cycle()
+    datas = sigdata(signals, x=x)
     x_range, y_range = Range(), Range()
-    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
 
-    for index, signal in enumerate(signals):
-        if isinstance(signal, dict):
-            signal = cast("dict[str, Any]", signal)
-            color = signal.pop("color", next(palette))
-            label = signal.pop("label", None)
-        else:
-            color = next(palette)
-            label = var_name(signal, str(index))
-        y = numpy.asarray(signal)
-        x = numpy.arange(len(y)) if x is None else numpy.asarray(x)
-        x_range += (x[0], x[-1])
-        y_range += (y.min(), y.max())
+    for index, data in enumerate(datas):
+        x_ = data.pop("x") or numpy.arange(len(data["y"]))
+        x_range += (x_[0], x_[-1])
+        y_range += (data["y"].min(), data["y"].max())
 
         axis = axes[0 if overlay else index]
-        axis.plot(x, y, color=color, label=label)
-        axis.set_title(kwargs.pop("title", None))
+        axis.plot(x_, data["y"], color=data["color"], label=data["label"])
+        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.legend()
 
-    for axis in axes:
-        if x_range.valid():
-            axis.set_xlim(x_range.start, x_range.stop)
-        if y_range.valid():
-            axis.set_ylim(y_range.start, y_range.stop)
-    pyplot.show(block=True)
+    set_ranges(axes, x_range, y_range)
+    if show:
+        pyplot.show(block=True)
+    return figure
 
 
 def palette_cycle() -> itertools.cycle:
@@ -115,162 +111,127 @@ def phase(
     *signals: Array | dict[str, Any],
     overlay: bool = True,
     rate: int | None = None,
+    show: bool = True,
     x: Array | None = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency phase."""
-    pyplot = dyport("matplotlib.pyplot")
-    palette = palette_cycle()
-    x_range, y_range = Range(), Range(20, 20_000)
+    numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
+    rate = rate or kwargs.pop("r", None)
 
-    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    datas = sigdata(signals, x=x)
+    x_range, y_range = Range(20, 20_000, True), Range()
+    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Phase (rad)")
     ticks = spectrum_ticks()
 
-    for index, signal in enumerate(signals):
-        if isinstance(signal, dict):
-            signal = cast("dict[str, Any]", signal)
-            color = signal.pop("color", next(palette))
-            label = signal.pop("label", None)
-        else:
-            color = next(palette)
-            label = var_name(signal, str(index))
-
-        x, y = signal_phase(signal, rate, x)
+    for index, data in enumerate(datas):
+        rate_ = rate or data.pop("rate")
+        y = numpy.unwrap(numpy.angle(numpy.fft.rfft(data["y"])))
+        x_ = data.pop("x") or numpy.fft.rfftfreq(len(data["y"]), 1 / rate_)
+        x_range += (x_[0], x_[-1])
         y_range += (y.min(), y.max())
 
         axis = axes[0 if overlay else index]
-        axis.plot(x, y, color=color, label=label)
-        axis.set_title(kwargs.pop("title", None))
+        axis.plot(x_, data["y"], color=data["color"], label=data["label"])
+        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
         axis.set_xticklabels(ticks[1])
         axis.minorticks_off()
 
+    set_ranges(axes, x_range, y_range)
+    if show:
+        pyplot.show(block=True)
+    return figure
+
+
+def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
+    """Set ranges for axes if valid."""
     for axis in axes:
         if x_range.valid():
             axis.set_xlim(x_range.start, x_range.stop)
         if y_range.valid():
             axis.set_ylim(y_range.start, y_range.stop)
-    pyplot.show(block=True)
 
 
-def signal_phase(
-    signal: Array | dict[str, Any], rate: int | None = None, x: Array | None = None
-) -> tuple[Array, Array]:
-    """Extract frequency phase from signal dictionary."""
-    numpy = dyport("numpy")
-
-    if isinstance(signal, dict):
-        signal = cast("dict[str, Any]", signal)
-        if "f" in signal:
-            y = signal.pop("f")
-        else:
-            y_ = signal.pop("y")
-            y = numpy.unwrap(numpy.angle(numpy.fft.rfft(y_)))
-
-        if "x" in signal:
-            x = signal.pop("x")
-        elif x is None:
-            length = 2 * (len(y) - 1)
-            rate = signal.pop("rate") if rate is None else rate
-            x = numpy.fft.rfftfreq(length, 1 / rate)
-        else:
-            x = numpy.asarray(x)
-    else:
-        y = numpy.asarray(signal)
-        x = numpy.arange(len(y)) if x is None else numpy.asarray(x)
-
-    return flatten(x), flatten(y)
-
-
-def signal_spectrum(
-    signal: Array | dict[str, Any],
-    rate: int | None = None,
+def sigdata(
+    signals: Iterable[Array | tuple[Array, Array] | dict[str, Any]],
     x: Array | None = None,
-) -> tuple[Array, Array]:
-    """Extract frequency spectrum from signal dictionary."""
+) -> list[dict[str, Any]]:
+    """Convert signal into standardized format."""
     numpy = dyport("numpy")
+    palette = palette_cycle()
 
-    if isinstance(signal, dict):
-        signal = cast("dict[str, Any]", signal)
-        y = signal.pop("f") if "f" in signal else numpy.fft.rfft(signal.pop("y"))
-        if "x" in signal:
-            x = signal.pop("x")
-        elif x is None:
-            length = 2 * (len(y) - 1)
-            rate = signal.pop("rate") if rate is None else rate
-            x = numpy.fft.rfftfreq(length, 1 / rate)
+    datas = []
+    for index, signal in enumerate(signals):
+        if isinstance(signal, dict):
+            signal = cast("dict[str, Any]", signal)
+            y = numpy.asarray(signal.pop("y")).ravel()
+            x_ = signal.pop("x", x)
+            x_ = x_ if x_ is None else numpy.asarray(x).ravel()
+            color = pyrc.popall(signal, ["color", "c"], next(palette))
+            label = pyrc.popall(signal, ["label", "l"], var_name(signal, str(index)))
+            data = {
+                **signal,
+                "x": x_,
+                "y": y,
+                "color": color,
+                "label": label,
+            }
+        elif isinstance(signal, tuple):
+            signal = cast("tuple[Array, Array]", signal)
+            x_, y = signal
+            data = {
+                "x": numpy.asarray(x_).ravel(),
+                "y": numpy.asarray(y).ravel(),
+                "color": next(palette),
+                "label": var_name(signal, str(index)),
+            }
         else:
-            x = numpy.asarray(x)
-    else:
-        y = numpy.fft.rfft(numpy.asarray(signal))
-        x = numpy.arange(len(y)) if x is None else numpy.asarray(x)
-
-    return flatten(x), flatten(y)
-
-
-def signal_waveform(
-    signal: Array | dict[str, Any],
-    rate: int | None = None,
-    x: Array | None = None,
-) -> tuple[Array, Array]:
-    """Extract waveform from signal dictionary."""
-    numpy = dyport("numpy")
-
-    if isinstance(signal, dict):
-        signal = cast("dict[str, Any]", signal)
-        y = signal.pop("y")
-        if "x" in signal:
-            x = numpy.asarray(signal.pop("x"))
-        else:
-            rate = signal.pop("rate") if rate is None else rate
-            x = (
-                numpy.linspace(0, len(y) / rate, len(y))
-                if x is None
-                else numpy.asarray(x)
-            )
-    else:
-        y = numpy.asarray(signal)
-        x = numpy.arange(len(y)) if x is None else numpy.asarray(x)
-
-    return flatten(x), flatten(y)
+            y = numpy.asarray(signal).ravel()
+            x_ = x if x is None else numpy.asarray(x).ravel()
+            data = {
+                "x": x_,
+                "y": y,
+                "color": next(palette),
+                "label": var_name(signal, str(index)),
+            }
+        datas.append(data)
+    return datas
 
 
 def spectrum(
     *signals: Array | dict[str, Any],
     overlay: bool = True,
     rate: int | None = None,
+    show: bool = True,
     x: Array | None = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency spectrum."""
-    pyplot = dyport("matplotlib.pyplot")
-    palette = palette_cycle()
-    ticks = spectrum_ticks()
-    x_range, y_range = Range(20, 20_000, True), Range()
+    numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
+    rate = rate or kwargs.pop("r", None)
 
-    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    datas = sigdata(signals, x=x)
+    x_range, y_range = Range(20, 20_000, True), Range()
+    ticks = spectrum_ticks()
+    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Volume (dB)")
 
-    for index, signal in enumerate(signals):
-        if isinstance(signal, dict):
-            signal = cast("dict[str, Any]", signal)
-            color = signal.pop("color", next(palette))
-            label = signal.pop("label", None)
-        else:
-            color = next(palette)
-            label = var_name(signal, str(index))
-
-        x, y = signal_spectrum(signal, rate, x)
+    for index, data in enumerate(datas):
+        rate_ = rate or data.pop("rate")
+        y = numpy.fft.rfft(data["y"])
+        x_ = data.pop("x") or numpy.fft.rfftfreq(len(data["y"]), 1 / rate_)
+        x_range += (x_[0], x_[-1])
         y_range += (y.min(), y.max())
 
         axis = axes[0 if overlay else index]
-        axis.plot(x, y, color=color, label=label)
-        axis.set_title(kwargs.pop("title", None))
+        axis.plot(x_, y, color=data["color"], label=data["label"])
+        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
@@ -278,12 +239,10 @@ def spectrum(
         axis.legend()
         axis.minorticks_off()
 
-    for axis in axes:
-        if x_range.valid():
-            axis.set_xlim(x_range.start, x_range.stop)
-        if y_range.valid():
-            axis.set_ylim(y_range.start, y_range.stop)
-    pyplot.show(block=True)
+    set_ranges(axes, x_range, y_range)
+    if show:
+        pyplot.show(block=True)
+    return figure
 
 
 def spectrum_ticks() -> tuple[list[float], list[str]]:
@@ -311,43 +270,36 @@ def var_name(var: Any, default: str = "") -> str:
 
 
 def waveform(
-    *signals: Array | dict[str, Any],
+    *signals: Signal,
     overlay: bool = True,
     rate: int | None = None,
+    show: bool = True,
     x: Array | None = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio waveform."""
-    pyplot = dyport("matplotlib.pyplot")
-    palette = palette_cycle()
-    x_range, y_range = Range(), Range(-1, 1, True)
+    numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
+    rate = rate or kwargs.pop("r", None)
 
-    _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+    datas = sigdata(signals, x=x)
+    x_range, y_range = Range(), Range(-1, 1, True)
+    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
     axes = axes[0]
     axes[0].set_ylabel("Amplitude")
 
-    for index, signal in enumerate(signals):
-        if isinstance(signal, dict):
-            signal = cast("dict[str, Any]", signal)
-            color = signal.pop("color", next(palette))
-            label = signal.pop("label", None)
-        else:
-            color = next(palette)
-            label = var_name(signal, str(index))
-
-        x, y = signal_waveform(signal, rate, x)
-        x_range += (x[0], x[-1])
-        y_range += (y.min(), y.max())
+    for index, data in enumerate(datas):
+        rate_ = rate or data.pop("rate")
+        x_ = data.pop("x") or numpy.linspace(0, len(data["y"]) / rate_, len(data["y"]))
+        x_range += (x_[0], x_[-1])
+        y_range += (data["y"].min(), data["y"].max())
 
         axis = axes[0 if overlay else index]
-        axis.plot(x, y, color=color, label=label)
-        axis.set_title(kwargs.pop("title", None))
+        axis.plot(x_, data["y"], color=data["color"], label=data["label"])
+        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Time (s)")
         axis.legend()
 
-    for axis in axes:
-        if x_range.valid():
-            axis.set_xlim(x_range.start, x_range.stop)
-        if y_range.valid():
-            axis.set_ylim(y_range.start, y_range.stop)
-    pyplot.show(block=True)
+    set_ranges(axes, x_range, y_range)
+    if show:
+        pyplot.show(block=True)
+    return figure

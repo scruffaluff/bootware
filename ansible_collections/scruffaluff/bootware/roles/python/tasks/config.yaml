@@ -220,12 +220,14 @@
   loop:
     - dest: .pdbrc
       src: pdbrc
-    - dest: .config/pyrc/dbgrc.py
-      src: dbgrc.py
     - dest: .config/pyrc/pdbrc.py
       src: pdbrc.py
     - dest: .config/pyrc/plotrc.py
       src: plotrc.py
+    - dest: .config/pyrc/pyrc.py
+      src: pyrc.py
+    - dest: .config/pyrc/sitecustomize.py
+      src: sitecustomize.py
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -238,12 +240,14 @@
   loop:
     - dest: .pdbrc
       src: pdbrc
-    - dest: .config\pyrc\dbgrc.py
-      src: dbgrc.py
     - dest: .config\pyrc\pdbrc.py
       src: pdbrc.py
     - dest: .config\pyrc\plotrc.py
       src: plotrc.py
+    - dest: .config\pyrc\pyrc.py
+      src: pyrc.py
+    - dest: .config\pyrc\sitecustomize.py
+      src: sitecustomize.py
   tags:
     - config
   when: ansible_facts.system == "Win32NT"

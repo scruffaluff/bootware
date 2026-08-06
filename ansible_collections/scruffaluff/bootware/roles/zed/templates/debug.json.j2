@@ -1,0 +1,75 @@
+[
+  {
+    "adapter": "CodeLLDB",
+    "build": {
+      "args": ["build", "test"],
+      "command": "just"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "label": "Debug C++ tests",
+    "program": "build/Test/test",
+    "request": "launch",
+    "sourceLanguages": ["cpp"]
+  },
+  {
+    "adapter": "CodeLLDB",
+    "build": {
+      "args": ["test", "--lib", "--no-run"],
+      "command": "cargo"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "label": "Debug Rust tests",
+    "sourceLanguages": ["rust"]
+  }
+  {
+    "adapter": "Debugpy",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {
+      "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+      "PYTHONPATH": "{{ user_home}}/.config/pyrc",
+    },
+    "justMyCode": false,
+    "label": "Debug active Python file",
+    "program": "$ZED_FILE",
+    "request": "launch"
+  },
+  {
+    "adapter": "Debugpy",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {
+      "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+      "PYTHONPATH": "{{ user_home}}/.config/pyrc",
+    },
+    "justMyCode": false,
+    "label": "Debug Python tests",
+    "module": "pytest",
+    "request": "launch"
+  },
+  {
+    "adapter": "JavaScript",
+    "args": ["test-unit"],
+    "command": "just",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "label": "Debug JavaScript tests",
+    "request": "launch",
+    "type": "node-terminal"
+  },
+  {
+    "adapter": "JavaScript",
+    "console": "integratedTerminal",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "justMyCode": false,
+    "label": "JavaScript debug terminal",
+    "request": "launch",
+    "type": "pwa-node"
+  },
+  {
+    "adapter": "JavaScript",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "justMyCode": false,
+    "label": "Debug active JavaScript file",
+    "program": "$ZED_FILE",
+    "request": "launch",
+    "type": "pwa-node"
+  }
+]

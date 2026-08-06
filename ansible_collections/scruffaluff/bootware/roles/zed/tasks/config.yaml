@@ -71,6 +71,7 @@
     src: "{{ item }}.json.j2"
   become: true
   loop:
+    - debug
     - keymap
     - settings
   tags:
@@ -91,6 +92,7 @@
     force: true
     src: "{{ item }}.json.j2"
   loop:
+    - debug
     - keymap
     - settings
   tags:

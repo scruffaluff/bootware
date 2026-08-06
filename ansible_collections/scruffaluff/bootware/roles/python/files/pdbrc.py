@@ -9,7 +9,7 @@ import shlex
 import traceback
 from typing import TYPE_CHECKING, Any, cast
 
-import dbgrc
+import pyrc
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -42,15 +42,15 @@ def do_cat(self: Pdb, line: str) -> None:
 
     Print object catalog with default pager.
     """
-    parser = dbgrc.Parser()
+    parser = pyrc.Parser()
     parser.add_argument("-r", "--regex", default=None)
     rest, args = parser.parse_line(line)
 
     try:
-        object_ = dbgrc.parse(self, rest)
-        dbgrc.cat(object_, regex=args.regex)
+        object_ = pyrc.parse(self, rest)
+        pyrc.cat(object_, regex=args.regex)
     except Exception as exception:
-        dbgrc.error(exception)
+        pyrc.error(exception)
         return
 
 
@@ -60,20 +60,20 @@ def do_doc(self: Pdb, line: str) -> None:
     Print object signature and documentation in default pager.
     """
     try:
-        object_ = dbgrc.parse(self, line)
+        object_ = pyrc.parse(self, line)
     except Exception as exception:
-        dbgrc.error(exception)
+        pyrc.error(exception)
         return
 
     if object_ is None:
         try:
-            docstring = dbgrc.curframe(self).f_globals["__doc__"]
+            docstring = pyrc.curframe(self).f_globals["__doc__"]
         except KeyError:
-            dbgrc.error("Unable to find current module docstring")
+            pyrc.error("Unable to find current module docstring")
         else:
-            dbgrc.cat(docstring)
+            pyrc.cat(docstring)
     else:
-        dbgrc.doc(object_)
+        pyrc.doc(object_)
 
 
 def do_edit(self: Pdb, line: str) -> None:
@@ -82,11 +82,11 @@ def do_edit(self: Pdb, line: str) -> None:
     Open object source code or current module in default text editor.
     """
     try:
-        object_ = dbgrc.parse(self, line)
+        object_ = pyrc.parse(self, line)
     except Exception as exception:
-        dbgrc.error(exception)
+        pyrc.error(exception)
     else:
-        dbgrc.edit(object_, dbgrc.curframe(self))
+        pyrc.edit(object_, pyrc.curframe(self))
 
 
 def do_nextlist(self: Pdb, _arg: str) -> int:
@@ -94,7 +94,7 @@ def do_nextlist(self: Pdb, _arg: str) -> int:
 
     Continue execution until the next line and then list source code.
     """
-    self.set_next(dbgrc.curframe(self))
+    self.set_next(pyrc.curframe(self))
     self.do_list("")
     # Returning "1" appears to be necessary for subsequent calls to work.
     return 1
@@ -105,11 +105,11 @@ def do_nushell(self: Pdb, line: str) -> None:
 
     Execute Nushell expression or start interactive session.
     """
-    line_ = dbgrc.parse_exprs(var_lookup(self), line)
-    parser = dbgrc.Parser()
+    line_ = pyrc.parse_exprs(var_lookup(self), line)
+    parser = pyrc.Parser()
     parser.add_argument("-c", "--cwd", default=None)
     rest, args = parser.parse_line(line_)
-    dbgrc.nushell(rest, cwd=args.cwd)
+    pyrc.nushell(rest, cwd=args.cwd)
 
 
 def do_shell(self: Pdb, line: str) -> None:
@@ -117,9 +117,9 @@ def do_shell(self: Pdb, line: str) -> None:
 
     Execute command or start interactive default shell session.
     """
-    line_ = dbgrc.parse_exprs(var_lookup(self), line)
+    line_ = pyrc.parse_exprs(var_lookup(self), line)
     arguments = list(map(str, map(os.path.expanduser, shlex.split(line_.strip()))))
-    dbgrc.shell(arguments)
+    pyrc.shell(arguments)
 
 
 def do_steplist(self: Pdb, arg: str) -> int:

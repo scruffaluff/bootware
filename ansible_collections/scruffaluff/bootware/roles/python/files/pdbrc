@@ -14,9 +14,6 @@ import pdbrc
 pdbrc.setup(pdb.Pdb)
 sys.excepthook = pdbrc.break_exception(pdb)
 
-# Load debug helper modules.
-import plotrc
-
 # Remove setup import modules.
 _ = sys.path.pop()
 if "os" not in _namespace: del os

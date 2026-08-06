@@ -10,9 +10,8 @@ from pprint import pprint
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any
 
-import dbgrc
 import plotrc
-from dbgrc import Parser
+import pyrc
 from lldb import (
     SBCommandReturnObject,
     SBDebugger,
@@ -21,6 +20,7 @@ from lldb import (
     SBValue,
     eReturnStatusFailed,
 )
+from pyrc import Parser
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -61,7 +61,7 @@ def cmd_nushell(
 ) -> None:
     """Execute Nushell expression or start interactive session."""
     frame = current_frame(debugger)
-    line = dbgrc.parse_exprs(var_lookup(frame), command)
+    line = pyrc.parse_exprs(var_lookup(frame), command)
     parser = Parser()
     parser.add_argument("-c", "--cwd", default=None)
     rest, args = parser.parse_line(line)
@@ -83,7 +83,7 @@ def cmd_py(
 ) -> None:
     """Execute Python expression with frame variables."""
     frame = current_frame(debugger)
-    variables = dbgrc.find_vars(var_lookup(frame), command)
+    variables = pyrc.find_vars(var_lookup(frame), command)
     try:
         eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)
     except Exception as exception:

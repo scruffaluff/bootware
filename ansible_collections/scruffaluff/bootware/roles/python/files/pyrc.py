@@ -16,19 +16,20 @@ import shlex
 import subprocess
 import sys
 import tempfile
-import traceback
 from argparse import ArgumentError, ArgumentParser
 from ast import Load, Name
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Sequence
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any, NamedTuple, cast
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from collections.abc import Callable, Iterator, Sequence
-    from pdb import Pdb
-    from types import ModuleType, TracebackType
+    from collections.abc import Callable, Iterator
+    from types import ModuleType
+
+
+Array = Sequence[float]
 
 
 class Expr(NamedTuple):
@@ -72,19 +73,16 @@ class Parser(ArgumentParser):
         return rest, args
 
 
-def break_exception(self: Pdb) -> Callable:
-    """Create exception handler for debugging."""
+def aplay(*args: Any, **kwargs: Any) -> None:
+    """Play back a NumPy array containing audio data."""
+    sounddevice = dyport("sounddevice")
+    sounddevice.play(*args, **kwargs)
 
-    def excepthook(
-        type_: type[BaseException], value: BaseException, trace: TracebackType
-    ) -> None:
-        """Start debugger on unhandled exception."""
-        traceback.print_exception(type_, value, trace)
-        # Mypy is incorrect since the method is defined at
-        # https://docs.python.org/3/library/pdb.html#pdb.pm.
-        self.pm()  # type: ignore[attr-defined]
 
-    return excepthook
+def arec(*args: Any, **kwargs: Any) -> Array:
+    """Record audio data into a NumPy array."""
+    sounddevice = dyport("sounddevice")
+    return sounddevice.record(*args, **kwargs)
 
 
 def cat(object_: Any, regex: str | None = None) -> None:
@@ -145,7 +143,7 @@ def drop_tokens(tokens: list[str], line: str) -> str:
         position = index + len(token)
 
         # Remove trailing quotes after token that shlex may have ignored.
-        while not list_get(line, position, " ").isspace():
+        while not seq_get(line, position, " ").isspace():
             position += 1
     return line[position:].lstrip()
 
@@ -298,16 +296,8 @@ def is_type(value: Any) -> bool:
     )
 
 
-def list_get(lst: Sequence[Any], pos: int, default: Any) -> Any:
-    """Safe implementation of get for sequences."""
-    try:
-        return lst[pos]
-    except IndexError:
-        return default
-
-
 def name(object_: Any) -> str:
-    """Get name object of name of its type."""
+    """Get object name or name of its type."""
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
 
 
@@ -353,6 +343,27 @@ def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
         line = line[: expr.start + offset] + insert + line[expr.stop + offset :]
         offset += len(insert) - expr.stop + expr.start
     return line
+
+
+def popall(obj: Any, keys: str | Iterable[str], default: Any) -> Any:
+    """Pop possible keys from object until successful."""
+    if isinstance(keys, str):
+        return obj.pop(keys, default)
+
+    for key in keys:
+        try:
+            return obj.pop(key)
+        except KeyError:
+            pass
+    return default
+
+
+def seq_get(lst: Sequence[Any], pos: int, default: Any) -> Any:
+    """Safe implementation of get for sequences."""
+    try:
+        return lst[pos]
+    except IndexError:
+        return default
 
 
 def shell(command: list[str]) -> None:
