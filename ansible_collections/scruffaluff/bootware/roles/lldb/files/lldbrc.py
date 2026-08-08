@@ -1,17 +1,14 @@
 """LLDB settings script."""
 
-# ruff: noqa: ANN401, ARG001, BLE001, S307
+# ruff: noqa: ANN401, ARG001
 
 from __future__ import annotations
 
 import re
-import subprocess
 from pprint import pprint
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any
 
-import plotrc
-import pyrc
 from lldb import (
     SBCommandReturnObject,
     SBDebugger,
@@ -20,6 +17,9 @@ from lldb import (
     SBValue,
     eReturnStatusFailed,
 )
+
+import plotrc
+import pyrc
 from pyrc import Parser
 
 if TYPE_CHECKING:
@@ -60,15 +60,13 @@ def cmd_nushell(
     internal_dict: dict,
 ) -> None:
     """Execute Nushell expression or start interactive session."""
-    frame = current_frame(debugger)
+    frame = curframe(debugger)
     line = pyrc.parse_exprs(var_lookup(frame), command)
     parser = Parser()
     parser.add_argument("-c", "--cwd", default=None)
-    rest, args = parser.parse_line(line)
-    cmd = ["nu", "--login", "--commands", rest] if rest else ["nu", "--login"]
-
+    cmd, args = parser.parse_line(line)
     try:
-        subprocess.run(cmd, check=True, cwd=args.cwd)
+        pyrc.nushell(cmd, cwd=args.cwd)
     except (CalledProcessError, FileNotFoundError) as exception:
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)
@@ -82,11 +80,11 @@ def cmd_py(
     internal_dict: dict,
 ) -> None:
     """Execute Python expression with frame variables."""
-    frame = current_frame(debugger)
+    frame = curframe(debugger)
     variables = pyrc.find_vars(var_lookup(frame), command)
     try:
-        eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)
-    except Exception as exception:
+        eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)  # noqa: S307
+    except Exception as exception:  # noqa: BLE001
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)
 
@@ -100,7 +98,7 @@ def cmd_pytype(
 ) -> None:
     """Print variable type as it appears to Python."""
     name = command.strip()
-    frame = current_frame(debugger)
+    frame = curframe(debugger)
     variable = frame.FindVariable(name)
     if variable.error.success:
         print(variable.type.name)
@@ -109,7 +107,7 @@ def cmd_pytype(
         result.SetStatus(eReturnStatusFailed)
 
 
-def current_frame(debugger: SBDebugger) -> SBFrame:
+def curframe(debugger: SBDebugger) -> SBFrame:
     """Get current stack frame in debugger."""
     target = debugger.GetSelectedTarget()
     return target.GetProcess().GetSelectedThread().GetSelectedFrame()

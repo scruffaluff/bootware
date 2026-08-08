@@ -1,20 +1,21 @@
 """Python plotting utilities."""
 
-# ruff: noqa: ANN401
+# Explicit optional, union, and quoted types are used to support older Python versions.
+# ruff: noqa: ANN401, PYI034, UP007, UP037, UP045
 
 from __future__ import annotations
 
+import builtins
 import dataclasses
-import inspect
 import itertools
 from collections.abc import Iterable, Sequence
-from typing import Any, cast
+from typing import Any, Optional, Union, cast, no_type_check
 
 import pyrc
 from pyrc import dyport
 
 Array = Sequence[float]
-Signal = Array | tuple[Array, Array] | dict[str, Any]
+Signal = Union[Array, tuple[Array, Array], dict[str, Any]]
 
 
 @dataclasses.dataclass
@@ -25,9 +26,7 @@ class Range:
     stop: float = float("-inf")
     fixed: bool = False
 
-    # Quoted return type is used instead of Self to support older Python
-    # versions, such as LLDB's 3.9.
-    def __iadd__(self, other: tuple[float, float]) -> "Range":  # noqa: PYI034, UP037
+    def __iadd__(self, other: tuple[float, float]) -> "Range":
         """Expand bounds if necessary."""
         if not self.fixed:
             self.start = min(other[0], self.start)
@@ -39,6 +38,7 @@ class Range:
         return self.start < self.stop
 
 
+@no_type_check
 def decibel(signal: Array) -> Array:
     """Convert signal to decibels.
 
@@ -51,6 +51,17 @@ def decibel(signal: Array) -> Array:
     return 20 * numpy.log10(amplitude)
 
 
+@no_type_check
+def export() -> None:
+    """Add functions to global scope."""
+    builtins.pline = line
+    builtins.phase = phase
+    builtins.psgrm = spectrum
+    builtins.pspec = spectrum
+    builtins.pwave = waveform
+
+
+@no_type_check
 def flatten(array: Array) -> Array:
     """Convert array to one dimensional form."""
     if array.ndim > 1:
@@ -62,7 +73,7 @@ def line(
     *signals: Signal,
     overlay: bool = True,
     show: bool = True,
-    x: Array | None = None,
+    x: Optional[Array] = None,
     **kwargs: Any,
 ) -> Any:
     """Plot line."""
@@ -74,14 +85,14 @@ def line(
     axes = axes[0]
 
     for index, data in enumerate(datas):
-        x_ = data.pop("x") or numpy.arange(len(data["y"]))
+        x_ = data.pop("x", numpy.arange(len(data["y"])))
         x_range += (x_[0], x_[-1])
         y_range += (data["y"].min(), data["y"].max())
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, data["y"], color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
-        axis.legend()
+        axis.legend(loc="upper right")
 
     set_ranges(axes, x_range, y_range)
     if show:
@@ -108,11 +119,11 @@ def palette_cycle() -> itertools.cycle:
 
 
 def phase(
-    *signals: Array | dict[str, Any],
+    *signals: Signal,
     overlay: bool = True,
-    rate: int | None = None,
+    rate: Optional[int] = None,
     show: bool = True,
-    x: Array | None = None,
+    x: Optional[Array] = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency phase."""
@@ -129,13 +140,14 @@ def phase(
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate")
         y = numpy.unwrap(numpy.angle(numpy.fft.rfft(data["y"])))
-        x_ = data.pop("x") or numpy.fft.rfftfreq(len(data["y"]), 1 / rate_)
+        x_ = data.pop("x", numpy.fft.rfftfreq(len(data["y"]), 1 / rate_))
         x_range += (x_[0], x_[-1])
         y_range += (y.min(), y.max())
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, data["y"], color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
+        axis.legend(loc="upper right")
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
@@ -158,8 +170,8 @@ def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
 
 
 def sigdata(
-    signals: Iterable[Array | tuple[Array, Array] | dict[str, Any]],
-    x: Array | None = None,
+    signals: Iterable[Signal],
+    x: Optional[Array] = None,
 ) -> list[dict[str, Any]]:
     """Convert signal into standardized format."""
     numpy = dyport("numpy")
@@ -171,16 +183,18 @@ def sigdata(
             signal = cast("dict[str, Any]", signal)
             y = numpy.asarray(signal.pop("y")).ravel()
             x_ = signal.pop("x", x)
-            x_ = x_ if x_ is None else numpy.asarray(x).ravel()
             color = pyrc.popall(signal, ["color", "c"], next(palette))
-            label = pyrc.popall(signal, ["label", "l"], var_name(signal, str(index)))
+            label = pyrc.popall(
+                signal, ["label", "l"], pyrc.varname(signal, str(index), depth=3)
+            )
             data = {
                 **signal,
-                "x": x_,
                 "y": y,
                 "color": color,
                 "label": label,
             }
+            if x_ is not None:
+                data["x"] = numpy.asarray(x_).ravel()
         elif isinstance(signal, tuple):
             signal = cast("tuple[Array, Array]", signal)
             x_, y = signal
@@ -188,27 +202,27 @@ def sigdata(
                 "x": numpy.asarray(x_).ravel(),
                 "y": numpy.asarray(y).ravel(),
                 "color": next(palette),
-                "label": var_name(signal, str(index)),
+                "label": pyrc.varname(signal, str(index), depth=3),
             }
         else:
             y = numpy.asarray(signal).ravel()
-            x_ = x if x is None else numpy.asarray(x).ravel()
             data = {
-                "x": x_,
                 "y": y,
                 "color": next(palette),
-                "label": var_name(signal, str(index)),
+                "label": pyrc.varname(signal, str(index), depth=3),
             }
+            if x is not None:
+                data["x"] = numpy.asarray(x).ravel()
         datas.append(data)
     return datas
 
 
 def spectrum(
-    *signals: Array | dict[str, Any],
+    *signals: Signal,
     overlay: bool = True,
-    rate: int | None = None,
+    rate: Optional[int] = None,
     show: bool = True,
-    x: Array | None = None,
+    x: Optional[Array] = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio frequency spectrum."""
@@ -225,7 +239,7 @@ def spectrum(
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate")
         y = numpy.fft.rfft(data["y"])
-        x_ = data.pop("x") or numpy.fft.rfftfreq(len(data["y"]), 1 / rate_)
+        x_ = data.pop("x", numpy.fft.rfftfreq(len(data["y"]), 1 / rate_))
         x_range += (x_[0], x_[-1])
         y_range += (y.min(), y.max())
 
@@ -236,7 +250,7 @@ def spectrum(
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
         axis.set_xticklabels(ticks[1])
-        axis.legend()
+        axis.legend(loc="upper right")
         axis.minorticks_off()
 
     set_ranges(axes, x_range, y_range)
@@ -260,21 +274,12 @@ def subplots(*args: Any, **kwargs: Any) -> tuple[Any, Any]:
     return pyplot.subplots(*args, figsize=(12, 6), layout="compressed", **kwargs)
 
 
-def var_name(var: Any, default: str = "") -> str:
-    """Trace variable name in calling scope."""
-    vars_ = inspect.currentframe().f_back.f_back.f_locals.items()
-    try:
-        return next(name for name, value in vars_ if value is var)
-    except StopIteration:
-        return default
-
-
 def waveform(
     *signals: Signal,
     overlay: bool = True,
-    rate: int | None = None,
+    rate: Optional[int] = None,
     show: bool = True,
-    x: Array | None = None,
+    x: Optional[Array] = None,
     **kwargs: Any,
 ) -> None:
     """Plot audio waveform."""
@@ -289,7 +294,7 @@ def waveform(
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate")
-        x_ = data.pop("x") or numpy.linspace(0, len(data["y"]) / rate_, len(data["y"]))
+        x_ = data.pop("x", numpy.linspace(0, len(data["y"]) / rate_, len(data["y"])))
         x_range += (x_[0], x_[-1])
         y_range += (data["y"].min(), data["y"].max())
 
@@ -297,7 +302,7 @@ def waveform(
         axis.plot(x_, data["y"], color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Time (s)")
-        axis.legend()
+        axis.legend(loc="upper right")
 
     set_ranges(axes, x_range, y_range)
     if show:
