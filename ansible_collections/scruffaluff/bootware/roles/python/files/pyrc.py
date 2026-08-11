@@ -1,7 +1,7 @@
 """Python debugger settings file."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: ANN401
+# ruff: noqa: ANN401, UP045
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from argparse import ArgumentError, ArgumentParser
 from ast import Load, Name
 from collections.abc import Callable, Iterable, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, NamedTuple, cast, no_type_check
+from typing import TYPE_CHECKING, Any, NamedTuple, Optional, cast, no_type_check
 
 if TYPE_CHECKING:
     from argparse import Namespace
@@ -75,16 +75,76 @@ class Parser(ArgumentParser):
         return rest, args
 
 
-def aplay(*args: Any, **kwargs: Any) -> None:
-    """Play back a NumPy array containing audio data."""
+def aplay(
+    data: Array,
+    rate: Optional[int] = None,
+    map: Optional[Sequence[int]] = None,  # noqa: A002
+    block: bool = False,
+    loop: bool = False,
+    **kwargs: Any,
+) -> None:
+    """Play back a NumPy array containing audio data.
+
+    Arguments:
+        data: Audio data to be played back. The columns of a two-dimensional
+            array are interpreted as channels, one-dimensional arrays are
+            treated as mono data.
+        rate: Audio sample rate.
+        map: List of channel numbers, starting with 1, where the columns of
+            data shall be played back.
+        block: Whether to wait until playback finishes.
+        loop: Play data in a loop.
+        kwargs: Additional arguments for sounddevice play.
+    """
     sounddevice = dyport("sounddevice")
-    sounddevice.play(*args, **kwargs)
+    sounddevice.play(
+        data,
+        samplerate=rate,
+        mapping=map,
+        blocking=block,
+        loop=loop,
+        **kwargs,
+    )
 
 
-def arec(*args: Any, **kwargs: Any) -> Array:
-    """Record audio data into a NumPy array."""
+def arec(  # noqa: PLR0913, PLR0917
+    frames: Optional[int] = None,
+    rate: Optional[int] = None,
+    channels: Optional[int] = None,
+    dtype: Optional[type] = None,
+    out: Optional[Array] = None,
+    map: Optional[Sequence[int]] = None,  # noqa: A002
+    block: bool = False,
+    **kwargs: Any,
+) -> Array:
+    """Record audio data into a NumPy array.
+
+    Arguments:
+        frames: Number of frames to record.
+        rate: Audio sample rate.
+        channels: Number of channels to record.
+        dtype: Data type of the recording.
+        out: Output array for recored data.
+        map: List of channel numbers, starting with 1, where the columns of
+            data shall be recorded.
+        block: Whether to wait until recording finishes.
+        loop: Play data in a loop.
+        kwargs: Additional arguments for sounddevice record.
+
+    Returns:
+        The recorded data.
+    """
     sounddevice = dyport("sounddevice")
-    return sounddevice.record(*args, **kwargs)
+    return sounddevice.record(
+        frames,
+        samplerate=rate,
+        channels=channels,
+        dtype=dtype,
+        out=out,
+        mapping=map,
+        blocking=block,
+        **kwargs,
+    )
 
 
 def cat(object_: Any, regex: str | None = None) -> None:
@@ -114,6 +174,19 @@ def catalog(
     if isinstance(object_, dict):
         return pprint.pformat({key: object_[key] for key in sorted(object_.keys())})
     return pprint.pformat(object_)
+
+
+@no_type_check
+def decibel(signal: Array) -> Array:
+    """Convert signal to decibels.
+
+    Avoids passing zeros to log10 by replacing them with the datatype epsilon.
+    """
+    numpy = dyport("numpy")
+
+    epsilon = numpy.finfo(signal.dtype).eps
+    amplitude = numpy.maximum(numpy.abs(signal), epsilon)
+    return 20 * numpy.log10(amplitude)
 
 
 def doc(object_: Any) -> None:
@@ -222,9 +295,11 @@ def export() -> None:
     builtins.aplay = aplay
     builtins.arec = arec
     builtins.cat = cat
+    builtins.decibel = decibel
     builtins.doc = doc
     builtins.dyport = dyport
     builtins.edit = edit
+    builtins.normalize = normalize
     builtins.nushell = nushell
     builtins.page = page
     builtins.shell = shell
@@ -310,6 +385,16 @@ def is_type(value: Any) -> bool:
 def name(object_: Any) -> str:
     """Get object name or its type name."""
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
+
+
+def normalize(signal: Array) -> Array:
+    """Scale signal to -1 and +1 range."""
+    numpy = dyport("numpy")
+
+    maximum = numpy.abs(signal).max()
+    if maximum == 0:
+        return signal
+    return signal / maximum
 
 
 def nushell(command: str, **kwargs: Any) -> None:
