@@ -1,7 +1,7 @@
 """Python plotting utilities."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: ANN401, PYI034, UP007, UP037, UP045
+# ruff: noqa: PLR0913, PYI034, UP007, UP037, UP045
 
 from __future__ import annotations
 
@@ -39,48 +39,49 @@ class Range:
         return self.start < self.stop
 
 
-def bode(
+@no_type_check
+def export() -> None:
+    """Add functions to global scope."""
+    builtins.pfreq = frequency
+    builtins.pgrid = grid
+    builtins.pline = line
+    builtins.phase = phase
+    builtins.pspec = spectrogram
+    builtins.pwave = waveform
+
+
+def frequency(
     *signals: Signal,
+    axes: Optional[list[Any]] = None,
+    depth: int = 3,
     overlay: bool = True,
     rate: Optional[int] = None,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
 ) -> None:
-    """Plot audio frequency magnitude and phase."""
+    """Plot audio frequency spectrum."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
-    rate = rate or kwargs.pop("r", None)
+    overlay = kwargs.pop("o", overlay)
+    rate = kwargs.pop("r", rate)
 
-    figure, axes = subplots(
-        ncols=1 if overlay else len(signals), nrows=2, squeeze=False
-    )
-    axes[0][0].set_ylabel("Volume (dB)")
-    axes[1][0].set_ylabel("Phase (rad)")
-    x_range, freq_range, phase_range = Range(20, 20_000, True), Range(), Range()
+    if axes is None:
+        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        axes = axes[0]
+    axes[0].set_ylabel("Volume (dB)")
     ticks = spectrum_ticks()
-    datas = sigdata(signals, x=x)
+    x_range, y_range = Range(20, 20_000, True), Range()
+    datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate", len(data["y"]))
-        fft = numpy.fft.rfft(data["y"])
-        freq = numpy.abs(fft)
-        phase = numpy.unwrap(numpy.angle(fft))
+        y = numpy.abs(numpy.fft.rfft(data["y"]))
         x_ = data.pop("x", numpy.fft.rfftfreq(len(data["y"]), 1 / rate_))
         x_range += (x_[0], x_[-1])
+        y_range += (y.min(), y.max())
 
-        freq_range += (freq.min(), freq.max())
-        phase_range += (phase.min(), phase.max())
-        axis = axes[0][0 if overlay else index]
-        axis.plot(x_, freq, color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
-        axis.set_xscale("log")
-        axis.set_xticks(ticks[0])
-        axis.set_xticklabels(ticks[1])
-        axis.legend(loc="upper right")
-        axis.minorticks_off()
-
-        axis = axes[1][0 if overlay else index]
-        axis.plot(x_, phase, color=data["color"], label=data["label"])
+        axis = axes[0 if overlay else index]
+        axis.plot(x_, y, color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
@@ -89,38 +90,103 @@ def bode(
         axis.legend(loc="upper right")
         axis.minorticks_off()
 
-    set_ranges(axes[0], x_range, freq_range)
-    set_ranges(axes[1], x_range, phase_range)
+    set_ranges(axes, x_range, y_range)
     if show:
         pyplot.show(block=True)
-    return figure
 
 
-@no_type_check
-def export() -> None:
-    """Add functions to global scope."""
-    builtins.pbode = bode
-    builtins.pfreq = spectrum
-    builtins.pline = line
-    builtins.phase = phase
-    builtins.pspec = spectrogram
-    builtins.pwave = waveform
+def grid(
+    *signals: Signal,
+    plots: list[str] | None = None,
+    overlay: bool = True,
+    rate: Optional[int] = None,
+    show: bool = True,
+    x: Optional[Array] = None,
+    **kwargs: Any,
+) -> None:
+    """Plot multiple graphs vertically in a grid."""
+    pyplot = dyport("matplotlib.pyplot")
+    overlay = kwargs.pop("o", overlay)
+    plots = plots or kwargs.pop("p", ["frequency", "phase"])
+    rate = kwargs.pop("r", rate)
+
+    _, axes = subplots(
+        nrows=len(plots), ncols=1 if overlay else len(signals), squeeze=False
+    )
+    for idx, plot in enumerate(plots):
+        if "line".startswith(plot):
+            line(
+                *signals,
+                axes=axes[idx],
+                depth=4,
+                overlay=overlay,
+                show=False,
+                x=x,
+                **kwargs,
+            )
+        elif "frequency".startswith(plot):
+            frequency(
+                *signals,
+                axes=axes[idx],
+                depth=4,
+                overlay=overlay,
+                rate=rate,
+                show=False,
+                x=x,
+                **kwargs,
+            )
+        elif "phase".startswith(plot):
+            phase(
+                *signals,
+                axes=axes[idx],
+                depth=4,
+                overlay=overlay,
+                rate=rate,
+                show=False,
+                x=x,
+                **kwargs,
+            )
+        elif "spectrogram".startswith(plot):
+            spectrogram(
+                *signals, axes=axes[idx], depth=4, rate=rate, show=False, **kwargs
+            )
+        elif "waveform".startswith(plot):
+            waveform(
+                *signals,
+                axes=axes[idx],
+                depth=4,
+                overlay=overlay,
+                rate=rate,
+                show=False,
+                x=x,
+                **kwargs,
+            )
+        else:
+            msg = f"Unknown plot type '{plot}'."
+            raise ValueError(msg)
+
+    if show:
+        pyplot.show(block=True)
 
 
 def line(
     *signals: Signal,
+    axes: Optional[list[Any]] = None,
+    depth: int = 3,
     overlay: bool = True,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Any:
+) -> None:
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
+    overlay = kwargs.pop("o", overlay)
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
-    axes = axes[0]
+    if axes is None:
+        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        axes = axes[0]
     x_range, y_range = Range(), Range()
-    datas = sigdata(signals, x=x)
+    datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         x_ = data.pop("x", numpy.arange(len(data["y"])))
@@ -135,7 +201,6 @@ def line(
     set_ranges(axes, x_range, y_range)
     if show:
         pyplot.show(block=True)
-    return figure
 
 
 @no_type_check
@@ -168,6 +233,8 @@ def palette_cycle() -> itertools.cycle:
 
 def phase(
     *signals: Signal,
+    axes: Optional[list[Any]] = None,
+    depth: int = 3,
     overlay: bool = True,
     rate: Optional[int] = None,
     show: bool = True,
@@ -176,14 +243,16 @@ def phase(
 ) -> None:
     """Plot audio frequency phase."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
-    rate = rate or kwargs.pop("r", None)
+    overlay = kwargs.pop("o", overlay)
+    rate = kwargs.pop("r", rate)
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
-    axes = axes[0]
+    if axes is None:
+        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        axes = axes[0]
     axes[0].set_ylabel("Phase (rad)")
     ticks = spectrum_ticks()
     x_range, y_range = Range(20, 20_000, True), Range()
-    datas = sigdata(signals, x=x)
+    datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate", len(data["y"]))
@@ -205,7 +274,6 @@ def phase(
     set_ranges(axes, x_range, y_range)
     if show:
         pyplot.show(block=True)
-    return figure
 
 
 def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
@@ -220,6 +288,7 @@ def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
 def sigdata(
     signals: Iterable[Signal],
     x: Optional[Array] = None,
+    depth: int = 3,
 ) -> list[dict[str, Any]]:
     """Convert signal into standardized format."""
     numpy = dyport("numpy")
@@ -233,7 +302,7 @@ def sigdata(
             x_ = signal.pop("x", x)
             color = pyrc.popall(signal, ["color", "c"], next(palette))
             label = pyrc.popall(
-                signal, ["label", "l"], pyrc.varname(signal, str(index), depth=3)
+                signal, ["label", "l"], pyrc.varname(signal, str(index), depth=depth)
             )
             data = {
                 **signal,
@@ -250,14 +319,14 @@ def sigdata(
                 "x": mono(numpy.asarray(x_)),
                 "y": mono(numpy.asarray(y)),
                 "color": next(palette),
-                "label": pyrc.varname(signal, str(index), depth=3),
+                "label": pyrc.varname(signal, str(index), depth=depth),
             }
         else:
             y = mono(numpy.asarray(signal))
             data = {
                 "y": y,
                 "color": next(palette),
-                "label": pyrc.varname(signal, str(index), depth=3),
+                "label": pyrc.varname(signal, str(index), depth=depth),
             }
             if x is not None:
                 data["x"] = mono(numpy.asarray(x))
@@ -266,24 +335,31 @@ def sigdata(
 
 
 def spectrogram(
-    *signals: Signal, rate: Optional[int] = None, show: bool = True, **kwargs: Any
-) -> Any:
+    *signals: Signal,
+    axes: Optional[list[Any]] = None,
+    depth: int = 3,
+    rate: Optional[int] = None,
+    show: bool = True,
+    **kwargs: Any,
+) -> None:
     """Plot audio frequency time heatmap with Matplotlib."""
     numpy, pyplot, signal = (
         dyport("numpy"),
         dyport("matplotlib.pyplot"),
         dyport("scipy.signal"),
     )
-    rate = rate or kwargs.pop("r", None)
+    rate = kwargs.pop("r", rate)
 
-    figure, axes = subplots(ncols=len(signals), squeeze=False)
-    axes = axes[0]
-    axes[0].set_ylabel("Frequency (Hz)")
+    if axes is None:
+        _, axis = subplots(ncols=1, squeeze=True)
+    else:
+        axis = axes[0]
+    axis.set_ylabel("Frequency (Hz)")
     ticks = spectrum_ticks()
     x_range, y_range = Range(), Range(20, 20_000, True)
-    datas = sigdata(signals)
+    datas = sigdata(signals, depth=depth)
 
-    for index, data in enumerate(datas):
+    for data in datas:
         rate_ = rate or data.pop("rate", len(data["y"]))
         transform = signal.ShortTimeFFT.from_window(
             ("gaussian", 1e-2 * rate_),
@@ -301,7 +377,6 @@ def spectrogram(
         x_range += (x.min(), x.max())
         y_range += (y.min(), y.max())
 
-        axis = axes[index]
         mesh = axis.pcolormesh(
             x,
             y,
@@ -315,53 +390,10 @@ def spectrogram(
         axis.set_yticks(ticks[0])
         axis.set_yticklabels(ticks[1])
 
-    set_ranges(axes, x_range, y_range)
-    figure.colorbar(mesh, ax=axes, label="Volume (dB)")
+    set_ranges([axis], x_range, y_range)
+    axis.figure.colorbar(mesh, ax=axes, label="Volume (dB)")
     if show:
         pyplot.show(block=True)
-    return figure
-
-
-def spectrum(
-    *signals: Signal,
-    overlay: bool = True,
-    rate: Optional[int] = None,
-    show: bool = True,
-    x: Optional[Array] = None,
-    **kwargs: Any,
-) -> None:
-    """Plot audio frequency spectrum."""
-    numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
-    rate = rate or kwargs.pop("r", None)
-
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
-    axes = axes[0]
-    axes[0].set_ylabel("Volume (dB)")
-    ticks = spectrum_ticks()
-    x_range, y_range = Range(20, 20_000, True), Range()
-    datas = sigdata(signals, x=x)
-
-    for index, data in enumerate(datas):
-        rate_ = rate or data.pop("rate", len(data["y"]))
-        y = numpy.abs(numpy.fft.rfft(data["y"]))
-        x_ = data.pop("x", numpy.fft.rfftfreq(len(data["y"]), 1 / rate_))
-        x_range += (x_[0], x_[-1])
-        y_range += (y.min(), y.max())
-
-        axis = axes[0 if overlay else index]
-        axis.plot(x_, y, color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
-        axis.set_xlabel("Frequency (Hz)")
-        axis.set_xscale("log")
-        axis.set_xticks(ticks[0])
-        axis.set_xticklabels(ticks[1])
-        axis.legend(loc="upper right")
-        axis.minorticks_off()
-
-    set_ranges(axes, x_range, y_range)
-    if show:
-        pyplot.show(block=True)
-    return figure
 
 
 def spectrum_ticks() -> tuple[list[float], list[str]]:
@@ -381,6 +413,8 @@ def subplots(*args: Any, **kwargs: Any) -> tuple[Any, Any]:
 
 def waveform(
     *signals: Signal,
+    axes: Optional[list[Any]] = None,
+    depth: int = 3,
     overlay: bool = True,
     rate: Optional[int] = None,
     show: bool = True,
@@ -389,13 +423,15 @@ def waveform(
 ) -> None:
     """Plot audio waveform."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
-    rate = rate or kwargs.pop("r", None)
+    overlay = kwargs.pop("o", overlay)
+    rate = kwargs.pop("r", rate)
 
-    figure, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
-    axes = axes[0]
+    if axes is None:
+        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        axes = axes[0]
     axes[0].set_ylabel("Amplitude")
     x_range, y_range = Range(), Range(-1, 1, True)
-    datas = sigdata(signals, x=x)
+    datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate", len(data["y"]))
@@ -412,4 +448,3 @@ def waveform(
     set_ranges(axes, x_range, y_range)
     if show:
         pyplot.show(block=True)
-    return figure

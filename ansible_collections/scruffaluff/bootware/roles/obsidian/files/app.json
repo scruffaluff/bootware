@@ -4,6 +4,7 @@
   "newLinkFormat": "relative",
   "showInlineTitle": false,
   "spellcheck": false,
+  "strictLineBreaks": false,
   "tabSize": 2,
   "useTab": false
 }
