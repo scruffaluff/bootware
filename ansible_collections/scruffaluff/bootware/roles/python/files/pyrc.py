@@ -1,7 +1,7 @@
 """Python debugger settings file."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: ANN401, UP045
+# ruff: noqa: ANN401, D102, UP007, UP037, UP045
 
 from __future__ import annotations
 
@@ -21,17 +21,37 @@ import sys
 import tempfile
 from argparse import ArgumentError, ArgumentParser
 from ast import Load, Name
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, NamedTuple, Optional, cast, no_type_check
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    NamedTuple,
+    Optional,
+    Protocol,
+    Union,
+    cast,
+    no_type_check,
+)
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from collections.abc import Callable, Iterator
+    from collections.abc import Callable, Iterable, Iterator, Sequence
     from types import ModuleType
 
 
-Array = Sequence[float]
+class Array(Protocol):
+    """Numpy array protocol."""
+
+    @property
+    def dtype(self) -> Any: ...
+    def max(self) -> float: ...
+    def mean(self, axis: int) -> "Array": ...
+    def min(self) -> float: ...
+    @property
+    def ndim(self) -> int: ...
+    @property
+    def shape(self) -> Sequence[int]: ...
 
 
 class Expr(NamedTuple):
@@ -176,7 +196,6 @@ def catalog(
     return pprint.pformat(object_)
 
 
-@no_type_check
 def decibel(signal: Array) -> Array:
     """Convert signal to decibels.
 
@@ -440,7 +459,7 @@ def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
     return line
 
 
-def popall(obj: Any, keys: str | Iterable[str], default: Any) -> Any:
+def popall(obj: Any, keys: Union[str, Iterable[str]], default: Any) -> Any:
     """Pop possible keys from object until successful."""
     if isinstance(keys, str):
         return obj.pop(keys, default)

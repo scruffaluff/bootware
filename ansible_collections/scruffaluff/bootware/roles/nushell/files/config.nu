@@ -697,10 +697,14 @@ def --wrapped cbpaste [...args: string] {
     }
 }
 
-# CUDA settings.
+# Build settings.
 
+# Add LLVM binaries to system path.
+prepend-paths "/usr/local/opt/llvm/bin" "/opt/homebrew/opt/llvm/bin"
+# Add OpenBLAS binaries to system path.
+prepend-paths "/usr/local/opt/openblas" "/opt/homebrew/opt/openblas"
 # Add CUDA binaries to system path.
-prepend-paths /usr/local/cuda/bin
+prepend-paths "/usr/local/cuda/bin"
 
 # Docker settings.
 
@@ -822,20 +826,12 @@ $env.PYTHON_HISTORY = if $nu.os-info.name == "windows" {
 # Fix Poetry package install issue on headless systems.
 $env.PYTHON_KEYRING_BACKEND = "keyring.backends.fail.Keyring"
 
-# Add numerical compute libraries to system path for MacOS.
-if $nu.os-info.name == "macos" {
-    if ("/opt/homebrew" | path exists) {
-        $env.OPENBLAS = "/opt/homebrew/opt/openblas"
-    } else {
-        $env.OPENBLAS = "/usr/local/opt/openblas"
-    }
-    prepend-paths $env.OPENBLAS
-}
-
 # Rclone settings.
 
 # Make Rclone create empty intermediate folders.
 $env.RCLONE_CREATE_EMPTY_SRC_DIRS = "true"
+# Make Rclone skip ignored files.
+$env.RCLONE_EXCLUDE_FROM = $"($nu.home-dir)/.ignore"
 # Make Rclone skip modifcation time updates.
 $env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
 $env.RCLONE_NO_UPDATE_MODTIME = "true"

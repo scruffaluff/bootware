@@ -4,8 +4,8 @@
 
 from __future__ import annotations
 
+import pprint
 import re
-from pprint import pprint
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any
 
@@ -81,9 +81,33 @@ def cmd_py(
 ) -> None:
     """Execute Python expression with frame variables."""
     frame = curframe(debugger)
-    variables = pyrc.find_vars(var_lookup(frame), command)
     try:
-        eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)  # noqa: S307
+        eval(  # noqa: S307
+            command,
+            {
+                "aplay": pyrc.aplay,
+                "arec": pyrc.arec,
+                "cat": pyrc.cat,
+                "decibel": pyrc.decibel,
+                "doc": pyrc.doc,
+                "dyport": pyrc.dyport,
+                "edit": pyrc.edit,
+                "normalize": pyrc.normalize,
+                "nushell": pyrc.nushell,
+                "page": pyrc.page,
+                "pfreq": plotrc.frequency,
+                "pgrid": plotrc.grid,
+                "phase": plotrc.phase,
+                "pline": plotrc.line,
+                "plotrc": plotrc,
+                "pprint": pprint.pprint,
+                "pspec": plotrc.spectrogram,
+                "pwave": plotrc.waveform,
+                "shell": pyrc.shell,
+                "varname": pyrc.varname,
+            },
+            pyrc.find_vars(var_lookup(frame), command),
+        )
     except Exception as exception:  # noqa: BLE001
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)

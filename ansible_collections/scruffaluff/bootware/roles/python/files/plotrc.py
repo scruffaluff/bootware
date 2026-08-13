@@ -8,6 +8,7 @@ from __future__ import annotations
 import builtins
 import dataclasses
 import itertools
+from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, Union, cast, no_type_check
 
 import pyrc
@@ -39,6 +40,65 @@ class Range:
         return self.start < self.stop
 
 
+class Scale(Enum):
+    """Signal amplitude scale."""
+
+    Decibel = "decibel"
+    FullScale = "fullscale"
+    Linear = "linear"
+    Normalized = "normalized"
+
+    def __call__(self, array: Array) -> Array:
+        """Transform array to scale."""
+        if self == Scale.Decibel:
+            return pyrc.decibel(array)
+        if self == Scale.FullScale:
+            return pyrc.decibel(pyrc.normalize(array))
+        if self == Scale.Normalized:
+            return pyrc.normalize(array)
+        return array
+
+    def __str__(self) -> str:
+        """Get string representation."""
+        return self.value
+
+    def axis(self) -> str:
+        """Get axis scale."""
+        return {
+            Scale.Decibel: "log",
+            Scale.FullScale: "log",
+            Scale.Linear: "linear",
+            Scale.Normalized: "linear",
+        }[self]
+
+    @classmethod
+    def from_prefix(cls, value: Union[str, "Scale"]) -> "Scale":
+        """Create Scale instance from value prefix."""
+        if isinstance(value, Scale):
+            return value
+
+        value_ = value.lower()
+        if "decibel".startswith(value_) or value_ == "db":
+            return cls.Decibel
+        if "fullscale".startswith(value_) or value_ == "dbfs":
+            return cls.FullScale
+        if "linear".startswith(value_):
+            return cls.Linear
+        if "normalized".startswith(value_):
+            return cls.Normalized
+        msg = f"Invalid scale value '{value}'"
+        raise ValueError(msg)
+
+    def unit(self) -> str:
+        """Get plot axis label unit."""
+        return {
+            Scale.Decibel: " (dB)",
+            Scale.FullScale: " (dBFS)",
+            Scale.Linear: "",
+            Scale.Normalized: "",
+        }[self]
+
+
 @no_type_check
 def export() -> None:
     """Add functions to global scope."""
@@ -56,6 +116,7 @@ def frequency(
     depth: int = 3,
     overlay: bool = True,
     rate: Optional[int] = None,
+    scale: Scale = Scale.Linear,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
@@ -64,18 +125,19 @@ def frequency(
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     rate = kwargs.pop("r", rate)
+    scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
         _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
         axes = axes[0]
-    axes[0].set_ylabel("Volume (dB)")
+    axes[0].set_ylabel(f"Level{scale.unit()}")
     ticks = spectrum_ticks()
     x_range, y_range = Range(20, 20_000, True), Range()
     datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate", len(data["y"]))
-        y = numpy.abs(numpy.fft.rfft(data["y"]))
+        y = scale(numpy.abs(numpy.fft.rfft(data["y"])))
         x_ = data.pop("x", numpy.fft.rfftfreq(len(data["y"]), 1 / rate_))
         x_range += (x_[0], x_[-1])
         y_range += (y.min(), y.max())
@@ -87,6 +149,7 @@ def frequency(
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
         axis.set_xticklabels(ticks[1])
+        axis.set_yscale(scale.axis())
         axis.legend(loc="upper right")
         axis.minorticks_off()
 
@@ -100,6 +163,7 @@ def grid(
     plots: list[str] | None = None,
     overlay: bool = True,
     rate: Optional[int] = None,
+    scale: Scale = Scale.Linear,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
@@ -109,6 +173,7 @@ def grid(
     overlay = kwargs.pop("o", overlay)
     plots = plots or kwargs.pop("p", ["frequency", "phase"])
     rate = kwargs.pop("r", rate)
+    scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     _, axes = subplots(
         nrows=len(plots), ncols=1 if overlay else len(signals), squeeze=False
@@ -120,6 +185,7 @@ def grid(
                 axes=axes[idx],
                 depth=4,
                 overlay=overlay,
+                scale=scale,
                 show=False,
                 x=x,
                 **kwargs,
@@ -131,6 +197,7 @@ def grid(
                 depth=4,
                 overlay=overlay,
                 rate=rate,
+                scale=scale,
                 show=False,
                 x=x,
                 **kwargs,
@@ -157,6 +224,7 @@ def grid(
                 depth=4,
                 overlay=overlay,
                 rate=rate,
+                scale=scale,
                 show=False,
                 x=x,
                 **kwargs,
@@ -174,6 +242,7 @@ def line(
     axes: Optional[list[Any]] = None,
     depth: int = 3,
     overlay: bool = True,
+    scale: Scale = Scale.Linear,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
@@ -181,6 +250,7 @@ def line(
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
+    scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
         _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
@@ -190,12 +260,14 @@ def line(
 
     for index, data in enumerate(datas):
         x_ = data.pop("x", numpy.arange(len(data["y"])))
+        y = scale(data["y"])
         x_range += (x_[0], x_[-1])
-        y_range += (data["y"].min(), data["y"].max())
+        y_range += (y.min(), y.max())
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, data["y"], color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
+        axis.set_yscale(scale.axis())
         axis.legend(loc="upper right")
 
     set_ranges(axes, x_range, y_range)
@@ -203,7 +275,6 @@ def line(
         pyplot.show(block=True)
 
 
-@no_type_check
 def mono(array: Array) -> Array:
     """Average 2 dimensional array into 1 dimension."""
     if array.ndim == 1:
@@ -373,7 +444,7 @@ def spectrogram(
         z_ = transform.stft(data["y"])
         x = numpy.linspace(bounds[0], bounds[1], num=z_.shape[1])
         y = numpy.linspace(bounds[2], bounds[3], num=z_.shape[0])
-        z = pyrc.decibel(z_)
+        z = pyrc.decibel(numpy.abs(z_))
         x_range += (x.min(), x.max())
         y_range += (y.min(), y.max())
 
@@ -391,7 +462,7 @@ def spectrogram(
         axis.set_yticklabels(ticks[1])
 
     set_ranges([axis], x_range, y_range)
-    axis.figure.colorbar(mesh, ax=axes, label="Volume (dB)")
+    axis.figure.colorbar(mesh, ax=axes, label="Level (dB)")
     if show:
         pyplot.show(block=True)
 
@@ -417,6 +488,7 @@ def waveform(
     depth: int = 3,
     overlay: bool = True,
     rate: Optional[int] = None,
+    scale: Scale = Scale.Linear,
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
@@ -425,24 +497,27 @@ def waveform(
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     rate = kwargs.pop("r", rate)
+    scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
         _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
         axes = axes[0]
-    axes[0].set_ylabel("Amplitude")
+    axes[0].set_ylabel(f"Amplitude{scale.unit()}")
     x_range, y_range = Range(), Range(-1, 1, True)
     datas = sigdata(signals, x=x, depth=depth)
 
     for index, data in enumerate(datas):
         rate_ = rate or data.pop("rate", len(data["y"]))
         x_ = data.pop("x", numpy.linspace(0, len(data["y"]) / rate_, len(data["y"])))
+        y = scale(data["y"])
         x_range += (x_[0], x_[-1])
-        y_range += (data["y"].min(), data["y"].max())
+        y_range += (y.min(), y.max())
 
         axis = axes[0 if overlay else index]
-        axis.plot(x_, data["y"], color=data["color"], label=data["label"])
+        axis.plot(x_, y, color=data["color"], label=data["label"])
         axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Time (s)")
+        axis.set_yscale(scale.axis())
         axis.legend(loc="upper right")
 
     set_ranges(axes, x_range, y_range)

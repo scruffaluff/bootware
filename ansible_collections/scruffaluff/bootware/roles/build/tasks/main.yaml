@@ -49,6 +49,7 @@
       - gdb
       - llvm
       - make
+      - openblas
       - openocd
   tags:
     - install
