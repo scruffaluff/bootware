@@ -308,6 +308,15 @@ if type -q bat
     set --export PAGER bat
 end
 
+# Build settings.
+
+# Add LLVM binaries to system path.
+prepend-paths /usr/local/opt/llvm/bin /opt/homebrew/opt/llvm/bin
+# Add OpenBLAS binaries to system path.
+prepend-paths /usr/local/opt/openblas /opt/homebrew/opt/openblas
+# Add CUDA binaries to system path.
+prepend-paths /usr/local/cuda/bin
+
 # Clipboard settings.
 
 # Add unified clipboard aliases.
@@ -481,20 +490,12 @@ set --export PYTHON_HISTORY /dev/null
 # Fix Poetry package install issue on headless systems.
 set --export PYTHON_KEYRING_BACKEND 'keyring.backends.fail.Keyring'
 
-# Add numerical compute libraries to system path for MacOS.
-if test $os = Darwin
-    if test -d /opt/homebrew
-        set --export OPENBLAS /opt/homebrew/opt/openblas
-    else
-        set --export OPENBLAS /usr/local/opt/openblas
-    end
-    prepend-paths $OPENBLAS
-end
-
 # Rclone settings.
 
 # Make Rclone create empty intermediate folders.
 set --export RCLONE_CREATE_EMPTY_SRC_DIRS true
+# Make Rclone skip ignored files.
+set --export RCLONE_EXCLUDE_FROM "$HOME/.ignore"
 # Make Rclone skip modifcation time updates.
 set --export RCLONE_NO_UPDATE_DIR_MODTIME true
 set --export RCLONE_NO_UPDATE_MODTIME true

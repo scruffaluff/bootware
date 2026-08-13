@@ -370,6 +370,8 @@ $Env:PYTHON_KEYRING_BACKEND = 'keyring.backends.fail.Keyring'
 
 # Make Rclone create empty intermediate folders.
 $Env:RCLONE_CREATE_EMPTY_SRC_DIRS = 'true'
+# Make Rclone skip ignored files.
+$Env:RCLONE_EXCLUDE_FROM = "$HOME\.ignore"
 # Make Rclone skip modifcation time updates.
 $Env:RCLONE_NO_UPDATE_DIR_MODTIME = 'true'
 $Env:RCLONE_NO_UPDATE_MODTIME = 'true'

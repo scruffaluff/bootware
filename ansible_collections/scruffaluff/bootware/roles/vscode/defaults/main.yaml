@@ -37,7 +37,6 @@ vscode_oss_extensions_:
   - leanprover.lean4
   - marimo-team.vscode-marimo
   - mechatroner.rainbow-csv
-  - mhutchie.git-graph
   - ms-playwright.playwright
   - myriad-dreamin.tinymist
   - nefrob.vscode-just-syntax
@@ -61,7 +60,6 @@ vscode_oss_remote_extensions_:
   - foxundermoon.shell-format
   - james-yu.latex-workshop
   - mechatroner.rainbow-csv
-  - mhutchie.git-graph
   - nefrob.vscode-just-syntax
   - pomdtr.excalidraw-editor
   - tamasfe.even-better-toml

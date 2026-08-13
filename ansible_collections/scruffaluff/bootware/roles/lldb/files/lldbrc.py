@@ -1,18 +1,14 @@
 """LLDB settings script."""
 
-# ruff: noqa: ANN401, ARG001, BLE001, S307
+# ruff: noqa: ANN401, ARG001
 
 from __future__ import annotations
 
+import pprint
 import re
-import subprocess
-from pprint import pprint
 from subprocess import CalledProcessError
 from typing import TYPE_CHECKING, Any
 
-import dbgrc
-import plotrc
-from dbgrc import Parser
 from lldb import (
     SBCommandReturnObject,
     SBDebugger,
@@ -21,6 +17,10 @@ from lldb import (
     SBValue,
     eReturnStatusFailed,
 )
+
+import plotrc
+import pyrc
+from pyrc import Parser
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -60,15 +60,13 @@ def cmd_nushell(
     internal_dict: dict,
 ) -> None:
     """Execute Nushell expression or start interactive session."""
-    frame = current_frame(debugger)
-    line = dbgrc.parse_exprs(var_lookup(frame), command)
+    frame = curframe(debugger)
+    line = pyrc.parse_exprs(var_lookup(frame), command)
     parser = Parser()
     parser.add_argument("-c", "--cwd", default=None)
-    rest, args = parser.parse_line(line)
-    cmd = ["nu", "--login", "--commands", rest] if rest else ["nu", "--login"]
-
+    cmd, args = parser.parse_line(line)
     try:
-        subprocess.run(cmd, check=True, cwd=args.cwd)
+        pyrc.nushell(cmd, cwd=args.cwd)
     except (CalledProcessError, FileNotFoundError) as exception:
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)
@@ -82,11 +80,35 @@ def cmd_py(
     internal_dict: dict,
 ) -> None:
     """Execute Python expression with frame variables."""
-    frame = current_frame(debugger)
-    variables = dbgrc.find_vars(var_lookup(frame), command)
+    frame = curframe(debugger)
     try:
-        eval(command, {**globals(), "pp": pprint, "plotrc": plotrc}, variables)
-    except Exception as exception:
+        eval(  # noqa: S307
+            command,
+            {
+                "aplay": pyrc.aplay,
+                "arec": pyrc.arec,
+                "cat": pyrc.cat,
+                "decibel": pyrc.decibel,
+                "doc": pyrc.doc,
+                "dyport": pyrc.dyport,
+                "edit": pyrc.edit,
+                "normalize": pyrc.normalize,
+                "nushell": pyrc.nushell,
+                "page": pyrc.page,
+                "pfreq": plotrc.frequency,
+                "pgrid": plotrc.grid,
+                "phase": plotrc.phase,
+                "pline": plotrc.line,
+                "plotrc": plotrc,
+                "pprint": pprint.pprint,
+                "pspec": plotrc.spectrogram,
+                "pwave": plotrc.waveform,
+                "shell": pyrc.shell,
+                "varname": pyrc.varname,
+            },
+            pyrc.find_vars(var_lookup(frame), command),
+        )
+    except Exception as exception:  # noqa: BLE001
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)
 
@@ -100,7 +122,7 @@ def cmd_pytype(
 ) -> None:
     """Print variable type as it appears to Python."""
     name = command.strip()
-    frame = current_frame(debugger)
+    frame = curframe(debugger)
     variable = frame.FindVariable(name)
     if variable.error.success:
         print(variable.type.name)
@@ -109,7 +131,7 @@ def cmd_pytype(
         result.SetStatus(eReturnStatusFailed)
 
 
-def current_frame(debugger: SBDebugger) -> SBFrame:
+def curframe(debugger: SBDebugger) -> SBFrame:
     """Get current stack frame in debugger."""
     target = debugger.GetSelectedTarget()
     return target.GetProcess().GetSelectedThread().GetSelectedFrame()

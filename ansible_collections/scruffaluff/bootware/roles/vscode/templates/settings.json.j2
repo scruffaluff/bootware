@@ -119,15 +119,41 @@
   "launch": {
     "configurations": [
       {
-        "connect": { "host": "localhost", "port": 5678 },
-        "name": "Python Debugger: Attach",
-        "request": "attach",
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+          "PYTHONPATH": "{{ user_home }}/.config/pyrc"
+        },
+        "justMyCode": false,
+        "name": "Debug Python file",
+        "program": "${file}",
+        "request": "launch",
+        "type": "debugpy",
+      },
+      {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+          "PYTHONPATH": "{{ user_home }}/.config/pyrc"
+        },
+        justMyCode": false,
+        "module": "pytest",
+        "name": "Debug Python tests",
+        "request": "launch",
         "type": "debugpy"
-      }
+      },
+      {
+        "cargo": {
+          "args": ["test", "--lib", "--no-run"]
+        },
+        "cwd": "${workspaceFolder}",
+        "name": "Debug Rust tests",
+        "type": "lldb",
+        "request": "launch"
+      },
     ]
   },
   "lldb.launch.initCommands": ["command source ~/.lldbinit"],
-  "lldb.launch.sourceLanguages": ["rust"],
   "lldb.suppressUpdateNotifications": true,
   "markdown.preview.fontFamily": "PT Serif",
   "markdown.preview.fontSize": {{ vscode_font_size }},
@@ -139,7 +165,7 @@
   "notebook.stickyScroll.enabled": false,
   "prettier.resolveGlobalModules": true,
   "python.analysis.autoImportCompletions": false,
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/{{ 'Scripts/python.exe' if ansible_facts.system == 'Win32NT' else 'bin/python' }}",
   "python.languageServer": "None",
   "python.terminal.activateEnvironment": false,
   "python.testing.promptToConfigure": false,

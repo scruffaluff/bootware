@@ -34,10 +34,10 @@ patch = mock.patch.dict(
 )
 patch.start()
 
-import dbgrc
 import lldbrc
 import pdbrc
-from dbgrc import Expr, Parser
+import pyrc
+from pyrc import Expr, Parser
 
 
 @pytest.mark.parametrize(
@@ -52,7 +52,7 @@ from dbgrc import Expr, Parser
 def test_drop_tokens(line: str, count: int, expected: str) -> None:
     """Remove tokens from start of line."""
     tokens = shlex.split(line)[:count]
-    actual = dbgrc.drop_tokens(tokens, line)
+    actual = pyrc.drop_tokens(tokens, line)
     assert actual == expected
 
 
@@ -66,7 +66,7 @@ def test_drop_tokens(line: str, count: int, expected: str) -> None:
 )
 def test_find_exprs(line: str, expected: list[Expr]) -> None:
     """Find expressions in command lines."""
-    actual = list(dbgrc.find_exprs(line))
+    actual = list(pyrc.find_exprs(line))
     assert actual == expected
 
 
@@ -89,7 +89,7 @@ def test_parse_exprs(line: str, locals_: dict[str, Any], expected: str) -> None:
     pdb = SimpleNamespace(
         curframe=SimpleNamespace(f_globals={}), curframe_locals=locals_
     )
-    actual = dbgrc.parse_exprs(pdbrc.var_lookup(pdb), line)
+    actual = pyrc.parse_exprs(pdbrc.var_lookup(pdb), line)
     assert actual == expected
 
 

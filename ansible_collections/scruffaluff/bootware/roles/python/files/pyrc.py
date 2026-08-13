@@ -1,10 +1,13 @@
 """Python debugger settings file."""
 
-# ruff: noqa: ANN401, BLE001, S307
+# Explicit optional, union, and quoted types are used to support older Python versions.
+# ruff: noqa: ANN401, D102, UP007, UP037, UP045
 
 from __future__ import annotations
 
 import ast
+import builtins
+import contextlib
 import functools
 import importlib
 import inspect
@@ -16,19 +19,39 @@ import shlex
 import subprocess
 import sys
 import tempfile
-import traceback
 from argparse import ArgumentError, ArgumentParser
 from ast import Load, Name
 from collections.abc import Callable
 from pathlib import Path
-from subprocess import CalledProcessError
-from typing import TYPE_CHECKING, Any, NamedTuple, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    NamedTuple,
+    Optional,
+    Protocol,
+    Union,
+    cast,
+    no_type_check,
+)
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from collections.abc import Callable, Iterator, Sequence
-    from pdb import Pdb
-    from types import ModuleType, TracebackType
+    from collections.abc import Callable, Iterable, Iterator, Sequence
+    from types import ModuleType
+
+
+class Array(Protocol):
+    """Numpy array protocol."""
+
+    @property
+    def dtype(self) -> Any: ...
+    def max(self) -> float: ...
+    def mean(self, axis: int) -> "Array": ...
+    def min(self) -> float: ...
+    @property
+    def ndim(self) -> int: ...
+    @property
+    def shape(self) -> Sequence[int]: ...
 
 
 class Expr(NamedTuple):
@@ -72,19 +95,76 @@ class Parser(ArgumentParser):
         return rest, args
 
 
-def break_exception(self: Pdb) -> Callable:
-    """Create exception handler for debugging."""
+def aplay(
+    data: Array,
+    rate: Optional[int] = None,
+    map: Optional[Sequence[int]] = None,  # noqa: A002
+    block: bool = False,
+    loop: bool = False,
+    **kwargs: Any,
+) -> None:
+    """Play back a NumPy array containing audio data.
 
-    def excepthook(
-        type_: type[BaseException], value: BaseException, trace: TracebackType
-    ) -> None:
-        """Start debugger on unhandled exception."""
-        traceback.print_exception(type_, value, trace)
-        # Mypy is incorrect since the method is defined at
-        # https://docs.python.org/3/library/pdb.html#pdb.pm.
-        self.pm()  # type: ignore[attr-defined]
+    Arguments:
+        data: Audio data to be played back. The columns of a two-dimensional
+            array are interpreted as channels, one-dimensional arrays are
+            treated as mono data.
+        rate: Audio sample rate.
+        map: List of channel numbers, starting with 1, where the columns of
+            data shall be played back.
+        block: Whether to wait until playback finishes.
+        loop: Play data in a loop.
+        kwargs: Additional arguments for sounddevice play.
+    """
+    sounddevice = dyport("sounddevice")
+    sounddevice.play(
+        data,
+        samplerate=rate,
+        mapping=map,
+        blocking=block,
+        loop=loop,
+        **kwargs,
+    )
 
-    return excepthook
+
+def arec(  # noqa: PLR0913, PLR0917
+    frames: Optional[int] = None,
+    rate: Optional[int] = None,
+    channels: Optional[int] = None,
+    dtype: Optional[type] = None,
+    out: Optional[Array] = None,
+    map: Optional[Sequence[int]] = None,  # noqa: A002
+    block: bool = False,
+    **kwargs: Any,
+) -> Array:
+    """Record audio data into a NumPy array.
+
+    Arguments:
+        frames: Number of frames to record.
+        rate: Audio sample rate.
+        channels: Number of channels to record.
+        dtype: Data type of the recording.
+        out: Output array for recored data.
+        map: List of channel numbers, starting with 1, where the columns of
+            data shall be recorded.
+        block: Whether to wait until recording finishes.
+        loop: Play data in a loop.
+        kwargs: Additional arguments for sounddevice record.
+
+    Returns:
+        The recorded data.
+    """
+    sounddevice = dyport("sounddevice")
+    return sounddevice.record(
+        frames,
+        samplerate=rate,
+        channels=channels,
+        dtype=dtype,
+        out=out,
+        mapping=map,
+        blocking=block,
+        **kwargs,
+    )
 
 
 def cat(object_: Any, regex: str | None = None) -> None:
@@ -116,6 +196,18 @@ def catalog(
     return pprint.pformat(object_)
 
 
+def decibel(signal: Array) -> Array:
+    """Convert signal to decibels.
+
+    Avoids passing zeros to log10 by replacing them with the datatype epsilon.
+    """
+    numpy = dyport("numpy")
+
+    epsilon = numpy.finfo(signal.dtype).eps
+    amplitude = numpy.maximum(numpy.abs(signal), epsilon)
+    return 20 * numpy.log10(amplitude)
+
+
 def doc(object_: Any) -> None:
     """Print object signature and documentation in default pager."""
     docstring = inspect.getdoc(object_)
@@ -123,10 +215,11 @@ def doc(object_: Any) -> None:
         signature = f"{name(object_)}{inspect.signature(object_)}"
     except (AttributeError, TypeError):
         signature = None
-
     if docstring is None and signature is None:
-        error(f"Unable to find documenation for '{object_}'")
-    elif docstring is None:
+        msg = f"Unable to find documenation for '{object_}'"
+        raise LookupError(msg)
+
+    if docstring is None:
         page(cast("str", signature))
     elif signature is None:
         page(docstring)
@@ -145,7 +238,7 @@ def drop_tokens(tokens: list[str], line: str) -> str:
         position = index + len(token)
 
         # Remove trailing quotes after token that shlex may have ignored.
-        while not list_get(line, position, " ").isspace():
+        while not seq_get(line, position, " ").isspace():
             position += 1
     return line[position:].lstrip()
 
@@ -184,39 +277,52 @@ def dyport(name: str) -> ModuleType:
 
 def edit(object_: Any = None, frame: Any = None) -> None:
     """Open object's source code in default editor."""
-    editor = os.environ.get("EDITOR", "vi")
     if isinstance(object_, int) and frame is not None:
-        command = [editor, f"+{object_}", frame.f_code.co_filename]
+        file, line = frame.f_code.co_filename, object_
     elif object_ is None and frame is not None:
         file, line = frame.f_code.co_filename, frame.f_lineno
-        command = [editor, f"+{line}", file]
     else:
         type_ = object_ if is_type(object_) else type(object_)
-        try:
-            file, line = find_source(type_)
-        except Exception as exception:
-            error(exception)
-            return
-        command = [editor, f"+{line}", file]
+        file, line = find_source(type_)
+
+    if os.environ.get("TERM_PROGRAM") == "zed":
+        command = ["zed", f"{file}:{line}"]
+    elif os.environ.get("TERM_PROGRAM") == "code":
+        command = ["code", f"{file}:{line}"]
+    else:
+        command = [os.environ.get("EDITOR", "vi"), f"+{line}", file]
 
     if os.environ.get("ZELLIJ"):
-        command = [
-            "zellij",
-            "action",
-            "new-pane",
-            "--close-on-exit",
-            "--",
-            *command,
-        ]
-    subprocess.run(command, check=True)
-
-
-def error(message: str | Exception) -> None:
-    """Print error to console."""
-    if isinstance(message, str):
-        print(f"*** {message}")
+        subprocess.run(
+            [
+                "zellij",
+                "action",
+                "new-pane",
+                "--close-on-exit",
+                "--",
+                *command,
+            ],
+            check=True,
+        )
     else:
-        print(f"*** {type(message).__name__}: {message}")
+        subprocess.run(command, check=True)
+
+
+@no_type_check
+def export() -> None:
+    """Add functions to global scope."""
+    builtins.aplay = aplay
+    builtins.arec = arec
+    builtins.cat = cat
+    builtins.decibel = decibel
+    builtins.doc = doc
+    builtins.dyport = dyport
+    builtins.edit = edit
+    builtins.normalize = normalize
+    builtins.nushell = nushell
+    builtins.page = page
+    builtins.shell = shell
+    builtins.varname = varname
 
 
 def find_exprs(line: str) -> Iterator[Expr]:  # noqa: C901
@@ -279,11 +385,8 @@ def find_vars(lookup: Callable[[str], Any], expression: str) -> dict[str, Any]:
         name = getattr(node, "id", "")
         if name not in seen and isinstance(node, Name) and isinstance(node.ctx, Load):
             seen.add(name)
-            try:
+            with contextlib.suppress(ValueError):
                 variables[name] = lookup(name)
-            except ValueError:
-                pass
-
     return variables
 
 
@@ -298,26 +401,25 @@ def is_type(value: Any) -> bool:
     )
 
 
-def list_get(lst: Sequence[Any], pos: int, default: Any) -> Any:
-    """Safe implementation of get for sequences."""
-    try:
-        return lst[pos]
-    except IndexError:
-        return default
-
-
 def name(object_: Any) -> str:
-    """Get name object of name of its type."""
+    """Get object name or its type name."""
     return cast("str", getattr(object_, "__name__", object_.__class__.__name__))
 
 
-def nushell(expr: str, **kwargs: Any) -> None:
+def normalize(signal: Array) -> Array:
+    """Scale signal to -1 and +1 range."""
+    numpy = dyport("numpy")
+
+    maximum = numpy.abs(signal).max()
+    if maximum == 0:
+        return signal
+    return signal / maximum
+
+
+def nushell(command: str, **kwargs: Any) -> None:
     """Execute Nushell expression or start interactive session."""
-    command = ["nu", "--login", "--commands", expr] if expr else ["nu", "--login"]
-    try:
-        subprocess.run(command, check=True, **kwargs)
-    except (CalledProcessError, FileNotFoundError) as exception:
-        error(exception)
+    cmd = ["nu", "--login", "--commands", command] if command else ["nu", "--login"]
+    subprocess.run(cmd, check=True, **kwargs)
 
 
 def page(text: str) -> None:
@@ -346,8 +448,10 @@ def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
     for expr in find_exprs(line):
         variables = find_vars(lookup, expr.expr)
         try:
-            result = str(eval(expr.expr, {}, variables))
-        except Exception:  # noqa: S112
+            result = str(eval(expr.expr, {}, variables))  # noqa: S307
+        # Any exception can occur during an eval statement. If the expression
+        # cannot be evaluated, then it should be treated as a literal.
+        except Exception:  # noqa: BLE001, S112
             continue
         insert = shlex.quote(result)
         line = line[: expr.start + offset] + insert + line[expr.stop + offset :]
@@ -355,11 +459,43 @@ def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
     return line
 
 
+def popall(obj: Any, keys: Union[str, Iterable[str]], default: Any) -> Any:
+    """Pop possible keys from object until successful."""
+    if isinstance(keys, str):
+        return obj.pop(keys, default)
+    for key in keys:
+        with contextlib.suppress(KeyError):
+            return obj.pop(key)
+    return default
+
+
+def seq_get(seq: Sequence[Any], pos: int, default: Any) -> Any:
+    """Safe implementation of get for sequences."""
+    try:
+        return seq[pos]
+    except IndexError:
+        return default
+
+
 def shell(command: list[str]) -> None:
     """Execute command or start interactive default shell session."""
     if not command:
         command = [parent_shell()]
+    subprocess.run(command, check=True)
+
+
+def varname(var: Any, default: str = "", depth: int = 2) -> str:
+    """Trace variable name in calling scope."""
+    frame = inspect.currentframe()
+    if frame is None:
+        return default
+
+    for _ in range(depth):
+        frame = frame.f_back
+        if frame is None:
+            return default
+    vars_ = frame.f_locals.items()
     try:
-        subprocess.run(command, check=True)
-    except (CalledProcessError, FileNotFoundError) as exception:
-        error(exception)
+        return next(name for name, value in vars_ if value is var)
+    except StopIteration:
+        return default

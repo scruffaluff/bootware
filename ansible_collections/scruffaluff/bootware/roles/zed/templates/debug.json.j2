@@ -1,0 +1,47 @@
+[
+   {
+    "adapter": "JavaScript",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "justMyCode": false,
+    "label": "Debug JavaScript file",
+    "program": "$ZED_FILE",
+    "request": "launch",
+    "type": "pwa-node"
+  },
+  {
+    "adapter": "Debugpy",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {
+      "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+      "PYTHONPATH": "{{ user_home}}/.config/pyrc"
+    },
+    "justMyCode": false,
+    "label": "Debug Python file",
+    "program": "$ZED_FILE",
+    "python": "$ZED_WORKTREE_ROOT/.venv/{{ 'Scripts/python.exe' if ansible_facts.system == 'Win32NT' else 'bin/python' }}",
+    "request": "launch"
+  },
+  {
+    "adapter": "Debugpy",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "env": {
+      "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
+      "PYTHONPATH": "{{ user_home}}/.config/pyrc"
+    },
+    "justMyCode": false,
+    "label": "Debug Python tests",
+    "module": "pytest",
+    "python": "$ZED_WORKTREE_ROOT/.venv/{{ 'Scripts/python.exe' if ansible_facts.system == 'Win32NT' else 'bin/python' }}",
+    "request": "launch"
+  },
+  {
+    "adapter": "CodeLLDB",
+    "build": {
+      "args": ["test", "--lib", "--no-run"],
+      "command": "cargo"
+    },
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "label": "Debug Rust tests",
+    "sourceLanguages": ["rust"]
+  }
+]

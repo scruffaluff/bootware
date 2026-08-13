@@ -14,7 +14,7 @@ dev = [
   "ansible-lint~=26.6;sys_platform!='windows'",
   "pytest~=9.1",
   "ruff~=0.16.1",
-  "ty~=0.0.66",
+  "ty~=0.0.70",
   "yamllint~=1.38",
 ]
 
@@ -45,11 +45,13 @@ extend-exclude = ["jupyter_notebook_config.py"]
 docstring-code-format = true
 
 [tool.ruff.lint]
+isort = { known-first-party = ["lldbrc", "pdbrc", "plotrc", "pyrc"] }
 flake8-annotations = { allow-star-arg-any = true }
 pydocstyle = { convention = "google" }
 ignore = [
   "COM",     # Rule conflicts with formatter.
   "CPY001",  # Copyright notices are not required.
+  "E731",    # Lambda statements sometimes increase readability.
   "FBT",     # Boolean function arguments are acceptable.
   "FIX",     # Todo comments are acceptable.
   "ICN",     # Import abbreviations reduce readability.

@@ -95,9 +95,12 @@
   loop:
     - app.json
     - appearance.json
+    - backlink.json
     - community-plugins.json
     - core-plugins.json
+    - daily-notes.json
     - hotkeys.json
+    - webviewer.json
   tags:
     - config
   when: ansible_facts.system == "Win32NT" and obsidian_vault is defined
