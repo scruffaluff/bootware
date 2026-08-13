@@ -837,7 +837,6 @@ $env.RCLONE_NO_UPDATE_DIR_MODTIME = "true"
 $env.RCLONE_NO_UPDATE_MODTIME = "true"
 # Make Rclone show progress bars.
 $env.RCLONE_PROGRESS = "true"
-$env.RCLONE_STATS_ONE_LINE = "true"
 
 # Ripgrep settings.
 
@@ -862,7 +861,7 @@ alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Add alias for Rsync with progress bars and ignored files.
-alias rsync = rsync --partial --progress --filter ":- .gitignore"
+alias rsync = rsync --partial --progress --exclude-from $"($nu.home-dir)/.ignore" --filter ":- .gitignore"
 
 # Configure prompt if interactive.
 if $nu.is-interactive {

@@ -4,6 +4,7 @@
 
 *.bak
 *.log
+*.py[cdio]
 *.tar.gz
 *.swp
 *.xml

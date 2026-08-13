@@ -393,7 +393,6 @@ export RCLONE_NO_UPDATE_DIR_MODTIME='true'
 export RCLONE_NO_UPDATE_MODTIME='true'
 # Make Rclone show progress bars.
 export RCLONE_PROGRESS='true'
-export RCLONE_STATS_ONE_LINE='true'
 
 # Ripgrep settings.
 
@@ -418,7 +417,7 @@ alias mkdir='mkdir -p'
 # Add alias for remove by force.
 alias rmf='rm -fr'
 # Add alias for Rsync with progress bars and ignored files.
-alias rsync='rsync --partial --progress --filter ":- .gitignore"'
+alias rsync='rsync --partial --progress --exclude-from "${HOME}/.ignore" --filter ":- .gitignore"'
 # Disable MacOS default shell is now Zsh message. Value must be 1.
 export BASH_SILENCE_DEPRECATION_WARNING='1'
 # Prevent `Ctrl+D` keybinding from closing the shell on an empty line.

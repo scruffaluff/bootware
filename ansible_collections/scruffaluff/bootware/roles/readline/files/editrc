@@ -10,8 +10,10 @@ edit on
 bind -r "^d"
 
 # Use common shell keybindings.
+bind "^[;" ed-next-char
 bind "^[b" ed-prev-word
 bind "^[f" em-next-word
+bind "^[j" ed-prev-char
 bind "^[w" em-delete-next-word
 bind "^[z" vi-undo
 bind "^a" ed-move-to-beg

@@ -501,7 +501,6 @@ set --export RCLONE_NO_UPDATE_DIR_MODTIME true
 set --export RCLONE_NO_UPDATE_MODTIME true
 # Make Rclone show progress bars.
 set --export RCLONE_PROGRESS true
-set --export RCLONE_STATS_ONE_LINE true
 
 # Ripgrep settings.
 
@@ -526,7 +525,7 @@ alias mkdir 'mkdir -p'
 # Add alias for remove by force.
 alias rmf 'rm -fr'
 # Add alias for Rsync with progress bars and ignored files.
-alias rsync 'rsync --partial --progress --filter ":- .gitignore"'
+alias rsync 'rsync --partial --progress --exclude-from "$HOME/.ignore" --filter ":- .gitignore"'
 # Disable welcome message.
 set fish_greeting ''
 
