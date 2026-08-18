@@ -7,9 +7,9 @@ yazi_libc: >-
   {{ 'gnu' if glibc_version is defined and glibc_version is
   ansible.builtin.version("2.38", ">") else 'musl' }}
 yazi_plugins:
-  - lpnh/fr
-  - luccahuguet/auto-layout
   - Rolv-Apneseth/starship
+  - Yazelix/auto-layout
+  - lpnh/fr
   - yazi-rs/plugins:chmod
   - yazi-rs/plugins:full-border
   - yazi-rs/plugins:git

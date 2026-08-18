@@ -145,7 +145,7 @@ setup: _setup
   if (which uv | is-empty) {
     print "Installing Uv."
     http get https://scruffaluff.github.io/picoware/install/uv.nu
-    | nu -c $"($in | decode); main --preserve-env --dest .vendor/bin"
+    | nu --commands $"($in | decode); main --preserve-env --dest .vendor/bin"
   }
   print $"Using (uv --version)."
   if (which yq | is-empty) {

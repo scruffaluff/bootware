@@ -128,7 +128,11 @@ def frequency(
     scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
-        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        _, axes = subplots(
+            ncols=1 if overlay else len(signals),
+            squeeze=False,
+            title=pyrc.popall(kwargs, ["title", "t"], None),
+        )
         axes = axes[0]
     axes[0].set_ylabel(f"Level{scale.unit()}")
     ticks = spectrum_ticks()
@@ -144,7 +148,6 @@ def frequency(
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, y, color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
         axis.set_xticks(ticks[0])
@@ -176,7 +179,10 @@ def grid(
     scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     _, axes = subplots(
-        nrows=len(plots), ncols=1 if overlay else len(signals), squeeze=False
+        nrows=len(plots),
+        ncols=1 if overlay else len(signals),
+        squeeze=False,
+        title=pyrc.popall(kwargs, ["title", "t"], None),
     )
     for idx, plot in enumerate(plots):
         if "line".startswith(plot):
@@ -253,7 +259,11 @@ def line(
     scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
-        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        _, axes = subplots(
+            ncols=1 if overlay else len(signals),
+            squeeze=False,
+            title=pyrc.popall(kwargs, ["title", "t"], None),
+        )
         axes = axes[0]
     x_range, y_range = Range(), Range()
     datas = sigdata(signals, x=x, depth=depth)
@@ -266,7 +276,6 @@ def line(
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, data["y"], color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_yscale(scale.axis())
         axis.legend(loc="upper right")
 
@@ -318,7 +327,11 @@ def phase(
     rate = kwargs.pop("r", rate)
 
     if axes is None:
-        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        _, axes = subplots(
+            ncols=1 if overlay else len(signals),
+            squeeze=False,
+            title=pyrc.popall(kwargs, ["title", "t"], None),
+        )
         axes = axes[0]
     axes[0].set_ylabel("Phase (rad)")
     ticks = spectrum_ticks()
@@ -334,7 +347,6 @@ def phase(
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, y, color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.legend(loc="upper right")
         axis.set_xlabel("Frequency (Hz)")
         axis.set_xscale("log")
@@ -422,7 +434,11 @@ def spectrogram(
     rate = kwargs.pop("r", rate)
 
     if axes is None:
-        _, axis = subplots(ncols=1, squeeze=True)
+        _, axis = subplots(
+            ncols=1,
+            squeeze=True,
+            title=pyrc.popall(kwargs, ["title", "t"], None),
+        )
     else:
         axis = axes[0]
     axis.set_ylabel("Frequency (Hz)")
@@ -476,10 +492,15 @@ def spectrum_ticks() -> tuple[list[float], list[str]]:
     return ticks.tolist(), labels
 
 
-def subplots(*args: Any, **kwargs: Any) -> tuple[Any, Any]:
+def subplots(*args: Any, title: Optional[str] = None, **kwargs: Any) -> tuple[Any, Any]:
     """Wrapper for Matplotlib subplots."""
     pyplot = dyport("matplotlib.pyplot")
-    return pyplot.subplots(*args, figsize=(12, 6), layout="compressed", **kwargs)
+    figure, axes = pyplot.subplots(
+        *args, figsize=(12, 6), layout="compressed", **kwargs
+    )
+    if title is not None:
+        figure.suptitle(title)
+    return figure, axes
 
 
 def waveform(
@@ -500,7 +521,11 @@ def waveform(
     scale = Scale.from_prefix(kwargs.pop("s", scale))
 
     if axes is None:
-        _, axes = subplots(ncols=1 if overlay else len(signals), squeeze=False)
+        _, axes = subplots(
+            ncols=1 if overlay else len(signals),
+            squeeze=False,
+            title=pyrc.popall(kwargs, ["title", "t"], None),
+        )
         axes = axes[0]
     axes[0].set_ylabel(f"Amplitude{scale.unit()}")
     x_range, y_range = Range(), Range(-1, 1, True)
@@ -515,7 +540,6 @@ def waveform(
 
         axis = axes[0 if overlay else index]
         axis.plot(x_, y, color=data["color"], label=data["label"])
-        axis.set_title(pyrc.popall(kwargs, ["title", "t"], None))
         axis.set_xlabel("Time (s)")
         axis.set_yscale(scale.axis())
         axis.legend(loc="upper right")

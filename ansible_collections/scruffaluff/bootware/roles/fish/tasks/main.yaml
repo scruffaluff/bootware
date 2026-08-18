@@ -40,15 +40,33 @@
     - install
   when: ansible_facts.system == "Darwin"
 
-- name: Register Fish as a valid login shell for Unix
-  ansible.builtin.lineinfile:
-    create: true
-    line: "{{ fish_executable }}"
-    mode: "644"
-    path: /etc/shells
+- name: Install Fisher package manager for Unix
+  ansible.builtin.shell: # noqa command-instead-of-module
+    cmd: |
+      curl -LSfs https://git.io/fisher | source
+      fisher install jorgebucaran/fisher
+    executable: "{{ fish_executable }}"
   become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
+  register: fish_fisher_install
   tags:
-    - install
+    - plugin
+  when: ansible_facts.system != "Win32NT"
+
+- name: Install Fish plugins for Unix
+  ansible.builtin.shell:
+    cmd: |
+      source {{ user_home }}/.config/fish/config.fish
+      fisher install {{ item }}
+    executable: "{{ fish_executable }}"
+  become: true
+  become_user: "{{ user_id }}"
+  changed_when: "'Installing' in fish_plugin_install.stdout"
+  loop: "{{ fish_plugins }}"
+  register: fish_plugin_install
+  tags:
+    - plugin
   when: ansible_facts.system != "Win32NT"
 
 - name: Create Fish user directories for Unix
@@ -79,33 +97,15 @@
     - config
   when: ansible_facts.system != "Win32NT"
 
-- name: Install Fisher package manager for Unix
-  ansible.builtin.shell: # noqa command-instead-of-module
-    cmd: |
-      curl -LSfs https://git.io/fisher | source
-      fisher install jorgebucaran/fisher
-    executable: "{{ fish_executable }}"
+- name: Register Fish as a valid login shell for Unix
+  ansible.builtin.lineinfile:
+    create: true
+    line: "{{ fish_executable }}"
+    mode: "644"
+    path: /etc/shells
   become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
-  register: fish_fisher_install
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
-
-- name: Install Fish plugins for Unix
-  ansible.builtin.shell:
-    cmd: |
-      source {{ user_home }}/.config/fish/config.fish
-      fisher install {{ item }}
-    executable: "{{ fish_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
-  changed_when: "'Installing' in fish_plugin_install.stdout"
-  loop: "{{ fish_plugins }}"
-  register: fish_plugin_install
-  tags:
-    - config
   when: ansible_facts.system != "Win32NT"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
