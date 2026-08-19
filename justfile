@@ -15,6 +15,9 @@ export PSModulePath := if os() == "windows" {
   join(justfile_directory(), ".vendor\\lib\\powershell\\modules;") +
   env("PSModulePath", "")
 } else { "" }
+export UV_PYTHON_INSTALL_DIR :=  justfile_directory() / ".vendor/lib/uv/python"
+export UV_TOOL_BIN_DIR := justfile_directory() / ".vendor/bin"
+export UV_TOOL_DIR := justfile_directory() / ".vendor/lib/uv/tool"
 
 # Run continuous integration pipeline.
 ci: setup lint test-sh test-nu test-py doc

@@ -31,6 +31,7 @@ def "_cut-path-left cases" [] {
         [0 { cursor: 0 line: "src/path" } "src/path"]
         [8 { cursor: 4 line: "vim " } "vim path"]
         [12 { cursor: 8 line: "vim src/" } "vim src/path"]
+        [12 { cursor: 8 line: "vim src\\" } "vim src\\path"]
     ] {
         $env.NUTEST_COMMANDLINE = $case.line
         $env.NUTEST_COMMANDLINE_GETCURSOR = $case.cursor | into string

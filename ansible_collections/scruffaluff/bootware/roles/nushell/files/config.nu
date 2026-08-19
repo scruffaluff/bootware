@@ -154,7 +154,7 @@ def _cut-path-left [] {
     let second = $chars | slice $cursor.. | str join
 
     let update = $first
-    | str replace --regex "[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$" ""
+    | str replace --regex r#'[^\\/={}'\":@ |;<>&,]+[\\/={}'\":@ |;<>&,]*$'# ""
     commandline edit --replace $"($update)($second)"
     commandline set-cursor ($update | str length --chars)
 }
@@ -777,9 +777,7 @@ if (which "hx" | is-not-empty) {
 # Homebrew settings
 
 # Avoid Homebrew hints after installing a package for Unix.
-if $nu.os-info.name != "windows" {
-    $env.HOMEBREW_NO_ENV_HINTS = "true"
-}
+$env.HOMEBREW_NO_ENV_HINTS = "true"
 
 # Just settings.
 

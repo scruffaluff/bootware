@@ -8,24 +8,7 @@ local state = ya.sync(function()
   return cx.active.current.cwd
 end)
 
-function module:entry()
-  ya.emit('escape', { visual = true })
-  local cwd = state()
-  local permit = ui.hide()
-
-  local output, error = module:run_fzf(cwd)
-  permit:drop()
-  if not output then
-    return ya.notify({ title = 'Fzf', content = tostring(error), timeout = 5, level = 'error' })
-  end
-
-  local folder = module:parse_folder(cwd, output)
-  if fs.cha(folder) then
-    ya.emit('mgr:cd', { folder, raw = true })
-  end
-end
-
-function module:parse_folder(cwd, output)
+local function parse_folder(cwd, output)
   local folder = Url(output:match('[^\r\n]+') or '')
   if folder.is_absolute then
     return folder
@@ -34,7 +17,7 @@ function module:parse_folder(cwd, output)
   end
 end
 
-function module:run_fzf(cwd)
+local function run_fzf(cwd)
   local process, error = Command('fzf')
     :arg('--height')
     :arg('~100')
@@ -55,6 +38,28 @@ function module:run_fzf(cwd)
     return nil, Err('Process fzf exited with code %s.', output.status.code)
   end
   return output.stdout, nil
+end
+
+function module:entry()
+  ya.emit('escape', { visual = true })
+  local cwd = state()
+  local permit = ui.hide()
+
+  local output, error = run_fzf(cwd)
+  permit:drop()
+  if not output then
+    return ya.notify({
+      title = 'Fzf',
+      content = tostring(error),
+      timeout = 5,
+      level = 'error',
+    })
+  end
+
+  local folder = parse_folder(cwd, output)
+  if fs.cha(folder) then
+    ya.emit('mgr:cd', { folder, raw = true })
+  end
 end
 
 return module

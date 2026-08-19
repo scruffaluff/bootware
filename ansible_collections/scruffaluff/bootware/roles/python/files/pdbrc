@@ -11,9 +11,9 @@ _sys.path.insert(0, _os.path.expanduser("~/.config/pyrc"))
 import pdbrc as _pdbrc
 _pdbrc.setup(_pdb.Pdb)
 _sys.excepthook = _pdbrc.break_exception(_pdb)
-_ = _sys.path.pop(0)
+_path = _sys.path.pop(0)
 
-del _, _os, _pdb, _pdbrc, _sys
+del _os, _path, _pdb, _pdbrc, _sys
 
 # Convenience aliases.
 alias db debug %*

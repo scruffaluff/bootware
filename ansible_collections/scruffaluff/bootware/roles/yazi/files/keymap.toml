@@ -44,6 +44,7 @@ append_keymap = [
   ], run = "plugin zoxide" },
 ]
 prepend_keymap = [
+  { desc = "Permanently delete selected files", on = "D", run = "remove --permanently" },
   { desc = "Go back to the parent directory", on = "j", run = "leave" },
   { desc = "Jump back to previous directory", on = "J", run = "back" },
   { desc = "Move cursor down", on = "k", run = "arrow 1" },

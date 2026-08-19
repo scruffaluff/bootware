@@ -211,11 +211,8 @@ jobs:
             pw useradd -m -G wheel -n freebsd -w no
             echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/bootware
           release: "15.0"
-          # Security role is skipped since it breaks the freebsd-vm action's
-          # Rsync connection by enforcing stricter SSH rules. Chrome, VSCode,
-          # and Wireshark roles are skipped since they intermittently disappear
-          # from the FreeBSD package registry. Audacity and Musescore tests are
-          # skipped in FreeBSD VM since they require a display connection.
+          # GUI roles are skipped since their packages intermittently disappear
+          # from the FreeBSD registry.
           run: |
             su - freebsd -c sh << EOF
             set -eu
@@ -223,8 +220,8 @@ jobs:
             src/install.sh --global
             sudo install src/bootware.sh /usr/local/bin/bootware
             bootware setup
-            bootware bootstrap --dev --no-passwd --retries 3 --skip chrome,security,vscode,wireshark --tags all,never
-            bash -c 'source /home/freebsd/.bashrc && deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --skip audacity,chrome,musescore,vscode,wireshark freebsd'
+            bootware bootstrap --dev --no-passwd --retries 3 --tags server
+            bash -c 'source /home/freebsd/.bashrc && deno run --allow-read --allow-run test/e2e/roles.test.ts --arch amd64 --tags server freebsd'
             EOF
           usesh: true
       # To login into the FreeBSD VM from the host runner, execute `ssh -t
