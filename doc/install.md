@@ -16,7 +16,7 @@ curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh
 ```
 
 ```nushell [Nushell]
-http get https://scruffaluff.github.io/bootware/install.nu | nu -c $"($in | decode); main"
+http get https://scruffaluff.github.io/bootware/install.nu | nu -c $in
 ```
 
 :::
@@ -35,7 +35,7 @@ curl -LSfs https://scruffaluff.github.io/bootware/install.sh | sh -s -- --help
 ```
 
 ```nushell [Nushell]
-http get https://scruffaluff.github.io/bootware/install.nu | nu -c $"($in | decode); main --help"
+http get https://scruffaluff.github.io/bootware/install.nu | nu -c $in --help
 ```
 
 :::

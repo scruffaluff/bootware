@@ -14,9 +14,9 @@
 - name: Install PowerShell Core for Windows
   ansible.windows.win_package:
     arguments:
-      - /quiet
       - ENABLE_PSREMOTING=1
       - REGISTER_MANIFEST=1
+    creates_path: "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
     path: >-
       https://github.com/PowerShell/PowerShell/releases/download/v{{
       powershell_formula.json.versions.stable }}/PowerShell-{{

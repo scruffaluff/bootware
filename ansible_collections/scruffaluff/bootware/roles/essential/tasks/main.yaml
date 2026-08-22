@@ -201,14 +201,15 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-- name: Set owner of Scoop user folder for Windows
-  ansible.windows.win_owner:
-    path: "{{ user_home }}\\scoop"
-    recurse: true
-    user: "{{ user_id }}"
-  tags:
-    - install
-  when: ansible_facts.system == "Win32NT"
+# Disabled due to untrusted mount point errors when run from WSL.
+# - name: Set owner of Scoop user folder for Windows
+#   ansible.windows.win_owner:
+#     path: "{{ user_home }}\\scoop"
+#     recurse: true
+#     user: "{{ user_id }}"
+#   tags:
+#     - install
+#   when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:
