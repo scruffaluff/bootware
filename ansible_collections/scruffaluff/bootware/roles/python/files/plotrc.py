@@ -1,12 +1,13 @@
 """Python plotting utilities."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: PLR0913, PYI034, UP007, UP037, UP045
+# ruff: noqa: ANN401, PLR0913, PYI034, UP007, UP037, UP045
 
 from __future__ import annotations
 
 import builtins
 import dataclasses
+import importlib
 import itertools
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, Union, cast, no_type_check
@@ -170,7 +171,7 @@ def grid(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> None:
+) -> Any:
     """Plot multiple graphs vertically in a grid."""
     pyplot = dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -240,7 +241,12 @@ def grid(
             raise ValueError(msg)
 
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()
 
 
 def line(
@@ -252,7 +258,7 @@ def line(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> None:
+) -> Any:
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -281,7 +287,12 @@ def line(
 
     set_ranges(axes, x_range, y_range)
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()
 
 
 def mono(array: Array) -> Array:
@@ -320,7 +331,7 @@ def phase(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> None:
+) -> Any:
     """Plot audio frequency phase."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -356,7 +367,12 @@ def phase(
 
     set_ranges(axes, x_range, y_range)
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()
 
 
 def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
@@ -424,7 +440,7 @@ def spectrogram(
     rate: Optional[int] = None,
     show: bool = True,
     **kwargs: Any,
-) -> None:
+) -> Any:
     """Plot audio frequency time heatmap with Matplotlib."""
     numpy, pyplot, signal = (
         dyport("numpy"),
@@ -480,7 +496,12 @@ def spectrogram(
     set_ranges([axis], x_range, y_range)
     axis.figure.colorbar(mesh, ax=axes, label="Level (dB)")
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()
 
 
 def spectrum_ticks() -> tuple[list[float], list[str]]:
@@ -513,7 +534,7 @@ def waveform(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> None:
+) -> Any:
     """Plot audio waveform."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -546,4 +567,9 @@ def waveform(
 
     set_ranges(axes, x_range, y_range)
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()

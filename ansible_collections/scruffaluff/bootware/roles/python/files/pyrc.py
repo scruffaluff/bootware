@@ -390,6 +390,14 @@ def find_vars(lookup: Callable[[str], Any], expression: str) -> dict[str, Any]:
     return variables
 
 
+@functools.cache
+def in_marimo() -> bool:
+    """Check if running inside a Marimo notebook."""
+    if "marimo" not in sys.modules:
+        return False
+    return importlib.import_module("marimo").running_in_notebook()
+
+
 def is_type(value: Any) -> bool:
     """Check if value is a type or variable."""
     return any(
