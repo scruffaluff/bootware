@@ -1,0 +1,64 @@
+---
+- name: Get latest ROCm version for Linux
+  ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/ROCm/ROCm/releases/latest
+  register: rocm_release
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Parse ROCm version for Linux
+  ansible.builtin.set_fact:
+    rocm_version: >-
+      {{ rocm_release.json.tag_name | regex_search('(\d+\.)+\d+') }}
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Install ROCm repository for Debian
+  ansible.builtin.apt:
+    deb: >-
+      https://repo.radeon.com/amdgpu-install/{{ rocm_version
+      }}/ubuntu/noble/amdgpu-install_{{ rocm_version }}.{{ rocm_version |
+      replace('.', '0') }}-1_all.deb
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "apt"
+
+- name: Install ROCm repository for Fedora
+  ansible.builtin.dnf:
+    name: >-
+      https://repo.radeon.com/amdgpu-install/{{ rocm_version
+      }}/rhel/10/amdgpu-install-{{ rocm_version }}.{{ rocm_version |
+      replace('.', '0') }}-1.el10.noarch.rpm
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"
+
+- name: Install ROCm toolkit for Linux
+  ansible.builtin.package:
+    name:
+      - amdgpu-dkms
+      - rocm
+    update_cache: true
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
+
+- name: Add user to GPU groups for Linux
+  ansible.builtin.user:
+    append: true
+    groups:
+      - render
+      - video
+    name: "{{ user_id }}"
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr in ["apt", "dnf"]
