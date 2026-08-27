@@ -1,0 +1,14 @@
+---
+- name: Install Vulkan toolkit for Fedora
+  ansible.builtin.dnf:
+    name:
+      - glslc
+      - spirv-headers-devel
+      - vulkan-headers
+      - vulkan-loader
+      - vulkan-loader-devel
+      - vulkan-tools
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"

@@ -1845,6 +1845,19 @@
         - never
         - vscode
 
+    - name: Install Vulkan GPU toolkit
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - gpu
+            - never
+            - vulkan
+        name: scruffaluff.bootware.vulkan
+      tags:
+        - gpu
+        - never
+        - vulkan
+
     - name: Install Watchexec file watcher
       ansible.builtin.include_role:
         apply:

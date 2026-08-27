@@ -784,6 +784,11 @@
     "tests": ["code --version"]
   },
   {
+    "name": "vulkan",
+    "skip": [{ "os": "freebsd" }, { "os": "macos" }],
+    "tests": ["vulkaninfo --help"]
+  },
+  {
     "name": "watchexec",
     "skip": [
       {
