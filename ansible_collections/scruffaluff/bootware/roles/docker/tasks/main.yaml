@@ -69,7 +69,7 @@
 - name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ system_architecture }}
+      deb [arch={{ system_architecture }}]
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
       https://download.docker.com/linux/debian {{
       ansible_facts.distribution_release | lower }} stable
@@ -85,7 +85,7 @@
 - name: Add Docker repository for Ubuntu
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ system_architecture }}
+      deb [arch={{ system_architecture }}]
       signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
       https://download.docker.com/linux/ubuntu {{
       ansible_facts.distribution_release | lower }} stable
