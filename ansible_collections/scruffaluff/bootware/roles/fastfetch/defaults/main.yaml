@@ -1,0 +1,5 @@
+---
+fastfetch_arch_:
+  amd64: amd64
+  arm64: aarch64
+fastfetch_arch: "{{ fastfetch_arch_[system_architecture] }}"
