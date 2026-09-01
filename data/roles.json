@@ -5,6 +5,11 @@
   },
   {
     "name": "alacritty",
+    "skip": [
+      {
+        "os": "macos"
+      }
+    ],
     "tests": ["alacritty --version"]
   },
   {
@@ -619,8 +624,24 @@
   },
   {
     "name": "rocm",
-    "skip": [{ "os": "alpine" }, { "os": "freebsd" }, { "os": "macos" }],
-    "tests": ["rocminfo --help"]
+    "skip": [
+      {
+        "os": "alpine"
+      },
+      {
+        "os": "arch"
+      },
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "macos"
+      },
+      {
+        "os": "windows"
+      }
+    ],
+    "tests": ["which rocminfo"]
   },
   {
     "name": "rust",
@@ -776,17 +797,19 @@
   },
   {
     "name": "vscode",
-    "skip": [
-      {
-        "os": "alpine"
-      }
-    ],
     "tests": ["code --version"]
   },
   {
     "name": "vulkan",
-    "skip": [{ "os": "freebsd" }, { "os": "macos" }],
-    "tests": ["vulkaninfo --help"]
+    "skip": [
+      {
+        "os": "macos"
+      }
+    ],
+    "tests": {
+      "default": ["which vulkaninfo"],
+      "windows": ["scoop prefix vulkan"]
+    }
   },
   {
     "name": "watchexec",

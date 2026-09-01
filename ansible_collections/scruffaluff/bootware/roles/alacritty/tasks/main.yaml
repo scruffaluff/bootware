@@ -15,15 +15,6 @@
     - install
   when: ansible_facts.system == "Linux"
 
-- name: Install Alacritty for MacOS
-  community.general.homebrew_cask:
-    accept_external_apps: true
-    name: alacritty
-    state: present
-  tags:
-    - install
-  when: ansible_facts.system == "Darwin"
-
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
     global: true

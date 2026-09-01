@@ -1,7 +1,24 @@
 ---
+- name: Create ROCm temporary directory for Debian
+  ansible.builtin.tempfile:
+    state: directory
+  register: rocm_temp
+  tags:
+    - install
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+
+- name: Set ROCm temporary directory permissions for Debian
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ rocm_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+
 - name: Download AMD GPG key for Debian
   ansible.builtin.get_url:
-    dest: "{{ docker_temp.path }}/amd.gpg"
+    dest: "{{ rocm_temp.path }}/amd.gpg"
     mode: "640"
     url: https://stable.repo.amd.com/rocm/gpg/packages.gpg
   become: true
@@ -13,7 +30,7 @@
   ansible.builtin.command:
     cmd: >-
       gpg --batch --dearmor --yes --output /usr/share/keyrings/amd.gpg {{
-      docker_temp.path }}/amd.gpg
+      rocm_temp.path }}/amd.gpg
     creates: /usr/share/keyrings/amd.gpg
   become: true
   tags:
@@ -34,7 +51,7 @@
       Architectures: amd64
       Components: main
       Enabled: yes
-      Signed-By: /etc/apt/keyrings/amd.gpg
+      Signed-By: /usr/share/keyrings/amd.gpg
       Suites: stable
       Types: deb
       URIs: https://stable.repo.amd.com/rocm/core/packages/debian13/
@@ -85,3 +102,11 @@
   tags:
     - install
   when: system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+
+- name: Remove ROCm temporary directory for Debian
+  ansible.builtin.file:
+    path: "{{ rocm_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: system_pkg_mgr == "apt" and system_architecture == "amd64"

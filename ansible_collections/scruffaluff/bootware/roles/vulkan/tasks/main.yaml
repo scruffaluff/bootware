@@ -19,7 +19,6 @@
       - shaderc
       - spirv-headers
       - vulkan-headers
-      - vulkan-loader
       - vulkan-tools
   tags:
     - install
@@ -29,9 +28,7 @@
   ansible.builtin.apt:
     name:
       - libvulkan-dev
-      - shaderc
       - spirv-headers
-      - vulkan-headers
       - vulkan-tools
   become: true
   tags:

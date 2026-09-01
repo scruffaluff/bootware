@@ -46,7 +46,7 @@
 
 - name: Download Docker GPG key for Debian
   ansible.builtin.get_url:
-    dest: "{{ docker_temp.path }}/docker-archive-keyring.gpg"
+    dest: "{{ docker_temp.path }}/docker.gpg"
     mode: "640"
     url: https://download.docker.com/linux/debian/gpg
   become: true
@@ -57,10 +57,9 @@
 - name: Add Docker GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --batch --dearmor --yes --output
-      /usr/share/keyrings/docker-archive-keyring.gpg {{ docker_temp.path
-      }}/docker-archive-keyring.gpg
-    creates: /usr/share/keyrings/docker-archive-keyring.gpg
+      gpg --batch --dearmor --yes --output /usr/share/keyrings/docker.gpg {{
+      docker_temp.path }}/docker.gpg
+    creates: /usr/share/keyrings/docker.gpg
   become: true
   tags:
     - install
@@ -69,8 +68,8 @@
 - name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ system_architecture }}]
-      signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+      deb [arch={{ system_architecture }}
+      signed-by=/usr/share/keyrings/docker.gpg]
       https://download.docker.com/linux/debian {{
       ansible_facts.distribution_release | lower }} stable
     state: present
@@ -85,8 +84,8 @@
 - name: Add Docker repository for Ubuntu
   ansible.builtin.apt_repository:
     repo: >-
-      deb [arch={{ system_architecture }}]
-      signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+      deb [arch={{ system_architecture }}
+      signed-by=/usr/share/keyrings/docker.gpg]
       https://download.docker.com/linux/ubuntu {{
       ansible_facts.distribution_release | lower }} stable
     state: present
