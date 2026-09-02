@@ -26,7 +26,7 @@ Describe 'Bootstrap' {
             + "192.48.16.0 --private-key `$HOME/.ssh/bootware --skip none " `
             + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
             + "--tags desktop --user $Env:UserName " `
-            + '--extra-vars connect_role_executed=false ' `
+            + '--extra-vars {"connect_role_executed":false} ' `
             + '--start-at-task Install Deno JavaScript runtime ' `
             + "--playbook $(WSLPath $Playbook)"
 

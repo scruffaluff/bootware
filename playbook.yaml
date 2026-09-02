@@ -24,7 +24,6 @@
         apply:
           tags:
             - desktop
-            - essential
             - path
             - server
             - setup
@@ -33,7 +32,6 @@
         name: scruffaluff.bootware.path
       tags:
         - desktop
-        - essential
         - path
         - server
         - setup
@@ -1059,6 +1057,25 @@
       tags:
         - latex
         - never
+
+    - name: Install Less pager
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - less
+            - server
+            - shell
+            - sysadmin
+            - wsl
+        name: scruffaluff.bootware.less
+      tags:
+        - desktop
+        - less
+        - server
+        - shell
+        - sysadmin
+        - wsl
 
     - name: Install Libre Office document suite
       ansible.builtin.include_role:

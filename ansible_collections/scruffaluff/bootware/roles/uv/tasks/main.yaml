@@ -1,4 +1,23 @@
 ---
+- name: Create Uv temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: uv_temp
+  tags:
+    - completion
+    - install
+  when: ansible_facts.system != "Win32NT"
+
+- name: Set Uv temporary directory permissions for Unix
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ uv_temp.path }}"
+    state: directory
+  tags:
+    - completion
+    - install
+  when: ansible_facts.system != "Win32NT"
+
 - name: Install Uv for FreeBSD
   become: true
   community.general.pkgng:
@@ -13,23 +32,6 @@
     return_content: true
     url: https://formulae.brew.sh/api/formula/uv.json
   register: uv_formula
-  tags:
-    - install
-  when: ansible_facts.system == "Linux"
-
-- name: Create Uv temporary directory for Linux
-  ansible.builtin.tempfile:
-    state: directory
-  register: uv_temp
-  tags:
-    - install
-  when: ansible_facts.system == "Linux"
-
-- name: Set Uv temporary directory permissions for Linux
-  ansible.builtin.file:
-    mode: "755"
-    path: "{{ uv_temp.path }}"
-    state: directory
   tags:
     - install
   when: ansible_facts.system == "Linux"
@@ -138,39 +140,56 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-# Uv Nushell completions are disabled since they break help flags for
-# subprocesses.
 - name: Create Uv shell completions for Unix
   ansible.builtin.shell:
-    cmd: uv --generate-shell-completion {{ item.shell }} > '{{ item.path }}'
-  become: true
+    cmd:
+      uv --generate-shell-completion {{ item }} > {{ uv_temp.path }}/uv.{{ item
+      }}
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
   loop:
-    - path: "{{ bash_completion }}/uv"
-      shell: bash
-    - path: "{{ fish_completion }}/uv.fish"
-      shell: fish
-    # - path: "{{ nushell_vendor_autoload }}/uv.nu"
-    #   shell: nushell
+    - bash
+    - fish
+    - nushell
   tags:
+    - completion
     - install
   when: ansible_facts.system != "Win32NT"
 
-# - name: Create Uv Nushell shell completions for Windows
-#   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
-#   # prepends to outputs redirected to files.
-#   ansible.windows.win_shell: |
-#     $Text = uv --generate-shell-completion nushell
-#     [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/uv.nu", $Text)
-#   changed_when: true
-#   environment:
-#     Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
-#   tags:
-#     - completion
-#     - install
-#   when: ansible_facts.system == "Win32NT"
+- name: Install Uv shell completions for Unix
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    force: true
+    mode: "644"
+    remote_src: true
+    src: "{{ uv_temp.path }}/uv.{{ item.shell }}"
+  become: true
+  loop:
+    - dest: "{{ bash_completion }}/uv"
+      shell: bash
+    - dest: "{{ fish_completion }}/uv.fish"
+      shell: fish
+    - dest: "{{ nushell_vendor_autoload }}/uv.nu"
+      shell: nushell
+  tags:
+    - completion
+    - install
+  when: ansible_facts.system != "Win32NT"
+
+- name: Create Uv Nushell shell completions for Windows
+  # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
+  # prepends to outputs redirected to files.
+  ansible.windows.win_shell: |
+    $Text = uv --generate-shell-completion nushell
+    [System.IO.File]::WriteAllLines("{{ nushell_vendor_autoload }}/uv.nu", $Text)
+  changed_when: true
+  environment:
+    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+  tags:
+    - completion
+    - install
+  when: ansible_facts.system == "Win32NT"
 
 - name: Create Uv PowerShell completions for Windows
   # Using "WriteAllLines" to avoid the Byte Order Mark (BOM) that PowerShell 5
@@ -187,10 +206,11 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-- name: Remove Uv temporary directory for Linux
+- name: Remove Uv temporary directory for Unix
   ansible.builtin.file:
     path: "{{ uv_temp.path }}"
     state: absent
   tags:
+    - completion
     - install
-  when: ansible_facts.system == "Linux"
+  when: ansible_facts.system != "Win32NT"

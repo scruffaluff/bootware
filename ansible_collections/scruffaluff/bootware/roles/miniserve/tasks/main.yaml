@@ -79,7 +79,6 @@
     cmd: >-
       miniserve --print-completions {{ item }} > {{ miniserve_temp.path
       }}/miniserve.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

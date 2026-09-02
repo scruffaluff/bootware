@@ -19,7 +19,7 @@ state = status --branch --short
 [core]
 autocrlf = input
 editor = hx
-{% if ansible_facts.system != "Linux" or system_pkg_mgr != "apk" or system_architecture != "arm64" %}
+{% if ansible_facts.system != "Linux" or system_architecture == "amd6" or system_libc == "gnu" %}
 pager = delta
 {% endif %}
 
@@ -34,7 +34,7 @@ colorMoved = default
 [init]
 defaultBranch = main
 
-{% if ansible_facts.system != "Linux" or system_pkg_mgr != "apk" or system_architecture != "arm64" %}
+{% if ansible_facts.system != "Linux" or system_architecture == "amd64" or system_libc == "gnu" %}
 [interactive]
 diffFilter = delta --color-only
 {% endif %}

@@ -1,0 +1,86 @@
+---
+- name: Install Less for FreeBSD
+  become: true
+  community.general.pkgng:
+    name: less
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
+- name: Install Less for Linux
+  ansible.builtin.package:
+    name: less
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Linux"
+
+# MacOS default version of Less is too old to support keybindings.
+- name: Install Less for MacOS
+  become: true
+  become_user: "{{ brew_user }}"
+  community.general.homebrew:
+    name: less
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Install Less for Windows
+  community.windows.win_scoop:
+    global: true
+    name: less
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+# VSCode remote terminals for MacOS automatically prepend folders to the system
+# path, which makes the /usr/bin/less appear before the /opt/homebrew/bin/less.
+# Luckily /usr/local/bin still appears before /usr/bin.
+- name: Make less symlink for MacOS
+  ansible.builtin.file:
+    src: /opt/homebrew/bin/less
+    dest: /usr/local/bin/less
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  tags:
+    - install
+  when:
+    - ansible_facts.system == "Darwin"
+    - ansible_facts.architecture == "arm64"
+
+- name: Copy Less settings file for Unix
+  ansible.builtin.copy:
+    dest: "{{ user_home }}/.lesskey"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: lesskey
+  become: true
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+# On Windows Less configuration files start with "_" instead of ".". For more
+# information, visit https://linux.die.net/man/1/less.
+- name: Copy Less settings file for Windows
+  ansible.windows.win_copy:
+    dest: "{{ user_home }}\\_lesskey"
+    force: true
+    src: lesskey
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set owner of Less files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\{{ item }}"
+    recurse: true
+    user: "{{ user_id }}"
+  loop:
+    - _lesskey
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

@@ -69,7 +69,6 @@
 - name: Create Yq shell completions for Unix
   ansible.builtin.shell:
     cmd: yq shell-completion {{ item }} > {{ yq_temp.path }}/yq.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

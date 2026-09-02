@@ -192,6 +192,13 @@ _setup:
     fi
   done
   echo "Using $(bats --version)."
+  if ! command -v jq > /dev/null 2>&1; then
+    echo 'Installing Jq.'
+    curl --fail --location --show-error \
+      https://scruffaluff.github.io/picoware/install/jq.sh | sh -s -- \
+      --preserve-env --dest .vendor/bin
+  fi
+  echo "Using $(jq --version)."
   if ! command -v nu > /dev/null 2>&1; then
     echo 'Installing Nushell.'
     curl --fail --location --show-error \

@@ -1,4 +1,32 @@
 ---
+- name: Create Alacritty temporary directory for MacOS
+  ansible.builtin.tempfile:
+    state: directory
+  register: alacritty_temp
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Set Alacritty temporary directory permissions for MacOS
+  ansible.builtin.file:
+    mode: "755"
+    path: "{{ alacritty_temp.path }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Get latest Alacritty version for MacOS
+  ansible.builtin.uri:
+    headers: "{{ github_api_headers }}"
+    method: GET
+    return_content: true
+    url: https://api.github.com/repos/alacritty/alacritty/releases/latest
+  register: alacritty_release
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
 - name: Install Alacritty for FreeBSD
   become: true
   community.general.pkgng:
@@ -14,6 +42,60 @@
   tags:
     - install
   when: ansible_facts.system == "Linux"
+
+- name: Download Alacritty for MacOS
+  ansible.builtin.get_url:
+    dest: "{{ alacritty_temp.path }}/alacritty.dmg"
+    mode: "644"
+    url: >-
+      https://github.com/alacritty/alacritty/releases/download/{{
+      alacritty_release.json.tag_name }}/Alacritty-{{
+      alacritty_release.json.tag_name }}.dmg
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Mount Alacritty disk image for MacOS
+  ansible.builtin.command:
+    cmd: >-
+      hdiutil attach -nobrowse -quiet -mountpoint {{ alacritty_temp.path
+      }}/alacritty {{ alacritty_temp.path }}/alacritty.dmg
+  changed_when: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Install Alacritty for MacOS
+  ansible.builtin.copy:
+    dest: /Applications/
+    mode: "755"
+    force: true
+    remote_src: true
+    src: "{{ alacritty_temp.path }}/alacritty/Alacritty.app"
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Unmount Alacritty disk image for MacOS
+  ansible.builtin.command:
+    cmd: hdiutil detach -quiet {{ alacritty_temp.path }}/alacritty
+  changed_when: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
+- name: Make Alacritty symlink for MacOS
+  ansible.builtin.file:
+    src: /Applications/Alacritty.app/Contents/MacOS/alacritty
+    dest: /usr/local/bin/alacritty
+    force: true
+    mode: "755"
+    state: link
+  become: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
@@ -73,3 +155,11 @@
   tags:
     - config
   when: ansible_facts.system == "Win32NT"
+
+- name: Remove Alacritty temporary directory for MacOS
+  ansible.builtin.file:
+    path: "{{ alacritty_temp.path }}"
+    state: absent
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"

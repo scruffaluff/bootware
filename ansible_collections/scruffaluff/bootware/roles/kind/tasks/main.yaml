@@ -50,7 +50,6 @@
 - name: Create Kind shell completions for Unix
   ansible.builtin.shell: >-
     kind completion {{ item }} > {{ kind_temp.path }}/kind.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

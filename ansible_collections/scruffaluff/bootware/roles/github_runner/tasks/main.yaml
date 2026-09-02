@@ -3,7 +3,6 @@
   ansible.builtin.getent:
     database: group
     split: ":"
-  become: true
   tags:
     - install
   when: ansible_facts.system == "Linux"

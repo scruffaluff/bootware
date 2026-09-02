@@ -90,7 +90,6 @@
 - name: Create Digital Ocean CLI shell completions for Unix
   ansible.builtin.shell:
     cmd: doctl completion {{ item }} > {{ doctl_temp.path }}/doctl.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

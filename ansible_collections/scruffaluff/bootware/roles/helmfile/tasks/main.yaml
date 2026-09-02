@@ -92,7 +92,6 @@
     cmd: >-
       helmfile completion {{ item }} > {{ helmfile_temp.path }}/helmfile.{{ item
       }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

@@ -332,8 +332,8 @@ bootstrap() {
         ".[0].tasks[] | select(.\"ansible.builtin.include_role\".name == \"scruffaluff.bootware.${start_role}\") | .name" \
         "${playbook}"
     )"
-    set -- "$@" '--extra-vars' '{"connect_role_executed":false}' '--start-at-task' \
-      "${start_task}"
+    set -- "$@" '--extra-vars' '{"connect_role_executed":false}' \
+      '--start-at-task' "${start_task}"
   fi
 
   # Convenience logic for using a single host without a trailing comma.
@@ -380,11 +380,11 @@ bootstrap() {
   until "ansible-${cmd}" \
     ${ask_passwd:+--ask-become-pass} \
     --extra-vars "@${config_path}" \
-    ${become_method:+--extra-vars "ansible_become_method=${become_method}"} \
-    ${passwd:+--extra-vars "ansible_password=${passwd}"} \
-    ${port:+--extra-vars "ansible_ssh_port=${port}"} \
-    ${install_group:+--extra-vars "group_id=${install_group}"} \
-    ${install_user:+--extra-vars "user_id=${install_user}"} \
+    ${become_method:+--extra-vars "{\"ansible_become_method\":\"${become_method}\"}"} \
+    ${passwd:+--extra-vars "{\"ansible_password\":\"${passwd}\"}"} \
+    ${port:+--extra-vars "{\"ansible_ssh_port\":\"${port}\"}"} \
+    ${install_group:+--extra-vars "{\"group_id\":\"${install_group}\"}"} \
+    ${install_user:+--extra-vars "{\"user_id\":\"${install_user}\"}"} \
     --inventory "${inventory}" \
     ${tags:+--tags "${tags}"} \
     ${skip:+--skip-tags "${skip}"} \

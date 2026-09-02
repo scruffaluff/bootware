@@ -84,7 +84,6 @@
   ansible.builtin.shell:
     cmd: >-
       kubectl completion {{ item }} > {{ kubectl_temp.path }}/kubectl.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

@@ -61,6 +61,7 @@
 
 - name: Install Krew for Windows
   community.windows.win_scoop:
+    global: true
     name: krew
   tags:
     - install

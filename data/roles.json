@@ -5,11 +5,6 @@
   },
   {
     "name": "alacritty",
-    "skip": [
-      {
-        "os": "macos"
-      }
-    ],
     "tests": ["alacritty --version"]
   },
   {
@@ -412,6 +407,10 @@
   {
     "name": "latex",
     "tests": ["latex --version"]
+  },
+  {
+    "name": "less",
+    "tests": ["less --version"]
   },
   {
     "name": "libre_office",
