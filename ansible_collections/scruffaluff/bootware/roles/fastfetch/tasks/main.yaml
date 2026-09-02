@@ -52,7 +52,7 @@
     src: >-
       https://github.com/fastfetch-cli/fastfetch/releases/download/{{
       fastfetch_formula.json.versions.stable }}/fastfetch-linux-{{
-      system_architecture }}.tar.gz
+      fastfetch_arch }}.tar.gz
   tags:
     - install
   when: ansible_facts.system == "Linux" and fastfetch_linux is failed
@@ -64,7 +64,7 @@
     mode: "755"
     remote_src: true
     src: >-
-      {{ fastfetch_temp.path }}/fastfetch-linux-{{ system_architecture
+      {{ fastfetch_temp.path }}/fastfetch-linux-{{ fastfetch_arch
       }}/usr/bin/fastfetch
   become: true
   tags:

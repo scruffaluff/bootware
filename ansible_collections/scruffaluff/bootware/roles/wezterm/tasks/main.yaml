@@ -37,10 +37,9 @@
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
     cmd: >-
-      gpg --batch --dearmor --yes --output
-      /usr/share/keyrings/wezterm-archive-keyring.gpg {{ wezterm_temp.path
-      }}/wezterm.key
-    creates: /usr/share/keyrings/wezterm-archive-keyring.gpg
+      gpg --batch --dearmor --yes --output /usr/share/keyrings/wezterm.gpg {{
+      wezterm_temp.path }}/wezterm.key
+    creates: /usr/share/keyrings/wezterm.gpg
   become: true
   tags:
     - install
@@ -49,8 +48,8 @@
 - name: Add Wezterm repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by=/usr/share/keyrings/wezterm-archive-keyring.gpg]
-      https://apt.fury.io/wez/ * *
+      deb [signed-by=/usr/share/keyrings/wezterm.gpg] https://apt.fury.io/wez/ *
+      *
     state: present
     filename: wezterm
   become: true

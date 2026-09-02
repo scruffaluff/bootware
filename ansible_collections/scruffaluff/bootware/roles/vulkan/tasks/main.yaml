@@ -1,0 +1,71 @@
+---
+- name: Install Vulkan toolkit for Alpine
+  become: true
+  community.general.apk:
+    name:
+      - shaderc
+      - spirv-headers
+      - vulkan-headers
+      - vulkan-loader
+      - vulkan-tools
+  tags:
+    - install
+  when: system_pkg_mgr == "apk"
+
+- name: Install Vulkan toolkit for Arch
+  become: true
+  community.general.pacman:
+    name:
+      - shaderc
+      - spirv-headers
+      - vulkan-headers
+      - vulkan-tools
+  tags:
+    - install
+  when: system_pkg_mgr == "pacman"
+
+- name: Install Vulkan toolkit for Debian
+  ansible.builtin.apt:
+    name:
+      - libvulkan-dev
+      - spirv-headers
+      - vulkan-tools
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "apt"
+
+- name: Install Vulkan toolkit for Fedora
+  ansible.builtin.dnf:
+    name:
+      - glslc
+      - spirv-headers-devel
+      - vulkan-headers
+      - vulkan-loader
+      - vulkan-tools
+  become: true
+  tags:
+    - install
+  when: system_pkg_mgr == "dnf"
+
+- name: Install Vulkan toolkit for FreeBSD
+  become: true
+  community.general.pkgng:
+    name:
+      - shaderc
+      - spirv-headers
+      - vulkan-headers
+      - vulkan-loader
+      - vulkan-tools
+  tags:
+    - install
+  when: ansible_facts.system == "FreeBSD"
+
+- name: Install Vulkan toolkit for Windows
+  community.windows.win_scoop:
+    global: true
+    name:
+      - vulkan
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"

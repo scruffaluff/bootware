@@ -9,7 +9,7 @@ see the commit logs. The format is based on
 
 ### Added
 
-- Handy role.
+- Handy, ROCm, and Vulkan roles.
 
 ### Changed
 
