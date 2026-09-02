@@ -53,8 +53,9 @@
   become: true
   tags:
     - config
-  when: >-
-    ansible_facts.system in ["Darwin", "Linux"] and obsidian_vault is defined
+  when:
+    - ansible_facts.system in ["Darwin", "Linux"]
+    - obsidian_vault is defined
 
 - name: Create Obsidian vault settings directory for Windows
   ansible.windows.win_file:
@@ -62,7 +63,9 @@
     state: directory
   tags:
     - config
-  when: ansible_facts.system == "Win32NT" and obsidian_vault is defined
+  when:
+    - ansible_facts.system == "Win32NT"
+    - obsidian_vault is defined
 
 - name: Copy Obsidian vault settings files for Unix
   ansible.builtin.copy:
@@ -84,8 +87,9 @@
     - webviewer.json
   tags:
     - config
-  when: >-
-    ansible_facts.system in ["Darwin", "Linux"] and obsidian_vault is defined
+  when:
+    - ansible_facts.system in ["Darwin", "Linux"]
+    - obsidian_vault is defined
 
 - name: Copy Obsidian vault settings files for Windows
   ansible.windows.win_copy:
@@ -103,7 +107,9 @@
     - webviewer.json
   tags:
     - config
-  when: ansible_facts.system == "Win32NT" and obsidian_vault is defined
+  when:
+    - ansible_facts.system == "Win32NT"
+    - obsidian_vault is defined
 
 - name: Configure Obsidian plugins
   ansible.builtin.include_tasks:
@@ -130,4 +136,6 @@
     user: "{{ user_id }}"
   tags:
     - config
-  when: ansible_facts.system == "Win32NT" and obsidian_vault is defined
+  when:
+    - ansible_facts.system == "Win32NT"
+    - obsidian_vault is defined

@@ -1,5 +1,6 @@
 ---
 dependencies:
   - role: connect
-    when: >-
-      connect_role_executed is defined and not (connect_role_executed | bool)
+    when:
+      - connect_role_executed is defined
+      - not connect_role_executed

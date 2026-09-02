@@ -155,7 +155,9 @@
   register: python_application_unix
   tags:
     - plugin
-  when: ansible_facts.system != "Win32NT" and system_pkg_mgr != "opkg"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - system_pkg_mgr != "opkg"
 
 - name: Install Python applications for Windows
   ansible.windows.win_shell: >-

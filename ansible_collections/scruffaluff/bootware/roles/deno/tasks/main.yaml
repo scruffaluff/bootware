@@ -124,7 +124,6 @@
 - name: Create Deno shell completions for Unix
   ansible.builtin.shell:
     cmd: deno completions {{ item }} > {{ deno_temp.path }}/deno.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

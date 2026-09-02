@@ -25,7 +25,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
   become: true

@@ -42,7 +42,9 @@
   register: helmfile_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helmfile_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helmfile_linux is failed
 
 - name: Download Helmfile for Linux
   ansible.builtin.unarchive:
@@ -56,7 +58,9 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helmfile_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helmfile_linux is failed
 
 - name: Install Helmfile for Linux
   ansible.builtin.copy:
@@ -68,7 +72,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helmfile_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helmfile_linux is failed
 
 - name: Install Helmfile for MacOS
   become: true

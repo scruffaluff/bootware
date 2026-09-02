@@ -39,7 +39,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT" and system_paths | length > 0
+  when:
+    - ansible_facts.system != "Win32NT"
+    - system_paths | length > 0
 
 - name: Add binaries directories to system profile for Unix
   ansible.builtin.template:
@@ -50,7 +52,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT" and system_paths | length > 0
+  when:
+    - ansible_facts.system != "Win32NT"
+    - system_paths | length > 0
 
 - name: Create system environment configuration directory for Linux
   ansible.builtin.file:
@@ -60,7 +64,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_paths | length > 0
+  when:
+    - ansible_facts.system == "Linux"
+    - system_paths | length > 0
 
 - name: Add binaries directories to system environment for Linux
   ansible.builtin.template:
@@ -71,7 +77,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_paths | length > 0
+  when:
+    - ansible_facts.system == "Linux"
+    - system_paths | length > 0
 
 - name: Create Launchd configuration directory for MacOS
   ansible.builtin.file:
@@ -81,7 +89,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Darwin" and system_paths | length > 0
+  when:
+    - ansible_facts.system == "Darwin"
+    - system_paths | length > 0
 
 - name: Add binaries directories to Launchd paths for MacOS
   ansible.builtin.template:
@@ -92,7 +102,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Darwin" and system_paths | length > 0
+  when:
+    - ansible_facts.system == "Darwin"
+    - system_paths | length > 0
 
 - name: Create binaries directories for Windows
   ansible.windows.win_file:
@@ -192,7 +204,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT" and user_id != "root"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - user_id != "root"
 
 - name: Create shell completion directories for Windows
   ansible.windows.win_file:

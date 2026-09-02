@@ -10,7 +10,9 @@
       changed_when: true
       tags:
         - install
-      when: ansible_facts.system == "Linux" and gnome_desktop
+      when:
+        - ansible_facts.system == "Linux"
+        - gnome_desktop
   rescue:
     - name: Get latest Caffeine shell extension version for GNOME desktops
       ansible.builtin.uri:
@@ -89,7 +91,9 @@
   changed_when: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and gnome_desktop
+  when:
+    - ansible_facts.system == "Linux"
+    - gnome_desktop
 
 - name: Download Caffeinate script for GNOME desktops
   ansible.builtin.get_url:
@@ -100,7 +104,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and gnome_desktop
+  when:
+    - ansible_facts.system == "Linux"
+    - gnome_desktop
 
 - name: Download Caffeinate script for Windows
   ansible.windows.win_get_url:

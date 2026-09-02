@@ -7,7 +7,9 @@
       - xdg-utils
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD" and gnome_desktop
+  when:
+    - ansible_facts.system == "FreeBSD"
+    - gnome_desktop
 
 - name: Install desktop management dependencies for Linux
   ansible.builtin.package:
@@ -17,7 +19,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and gnome_desktop
+  when:
+    - ansible_facts.system == "Linux"
+    - gnome_desktop
 
 - name: Add clipboard commands for Linux
   ansible.builtin.package:
@@ -81,7 +85,9 @@
     loop_var: gnome_extension
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
+  when:
+    - ansible_facts.system in ["FreeBSD", "Linux"]
+    - gnome_desktop
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
@@ -91,7 +97,9 @@
     BOOTWARE_FONT_SIZE: "{{ system_font_size }}"
   tags:
     - config
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
+  when:
+    - ansible_facts.system in ["FreeBSD", "Linux"]
+    - gnome_desktop
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh

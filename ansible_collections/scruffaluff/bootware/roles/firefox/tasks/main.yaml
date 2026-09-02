@@ -3,8 +3,9 @@
   ansible.builtin.import_tasks: debian.yaml
   tags:
     - install
-  when: >-
-    system_pkg_mgr == "apt" and ansible_facts.distribution != "Ubuntu"
+  when:
+    - system_pkg_mgr == "apt"
+    - ansible_facts.distribution != "Ubuntu"
 
 - name: Install Firefox for FreeBSD
   become: true
@@ -20,7 +21,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apt"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apt"
 
 - name: Install Firefox for MacOS
   community.general.homebrew_cask:
@@ -54,7 +57,9 @@
   register: firefox_profiles_unix
   tags:
     - config
-  when: ansible_facts.system != "Win32NT" and user_id != "root"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - user_id != "root"
 
 - name: Find Firefox profiles for Windows
   scruffaluff.bootware.win_firefox_profiles:
@@ -75,7 +80,9 @@
   loop: "{{ firefox_profiles_unix['paths'] }}"
   tags:
     - config
-  when: ansible_facts.system != "Win32NT" and user_id != "root"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - user_id != "root"
 
 - name: Create Firefox user preferences directory for Windows
   ansible.windows.win_file:
@@ -98,7 +105,9 @@
   loop: "{{ firefox_profiles_unix['paths'] }}"
   tags:
     - config
-  when: ansible_facts.system != "Win32NT" and user_id != "root"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - user_id != "root"
 
 - name: Copy Firefox user preferences for Windows
   ansible.windows.win_copy:

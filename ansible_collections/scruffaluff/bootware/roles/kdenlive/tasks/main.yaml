@@ -23,7 +23,9 @@
     name: org.kde.kdenlive
   tags:
     - install
-  when: ansible_facts.system == "Linux" and kdenlive_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - kdenlive_linux is failed
 
 - name: Install Kdenlive for MacOS
   community.general.homebrew_cask:

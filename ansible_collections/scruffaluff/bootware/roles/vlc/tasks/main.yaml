@@ -23,7 +23,9 @@
     name: org.videolan.VLC
   tags:
     - install
-  when: ansible_facts.system == "Linux" and vlc_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - vlc_linux is failed
 
 - name: Install VLC for MacOS
   community.general.homebrew_cask:

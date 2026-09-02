@@ -27,8 +27,9 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr not in ["apk", "opkg"]
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install ShellCheck for MacOS
   become: true

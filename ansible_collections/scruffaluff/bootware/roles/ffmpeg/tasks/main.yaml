@@ -23,8 +23,9 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "dnf"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "dnf"
 
 - name: Install FFmpeg for MacOS
   become: true

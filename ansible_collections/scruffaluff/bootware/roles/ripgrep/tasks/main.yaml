@@ -25,7 +25,9 @@
   register: ripgrep_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Create Ripgrep temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +35,9 @@
   register: ripgrep_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Set Ripgrep temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +46,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Download Ripgrep for Linux
   ansible.builtin.unarchive:
@@ -56,7 +62,9 @@
       }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Install Ripgrep for Linux
   ansible.builtin.copy:
@@ -70,7 +78,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Install Ripgrep for MacOS
   become: true
@@ -107,7 +117,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed
 
 - name: Copy Ripgrep settings file for Unix
   ansible.builtin.copy:
@@ -145,4 +157,6 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and ripgrep_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - ripgrep_linux is failed

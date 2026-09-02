@@ -9,7 +9,9 @@
 
 - name: Apply custom styles to VSCode
   ansible.builtin.import_tasks: style.yaml
-  when: vscode_style and system_pkg_mgr != "apk"
+  when:
+    - vscode_style
+    - system_pkg_mgr != "apk"
 
 - name: Set owner of VSCode files for Windows
   ansible.windows.win_owner:

@@ -101,9 +101,9 @@
       {{ user_home }}\\scoop\\apps\\mingit\\current\\cmd;{{ user_home
       }}\\scoop\\shims;C:\\ProgramData\\scoop\\apps\\mingit\\current\\cmd;C:\\ProgramData\\scoop\\shims;{{
       ansible_facts.env.Path }}
-  failed_when: >-
-    essential_scoop_bucket.rc != 0 and 'bucket already exists' not in
-    essential_scoop_bucket.stdout
+  failed_when:
+    - essential_scoop_bucket.rc != 0
+    - "'bucket already exists' not in essential_scoop_bucket.stdout"
   loop:
     - extras
     - main
@@ -187,11 +187,17 @@
   ansible.builtin.stat:
     path: /usr/sbin/yay
   register: essential_yay_stat
+  tags:
+    - install
   when: system_pkg_mgr == "pacman"
 
 - name: Install Yay for Arch
   ansible.builtin.import_tasks: yay.yaml
-  when: system_pkg_mgr == "pacman" and not essential_yay_stat.stat.exists
+  tags:
+    - install
+  when:
+    - system_pkg_mgr == "pacman"
+    - not essential_yay_stat.stat.exists
 
 - name: Create Scoop user folder for Windows
   ansible.windows.win_file:

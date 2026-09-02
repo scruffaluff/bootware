@@ -73,9 +73,9 @@
   changed_when: "'bucket was added successfully' in tilt_bucket_add.stdout"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
-  failed_when: >-
-    tilt_bucket_add.rc != 0 and 'bucket already exists' not in
-    tilt_bucket_add.stdout
+  failed_when:
+    - tilt_bucket_add.rc != 0
+    - "'bucket already exists' not in tilt_bucket_add.stdout"
   register: tilt_bucket_add
   tags:
     - install

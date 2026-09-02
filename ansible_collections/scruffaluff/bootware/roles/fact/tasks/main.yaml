@@ -4,13 +4,17 @@
     cmd: ldd --version
   register: glibc_version_text
   changed_when: false
-  when: ansible_facts.system == "Linux" and system_libc == "gnu"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu"
 
 - name: Parse system Glibc version
   ansible.builtin.set_fact:
     glibc_version: >-
       {{ glibc_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
-  when: ansible_facts.system == "Linux" and system_libc == "gnu"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu"
 
 - name: Check if GNOME shell is installed
   ansible.builtin.stat:
@@ -35,13 +39,17 @@
     cmd: gnome-shell --version
   changed_when: false
   register: gnome_version_text
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
+  when:
+    - ansible_facts.system in ["FreeBSD", "Linux"]
+    - gnome_desktop
 
 - name: Parse GNOME version for GNOME desktops
   ansible.builtin.set_fact:
     gnome_version: >-
       {{ gnome_version_text.stdout_lines[0] | regex_search('(\d+\.)+\d+') }}
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
+  when:
+    - ansible_facts.system in ["FreeBSD", "Linux"]
+    - gnome_desktop
 
 - name: Check if systemd is available for Linux
   ansible.builtin.stat:

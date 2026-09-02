@@ -23,7 +23,9 @@
     name: org.audacityteam.Audacity
   tags:
     - install
-  when: ansible_facts.system == "Linux" and audacity_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - audacity_linux is failed
 
 - name: Install Audacity for MacOS
   community.general.homebrew_cask:

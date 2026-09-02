@@ -3,7 +3,9 @@
   ansible.builtin.import_tasks: forge.yaml
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"] and gnome_desktop
+  when:
+    - ansible_facts.system in ["FreeBSD", "Linux"]
+    - gnome_desktop
 
 - name: Install Amethyst for MacOS
   community.general.homebrew_cask:

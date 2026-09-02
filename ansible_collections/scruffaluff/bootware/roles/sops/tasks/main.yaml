@@ -25,7 +25,9 @@
   register: sops_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and sops_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - sops_linux is failed
 
 - name: Install Sops for Linux
   ansible.builtin.get_url:
@@ -39,7 +41,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and sops_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - sops_linux is failed
 
 - name: Install Sops for MacOS
   become: true

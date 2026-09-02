@@ -35,7 +35,9 @@
   register: mkcert_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and mkcert_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - mkcert_linux is failed
 
 - name: Install Mkcert for Linux
   ansible.builtin.get_url:
@@ -49,7 +51,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and mkcert_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - mkcert_linux is failed
 
 - name: Install Mkcert for MacOS
   become: true

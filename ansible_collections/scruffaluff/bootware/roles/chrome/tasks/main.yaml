@@ -25,7 +25,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Add Google GPG key for Fedora
   ansible.builtin.rpm_key:
@@ -33,8 +35,9 @@
   become: true
   tags:
     - install
-  when: >-
-    system_pkg_mgr in ["dnf", "zypper"] and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install Google Chrome for Fedora
   ansible.builtin.dnf:
@@ -43,8 +46,9 @@
   become: true
   tags:
     - install
-  when: >-
-    system_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "dnf"
 
 - name: Install Google Chrome for FreeBSD
   become: true

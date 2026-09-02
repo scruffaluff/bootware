@@ -5,7 +5,9 @@
     name: shadow
   tags:
     - install
-  when: system_pkg_mgr == "apk" and user_login == "bash"
+  when:
+    - system_pkg_mgr == "apk"
+    - user_login == "bash"
 
 - name: Install Shadow for OpenWrt
   become: true
@@ -13,7 +15,9 @@
     name: shadow-usermod
   tags:
     - install
-  when: system_pkg_mgr == "opkg" and user_login == "bash"
+  when:
+    - system_pkg_mgr == "opkg"
+    - user_login == "bash"
 
 - name: Install Bash for FreeBSD
   become: true
@@ -33,7 +37,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "opkg"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
   become: true
@@ -91,7 +97,9 @@
   register: bash_chsh
   tags:
     - config
-  when: system_pkg_mgr == "apk" and user_login == "bash"
+  when:
+    - system_pkg_mgr == "apk"
+    - user_login == "bash"
 
 - name: Change user default shell to Bash for Unix
   ansible.builtin.user:
@@ -100,9 +108,10 @@
   become: true
   tags:
     - config
-  when: >-
-    ansible_facts.system != "Win32NT" and system_pkg_mgr != "apk" and user_login
-    == "bash"
+  when:
+    - ansible_facts.system != "Win32NT"
+    - system_pkg_mgr != "apk"
+    - user_login == "bash"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

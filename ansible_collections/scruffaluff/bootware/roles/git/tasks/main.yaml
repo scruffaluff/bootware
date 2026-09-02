@@ -38,9 +38,10 @@
   register: git_delta_formula
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == "amd64") and git_delta_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64" or system_libc == "gnu"
+    - git_delta_linux is failed
 
 - name: Create Git temporary directory for Linux
   ansible.builtin.tempfile:
@@ -48,9 +49,10 @@
   register: git_temp
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == "amd64") and git_delta_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64" or system_libc == "gnu"
+    - git_delta_linux is failed
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
@@ -64,9 +66,10 @@
       }}-unknown-linux-{{ system_libc }}.tar.gz
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == "amd64") and git_delta_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64" or system_libc == "gnu"
+    - git_delta_linux is failed
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
@@ -80,9 +83,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == "amd64") and git_delta_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64" or system_libc == "gnu"
+    - git_delta_linux is failed
 
 - name: Install Git for MacOS
   become: true
@@ -149,6 +153,7 @@
     state: absent
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == "amd64") and git_delta_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64" or system_libc == "gnu"
+    - git_delta_linux is failed

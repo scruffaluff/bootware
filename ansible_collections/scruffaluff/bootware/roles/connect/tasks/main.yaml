@@ -13,10 +13,10 @@
       {{ 'cmd' if 'commandprompt' in connect_windows_shell.stdout else
       'powershell' }}
     system_pkg_mgr: scoop
-  when: >-
-    connect_windows_shell.rc == 0 and ('commandprompt' in
-    connect_windows_shell.stdout or 'powershell' in
-    connect_windows_shell.stdout)
+  when:
+    - connect_windows_shell.rc == 0
+    - "'commandprompt' in connect_windows_shell.stdout or 'powershell' in
+      connect_windows_shell.stdout"
 
 - name: Gather facts about system
   ansible.builtin.gather_facts: {}
@@ -26,9 +26,9 @@
     ansible_become_method: doas
   # Variable system_pkg_mgr cannot be used since it is not defined until after
   # this role.
-  when: >-
-    ansible_facts.system == "Linux" and ansible_facts.get("pkg_mgr", "") ==
-    "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - ansible_facts.get("pkg_mgr", "") == "apk"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

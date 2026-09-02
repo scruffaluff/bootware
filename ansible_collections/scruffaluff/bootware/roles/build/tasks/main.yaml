@@ -36,7 +36,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "opkg"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "opkg"
 
 - name: Install build tools for MacOS
   become: true

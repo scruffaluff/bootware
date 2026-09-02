@@ -5,7 +5,9 @@
   register: rocm_temp
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Set ROCm temporary directory permissions for Debian
   ansible.builtin.file:
@@ -14,7 +16,9 @@
     state: directory
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Download AMD GPG key for Debian
   ansible.builtin.get_url:
@@ -24,7 +28,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Add AMD GPG key for Debian
   ansible.builtin.command:
@@ -35,7 +41,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Add AMD GPG key for Fedora
   ansible.builtin.rpm_key:
@@ -43,7 +51,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "dnf"
 
 - name: Add ROCm repository for Debian
   ansible.builtin.copy:
@@ -62,7 +72,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Add ROCm repository for Fedora
   ansible.builtin.copy:
@@ -79,7 +91,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "dnf"
 
 - name: Install ROCm toolkit for Linux
   ansible.builtin.package:
@@ -89,7 +103,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr in ["apt", "dnf"]
 
 - name: Add user to GPU groups for Linux
   ansible.builtin.user:
@@ -101,7 +117,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr in ["apt", "dnf"]
 
 - name: Remove ROCm temporary directory for Debian
   ansible.builtin.file:
@@ -109,4 +127,6 @@
     state: absent
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"

@@ -26,7 +26,9 @@
   register: glow_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Get latest Glow version for Linux
   ansible.builtin.uri:
@@ -36,9 +38,10 @@
   register: glow_formula
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and glow_linux
-    is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - glow_linux is failed
 
 - name: Create Glow temporary directory for Linux
   ansible.builtin.tempfile:
@@ -46,9 +49,10 @@
   register: glow_temp
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and glow_linux
-    is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - glow_linux is failed
 
 - name: Download Glow for Linux
   ansible.builtin.unarchive:
@@ -61,9 +65,10 @@
       glow_formula.json.versions.stable }}_Linux_{{ glow_arch }}.tar.gz
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and glow_linux
-    is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - glow_linux is failed
 
 - name: Install Glow for Linux
   ansible.builtin.copy:
@@ -77,9 +82,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and glow_linux
-    is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - glow_linux is failed
 
 - name: Install Glow for MacOS
   become: true
@@ -180,6 +186,7 @@
     state: absent
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and glow_linux
-    is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - glow_linux is failed

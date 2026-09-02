@@ -15,7 +15,9 @@
   register: obs_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_architecture == "amd64"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64"
 
 - name: Install OBS Studio for Linux
   become: true
@@ -23,9 +25,10 @@
     name: com.obsproject.Studio
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_architecture == "amd64" and
-    obs_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64"
+    - obs_linux is failed
 
 - name: Install OBS Studio for MacOS
   community.general.homebrew_cask:

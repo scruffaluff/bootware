@@ -42,7 +42,9 @@
   register: doctl_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and doctl_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - doctl_linux is failed
 
 - name: Download Digital Ocean CLI for Linux
   ansible.builtin.unarchive:
@@ -56,7 +58,9 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and doctl_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - doctl_linux is failed
 
 - name: Install Digital Ocean CLI for Linux
   ansible.builtin.copy:
@@ -68,7 +72,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and doctl_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - doctl_linux is failed
 
 - name: Install Digital Ocean CLI for MacOS
   become: true

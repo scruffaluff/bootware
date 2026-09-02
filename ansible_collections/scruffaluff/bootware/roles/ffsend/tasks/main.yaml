@@ -18,9 +18,10 @@
   register: ffsend_formula
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64"
+    - system_pkg_mgr != "apk"
 
 # Static FFSend installation avoids OpenSSL compatibility issues on newer
 # versions of Fedora and Ubuntu.
@@ -36,9 +37,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
-    system_architecture == "amd64"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_architecture == "amd64"
+    - system_pkg_mgr != "apk"
 
 - name: Install FFSend for MacOS
   become: true

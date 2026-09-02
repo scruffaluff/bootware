@@ -2,7 +2,8 @@
 dependencies:
   - role: variable
   - role: flatpak
-    when: >-
-      flatpak_role_executed is not defined and ansible_facts.system == "Linux"
-      and (system_pkg_mgr not in ["apt", "dnf"] or system_architecture !=
-      "amd64")
+    when:
+      - flatpak_role_executed is not defined
+      - ansible_facts.system == "Linux"
+      - not (system_architecture == "amd64" and system_pkg_mgr in ["apt",
+        "dnf"])

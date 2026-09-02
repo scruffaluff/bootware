@@ -25,7 +25,9 @@
   register: hyperfine_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Create Hyperfine temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +35,9 @@
   register: hyperfine_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Set Hyperfine temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +46,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Download Hyperfine for Linux
   ansible.builtin.unarchive:
@@ -56,7 +62,9 @@
       }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Install Hyperfine for Linux
   ansible.builtin.copy:
@@ -71,7 +79,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Install Hyperfine for MacOS
   become: true
@@ -109,7 +119,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed
 
 - name: Remove Hyperfine temporary directory for Linux
   ansible.builtin.file:
@@ -117,4 +129,6 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and hyperfine_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - hyperfine_linux is failed

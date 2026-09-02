@@ -15,7 +15,9 @@
   register: bottom_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Get latest Bottom version for Linux
   ansible.builtin.uri:
@@ -25,7 +27,9 @@
   register: bottom_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed
 
 - name: Create Bottom temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +37,9 @@
   register: bottom_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed
 
 - name: Set Bottom temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +48,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed
 
 - name: Download Bottom for Linux
   ansible.builtin.unarchive:
@@ -59,7 +67,9 @@
     bottom_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed
 
 - name: Install Bottom for Linux
   ansible.builtin.copy:
@@ -71,7 +81,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed
 
 - name: Install Bottom for MacOS
   become: true
@@ -147,4 +159,6 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and bottom_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - bottom_linux is failed

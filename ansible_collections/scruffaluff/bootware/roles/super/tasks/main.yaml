@@ -22,9 +22,10 @@
   become: true
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
-  when: >-
-    super_passwordless and ansible_facts.system != "Win32NT" and
-    super_doas_available.rc == 0
+  when:
+    - super_passwordless
+    - ansible_facts.system != "Win32NT"
+    - super_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
   ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
@@ -54,7 +55,9 @@
   become: true
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
-  when: ansible_facts.system != "Win32NT" and super_sudo_available.rc == 0
+  when:
+    - ansible_facts.system != "Win32NT"
+    - super_sudo_available.rc == 0
 
 - name: Enable passwordless sudo for Unix
   ansible.builtin.blockinfile:
@@ -72,13 +75,16 @@
   become: true
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
-  when: >-
-    super_passwordless and ansible_facts.system != "Win32NT" and
-    super_sudo_available.rc == 0
+  when:
+    - super_passwordless
+    - ansible_facts.system != "Win32NT"
+    - super_sudo_available.rc == 0
 
 - name: Restrict administrator permission popup to once per session for Windows
   ansible.windows.win_command:
     cmd: gsudo config CacheMode Auto
   # Command always marks config as changed.
   changed_when: true
-  when: super_passwordless and ansible_facts.system == "Win32NT"
+  when:
+    - super_passwordless
+    - ansible_facts.system == "Win32NT"

@@ -63,7 +63,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and watchexec_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - watchexec_linux is failed
 
 - name: Install Watchexec for MacOS
   become: true

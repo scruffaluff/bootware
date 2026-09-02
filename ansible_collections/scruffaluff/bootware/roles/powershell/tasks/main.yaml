@@ -120,7 +120,9 @@
     type: string
   tags:
     - config
-  when: ansible_facts.system == "Win32NT" and user_login == "powershell"
+  when:
+    - ansible_facts.system == "Win32NT"
+    - user_login == "powershell"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

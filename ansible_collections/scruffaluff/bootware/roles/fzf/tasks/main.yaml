@@ -61,7 +61,9 @@
     fzf_unarchive_run: >-
       {{ (fzf_unarchive_result is failed) if fzf_unarchive_result is defined
       else true }}
-  when: ansible_facts.system == "Linux" and fzf_unarchive_run
+  when:
+    - ansible_facts.system == "Linux"
+    - fzf_unarchive_run
 
 - name: Install Fzf for Linux
   ansible.builtin.copy:

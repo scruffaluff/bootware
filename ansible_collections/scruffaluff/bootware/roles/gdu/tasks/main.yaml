@@ -26,7 +26,9 @@
   register: gdu_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Get latest GDU version for Linux
   ansible.builtin.uri:
@@ -36,9 +38,10 @@
   register: gdu_formula
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and gdu_linux is
-    failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - gdu_linux is failed
 
 - name: Create GDU temporary directory for Linux
   ansible.builtin.tempfile:
@@ -46,9 +49,10 @@
   register: gdu_temp
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and gdu_linux is
-    failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - gdu_linux is failed
 
 - name: Download GDU for Linux
   ansible.builtin.unarchive:
@@ -61,9 +65,10 @@
       }}.tgz
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and gdu_linux is
-    failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - gdu_linux is failed
 
 - name: Install GDU for Linux
   ansible.builtin.copy:
@@ -75,9 +80,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and gdu_linux is
-    failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - gdu_linux is failed
 
 - name: Install GDU for MacOS
   become: true
@@ -116,6 +122,7 @@
     state: absent
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and gdu_linux is
-    failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - gdu_linux is failed

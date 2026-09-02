@@ -25,7 +25,9 @@
   register: helm_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed
 
 - name: Create Helm temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +35,9 @@
   register: helm_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed
 
 - name: Set Helm temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +46,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed
 
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
@@ -54,7 +60,9 @@
       system_architecture }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed
 
 - name: Install Helm for Linux
   ansible.builtin.copy:
@@ -66,7 +74,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed
 
 - name: Install Helm for MacOS
   become: true
@@ -93,9 +103,9 @@
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
-  failed_when: >-
-    helm_plugin_install.rc != 0 and 'plugin already exists' not in
-    helm_plugin_install.stderr
+  failed_when:
+    - helm_plugin_install.rc != 0
+    - "'plugin already exists' not in helm_plugin_install.stderr"
   loop: "{{ helm_plugins }}"
   register: helm_plugin_install
   tags:
@@ -108,9 +118,9 @@
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
-  failed_when: >-
-    helm_plugin_install.rc != 0 and 'plugin already exists' not in
-    helm_plugin_install.stderr
+  failed_when:
+    - helm_plugin_install.rc != 0
+    - "'plugin already exists' not in helm_plugin_install.stderr"
   loop: "{{ helm_plugins }}"
   register: helm_plugin_install
   tags:
@@ -123,4 +133,6 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and helm_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - helm_linux is failed

@@ -7,7 +7,9 @@
   register: bitwarden_cask
   tags:
     - install
-  when: system_pkg_mgr in ["apt", "dnf"] and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr in ["apt", "dnf"]
 
 # DEB and RPM packages are preferred on Linux since the Flatpak package does not
 # have access to biometrics.
@@ -20,7 +22,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "apt"
 
 - name: Install Bitwarden for Fedora
   ansible.builtin.dnf:
@@ -32,7 +36,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "dnf"
 
 - name: Install Bitwarden for Linux
   become: true
@@ -40,9 +46,9 @@
     name: com.bitwarden.desktop
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_pkg_mgr not in ["apt", "dnf"] or
-    system_architecture != "amd64")
+  when:
+    - ansible_facts.system == "Linux"
+    - not (system_architecture == "amd64" and system_pkg_mgr in ["apt", "dnf"])
 
 - name: Install Bitwarden for MacOS
   community.general.homebrew_cask:

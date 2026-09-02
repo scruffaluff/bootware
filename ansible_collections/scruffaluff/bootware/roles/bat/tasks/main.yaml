@@ -25,9 +25,10 @@
   register: bat_formula
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed
 
 - name: Create Bat temporary directory for Linux
   ansible.builtin.tempfile:
@@ -35,9 +36,10 @@
   register: bat_temp
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed
 
 - name: Download Bat for Linux
   ansible.builtin.unarchive:
@@ -51,9 +53,10 @@
       system_libc }}.tar.gz
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed
 
 - name: Install Bat for Linux
   ansible.builtin.copy:
@@ -67,9 +70,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed
 
 - name: Install Bat shell completions for Linux
   ansible.builtin.copy:
@@ -90,9 +94,10 @@
   tags:
     - completion
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed
 
 # Debian Bat package installs Bat as command "batcat" since another package
 # installs the command "bat".
@@ -191,6 +196,7 @@
     state: absent
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and (system_libc == "gnu" or
-    system_architecture == 'amd64') and bat_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_libc == "gnu" or system_architecture == 'amd64'
+    - bat_linux is failed

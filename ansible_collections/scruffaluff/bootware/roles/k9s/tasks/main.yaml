@@ -25,7 +25,9 @@
   register: k9s_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed
 
 - name: Create K9s temporary directory for Linux
   ansible.builtin.tempfile:
@@ -33,7 +35,9 @@
   register: k9s_temp
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed
 
 - name: Set K9s temporary directory permissions for Linux
   ansible.builtin.file:
@@ -42,7 +46,9 @@
     state: directory
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed
 
 - name: Download K9s for Linux
   ansible.builtin.unarchive:
@@ -55,7 +61,9 @@
       }}.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed
 
 - name: Install K9s for Linux
   ansible.builtin.copy:
@@ -67,7 +75,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed
 
 - name: Install K9s for MacOS
   become: true
@@ -153,4 +163,6 @@
     state: absent
   tags:
     - install
-  when: ansible_facts.system == "Linux" and k9s_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - k9s_linux is failed

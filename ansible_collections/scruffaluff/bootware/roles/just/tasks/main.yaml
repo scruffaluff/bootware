@@ -35,7 +35,9 @@
 #   register: just_linux
 #   tags:
 #     - install
-#   when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+#   when:
+#     - ansible_facts.system == "Linux"
+#     - system_pkg_mgr != "apk"
 
 - name: Get latest Just version for Linux
   ansible.builtin.uri:
@@ -45,7 +47,9 @@
   register: just_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Download Just for Linux
   ansible.builtin.unarchive:
@@ -59,7 +63,9 @@
       }}-unknown-linux-musl.tar.gz
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Install Just for Linux
   ansible.builtin.copy:
@@ -71,7 +77,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Install Just for MacOS
   become: true

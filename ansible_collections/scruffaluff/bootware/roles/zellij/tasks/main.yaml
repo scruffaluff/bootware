@@ -42,7 +42,9 @@
   register: zellij_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and zellij_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - zellij_linux is failed
 
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
@@ -59,7 +61,9 @@
     zellij_arch:
       amd64: x86_64
       arm64: aarch64
-  when: ansible_facts.system == "Linux" and zellij_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - zellij_linux is failed
 
 - name: Install Zellij for Linux
   ansible.builtin.copy:
@@ -71,7 +75,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and zellij_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - zellij_linux is failed
 
 - name: Install Zellij for MacOS
   become: true
@@ -95,7 +101,6 @@
     cmd: >-
       zellij setup --generate-completion {{ item }} > {{ zellij_temp.path
       }}/zellij.{{ item }}
-  become: true
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

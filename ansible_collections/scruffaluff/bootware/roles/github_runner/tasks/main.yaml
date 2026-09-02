@@ -54,9 +54,9 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system in ["Darwin", "Linux"] and
-    github_runner_doas_available.rc == 0
+  when:
+    - ansible_facts.system in ["Darwin", "Linux"]
+    - github_runner_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
   ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
@@ -82,9 +82,9 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system in ["Darwin", "Linux"] and
-    github_runner_sudo_available.rc == 0
+  when:
+    - ansible_facts.system in ["Darwin", "Linux"]
+    - github_runner_sudo_available.rc == 0
 
 - name: Create GitHub Runner directory for Unix
   ansible.builtin.file:

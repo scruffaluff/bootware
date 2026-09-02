@@ -26,7 +26,9 @@
   register: kubectl_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux" and system_pkg_mgr != "apk"
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
 
 - name: Get latest Kubectl version for Linux
   ansible.builtin.uri:
@@ -36,9 +38,10 @@
   register: kubectl_version
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
-    kubectl_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - kubectl_linux is failed
 
 - name: Install Kubectl for Linux
   ansible.builtin.get_url:
@@ -51,9 +54,10 @@
   become: true
   tags:
     - install
-  when: >-
-    ansible_facts.system == "Linux" and system_pkg_mgr != "apk" and
-    kubectl_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - system_pkg_mgr != "apk"
+    - kubectl_linux is failed
 
 - name: Install Kubectl for MacOS
   become: true

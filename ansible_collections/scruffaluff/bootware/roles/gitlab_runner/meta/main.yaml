@@ -2,5 +2,6 @@
 dependencies:
   - role: variable
   - role: bash
-    when: >-
-      bash_role_executed is not defined and ansible_facts.system != "Win32NT"
+    when:
+      - bash_role_executed is not defined
+      - ansible_facts.system != "Win32NT"

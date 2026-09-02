@@ -93,7 +93,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt" and docker_debian is failed
+  when:
+    - system_pkg_mgr == "apt"
+    - docker_debian is failed
 
 - name: Install Docker for Debian
   ansible.builtin.apt:
@@ -174,7 +176,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apk" and docker_service.stat.exists
+  when:
+    - system_pkg_mgr == "apk"
+    - docker_service.stat.exists
 
 - name: Start Containerd on system boot for Linux
   ansible.builtin.systemd:
@@ -183,7 +187,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and systemd
+  when:
+    - ansible_facts.system == "Linux"
+    - systemd
 
 - name: Start Docker on system boot for Alpine
   ansible.builtin.service:
@@ -193,7 +199,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apk" and docker_service.stat.exists
+  when:
+    - system_pkg_mgr == "apk"
+    - docker_service.stat.exists
 
 - name: Start Docker on system boot for Linux
   ansible.builtin.systemd:
@@ -202,7 +210,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and systemd
+  when:
+    - ansible_facts.system == "Linux"
+    - systemd
 
 - name: Create Docker plugins directory for MacOS
   ansible.builtin.file:
@@ -218,10 +228,12 @@
 
 - name: Configure Docker Buildx plugin for MacOS
   ansible.builtin.file:
-    src: "{{ brew_prefix }}/bin/docker-buildx"
     dest: "{{ user_home }}/.docker/cli-plugins/docker-buildx"
     force: true
+    group: "{{ group_id }}"
     mode: "755"
+    owner: "{{ user_id }}"
+    src: "{{ brew_prefix }}/bin/docker-buildx"
     state: link
   become: true
   tags:
@@ -237,7 +249,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apk" and docker_service.stat.exists
+  when:
+    - system_pkg_mgr == "apk"
+    - docker_service.stat.exists
 
 - name: Add user to Docker group for Linux
   ansible.builtin.user:
@@ -248,7 +262,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and systemd
+  when:
+    - ansible_facts.system == "Linux"
+    - systemd
 
 - name: Install Docker shell completions for Unix
   ansible.builtin.get_url:

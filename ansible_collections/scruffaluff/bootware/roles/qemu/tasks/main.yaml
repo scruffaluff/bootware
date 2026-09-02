@@ -88,7 +88,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "zypper" and system_architecture == "amd64"
+  when:
+    - system_architecture == "amd64"
+    - system_pkg_mgr == "zypper"
 
 - name: Install QEMU for Windows
   community.windows.win_scoop:

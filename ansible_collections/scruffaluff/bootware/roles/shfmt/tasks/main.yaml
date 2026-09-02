@@ -25,7 +25,9 @@
   register: shfmt_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux" and shfmt_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - shfmt_linux is failed
 
 - name: Install Shfmt for Linux
   ansible.builtin.get_url:
@@ -39,7 +41,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux" and shfmt_linux is failed
+  when:
+    - ansible_facts.system == "Linux"
+    - shfmt_linux is failed
 
 - name: Install Shfmt for MacOS
   become: true
