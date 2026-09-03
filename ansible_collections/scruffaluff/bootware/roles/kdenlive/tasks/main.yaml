@@ -5,7 +5,9 @@
     name: kdenlive
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Kdenlive for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: kdenlive_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Kdenlive for Linux
   become: true
@@ -24,6 +28,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - kdenlive_linux is failed
 
@@ -38,7 +43,7 @@
 
 - name: Install Kdenlive for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: kdenlive
   tags:
     - install

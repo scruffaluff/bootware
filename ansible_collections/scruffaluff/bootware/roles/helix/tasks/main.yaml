@@ -37,7 +37,9 @@
     name: helix
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Helix package in all distributions reaches version 25.01.
 # - name: Install Helix for Linux
@@ -48,7 +50,9 @@
 #   register: helix_linux
 #   tags:
 #     - install
-#   when: ansible_facts.system == "Linux"
+#   when:
+#     - system_install
+#     - ansible_facts.system == "Linux"
 #
 # - name: Make Helix symlink for Arch
 #   ansible.builtin.file:
@@ -61,6 +65,7 @@
 #   tags:
 #     - install
 #   when:
+#     - system_install
 #     - system_pkg_mgr == "pacman"
 #     - helix_linux is success
 
@@ -99,19 +104,19 @@
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/hx
+    dest: "{{ bin_path }}/hx"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ helix_temp.path }}/{{ helix_folder }}/hx"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Helix for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: helix
   tags:
@@ -120,7 +125,7 @@
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: helix
   tags:
     - install
@@ -128,12 +133,12 @@
 
 - name: Create Helix configuration directory for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/helix"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -144,12 +149,12 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     remote_src: true
     src: "{{ helix_temp.path }}/{{ helix_folder }}/runtime"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
@@ -158,11 +163,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/helix/config.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when:
@@ -173,11 +178,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/helix/languages.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: languages.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when:

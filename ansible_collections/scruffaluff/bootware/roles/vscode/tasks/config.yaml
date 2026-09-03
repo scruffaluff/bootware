@@ -50,12 +50,12 @@
 
 - name: Create VSCode user directory for MacOS
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/Library/Application Support/Code/User"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -65,11 +65,11 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/keybindings.json
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: keybindings.json.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -79,23 +79,23 @@
     dest: >-
       {{ user_home }}/Library/Application Support/Code/User/settings.json
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: settings.json.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
 
 - name: Create VSCode user directory for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/Code/User"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"
@@ -104,11 +104,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/keybindings.json"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: keybindings.json.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"
@@ -117,11 +117,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/Code/User/settings.json"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: settings.json.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"

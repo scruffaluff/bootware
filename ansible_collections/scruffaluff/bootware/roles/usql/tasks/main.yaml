@@ -5,7 +5,9 @@
     name: usql
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # As of 12/10/2023, Usql is not in the main Homebrew package list.
 - name: Get latest Usql version for Linux
@@ -53,19 +55,19 @@
 
 - name: Install Usql for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/usql
+    dest: "{{ bin_path }}/usql"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ usql_temp.path }}/usql_static"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Tap Usql for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew_tap:
     name: xo/xo
   tags:
@@ -75,8 +77,8 @@
 - name: Usql tap for MacOS
   ansible.builtin.command:
     cmd: brew trust xo/xo
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   changed_when: "'Already trusted tap' not in usql_tap_trust.stdout"
   register: usql_tap_trust
   tags:
@@ -84,8 +86,8 @@
   when: ansible_facts.system == "Darwin"
 
 - name: Install Usql for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: xo/xo/usql
   tags:
@@ -94,7 +96,7 @@
 
 - name: Install Usql for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: usql
   tags:
     - install

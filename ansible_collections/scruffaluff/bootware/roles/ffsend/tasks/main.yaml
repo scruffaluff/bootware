@@ -8,7 +8,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_pkg_mgr == "apk"
+    - system_install
 
 - name: Get latest FFSend version for Linux
   ansible.builtin.uri:
@@ -27,14 +29,14 @@
 # versions of Fedora and Ubuntu.
 - name: Install FFSend for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/ffsend
+    dest: "{{ bin_path }}/ffsend"
     force: true
     mode: "755"
     url: >-
       https://github.com/timvisee/ffsend/releases/download/v{{
       ffsend_formula.json.versions.stable }}/ffsend-v{{
       ffsend_formula.json.versions.stable }}-linux-x64-static
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -43,8 +45,8 @@
     - system_pkg_mgr != "apk"
 
 - name: Install FFSend for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: ffsend
   tags:
@@ -54,7 +56,7 @@
 # because Windows Defender considers the program to be a virus.
 # - name: Install FFSend for Windows
 # community.windows.win_scoop:
-#   global: true
+#   global: "{{ system_install }}"
 #   name: ffsend
 # tags:
 #   - install

@@ -24,7 +24,9 @@
     name: uv
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Uv version for Linux
   ansible.builtin.uri:
@@ -51,19 +53,19 @@
 
 - name: Install Uv for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/uv
+    dest: "{{ bin_path }}/uv"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ uv_temp.path }}/uv-{{ uv_arch }}-unknown-linux-{{ uv_libc }}/uv"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Uv for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: uv
   tags:
@@ -72,7 +74,7 @@
 
 - name: Install Uv for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: uv
   tags:
     - install

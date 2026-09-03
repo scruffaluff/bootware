@@ -8,7 +8,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Kubectl for FreeBSD
   become: true
@@ -16,7 +18,9 @@
     name: kubectl
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Kubectl for Linux
   ansible.builtin.package:
@@ -27,6 +31,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
@@ -45,13 +50,13 @@
 
 - name: Install Kubectl for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/kubectl
+    dest: "{{ bin_path }}/kubectl"
     force: true
     mode: "755"
     url: >-
       https://dl.k8s.io/release/{{ kubectl_version.content }}/bin/linux/{{
       system_architecture }}/kubectl
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -60,8 +65,8 @@
     - kubectl_linux is failed
 
 - name: Install Kubectl for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: kubectl
   tags:
@@ -70,7 +75,7 @@
 
 - name: Install Kubectl for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: kubectl
   tags:
     - install
@@ -106,7 +111,7 @@
     mode: "644"
     remote_src: true
     src: "{{ kubectl_temp.path }}/kubectl.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/kubectl"
       shell: bash

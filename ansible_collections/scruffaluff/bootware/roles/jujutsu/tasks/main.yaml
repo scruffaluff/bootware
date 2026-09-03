@@ -5,7 +5,9 @@
     name: jujutsu
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Jujutsu version for Linux
   ansible.builtin.uri:
@@ -50,19 +52,19 @@
 
 - name: Install Jujutsu for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/jj
+    dest: "{{ bin_path }}/jj"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ jujutsu_temp.path }}/jj"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Jujutsu for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: jj
   tags:
@@ -71,7 +73,7 @@
 
 - name: Install Jujutsu for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: jj
   tags:
     - install
@@ -79,12 +81,12 @@
 
 - name: Create Jujutsu settings directory for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/jj"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -93,11 +95,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/jj/config.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

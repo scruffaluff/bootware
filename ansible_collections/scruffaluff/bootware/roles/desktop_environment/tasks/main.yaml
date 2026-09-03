@@ -8,6 +8,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "FreeBSD"
     - gnome_desktop
 
@@ -20,6 +21,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - gnome_desktop
 
@@ -30,11 +32,13 @@
   failed_when: false
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install desktop management dependencies for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: duti
   tags:
@@ -43,7 +47,7 @@
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: powertoys
   tags:
     - install
@@ -51,12 +55,12 @@
 
 - name: Create keyboard layout directory for MacOS
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "700"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/Library/Keyboard Layouts"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -68,11 +72,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/Library/Keyboard Layouts/no_alt_characters.keylayout"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "640"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: no_alt_characters.keylayout
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -91,8 +95,8 @@
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
-  become: true
-  become_user: "{{ user_id }}"
+  become: "{{ system_install }}"
+  become_user: "{{ user_id if system_install else omit }}"
   environment:
     BOOTWARE_FONT_SIZE: "{{ system_font_size }}"
   tags:
@@ -103,8 +107,8 @@
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
-  become: true
-  become_user: "{{ user_id }}"
+  become: "{{ system_install }}"
+  become_user: "{{ user_id if system_install else omit }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"

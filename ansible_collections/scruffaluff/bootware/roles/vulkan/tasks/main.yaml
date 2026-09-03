@@ -10,7 +10,9 @@
       - vulkan-tools
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Vulkan toolkit for Arch
   become: true
@@ -22,7 +24,9 @@
       - vulkan-tools
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install Vulkan toolkit for Debian
   ansible.builtin.apt:
@@ -33,7 +37,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Vulkan toolkit for Fedora
   ansible.builtin.dnf:
@@ -46,7 +52,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install Vulkan toolkit for FreeBSD
   become: true
@@ -59,11 +67,13 @@
       - vulkan-tools
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Vulkan toolkit for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - vulkan
   tags:

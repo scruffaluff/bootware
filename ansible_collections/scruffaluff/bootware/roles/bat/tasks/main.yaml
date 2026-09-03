@@ -5,7 +5,9 @@
     name: bat
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Bat for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: bat_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Bat version for Linux
   ansible.builtin.uri:
@@ -28,7 +32,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_libc == "gnu" or system_architecture == 'amd64'
-    - bat_linux is failed
+    - not system_install or bat_linux is failed
 
 - name: Create Bat temporary directory for Linux
   ansible.builtin.tempfile:
@@ -39,7 +43,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_libc == "gnu" or system_architecture == 'amd64'
-    - bat_linux is failed
+    - not system_install or bat_linux is failed
 
 - name: Download Bat for Linux
   ansible.builtin.unarchive:
@@ -56,24 +60,24 @@
   when:
     - ansible_facts.system == "Linux"
     - system_libc == "gnu" or system_architecture == 'amd64'
-    - bat_linux is failed
+    - not system_install or bat_linux is failed
 
 - name: Install Bat for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/bat
+    dest: "{{ bin_path }}/bat"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ bat_temp.path }}/bat-v{{ bat_formula.json.versions.stable }}-{{
       bat_arch }}-unknown-linux-{{ system_libc }}/bat
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
     - system_libc == "gnu" or system_architecture == 'amd64'
-    - bat_linux is failed
+    - not system_install or bat_linux is failed
 
 - name: Install Bat shell completions for Linux
   ansible.builtin.copy:
@@ -85,7 +89,7 @@
       {{ bat_temp.path }}/bat-v{{ bat_formula.json.versions.stable }}-{{
       bat_arch }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell
       }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/bat"
       shell: bash
@@ -104,18 +108,20 @@
 - name: Make Bat symlink for Debian
   ansible.builtin.file:
     src: /usr/bin/batcat
-    dest: /usr/local/bin/bat
+    dest: "{{ bin_path }}/bat"
     force: true
     mode: "755"
     state: link
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Bat for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: bat
   tags:
@@ -124,7 +130,7 @@
 
 - name: Install Bat for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: bat
   tags:
     - install
@@ -133,11 +139,11 @@
 - name: Create Bat settings directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config/bat"
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -146,11 +152,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/bat/config"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -199,4 +205,4 @@
   when:
     - ansible_facts.system == "Linux"
     - system_libc == "gnu" or system_architecture == 'amd64'
-    - bat_linux is failed
+    - not system_install or bat_linux is failed

@@ -8,7 +8,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_pkg_mgr == "apk"
+    - system_install
 
 - name: Install GDU for FreeBSD
   become: true
@@ -16,7 +18,9 @@
     name: gdu
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install GDU for Linux
   ansible.builtin.package:
@@ -27,6 +31,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
@@ -41,7 +46,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - gdu_linux is failed
+    - not system_install or gdu_linux is failed
 
 - name: Create GDU temporary directory for Linux
   ansible.builtin.tempfile:
@@ -52,7 +57,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - gdu_linux is failed
+    - not system_install or gdu_linux is failed
 
 - name: Download GDU for Linux
   ansible.builtin.unarchive:
@@ -68,26 +73,26 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - gdu_linux is failed
+    - not system_install or gdu_linux is failed
 
 - name: Install GDU for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/gdu
+    dest: "{{ bin_path }}/gdu"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ gdu_temp.path }}/gdu_linux_{{ system_architecture }}"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - gdu_linux is failed
+    - not system_install or gdu_linux is failed
 
 - name: Install GDU for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: gdu
   tags:
@@ -96,7 +101,7 @@
 
 - name: Install GDU for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: gdu
   tags:
     - install
@@ -107,11 +112,11 @@
 - name: Make GDU symlink for MacOS
   ansible.builtin.file:
     src: "{{ brew_prefix }}/bin/gdu-go"
-    dest: /usr/local/bin/gdu
+    dest: "{{ bin_path }}/gdu"
     force: true
     mode: "755"
     state: link
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Darwin"
@@ -125,4 +130,4 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - gdu_linux is failed
+    - not system_install or gdu_linux is failed

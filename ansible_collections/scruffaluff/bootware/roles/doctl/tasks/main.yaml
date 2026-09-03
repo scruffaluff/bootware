@@ -22,7 +22,9 @@
     name: doctl
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Digital Ocean CLI for Linux
   ansible.builtin.package:
@@ -32,7 +34,9 @@
   register: doctl_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Digital Ocean CLI version for Linux
   ansible.builtin.uri:
@@ -44,7 +48,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - doctl_linux is failed
+    - not system_install or doctl_linux is failed
 
 - name: Download Digital Ocean CLI for Linux
   ansible.builtin.unarchive:
@@ -60,25 +64,25 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - doctl_linux is failed
+    - not system_install or doctl_linux is failed
 
 - name: Install Digital Ocean CLI for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/doctl
+    dest: "{{ bin_path }}/doctl"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ doctl_temp.path }}/doctl"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - doctl_linux is failed
+    - not system_install or doctl_linux is failed
 
 - name: Install Digital Ocean CLI for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: doctl
   tags:
@@ -87,7 +91,7 @@
 
 - name: Install Digital Ocean CLI for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: doctl
   tags:
     - install
@@ -114,7 +118,7 @@
     mode: "644"
     remote_src: true
     src: "{{ doctl_temp.path }}/doctl.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/doctl"
       shell: bash

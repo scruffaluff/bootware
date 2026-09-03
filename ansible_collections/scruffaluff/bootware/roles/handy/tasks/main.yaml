@@ -15,7 +15,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["apt", "dnf"]
+  when:
+    - system_install
+    - system_pkg_mgr in ["apt", "dnf"]
 
 - name: Install Handy for Debian
   ansible.builtin.apt:
@@ -26,7 +28,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Handy for Fedora
   ansible.builtin.dnf:
@@ -42,7 +46,9 @@
     handy_arch:
       amd64: x86_64
       arm64: aarch64
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install Handy for MacOS
   community.general.homebrew_cask:
@@ -55,7 +61,7 @@
 
 - name: Install Handy for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: handy
   tags:
     - install

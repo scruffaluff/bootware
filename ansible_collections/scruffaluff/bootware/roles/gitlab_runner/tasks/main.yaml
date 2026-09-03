@@ -5,7 +5,9 @@
     name: gitlab-runner
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install GitLab Runner for Arch
   become: true
@@ -14,6 +16,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "pacman"
 
@@ -78,6 +81,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr in ["apt", "dnf", "zypper"]
     - not gitlab_runner_stat.stat.exists
 
@@ -87,7 +91,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install GitLab Runner for Fedora
   ansible.builtin.dnf:
@@ -95,7 +101,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install GitLab Runner for FreeBSD
   become: true
@@ -103,11 +111,13 @@
     name: gitlab-runner
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install GitLab Runner for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: gitlab-runner
   tags:
@@ -120,11 +130,13 @@
     name: gitlab-runner
   tags:
     - install
-  when: system_pkg_mgr == "zypper"
+  when:
+    - system_install
+    - system_pkg_mgr == "zypper"
 
 - name: Install GitLab Runner for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: gitlab-runner
   tags:
     - install
@@ -137,7 +149,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when:
+    - system_install
+    - ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Configure GitLab runner user for MacOS
   ansible.builtin.user:
@@ -149,7 +163,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Darwin"
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
 
 - name: Configure GitLab runner user for Unix
   ansible.builtin.user:
@@ -161,7 +177,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when:
+    - system_install
+    - ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Check if Doas is available for Unix
   ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
@@ -187,6 +205,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - gitlab_runner_doas_available.rc == 0
 
@@ -215,6 +234,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - gitlab_runner_sudo_available.rc == 0
 

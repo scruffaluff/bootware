@@ -5,7 +5,9 @@
     name: wireshark
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Wireshark for Linux
   ansible.builtin.package:
@@ -20,7 +22,9 @@
       dnf: wireshark
       pacman: wireshark-qt
       zypper: wireshark-ui-qt
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 # Manual configuration of ChmodBPF is required for Wireshark by following the
 # instructions at
@@ -39,7 +43,7 @@
 # information, visit https://npcap.com/oem/internal.html.
 - name: Install Wireshark for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: wireshark
   tags:
     - install
@@ -54,7 +58,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
   ansible.builtin.command:
@@ -66,7 +72,9 @@
     DEBIAN_FRONTEND: noninteractive
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
   ansible.builtin.user:
@@ -77,4 +85,6 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"

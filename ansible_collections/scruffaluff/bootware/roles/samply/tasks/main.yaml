@@ -7,7 +7,9 @@
   register: samply_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Samply version for Linux
   ansible.builtin.uri:
@@ -19,7 +21,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Create Samply temporary directory for Linux
   ansible.builtin.tempfile:
@@ -29,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Set Samply temporary directory permissions for Linux
   ansible.builtin.file:
@@ -40,7 +42,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Download Samply for Linux
   ansible.builtin.unarchive:
@@ -55,27 +57,27 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Install Samply for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/samply
+    dest: "{{ bin_path }}/samply"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ samply_temp.path }}/samply-{{ samply_arch }}-unknown-linux-{{
       samply_libc }}/samply
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Install Samply for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: samply
   tags:
@@ -138,7 +140,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - samply_linux is failed
+    - not system_install or samply_linux is failed
 
 - name: Remove Samply temporary directory for Windows
   ansible.windows.win_file:

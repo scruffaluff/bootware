@@ -15,18 +15,20 @@
     name: tealdeer
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install TLDR for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/tldr
+    dest: "{{ bin_path }}/tldr"
     force: true
     mode: "755"
     url: >-
       https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/tealdeer-linux-{{
       tldr_arch[system_architecture] }}-musl
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   vars:
@@ -36,8 +38,8 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install TLDR for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: tealdeer
   tags:
@@ -46,7 +48,7 @@
 
 - name: Install TLDR for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: tealdeer
   tags:
     - install
@@ -68,7 +70,7 @@
     url: >-
       https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/completions_{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/tldr"
       shell: bash
@@ -82,11 +84,11 @@
 - name: Create TLDR settings directory for Unix
   ansible.builtin.file:
     dest: "{{ user_home }}/.config/tldr"
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -95,11 +97,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/tldr/config.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

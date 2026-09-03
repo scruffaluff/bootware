@@ -22,7 +22,9 @@
     name: zellij
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Zellij for Linux
   ansible.builtin.package:
@@ -32,7 +34,9 @@
   register: zellij_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Zellij version for Linux
   ansible.builtin.uri:
@@ -44,7 +48,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - zellij_linux is failed
+    - not system_install or zellij_linux is failed
 
 - name: Download Zellij for Linux
   ansible.builtin.unarchive:
@@ -63,25 +67,25 @@
       arm64: aarch64
   when:
     - ansible_facts.system == "Linux"
-    - zellij_linux is failed
+    - not system_install or zellij_linux is failed
 
 - name: Install Zellij for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/zellij
+    dest: "{{ bin_path }}/zellij"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ zellij_temp.path }}/zellij"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - zellij_linux is failed
+    - not system_install or zellij_linux is failed
 
 - name: Install Zellij for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: zellij
   tags:
@@ -90,7 +94,7 @@
 
 - name: Install Zellij for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: zellij
   tags:
     - install
@@ -119,7 +123,7 @@
     mode: "644"
     remote_src: true
     src: "{{ zellij_temp.path }}/zellij.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/zellij"
       shell: bash
@@ -132,12 +136,12 @@
 
 - name: Create Zellij settings directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - zellij
     - zellij/layouts
@@ -149,11 +153,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/zellij/config.kdl"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.kdl.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -162,11 +166,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/zellij/{{ item.dest }}"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: layouts/layout.kdl
       src: layout.kdl

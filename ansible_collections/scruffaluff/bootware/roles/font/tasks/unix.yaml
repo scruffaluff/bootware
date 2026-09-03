@@ -5,7 +5,9 @@
     name: fontconfig
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install font config for Linux
   ansible.builtin.package:
@@ -13,7 +15,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Check if font is installed for Unix
   ansible.builtin.stat:
@@ -68,6 +72,7 @@
         path: "{{ font_folder[ansible_facts.system] }}"
         state: directory
       become: true
+      when: system_install
 
     - name: Install font files for Unix
       ansible.builtin.copy:
@@ -77,6 +82,7 @@
         src: "{{ item.path }}"
       become: true
       loop: "{{ font_paths.files }}"
+      when: system_install
 
 - name: Update font cache for Unix
   ansible.builtin.command:
@@ -86,7 +92,9 @@
   register: font_cache_unix
   tags:
     - install
-  when: ansible_facts.system in ["FreeBSD", "Linux"]
+  when:
+    - system_install
+    - ansible_facts.system in ["FreeBSD", "Linux"]
 
 - name: Remove font temporary directory for Unix
   ansible.builtin.file:

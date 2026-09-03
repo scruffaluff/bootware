@@ -5,7 +5,9 @@
     name: less
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Less for Linux
   ansible.builtin.package:
@@ -13,12 +15,14 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 # MacOS default version of Less is too old to support keybindings.
 - name: Install Less for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: less
   tags:
@@ -27,7 +31,7 @@
 
 - name: Install Less for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: less
   tags:
     - install
@@ -39,7 +43,7 @@
 - name: Make less symlink for MacOS
   ansible.builtin.file:
     src: /opt/homebrew/bin/less
-    dest: /usr/local/bin/less
+    dest: "{{ bin_path }}/less"
     force: true
     mode: "755"
     state: link
@@ -54,11 +58,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.lesskey"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "640"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: lesskey
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

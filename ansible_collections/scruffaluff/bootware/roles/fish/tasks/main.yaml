@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "fish"
 
@@ -16,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "opkg"
     - user_login == "fish"
 
@@ -25,7 +27,9 @@
     name: fish
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Fish for Linux
   ansible.builtin.package:
@@ -33,11 +37,13 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Fish for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: fish
   tags:
@@ -50,8 +56,8 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
+  become: "{{ system_install }}"
+  become_user: "{{ user_id if system_install else omit }}"
   changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
   register: fish_fisher_install
   tags:
@@ -64,14 +70,16 @@
       source {{ user_home }}/.config/fish/config.fish
       fisher install {{ item }}
     executable: "{{ fish_executable }}"
-  become: true
-  become_user: "{{ user_id }}"
+  become: "{{ system_install }}"
+  become_user: "{{ user_id if system_install else omit }}"
   changed_when: "'Installing' in fish_plugin_install.stdout"
   loop: "{{ fish_plugins }}"
   register: fish_plugin_install
   tags:
     - plugin
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Create Fish user directories for Unix
   ansible.builtin.file:
@@ -96,7 +104,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: config.fish
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -110,7 +118,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
@@ -123,6 +133,7 @@
   tags:
     - config
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "fish"
 
@@ -134,6 +145,7 @@
   tags:
     - config
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "apk"
     - user_login == "fish"

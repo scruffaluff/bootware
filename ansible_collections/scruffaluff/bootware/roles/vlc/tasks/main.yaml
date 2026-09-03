@@ -5,7 +5,9 @@
     name: vlc
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install VLC for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: vlc_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install VLC for Linux
   become: true
@@ -24,6 +28,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - vlc_linux is failed
 

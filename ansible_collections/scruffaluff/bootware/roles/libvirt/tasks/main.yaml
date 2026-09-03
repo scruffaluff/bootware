@@ -9,7 +9,9 @@
       - virt-viewer
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Libvirt for Arch
   become: true
@@ -23,7 +25,9 @@
       - virt-viewer
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install Libvirt for Debian
   ansible.builtin.apt:
@@ -40,7 +44,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Libvirt for FreeBSD
   become: true
@@ -52,7 +58,9 @@
       - virt-viewer
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Libvirt for Fedora
   ansible.builtin.package:
@@ -70,11 +78,13 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Tap Virt Viewer for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew_tap:
     name: jeffreywildman/homebrew-virt-manager
   tags:
@@ -84,8 +94,8 @@
 - name: Trust Virt Viewer tap for MacOS
   ansible.builtin.command:
     cmd: brew trust jeffreywildman/homebrew-virt-manager
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   changed_when: "'Already trusted tap' not in libvirt_tap_trust.stdout"
   register: libvirt_tap_trust
   tags:
@@ -93,8 +103,8 @@
   when: ansible_facts.system == "Darwin"
 
 - name: Install Virt Viewer for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: virt-viewer
   tags:
@@ -102,8 +112,8 @@
   when: ansible_facts.system == "Darwin"
 
 - name: Install Libvirt for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - cdrtools
@@ -130,11 +140,13 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "zypper"
+  when:
+    - system_install
+    - system_pkg_mgr == "zypper"
 
 - name: Install Libvirt for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: virt-viewer
   tags:
     - install

@@ -13,7 +13,9 @@
     name: rust-analyzer
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Create Rust temporary directory for Linux
   ansible.builtin.tempfile:
@@ -57,12 +59,12 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.local/bin/rust-analyzer"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     remote_src: true
     src: "{{ rust_temp.path }}/rust-analyzer"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: >-
@@ -70,8 +72,8 @@
     (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: rust-analyzer
   tags:
@@ -80,7 +82,7 @@
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: rust-analyzer
   tags:
     - install
@@ -93,7 +95,7 @@
   ansible.builtin.file:
     path: "{{ user_home }}/.cargo/bin/rust-analyzer"
     state: absent
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"

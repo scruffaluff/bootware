@@ -5,7 +5,9 @@
     name: io.beekeeperstudio.Studio
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Beekeeper for MacOS
   community.general.homebrew_cask:
@@ -18,7 +20,7 @@
 
 - name: Install Beekeeper for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: beekeeper-studio
   tags:
     - install

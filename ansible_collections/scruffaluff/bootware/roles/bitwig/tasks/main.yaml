@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64"
 

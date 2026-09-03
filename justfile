@@ -2,7 +2,9 @@
 #
 # For more information, visit https://just.systems.
 
-set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
+[windows]
+set shell := ["powershell.exe", "-NoLogo", "-Command"]
+
 export PATH := if os() == "windows" {
   join(justfile_directory(), ".vendor\\bin;") + join(justfile_directory(),
   ".vendor\\lib\\node\\bin;") + env("PATH")

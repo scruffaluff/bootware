@@ -10,7 +10,9 @@
       - sox
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install audio packages for Arch
   become: true
@@ -23,7 +25,9 @@
       - sox
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install audio packages for Debian
   ansible.builtin.apt:
@@ -36,7 +40,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install audio packages for Fedora
   ansible.builtin.dnf:
@@ -49,7 +55,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install audio packages for FreeBSD
   become: true
@@ -62,11 +70,13 @@
       - sox
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install audio packages for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - media-info
@@ -78,7 +88,7 @@
 
 - name: Install audio packages for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - mediainfo
       - mpv

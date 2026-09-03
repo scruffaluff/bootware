@@ -8,7 +8,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Duf for FreeBSD
   become: true
@@ -16,7 +18,9 @@
     name: duf
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Duf for Linux
   ansible.builtin.package:
@@ -27,6 +31,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
@@ -41,7 +46,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - duf_linux is failed
+    - not system_install or duf_linux is failed
 
 - name: Create Duf temporary directory for Linux
   ansible.builtin.tempfile:
@@ -52,7 +57,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - duf_linux is failed
+    - not system_install or duf_linux is failed
 
 - name: Download Duf for Linux
   ansible.builtin.unarchive:
@@ -73,26 +78,26 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - duf_linux is failed
+    - not system_install or duf_linux is failed
 
 - name: Install Duf for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/duf
+    dest: "{{ bin_path }}/duf"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ duf_temp.path }}/duf"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - duf_linux is failed
+    - not system_install or duf_linux is failed
 
 - name: Install Duf for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: duf
   tags:
@@ -101,7 +106,7 @@
 
 - name: Install Duf for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: duf
   tags:
     - install
@@ -116,4 +121,4 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - duf_linux is failed
+    - not system_install or duf_linux is failed

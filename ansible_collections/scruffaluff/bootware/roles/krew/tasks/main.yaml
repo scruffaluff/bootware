@@ -48,11 +48,13 @@
   register: krew_install
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Krew for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: krew
   tags:
@@ -61,7 +63,7 @@
 
 - name: Install Krew for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: krew
   tags:
     - install
@@ -79,7 +81,9 @@
   register: krew_plugin_install
   tags:
     - plugin
-  when: ansible_facts.system not in ["FreeBSD", "Win32NT"]
+  when:
+    - system_install
+    - ansible_facts.system not in ["FreeBSD", "Win32NT"]
 
 - name: Install Kubectl plugins for Windows
   ansible.windows.win_command:

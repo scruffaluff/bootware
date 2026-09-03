@@ -5,7 +5,9 @@
     name: cuda
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install CUDA keyring for Debian
   ansible.builtin.apt:
@@ -15,7 +17,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install CUDA repository for Fedora
   ansible.builtin.get_url:
@@ -27,7 +31,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install CUDA toolkit for Linux
   ansible.builtin.package:
@@ -38,11 +44,13 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["apt", "dnf"]
+  when:
+    - system_install
+    - system_pkg_mgr in ["apt", "dnf"]
 
 - name: Install CUDA toolkit for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: cuda
   tags:
     - install

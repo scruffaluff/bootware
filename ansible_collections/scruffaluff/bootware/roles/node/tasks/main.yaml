@@ -7,7 +7,9 @@
       - npm-node22
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Node for Linux
   ansible.builtin.package:
@@ -17,11 +19,13 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Node for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: node
   tags:
@@ -36,11 +40,13 @@
       - node-npm
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install Node for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: nodejs
   tags:
     - install
@@ -126,6 +132,7 @@
   tags:
     - plugin
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - user_id != "root"
 

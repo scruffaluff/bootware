@@ -15,7 +15,9 @@
       opkg: nss-utils
       pacman: nss
       zypper: mozilla-nss
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Mkcert for Linux
   ansible.builtin.package:
@@ -25,7 +27,9 @@
   register: mkcert_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Mkcert version for Linux
   ansible.builtin.uri:
@@ -37,27 +41,27 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - mkcert_linux is failed
+    - not system_install or mkcert_linux is failed
 
 - name: Install Mkcert for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/mkcert
+    dest: "{{ bin_path }}/mkcert"
     force: true
     mode: "755"
     url: >-
       https://github.com/FiloSottile/mkcert/releases/download/v{{
       mkcert_formula.json.versions.stable }}/mkcert-v{{
       mkcert_formula.json.versions.stable }}-linux-{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - mkcert_linux is failed
+    - not system_install or mkcert_linux is failed
 
 - name: Install Mkcert for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - mkcert
@@ -68,7 +72,7 @@
 
 - name: Install Mkcert for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: mkcert
   tags:
     - install

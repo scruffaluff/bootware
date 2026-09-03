@@ -5,7 +5,9 @@
     name: texlive-full
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Latex for Linux
   ansible.builtin.package:
@@ -14,11 +16,13 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Latex for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: texlive
   tags:
@@ -27,7 +31,7 @@
 
 - name: Install Latex for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: miktex
   tags:
     - install

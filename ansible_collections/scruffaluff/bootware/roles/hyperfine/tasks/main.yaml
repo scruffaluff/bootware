@@ -5,7 +5,9 @@
     name: hyperfine
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Hyperfine for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: hyperfine_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Hyperfine version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Create Hyperfine temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Set Hyperfine temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Download Hyperfine for Linux
   ansible.builtin.unarchive:
@@ -64,11 +68,11 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Install Hyperfine for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/hyperfine
+    dest: "{{ bin_path }}/hyperfine"
     force: true
     mode: "755"
     remote_src: true
@@ -76,16 +80,16 @@
       {{ hyperfine_temp.path }}/hyperfine-v{{
       hyperfine_formula.json.versions.stable }}-{{ hyperfine_arch
       }}-unknown-linux-musl/hyperfine
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Install Hyperfine for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: hyperfine
   tags:
@@ -94,7 +98,7 @@
 
 - name: Install Hyperfine for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: hyperfine
   tags:
     - install
@@ -110,7 +114,7 @@
       {{ hyperfine_temp.path }}/hyperfine-v{{
       hyperfine_formula.json.versions.stable }}-{{ hyperfine_arch
       }}-unknown-linux-musl/autocomplete/hyperfine.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/hyperfine"
       shell: bash
@@ -121,7 +125,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed
 
 - name: Remove Hyperfine temporary directory for Linux
   ansible.builtin.file:
@@ -131,4 +135,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - hyperfine_linux is failed
+    - not system_install or hyperfine_linux is failed

@@ -5,7 +5,9 @@
     name: lua54
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Lua for Linux
   ansible.builtin.package:
@@ -18,11 +20,13 @@
       apk: lua5.4
       apt: lua5.3
       zypper: lua53
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Lua for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: lua
   tags:
@@ -31,7 +35,7 @@
 
 - name: Install Lua for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: lua
   tags:
     - install

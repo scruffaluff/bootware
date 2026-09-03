@@ -4,7 +4,9 @@
     name: root
     shell: /usr/sbin/nologin
   become: true
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Disable SSH password login for Unix
   ansible.builtin.lineinfile:
@@ -20,7 +22,9 @@
       value: "no"
     - key: PermitRootLogin
       value: "no"
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Disable SSH password login for Windows
   community.windows.win_lineinfile:

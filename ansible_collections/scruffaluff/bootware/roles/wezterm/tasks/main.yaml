@@ -5,7 +5,9 @@
     name: "{{ wezterm_package }}"
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Create Wezterm temporary directory for Unix
   ansible.builtin.tempfile:
@@ -32,7 +34,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
@@ -43,7 +47,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Wezterm repository for Debian
   ansible.builtin.apt_repository:
@@ -55,7 +61,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Apt cache for Debian
   ansible.builtin.apt:
@@ -63,7 +71,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Wezterm repository for Fedora
   become: true
@@ -71,7 +81,9 @@
     name: wezfurlong/wezterm-nightly
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install Wezterm for Linux
   ansible.builtin.package:
@@ -79,7 +91,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Wezterm for MacOS
   community.general.homebrew_cask:
@@ -92,7 +106,7 @@
 
 - name: Install Wezterm for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: "{{ wezterm_package }}"
   tags:
     - install
@@ -100,12 +114,12 @@
 
 - name: Create Wezterm configuration directory for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/wezterm"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -122,11 +136,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/wezterm/wezterm.lua"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: wezterm.lua.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

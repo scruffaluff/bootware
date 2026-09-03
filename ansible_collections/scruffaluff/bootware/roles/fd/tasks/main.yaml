@@ -5,7 +5,9 @@
     name: fd-find
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Fd version for Linux
   ansible.builtin.uri:
@@ -49,21 +51,21 @@
 
 - name: Install Fd for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/fd
+    dest: "{{ bin_path }}/fd"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ fd_libc }}/fd
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Fd for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: fd
   tags:
@@ -72,7 +74,7 @@
 
 - name: Install Fd for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: fd
   tags:
     - install
@@ -87,7 +89,7 @@
     src: >-
       {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ fd_libc }}/autocomplete/fd.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/fd"
       shell: bash

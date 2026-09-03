@@ -9,7 +9,9 @@
       - python3-dev
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Python for Arch
   become: true
@@ -20,8 +22,9 @@
       - python-pipx
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
-
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 - name: Install Python for Debian
   ansible.builtin.apt:
     name:
@@ -33,7 +36,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Python for Fedora
   ansible.builtin.dnf:
@@ -45,7 +50,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 # Rust is required for installing many Python applications on FreeBSD.
 - name: Install Python for FreeBSD
@@ -58,11 +65,13 @@
       - rust
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Python for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - pipx
@@ -81,7 +90,9 @@
       - python3-venv
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install Python for Suse
   become: true
@@ -92,11 +103,13 @@
       - python312-pipx
   tags:
     - install
-  when: system_pkg_mgr == "zypper"
+  when:
+    - system_install
+    - system_pkg_mgr == "zypper"
 
 - name: Install Python for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - pipx
       - python
@@ -117,7 +130,9 @@
     - python
   tags:
     - install
-  when: ansible_facts.system == "Darwin"
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
 
 # While Python Microsoft Store links are listed app execution aliases in Windows
 # settings, they are actually reparse point and require fsutil for permanent
@@ -156,6 +171,7 @@
   tags:
     - plugin
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "opkg"
 

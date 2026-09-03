@@ -7,7 +7,9 @@
   register: presenterm_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Presenterm version for Linux
   ansible.builtin.uri:
@@ -19,7 +21,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Create Presenterm temporary directory for Linux
   ansible.builtin.tempfile:
@@ -29,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Set Presenterm temporary directory permissions for Linux
   ansible.builtin.file:
@@ -40,7 +42,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Download Presenterm for Linux
   ansible.builtin.unarchive:
@@ -56,27 +58,27 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Install Presenterm for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/presenterm
+    dest: "{{ bin_path }}/presenterm"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ presenterm_temp.path }}/presenterm-{{
       presenterm_formula.json.versions.stable }}/presenterm
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Install Presenterm for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: presenterm
   tags:
@@ -85,7 +87,7 @@
 
 - name: Install Presenterm for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: presenterm
   tags:
     - install
@@ -93,12 +95,12 @@
 
 - name: Create Presenterm configuration directory for Linux
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/presenterm"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"
@@ -107,23 +109,23 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/presenterm/config.yaml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.yaml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"
 
 - name: Create Presenterm configuration directory for MacOS
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/Library/Application Support/presenterm"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -132,11 +134,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/Library/Application Support/presenterm/config.yaml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: config.yaml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -175,4 +177,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed

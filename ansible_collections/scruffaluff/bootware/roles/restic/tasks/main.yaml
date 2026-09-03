@@ -5,7 +5,9 @@
     name: restic
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Restic for Linux
   ansible.builtin.package:
@@ -13,11 +15,13 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Restic for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: restic
   tags:
@@ -26,7 +30,7 @@
 
 - name: Install Restic for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: restic
   tags:
     - install
@@ -63,7 +67,7 @@
     mode: "644"
     remote_src: true
     src: "{{ restic_temp.path }}/restic.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/restic"
       shell: bash

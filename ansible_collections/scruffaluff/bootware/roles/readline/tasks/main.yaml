@@ -3,11 +3,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.{{ item }}"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "640"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - editrc
     - inputrc

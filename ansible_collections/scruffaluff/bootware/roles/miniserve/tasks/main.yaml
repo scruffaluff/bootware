@@ -5,7 +5,9 @@
     name: miniserve
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Miniserve for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: miniserve_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Miniserve version for Linux
   ansible.builtin.uri:
@@ -27,11 +31,11 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - miniserve_linux is failed
+    - not system_install or miniserve_linux is failed
 
 - name: Install Miniserve for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/miniserve
+    dest: "{{ bin_path }}/miniserve"
     force: true
     mode: "755"
     url: >-
@@ -39,7 +43,7 @@
       miniserve_formula.json.versions.stable }}/miniserve-{{
       miniserve_formula.json.versions.stable }}-{{
       miniserve_arch[system_architecture] }}-unknown-linux-{{ miniserve_libc }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   vars:
@@ -51,11 +55,11 @@
       ansible.builtin.version("2.38", ">") else 'musl' }}
   when:
     - ansible_facts.system == "Linux"
-    - miniserve_linux is failed
+    - not system_install or miniserve_linux is failed
 
 - name: Install Miniserve for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: miniserve
   tags:
@@ -64,7 +68,7 @@
 
 - name: Install Miniserve for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: miniserve
   tags:
     - install
@@ -101,7 +105,7 @@
     mode: "644"
     remote_src: true
     src: "{{ miniserve_temp.path }}/miniserve.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/miniserve"
       shell: bash

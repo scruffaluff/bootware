@@ -9,7 +9,9 @@
 #     update_cache: true
 #   tags:
 #     - install
-#   when: system_pkg_mgr == "apk"
+#   when:
+#     - system_install
+#     - system_pkg_mgr == "apk"
 
 - name: Install Google Chrome for Arch
   become: true
@@ -17,7 +19,9 @@
     name: chromium
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install Google Chrome for Debian
   ansible.builtin.apt:
@@ -26,6 +30,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "apt"
 
@@ -36,6 +41,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr in ["dnf", "zypper"]
 
@@ -47,6 +53,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "dnf"
 
@@ -56,7 +63,9 @@
     name: chromium
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Google Chrome for MacOS
   community.general.homebrew_cask:
@@ -69,7 +78,7 @@
 
 - name: Install Google Chrome for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: googlechrome
   tags:
     - install
@@ -87,7 +96,9 @@
   loop: "{{ chrome_services }}"
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 # Services need to be removed before they can be blocked since Ansible cannot
 # directly replace one file type with another, i.e. directory to file.
@@ -99,7 +110,9 @@
   loop: "{{ chrome_services }}"
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Block Google Chrome services for Unix
   ansible.builtin.file:
@@ -112,7 +125,9 @@
   loop: "{{ chrome_services }}"
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Set Google Chrome policies for MacOS
   ansible.builtin.command:
@@ -133,7 +148,9 @@
   become: true
   tags:
     - config
-  when: ansible_facts.system not in ["Darwin", "Win32NT"]
+  when:
+    - system_install
+    - ansible_facts.system not in ["Darwin", "Win32NT"]
 
 - name: Set Google Chrome policies for Unix
   ansible.builtin.copy:
@@ -144,7 +161,9 @@
   become: true
   tags:
     - config
-  when: ansible_facts.system not in ["Darwin", "Win32NT"]
+  when:
+    - system_install
+    - ansible_facts.system not in ["Darwin", "Win32NT"]
 
 - name: Set Google Chrome policies for Windows
   ansible.windows.win_regedit:

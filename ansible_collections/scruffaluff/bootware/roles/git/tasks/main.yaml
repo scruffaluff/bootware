@@ -8,7 +8,9 @@
       - git-lfs
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Git for Linux
   ansible.builtin.package:
@@ -18,7 +20,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Git Delta for Linux
   ansible.builtin.package:
@@ -28,7 +32,9 @@
   register: git_delta_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Git Delta version for Linux
   ansible.builtin.uri:
@@ -41,7 +47,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64" or system_libc == "gnu"
-    - git_delta_linux is failed
+    - not system_install or git_delta_linux is failed
 
 - name: Create Git temporary directory for Linux
   ansible.builtin.tempfile:
@@ -52,7 +58,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64" or system_libc == "gnu"
-    - git_delta_linux is failed
+    - not system_install or git_delta_linux is failed
 
 - name: Download Git Delta for Linux
   ansible.builtin.unarchive:
@@ -69,28 +75,28 @@
   when:
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64" or system_libc == "gnu"
-    - git_delta_linux is failed
+    - not system_install or git_delta_linux is failed
 
 - name: Install Git Delta for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/delta
+    dest: "{{ bin_path }}/delta"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ git_temp.path }}/delta-{{ git_delta_formula.json.versions.stable }}-{{
       git_delta_arch }}-unknown-linux-{{ system_libc }}/delta
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64" or system_libc == "gnu"
-    - git_delta_linux is failed
+    - not system_install or git_delta_linux is failed
 
 - name: Install Git for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - git
@@ -106,11 +112,13 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install Git for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - delta
       - git-lfs
@@ -124,11 +132,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.gitconfig"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "640"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: gitconfig.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -156,4 +164,4 @@
   when:
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64" or system_libc == "gnu"
-    - git_delta_linux is failed
+    - not system_install or git_delta_linux is failed

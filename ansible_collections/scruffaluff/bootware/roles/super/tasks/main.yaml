@@ -23,6 +23,7 @@
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
+    - system_install
     - super_passwordless
     - ansible_facts.system != "Win32NT"
     - super_doas_available.rc == 0
@@ -56,6 +57,7 @@
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - super_sudo_available.rc == 0
 
@@ -76,6 +78,7 @@
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
+    - system_install
     - super_passwordless
     - ansible_facts.system != "Win32NT"
     - super_sudo_available.rc == 0

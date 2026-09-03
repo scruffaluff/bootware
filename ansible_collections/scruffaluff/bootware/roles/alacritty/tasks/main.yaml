@@ -33,7 +33,9 @@
     name: alacritty
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Alacritty for Linux
   ansible.builtin.package:
@@ -41,7 +43,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Download Alacritty for MacOS
   ansible.builtin.get_url:
@@ -67,12 +71,13 @@
 
 - name: Install Alacritty for MacOS
   ansible.builtin.copy:
-    dest: /Applications/
+    dest: >-
+      {{ '/Applications/' if system_install else user_home + '/Applications/' }}
     mode: "755"
     force: true
     remote_src: true
     src: "{{ alacritty_temp.path }}/alacritty/Alacritty.app"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Darwin"
@@ -87,19 +92,21 @@
 
 - name: Make Alacritty symlink for MacOS
   ansible.builtin.file:
-    src: /Applications/Alacritty.app/Contents/MacOS/alacritty
-    dest: /usr/local/bin/alacritty
+    src: >-
+      {{ '/Applications' if system_install else user_home + '/Applications'
+      }}/Alacritty.app/Contents/MacOS/alacritty
+    dest: "{{ bin_path }}/alacritty"
     force: true
     mode: "755"
     state: link
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Darwin"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: alacritty
   tags:
     - install
@@ -107,12 +114,12 @@
 
 - name: Create Alacritty configuration directory for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/alacritty"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -129,11 +136,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/alacritty/alacritty.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: alacritty.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

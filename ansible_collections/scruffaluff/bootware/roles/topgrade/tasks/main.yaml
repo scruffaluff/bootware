@@ -5,7 +5,9 @@
     name: topgrade
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Topgrade for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: topgrade_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Topgrade version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed
 
 - name: Create Topgrade temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed
 
 - name: Set Topgrade temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed
 
 - name: Download Topgrade for Linux
   ansible.builtin.unarchive:
@@ -72,25 +76,25 @@
       ansible.builtin.version("2.39", ">") else 'musl' }}
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed
 
 - name: Install Topgrade for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/topgrade
+    dest: "{{ bin_path }}/topgrade"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ topgrade_temp.path }}/topgrade"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed
 
 - name: Install Topgrade for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: topgrade
   tags:
@@ -99,7 +103,7 @@
 
 - name: Install Topgrade for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: topgrade
   tags:
     - install
@@ -109,11 +113,11 @@
   ansible.builtin.template:
     dest: "{{ user_home }}/.config/topgrade.toml"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "640"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: topgrade.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -143,4 +147,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - topgrade_linux is failed
+    - not system_install or topgrade_linux is failed

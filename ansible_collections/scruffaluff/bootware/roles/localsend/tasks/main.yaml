@@ -5,7 +5,9 @@
     name: org.localsend.localsend_app
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install LocalSend for MacOS
   community.general.homebrew_cask:
@@ -18,7 +20,7 @@
 
 - name: Install LocalSend for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: localsend
   tags:
     - install

@@ -5,7 +5,9 @@
     name: zoxide
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Zoxide package in most distributions reaches version 0.9.4.
 # - name: Install Zoxide for Linux
@@ -65,19 +67,19 @@
 
 - name: Install Zoxide for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/zoxide
+    dest: "{{ bin_path }}/zoxide"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ zoxide_temp.path }}/zoxide"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Zoxide for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: zoxide
   tags:
@@ -86,7 +88,7 @@
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: zoxide
   tags:
     - install
@@ -99,7 +101,7 @@
     mode: "644"
     remote_src: true
     src: "{{ zoxide_temp.path }}/completions/zoxide.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/zoxide"
       shell: bash
@@ -113,7 +115,7 @@
 - name: Create Zoxide Nushell configuration for Unix
   ansible.builtin.shell: >-
     zoxide init --cmd cd nushell > '{{ nushell_autoload }}/zoxide.nu'
-  become: true
+  become: "{{ system_install }}"
   changed_when: true
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}

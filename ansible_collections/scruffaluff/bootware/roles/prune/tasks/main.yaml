@@ -7,7 +7,9 @@
   loop: "{{ prune_linux_packages }}"
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Prune Copr repositories for Fedora
   become: true
@@ -17,4 +19,6 @@
   loop: "{{ prune_copr_repositories }}"
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"

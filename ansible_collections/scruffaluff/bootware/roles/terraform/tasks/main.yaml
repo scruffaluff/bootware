@@ -5,7 +5,9 @@
     name: terraform
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Terraform for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: terraform_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Terraform version for Unix
   ansible.builtin.uri:
@@ -28,7 +32,7 @@
     - install
   when: >-
     ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
-    terraform_linux is failed)
+    (not system_install or terraform_linux is failed))
 
 - name: Create Terraform temporary directory for Unix
   ansible.builtin.tempfile:
@@ -38,7 +42,7 @@
     - install
   when: >-
     ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
-    terraform_linux is failed)
+    (not system_install or terraform_linux is failed))
 
 - name: Download Terraform for Unix
   ansible.builtin.unarchive:
@@ -54,25 +58,25 @@
     - install
   when: >-
     ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
-    terraform_linux is failed)
+    (not system_install or terraform_linux is failed))
 
 - name: Install Terraform for Unix
   ansible.builtin.copy:
-    dest: /usr/local/bin/terraform
+    dest: "{{ bin_path }}/terraform"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ terraform_temp.path }}/terraform"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: >-
     ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
-    terraform_linux is failed)
+    (not system_install or terraform_linux is failed))
 
 - name: Install Terraform for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: terraform
   tags:
     - install
@@ -86,4 +90,4 @@
     - install
   when: >-
     ansible_facts.system == "Darwin" or (ansible_facts.system == "Linux" and
-    terraform_linux is failed)
+    (not system_install or terraform_linux is failed))

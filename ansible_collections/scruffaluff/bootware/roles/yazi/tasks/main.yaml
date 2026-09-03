@@ -1,7 +1,7 @@
 ---
 - name: Install Yazi dependencies for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name:
       - poppler
@@ -16,7 +16,9 @@
     name: yazi
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Yazi version for Linux
   ansible.builtin.uri:
@@ -26,7 +28,9 @@
   register: yazi_formula
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 # Disabled since many package managers include an incomplete version of Yazi.
 # - name: Install Yazi for Linux
@@ -71,14 +75,14 @@
 
 - name: Install Yazi for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/{{ item }}
+    dest: "{{ bin_path }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc }}/{{
       item }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - ya
     - yazi
@@ -87,8 +91,8 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Yazi for MacOS
-  become: true
-  become_user: "{{ brew_user }}"
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user if system_install else omit }}"
   community.general.homebrew:
     name: yazi
   tags:
@@ -97,7 +101,7 @@
 
 - name: Install Yazi for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - file
       - yazi
@@ -114,7 +118,7 @@
     src: >-
       {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
       }}/completions/yazi.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
@@ -128,8 +132,8 @@
 - name: Install Yazi plugins for Unix
   ansible.builtin.command:
     cmd: ya pkg add {{ item }}
-  become: true
-  become_user: "{{ user_id }}"
+  become: "{{ system_install }}"
+  become_user: "{{ user_id if system_install else omit }}"
   changed_when: "'Deploying package' in yazi_plugin_install.stdout"
   environment:
     PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
@@ -158,12 +162,12 @@
 
 - name: Create Yazi configuration directories for Unix
   ansible.builtin.file:
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "755"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     path: "{{ user_home }}/.config/{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - yazi
     - yazi/plugins/auto-layout.yazi
@@ -177,11 +181,11 @@
   ansible.builtin.copy:
     dest: "{{ user_home }}/.config/yazi/{{ item.dest }}"
     force: true
-    group: "{{ group_id }}"
+    group: "{{ group_id if system_install else omit }}"
     mode: "644"
-    owner: "{{ user_id }}"
+    owner: "{{ user_id if system_install else omit }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: keymap.toml
       src: keymap.toml

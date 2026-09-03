@@ -5,10 +5,10 @@
       #!/usr/bin/env sh
       set -eu
       deno run --allow-all --no-config --quiet --node-modules-dir=none npm:prettier "$@"
-    dest: /usr/local/bin/prettier
+    dest: "{{ bin_path }}/prettier"
     force: true
     mode: "755"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"
