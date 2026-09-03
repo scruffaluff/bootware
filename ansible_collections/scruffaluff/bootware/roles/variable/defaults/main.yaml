@@ -3,6 +3,7 @@ backslash: "\\"
 brew_prefix: >-
   {{ '/opt/homebrew' if ansible_facts.architecture in ['aarch64', 'arm64'] else
   '/usr/local' }}
+system_install: true
 user_id: "{{ ansible_facts.user_id }}"
 user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
@@ -12,7 +13,7 @@ user_home_:
   Win32NT: C:\Users\{{ user_id }}
 user_home: "{{ user_home_.get(ansible_facts.system, '/home/' + user_id) }}"
 
-bash_completion_:
+bash_completion_sys_:
   Darwin: "{{ brew_prefix }}/share/bash-completion/completions"
   FreeBSD: /usr/local/share/bash-completion/completions
   Linux: /usr/share/bash-completion/completions
@@ -20,7 +21,7 @@ bash_executable_:
   Darwin: "{{ brew_prefix }}/bin/bash"
   FreeBSD: /usr/local/bin/bash
   Linux: /bin/bash
-fish_completion_:
+fish_completion_sys_:
   Darwin: "{{ brew_prefix }}/etc/fish/completions"
   FreeBSD: /usr/local/etc/fish/completions
   Linux: /etc/fish/completions
@@ -28,10 +29,6 @@ fish_executable_:
   Darwin: "{{ brew_prefix }}/bin/fish"
   FreeBSD: /usr/local/bin/fish
   Linux: /usr/bin/fish
-fish_vendor_completion_:
-  Darwin: "{{ brew_prefix }}/share/fish/completions"
-  FreeBSD: /usr/local/share/fish/completions
-  Linux: /usr/share/fish/completions
 github_api_token_: >-
   {{ lookup('ansible.builtin.env', 'BOOTWARE_GITHUB_TOKEN', default='') }}
 group_id_:
@@ -43,21 +40,16 @@ nushell_executable_:
   FreeBSD: /usr/local/bin/nu
   Linux: /usr/bin/nu
   Win32NT: C:\ProgramData\scoop\shims\nu.exe
-nushell_user_autoload_:
+nushell_autoload_sys_:
+  Darwin: /Library/Application Support/nushell/vendor/autoload
+  FreeBSD: /usr/local/share/nushell/vendor/autoload
+  Linux: /usr/local/share/nushell/vendor/autoload
+  Win32NT: C:\ProgramData\nushell\vendor/autoload
+nushell_autoload_user_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/autoload"
   Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\autoload"
-nushell_user_vendor_autoload_:
-  Darwin: "{{ user_home }}/Library/Application Support/nushell/vendor/autoload"
-  FreeBSD: "{{ user_home }}/.local/share/nushell/vendor/autoload"
-  Linux: "{{ user_home }}/.local/share/nushell/vendor/autoload"
-  Win32NT: "{{ user_home }}\\AppData\\Roaming\\nushell\\vendor\\autoload"
-nushell_vendor_autoload_:
-  Darwin: /Library/Application Support/nushell/vendor/autoload
-  FreeBSD: /usr/local/share/nushell/vendor/autoload
-  Linux: /usr/local/share/nushell/vendor/autoload
-  Win32NT: C:\ProgramData\nushell\vendor\autoload
 system_libc_:
   Linux: "{{ 'musl' if system_pkg_mgr in ['apk', 'opkg'] else 'gnu' }}"
 system_architecture_:
@@ -70,49 +62,59 @@ system_architecture_:
   x64: amd64
   x86_64: amd64
 
-bash_completion: >-
-  {{ bash_completion_.get(ansible_facts.system,
+bash_completion_sys: >-
+  {{ bash_completion_sys_.get(ansible_facts.system,
   '/usr/share/bash-completion/completions') }}
+bash_completion_user: "{{ user_home }}/.local/share/bash-completion/completions"
+bin_path_sys: >-
+  {{ 'C:\Program Files\Bin' if ansible_facts.system == 'Win32NT' else
+  '/usr/local/bin' }}
+bin_path_user: >-
+  {{ user_home + '\AppData\Local\Programs\Bin' if ansible_facts.system ==
+  'Win32NT' else user_home + '/.local/bin' }}
+fish_completion_sys: >-
+  {{ fish_completion_sys_.get(ansible_facts.system, '/etc/fish/completions') }}
+fish_completion_user: "{{ user_home }}/.config/fish/completions"
+nushell_autoload_sys: >-
+  {{ nushell_autoload_sys_.get(ansible_facts.system,
+  '/usr/local/share/nushell/autoload') }}
+nushell_autoload_user: >-
+  {{ nushell_autoload_user_.get(ansible_facts.system, user_home +
+  '.local/share/nushell/autoload') }}
+powershell_module_sys:
+  - C:\\Program Files\\PowerShell\\Modules
+  - C:\\Program Files\\WindowsPowerShell\\Modules
+powershell_module_user:
+  - "{{ user_home }}\\Documents\\PowerShell\\Modules"
+  - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
+scoop_path_sys: C:\ProgramData\scoop
+scoop_path_user: "{{ user_home }}\\scoop"
+
+bash_completion: >-
+  {{ bash_completion_sys if system_install else bash_completion_user }}
 bash_executable: "{{ bash_executable_.get(ansible_facts.system, '/bin/bash') }}"
 bash_name: bash
-bash_user_completion: "{{ user_home }}/.local/share/bash-completion/completions"
 brew_user: "{{ user_id }}"
 editor_font_size: "{{ font_size | default(14) }}"
 fish_completion: >-
-  {{ fish_completion_.get(ansible_facts.system, '/etc/fish/completions') }}
+  {{ fish_completion_sys if system_install else fish_completion_user }}
 fish_executable: >-
   {{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}
 fish_name: fish
-fish_user_completion: "{{ user_home }}/.config/fish/completions"
-fish_vendor_completion: >-
-  {{ fish_vendor_completion_.get(ansible_facts.system,
-  '/usr/share/fish/completions') }}
 github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}
 group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
+nushell_autoload: >-
+  {{ nushell_autoload_sys if system_install else nushell_autoload_user }}
 nushell_executable: >-
   {{ nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
 nushell_name: nu
-nushell_user_autoload: >-
-  {{ nushell_user_autoload_.get(ansible_facts.system, user_home +
-  '.local/share/nushell/autoload') }}
-nushell_user_vendor_autoload: >-
-  {{ nushell_user_vendor_autoload_.get(ansible_facts.system, user_home +
-  '.local/share/nushell/vendor/autoload') }}
-nushell_vendor_autoload: >-
-  {{ nushell_vendor_autoload_.get(ansible_facts.system,
-  '/usr/local/share/nushell/vendor/autoload') }}
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
+powershell_module: >-
+  {{ powershell_module_sys if system_install else powershell_module_user }}
 powershell_name: pwsh
-powershell_module_paths:
-  - C:\\Program Files\\PowerShell\\Modules
-  - C:\\Program Files\\WindowsPowerShell\\Modules
-powershell_user_module_paths:
-  - "{{ user_home }}\\Documents\\PowerShell\\Modules"
-  - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
-scoop_path: C:\ProgramData\scoop
-scoop_user_path: "{{ user_home }}\\scoop"
+scoop_path: "{{ scoop_path_sys if system_install else scoop_path_user }}"
 system_architecture: >-
   {{ system_architecture_.get(ansible_facts.architecture, '') }}
 system_font_size: "{{ font_size | default(11) }}"

@@ -82,7 +82,7 @@
     state: directory
   become: true
   loop:
-    - "{{ fish_user_completion }}"
+    - "{{ fish_completion_user }}"
     - "{{ user_home }}/.config/fish/functions"
   tags:
     - install

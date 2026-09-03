@@ -37,6 +37,7 @@ Options:
   -h, --help                      Print help information.
       --install-group <GROUP>     Remote group to install software for.
       --install-user <USER>       Remote user to install software for.
+      --local                     Install software for current user only.
   -i, --inventory <IP-LIST>       Ansible remote hosts IP addresses.
       --no-passwd                 Do not ask for user password.
       --no-setup                  Skip Bootware dependency installation.
@@ -226,9 +227,9 @@ function Bootstrap() {
                 $ArgIdx += 2
                 break
             }
-            '--start-at-role' {
-                $StartRole = $Args[0][$ArgIdx + 1]
-                $ArgIdx += 2
+            '--local' {
+                $ExtraArgs += '--local'
+                $ArgIdx += 1
                 break
             }
             { $_ -in '-t', '--tags' } {
@@ -260,19 +261,6 @@ function Bootstrap() {
     }
     elseif (-not (Get-Command -ErrorAction SilentlyContinue wsl)) {
         throw 'Error: The WSL needs to be setup before bootstrapping'
-    }
-
-    # Configure run to find task associated with start role.
-    #
-    # Special quoting is required for the filter due to PowerShell shenanigans.
-    # For more information, visit https://github.com/mikefarah/yq/issues/747.
-    if ($StartRole) {
-        $Filter = ".[0].tasks[] | select(.`"ansible.builtin.include_role`".name == `"scruffaluff.bootware.$StartRole`") | .name"
-        $StartTask = yq --exit-status $($Filter -replace '"', '\"') $Playbook
-        $ExtraArgs += @(
-            '--extra-vars', '{"connect_role_executed":false}', '--start-at-task',
-            $StartTask
-        )
     }
 
     try {

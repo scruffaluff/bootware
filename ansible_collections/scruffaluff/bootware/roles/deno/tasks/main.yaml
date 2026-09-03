@@ -166,7 +166,7 @@
   changed_when: true
   environment:
     Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
-  loop: "{{ powershell_module_paths }}"
+  loop: "{{ powershell_module }}"
   tags:
     - completion
     - install

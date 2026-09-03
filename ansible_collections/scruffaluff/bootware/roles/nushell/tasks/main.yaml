@@ -184,7 +184,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_autoload_user }}"
     state: directory
   become: true
   tags:
@@ -216,7 +216,7 @@
   become: true
   loop:
     - "{{ user_home }}/.config/nushell"
-    - "{{ nushell_user_autoload }}"
+    - "{{ nushell_autoload_user }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"]
@@ -238,7 +238,7 @@
 
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ nushell_user_autoload }}"
+    path: "{{ nushell_autoload_user }}"
     state: directory
   tags:
     - config
