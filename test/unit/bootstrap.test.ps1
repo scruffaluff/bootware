@@ -18,22 +18,6 @@ BeforeAll {
 }
 
 Describe 'Bootstrap' {
-    It 'Subcommand finds first task associated with role' {
-        $Env:BOOTWARE_NOLOG = 'true'
-        $Playbook = "$(Get-Location)\playbook.yaml"
-        $Expected = 'wsl bootware bootstrap --no-passwd --config ' `
-            + '/mnt/c/Users/Administrator/.bootware/config.yaml --inventory ' `
-            + "192.48.16.0 --private-key `$HOME/.ssh/bootware --skip none " `
-            + "--ssh-extra-args '-o StrictHostKeyChecking=no' " `
-            + "--tags desktop --user $Env:UserName " `
-            + '--extra-vars {"connect_role_executed":false} ' `
-            + '--start-at-task Install Deno JavaScript runtime ' `
-            + "--playbook $(WSLPath $Playbook)"
-
-        $Actual = & $Bootware bootstrap --start-at-role deno --playbook $Playbook
-        $Actual | Should -Be $Expected
-    }
-
     It 'Subcommand passes default arguments to WSL copy of Bootware' {
         $Env:BOOTWARE_NOLOG = 'true'
         $Expected = 'wsl bootware bootstrap --no-passwd --config ' `

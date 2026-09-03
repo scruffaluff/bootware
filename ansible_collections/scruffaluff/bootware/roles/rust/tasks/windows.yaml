@@ -20,9 +20,9 @@
     cmd: rustup default {{ rust_toolchain }}
   changed_when: "'installing' in rust_toolchain_set.stdout"
   environment:
-    CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
+    CARGO_HOME: "{{ scoop_path_user }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
-      {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
+      {{ scoop_path_user }}\apps\rustup-msvc\current\.cargo\bin;{{
       ansible_facts.env.Path }}
   register: rust_toolchain_set
   tags:
@@ -33,9 +33,9 @@
     cmd: rustup component add {{ item }}
   changed_when: "'installing' in rust_component_add.stdout"
   environment:
-    CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
+    CARGO_HOME: "{{ scoop_path_user }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
-      {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
+      {{ scoop_path_user }}\apps\rustup-msvc\current\.cargo\bin;{{
       ansible_facts.env.Path }}
   loop: "{{ rust_components }}"
   register: rust_component_add
@@ -47,9 +47,9 @@
     cmd: rustup target add {{ item }}
   changed_when: "'installing' in rust_target_add.stdout"
   environment:
-    CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
+    CARGO_HOME: "{{ scoop_path_user }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
-      {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
+      {{ scoop_path_user }}\apps\rustup-msvc\current\.cargo\bin;{{
       ansible_facts.env.Path }}
   loop: "{{ rust_targets }}"
   register: rust_target_add
@@ -82,7 +82,7 @@
 
 - name: Create Cargo Binstall directory for Windows
   ansible.windows.win_file:
-    path: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo\\bin"
+    path: "{{ scoop_path_user }}\\apps\\rustup-msvc\\current\\.cargo\\bin"
     state: directory
   tags:
     - plugin
@@ -90,7 +90,7 @@
 - name: Install Cargo Binstall for Windows
   ansible.windows.win_copy:
     dest: >-
-      {{ scoop_user_path
+      {{ scoop_path_user
       }}\apps\rustup-msvc\current\.cargo\bin\cargo-binstall.exe
     force: true
     remote_src: true
@@ -104,9 +104,9 @@
     cmd: cargo binstall --no-confirm {{ item }}
   changed_when: "'This will install' in rust_binstall_package.stdout"
   environment:
-    CARGO_HOME: "{{ scoop_user_path }}\\apps\\rustup-msvc\\current\\.cargo"
+    CARGO_HOME: "{{ scoop_path_user }}\\apps\\rustup-msvc\\current\\.cargo"
     Path: >-
-      {{ scoop_user_path }}\apps\rustup-msvc\current\.cargo\bin;{{
+      {{ scoop_path_user }}\apps\rustup-msvc\current\.cargo\bin;{{
       ansible_facts.env.Path }}
   loop: "{{ rust_applications }}"
   register: rust_binstall_package

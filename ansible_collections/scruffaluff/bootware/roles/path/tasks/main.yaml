@@ -11,7 +11,7 @@
 
 - name: Create system binaries directory for Unix
   ansible.builtin.file:
-    dest: /usr/local/bin
+    dest: "{{ bin_path_sys }}"
     mode: "755"
     state: directory
   become: true
@@ -21,7 +21,7 @@
 
 - name: Create user binaries directory for Unix
   ansible.builtin.file:
-    dest: "{{ user_home }}/.local/bin"
+    dest: "{{ bin_path_user }}"
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
@@ -106,14 +106,21 @@
     - ansible_facts.system == "Darwin"
     - system_paths | length > 0
 
-- name: Create binaries directories for Windows
+- name: Create system binaries directory for Windows
+  ansible.windows.win_file:
+    path: "{{ bin_path_sys }}"
+    state: directory
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Create user binaries directories for Windows
   ansible.windows.win_file:
     path: "{{ item }}"
     state: directory
   loop:
-    - "C:\\Program Files\\Bin"
     - "{{ user_home }}\\.local\\bin"
-    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
+    - "{{ bin_path_user }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -125,22 +132,26 @@
     user: "{{ user_id }}"
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
+    - "{{ bin_path_user }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
 
-- name: Add binaries directories to path for Windows
+- name: Add system binaries directory to path for Windows
   ansible.windows.win_path:
-    elements: "{{ item.elements }}"
-    scope: "{{ item.scope }}"
+    elements: "{{ bin_path_sys }}"
+    scope: machine
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Add user binaries directories to path for Windows
+  ansible.windows.win_path:
+    elements: "{{ item }}"
+    scope: user
   loop:
-    - elements: C:\Program Files\Bin
-      scope: machine
-    - elements: "{{ user_home }}\\.local\\bin"
-      scope: user
-    - elements: "{{ user_home }}\\AppData\\Local\\Programs\\Bin"
-      scope: user
+    - "{{ user_home }}\\.local\\bin"
+    - "{{ bin_path_user }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -181,9 +192,9 @@
     state: directory
   become: true
   loop:
-    - "{{ bash_completion }}"
-    - "{{ fish_completion }}"
-    - "{{ nushell_vendor_autoload }}"
+    - "{{ bash_completion_sys }}"
+    - "{{ fish_completion_sys }}"
+    - "{{ nushell_autoload_sys }}"
   tags:
     - completion
     - install
@@ -198,9 +209,9 @@
     state: directory
   become: true
   loop:
-    - "{{ bash_user_completion }}"
-    - "{{ fish_user_completion }}"
-    - "{{ nushell_user_vendor_autoload }}"
+    - "{{ bash_completion_user }}"
+    - "{{ fish_completion_user }}"
+    - "{{ nushell_autoload_user }}"
   tags:
     - completion
     - install
@@ -208,13 +219,21 @@
     - ansible_facts.system != "Win32NT"
     - user_id != "root"
 
-- name: Create shell completion directories for Windows
+- name: Create system shell completion directories for Windows
   ansible.windows.win_file:
     path: "{{ item }}"
     state: directory
-  loop: >-
-    {{ [nushell_vendor_autoload, nushell_user_vendor_autoload] +
-    powershell_module_paths + powershell_user_module_paths }}
+  loop: "{{ [nushell_autoload_sys] + powershell_module_sys }}"
+  tags:
+    - completion
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Create user shell completion directories for Windows
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: directory
+  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
   tags:
     - completion
     - install
@@ -225,7 +244,7 @@
     path: "{{ item }}"
     recurse: true
     user: "{{ user_id }}"
-  loop: "{{ [nushell_user_vendor_autoload] + powershell_user_module_paths }}"
+  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
