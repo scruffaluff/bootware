@@ -5,7 +5,9 @@
     name: musescore
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install MuseScore for Linux
   become: true
@@ -13,9 +15,13 @@
     name: org.musescore.MuseScore
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install MuseScore for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: musescore
@@ -26,7 +32,7 @@
 
 - name: Install MuseScore for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: musescore
   tags:
     - install

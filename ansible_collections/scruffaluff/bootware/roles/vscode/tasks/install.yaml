@@ -16,6 +16,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apt"
     - ansible_facts.distribution != "Pop!_OS"
 
@@ -25,7 +26,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["dnf", "zypper"]
+  when:
+    - system_install
+    - system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Create VSCode temporary directory for Fedora
   ansible.builtin.tempfile:
@@ -63,7 +66,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr in ["dnf", "zypper"]
+  when:
+    - system_install
+    - system_pkg_mgr in ["dnf", "zypper"]
 
 - name: Install VSCode for FreeBSD
   become: true
@@ -71,7 +76,9 @@
     name: vscode
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Make VSCode symlink for FreeBSD
   ansible.builtin.file:
@@ -83,9 +90,13 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install VSCode for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: visual-studio-code
@@ -101,6 +112,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apt"
     - ansible_facts.distribution == "Pop!_OS"
 
@@ -114,7 +126,9 @@
     name: vscode
   tags:
     - install
-  when: ansible_facts.system == "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system == "Win32NT"
 
 - name: Install VSCode extensions for Unix
   ansible.builtin.command:

@@ -14,7 +14,9 @@
     name: zed-editor
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Zed for Linux
   ansible.builtin.package:
@@ -25,6 +27,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
@@ -127,7 +130,7 @@
     - zed_linux is failed
 
 - name: Install Zed for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: zed
@@ -137,7 +140,7 @@
 
 - name: Install Zed for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: zed
   tags:
     - install

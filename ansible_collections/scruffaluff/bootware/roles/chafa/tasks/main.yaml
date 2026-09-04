@@ -5,7 +5,9 @@
     name: chafa
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Chafa for Linux
   ansible.builtin.package:
@@ -13,10 +15,12 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Chafa for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: chafa
@@ -26,7 +30,7 @@
 
 - name: Install Chafa for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: chafa
   tags:
     - install

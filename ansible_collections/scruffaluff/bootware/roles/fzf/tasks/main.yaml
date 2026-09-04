@@ -5,7 +5,9 @@
     name: fzf
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Create Fzf temporary directory for Linux
   ansible.builtin.tempfile:
@@ -67,18 +69,18 @@
 
 - name: Install Fzf for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/fzf
+    dest: "{{ bin_path }}/fzf"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ fzf_temp.path }}/fzf"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install FzF for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -90,7 +92,7 @@
 
 - name: Install FzF for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - fzf
       - psfzf

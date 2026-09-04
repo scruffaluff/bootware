@@ -7,7 +7,9 @@
   register: presenterm_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Presenterm version for Linux
   ansible.builtin.uri:
@@ -19,7 +21,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Create Presenterm temporary directory for Linux
   ansible.builtin.tempfile:
@@ -29,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Set Presenterm temporary directory permissions for Linux
   ansible.builtin.file:
@@ -40,7 +42,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Download Presenterm for Linux
   ansible.builtin.unarchive:
@@ -56,26 +58,26 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Install Presenterm for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/presenterm
+    dest: "{{ bin_path }}/presenterm"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ presenterm_temp.path }}/presenterm-{{
       presenterm_formula.json.versions.stable }}/presenterm
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed
 
 - name: Install Presenterm for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: presenterm
@@ -85,7 +87,7 @@
 
 - name: Install Presenterm for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: presenterm
   tags:
     - install
@@ -98,7 +100,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/presenterm"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Linux"
@@ -123,7 +125,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Application Support/presenterm"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -175,4 +177,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - presenterm_linux is failed
+    - not system_install or presenterm_linux is failed

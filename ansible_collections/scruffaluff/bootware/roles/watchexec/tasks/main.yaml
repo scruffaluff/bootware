@@ -48,11 +48,13 @@
   register: watchexec_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Watchexec for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/watchexec
+    dest: "{{ bin_path }}/watchexec"
     force: true
     mode: "755"
     remote_src: true
@@ -60,15 +62,15 @@
       {{ watchexec_temp.path }}/watchexec-{{
       watchexec_formula.json.versions.stable }}-{{ watchexec_arch }}-{{
       watchexec_env }}/watchexec
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - watchexec_linux is failed
+    - not system_install or watchexec_linux is failed
 
 - name: Install Watchexec for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: watchexec
@@ -78,7 +80,7 @@
 
 - name: Install Watchexec for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: watchexec
   tags:
     - install

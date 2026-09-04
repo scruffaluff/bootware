@@ -51,7 +51,7 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Krew for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: krew
@@ -61,7 +61,7 @@
 
 - name: Install Krew for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: krew
   tags:
     - install

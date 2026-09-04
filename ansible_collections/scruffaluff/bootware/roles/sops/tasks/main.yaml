@@ -5,7 +5,9 @@
     name: sops
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Sops for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: sops_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Sops version for Linux
   ansible.builtin.uri:
@@ -27,26 +31,26 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - sops_linux is failed
+    - not system_install or sops_linux is failed
 
 - name: Install Sops for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/sops
+    dest: "{{ bin_path }}/sops"
     force: true
     mode: "755"
     url: >-
       https://github.com/mozilla/sops/releases/download/v{{
       sops_formula.json.versions.stable }}/sops-v{{
       sops_formula.json.versions.stable }}.linux.{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - sops_linux is failed
+    - not system_install or sops_linux is failed
 
 - name: Install Sops for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: sops
@@ -56,7 +60,7 @@
 
 - name: Install Sops for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: sops
   tags:
     - install

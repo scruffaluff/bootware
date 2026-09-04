@@ -5,7 +5,9 @@
     name: fontconfig
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install font config for Linux
   ansible.builtin.package:
@@ -13,7 +15,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Check if font is installed for Unix
   ansible.builtin.stat:

@@ -20,6 +20,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "apt"
 
@@ -33,10 +34,13 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "dnf"
 
 - name: Install MongoDB Compass for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: mongodb-compass

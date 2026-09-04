@@ -5,7 +5,9 @@
     name: go-yq
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Yq package in most distributions reaches version 4.0.0.
 # - name: Install Yq for Linux
@@ -30,19 +32,19 @@
 
 - name: Install Yq for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/yq
+    dest: "{{ bin_path }}/yq"
     force: true
     mode: "755"
     url: >-
       https://github.com/mikefarah/yq/releases/download/v{{
       yq_formula.json.versions.stable }}/yq_linux_{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Yq for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: yq
@@ -52,7 +54,7 @@
 
 - name: Install Yq for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: yq
   tags:
     - install

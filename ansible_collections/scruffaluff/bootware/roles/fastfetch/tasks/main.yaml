@@ -5,7 +5,9 @@
     name: fastfetch
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Fastfetch for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: fastfetch_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Fastfetch version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed
 
 - name: Create Fastfetch temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed
 
 - name: Set Fastfetch temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed
 
 - name: Download Fastfetch for Linux
   ansible.builtin.unarchive:
@@ -63,26 +67,26 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed
 
 - name: Install Fastfetch for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/fastfetch
+    dest: "{{ bin_path }}/fastfetch"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ fastfetch_temp.path }}/fastfetch-linux-{{ fastfetch_arch
       }}/usr/bin/fastfetch
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed
 
 - name: Install Fastfetch for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: fastfetch
@@ -92,7 +96,7 @@
 
 - name: Install Fastfetch for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: fastfetch
   tags:
     - install
@@ -106,4 +110,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - fastfetch_linux is failed
+    - not system_install or fastfetch_linux is failed

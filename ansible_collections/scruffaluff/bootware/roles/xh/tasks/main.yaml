@@ -5,7 +5,9 @@
     name: xh
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Xh for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: xh_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Xh version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Create Xh temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Set Xh temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Download Xh for Linux
   ansible.builtin.unarchive:
@@ -63,26 +67,26 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Install Xh for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/xh
+    dest: "{{ bin_path }}/xh"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ xh_temp.path }}/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
       }}-unknown-linux-musl/xh
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Install Xh for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: xh
@@ -92,7 +96,7 @@
 
 - name: Install Xh for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: xh
   tags:
     - install
@@ -118,7 +122,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed
 
 - name: Remove Xh temporary directory for Linux
   ansible.builtin.file:
@@ -128,4 +132,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - xh_linux is failed
+    - not system_install or xh_linux is failed

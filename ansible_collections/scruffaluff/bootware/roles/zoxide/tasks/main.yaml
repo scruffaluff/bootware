@@ -5,7 +5,9 @@
     name: zoxide
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Zoxide package in most distributions reaches version 0.9.4.
 # - name: Install Zoxide for Linux
@@ -65,18 +67,18 @@
 
 - name: Install Zoxide for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/zoxide
+    dest: "{{ bin_path }}/zoxide"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ zoxide_temp.path }}/zoxide"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Zoxide for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: zoxide
@@ -86,7 +88,7 @@
 
 - name: Install Zoxide for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: zoxide
   tags:
     - install

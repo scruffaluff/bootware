@@ -16,7 +16,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Just for FreeBSD
   become: true
@@ -24,7 +26,9 @@
     name: just
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Just package in most distributions reaches version 1.38.
 # - name: Install Just for Linux
@@ -69,12 +73,12 @@
 
 - name: Install Just for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/just
+    dest: "{{ bin_path }}/just"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ just_temp.path }}/just"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -82,7 +86,7 @@
     - system_pkg_mgr != "apk"
 
 - name: Install Just for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: just
@@ -92,7 +96,7 @@
 
 - name: Install Just for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: just
   tags:
     - install

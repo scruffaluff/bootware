@@ -15,7 +15,9 @@
     name: lsd
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Create Lsd temporary directory for Unix
   ansible.builtin.tempfile:
@@ -41,20 +43,20 @@
 
 - name: Install Lsd for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/lsd
+    dest: "{{ bin_path }}/lsd"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ lsd_temp.path }}/lsd-v{{ lsd_formula.json.versions.stable }}-{{
       lsd_arch }}-unknown-linux-{{ lsd_libc }}/lsd
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Lsd for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: lsd
@@ -64,7 +66,7 @@
 
 - name: Install Lsd for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: lsd
   tags:
     - install
@@ -120,7 +122,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/lsd"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

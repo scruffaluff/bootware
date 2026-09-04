@@ -13,7 +13,9 @@
     name: rust-analyzer
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Create Rust temporary directory for Linux
   ansible.builtin.tempfile:
@@ -70,7 +72,7 @@
     (system_pkg_mgr == "apk" and system_architecture == "amd64")
 
 - name: Install Rust Analyzer for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: rust-analyzer
@@ -80,7 +82,7 @@
 
 - name: Install Rust Analyzer for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: rust-analyzer
   tags:
     - install

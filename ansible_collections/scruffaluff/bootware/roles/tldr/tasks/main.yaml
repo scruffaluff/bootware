@@ -15,18 +15,20 @@
     name: tealdeer
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install TLDR for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/tldr
+    dest: "{{ bin_path }}/tldr"
     force: true
     mode: "755"
     url: >-
       https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/tealdeer-linux-{{
       tldr_arch[system_architecture] }}-musl
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   vars:
@@ -36,7 +38,7 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install TLDR for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: tealdeer
@@ -46,7 +48,7 @@
 
 - name: Install TLDR for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: tealdeer
   tags:
     - install
@@ -86,7 +88,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

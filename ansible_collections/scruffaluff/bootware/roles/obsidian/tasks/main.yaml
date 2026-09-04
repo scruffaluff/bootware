@@ -5,9 +5,13 @@
     name: md.obsidian.Obsidian
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Obsidian for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: obsidian

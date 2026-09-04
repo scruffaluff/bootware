@@ -5,7 +5,9 @@
     name: py312-awscli
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install AWS CLI for Alpine
   become: true
@@ -13,7 +15,9 @@
     name: aws-cli
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Create AWS temporary directory for Linux
   ansible.builtin.tempfile:
@@ -56,7 +60,7 @@
     - system_pkg_mgr != "apk"
 
 - name: Install AWS CLI for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: awscli
@@ -66,7 +70,7 @@
 
 - name: Install AWS CLI for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: aws
   tags:
     - install

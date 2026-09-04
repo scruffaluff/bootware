@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "nushell"
 
@@ -16,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "opkg"
     - user_login == "nushell"
 
@@ -25,7 +27,9 @@
     name: "{{ ['nushell'] + nushell_plugins }}"
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # Disabled since many package managers include an outdated version of Nushell.
 # - name: Install Nushell for Linux
@@ -36,7 +40,9 @@
 #   register: nushell_linux
 #   tags:
 #     - install
-#   when: ansible_facts.system == "Linux"
+#   when:
+#     - system_install
+#     - ansible_facts.system == "Linux"
 
 - name: Get latest Nushell version for Linux
   ansible.builtin.uri:
@@ -95,7 +101,7 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Nushell for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: nushell
@@ -105,7 +111,7 @@
 
 - name: Install Nushell for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: nu
   tags:
     - install
@@ -277,6 +283,7 @@
   tags:
     - config
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "apk"
     - user_login == "nushell"

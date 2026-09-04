@@ -5,9 +5,13 @@
     name: net.sonic_pi.SonicPi
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Sonic Pi for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: sonic-pi
@@ -18,7 +22,7 @@
 
 - name: Install Sonic Pi for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: sonic-pi
   tags:
     - install

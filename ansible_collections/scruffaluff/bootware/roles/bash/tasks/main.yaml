@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "bash"
 
@@ -16,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "opkg"
     - user_login == "bash"
 
@@ -27,7 +29,9 @@
       - bash-completion
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Bash for Linux
   ansible.builtin.package:
@@ -38,11 +42,12 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "opkg"
 
 - name: Install Bash for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -58,7 +63,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Register Bash as a valid login shell for Unix
   ansible.builtin.lineinfile:
@@ -69,7 +76,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Copy Bash settings files for Unix
   ansible.builtin.copy:
@@ -79,7 +88,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - bashrc
     - bash_profile
@@ -98,6 +107,7 @@
   tags:
     - config
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "bash"
 
@@ -109,6 +119,7 @@
   tags:
     - config
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "apk"
     - user_login == "bash"

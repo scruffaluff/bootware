@@ -4,6 +4,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apt"
     - ansible_facts.distribution != "Ubuntu"
 
@@ -13,7 +14,9 @@
     name: firefox
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Firefox for Linux
   ansible.builtin.package:
@@ -22,10 +25,13 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apt"
 
 - name: Install Firefox for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: firefox
@@ -38,11 +44,13 @@
   ansible.builtin.import_tasks: ubuntu.yaml
   tags:
     - install
-  when: ansible_facts.distribution == "Ubuntu"
+  when:
+    - system_install
+    - ansible_facts.distribution == "Ubuntu"
 
 - name: Install Firefox for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: firefox
   tags:
     - install

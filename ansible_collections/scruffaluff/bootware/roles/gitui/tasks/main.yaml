@@ -5,7 +5,9 @@
     name: gitui
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install GitUI for FreeBSD
   become: true
@@ -13,7 +15,9 @@
     name: gitui
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when GitUI package in most distributions reaches version 0.25.0.
 # - name: Install GitUI for Linux
@@ -71,12 +75,12 @@
 
 - name: Install GitUI for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/gitui
+    dest: "{{ bin_path }}/gitui"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ gitui_temp.path }}/gitui"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -84,7 +88,7 @@
     - system_pkg_mgr != "apk"
 
 - name: Install GitUI for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: gitui
@@ -94,7 +98,7 @@
 
 - name: Install GitUI for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: gitui
   tags:
     - install
@@ -107,7 +111,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/gitui"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

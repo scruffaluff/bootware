@@ -8,6 +8,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "FreeBSD"
     - gnome_desktop
 
@@ -20,6 +21,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - gnome_desktop
 
@@ -30,10 +32,12 @@
   failed_when: false
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install desktop management dependencies for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: duti
@@ -43,7 +47,7 @@
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: powertoys
   tags:
     - install

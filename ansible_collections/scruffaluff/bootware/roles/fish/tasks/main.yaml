@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "fish"
 
@@ -16,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "opkg"
     - user_login == "fish"
 
@@ -25,7 +27,9 @@
     name: fish
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Fish for Linux
   ansible.builtin.package:
@@ -33,10 +37,12 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Fish for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: fish
@@ -134,6 +140,7 @@
   tags:
     - config
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "apk"
     - user_login == "fish"

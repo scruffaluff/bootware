@@ -7,7 +7,9 @@
     name: tmux
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Tmux for FreeBSD
   become: true
@@ -15,7 +17,9 @@
     name: tmux
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Tmux for Linux
   ansible.builtin.package:
@@ -26,11 +30,12 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
 - name: Install Tmux for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -48,7 +53,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: tmux.conf.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

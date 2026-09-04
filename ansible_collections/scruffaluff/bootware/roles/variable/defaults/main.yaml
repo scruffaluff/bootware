@@ -94,6 +94,7 @@ bash_completion: >-
   {{ bash_completion_sys if system_install else bash_completion_user }}
 bash_executable: "{{ bash_executable_.get(ansible_facts.system, '/bin/bash') }}"
 bash_name: bash
+bin_path: "{{ bin_path_sys if system_install else bin_path_user }}"
 brew_user: "{{ user_id }}"
 editor_font_size: "{{ font_size | default(14) }}"
 fish_completion: >-

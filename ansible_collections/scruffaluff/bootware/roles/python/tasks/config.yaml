@@ -6,7 +6,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.jupyter/lab/user-settings/@jupyterlab/{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - apputils-extension
     - filebrowser-extension
@@ -89,7 +89,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.matplotlib"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -131,7 +131,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/marimo"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -165,7 +165,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: marimo.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -195,7 +195,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/pyrc"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -259,7 +259,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/ruff"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

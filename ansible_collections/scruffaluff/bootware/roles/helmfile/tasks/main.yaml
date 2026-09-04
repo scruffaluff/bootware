@@ -22,7 +22,9 @@
     name: helmfile
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Helmfile for Linux
   ansible.builtin.package:
@@ -32,7 +34,9 @@
   register: helmfile_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Helmfile version for Linux
   ansible.builtin.uri:
@@ -44,7 +48,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helmfile_linux is failed
+    - not system_install or helmfile_linux is failed
 
 - name: Download Helmfile for Linux
   ansible.builtin.unarchive:
@@ -60,24 +64,24 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helmfile_linux is failed
+    - not system_install or helmfile_linux is failed
 
 - name: Install Helmfile for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/helmfile
+    dest: "{{ bin_path }}/helmfile"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ helmfile_temp.path }}/helmfile"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helmfile_linux is failed
+    - not system_install or helmfile_linux is failed
 
 - name: Install Helmfile for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helmfile
@@ -87,7 +91,7 @@
 
 - name: Install Helmfile for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: helmfile
   tags:
     - install

@@ -5,7 +5,9 @@
     name: shfmt
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Shfmt for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: shfmt_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Shfmt version for Linux
   ansible.builtin.uri:
@@ -27,26 +31,26 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - shfmt_linux is failed
+    - not system_install or shfmt_linux is failed
 
 - name: Install Shfmt for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/shfmt
+    dest: "{{ bin_path }}/shfmt"
     force: true
     mode: "755"
     url: >-
       https://github.com/mvdan/sh/releases/download/v{{
       shfmt_formula.json.versions.stable }}/shfmt_v{{
       shfmt_formula.json.versions.stable }}_linux_{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - shfmt_linux is failed
+    - not system_install or shfmt_linux is failed
 
 - name: Install Shfmt for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: shfmt
@@ -56,7 +60,7 @@
 
 - name: Install Shfmt for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: shfmt
   tags:
     - install

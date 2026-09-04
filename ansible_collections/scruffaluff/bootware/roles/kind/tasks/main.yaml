@@ -11,19 +11,19 @@
 
 - name: Install Kind for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/kind
+    dest: "{{ bin_path }}/kind"
     force: true
     mode: "755"
     url: >-
       https://github.com/kubernetes-sigs/kind/releases/download/v{{
       kind_formula.json.versions.stable }}/kind-linux-{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Kind for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: kind
@@ -33,7 +33,7 @@
 
 - name: Install Kind for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: kind
   tags:
     - install

@@ -5,9 +5,13 @@
     name: android-tools
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Android platform tools for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: android-platform-tools
@@ -24,6 +28,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr not in ["opkg", "zypper"]
 
@@ -31,7 +36,7 @@
 # to be separately installed.
 - name: Install Android platform tools for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - adb
       - android-clt

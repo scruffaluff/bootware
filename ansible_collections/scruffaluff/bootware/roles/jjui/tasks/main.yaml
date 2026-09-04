@@ -5,7 +5,9 @@
     name: jjui
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest JJUI version for Linux
   ansible.builtin.uri:
@@ -49,20 +51,20 @@
 
 - name: Install JJUI for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/jjui
+    dest: "{{ bin_path }}/jjui"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ jjui_temp.path }}/jjui-{{ jjui_formula.json.versions.stable }}-linux-{{
       system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install JJUI for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: jjui
@@ -72,7 +74,7 @@
 
 - name: Install JJUI for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: jjui
   tags:
     - install
@@ -85,7 +87,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/jjui"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

@@ -5,7 +5,9 @@
     name: vlc
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install VLC for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: vlc_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install VLC for Linux
   become: true
@@ -24,10 +28,13 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - vlc_linux is failed
 
 - name: Install VLC for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: vlc
@@ -43,7 +50,9 @@
     name: vlc
   tags:
     - install
-  when: ansible_facts.system == "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system == "Win32NT"
 
 - name: Remove VLC desktop shortcut
   community.windows.win_shortcut:

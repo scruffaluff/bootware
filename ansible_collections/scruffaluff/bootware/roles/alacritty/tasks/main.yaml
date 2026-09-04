@@ -33,7 +33,9 @@
     name: alacritty
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Alacritty for Linux
   ansible.builtin.package:
@@ -41,7 +43,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Download Alacritty for MacOS
   ansible.builtin.get_url:
@@ -67,7 +71,8 @@
 
 - name: Install Alacritty for MacOS
   ansible.builtin.copy:
-    dest: /Applications/
+    dest: >-
+      {{ '/Applications/' if system_install else user_home + '/Applications/' }}
     mode: "755"
     force: true
     remote_src: true
@@ -87,19 +92,21 @@
 
 - name: Make Alacritty symlink for MacOS
   ansible.builtin.file:
-    src: /Applications/Alacritty.app/Contents/MacOS/alacritty
-    dest: /usr/local/bin/alacritty
+    src: >-
+      {{ '/Applications/' if system_install else user_home + '/Applications/'
+      }}Alacritty.app/Contents/MacOS/alacritty
+    dest: "{{ bin_path }}/alacritty"
     force: true
     mode: "755"
     state: link
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Darwin"
 
 - name: Install Alacritty for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: alacritty
   tags:
     - install
@@ -112,7 +119,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/alacritty"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -133,7 +140,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: alacritty.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

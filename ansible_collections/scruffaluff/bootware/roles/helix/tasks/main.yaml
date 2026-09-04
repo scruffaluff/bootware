@@ -37,7 +37,9 @@
     name: helix
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # TODO: Renable when Helix package in all distributions reaches version 25.01.
 # - name: Install Helix for Linux
@@ -99,18 +101,18 @@
 
 - name: Install Helix for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/hx
+    dest: "{{ bin_path }}/hx"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ helix_temp.path }}/{{ helix_folder }}/hx"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Helix for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helix
@@ -120,7 +122,7 @@
 
 - name: Install Helix for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: helix
   tags:
     - install
@@ -133,7 +135,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/helix"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -162,7 +164,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: config.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when:

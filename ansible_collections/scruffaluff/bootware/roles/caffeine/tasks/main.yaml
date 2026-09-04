@@ -72,7 +72,7 @@
 
 - name: Install Caffeine for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: caffeine
   tags:
     - install
@@ -97,11 +97,11 @@
 
 - name: Download Caffeinate script for GNOME desktops
   ansible.builtin.get_url:
-    dest: /usr/local/bin/caffeinate
+    dest: "{{ bin_path }}/caffeinate"
     force: true
     mode: "755"
     url: https://raw.githubusercontent.com/scruffaluff/picoware/refs/heads/main/src/script/caffeinate.sh
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:

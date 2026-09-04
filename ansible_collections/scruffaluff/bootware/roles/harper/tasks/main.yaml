@@ -5,7 +5,9 @@
     name: harper
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Harper version for Linux
   ansible.builtin.uri:
@@ -52,12 +54,12 @@
 
 - name: Install Harper for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/{{ item }}
+    dest: "{{ bin_path }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ harper_temp.path }}/{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - harper-cli
     - harper-ls
@@ -66,7 +68,7 @@
   when: ansible_facts.system == "Linux"
 
 - name: Install Harper for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: harper
@@ -76,7 +78,7 @@
 
 - name: Install Harper for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: harper
   tags:
     - install

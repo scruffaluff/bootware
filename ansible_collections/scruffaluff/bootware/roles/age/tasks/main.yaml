@@ -5,7 +5,9 @@
     name: age
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Age for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: age_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Age version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed
 
 - name: Create Age temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed
 
 - name: Set Age temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed
 
 - name: Download Age for Linux
   ansible.builtin.unarchive:
@@ -63,16 +67,16 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed
 
 - name: Install Age for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/{{ item }}
+    dest: "{{ bin_path }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ age_temp.path }}/age/{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - age
     - age-keygen
@@ -80,10 +84,10 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed
 
 - name: Install Age for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: age
@@ -93,7 +97,7 @@
 
 - name: Install Age for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: age
   tags:
     - install
@@ -107,4 +111,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - age_linux is failed
+    - not system_install or age_linux is failed

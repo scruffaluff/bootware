@@ -11,19 +11,19 @@
 
 - name: Install K3d for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/k3d
+    dest: "{{ bin_path }}/k3d"
     force: true
     mode: "755"
     url: >-
       https://github.com/k3d-io/k3d/releases/download/v{{
       k3d_formula.json.versions.stable }}/k3d-linux-{{ system_architecture }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install K3d for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: k3d
@@ -33,7 +33,7 @@
 
 - name: Install K3d for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: k3d
   tags:
     - install

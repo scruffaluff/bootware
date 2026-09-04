@@ -8,7 +8,9 @@
     update_cache: true
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Glow for FreeBSD
   become: true
@@ -16,7 +18,9 @@
     name: glow
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Glow for Linux
   ansible.builtin.package:
@@ -27,6 +31,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
 
@@ -41,7 +46,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - glow_linux is failed
+    - not system_install or glow_linux is failed
 
 - name: Create Glow temporary directory for Linux
   ansible.builtin.tempfile:
@@ -52,7 +57,7 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - glow_linux is failed
+    - not system_install or glow_linux is failed
 
 - name: Download Glow for Linux
   ansible.builtin.unarchive:
@@ -68,27 +73,27 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - glow_linux is failed
+    - not system_install or glow_linux is failed
 
 - name: Install Glow for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/glow
+    dest: "{{ bin_path }}/glow"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ glow_temp.path }}/glow_{{ glow_formula.json.versions.stable }}_Linux_{{
       glow_arch }}/glow
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - glow_linux is failed
+    - not system_install or glow_linux is failed
 
 - name: Install Glow for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: glow
@@ -98,7 +103,7 @@
 
 - name: Install Glow for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: glow
   tags:
     - install
@@ -111,7 +116,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -136,7 +141,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/glow"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system not in ["Darwin", "Win32NT"]
@@ -189,4 +194,4 @@
   when:
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
-    - glow_linux is failed
+    - not system_install or glow_linux is failed

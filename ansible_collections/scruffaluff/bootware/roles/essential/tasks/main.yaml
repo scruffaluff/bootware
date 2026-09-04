@@ -8,7 +8,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Create Homebrew user for MacOS
   ansible.builtin.user:
@@ -17,7 +19,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Darwin"
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
 
 - name: Install Homebrew for MacOS
   ansible.builtin.shell:
@@ -25,7 +29,7 @@
       if ! command -v brew > /dev/null 2>&1; then
         curl -LSfs 'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | bash
       fi
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   changed_when: true
   failed_when: essential_homebrew.rc != 0
@@ -39,7 +43,9 @@
     name: chocolatey
   tags:
     - install
-  when: ansible_facts.system == "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system == "Win32NT"
 
 - name: Install Scoop for Windows
   ansible.windows.win_shell: |
@@ -84,7 +90,7 @@
 
 - name: Install Scoop bucket dependency for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: mingit
   tags:
     - install
@@ -136,7 +142,9 @@
       - zstd
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install essential packages for Linux
   ansible.builtin.package:
@@ -146,10 +154,12 @@
   loop: "{{ essential_linux_packages }}"
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install essential packages for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -167,7 +177,7 @@
 
 - name: Install essential packages for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - 7zip
       - bzip2
@@ -189,13 +199,16 @@
   register: essential_yay_stat
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Install Yay for Arch
   ansible.builtin.import_tasks: yay.yaml
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "pacman"
     - not essential_yay_stat.stat.exists
 
@@ -207,15 +220,14 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-# Disabled due to untrusted mount point errors when run from WSL.
-# - name: Set owner of Scoop user folder for Windows
-#   ansible.windows.win_owner:
-#     path: "{{ user_home }}\\scoop"
-#     recurse: true
-#     user: "{{ user_id }}"
-#   tags:
-#     - install
-#   when: ansible_facts.system == "Win32NT"
+- name: Set owner of Scoop user folder for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\scoop"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
 
 - name: Mark role as executed to prevent reruns
   ansible.builtin.set_fact:

@@ -5,7 +5,9 @@
     name: scc
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Scc version for Linux
   ansible.builtin.uri:
@@ -53,18 +55,18 @@
 
 - name: Install Scc for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/scc
+    dest: "{{ bin_path }}/scc"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ scc_temp.path }}/scc"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Scc for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: scc
@@ -74,7 +76,7 @@
 
 - name: Install Scc for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: scc
   tags:
     - install

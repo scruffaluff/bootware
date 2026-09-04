@@ -17,7 +17,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Darwin"
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
 
 - name: Create GitHub Runner user for Linux
   ansible.builtin.user:
@@ -29,7 +31,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Check if Doas is available for Unix
   ansible.builtin.shell: command -v doas # noqa command-instead-of-shell

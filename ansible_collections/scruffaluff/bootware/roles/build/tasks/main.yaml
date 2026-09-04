@@ -5,7 +5,9 @@
     name: build-base
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install build tools for FreeBSD
   become: true
@@ -19,7 +21,9 @@
       - openocd
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install build tools for Linux
   ansible.builtin.package:
@@ -37,11 +41,12 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "opkg"
 
 - name: Install build tools for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -67,7 +72,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install build tools with Chocolatey for Windows
   chocolatey.chocolatey.win_chocolatey:
@@ -78,11 +85,13 @@
       - windows-sdk-10.1
   tags:
     - install
-  when: ansible_facts.system == "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system == "Win32NT"
 
 - name: Install build tools with Scoop for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - ccache
       - cmake
