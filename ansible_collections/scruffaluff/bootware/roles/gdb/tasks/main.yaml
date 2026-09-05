@@ -55,7 +55,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: .gdbinit
       src: gdbinit

@@ -89,7 +89,7 @@
     src: >-
       {{ fd_temp.path }}/fd-v{{ fd_formula.json.versions.stable }}-{{ fd_arch
       }}-unknown-linux-{{ fd_libc }}/autocomplete/fd.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/fd"
       shell: bash

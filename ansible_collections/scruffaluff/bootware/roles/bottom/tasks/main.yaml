@@ -112,7 +112,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -125,7 +125,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: bottom.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

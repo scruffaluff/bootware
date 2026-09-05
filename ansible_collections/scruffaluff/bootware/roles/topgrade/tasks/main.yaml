@@ -117,7 +117,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: topgrade.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

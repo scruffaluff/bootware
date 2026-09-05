@@ -129,7 +129,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: glow.yaml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -154,7 +154,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: glow.yaml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system not in ["Darwin", "Win32NT"]

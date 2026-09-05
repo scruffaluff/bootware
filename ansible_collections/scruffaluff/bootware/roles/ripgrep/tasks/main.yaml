@@ -112,7 +112,7 @@
     src: >-
       {{ ripgrep_temp.path }}/ripgrep-{{ ripgrep_formula.json.versions.stable
       }}-{{ ripgrep_arch }}-unknown-linux-musl/complete/rg.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/rg"
       shell: bash
@@ -133,7 +133,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: ripgreprc
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

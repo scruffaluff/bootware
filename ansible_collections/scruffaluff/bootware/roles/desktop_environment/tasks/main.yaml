@@ -60,7 +60,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Keyboard Layouts"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -76,7 +76,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: no_alt_characters.keylayout
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -95,7 +95,7 @@
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   environment:
     BOOTWARE_FONT_SIZE: "{{ system_font_size }}"
@@ -107,7 +107,7 @@
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   tags:
     - config

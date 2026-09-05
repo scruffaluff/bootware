@@ -44,7 +44,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: vimrc
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

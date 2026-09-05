@@ -102,7 +102,7 @@
     cmd: doctl completion {{ item }} > {{ doctl_temp.path }}/doctl.{{ item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish

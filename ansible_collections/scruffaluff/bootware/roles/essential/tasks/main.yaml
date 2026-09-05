@@ -103,10 +103,7 @@
   changed_when: >-
     'bucket was added successfully' in essential_scoop_bucket.stdout
   environment:
-    Path: >-
-      {{ user_home }}\\scoop\\apps\\mingit\\current\\cmd;{{ user_home
-      }}\\scoop\\shims;C:\\ProgramData\\scoop\\apps\\mingit\\current\\cmd;C:\\ProgramData\\scoop\\shims;{{
-      ansible_facts.env.Path }}
+    Path: "{{ scoop_path }}\\apps\\mingit\\current\\cmd;{{ env_path }}"
   failed_when:
     - essential_scoop_bucket.rc != 0
     - "'bucket already exists' not in essential_scoop_bucket.stdout"

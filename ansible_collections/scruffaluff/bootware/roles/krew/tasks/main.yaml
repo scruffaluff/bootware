@@ -42,7 +42,7 @@
   ansible.builtin.command:
     cmd: >-
       {{ krew_temp.path }}/krew-linux_{{ system_architecture }} install krew
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_install.stdout"
   register: krew_install
@@ -70,11 +70,11 @@
 - name: Install Kubectl plugins for Unix
   ansible.builtin.command:
     cmd: kubectl-krew install {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in krew_plugin_install.stdout"
   environment:
-    PATH: "{{ user_home }}/.krew/bin:{{ ansible_facts.env.PATH }}"
+    PATH: "{{ user_home }}/.krew/bin:{{ env_path }}"
   loop: "{{ krew_plugins }}"
   register: krew_plugin_install
   tags:

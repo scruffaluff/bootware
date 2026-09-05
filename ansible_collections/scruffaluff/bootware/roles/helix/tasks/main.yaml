@@ -151,7 +151,7 @@
     owner: "{{ user_id }}"
     remote_src: true
     src: "{{ helix_temp.path }}/{{ helix_folder }}/runtime"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
@@ -179,7 +179,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: languages.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when:

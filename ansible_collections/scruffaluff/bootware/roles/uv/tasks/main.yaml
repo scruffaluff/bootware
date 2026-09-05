@@ -149,7 +149,7 @@
       }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish
@@ -166,7 +166,7 @@
     mode: "644"
     remote_src: true
     src: "{{ uv_temp.path }}/uv.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/uv"
       shell: bash
@@ -187,7 +187,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/uv.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   tags:
     - completion
     - install
@@ -201,7 +201,7 @@
     [System.IO.File]::WriteAllLines("{{ item }}/UvCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   loop: "{{ powershell_module }}"
   tags:
     - completion

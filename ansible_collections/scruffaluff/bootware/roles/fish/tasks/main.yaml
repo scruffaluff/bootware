@@ -56,7 +56,7 @@
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher
     executable: "{{ fish_executable }}"
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installing jorgebucaran/fisher' in fish_fisher_install.stdout"
   register: fish_fisher_install
@@ -70,7 +70,7 @@
       source {{ user_home }}/.config/fish/config.fish
       fisher install {{ item }}
     executable: "{{ fish_executable }}"
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installing' in fish_plugin_install.stdout"
   loop: "{{ fish_plugins }}"
@@ -86,9 +86,9 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
-    - "{{ fish_completion_user }}"
+    - "{{ fish_completion_usr }}"
     - "{{ user_home }}/.config/fish/functions"
   tags:
     - install
@@ -102,7 +102,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: config.fish
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -116,14 +116,16 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 # User shell is not updated on Alpine Linux when using Ansible user module.
 # Workaround comes from https://github.com/ansible/ansible/issues/61911.
 - name: Change user default shell to Fish for Alpine
   ansible.builtin.command:
     cmd: chsh -s {{ fish_executable }} {{ user_id }}
-  become: true
+  become: "{{ system_install }}"
   changed_when: "'no changes made' not in fish_chsh.stderr"
   register: fish_chsh
   tags:

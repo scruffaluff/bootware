@@ -114,7 +114,7 @@
       {{ hyperfine_temp.path }}/hyperfine-v{{
       hyperfine_formula.json.versions.stable }}-{{ hyperfine_arch
       }}-unknown-linux-musl/autocomplete/hyperfine.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/hyperfine"
       shell: bash

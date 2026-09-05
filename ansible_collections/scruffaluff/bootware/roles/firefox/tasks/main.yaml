@@ -58,7 +58,7 @@
 
 # Ubuntu is skipped because its version of Firefox depends on Snap.
 - name: Find Firefox profiles for Unix
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   scruffaluff.bootware.firefox_profiles:
     user: "{{ user_id }}"
@@ -84,7 +84,7 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop: "{{ firefox_profiles_unix['paths'] }}"
   tags:
     - config
@@ -109,7 +109,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: user.js
-  become: true
+  become: "{{ system_install }}"
   loop: "{{ firefox_profiles_unix['paths'] }}"
   tags:
     - config

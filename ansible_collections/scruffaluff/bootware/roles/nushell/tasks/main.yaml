@@ -87,14 +87,14 @@
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
-    dest: /usr/bin/{{ item }}
+    dest: "{{ nushell_executable | dirname }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ nushell_temp.path }}/nu-{{ nushell_formula_linux.json.versions.stable
       }}-{{ nushell_arch }}-unknown-linux-{{ nushell_libc }}/{{ item }}
-  become: true
+  become: "{{ system_install }}"
   loop: "{{ ['nu'] + nushell_plugins }}"
   tags:
     - install
@@ -126,7 +126,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Register Nushell files as executables for Windows
   ansible.windows.win_regedit:
@@ -165,7 +167,7 @@
   ansible.builtin.command:
     cmd: >-
       nu --commands 'plugin add "{{ nushell_executable | dirname }}/{{ item }}"'
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: true
   loop: "{{ nushell_plugins }}"
@@ -179,7 +181,7 @@
       nu --commands "plugin add '{{ scoop_path }}\apps\nu\current\{{ item }}.exe'"
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   loop: "{{ nushell_plugins }}"
   tags:
     - plugin
@@ -192,7 +194,7 @@
     owner: "{{ user_id }}"
     path: "{{ nushell_autoload_user }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -205,7 +207,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - config.nu
   tags:
@@ -219,7 +221,7 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - "{{ user_home }}/.config/nushell"
     - "{{ nushell_autoload_user }}"
@@ -235,7 +237,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - config.nu
   tags:
@@ -266,7 +268,7 @@
 - name: Change user default shell to Nushell for Alpine
   ansible.builtin.command:
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
-  become: true
+  become: "{{ system_install }}"
   changed_when: "'no changes made' not in nushell_chsh.stderr"
   register: nushell_chsh
   tags:

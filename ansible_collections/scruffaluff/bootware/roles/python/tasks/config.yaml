@@ -38,7 +38,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: jupyter_notebook_config.py
       src: jupyter_notebook_config.py
@@ -110,7 +110,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: matplotlibrc
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -152,7 +152,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: marimo.css
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -216,7 +216,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: .pdbrc
       src: pdbrc
@@ -280,7 +280,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: ruff.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

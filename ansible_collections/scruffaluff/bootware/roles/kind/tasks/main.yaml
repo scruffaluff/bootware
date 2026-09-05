@@ -52,7 +52,7 @@
     kind completion {{ item }} > {{ kind_temp.path }}/kind.{{ item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish

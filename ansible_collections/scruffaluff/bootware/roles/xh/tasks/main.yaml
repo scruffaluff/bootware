@@ -111,7 +111,7 @@
     src: >-
       {{ xh_temp.path }}/xh-v{{ xh_formula.json.versions.stable }}-{{ xh_arch
       }}-unknown-linux-musl/completions/xh.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/xh"
       shell: bash

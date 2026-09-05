@@ -64,7 +64,7 @@
     owner: "{{ user_id }}"
     remote_src: true
     src: "{{ rust_temp.path }}/rust-analyzer"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: >-
@@ -95,7 +95,7 @@
   ansible.builtin.file:
     path: "{{ user_home }}/.cargo/bin/rust-analyzer"
     state: absent
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"

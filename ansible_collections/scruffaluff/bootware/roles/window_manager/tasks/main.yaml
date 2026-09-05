@@ -48,7 +48,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -61,7 +61,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: amethyst.yaml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"

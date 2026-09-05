@@ -70,7 +70,7 @@
     url: >-
       https://github.com/tealdeer-rs/tealdeer/releases/download/v{{
       tldr_formula.json.versions.stable }}/completions_{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/tldr"
       shell: bash
@@ -101,7 +101,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: config.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

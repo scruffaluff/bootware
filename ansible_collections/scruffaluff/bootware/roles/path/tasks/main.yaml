@@ -25,7 +25,7 @@
 
 - name: Create user binaries directory for Unix
   ansible.builtin.file:
-    dest: "{{ bin_path_user }}"
+    dest: "{{ bin_path_usr }}"
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
@@ -128,7 +128,7 @@
     state: directory
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -140,7 +140,7 @@
     user: "{{ user_id }}"
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -159,7 +159,7 @@
     scope: user
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -219,9 +219,9 @@
     state: directory
   become: "{{ system_install }}"
   loop:
-    - "{{ bash_completion_user }}"
-    - "{{ fish_completion_user }}"
-    - "{{ nushell_autoload_user }}"
+    - "{{ bash_completion_usr }}"
+    - "{{ fish_completion_usr }}"
+    - "{{ nushell_autoload_usr }}"
   tags:
     - completion
     - install

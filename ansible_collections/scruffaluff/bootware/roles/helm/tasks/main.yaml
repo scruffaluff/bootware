@@ -102,11 +102,11 @@
 - name: Install Helm plugins for Unix
   ansible.builtin.command:
     cmd: helm plugin install --verify=false {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   failed_when:
     - helm_plugin_install.rc != 0
     - "'plugin already exists' not in helm_plugin_install.stderr"
@@ -121,7 +121,7 @@
     cmd: helm plugin install --verify=false {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   failed_when:
     - helm_plugin_install.rc != 0
     - "'plugin already exists' not in helm_plugin_install.stderr"

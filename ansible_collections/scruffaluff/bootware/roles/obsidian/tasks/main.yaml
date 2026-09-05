@@ -34,7 +34,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system in ["Darwin", "Linux"]
@@ -54,7 +54,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when:
@@ -79,7 +79,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - app.json
     - appearance.json

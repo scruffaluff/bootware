@@ -105,7 +105,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/pyrc"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -126,7 +126,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: .lldbinit
       src: lldbinit

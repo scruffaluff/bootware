@@ -1,3 +1,7 @@
+# Global variables for cross role usage.
+#
+# Ensure usage of backslashes on Windows for Windows Defender firewall rules.
+
 ---
 backslash: "\\"
 brew_prefix: >-
@@ -9,7 +13,6 @@ user_home_:
   Darwin: "{{ '/root' if user_id == 'root' else '/Users/' + user_id }}"
   FreeBSD: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
   Linux: "{{ '/root' if user_id == 'root' else '/home/' + user_id }}"
-  # Backslashes are required for Windows Defender firewall rules.
   Win32NT: C:\Users\{{ user_id }}
 user_home: "{{ user_home_.get(ansible_facts.system, '/home/' + user_id) }}"
 
@@ -45,7 +48,7 @@ nushell_autoload_sys_:
   FreeBSD: /usr/local/share/nushell/vendor/autoload
   Linux: /usr/local/share/nushell/vendor/autoload
   Win32NT: C:\ProgramData\nushell\vendor/autoload
-nushell_autoload_user_:
+nushell_autoload_usr_:
   Darwin: "{{ user_home }}/Library/Application Support/nushell/autoload"
   FreeBSD: "{{ user_home }}/.local/share/nushell/autoload"
   Linux: "{{ user_home }}/.local/share/nushell/autoload"
@@ -65,40 +68,54 @@ system_architecture_:
 bash_completion_sys: >-
   {{ bash_completion_sys_.get(ansible_facts.system,
   '/usr/share/bash-completion/completions') }}
-bash_completion_user: "{{ user_home }}/.local/share/bash-completion/completions"
+bash_completion_usr: "{{ user_home }}/.local/share/bash-completion/completions"
 bin_path_sys: >-
   {{ 'C:\Program Files\Bin' if ansible_facts.system == 'Win32NT' else
   '/usr/local/bin' }}
-bin_path_user: >-
+bin_path_usr: >-
   {{ user_home + '\AppData\Local\Programs\Bin' if ansible_facts.system ==
   'Win32NT' else user_home + '/.local/bin' }}
 fish_completion_sys: >-
   {{ fish_completion_sys_.get(ansible_facts.system, '/etc/fish/completions') }}
-fish_completion_user: "{{ user_home }}/.config/fish/completions"
+fish_completion_usr: "{{ user_home }}/.config/fish/completions"
 nushell_autoload_sys: >-
   {{ nushell_autoload_sys_.get(ansible_facts.system,
   '/usr/local/share/nushell/autoload') }}
-nushell_autoload_user: >-
-  {{ nushell_autoload_user_.get(ansible_facts.system, user_home +
+nushell_autoload_usr: >-
+  {{ nushell_autoload_usr_.get(ansible_facts.system, user_home +
   '.local/share/nushell/autoload') }}
 powershell_module_sys:
   - C:\\Program Files\\PowerShell\\Modules
   - C:\\Program Files\\WindowsPowerShell\\Modules
-powershell_module_user:
+powershell_module_usr:
   - "{{ user_home }}\\Documents\\PowerShell\\Modules"
   - "{{ user_home }}\\Documents\\WindowsPowerShell\\Modules"
 scoop_path_sys: C:\ProgramData\scoop
-scoop_path_user: "{{ user_home }}\\scoop"
+scoop_path_usr: "{{ user_home }}\\scoop"
+env_path_:
+  Darwin: >-
+    {{ bin_path_usr }}:/opt/homebrew/bin:{{ bin_path_sys }}:{{
+    ansible_facts.env.PATH }}
+  FreeBSD: >-
+    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.PATH }}
+  Linux: >-
+    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.PATH }}
+  Win32NT: >-
+    {{ scoop_path_usr }}\shims;{{ scoop_path_sys }}\shims;{{ bin_path_usr }};{{
+    bin_path_sys }};{{ ansible_facts.env.Path }}
 
 bash_completion: >-
-  {{ bash_completion_sys if system_install else bash_completion_user }}
+  {{ bash_completion_sys if system_install else bash_completion_usr }}
 bash_executable: "{{ bash_executable_.get(ansible_facts.system, '/bin/bash') }}"
 bash_name: bash
-bin_path: "{{ bin_path_sys if system_install else bin_path_user }}"
+bin_path: "{{ bin_path_sys if system_install else bin_path_usr }}"
 brew_user: "{{ user_id }}"
 editor_font_size: "{{ font_size | default(14) }}"
+env_path: >-
+  {{ env_path_.get(ansible_facts.system, bin_path_usr + ':' + bin_path_sys + ':'
+  + ansible_facts.env.PATH) }}
 fish_completion: >-
-  {{ fish_completion_sys if system_install else fish_completion_user }}
+  {{ fish_completion_sys if system_install else fish_completion_usr }}
 fish_executable: >-
   {{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}
 fish_name: fish
@@ -107,15 +124,16 @@ github_api_headers: >-
   {} }}
 group_id: "{{ group_id_.get(ansible_facts.system, user_id) }}"
 nushell_autoload: >-
-  {{ nushell_autoload_sys if system_install else nushell_autoload_user }}
+  {{ nushell_autoload_sys if system_install else nushell_autoload_usr }}
 nushell_executable: >-
-  {{ nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') }}
+  {{ nushell_executable_.get(ansible_facts.system, '/usr/bin/nu') if
+  system_install else bin_path_usr + '/nu' }}
 nushell_name: nu
 powershell_executable: C:\\Program Files\\PowerShell\\7\\pwsh.exe
 powershell_module: >-
-  {{ powershell_module_sys if system_install else powershell_module_user }}
+  {{ powershell_module_sys if system_install else powershell_module_usr }}
 powershell_name: pwsh
-scoop_path: "{{ scoop_path_sys if system_install else scoop_path_user }}"
+scoop_path: "{{ scoop_path_sys if system_install else scoop_path_usr }}"
 system_architecture: >-
   {{ system_architecture_.get(ansible_facts.architecture, '') }}
 system_font_size: "{{ font_size | default(11) }}"

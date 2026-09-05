@@ -103,10 +103,10 @@
 - name: Create Starship Nushell configuration for Unix
   ansible.builtin.shell: >-
     starship init nu > '{{ nushell_autoload }}/starship.nu'
-  become: true
+  become: "{{ system_install }}"
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"
@@ -119,7 +119,7 @@
     [System.IO.File]::WriteAllLines("{{ nushell_autoload }}/starship.nu", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -132,7 +132,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: starship.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

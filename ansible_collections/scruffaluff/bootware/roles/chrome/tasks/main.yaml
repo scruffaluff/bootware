@@ -92,7 +92,7 @@
     owner: "{{ user_id }}"
     path: "{{ item | dirname }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop: "{{ chrome_services }}"
   tags:
     - install
@@ -126,7 +126,7 @@
 - name: Set Google Chrome policies for MacOS
   ansible.builtin.command:
     cmd: defaults write com.google.Chrome {{ item.key }} -int {{ item.value }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: true
   loop: "{{ chrome_policies | dict2items }}"

@@ -116,7 +116,7 @@
     src: >-
       {{ yazi_temp.path }}/yazi-{{ yazi_arch }}-unknown-linux-{{ yazi_libc
       }}/completions/yazi.{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/yazi"
       shell: bash
@@ -130,11 +130,11 @@
 - name: Install Yazi plugins for Unix
   ansible.builtin.command:
     cmd: ya pkg add {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Deploying package' in yazi_plugin_install.stdout"
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   failed_when:
     - yazi_plugin_install.rc != 0
     - "'already exists' not in yazi_plugin_install.stderr"
@@ -148,7 +148,7 @@
   ansible.windows.win_shell: ya pkg add {{ item }}
   changed_when: "'Deploying package' in yazi_plugin_install.stdout"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   failed_when:
     - yazi_plugin_install.rc != 0
     - "'already exists' not in yazi_plugin_install.stderr"
@@ -165,7 +165,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - yazi
     - yazi/plugins/auto-layout.yazi
@@ -183,7 +183,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: keymap.toml
       src: keymap.toml

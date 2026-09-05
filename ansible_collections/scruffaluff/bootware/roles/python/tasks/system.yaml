@@ -158,13 +158,11 @@
     cmd: >-
       uv tool install{{ ' --with ' + item.extras | join(',') if item.extras is
         defined else '' }} {{ item.name if item.name is defined else item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'already installed' not in python_application_unix.stderr"
   environment:
-    PATH: >-
-      {{ user_home }}/.local/bin:/opt/homebrew/bin:/usr/local/bin:{{
-      ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop: "{{ python_applications }}"
   register: python_application_unix
   tags:
@@ -179,7 +177,7 @@
     defined else '' }} {{ item.name if item.name is defined else item }}
   changed_when: "'already installed' not in python_application_windows.stderr"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   loop: "{{ python_applications }}"
   register: python_application_windows
   tags:

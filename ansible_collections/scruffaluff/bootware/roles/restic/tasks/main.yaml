@@ -51,14 +51,16 @@
       item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Install Restic shell completions for Unix
   ansible.builtin.copy:
@@ -67,7 +69,7 @@
     mode: "644"
     remote_src: true
     src: "{{ restic_temp.path }}/restic.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/restic"
       shell: bash
@@ -76,7 +78,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Remove Restic temporary directory for Unix
   ansible.builtin.file:

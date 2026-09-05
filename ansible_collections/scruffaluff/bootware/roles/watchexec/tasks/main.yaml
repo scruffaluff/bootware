@@ -96,7 +96,7 @@
       {{ watchexec_temp.path }}/watchexec-{{
       watchexec_formula.json.versions.stable }}-{{ watchexec_arch }}-{{
       watchexec_env }}/completions/{{ item.shell }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/watchexec"
       shell: bash

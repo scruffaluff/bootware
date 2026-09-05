@@ -133,13 +133,13 @@
 - name: Install VSCode extensions for Unix
   ansible.builtin.command:
     cmd: code --install-extension {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'successfully installed' in vscode_extension_install.stdout"
   environment:
     PATH: >-
-      /opt/homebrew/bin:/usr/local/bin:/usr/share/code/bin:/Applications/Visual
-      Studio Code.app/Contents/Resources/app/bin:{{ ansible_facts.env.PATH }}
+      /usr/share/code/bin:/Applications/Visual Studio
+      Code.app/Contents/Resources/app/bin:{{ env_path }}
   failed_when:
     - vscode_extension_install.rc != 0
     - "'already installed' not in vscode_extension_install.stdout"

@@ -89,7 +89,7 @@
       }}/miniserve.{{ item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish
@@ -105,7 +105,7 @@
     mode: "644"
     remote_src: true
     src: "{{ miniserve_temp.path }}/miniserve.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/miniserve"
       shell: bash

@@ -89,7 +89,7 @@
       {{ bat_temp.path }}/bat-v{{ bat_formula.json.versions.stable }}-{{
       bat_arch }}-unknown-linux-{{ system_libc }}/autocomplete/bat.{{ item.shell
       }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/bat"
       shell: bash
@@ -115,7 +115,10 @@
   become: "{{ system_install }}"
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
+    - bat_linux is success
 
 - name: Install Bat for MacOS
   become: "{{ system_install }}"
@@ -141,7 +144,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -154,7 +157,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: config
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
