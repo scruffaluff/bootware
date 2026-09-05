@@ -85,7 +85,7 @@
     src: >-
       {{ chafa_temp.path }}/chafa-{{ chafa_formula.json.versions.stable
       }}/tools/completions/fish-completion.fish
-  become: true
+  become: "{{ system_install }}"
   tags:
     - completion
     - install

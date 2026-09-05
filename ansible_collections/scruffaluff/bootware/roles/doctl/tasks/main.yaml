@@ -118,7 +118,7 @@
     mode: "644"
     remote_src: true
     src: "{{ doctl_temp.path }}/doctl.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/doctl"
       shell: bash

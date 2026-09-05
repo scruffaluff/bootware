@@ -128,6 +128,8 @@
   become_user: "{{ user_id }}"
   # Command always marks application as changed.
   changed_when: true
+  environment:
+    PATH: "{{ env_path }}"
   loop: "{{ node_applications }}"
   tags:
     - plugin

@@ -243,7 +243,7 @@
   ansible.windows.win_file:
     path: "{{ item }}"
     state: directory
-  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
+  loop: "{{ [nushell_autoload_usr] + powershell_module_usr }}"
   tags:
     - completion
     - install
@@ -254,7 +254,7 @@
     path: "{{ item }}"
     recurse: true
     user: "{{ user_id }}"
-  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
+  loop: "{{ [nushell_autoload_usr] + powershell_module_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"

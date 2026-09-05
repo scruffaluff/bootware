@@ -24,6 +24,11 @@
         dest: "{{ ansible_facts.env.TEMP }}\\font\\{{ font_family.name }}"
         src: "{{ ansible_facts.env.TEMP }}\\font\\{{ font_family.name }}.zip"
 
+    - name: Create font directory for Windows
+      ansible.windows.win_file:
+        path: "{{ font_folder }}"
+        state: directory
+
     # Based on logic from
     # https://alkanesolutions.co.uk/2021/12/06/installing-fonts-with-powershell.
     # Do not quote $Patterns variable, otherwise it will be interpreted as a

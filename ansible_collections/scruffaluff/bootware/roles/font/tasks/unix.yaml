@@ -71,7 +71,7 @@
         mode: "755"
         path: "{{ font_folder[ansible_facts.system] }}"
         state: directory
-      become: true
+      become: "{{ system_install }}"
 
     - name: Install font files for Unix
       ansible.builtin.copy:
@@ -79,13 +79,13 @@
         mode: "644"
         remote_src: true
         src: "{{ item.path }}"
-      become: true
+      become: "{{ system_install }}"
       loop: "{{ font_paths.files }}"
 
 - name: Update font cache for Unix
   ansible.builtin.command:
     cmd: fc-cache --verbose
-  become: true
+  become: "{{ system_install }}"
   changed_when: "'new cache contents' in font_cache_unix.stdout"
   register: font_cache_unix
   tags:

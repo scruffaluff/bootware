@@ -111,9 +111,9 @@ bash_name: bash
 bin_path: "{{ bin_path_sys if system_install else bin_path_usr }}"
 brew_user: "{{ user_id }}"
 editor_font_size: "{{ font_size | default(14) }}"
-env_path: >-
-  {{ env_path_.get(ansible_facts.system, bin_path_usr + ':' + bin_path_sys + ':'
-  + ansible_facts.env.PATH) }}
+# Cannot build default path directly since using ansible_facts.env.PATH crashes
+# on Windows.
+env_path: "{{ env_path_.get(ansible_facts.system, env_path_['Linux']) }}"
 fish_completion: >-
   {{ fish_completion_sys if system_install else fish_completion_usr }}
 fish_executable: >-

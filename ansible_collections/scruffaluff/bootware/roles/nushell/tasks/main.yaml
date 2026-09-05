@@ -170,6 +170,8 @@
   become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "{{ env_path }}"
   loop: "{{ nushell_plugins }}"
   tags:
     - plugin
@@ -192,7 +194,7 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_autoload_user }}"
+    path: "{{ nushell_autoload_usr }}"
     state: directory
   become: "{{ system_install }}"
   tags:
@@ -224,7 +226,7 @@
   become: "{{ system_install }}"
   loop:
     - "{{ user_home }}/.config/nushell"
-    - "{{ nushell_autoload_user }}"
+    - "{{ nushell_autoload_usr }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"]
@@ -246,7 +248,7 @@
 
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ nushell_autoload_user }}"
+    path: "{{ nushell_autoload_usr }}"
     state: directory
   tags:
     - config

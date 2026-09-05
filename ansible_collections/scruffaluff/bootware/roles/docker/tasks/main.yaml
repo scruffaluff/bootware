@@ -289,7 +289,7 @@
     url: >-
       https://raw.githubusercontent.com/docker/cli/master/contrib/completion/{{
       item.path }}
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/docker"
       path: bash/docker

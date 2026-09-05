@@ -111,7 +111,7 @@
     mode: "644"
     remote_src: true
     src: "{{ kubectl_temp.path }}/kubectl.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/kubectl"
       shell: bash

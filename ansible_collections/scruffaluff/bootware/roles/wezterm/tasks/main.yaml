@@ -15,7 +15,9 @@
   register: wezterm_temp
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Set Wezterm temporary directory permissions for Unix
   ansible.builtin.file:
@@ -24,7 +26,9 @@
     state: directory
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Download Wezterm GPG key for Debian
   ansible.builtin.get_url:
@@ -34,7 +38,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Wezterm GPG key for Debian
   ansible.builtin.command:
@@ -45,7 +51,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Wezterm repository for Debian
   ansible.builtin.apt_repository:
@@ -57,7 +65,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Install Apt cache for Debian
   ansible.builtin.apt:
@@ -75,7 +85,9 @@
     name: wezfurlong/wezterm-nightly
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install Wezterm for Linux
   ansible.builtin.package:
@@ -163,4 +175,6 @@
     state: absent
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"

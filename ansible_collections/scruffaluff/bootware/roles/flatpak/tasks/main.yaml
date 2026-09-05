@@ -20,7 +20,9 @@
   changed_when: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Enable Flathub remote repository for Linux
   ansible.builtin.command:
@@ -30,7 +32,9 @@
   changed_when: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Flatpak packages for Linux
   become: true

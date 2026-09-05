@@ -9,9 +9,13 @@
     - install
   vars:
     font_folder:
-      FreeBSD: /usr/local/share/fonts/{{ font_family.name }}
-      Darwin: /Library/Fonts
-      Linux: /usr/share/fonts/{{ font_family.name }}
+      FreeBSD: >-
+        {{ '/usr/local/share/fonts/' if system_install else user_home +
+        '/.local/share/fonts' }}
+      Darwin: "{{ '' if system_install else user_home }}/Library/Fonts"
+      Linux: >-
+        {{ '/usr/share/fonts/' if system_install else user_home +
+        '/.local/share/fonts' }}
   when:
     - ansible_facts.system != "Win32NT"
     - font_install
@@ -25,7 +29,9 @@
   tags:
     - install
   vars:
-    font_folder: C:\Windows\Fonts
+    font_folder: >-
+      {{ 'C:\Windows\Fonts' if system_install else user_home +
+      '\AppData\Local\Microsoft\Windows\Fonts' }}
   when:
     - ansible_facts.system == "Win32NT"
     - font_install
