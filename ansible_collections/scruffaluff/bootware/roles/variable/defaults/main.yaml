@@ -95,14 +95,18 @@ scoop_path_usr: "{{ user_home }}\\scoop"
 env_path_:
   Darwin: >-
     {{ bin_path_usr }}:/opt/homebrew/bin:{{ bin_path_sys }}:{{
-    ansible_facts.env.PATH }}
+    ansible_facts.env.get('PATH',
+    '/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin') }}
   FreeBSD: >-
-    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.PATH }}
+    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.get('PATH',
+    '/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin') }}
   Linux: >-
-    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.PATH }}
+    {{ bin_path_usr }}:{{ bin_path_sys }}:{{ ansible_facts.env.get('PATH',
+    '/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin') }}
   Win32NT: >-
     {{ scoop_path_usr }}\shims;{{ scoop_path_sys }}\shims;{{ bin_path_usr }};{{
-    bin_path_sys }};{{ ansible_facts.env.Path }}
+    bin_path_sys }};{{ ansible_facts.env.get('Path',
+    'C:\Windows\system32;C:\Windows') }}
 
 bash_completion: >-
   {{ bash_completion_sys if system_install else bash_completion_usr }}

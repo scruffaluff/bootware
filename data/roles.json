@@ -24,7 +24,9 @@
     "tests": {
       "freebsd": ["audacity --version"],
       "linux": ["which audacity || flatpak info org.audacityteam.Audacity"],
-      "macos": ["/Applications/Audacity.app/Contents/MacOS/Audacity --version"],
+      "macos": [
+        "'/Applications/Audacity 4.app/Contents/MacOS/audacity' --version"
+      ],
       "windows": ["scoop prefix audacity"]
     }
   },
