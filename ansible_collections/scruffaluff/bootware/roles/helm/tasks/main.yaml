@@ -5,7 +5,9 @@
     name: helm
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Helm for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: helm_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Helm version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed
 
 - name: Create Helm temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed
 
 - name: Set Helm temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed
 
 - name: Download Helm for Linux
   ansible.builtin.unarchive:
@@ -62,24 +66,24 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed
 
 - name: Install Helm for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/helm
+    dest: "{{ bin_path }}/helm"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ helm_temp.path }}/linux-{{ system_architecture }}/helm"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed
 
 - name: Install Helm for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: helm
@@ -89,7 +93,7 @@
 
 - name: Install Helm for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: helm
   tags:
     - install
@@ -98,11 +102,11 @@
 - name: Install Helm plugins for Unix
   ansible.builtin.command:
     cmd: helm plugin install --verify=false {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   failed_when:
     - helm_plugin_install.rc != 0
     - "'plugin already exists' not in helm_plugin_install.stderr"
@@ -117,7 +121,7 @@
     cmd: helm plugin install --verify=false {{ item }}
   changed_when: "'Installed plugin' in helm_plugin_install.stdout"
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   failed_when:
     - helm_plugin_install.rc != 0
     - "'plugin already exists' not in helm_plugin_install.stderr"
@@ -135,4 +139,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - helm_linux is failed
+    - not system_install or helm_linux is failed

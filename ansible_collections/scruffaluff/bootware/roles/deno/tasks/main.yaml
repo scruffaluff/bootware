@@ -15,7 +15,9 @@
     name: deno
   tags:
     - install
-  when: system_pkg_mgr == "apk"
+  when:
+    - system_install
+    - system_pkg_mgr == "apk"
 
 - name: Install Deno for FreeBSD
   become: true
@@ -23,7 +25,9 @@
     name: deno
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Download Deno for Unix
   ansible.builtin.unarchive:
@@ -48,12 +52,12 @@
 
 - name: Install Deno for Unix
   ansible.builtin.copy:
-    dest: /usr/local/bin/deno
+    dest: "{{ bin_path }}/deno"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ deno_temp.path }}/deno"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: >-
@@ -62,7 +66,7 @@
 
 - name: Install Deno for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: deno
   tags:
     - install
@@ -126,7 +130,7 @@
     cmd: deno completions {{ item }} > {{ deno_temp.path }}/deno.{{ item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish
@@ -144,7 +148,7 @@
     mode: "644"
     remote_src: true
     src: "{{ deno_temp.path }}/deno.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/deno"
       shell: bash
@@ -165,7 +169,7 @@
     [System.IO.File]::WriteAllLines("{{ item }}\DenoCompletion.psm1", $Text)
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   loop: "{{ powershell_module }}"
   tags:
     - completion

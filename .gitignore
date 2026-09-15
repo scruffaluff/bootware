@@ -5,14 +5,13 @@
 *.bak
 *.log
 *.py[cdio]
-*.tar.gz
 *.swp
+*.tar.gz
 *.xml
 .DS_Store
 .classpath/
 .env
 .hypothesis/
-.local/
 .localized
 .lock
 .mypy_cache/
@@ -22,6 +21,7 @@
 .venv/
 .vscode/
 .zed/
+/.local/
 /.vendor/
 /.vitepress/.temp/
 /.vitepress/cache/
@@ -31,11 +31,11 @@
 /ansible_collections/scruffaluff/bootware/README.md
 /build/
 /data/public/install*
+/dist/
 /doc/software.md
 Thumbs.db
 __pycache__/
 deno.lock
-dist/
 node_modules/
 tmp/
 !/ansible_collections/scruffaluff

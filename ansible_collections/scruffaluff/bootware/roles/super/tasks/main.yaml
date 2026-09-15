@@ -24,6 +24,7 @@
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
     - super_passwordless
+    - system_install
     - ansible_facts.system != "Win32NT"
     - super_doas_available.rc == 0
 
@@ -34,7 +35,9 @@
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   failed_when: false
   register: super_sudo_available
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Disable annoying and unhelpful sudoedit error
   ansible.builtin.blockinfile:
@@ -56,6 +59,7 @@
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - super_sudo_available.rc == 0
 
@@ -77,6 +81,7 @@
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
   when:
     - super_passwordless
+    - system_install
     - ansible_facts.system != "Win32NT"
     - super_sudo_available.rc == 0
 
@@ -87,4 +92,5 @@
   changed_when: true
   when:
     - super_passwordless
+    - system_install
     - ansible_facts.system == "Win32NT"

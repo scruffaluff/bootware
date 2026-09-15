@@ -7,7 +7,9 @@
       - typstyle
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Typst version for Linux
   ansible.builtin.uri:
@@ -71,27 +73,27 @@
 
 - name: Install Typst for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/typst
+    dest: "{{ bin_path }}/typst"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ typst_temp.path }}/typst-{{ typst_arch }}-unknown-linux-musl/typst
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Typstyle for Linux
   ansible.builtin.get_url:
-    dest: /usr/local/bin/typstyle
+    dest: "{{ bin_path }}/typstyle"
     force: true
     mode: "755"
     url: >-
       https://github.com/typstyle-rs/typstyle/releases/download/v{{
       typstyle_formula.json.versions.stable }}/typstyle-{{ typst_arch
       }}-unknown-linux-{{ system_libc }}
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
@@ -111,20 +113,20 @@
 
 - name: Install Tinymist for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/tinymist
+    dest: "{{ bin_path }}/tinymist"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ typst_temp.path }}/tinymist-{{ typst_arch }}-unknown-linux-{{
       system_libc }}/tinymist
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Typst for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name:
@@ -137,7 +139,7 @@
 
 - name: Install Typst for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name:
       - tinymist
       - typst

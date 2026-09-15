@@ -5,7 +5,9 @@
     name: carapace
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Get latest Carapace version for Linux
   ansible.builtin.uri:
@@ -50,18 +52,18 @@
 
 - name: Install Carapace for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/carapace
+    dest: "{{ bin_path }}/carapace"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ carapace_temp.path }}/carapace"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Carapace for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: carapace
@@ -71,7 +73,7 @@
 
 - name: Install Carapace for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: extras/carapace-bin
   tags:
     - install

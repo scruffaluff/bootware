@@ -5,7 +5,9 @@
     name: ImageMagick7
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Image Magick for Linux
   ansible.builtin.package:
@@ -20,10 +22,12 @@
       dnf: ImageMagick
       pacman: imagemagick
       zypper: ImageMagick
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Image Magick for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: imagemagick
@@ -33,7 +37,7 @@
 
 - name: Install Image Magick for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: imagemagick
   tags:
     - install

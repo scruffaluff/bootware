@@ -52,6 +52,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "dnf"
 
@@ -104,6 +105,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr in ["apt", "dnf"]
 
@@ -118,6 +120,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr in ["apt", "dnf"]
 

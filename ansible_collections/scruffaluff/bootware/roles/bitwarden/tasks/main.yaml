@@ -23,6 +23,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "apt"
 
@@ -37,6 +38,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_architecture == "amd64"
     - system_pkg_mgr == "dnf"
 
@@ -47,10 +49,13 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - not (system_architecture == "amd64" and system_pkg_mgr in ["apt", "dnf"])
 
 - name: Install Bitwarden for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: bitwarden
@@ -61,7 +66,7 @@
 
 - name: Install Bitwarden for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: bitwarden
   tags:
     - install

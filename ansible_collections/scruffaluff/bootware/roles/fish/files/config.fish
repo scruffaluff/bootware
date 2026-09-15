@@ -438,6 +438,13 @@ end
 # Avoid Homebrew hints after installing a package.
 set --export HOMEBREW_NO_ENV_HINTS true
 
+# Hugging Face settings.
+
+# Disable extraneous messages from HF CLI.
+set --export HF_HUB_DISABLE_TELEMETRY 1
+set --export HF_HUB_DISABLE_IMPLICIT_TOKEN 1
+set --export HF_HUB_DISABLE_UPDATE_CHECK 1
+
 # Just settings.
 
 # Add alias for account wide Just recipes.

@@ -6,7 +6,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.jupyter/lab/user-settings/@jupyterlab/{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - apputils-extension
     - filebrowser-extension
@@ -38,7 +38,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: jupyter_notebook_config.py
       src: jupyter_notebook_config.py
@@ -89,7 +89,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.matplotlib"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -110,7 +110,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: matplotlibrc
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -131,7 +131,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/marimo"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -152,7 +152,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: marimo.css
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -165,7 +165,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: marimo.toml.j2
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -195,7 +195,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/pyrc"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -216,7 +216,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item.src }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: .pdbrc
       src: pdbrc
@@ -259,7 +259,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.config/ruff"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -280,7 +280,7 @@
     mode: "644"
     owner: "{{ user_id }}"
     src: ruff.toml
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

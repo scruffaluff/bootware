@@ -61,7 +61,7 @@
     owner: "{{ user_id }}"
     path: "{{ plugin.dest | dirname }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"
@@ -74,7 +74,7 @@
     group: "{{ group_id }}"
     mode: "644"
     owner: "{{ user_id }}"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system != "Win32NT"

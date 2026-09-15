@@ -6,10 +6,13 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_architecture == "amd64"
 
 - name: Install Bitwig for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: bitwig-studio
@@ -23,4 +26,6 @@
     name: bitwig
   tags:
     - install
-  when: ansible_facts.system == "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system == "Win32NT"

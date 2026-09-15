@@ -319,6 +319,13 @@ if (Get-Command -ErrorAction SilentlyContinue hx) {
     $Env:EDITOR = 'hx'
 }
 
+# Hugging Face settings.
+
+# Disable extraneous messages from HF CLI.
+$Env:HF_HUB_DISABLE_TELEMETRY = '1'
+$Env:HF_HUB_DISABLE_IMPLICIT_TOKEN = '1'
+$Env:HF_HUB_DISABLE_UPDATE_CHECK = '1'
+
 # Just settings.
 
 # Add alias for account wide Just recipes.

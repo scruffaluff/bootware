@@ -6,7 +6,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.cargo"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
 
@@ -14,7 +14,7 @@
   ansible.builtin.shell: # noqa command-instead-of-module
     cmd: curl -LSfs https://sh.rustup.rs | sh -s -- -y --no-modify-path
     creates: "{{ user_home }}/.cargo/bin/rustup"
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   tags:
     - install
@@ -22,13 +22,11 @@
 - name: Set Rust default toolchain
   ansible.builtin.command:
     cmd: rustup default {{ rust_toolchain }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_toolchain_set.stdout"
   environment:
-    PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
-      ansible_facts.env.PATH }}
+    PATH: "{{ user_home }}/.cargo/bin:{{ env_path }}"
   register: rust_toolchain_set
   tags:
     - install
@@ -36,13 +34,11 @@
 - name: Add Rust components for Unix
   ansible.builtin.command:
     cmd: rustup component add {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_component_add.stdout"
   environment:
-    PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
-      ansible_facts.env.PATH }}
+    PATH: "{{ user_home }}/.cargo/bin:{{ env_path }}"
   loop: "{{ rust_components }}"
   register: rust_component_add
   tags:
@@ -51,13 +47,11 @@
 - name: Add Rust targets for Unix
   ansible.builtin.command:
     cmd: rustup target add {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'installing' in rust_target_add.stdout"
   environment:
-    PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
-      ansible_facts.env.PATH }}
+    PATH: "{{ user_home }}/.cargo/bin:{{ env_path }}"
   loop: "{{ rust_targets }}"
   register: rust_target_add
   tags:
@@ -111,7 +105,7 @@
     owner: "{{ user_id }}"
     remote_src: true
     src: "{{ rust_temp.path }}/cargo-binstall"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - plugin
   when: ansible_facts.system in ["Darwin", "Linux"]
@@ -119,13 +113,11 @@
 - name: Install Cargo packages for Unix
   ansible.builtin.command:
     cmd: cargo binstall --no-confirm {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'This will install' in rust_binstall_package.stdout"
   environment:
-    PATH: >-
-      {{ user_home }}/.cargo/bin:{{ user_home }}/.local/bin:{{
-      ansible_facts.env.PATH }}
+    PATH: "{{ user_home }}/.cargo/bin:{{ env_path }}"
   loop: "{{ rust_applications }}"
   register: rust_binstall_package
   tags:

@@ -7,7 +7,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Create system binaries directory for Unix
   ansible.builtin.file:
@@ -17,16 +19,18 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Create user binaries directory for Unix
   ansible.builtin.file:
-    dest: "{{ bin_path_user }}"
+    dest: "{{ bin_path_usr }}"
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"
@@ -40,6 +44,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_paths | length > 0
 
@@ -53,6 +58,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_paths | length > 0
 
@@ -65,6 +71,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_paths | length > 0
 
@@ -78,6 +85,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_paths | length > 0
 
@@ -120,7 +128,7 @@
     state: directory
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -132,7 +140,7 @@
     user: "{{ user_id }}"
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -151,7 +159,7 @@
     scope: user
   loop:
     - "{{ user_home }}\\.local\\bin"
-    - "{{ bin_path_user }}"
+    - "{{ bin_path_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
@@ -163,7 +171,7 @@
     mode: "755"
     owner: "{{ user_id }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when: ansible_facts.system != "Win32NT"
@@ -198,7 +206,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Create user shell completion directories for Unix
   ansible.builtin.file:
@@ -207,11 +217,11 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
-    - "{{ bash_completion_user }}"
-    - "{{ fish_completion_user }}"
-    - "{{ nushell_autoload_user }}"
+    - "{{ bash_completion_usr }}"
+    - "{{ fish_completion_usr }}"
+    - "{{ nushell_autoload_usr }}"
   tags:
     - completion
     - install
@@ -233,7 +243,7 @@
   ansible.windows.win_file:
     path: "{{ item }}"
     state: directory
-  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
+  loop: "{{ [nushell_autoload_usr] + powershell_module_usr }}"
   tags:
     - completion
     - install
@@ -244,7 +254,7 @@
     path: "{{ item }}"
     recurse: true
     user: "{{ user_id }}"
-  loop: "{{ [nushell_autoload_user] + powershell_module_user }}"
+  loop: "{{ [nushell_autoload_usr] + powershell_module_usr }}"
   tags:
     - install
   when: ansible_facts.system == "Win32NT"

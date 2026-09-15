@@ -1,22 +1,86 @@
 ---
+- name: Create Restic temporary directory for Unix
+  ansible.builtin.tempfile:
+    state: directory
+  register: restic_temp
+  tags:
+    - install
+  when: ansible_facts.system != "Win32NT"
+
 - name: Install Restic for FreeBSD
   become: true
   community.general.pkgng:
     name: restic
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Restic for Linux
   ansible.builtin.package:
     name: restic
   become: true
+  ignore_errors: true
+  register: restic_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
+
+- name: Get latest Restic version for Linux
+  ansible.builtin.uri:
+    method: GET
+    return_content: true
+    url: https://formulae.brew.sh/api/formula/restic.json
+  register: restic_formula
+  tags:
+    - install
+  when:
+    - ansible_facts.system == "Linux"
+    - not system_install or restic_linux is failed
+
+- name: Download Restic for Linux
+  ansible.builtin.get_url:
+    dest: "{{ restic_temp.path }}/restic.bz2"
+    mode: "644"
+    url: >-
+      https://github.com/restic/restic/releases/download/v{{
+      restic_formula.json.versions.stable }}/restic_{{
+      restic_formula.json.versions.stable }}_linux_{{ system_architecture }}.bz2
+  tags:
+    - install
+  when:
+    - ansible_facts.system == "Linux"
+    - not system_install or restic_linux is failed
+
+- name: Extract Restic for Linux
+  ansible.builtin.command:
+    cmd: bzip2 -d {{ restic_temp.path }}/restic.bz2
+  changed_when: true
+  tags:
+    - install
+  when:
+    - ansible_facts.system == "Linux"
+    - not system_install or restic_linux is failed
+
+- name: Install Restic for Linux
+  ansible.builtin.copy:
+    dest: "{{ bin_path }}/restic"
+    force: true
+    mode: "755"
+    remote_src: true
+    src: "{{ restic_temp.path }}/restic"
+  become: "{{ system_install }}"
+  tags:
+    - install
+  when:
+    - ansible_facts.system == "Linux"
+    - not system_install or restic_linux is failed
 
 - name: Install Restic for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: restic
@@ -26,19 +90,11 @@
 
 - name: Install Restic for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: restic
   tags:
     - install
   when: ansible_facts.system == "Win32NT"
-
-- name: Create Restic temporary directory for Unix
-  ansible.builtin.tempfile:
-    state: directory
-  register: restic_temp
-  tags:
-    - install
-  when: ansible_facts.system != "Win32NT"
 
 - name: Create Restic shell completions for Unix
   ansible.builtin.command:
@@ -47,14 +103,16 @@
       item }}
   changed_when: true
   environment:
-    PATH: /opt/homebrew/bin:/usr/local/bin:{{ ansible_facts.env.PATH }}
+    PATH: "{{ env_path }}"
   loop:
     - bash
     - fish
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Install Restic shell completions for Unix
   ansible.builtin.copy:
@@ -63,7 +121,7 @@
     mode: "644"
     remote_src: true
     src: "{{ restic_temp.path }}/restic.{{ item.shell }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - dest: "{{ bash_completion }}/restic"
       shell: bash
@@ -72,7 +130,9 @@
   tags:
     - completion
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Remove Restic temporary directory for Unix
   ansible.builtin.file:

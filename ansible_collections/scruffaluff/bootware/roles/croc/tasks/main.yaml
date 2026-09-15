@@ -5,7 +5,9 @@
     name: croc
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Croc for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: croc_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Croc version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed
 
 - name: Create Croc temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed
 
 - name: Set Croc temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed
 
 - name: Download Croc for Linux
   ansible.builtin.unarchive:
@@ -68,24 +72,24 @@
       arm64: ARM64
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed
 
 - name: Install Croc for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/croc
+    dest: "{{ bin_path }}/croc"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ croc_temp.path }}/croc"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed
 
 - name: Install Croc for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: croc
@@ -95,7 +99,7 @@
 
 - name: Install Croc for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: croc
   tags:
     - install
@@ -134,4 +138,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - croc_linux is failed
+    - not system_install or croc_linux is failed

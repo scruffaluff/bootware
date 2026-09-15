@@ -5,9 +5,13 @@
     name: com.spotify.Client
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Spotify for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: spotify
@@ -18,7 +22,7 @@
 
 - name: Install Spotify for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: spotify
   tags:
     - install

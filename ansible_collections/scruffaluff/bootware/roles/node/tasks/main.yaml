@@ -7,7 +7,9 @@
       - npm-node22
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Node for Linux
   ansible.builtin.package:
@@ -17,10 +19,12 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install Node for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: node
@@ -36,11 +40,13 @@
       - node-npm
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install Node for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: nodejs
   tags:
     - install
@@ -53,7 +59,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/.npm/global"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
@@ -71,7 +77,7 @@
     path: "{{ user_home }}/.npmrc"
     regex: "^\\s*{{ item.key }}\\b"
     state: present
-  become: true
+  become: "{{ system_install }}"
   loop:
     - key: prefix
       line: prefix = "{{ user_home }}/.npm/global"
@@ -118,10 +124,12 @@
 - name: Install Node applications for Unix
   ansible.builtin.command:
     cmd: npm install --global {{ item }}
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   # Command always marks application as changed.
   changed_when: true
+  environment:
+    PATH: "{{ env_path }}"
   loop: "{{ node_applications }}"
   tags:
     - plugin
@@ -135,9 +143,7 @@
   changed_when: true
   environment:
     # NPM is often missing from Scoop shims.
-    Path: >-
-      {{ scoop_path }}\\apps\\nodejs\\current;{{ scoop_path }}\\shims;{{
-      ansible_facts.env.Path }}
+    Path: "{{ scoop_path }}\\apps\\nodejs\\current;{{ env_path }}"
   loop: "{{ node_applications }}"
   tags:
     - plugin

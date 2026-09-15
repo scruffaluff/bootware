@@ -6,6 +6,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - user_login == "nushell"
 
@@ -16,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "opkg"
     - user_login == "nushell"
 
@@ -25,7 +27,9 @@
     name: "{{ ['nushell'] + nushell_plugins }}"
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 # Disabled since many package managers include an outdated version of Nushell.
 # - name: Install Nushell for Linux
@@ -36,7 +40,9 @@
 #   register: nushell_linux
 #   tags:
 #     - install
-#   when: ansible_facts.system == "Linux"
+#   when:
+#     - system_install
+#     - ansible_facts.system == "Linux"
 
 - name: Get latest Nushell version for Linux
   ansible.builtin.uri:
@@ -81,21 +87,21 @@
 
 - name: Install Nushell for Linux
   ansible.builtin.copy:
-    dest: /usr/bin/{{ item }}
+    dest: "{{ nushell_executable | dirname }}/{{ item }}"
     force: true
     mode: "755"
     remote_src: true
     src: >-
       {{ nushell_temp.path }}/nu-{{ nushell_formula_linux.json.versions.stable
       }}-{{ nushell_arch }}-unknown-linux-{{ nushell_libc }}/{{ item }}
-  become: true
+  become: "{{ system_install }}"
   loop: "{{ ['nu'] + nushell_plugins }}"
   tags:
     - install
   when: ansible_facts.system == "Linux"
 
 - name: Install Nushell for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: nushell
@@ -105,7 +111,7 @@
 
 - name: Install Nushell for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: nu
   tags:
     - install
@@ -120,7 +126,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system != "Win32NT"
+  when:
+    - system_install
+    - ansible_facts.system != "Win32NT"
 
 - name: Register Nushell files as executables for Windows
   ansible.windows.win_regedit:
@@ -159,9 +167,11 @@
   ansible.builtin.command:
     cmd: >-
       nu --commands 'plugin add "{{ nushell_executable | dirname }}/{{ item }}"'
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: true
+  environment:
+    PATH: "{{ env_path }}"
   loop: "{{ nushell_plugins }}"
   tags:
     - plugin
@@ -173,7 +183,7 @@
       nu --commands "plugin add '{{ scoop_path }}\apps\nu\current\{{ item }}.exe'"
   changed_when: true
   environment:
-    Path: "{{ scoop_path }}\\shims;{{ ansible_facts.env.Path }}"
+    Path: "{{ env_path }}"
   loop: "{{ nushell_plugins }}"
   tags:
     - plugin
@@ -184,9 +194,9 @@
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
-    path: "{{ nushell_autoload_user }}"
+    path: "{{ nushell_autoload_usr }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -199,7 +209,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - config.nu
   tags:
@@ -213,10 +223,10 @@
     owner: "{{ user_id }}"
     path: "{{ item }}"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   loop:
     - "{{ user_home }}/.config/nushell"
-    - "{{ nushell_autoload_user }}"
+    - "{{ nushell_autoload_usr }}"
   tags:
     - config
   when: ansible_facts.system in ["FreeBSD", "Linux"]
@@ -229,7 +239,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - config.nu
   tags:
@@ -238,7 +248,7 @@
 
 - name: Create Nushell settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ nushell_autoload_user }}"
+    path: "{{ nushell_autoload_usr }}"
     state: directory
   tags:
     - config
@@ -260,7 +270,7 @@
 - name: Change user default shell to Nushell for Alpine
   ansible.builtin.command:
     cmd: chsh -s {{ nushell_executable }} {{ user_id }}
-  become: true
+  become: "{{ system_install }}"
   changed_when: "'no changes made' not in nushell_chsh.stderr"
   register: nushell_chsh
   tags:
@@ -277,6 +287,7 @@
   tags:
     - config
   when:
+    - system_install
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "apk"
     - user_login == "nushell"

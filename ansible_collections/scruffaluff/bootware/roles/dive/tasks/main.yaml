@@ -5,7 +5,9 @@
     name: dive
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Dive for Linux
   ansible.builtin.package:
@@ -15,7 +17,9 @@
   register: dive_linux
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Get latest Dive version for Linux
   ansible.builtin.uri:
@@ -27,7 +31,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed
 
 - name: Create Dive temporary directory for Linux
   ansible.builtin.tempfile:
@@ -37,7 +41,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed
 
 - name: Set Dive temporary directory permissions for Linux
   ansible.builtin.file:
@@ -48,7 +52,7 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed
 
 - name: Download Dive for Linux
   ansible.builtin.unarchive:
@@ -64,24 +68,24 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed
 
 - name: Install Dive for Linux
   ansible.builtin.copy:
-    dest: /usr/local/bin/dive
+    dest: "{{ bin_path }}/dive"
     force: true
     mode: "755"
     remote_src: true
     src: "{{ dive_temp.path }}/dive"
-  become: true
+  become: "{{ system_install }}"
   tags:
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed
 
 - name: Install Dive for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: dive
@@ -91,7 +95,7 @@
 
 - name: Install Dive for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: dive
   tags:
     - install
@@ -105,4 +109,4 @@
     - install
   when:
     - ansible_facts.system == "Linux"
-    - dive_linux is failed
+    - not system_install or dive_linux is failed

@@ -5,9 +5,13 @@
     name: io.dbeaver.DBeaverCommunity
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install DBeaver for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
   community.general.homebrew_cask:
     accept_external_apps: true
     name: dbeaver-community
@@ -18,7 +22,7 @@
 
 - name: Install DBeaver for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: dbeaver
   tags:
     - install

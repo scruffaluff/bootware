@@ -779,6 +779,13 @@ if (which "hx" | is-not-empty) {
 # Avoid Homebrew hints after installing a package for Unix.
 $env.HOMEBREW_NO_ENV_HINTS = "true"
 
+# Hugging Face settings.
+
+# Disable extraneous messages from HF CLI.
+$env.HF_HUB_DISABLE_TELEMETRY = "1"
+$env.HF_HUB_DISABLE_IMPLICIT_TOKEN = "1"
+$env.HF_HUB_DISABLE_UPDATE_CHECK = "1"
+
 # Just settings.
 
 # Add alias for account wide Just recipes.

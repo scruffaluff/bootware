@@ -5,7 +5,9 @@
     name: tailscale
   tags:
     - install
-  when: ansible_facts.system == "FreeBSD"
+  when:
+    - system_install
+    - ansible_facts.system == "FreeBSD"
 
 - name: Install Tailscale for Linux
   ansible.builtin.shell: # noqa command-instead-of-module
@@ -19,7 +21,7 @@
     - systemd
 
 - name: Install Tailscale for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: tailscale
@@ -29,7 +31,7 @@
 
 - name: Install Tailscale for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: tailscale
   tags:
     - install

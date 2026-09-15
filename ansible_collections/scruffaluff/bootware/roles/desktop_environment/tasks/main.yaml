@@ -8,6 +8,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "FreeBSD"
     - gnome_desktop
 
@@ -20,6 +21,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - gnome_desktop
 
@@ -30,10 +32,12 @@
   failed_when: false
   tags:
     - install
-  when: ansible_facts.system == "Linux"
+  when:
+    - system_install
+    - ansible_facts.system == "Linux"
 
 - name: Install desktop management dependencies for MacOS
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
   community.general.homebrew:
     name: duti
@@ -43,7 +47,7 @@
 
 - name: Install desktop management dependencies for Windows
   community.windows.win_scoop:
-    global: true
+    global: "{{ system_install }}"
     name: powertoys
   tags:
     - install
@@ -56,7 +60,7 @@
     owner: "{{ user_id }}"
     path: "{{ user_home }}/Library/Keyboard Layouts"
     state: directory
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -72,7 +76,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: no_alt_characters.keylayout
-  become: true
+  become: "{{ system_install }}"
   tags:
     - config
   when: ansible_facts.system == "Darwin"
@@ -91,7 +95,7 @@
 
 - name: Change desktop settings for GNOME desktops
   ansible.builtin.script: gnome.sh
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   environment:
     BOOTWARE_FONT_SIZE: "{{ system_font_size }}"
@@ -103,7 +107,7 @@
 
 - name: Change desktop settings for MacOS
   ansible.builtin.script: macos.sh
-  become: true
+  become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   tags:
     - config

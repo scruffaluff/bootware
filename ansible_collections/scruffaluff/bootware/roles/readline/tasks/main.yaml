@@ -7,7 +7,7 @@
     mode: "640"
     owner: "{{ user_id }}"
     src: "{{ item }}"
-  become: true
+  become: "{{ system_install }}"
   loop:
     - editrc
     - inputrc
