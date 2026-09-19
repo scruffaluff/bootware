@@ -1144,8 +1144,15 @@ $env.config = {
 if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     $env.config.completions.external = {
         completer: {|spans|
-            carapace-complete $spans
-            | default --empty { fish-complete $spans }
+            match $spans.0 {
+                rsync => { fish-complete $spans }
+                scp => { fish-complete $spans }
+                ssh => { fish-complete $spans }
+                _ => {
+                    carapace-complete $spans
+                    | default --empty { fish-complete $spans }
+                }
+            }
         }
         enable: true
     }

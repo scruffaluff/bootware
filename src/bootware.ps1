@@ -826,6 +826,7 @@ function SetupWSL($Branch) {
         Invoke-WebRequest -UseBasicParsing -OutFile $TempFile -Uri `
             'https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi'
         Start-Process -Wait $TempFile /Passive
+        Remove-Item -Force -Path $TempFile
 
         Log 'Installing Debian distribution.'
         Log "Complete pop up window and then run 'bootware setup' again."

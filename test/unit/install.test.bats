@@ -24,20 +24,28 @@ global_owner_is_root() { # @test
     --dest "${dst_dir}"
   assert_success
   assert_file_owner root "${dst_dir}/bootware"
+  rm -fr "${dst_dir}"
 }
 
 prints_version() { # @test
-  run bash src/install.sh ${DEBUG:+--debug} --preserve-env --dest \
-    "$(mktemp -d)"
+  local dst_dir
+  dst_dir="$(mktemp -d)"
+
+  run bash src/install.sh ${DEBUG:+--debug} --preserve-env --dest "${dst_dir}"
   assert_success
   assert_output --partial 'Installed Bootware 0.'
+  rm -fr "${dst_dir}"
 }
 
 quiet_is_silent() { # @test
+  local dst_dir
+  dst_dir="$(mktemp -d)"
+
   run bash src/install.sh ${DEBUG:+--debug} --preserve-env --quiet --dest \
-    "$(mktemp -d)"
+    "${dst_dir}"
   assert_success
   assert_output ''
+  rm -fr "${dst_dir}"
 }
 
 shows_error_usage_for_bad_argument() { # @test

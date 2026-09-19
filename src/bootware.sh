@@ -194,6 +194,7 @@ bootstrap() {
   local start_role
   local status
   local tags="${BOOTWARE_TAGS:-}"
+  local temp
   local temp_ssh_args='-o IdentitiesOnly=yes -o LogLevel=ERROR \
 -o PreferredAuthentications=publickey,password \
 -o StrictHostKeyChecking=no \
@@ -324,9 +325,9 @@ bootstrap() {
   if [ "${cmd}" = 'playbook' ] && [ -z "${playbook:-}" ]; then
     # Do not use long form flags for mktemp. They are not supported on some
     # systems.
-    tmp_dir="$(mktemp -u)"
-    git clone --depth 1 "${url}" "${tmp_dir}" > /dev/null 2>&1
-    playbook="${tmp_dir}/playbook.yaml"
+    temp="$(mktemp -u)"
+    git clone --depth 1 "${url}" "${temp}" > /dev/null 2>&1
+    playbook="${temp}/playbook.yaml"
   fi
 
   # Find task associated with start role.
@@ -408,6 +409,10 @@ bootstrap() {
     printf "\nRetrying bootstrapping with %s attempts left.\n" "${retries}"
     sleep 4
   done
+
+  if [ -n "${temp:-}" ]; then
+    rm -fr "${temp}"
+  fi
 }
 
 #######################################
@@ -790,7 +795,7 @@ roles() {
 # Subcommand to configure bootstrapping services and utilities.
 #######################################
 setup() {
-  local collections collection_status os tmp_dir super=''
+  local collections collection_status os super=''
 
   # Parse command line arguments.
   while [ "${#}" -gt 0 ]; do
@@ -897,7 +902,7 @@ setup_alpine() {
 #   Super user elevation command.
 #######################################
 setup_arch() {
-  local super="${1:-}" tmp_dir
+  local super="${1:-}"
 
   # Install dependencies for Bootware.
   #

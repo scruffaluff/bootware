@@ -54,6 +54,7 @@ alpm() {
 
   mv "${build}/${file}" build/dist/
   (cd build/dist && checksum "${file}")
+  rm -fr "${build}"
 }
 
 #######################################
@@ -80,6 +81,7 @@ apk() {
   (cd "${build}" && abuild checksum && abuild -r)
   mv "${HOME}/packages/tmp/$(uname -m)/bootware-${version}-r0.apk" build/dist/
   checksum "build/dist/bootware-${version}-r0.apk"
+  rm -fr "${build}"
 }
 
 #######################################
@@ -93,6 +95,7 @@ brew() {
   url="https://github.com/scruffaluff/bootware/archive/refs/tags/${version}.tar.gz"
   curl -LSfs --output /tmp/bootware.tar.gz "${url}"
   shasum="$(sha256sum /tmp/bootware.tar.gz | cut -d ' ' -f 1)"
+  rm -f /tmp/bootware.tar.gz
 
   mkdir -p build/dist
   export shasum="${shasum}" version="${version}" url="${url}"
@@ -144,6 +147,7 @@ deb() {
   envsubst < data/templates/control.tmpl > "${build}/DEBIAN/control"
   dpkg-deb --build "${build}" "build/dist/bootware_${version}_all.deb"
   checksum "build/dist/bootware_${version}_all.deb"
+  rm -fr "${build}"
 }
 
 #######################################

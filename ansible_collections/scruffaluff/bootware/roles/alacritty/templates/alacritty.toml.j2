@@ -132,7 +132,7 @@ mods = "Control"
 
 [terminal.shell]
 args = ["{{ '-NoLogo' if user_shell == 'powershell' else '--login' }}"]
-program = "{{ user_shell_name }}"
+program = "{{ user_shell_executable }}"
 {% if ansible_facts.system == "Darwin" %}
 
 [window]

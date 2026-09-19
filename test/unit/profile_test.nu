@@ -24,7 +24,8 @@ def --wrapped fzf [...args: path] { $env.NUTEST_FZF }
 
 @test
 def "_cut-path-left cases" [] {
-    $env.NUTEST_TMPDIR = mktemp --directory --tmpdir
+    let tmpdir = mktemp --directory --tmpdir
+    $env.NUTEST_TMPDIR = $tmpdir
 
     for case in [
         [cursor expected line];
@@ -46,6 +47,8 @@ def "_cut-path-left cases" [] {
         }
         assert equal $actual $case.expected
     }
+
+    rm --force --recursive $tmpdir
 }
 
 @test
@@ -69,7 +72,8 @@ def "commandline argument cases" [] {
 
 @test
 def "fzf-path-widget cases" [] {
-    $env.NUTEST_TMPDIR = mktemp --directory --tmpdir
+    let tmpdir = mktemp --directory --tmpdir
+    $env.NUTEST_TMPDIR = $tmpdir
 
     for case in [
         [cursor expected fzf line];
@@ -99,4 +103,6 @@ def "fzf-path-widget cases" [] {
         }
         assert equal $actual $case.expected
     }
+
+    rm --force --recursive $tmpdir
 }
