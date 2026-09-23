@@ -1,6 +1,6 @@
 """Tests for custom plotting routines."""
 
-# ruff: noqa: E402
+# ruff: file-ignore[E402]
 
 import sys
 from pathlib import Path

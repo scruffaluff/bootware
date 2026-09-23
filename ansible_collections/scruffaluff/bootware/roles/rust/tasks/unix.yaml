@@ -11,7 +11,7 @@
     - install
 
 - name: Install Rust for Unix
-  ansible.builtin.shell: # noqa command-instead-of-module
+  ansible.builtin.shell: # noqa: command-instead-of-module
     cmd: curl -LSfs https://sh.rustup.rs | sh -s -- -y --no-modify-path
     creates: "{{ user_home }}/.cargo/bin/rustup"
   become: "{{ system_install }}"

@@ -10,7 +10,7 @@
     - ansible_facts.system == "FreeBSD"
 
 - name: Install Tailscale for Linux
-  ansible.builtin.shell: # noqa command-instead-of-module
+  ansible.builtin.shell: # noqa: command-instead-of-module
     cmd: curl -LSfs https://tailscale.com/install.sh | sh
     creates: /usr/bin/tailscale
   become: true

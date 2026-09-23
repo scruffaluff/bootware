@@ -1,7 +1,7 @@
 """Python debugger settings file."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: ANN401, D102, UP007, UP037, UP045
+# ruff: file-ignore[ANN401, D102, UP007, UP037, UP045]
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ class Parser(ArgumentParser):
 def aplay(
     data: Array,
     rate: Optional[int] = None,
-    map: Optional[Sequence[int]] = None,  # noqa: A002
+    map: Optional[Sequence[int]] = None,  # ruff: ignore[A002]
     block: bool = False,
     loop: bool = False,
     **kwargs: Any,
@@ -127,13 +127,14 @@ def aplay(
     )
 
 
-def arec(  # noqa: PLR0913, PLR0917
+# ruff: ignore[PLR0913, PLR0917]
+def arec(
     frames: Optional[int] = None,
     rate: Optional[int] = None,
     channels: Optional[int] = None,
     dtype: Optional[type] = None,
     out: Optional[Array] = None,
-    map: Optional[Sequence[int]] = None,  # noqa: A002
+    map: Optional[Sequence[int]] = None,  # ruff: ignore[A002]
     block: bool = False,
     **kwargs: Any,
 ) -> Array:
@@ -325,7 +326,7 @@ def export() -> None:
     builtins.varname = varname
 
 
-def find_exprs(line: str) -> Iterator[Expr]:  # noqa: C901
+def find_exprs(line: str) -> Iterator[Expr]:  # ruff: ignore[C901]
     """Find variables starting with % or expressions surrounded by %{}."""
     first_chars = ["_", *map(chr, itertools.chain(range(65, 91), range(97, 123)))]
     chars = first_chars + list(map(chr, range(48, 58)))
@@ -456,10 +457,10 @@ def parse_exprs(lookup: Callable[[str], Any], line: str) -> str:
     for expr in find_exprs(line):
         variables = find_vars(lookup, expr.expr)
         try:
-            result = str(eval(expr.expr, {}, variables))  # noqa: S307
+            result = str(eval(expr.expr, {}, variables))  # ruff: ignore[S307]
         # Any exception can occur during an eval statement. If the expression
         # cannot be evaluated, then it should be treated as a literal.
-        except Exception:  # noqa: BLE001, S112
+        except Exception:  # ruff: ignore[BLE001, S112]
             continue
         insert = shlex.quote(result)
         line = line[: expr.start + offset] + insert + line[expr.stop + offset :]

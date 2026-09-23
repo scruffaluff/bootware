@@ -1,6 +1,6 @@
 """Tests for Pyrc custom modules."""
 
-# ruff: noqa: E402
+# ruff: file-ignore[E402]
 
 import shlex
 import sys

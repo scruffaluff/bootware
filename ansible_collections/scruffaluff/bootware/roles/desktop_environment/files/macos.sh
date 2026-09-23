@@ -18,13 +18,10 @@ defaults write com.apple.controlcenter \
 
 # Desktop settings.
 
-# Delete verification codes after use.
-defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
-# Prevent Stage Manager from hiding windows after a left click on desktop.
-defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
-defaults write com.apple.WindowManager GloballyEnabled -bool false
 # Disable alert beep sound.
 defaults write 'Apple Global Domain' com.apple.sound.beep.volume -float 0
+# Disable liquid glass styling effects.
+defaults write 'Apple Global Domain' NSGlassTintAmount -float 1.0
 # Prevent accent character popup when holding down a key.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Disable window animations.
@@ -35,14 +32,19 @@ defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
 # Disable hot corners new note popup.
 defaults write com.apple.doc wvous-br-corner -int 0
-# Remove widgets from desktop.
-defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
-defaults write com.apple.WindowManager StandardHideWidgets -bool true
 # Speed up Mission Control animations.
 defaults write com.apple.dock expose-animation-duration -float 0
 defaults write com.apple.dock missioncontrol-animation-duration -float 0
+# Delete verification codes after use.
+defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 # Save screenshots to Pictures folder
 defaults write com.apple.screencapture location -string "${HOME}/Pictures"
+# Prevent Stage Manager from hiding windows after a left click on desktop.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+defaults write com.apple.WindowManager GloballyEnabled -bool false
+# Remove widgets from desktop.
+defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+defaults write com.apple.WindowManager StandardHideWidgets -bool true
 
 # Dock and menu bar settings.
 
@@ -345,6 +347,9 @@ defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
 defaults write com.apple.AppleIntelligenceReport reportDuration -float 0
 # Disable Apple intelligence.
 defaults write com.apple.CloudSubscriptionFeatures.optIn 545129924 -bool false
+# Disable third party Siri recommendations.
+defaults write com.apple.generativepartnerservicesettings setupPrompt -bool false
+defaults write com.apple.siri.generativeassistantsettings setupPrompt -bool false
 # Delete verification codes after use.
 defaults write com.apple.onetimepasscodes DeleteVerificationCodes -bool true
 # Disable sharing search queries with Apple.

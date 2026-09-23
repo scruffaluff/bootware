@@ -1,7 +1,7 @@
 """Python plotting utilities."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: ANN401, PLR0913, PYI034, UP007, UP037, UP045
+# ruff: file-ignore[ANN401, PLR0913, PYI034, UP007, UP037, UP045]
 
 from __future__ import annotations
 

@@ -1,7 +1,7 @@
 """Python debugger settings file."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: noqa: BLE001, D403, D415, SLF001, UP007
+# ruff: file-ignore[BLE001, D403, D415, SLF001, UP007]
 
 from __future__ import annotations
 
@@ -148,10 +148,10 @@ def error(message: Union[str, Exception]) -> None:
         print(f"*** {type(message).__name__}: {message}")
 
 
-def parse(pdb: Pdb, input_: str) -> Any:  # noqa: ANN401
+def parse(pdb: Pdb, input_: str) -> Any:  # ruff: ignore[ANN401]
     """Parse and possibly execute command line input."""
     if input_.strip():
-        return eval(input_, curframe(pdb).f_globals, pdb.curframe_locals)  # noqa: S307
+        return eval(input_, curframe(pdb).f_globals, pdb.curframe_locals)  # ruff: ignore[S307]
     return None
 
 
@@ -180,7 +180,7 @@ def setup(pdb: Pdb) -> None:
 def var_lookup(pdb: Pdb) -> Callable[[str], Any]:
     """Generate a variable lookup function for a debugger frame."""
 
-    def lookup(name: str) -> Any:  # noqa: ANN401
+    def lookup(name: str) -> Any:  # ruff: ignore[ANN401]
         if name in pdb.curframe_locals:
             return pdb.curframe_locals[name]
         if name in curframe(pdb).f_globals:

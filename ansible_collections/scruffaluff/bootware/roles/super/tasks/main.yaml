@@ -1,6 +1,6 @@
 ---
 - name: Check if Doas is available for Unix
-  ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v doas # noqa: command-instead-of-shell
   changed_when: false
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}
@@ -29,7 +29,7 @@
     - super_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
-  ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v visudo # noqa: command-instead-of-shell
   changed_when: false
   environment:
     PATH: /usr/bin:/usr/sbin:{{ ansible_facts.env.PATH }}

@@ -51,7 +51,7 @@
   when: ansible_facts.system == "Darwin"
 
 - name: Install Fisher package manager for Unix
-  ansible.builtin.shell: # noqa command-instead-of-module
+  ansible.builtin.shell: # noqa: command-instead-of-module
     cmd: |
       curl -LSfs https://git.io/fisher | source
       fisher install jorgebucaran/fisher

@@ -36,7 +36,7 @@
     - ansible_facts.system == "Linux"
 
 - name: Check if Doas is available for Unix
-  ansible.builtin.shell: command -v doas # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v doas # noqa: command-instead-of-shell
   changed_when: false
   failed_when: false
   register: github_runner_doas_available
@@ -63,7 +63,7 @@
     - github_runner_doas_available.rc == 0
 
 - name: Check if Sudo is available for Unix
-  ansible.builtin.shell: command -v visudo # noqa command-instead-of-shell
+  ansible.builtin.shell: command -v visudo # noqa: command-instead-of-shell
   changed_when: false
   failed_when: false
   register: github_runner_sudo_available

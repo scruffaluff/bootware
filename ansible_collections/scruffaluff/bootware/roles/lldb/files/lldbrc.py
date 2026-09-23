@@ -1,6 +1,6 @@
 """LLDB settings script."""
 
-# ruff: noqa: ANN401, ARG001
+# ruff: file-ignore[ANN401, ARG001]
 
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def cmd_py(
     """Execute Python expression with frame variables."""
     frame = curframe(debugger)
     try:
-        eval(  # noqa: S307
+        eval(  # ruff: ignore[S307]
             command,
             {
                 "aplay": pyrc.aplay,
@@ -108,7 +108,7 @@ def cmd_py(
             },
             pyrc.find_vars(var_lookup(frame), command),
         )
-    except Exception as exception:  # noqa: BLE001
+    except Exception as exception:  # ruff: ignore[BLE001]
         result.SetError(str(exception))
         result.SetStatus(eReturnStatusFailed)
 
@@ -138,7 +138,7 @@ def curframe(debugger: SBDebugger) -> SBFrame:
 
 
 # Function requires many cases to handle possible variable types.
-def to_py(variable: SBValue) -> Any:  # noqa: PLR0911
+def to_py(variable: SBValue) -> Any:  # ruff: ignore[PLR0911]
     """Convert program type to Python type."""
     type_ = variable.type.name
 
