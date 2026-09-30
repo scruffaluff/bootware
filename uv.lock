@@ -143,7 +143,7 @@ dev = [
     { name = "ansible-lint", marker = "sys_platform != 'windows'", specifier = "~=26.6" },
     { name = "pytest", specifier = "~=9.1" },
     { name = "ruff", specifier = "~=0.16.0" },
-    { name = "ty", specifier = "~=0.0.80" },
+    { name = "ty", specifier = "~=0.0" },
     { name = "yamllint", specifier = "~=1.38" },
 ]
 

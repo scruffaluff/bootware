@@ -222,23 +222,6 @@ Enter 'all' to delete all the matching entries.
     commandline edit --replace ""
 }
 
-# Expand alias for autocompletion.
-#
-# Based on logic from
-# https://nushell.sh/cookbook/external_completers.html#alias-completions.
-def _expand-alias [spans: list<string>] {
-    let expansion = scope aliases
-    | where name == $spans.0
-    | get --optional 0
-    | get --optional expansion
-
-    if $expansion == null {
-        $spans
-    } else {
-        $spans | skip 1 | prepend ($expansion | split row " " | take 1)
-    }
-}
-
 # Paste current working directory into the commandline.
 def _paste-cwd [] {
     let cwd = $"($env.PWD)/" | str replace $nu.home-dir "~"
@@ -334,9 +317,8 @@ Get-ChildItem '($path)' | ForEach-Object {
 }
 
 # Complete commandline argument with Carapace.
-def carapace-complete [spans: list<string>] {
-    let spans = _expand-alias $spans
-    carapace $spans.0 nushell ...$spans | from json
+def carapace-complete [place: record] {
+    carapace $place.command.0 nushell ...$place.command | from json
 }
 
 # Wrapper for chown command with Windows support.
@@ -424,9 +406,8 @@ def "commandline argument" [] {
 }
 
 # Complete commandline argument with Fish.
-def fish-complete [spans: list<string>] {
-    let spans = _expand-alias $spans
-    let expands = $spans | each {|span|
+def fish-complete [place: record] {
+    let expands = $place.command | each {|span|
         let span = $span | str trim --char "`" | str trim --char "'"
         | str trim --char '"'
 
@@ -880,8 +861,8 @@ if $nu.is-interactive {
 
 $env.config = {
     color_config: (_color-theme)
-    completions: {algorithm: "substring"}
-    history: {file_format: "sqlite", isolation: true}
+    completions: {algorithm: "substring" persistent_menus: true}
+    history: {file_format: "sqlite" isolation: true}
     keybindings: [
         {
             event: {
@@ -1081,7 +1062,7 @@ $env.config = {
             modifier: shift_alt
         }
     ]
-    ls: {clickable_links: true, use_ls_colors: true}
+    ls: {clickable_links: true use_ls_colors: true}
     menus: [
         {
             marker: ""
@@ -1136,21 +1117,22 @@ $env.config = {
     #
     # For more information, visit
     # https://github.com/nushell/nushell/issues/5585.
-    shell_integration: { osc133: ($nu.os-info.name != "windows") }
+    shell_integration: {osc133: ($nu.os-info.name != "windows")}
     show_banner: false
+    table: {trim: {methodology: "truncating"}}
 }
 
 # Enable external completions if available.
 if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     $env.config.completions.external = {
-        completer: {|spans|
-            match $spans.0 {
-                rsync => { fish-complete $spans }
-                scp => { fish-complete $spans }
-                ssh => { fish-complete $spans }
+        completer: {|place|
+            match $place.command.0 {
+                rsync => { fish-complete $place }
+                scp => { fish-complete $place }
+                ssh => { fish-complete $place }
                 _ => {
-                    carapace-complete $spans
-                    | default --empty { fish-complete $spans }
+                    carapace-complete $place
+                    | default --empty { fish-complete $place }
                 }
             }
         }
@@ -1158,12 +1140,12 @@ if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     }
 } else if (which "carapace" | is-not-empty) {
     $env.config.completions.external = {
-        completer: {|spans| carapace-complete $spans }
+        completer: {|place| carapace-complete $place }
         enable: true
     }
 } else if (which "fish" | is-not-empty) {
     $env.config.completions.external = {
-        completer: {|spans| fish-complete $spans }
+        completer: {|place| fish-complete $place }
         enable: true
     }
 }

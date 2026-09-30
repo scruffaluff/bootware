@@ -133,9 +133,12 @@ setup: _setup
     http get $"https://nodejs.org/dist/($version)/($target)($archive)"
     | save --force $"($temp)/node($archive)"
     if $os == "windows" {
-      unzip -d $temp $"($temp)/node($archive)"
+      powershell -command $"
+  $ProgressPreference = 'SilentlyContinue'
+  Expand-Archive -DestinationPath '($temp)' -Path '($temp)/node.zip'
+  "
     } else {
-      tar fx $"($temp)/node($archive)" -C $temp
+      tar fx $"($temp)/node.tar.gz" -C $temp
     }
     mv $"($temp)/($target)" .vendor/lib/node
   }
