@@ -58,7 +58,7 @@
     path: "{{ ansible_facts.env.TEMP }}\\rust"
     state: directory
   tags:
-    - install
+    - plugin
 
 - name: Download Cargo Binstall archive for Windows
   ansible.windows.win_get_url:
@@ -129,4 +129,4 @@
     path: "{{ ansible_facts.env.TEMP }}\\rust"
     state: absent
   tags:
-    - install
+    - plugin

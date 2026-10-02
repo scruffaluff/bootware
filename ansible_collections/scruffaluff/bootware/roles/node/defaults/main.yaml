@@ -3,11 +3,12 @@ node_applications:
   # Temporarily disabled since its installation fails for several operating
   # systems of 06/01/2026. -
   # "@mermaid-js/mermaid-cli"
+  - "@playwright/cli"
+  - "@slidev/cli"
   - "@vue/language-server"
   - bash-language-server
   - lean-language-server
   - live-server
-  - playwright
   - speed-test
   - speedscope
   - taze

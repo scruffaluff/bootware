@@ -72,7 +72,7 @@
     state: directory
   register: rust_temp
   tags:
-    - install
+    - plugin
   when: ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Download Cargo Binstall for Unix
@@ -129,5 +129,5 @@
     path: "{{ rust_temp.path }}"
     state: absent
   tags:
-    - install
+    - plugin
   when: ansible_facts.system in ["Darwin", "Linux"]

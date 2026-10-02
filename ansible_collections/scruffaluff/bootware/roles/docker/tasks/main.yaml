@@ -153,6 +153,16 @@
     - system_install
     - ansible_facts.system == "FreeBSD"
 
+- name: Tap Krunkit for MacOS
+  become: "{{ system_install }}"
+  become_user: "{{ brew_user }}"
+  community.general.homebrew_tap:
+    name: slp/krun
+    trust: true
+  tags:
+    - install
+  when: ansible_facts.system == "Darwin"
+
 - name: Install Docker for MacOS
   become: "{{ system_install }}"
   become_user: "{{ brew_user }}"
@@ -161,6 +171,7 @@
       - colima
       - docker
       - docker-buildx
+      - slp/krun/krunkit
   tags:
     - install
   when: ansible_facts.system == "Darwin"
