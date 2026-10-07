@@ -1,7 +1,7 @@
 """Python plotting utilities."""
 
 # Explicit optional, union, and quoted types are used to support older Python versions.
-# ruff: file-ignore[ANN401, PLR0913, PYI034, UP007, UP037, UP045]
+# ruff: file-ignore[PLR0913, PYI034, UP007, UP037, UP045]
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from pyrc import Array, dyport
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+Figure = Any
 Signal = Union[Array, tuple[Array, Array], dict[str, Any]]
 
 
@@ -121,7 +122,7 @@ def frequency(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> None:
+) -> Optional[Figure]:
     """Plot audio frequency spectrum."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -159,7 +160,12 @@ def frequency(
 
     set_ranges(axes, x_range, y_range)
     if show:
+        if pyrc.in_marimo():
+            marimo = importlib.import_module("marimo")
+            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
+        return None
+    return pyplot.gca()
 
 
 def grid(
@@ -171,7 +177,7 @@ def grid(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Any:
+) -> Optional[Figure]:
     """Plot multiple graphs vertically in a grid."""
     pyplot = dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -258,7 +264,7 @@ def line(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Any:
+) -> Optional[Figure]:
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -331,7 +337,7 @@ def phase(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Any:
+) -> Optional[Figure]:
     """Plot audio frequency phase."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
@@ -440,7 +446,7 @@ def spectrogram(
     rate: Optional[int] = None,
     show: bool = True,
     **kwargs: Any,
-) -> Any:
+) -> Optional[Figure]:
     """Plot audio frequency time heatmap with Matplotlib."""
     numpy, pyplot, signal = (
         dyport("numpy"),
@@ -534,7 +540,7 @@ def waveform(
     show: bool = True,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Any:
+) -> Optional[Figure]:
     """Plot audio waveform."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)

@@ -83,7 +83,7 @@ vscode_user_path_:
   Darwin: "{{ user_home }}/Library/Application Support/Code/User"
   FreeBSD: "{{ user_home }}/.config/Code/User"
   Linux: "{{ user_home }}/.config/Code/User"
-  Win32NT: "{{ user_home }}\\AppData\\Roaming\\VSCode\\User"
+  Win32NT: "{{ user_home }}\\AppData\\Roaming\\Code\\User"
 vscode_extensions_: >-
   {{ vscode_oss_extensions_ + ['kdl-org.kdl',
   'ms-vscode-remote.vscode-remote-extensionpack', 'sukumo28.wav-preview'] }}

@@ -191,10 +191,11 @@ jobs:
         timeout-minutes: 60
         uses: mxschmitt/action-tmate@v3
 
+  # FreeBSD test is disabled since its package update fails as of 2026/10/06.
   freebsd:
     name: Test bootstrapping software for FreeBSD
     if: >-
-      ${{ github.event_name != 'workflow_dispatch' || inputs.job == 'freebsd' }}
+      ${{ github.event_name == 'workflow_dispatch' && inputs.job == 'freebsd' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

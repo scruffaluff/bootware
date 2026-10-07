@@ -1126,15 +1126,7 @@ $env.config = {
 if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
     $env.config.completions.external = {
         completer: {|place|
-            match $place.command.0 {
-                rsync => { fish-complete $place }
-                scp => { fish-complete $place }
-                ssh => { fish-complete $place }
-                _ => {
-                    carapace-complete $place
-                    | default --empty { fish-complete $place }
-                }
-            }
+            carapace-complete $place | default --empty { fish-complete $place }
         }
         enable: true
     }

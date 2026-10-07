@@ -18,14 +18,14 @@ defaults write com.apple.controlcenter \
 
 # Desktop settings.
 
-# Disable alert beep sound.
-defaults write 'Apple Global Domain' com.apple.sound.beep.volume -float 0
-# Disable liquid glass styling effects.
-defaults write 'Apple Global Domain' NSGlassTintAmount -float 1.0
 # Prevent accent character popup when holding down a key.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+# Disable alert beep sound.
+defaults write NSGlobalDomain com.apple.sound.beep.volume -float 0
 # Disable window animations.
 defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+# Disable liquid glass styling effects.
+defaults write NSGlobalDomain NSGlassTintAmount -float 1.0
 # Disable zoom animation for text input focus.
 defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 # Speed up window resize animations.
@@ -49,7 +49,7 @@ defaults write com.apple.WindowManager StandardHideWidgets -bool true
 # Dock and menu bar settings.
 
 # Show menu bar background.
-defaults write 'Apple Global Domain' SLSMenuBarUseBlurredAppearance -bool true
+defaults write NSGlobalDomain SLSMenuBarUseBlurredAppearance -bool true
 # Set dock to auto hide.
 defaults write com.apple.dock autohide -bool true
 # Set dock auto hide delay time to 0 seconds.
@@ -85,6 +85,14 @@ done
 
 # Finder settings.
 
+# Show file extensions in Finder.
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+# Show hidden files in file open dialogs.
+defaults write NSGlobalDomain AppleShowAllFiles -bool true
+# Do not autosave files to iCloud.
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+# Dsiable file renaming suggestions in Finder.
+defaults write NSGlobalDomain NSSmartNamingDisabled -bool true
 # Do not write `.DS_Store` files on network drives.
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Show hidden files in Finder.
@@ -112,23 +120,19 @@ defaults write com.apple.finder ShowRecentTags -bool false
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 # Show status bar in Finder folder window.
 defaults write com.apple.finder ShowStatusBar -bool true
-# Show file extensions in Finder.
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-# Show hidden files in file open dialogs.
-defaults write NSGlobalDomain AppleShowAllFiles -bool true
-# Do not autosave files to iCloud.
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Keyboard settings.
 
+# Disable dictionary lookup on word track pad press.
+defaults write NSGlobalDomain com.apple.trackpad.forceClick -int 0
+# Disable character viewer `Ctrl+Cmd+Space` key binding by remapping.
+# shellcheck disable=SC2016
+defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add \
+  'Emoji & Symbols' '@~^$0'
 # Disable application windows `Ctrl+Down` key binding.
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 33 '
 <dict><key>enabled</key><false/></dict>
 '
-# Disable character viewer `Ctrl+Cmd+Space` key binding by remapping.
-# shellcheck disable=SC2016
-defaults write 'Apple Global Domain' NSUserKeyEquivalents -dict-add \
-  'Emoji & Symbols' '@~^$0'
 # Disable the select previous input source `Ctrl+Space` key binding.
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 '
 <dict><key>enabled</key><false/></dict>
@@ -336,8 +340,6 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 125 '
 '
 # Disable extra bindings for function key.
 defaults write com.apple.HIToolbox AppleFnUsageType -int 0
-# Disable dictionary lookup on word track pad press.
-defaults write 'Apple Global Domain' com.apple.trackpad.forceClick -int 0
 
 # Privacy settings.
 
