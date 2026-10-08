@@ -391,6 +391,19 @@ def find_vars(lookup: Callable[[str], Any], expression: str) -> dict[str, Any]:
     return variables
 
 
+def in_debugger() -> bool:
+    """Check if running inside a debugger."""
+    if not hasattr(sys, "gettrace"):
+        return False
+    trace = sys.gettrace()
+    if trace is None:
+        return False
+    if not hasattr(trace, "__module__"):
+        return False
+    debuggers = ["bdb", "debugpy", "pdb"]
+    return any(debugger in trace.__module__ for debugger in debuggers)
+
+
 @functools.cache
 def in_marimo() -> bool:
     """Check if running inside a Marimo notebook."""

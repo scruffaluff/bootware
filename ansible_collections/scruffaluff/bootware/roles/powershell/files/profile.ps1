@@ -223,6 +223,8 @@ if (
     (Get-Command -ErrorAction SilentlyContinue carapace)
 ) {
     $Env:CARAPACE_BRIDGES = 'powershell'
+    $Env:CARAPACE_BUILTINS = 'powershell'
+    $Env:CARAPACE_LENIENT = '1'
     $Env:CARAPACE_MERGEFLAGS = '1'
     $Env:CARAPACE_TOOLTIP = '1'
     carapace _carapace powershell | Out-String | Invoke-Expression

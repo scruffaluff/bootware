@@ -10,7 +10,7 @@ inline_tooltip = false
 enabled = true
 
 [display]
-custom_css = ["{{ user_home }}/.config/marimo/marimo.css"]
+custom_css = ["{{ user_home | replace(backslash, '/') }}/.config/marimo/marimo.css"]
 
 [experimental]
 debugger = true
@@ -62,5 +62,5 @@ format_on_save = false
 auto_reload = "autorun"
 on_cell_change = "autorun"
 output_max_bytes = 1000000000
-pythonpath = ["{{ user_home }}/.config/pyrc"]
+pythonpath = ["{{ user_home | replace(backslash, '/') }}/.config/pyrc"]
 skip_update_check = true

@@ -224,7 +224,10 @@ prepend-paths '/usr/local/cuda/bin'
 #   -x: Check if file exists and execute permission is granted.
 if [[ -n "${tty}" && -x "$(command -v carapace)" ]]; then
   export CARAPACE_BRIDGES='fish,bash'
+  export CARAPACE_BUILTINS='bash'
+  export CARAPACE_LENIENT='1'
   export CARAPACE_MERGEFLAGS='1'
+  export CARAPACE_TOOLTIP='1'
   eval "$(carapace _carapace bash)"
 fi
 

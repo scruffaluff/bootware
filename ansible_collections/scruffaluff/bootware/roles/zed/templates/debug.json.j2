@@ -13,7 +13,7 @@
     "cwd": "$ZED_WORKTREE_ROOT",
     "env": {
       "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
-      "PYTHONPATH": "{{ user_home | replace('\\', '/') }}/.config/pyrc"
+      "PYTHONPATH": "{{ user_home | replace(backslash, '/') }}/.config/pyrc"
     },
     "justMyCode": false,
     "label": "Debug Python file",
@@ -26,7 +26,7 @@
     "cwd": "$ZED_WORKTREE_ROOT",
     "env": {
       "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
-      "PYTHONPATH": "{{ user_home | replace('\\', '/') }}/.config/pyrc"
+      "PYTHONPATH": "{{ user_home | replace(backslash, '/') }}/.config/pyrc"
     },
     "justMyCode": false,
     "label": "Debug Python tests",

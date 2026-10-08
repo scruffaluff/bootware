@@ -9,6 +9,7 @@ import builtins
 import dataclasses
 import importlib
 import itertools
+from collections.abc import Sequence
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, Union, cast, no_type_check
 
@@ -18,7 +19,9 @@ from pyrc import Array, dyport
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+AxesList = Sequence[Any]
 Figure = Any
+Plot = Union[AxesList, Sequence[AxesList], None]
 Signal = Union[Array, tuple[Array, Array], dict[str, Any]]
 
 
@@ -114,28 +117,30 @@ def export() -> None:
 
 def frequency(
     *signals: Signal,
-    axes: Optional[list[Any]] = None,
+    axes: Optional[AxesList] = None,
     depth: int = 3,
+    figsize: Optional[tuple[float, float]] = None,
     overlay: bool = True,
     rate: Optional[int] = None,
     scale: Scale = Scale.Linear,
-    show: bool = True,
+    show: Optional[bool] = None,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
+) -> Plot:
     """Plot audio frequency spectrum."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     rate = kwargs.pop("r", rate)
     scale = Scale.from_prefix(kwargs.pop("s", scale))
+    show = pyrc.in_debugger() if show is None else show
 
     if axes is None:
-        _, axes = subplots(
+        axes = subplots(
+            figsize=figsize,
             ncols=1 if overlay else len(signals),
             squeeze=False,
             title=pyrc.popall(kwargs, ["title", "t"], None),
-        )
-        axes = axes[0]
+        )[1][0]
     axes[0].set_ylabel(f"Level{scale.unit()}")
     ticks = spectrum_ticks()
     x_range, y_range = Range(20, 20_000, True), Range()
@@ -160,37 +165,44 @@ def frequency(
 
     set_ranges(axes, x_range, y_range)
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0].figure)
+    return axes
 
 
 def grid(
     *signals: Signal,
+    figsize: Optional[tuple[float, float]] = None,
     plots: list[str] | None = None,
     overlay: bool = True,
     rate: Optional[int] = None,
     scale: Scale = Scale.Linear,
-    show: bool = True,
+    show: Optional[bool] = None,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
-    """Plot multiple graphs vertically in a grid."""
+) -> Plot:
+    """Plot multiple graphs vertically in a grid.
+
+    Raises:
+        ValueError: For invalid plot type.
+    """
     pyplot = dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     plots = plots or kwargs.pop("p", ["frequency", "phase"])
     rate = kwargs.pop("r", rate)
     scale = Scale.from_prefix(kwargs.pop("s", scale))
+    show = pyrc.in_debugger() if show is None else show
 
-    _, axes = subplots(
+    axes = subplots(
+        figsize=figsize,
         nrows=len(plots),
         ncols=1 if overlay else len(signals),
         squeeze=False,
         title=pyrc.popall(kwargs, ["title", "t"], None),
-    )
+    )[1]
     for idx, plot in enumerate(plots):
         if "line".startswith(plot):
             line(
@@ -247,36 +259,38 @@ def grid(
             raise ValueError(msg)
 
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0][0].figure)
+    return axes
 
 
 def line(
     *signals: Signal,
-    axes: Optional[list[Any]] = None,
+    axes: Optional[AxesList] = None,
     depth: int = 3,
+    figsize: Optional[tuple[float, float]] = None,
     overlay: bool = True,
     scale: Scale = Scale.Linear,
-    show: bool = True,
+    show: Optional[bool] = None,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
+) -> Plot:
     """Plot line."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     scale = Scale.from_prefix(kwargs.pop("s", scale))
+    show = pyrc.in_debugger() if show is None else show
 
     if axes is None:
-        _, axes = subplots(
+        axes = subplots(
+            figsize=figsize,
             ncols=1 if overlay else len(signals),
             squeeze=False,
             title=pyrc.popall(kwargs, ["title", "t"], None),
-        )
-        axes = axes[0]
+        )[1][0]
     x_range, y_range = Range(), Range()
     datas = sigdata(signals, x=x, depth=depth)
 
@@ -293,12 +307,12 @@ def line(
 
     set_ranges(axes, x_range, y_range)
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0].figure)
+    return axes
 
 
 def mono(array: Array) -> Array:
@@ -311,7 +325,11 @@ def mono(array: Array) -> Array:
 
 
 def palette_cycle() -> itertools.cycle:
-    """Create a cycle of colors for plotting."""
+    """Create a cycle of colors for plotting.
+
+    Based on D3's Category10 palette,
+    https://d3js.org/d3-scale-chromatic/categorical#schemeCategory10.
+    """
     return itertools.cycle(
         (
             "#1f77b4",
@@ -330,26 +348,28 @@ def palette_cycle() -> itertools.cycle:
 
 def phase(
     *signals: Signal,
-    axes: Optional[list[Any]] = None,
+    axes: Optional[AxesList] = None,
     depth: int = 3,
+    figsize: Optional[tuple[float, float]] = None,
     overlay: bool = True,
     rate: Optional[int] = None,
-    show: bool = True,
+    show: Optional[bool] = None,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
+) -> Plot:
     """Plot audio frequency phase."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     rate = kwargs.pop("r", rate)
+    show = pyrc.in_debugger() if show is None else show
 
     if axes is None:
-        _, axes = subplots(
+        axes = subplots(
+            figsize=figsize,
             ncols=1 if overlay else len(signals),
             squeeze=False,
             title=pyrc.popall(kwargs, ["title", "t"], None),
-        )
-        axes = axes[0]
+        )[1][0]
     axes[0].set_ylabel("Phase (rad)")
     ticks = spectrum_ticks()
     x_range, y_range = Range(20, 20_000, True), Range()
@@ -373,15 +393,15 @@ def phase(
 
     set_ranges(axes, x_range, y_range)
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0].figure)
+    return axes
 
 
-def set_ranges(axes: Iterable[Any], x_range: Range, y_range: Range) -> None:
+def set_ranges(axes: AxesList, x_range: Range, y_range: Range) -> None:
     """Set ranges for axes if valid."""
     for axis in axes:
         if x_range.valid():
@@ -441,12 +461,13 @@ def sigdata(
 
 def spectrogram(
     *signals: Signal,
-    axes: Optional[list[Any]] = None,
+    axes: Optional[AxesList] = None,
     depth: int = 3,
+    figsize: Optional[tuple[float, float]] = None,
     rate: Optional[int] = None,
-    show: bool = True,
+    show: Optional[bool] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
+) -> Plot:
     """Plot audio frequency time heatmap with Matplotlib."""
     numpy, pyplot, signal = (
         dyport("numpy"),
@@ -454,15 +475,16 @@ def spectrogram(
         dyport("scipy.signal"),
     )
     rate = kwargs.pop("r", rate)
+    show = pyrc.in_debugger() if show is None else show
 
     if axes is None:
-        _, axis = subplots(
+        axes = subplots(
+            figsize=figsize,
             ncols=1,
             squeeze=True,
             title=pyrc.popall(kwargs, ["title", "t"], None),
-        )
-    else:
-        axis = axes[0]
+        )[1][0]
+    axis = axes[0]
     axis.set_ylabel("Frequency (Hz)")
     ticks = spectrum_ticks()
     x_range, y_range = Range(), Range(20, 20_000, True)
@@ -499,15 +521,15 @@ def spectrogram(
         axis.set_yticks(ticks[0])
         axis.set_yticklabels(ticks[1])
 
-    set_ranges([axis], x_range, y_range)
+    set_ranges(axes, x_range, y_range)
     axis.figure.colorbar(mesh, ax=axes, label="Level (dB)")
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0].figure)
+    return axes
 
 
 def spectrum_ticks() -> tuple[list[float], list[str]]:
@@ -519,11 +541,17 @@ def spectrum_ticks() -> tuple[list[float], list[str]]:
     return ticks.tolist(), labels
 
 
-def subplots(*args: Any, title: Optional[str] = None, **kwargs: Any) -> tuple[Any, Any]:
+def subplots(
+    *args: Any,
+    figsize: Optional[tuple[float, float]] = None,
+    title: Optional[str] = None,
+    **kwargs: Any,
+) -> tuple[Figure, Sequence[AxesList]]:
     """Wrapper for Matplotlib subplots."""
     pyplot = dyport("matplotlib.pyplot")
+    figsize = figsize or (10, 5)
     figure, axes = pyplot.subplots(
-        *args, figsize=(12, 6), layout="compressed", **kwargs
+        *args, figsize=figsize, layout="compressed", **kwargs
     )
     if title is not None:
         figure.suptitle(title)
@@ -532,28 +560,30 @@ def subplots(*args: Any, title: Optional[str] = None, **kwargs: Any) -> tuple[An
 
 def waveform(
     *signals: Signal,
-    axes: Optional[list[Any]] = None,
+    axes: Optional[AxesList] = None,
     depth: int = 3,
+    figsize: Optional[tuple[float, float]] = None,
     overlay: bool = True,
     rate: Optional[int] = None,
     scale: Scale = Scale.Linear,
-    show: bool = True,
+    show: Optional[bool] = None,
     x: Optional[Array] = None,
     **kwargs: Any,
-) -> Optional[Figure]:
+) -> Plot:
     """Plot audio waveform."""
     numpy, pyplot = dyport("numpy"), dyport("matplotlib.pyplot")
     overlay = kwargs.pop("o", overlay)
     rate = kwargs.pop("r", rate)
     scale = Scale.from_prefix(kwargs.pop("s", scale))
+    show = pyrc.in_debugger() if show is None else show
 
     if axes is None:
-        _, axes = subplots(
+        axes = subplots(
+            figsize=figsize,
             ncols=1 if overlay else len(signals),
             squeeze=False,
             title=pyrc.popall(kwargs, ["title", "t"], None),
-        )
-        axes = axes[0]
+        )[1][0]
     axes[0].set_ylabel(f"Amplitude{scale.unit()}")
     x_range, y_range = Range(), Range(-1, 1, True)
     datas = sigdata(signals, x=x, depth=depth)
@@ -573,9 +603,9 @@ def waveform(
 
     set_ranges(axes, x_range, y_range)
     if show:
-        if pyrc.in_marimo():
-            marimo = importlib.import_module("marimo")
-            return marimo.mpl.interactive(pyplot.gca())
         pyplot.show(block=True)
         return None
-    return pyplot.gca()
+    if pyrc.in_marimo():
+        marimo = importlib.import_module("marimo")
+        return marimo.mpl.interactive(axes[0].figure)
+    return axes

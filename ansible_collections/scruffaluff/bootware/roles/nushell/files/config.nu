@@ -639,6 +639,7 @@ if (which "bat" | is-not-empty) {
 # Carapace settings.
 
 $env.CARAPACE_BRIDGES = "fish,bash"
+$env.CARAPACE_LENIENT = "1"
 $env.CARAPACE_MERGEFLAGS = "1"
 
 # Clipboard settings.
@@ -847,7 +848,10 @@ alias cat = open --raw
 # Add alias for remove by force.
 alias rmf = rm --force --recursive
 # Add alias for Rsync with progress bars and ignored files.
-alias rsync = rsync --partial --progress --exclude-from $"($nu.home-dir)/.ignore" --filter ":- .gitignore"
+#
+# Separate variable for exclude from is required for Carapace Rsync completion.
+$env.RSYNC_EXCLUDE_FROM = $"($nu.home-dir)/.ignore"
+alias rsync = rsync --partial --progress --exclude-from $env.RSYNC_EXCLUDE_FROM --filter ":- .gitignore"
 
 # Configure prompt if interactive.
 if $nu.is-interactive {

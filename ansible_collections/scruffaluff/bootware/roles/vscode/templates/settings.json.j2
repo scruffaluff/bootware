@@ -122,7 +122,7 @@
         "cwd": "${workspaceFolder}",
         "env": {
           "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
-          "PYTHONPATH": "{{ user_home }}/.config/pyrc"
+          "PYTHONPATH": "{{ user_home | replace(backslash, '/') }}/.config/pyrc"
         },
         "justMyCode": false,
         "name": "Debug Python file",
@@ -134,7 +134,7 @@
         "cwd": "${workspaceFolder}",
         "env": {
           "PYDEVD_WARN_EVALUATION_TIMEOUT": "1000000",
-          "PYTHONPATH": "{{ user_home }}/.config/pyrc"
+          "PYTHONPATH": "{{ user_home | replace(backslash, '/') }}/.config/pyrc"
         },
         "justMyCode": false,
         "module": "pytest",
