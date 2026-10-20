@@ -42,6 +42,13 @@
 
 - name: Set Zed remotes
   ansible.builtin.set_fact:
+    zed_agent_default_model: >-
+      {{ zed_profiles | default(zed_settings.get('agent',
+      {}).get('default_model', {})) }}
+    zed_context_servers: >-
+      {{ zed_profiles | default(zed_settings.get('context_servers', {})) }}
+    zed_language_models: >-
+      {{ zed_profiles | default(zed_settings.get('language_models', {})) }}
     zed_profiles: >-
       {{ zed_profiles | default(zed_settings.get('profiles', zed_profiles_)) }}
     zed_remotes: >-

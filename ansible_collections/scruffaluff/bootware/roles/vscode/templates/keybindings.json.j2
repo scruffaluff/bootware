@@ -28,9 +28,6 @@
   { "command": "-inlineChat.holdForSpeech", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-inlineChat.startWithCurrentLine", "key": "{{ vscode_ctrl_key }}+i" },
-  { "command": "-inlineChat2.reveal", "key": "{{ vscode_ctrl_key }}+i" },
-  { "command": "-inlineChat2.start", "key": "{{ vscode_ctrl_key }}+i" },
-  { "command": "-inlineChat2.stop", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-list.find", "key": "ctrl+f" },
   { "command": "-list.selectAll", "key": "{{ vscode_ctrl_key }}+a" },
   { "command": "-notebook.cell.chat.start", "key": "{{ vscode_ctrl_key }}+i" },
@@ -88,6 +85,7 @@
     "command": "-workbench.action.terminal.accessibleBufferGoToPreviousCommand",
     "key": "alt+up"
   },
+  { "command": "-workbench.action.chat.open", "key": "ctrl+cmd+i" },
   { "command": "-workbench.action.terminal.chat.start", "key": "{{ vscode_ctrl_key }}+i" },
   { "command": "-workbench.action.terminal.focus", "key": "{{ vscode_ctrl_key }}+down" },
   { "command": "-workbench.action.terminal.focusFind", "key": "{{ vscode_ctrl_key }}+f" },
@@ -503,6 +501,15 @@
     "command": "workbench.action.editor.previousChange",
     "key": "ctrl+shift+[",
     "when": "editorTextFocus && !textCompareEditorActive"
+  },
+  {
+    "command": "workbench.files.action.collapseExplorerFolders",
+    "key": "alt+ctrl+c"
+  },
+  {
+    "command": "workbench.action.chat.open",
+    "key": "alt+ctrl+a",
+    "when": "!chatSetupDisabledInWorkspace && !chatSetupHidden"
   },
   {
     "command": "workbench.action.files.newUntitledFile",
