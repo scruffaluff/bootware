@@ -1,0 +1,137 @@
+---
+- name: Install Marimo for Unix
+  ansible.builtin.command:
+    cmd: >-
+      uv tool install --with pytest,python-lsp-server,ruff,ty
+      marimo[recommended]
+  become: "{{ system_install }}"
+  become_user: "{{ user_id }}"
+  changed_when: "'already installed' not in marimo_install_unix.stderr"
+  environment:
+    PATH: "{{ env_path }}"
+  register: marimo_install_unix
+  tags:
+    - install
+  when:
+    - ansible_facts.system != "Win32NT"
+    - system_pkg_mgr != "opkg"
+
+- name: Install Marimo for Windows
+  ansible.windows.win_shell: >-
+    uv tool install --with pytest,python-lsp-server,ruff,ty marimo[recommended]
+  changed_when: "'already installed' not in marimo_install_windows.stderr"
+  environment:
+    Path: "{{ env_path }}"
+  register: marimo_install_windows
+  tags:
+    - install
+  when: ansible_facts.system == "Win32NT"
+
+- name: Check if Marimo settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.config/marimo/marimo.toml"
+  register: marimo_settings_check_unix
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Check if Marimo settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ user_home }}\\.config\\marimo\\marimo.toml"
+  register: marimo_settings_check_windows
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set Marimo settings check
+  ansible.builtin.set_fact:
+    marimo_settings_check: >-
+      {{ marimo_settings_check_unix if not 'skipped' in
+      marimo_settings_check_unix else marimo_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of Marimo settings file
+  ansible.builtin.slurp:
+    src: "{{ user_home }}/.config/marimo/marimo.toml"
+  register: marimo_settings_file
+  tags:
+    - config
+  when: marimo_settings_check.stat.exists
+
+- name: Parse Marimo settings
+  ansible.builtin.set_fact:
+    marimo_settings: >-
+      {{ {} if 'skipped' in marimo_settings_file else
+      marimo_settings_file['content'] | b64decode | regex_replace('^\s*//.*$',
+      '', multiline=True) | community.general.from_toml }}
+  tags:
+    - config
+
+- name: Set Marimo variables
+  ansible.builtin.set_fact:
+    marimo_agent: >-
+      {{ marimo_agent | default(marimo_settings.get('ai', {})) }}
+    marimo_completion: >-
+      {{ marimo_completion | default(marimo_settings.get('completion', {})) }}
+    marimo_mcp: >-
+      {{ marimo_mcp | default(marimo_settings.get('mcp', {})) }}
+  tags:
+    - config
+
+- name: Create Marimo settings directory for Unix
+  ansible.builtin.file:
+    group: "{{ group_id }}"
+    mode: "755"
+    owner: "{{ user_id }}"
+    path: "{{ user_home }}/.config/marimo"
+    state: directory
+  become: "{{ system_install }}"
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Create Marimo settings directory for Windows
+  ansible.windows.win_file:
+    path: "{{ user_home }}\\.config\\marimo"
+    state: directory
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Copy Marimo settings files for Unix
+  ansible.builtin.template:
+    dest: "{{ user_home }}/.config/marimo/{{ item }}"
+    force: true
+    group: "{{ group_id }}"
+    mode: "640"
+    owner: "{{ user_id }}"
+    src: "{{ item }}.j2"
+  become: "{{ system_install }}"
+  loop:
+    - marimo.css
+    - marimo.toml
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Copy Marimo settings files for Windows
+  ansible.windows.win_template:
+    dest: "{{ user_home }}\\.config\\marimo\\{{ item }}"
+    force: true
+    src: "{{ item }}.j2"
+  loop:
+    - marimo.css
+    - marimo.toml
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set owner of Marimo files for Windows
+  ansible.windows.win_owner:
+    path: "{{ user_home }}\\.config\\marimo"
+    recurse: true
+    user: "{{ user_id }}"
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"

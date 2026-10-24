@@ -381,6 +381,8 @@ bootstrap() {
   export ANSIBLE_PYTHON_INTERPRETER='auto_silent'
   # Disable Python buffering to ensure realtime stdout for MacOS.
   export PYTHONUNBUFFERED='1'
+  # Add Ansible Uv tool binaries to system path.
+  export PATH="${HOME}/.local/bin:${PATH}"
 
   # Do not quote extra_args. Otherwise extra_args will be interpreted as a
   # single argument.
@@ -836,6 +838,19 @@ setup() {
       ;;
   esac
 
+  if ! command -v uv > /dev/null 2>&1; then
+    log 'Installing uv.'
+    curl -LSfs https://scruffaluff.github.io/picoware/install/uv.sh | sh -s -- --global
+  fi
+  export PATH="${HOME}/.local/bin:${PATH}"
+
+  # Install Ansible with extra packages.
+  if ! uv tool list | grep -q 'ansible'; then
+    log 'Installing Ansible.'
+    uv tool install --with tomlkit --with-executables-from ansible-core ansible
+    log "Installed $(ansible --version)."
+  fi
+
   collections='chocolatey.chocolatey community.general community.windows'
   for collection in ${collections}; do
     collection_status="$(ansible-galaxy collection list "${collection}" 2>&1)"
@@ -861,13 +876,6 @@ setup_alpine() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    ${super:+"${super}"} apk update
-    ${super:+"${super}"} apk add ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
     ${super:+"${super}"} apk update
@@ -909,14 +917,6 @@ setup_arch() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    # Installing Ansible via Python causes pacman conflicts with AWS CLI.
-    ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
-    ${super:+"${super}"} pacman --noconfirm --sync ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
     ${super:+"${super}"} pacman --noconfirm --refresh --sync --sysupgrade
@@ -961,15 +961,6 @@ setup_debian() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if ! command -v ansible > /dev/null 2>&1; then
-    # Install Ansible with Python3 since most package managers provide an old
-    # version of Ansible.
-    log 'Installing Ansible.'
-    ${super:+"${super}" -E} apt-get --quiet update
-    ${super:+"${super}" -E} apt-get --quiet install --yes ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
     ${super:+"${super}" -E} apt-get --quiet update
@@ -1011,15 +1002,6 @@ setup_fedora() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    # Installing Ansible via Python causes issues installing remote DNF packages
-    # with Ansible.
-    ${super:+"${super}"} dnf makecache
-    ${super:+"${super}"} dnf install --assumeyes ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
     ${super:+"${super}"} dnf makecache
@@ -1054,18 +1036,7 @@ setup_fedora() {
 #   Super user elevation command.
 #######################################
 setup_freebsd() {
-  local ansible_package super="${1:-}"
-
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    ${super:+"${super}"} pkg update
-
-    ansible_package="$(
-      pkg search --quiet --regex 'py[0-9]+-ansible-[^A-Za-z]'
-    )"
-    ${super:+"${super}"} pkg install --yes "${ansible_package}"
-    log "Installed $(ansible --version)."
-  fi
+  local super="${1:-}"
 
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
@@ -1156,12 +1127,6 @@ setup_macos() {
     brew analytics off
   fi
 
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    brew install --yes ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v git > /dev/null 2>&1; then
     log 'Installing Git.'
     brew install --yes git
@@ -1194,13 +1159,6 @@ setup_suse() {
   # Flags:
   #   -v: Only show file path of command.
   #   -x: Check if file exists and execute permission is granted.
-  if ! command -v ansible > /dev/null 2>&1; then
-    log 'Installing Ansible.'
-    ${super:+"${super}"} zypper update --no-confirm
-    ${super:+"${super}"} zypper install --no-confirm ansible
-    log "Installed $(ansible --version)."
-  fi
-
   if ! command -v curl > /dev/null 2>&1; then
     log 'Installing Curl.'
     ${super:+"${super}"} zypper update --no-confirm

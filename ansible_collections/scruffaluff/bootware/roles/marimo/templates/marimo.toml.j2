@@ -2,9 +2,17 @@
 #
 # For more information, visit https://docs.marimo.io/guides/configuration.
 
+{% if marimo_ai -%}
+{{ {"ai": marimo_agent} | community.general.to_toml }}
+{%- else %}
 [ai]
 enabled = false
 inline_tooltip = false
+{% endif %}
+{% if marimo_ai %}
+
+{{ {"completion": marimo_completion} | community.general.to_toml  }}
+{%- endif %}
 
 [diagnostics]
 enabled = true
@@ -54,6 +62,10 @@ enable_ruff = true
 
 [language_servers.ty]
 enabled = true
+{% if marimo_ai %}
+
+{{ {"mcp": marimo_mcp} | community.general.to_toml }}
+{%- endif %}
 
 [save]
 format_on_save = false
