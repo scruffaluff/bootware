@@ -40,7 +40,7 @@
   tags:
     - config
 
-- name: Set Zed remotes
+- name: Set Zed variables
   ansible.builtin.set_fact:
     zed_profiles: >-
       {{ zed_profiles | default(zed_settings.get('profiles', zed_profiles_)) }}

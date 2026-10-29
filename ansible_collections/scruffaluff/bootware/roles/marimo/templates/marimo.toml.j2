@@ -3,20 +3,34 @@
 # For more information, visit https://docs.marimo.io/guides/configuration.
 
 [ai]
+allow_provider_config = false
 enabled = false
 inline_tooltip = false
+
+[completion]
+activate_on_typing = true
+auto_close_pairs = false
+signature_hint_on_typing = false
 
 [diagnostics]
 enabled = true
 
 [display]
+code_lens = true
 custom_css = ["{{ user_home | replace(backslash, '/') }}/.config/marimo/marimo.css"]
+default_width = "full"
+reference_highlighting = true
+theme = "light"
 
 [experimental]
 debugger = true
+rtc_v2 = true
 
 [formatting]
 line_length = 80
+
+[keymap]
+preset = "default"
 
 # Marimo does not yet provide a way to disable keybindings so
 # "Alt-Ctrl-Shift-q" is used instead.
@@ -48,9 +62,13 @@ line_length = 80
 "markdown.link" = "Ctrl-k"
 
 [language_servers.pylsp]
-enabled = true
+enable_flake8 = false
 enable_mypy = false
+enable_pydocstyle = false
+enable_pyflakes = false
+enable_pylint = false
 enable_ruff = true
+enabled = true
 
 [language_servers.ty]
 enabled = true
@@ -59,8 +77,11 @@ enabled = true
 format_on_save = false
 
 [runtime]
+auto_instantiate = false
 auto_reload = "autorun"
 on_cell_change = "autorun"
 output_max_bytes = 1000000000
 pythonpath = ["{{ user_home | replace(backslash, '/') }}/.config/pyrc"]
+reactive_tests = true
+show_tracebacks = false
 skip_update_check = true

@@ -1169,6 +1169,21 @@
         - server
         - wsl
 
+    - name: Install Marimo interactive notebook environment
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop
+            - marimo
+            - server
+            - wsl
+        name: scruffaluff.bootware.marimo
+      tags:
+        - desktop
+        - marimo
+        - server
+        - wsl
+
     - name: Install Miniserve HTTP server
       ansible.builtin.include_role:
         apply:

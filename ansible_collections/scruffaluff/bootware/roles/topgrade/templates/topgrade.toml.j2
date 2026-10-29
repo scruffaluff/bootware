@@ -10,6 +10,8 @@ greedy_cask = true
 assume_yes = true
 {% if ansible_facts.system == "Darwin" %}
 disable = [
+  "bun",
+  "bun_packages",
   "certbot",
   "colima",
   "containers",
@@ -17,13 +19,19 @@ disable = [
   "git_repos",
   "helix",
   "helm",
+  "pnpm",
   "ruby_gems",
   "skills",
   "system",
   "uv",
+{% for item in topgrade_disables %}
+  "{{ item }}",
+{% endfor %}
 ]
 {% elif ansible_facts.system == "Win32NT" %}
 disable = [
+  "bun",
+  "bun_packages",
   "certbot",
   "containers",
   "gem",
@@ -32,23 +40,33 @@ disable = [
   "helm",
   "microsoft_office",
   "microsoft_store",
+  "pnpm",
   "ruby_gems",
   "skills",
   "system",
   "winget",
   "uv",
+{% for item in topgrade_disables %}
+  "{{ item }}",
+{% endfor %}
 ]
 {% else %}
 disable = [
+  "bun",
+  "bun_packages",
   "certbot",
   "containers",
   "gem",
   "git_repos",
   "helix",
   "helm",
+  "pnpm",
   "ruby_gems",
   "skills",
   "uv",
+{% for item in topgrade_disables %}
+  "{{ item }}",
+{% endfor %}
 ]
 {% endif %}
 no_retry = true

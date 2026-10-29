@@ -6,10 +6,11 @@
   "agent": {
     "button": false,
     "default_profile": "ask",
-    "dock": "right",
+    "dock": "left",
     "enabled": false,
+    "notify_when_agent_waiting": "never",
+    "play_sound_when_agent_done": "never",
     "show_turn_stats": true,
-    "sidebar_side": "right"
   },
 {% if zed_extensions | length > 0 %}
   "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},

@@ -1,4 +1,4 @@
-FROM docker.io/archlinux
+FROM docker.io/archlinux:latest
 
 ARG TARGETARCH
 

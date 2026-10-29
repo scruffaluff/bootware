@@ -4,7 +4,7 @@
 
 require('auto-layout'):setup()
 if not os.getenv('ZELLIJ') then
-  require('full-border'):setup({ type = ui.Border.ROUNDED })
+  require('full-border'):setup({ set = 'rounded' })
 end
 require('git'):setup()
 require('starship'):setup()

@@ -475,6 +475,18 @@
     }
   },
   {
+    "name": "marimo",
+    "skip": [
+      {
+        "os": "freebsd"
+      },
+      {
+        "os": "openwrt"
+      }
+    ],
+    "tests": ["marimo --version"]
+  },
+  {
     "name": "miniserve",
     "tests": ["miniserve --version"]
   },

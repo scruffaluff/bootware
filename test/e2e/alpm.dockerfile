@@ -32,7 +32,7 @@ FROM scratch AS dist
 
 COPY --from=build /bootware/build/dist/ /
 
-FROM docker.io/archlinux
+FROM docker.io/archlinux:latest
 
 ARG version
 
