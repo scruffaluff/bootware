@@ -8,11 +8,17 @@
   --marimo-text-font: Fira Sans;
 }
 
+{% if marimo_ai %}
+*:has(> svg.lucide-message-circle-question-mark) {
+  display: none;
+}
+{% else %}
 *:has(> svg.lucide-bot),
 *:has(> svg.lucide-message-circle-question-mark),
 *:has(> svg.lucide-sparkles) {
   display: none;
 }
+{% endif %}
 
 [data-testid="notebook-actions-dropdown"] {
   display: none;

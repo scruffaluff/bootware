@@ -7,6 +7,7 @@ zed_profiles_:
     settings:
       helix_mode: true
 
+zed_ai: false
 zed_arch: "{{ zed_arch_[system_architecture] }}"
 zed_config_path: >-
   {{ user_home + '\AppData\Roaming\Zed' if ansible_facts.system == 'Win32NT'

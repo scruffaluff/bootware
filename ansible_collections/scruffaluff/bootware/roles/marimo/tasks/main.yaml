@@ -44,6 +44,57 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+- name: Check if Marimo settings file exists for Unix
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.config/marimo/marimo.toml"
+  register: marimo_settings_check_unix
+  tags:
+    - config
+  when: ansible_facts.system != "Win32NT"
+
+- name: Check if Marimo settings file exists for Windows
+  ansible.windows.win_stat:
+    path: "{{ user_home }}\\.config\\marimo\\marimo.toml"
+  register: marimo_settings_check_windows
+  tags:
+    - config
+  when: ansible_facts.system == "Win32NT"
+
+- name: Set Marimo settings check
+  ansible.builtin.set_fact:
+    marimo_settings_check: >-
+      {{ marimo_settings_check_unix if not 'skipped' in
+      marimo_settings_check_unix else marimo_settings_check_windows }}
+  tags:
+    - config
+
+- name: Read contents of Marimo settings file
+  ansible.builtin.slurp:
+    src: "{{ user_home }}/.config/marimo/marimo.toml"
+  register: marimo_settings_file
+  tags:
+    - config
+  when: marimo_settings_check.stat.exists
+
+- name: Parse Marimo settings
+  ansible.builtin.set_fact:
+    marimo_settings: >-
+      {{ {} if 'skipped' in marimo_settings_file else
+      marimo_settings_file['content'] | b64decode | regex_replace('^\s*//.*$',
+      '', multiline=True) | community.general.from_toml }}
+  tags:
+    - config
+
+- name: Set Marimo variables
+  ansible.builtin.set_fact:
+    marimo_agent: >-
+      {{ marimo_agent | default(marimo_settings.get('ai', {})) |
+      combine(marimo_agent_, recursive=true) }}
+    marimo_mcp: >-
+      {{ marimo_mcp | default(marimo_settings.get('mcp', {})) }}
+  tags:
+    - config
+
 - name: Create Marimo settings directory for Unix
   ansible.builtin.file:
     group: "{{ group_id }}"

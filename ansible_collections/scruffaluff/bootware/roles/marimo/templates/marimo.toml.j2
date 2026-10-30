@@ -2,11 +2,7 @@
 #
 # For more information, visit https://docs.marimo.io/guides/configuration.
 
-[ai]
-allow_provider_config = false
-enabled = false
-inline_tooltip = false
-
+{{ {"ai": marimo_agent} | community.general.to_toml }}
 [completion]
 activate_on_typing = true
 auto_close_pairs = false
@@ -24,6 +20,7 @@ theme = "light"
 
 [experimental]
 debugger = true
+external_agents = {{ marimo_ai | to_json }}
 rtc_v2 = true
 
 [formatting]
@@ -72,6 +69,10 @@ enabled = true
 
 [language_servers.ty]
 enabled = true
+{% if marimo_mcp %}
+
+{{ {"mcp": marimo_mcp} | community.general.to_toml }}
+{%- endif %}
 
 [save]
 format_on_save = false
