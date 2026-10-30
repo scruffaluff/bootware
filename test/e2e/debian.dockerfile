@@ -46,8 +46,8 @@ COPY --chown="${USER}" data/ ./data/
 COPY --chown="${USER}" test/ ./test/
 
 # Ensure Bash and Deno are installed.
-RUN if ! command -v bash > /dev/null; then sudo -E apt-get install --quiet --yes bash; fi \
-    && if ! command -v deno > /dev/null; then sudo -E apt-get install --quiet --yes unzip \
+RUN if ! command -v bash > /dev/null; then sudo apt-get install --quiet --yes bash; fi \
+    && if ! command -v deno > /dev/null; then sudo apt-get install --quiet --yes unzip \
     && curl -LSfs https://scruffaluff.github.io/picoware/install/deno.sh | bash -s -- --global; fi
 
 ARG test

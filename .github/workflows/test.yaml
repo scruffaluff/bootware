@@ -175,11 +175,12 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v7
         with:
-          # Usql is disabled since its test fails in GitHub workflows as of
-          # 02/25/2026 due to a "signal arrived during cgo execution" error. The
-          # test passes when run locally.
+          # GitLab Runner is disabled since the upstream install script is
+          # broken as of 10/30/2026. Usql is disabled since its test fails in
+          # GitHub workflows as of 02/25/2026 due to a "signal arrived during
+          # cgo execution" error. The test passes when run locally.
           build-args: |
-            skip=spotify,usql
+            skip=gitlab_runner,spotify,usql
             test=true
           context: .
           file: test/e2e/fedora.dockerfile

@@ -1,4 +1,30 @@
 ---
+- name: Check if Firefox is a Snap package for Ubuntu
+  ansible.builtin.command:
+    cmd: snap list firefox
+  become: true
+  changed_when: false
+  failed_when: false
+  register: firefox_snap_list
+  tags:
+    - install
+  when:
+    - system_install
+    - ansible_facts.distribution == "Ubuntu"
+
+- name: Uninstall Firefox Snap package for Ubuntu
+  ansible.builtin.command:
+    cmd: snap remove --purge firefox
+  become: true
+  changed_when: "'firefox removed' in firefox_snap_purge.stdout"
+  register: firefox_snap_purge
+  tags:
+    - install
+  when:
+    - system_install
+    - ansible_facts.distribution == "Ubuntu"
+    - "'mozilla' in firefox_snap_list.stdout"
+
 - name: Install Firefox for Debian
   ansible.builtin.import_tasks: debian.yaml
   tags:
@@ -6,7 +32,6 @@
   when:
     - system_install
     - system_pkg_mgr == "apt"
-    - ansible_facts.distribution != "Ubuntu"
 
 - name: Install Firefox for FreeBSD
   become: true
@@ -40,14 +65,6 @@
     - install
   when: ansible_facts.system == "Darwin"
 
-- name: Install Firefox for Ubuntu
-  ansible.builtin.import_tasks: ubuntu.yaml
-  tags:
-    - install
-  when:
-    - system_install
-    - ansible_facts.distribution == "Ubuntu"
-
 - name: Install Firefox for Windows
   community.windows.win_scoop:
     global: "{{ system_install }}"
@@ -56,7 +73,6 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
-# Ubuntu is skipped because its version of Firefox depends on Snap.
 - name: Find Firefox profiles for Unix
   become: "{{ system_install }}"
   become_user: "{{ user_id }}"

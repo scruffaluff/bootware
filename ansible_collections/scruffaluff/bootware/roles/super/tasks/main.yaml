@@ -61,6 +61,7 @@
   when:
     - system_install
     - ansible_facts.system != "Win32NT"
+    - ansible_facts.distribution != "Ubuntu"
     - super_sudo_available.rc == 0
 
 - name: Enable passwordless sudo for Unix

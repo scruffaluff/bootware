@@ -35,6 +35,7 @@ rust_applications: >-
 rust_components:
   - clippy
   - llvm-tools-preview
+  - rust-analyzer
   - rust-src
   - rustfmt
 rust_targets: []

@@ -1,9 +1,25 @@
 ---
+- name: Install Marimo for Alpine
+  ansible.builtin.command:
+    cmd: >-
+      uv tool install --with pytest,python-lsp-server,ruff,ty
+      marimo[lsp,sandbox]
+  become: "{{ system_install }}"
+  become_user: "{{ user_id }}"
+  changed_when: "'already installed' not in marimo_install_alpine.stderr"
+  environment:
+    PATH: "{{ env_path }}"
+  register: marimo_install_alpine
+  tags:
+    - install
+  when:
+    - system_pkg_mgr == "apk"
+
 - name: Install Marimo for Unix
   ansible.builtin.command:
     cmd: >-
       uv tool install --with pytest,python-lsp-server,ruff,ty
-      marimo[recommended]
+      marimo[lsp,recommended]
   become: "{{ system_install }}"
   become_user: "{{ user_id }}"
   changed_when: "'already installed' not in marimo_install_unix.stderr"
@@ -14,11 +30,12 @@
     - install
   when:
     - ansible_facts.system != "Win32NT"
-    - system_pkg_mgr != "opkg"
+    - system_pkg_mgr not in ["apk", "opkg"]
 
 - name: Install Marimo for Windows
   ansible.windows.win_shell: >-
-    uv tool install --with pytest,python-lsp-server,ruff,ty marimo[recommended]
+    uv tool install --with pytest,python-lsp-server,ruff,ty
+    marimo[lsp,recommended]
   changed_when: "'already installed' not in marimo_install_windows.stderr"
   environment:
     Path: "{{ env_path }}"

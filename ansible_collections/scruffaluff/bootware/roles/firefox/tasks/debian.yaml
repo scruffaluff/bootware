@@ -1,8 +1,18 @@
 ---
+- name: Create keyring directory for Debian
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+  become: true
+  tags:
+    - install
+
 - name: Download Mozilla GPG key for Debian
   ansible.builtin.get_url:
-    dest: /usr/share/keyrings/mozilla.gpg
-    mode: "644"
+    dest: /etc/apt/keyrings/mozilla.asc
+    force: true
+    mode: "0644"
     url: https://packages.mozilla.org/apt/repo-signing-key.gpg
   become: true
   tags:
@@ -11,10 +21,10 @@
 - name: Add Mozilla repository for Debian
   ansible.builtin.apt_repository:
     repo: >-
-      deb [signed-by=/usr/share/keyrings/mozilla.gpg]
+      deb [signed-by=/etc/apt/keyrings/mozilla.asc]
       https://packages.mozilla.org/apt mozilla main
     state: present
-    filename: firefox
+    filename: mozilla
   become: true
   tags:
     - install
