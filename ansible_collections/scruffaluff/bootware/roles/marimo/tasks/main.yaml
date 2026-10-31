@@ -47,6 +47,7 @@
 - name: Check if Marimo settings file exists for Unix
   ansible.builtin.stat:
     path: "{{ user_home }}/.config/marimo/marimo.toml"
+  become: "{{ system_install }}"
   register: marimo_settings_check_unix
   tags:
     - config
@@ -71,6 +72,7 @@
 - name: Read contents of Marimo settings file
   ansible.builtin.slurp:
     src: "{{ user_home }}/.config/marimo/marimo.toml"
+  become: "{{ system_install and ansible_facts.system != 'Win32NT' }}"
   register: marimo_settings_file
   tags:
     - config

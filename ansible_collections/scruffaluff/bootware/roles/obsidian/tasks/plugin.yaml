@@ -2,6 +2,7 @@
 - name: Check if Obsidian plugin settings file exists for Unix
   ansible.builtin.stat:
     path: "{{ plugin.dest }}"
+  become: "{{ system_install }}"
   register: obsidian_plugin_check_unix
   tags:
     - config
@@ -26,6 +27,7 @@
 - name: Read contents of current Obsidian plugin settings file
   ansible.builtin.slurp:
     src: "{{ plugin.dest }}"
+  become: "{{ system_install and ansible_facts.system != 'Win32NT' }}"
   register: obsidian_plugin_dest_file
   tags:
     - config
