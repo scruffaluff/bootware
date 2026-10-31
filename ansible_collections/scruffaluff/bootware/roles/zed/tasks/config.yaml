@@ -2,6 +2,7 @@
 - name: Check if Zed settings file exists for Unix
   ansible.builtin.stat:
     path: "{{ zed_config_path }}/settings.json"
+  become: "{{ system_install }}"
   register: zed_settings_check_unix
   tags:
     - config
@@ -26,6 +27,7 @@
 - name: Read contents of Zed settings file
   ansible.builtin.slurp:
     src: "{{ zed_config_path }}/settings.json"
+  become: "{{ system_install and ansible_facts.system != 'Win32NT' }}"
   register: zed_settings_file
   tags:
     - config

@@ -4,7 +4,6 @@
   "bookmarks.sideBar.countBadge": "off",
   "browse-lite.chromeExecutable": "{{ vscode_chrome_path }}",
   "chat.agent.enabled": {{ vscode_ai | to_json }},
-  "chat.commandCenter.enabled": {{ vscode_ai | to_json }},
   "chat.agent.sandbox.allowUnsandboxedCommands": false,
   "chat.agent.sandbox.credentials.authenticategh": false,
   "chat.agent.sandbox.credentials.authenticategit": false,
@@ -123,6 +122,9 @@
   "inlineChat.fixDiagnostics": false,
   "js/ts.suggest.autoImports": false,
   "js/ts.updateImportsOnFileMove.enabled": "never",
+  "json.schemaDownload.trustedDomains": {
+    "*": true
+  },
   "latex-workshop.bind.enter.key": false,
   "latex-workshop.latex.autoBuild.run": "onFileChange",
   "latex-workshop.view.pdf.viewer": "tab",
