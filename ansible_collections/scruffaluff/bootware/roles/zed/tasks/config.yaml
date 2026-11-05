@@ -2,6 +2,7 @@
 - name: Check if Zed settings file exists for Unix
   ansible.builtin.stat:
     path: "{{ zed_config_path }}/settings.json"
+  become: "{{ system_install }}"
   register: zed_settings_check_unix
   tags:
     - config
@@ -26,6 +27,7 @@
 - name: Read contents of Zed settings file
   ansible.builtin.slurp:
     src: "{{ zed_config_path }}/settings.json"
+  become: "{{ system_install and ansible_facts.system != 'Win32NT' }}"
   register: zed_settings_file
   tags:
     - config
@@ -42,6 +44,17 @@
 
 - name: Set Zed variables
   ansible.builtin.set_fact:
+    zed_agent_default_model: >-
+      {{ zed_agent_default_model | default(zed_settings.get('agent',
+      {}).get('default_model', {})) }}
+    zed_agent_servers: >-
+      {{ zed_agent_servers | default(zed_settings.get('agent_servers', {})) }}
+    zed_context_servers: >-
+      {{ zed_context_servers | default(zed_settings.get('context_servers', {}))
+      }}
+    zed_language_models: >-
+      {{ zed_language_models | default(zed_settings.get('language_models', {}))
+      }}
     zed_profiles: >-
       {{ zed_profiles | default(zed_settings.get('profiles', zed_profiles_)) }}
     zed_remotes: >-

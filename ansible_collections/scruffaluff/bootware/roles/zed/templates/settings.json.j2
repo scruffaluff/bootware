@@ -4,14 +4,45 @@
 
 {
   "agent": {
-    "button": false,
+    "auto_compact": {
+      "enabled": true
+    },
+    "button": {{ zed_ai | to_json }},
+{% if zed_agent_default_model %}
+    "default_model": {{ zed_agent_default_model | to_nice_json(indent=2) | indent(4) }},
+{% endif %}
     "default_profile": "ask",
     "dock": "left",
-    "enabled": false,
+    "enabled": {{ zed_ai | to_json }},
     "notify_when_agent_waiting": "never",
     "play_sound_when_agent_done": "never",
+    "sandbox_permissions": {
+      "allow_unsandboxed": false,
+      "network_hosts": ["*"]
+    },
     "show_turn_stats": true,
+    "single_file_review": true,
+    "threads_sidebar": {
+      "auto_open": false
+    },
+    "tool_permissions": {
+      "default": "confirm",
+      "tools": {
+        "fetch": {
+          "default": "allow"
+        },
+        "search_web": {
+          "default": "allow"
+        },
+        "skill": {
+          "default": "allow"
+        }
+      }
+    },
   },
+{% if zed_agent_servers %}
+  "agent_servers": {{ zed_agent_servers | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
 {% if zed_extensions | length > 0 %}
   "auto_install_extensions": {{ zed_extensions | to_nice_json(indent=2) | indent(2) }},
 {% endif %}
@@ -23,6 +54,9 @@
   "collaboration_panel": {
     "button": false
   },
+{% if zed_context_servers %}
+  "context_servers": {{ zed_context_servers | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
   "cursor_shape": "bar",
   "diagnostics": {
     "inline": {
@@ -30,7 +64,7 @@
     }
   },
   "diff_view_style": "unified",
-  "disable_ai": true,
+  "disable_ai": {{ (not zed_ai) | to_json }},
   "edit_predictions": {
     "allow_data_collection": "no",
     "provider": "none"
@@ -84,6 +118,9 @@
   "jsx_tag_auto_close": {
     "enabled": false
   },
+{% if zed_language_models %}
+  "language_models": {{ zed_language_models | to_nice_json(indent=2) | indent(2) }},
+{% endif %}
   "languages": {
     "C": {
       "tab_size": 4

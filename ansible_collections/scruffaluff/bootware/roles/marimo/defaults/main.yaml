@@ -1,0 +1,6 @@
+---
+marimo_ai: false
+marimo_agent_:
+  allow_provider_config: "{{ marimo_ai }}"
+  enabled: "{{ marimo_ai }}"
+  inline_tooltip: "{{ marimo_ai }}"

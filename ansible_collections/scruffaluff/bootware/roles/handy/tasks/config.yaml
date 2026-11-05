@@ -2,6 +2,7 @@
 - name: Check if Handy settings file exists for Unix
   ansible.builtin.stat:
     path: "{{ handy_settings_path }}"
+  become: "{{ system_install }}"
   register: handy_settings_check_unix
   tags:
     - config
@@ -26,6 +27,7 @@
 - name: Read contents of current Handy settings file
   ansible.builtin.slurp:
     src: "{{ handy_settings_path }}"
+  become: "{{ system_install and ansible_facts.system != 'Win32NT' }}"
   register: handy_settings_file
   tags:
     - config

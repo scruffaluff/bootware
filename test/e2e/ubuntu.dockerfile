@@ -3,23 +3,29 @@ FROM docker.io/ubuntu:26.04
 ARG TARGETARCH
 ARG version=0.10.4
 
-# Install Ansible Curl and Sudo.
+# Install Curl, Sudo, and Uv.
 RUN DEBIAN_FRONTEND=noninteractive apt-get update --ignore-missing \
-  && DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes ansible \
-  curl sudo
+  && DEBIAN_FRONTEND=noninteractive apt-get install --quiet --yes curl sudo \
+  && curl -LSfs https://scruffaluff.github.io/picoware/install/uv.sh | sh -s \
+  -- --global
 
 # Grant ubuntu user passwordless sudo.
 RUN usermod --append --groups sudo ubuntu \
   && printf "ubuntu ALL=(ALL) NOPASSWD:ALL\n" >> /etc/sudoers
 
 # Ubuntu container comes with a builtin Ubuntu user.
-ENV HOME=/home/ubuntu USER=ubuntu
+ENV HOME=/home/ubuntu \
+    PATH='/home/ubuntu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
+    USER=ubuntu
 USER ubuntu
 WORKDIR $HOME
 
 # VSCode, when run inside of a container, will falsely warn the user about the
 # issues of running inside of the WSL and force a yes or no prompt.
 ENV DONT_PROMPT_WSL_INSTALL='true'
+
+RUN uv tool install --python 3.14 --with tomlkit --with-executables-from \
+  ansible-core ansible
 
 COPY --chown="${USER}" . $HOME/repo
 

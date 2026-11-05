@@ -83,6 +83,7 @@ vscode_extensions_: >-
 vscode_remote_extensions_: >-
   {{ vscode_oss_extensions_ + ['sukumo28.wav-preview'] }}
 
+vscode_ai: false
 vscode_arch: "{{ vscode_arch_[system_architecture] }}"
 vscode_chrome_path: "{{ vscode_chrome_path_[ansible_facts.system] }}"
 vscode_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
