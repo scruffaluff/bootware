@@ -8,7 +8,18 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+rust_components:
+  - clippy
+  - llvm-tools-preview
+  - rust-analyzer
+  - rust-src
+  - rustfmt
+rust_targets: []
+rust_toolchain: stable
+```
 
 ## Dependencies
 

@@ -131,7 +131,9 @@
     - python
   tags:
     - install
-  when: ansible_facts.system == "Darwin"
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
 
 # While Python Microsoft Store links are listed app execution aliases in Windows
 # settings, they are actually reparse point and require fsutil for permanent

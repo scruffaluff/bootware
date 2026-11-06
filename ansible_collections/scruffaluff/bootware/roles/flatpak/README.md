@@ -8,7 +8,12 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+flatpak_packages_gnome:
+  - com.mattjakeman.ExtensionManager
+```
 
 ## Dependencies
 

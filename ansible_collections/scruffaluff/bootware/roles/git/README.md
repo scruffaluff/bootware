@@ -8,7 +8,13 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+git_editor: hx
+git_user_email: user.name@mail.com
+git_user_name: User Name
+```
 
 ## Dependencies
 

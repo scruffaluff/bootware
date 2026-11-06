@@ -51,7 +51,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "pacman"
+  when:
+    - system_install
+    - system_pkg_mgr == "pacman"
 
 - name: Update Yay package list for Arch
   ansible.builtin.command:

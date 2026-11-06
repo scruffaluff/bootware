@@ -8,7 +8,12 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+prune_copr_repositories:
+  - phracek/PyCharm
+```
 
 ## Dependencies
 

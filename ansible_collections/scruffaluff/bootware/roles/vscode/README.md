@@ -8,7 +8,12 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+vscode_ai: false
+vscode_font_size: 14
+```
 
 ## Dependencies
 

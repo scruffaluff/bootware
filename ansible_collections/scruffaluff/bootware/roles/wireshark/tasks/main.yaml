@@ -60,7 +60,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Create Wireshark group for Debian
   ansible.builtin.command:
@@ -72,7 +74,9 @@
     DEBIAN_FRONTEND: noninteractive
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add user to Wireshark group for Linux
   ansible.builtin.user:

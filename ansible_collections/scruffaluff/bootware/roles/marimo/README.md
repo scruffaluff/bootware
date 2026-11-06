@@ -9,11 +9,15 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+marimo_ai: false
+```
 
 ## Dependencies
 
-None.
+Requires Python tomlkit package.
 
 ## Example Playbook
 

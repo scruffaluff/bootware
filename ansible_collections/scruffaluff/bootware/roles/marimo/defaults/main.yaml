@@ -1,5 +1,5 @@
 ---
-marimo_ai: false
+marimo_ai: "{{ ai }}"
 marimo_agent_:
   allow_provider_config: "{{ marimo_ai }}"
   enabled: "{{ marimo_ai }}"

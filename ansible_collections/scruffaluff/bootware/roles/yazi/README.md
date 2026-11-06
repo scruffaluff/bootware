@@ -8,7 +8,21 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+yazi_plugins:
+  - Rolv-Apneseth/starship
+  - lpnh/fr
+  - yazi-rs/plugins:chmod
+  - yazi-rs/plugins:full-border
+  - yazi-rs/plugins:git
+  - yazi-rs/plugins:mime-ext
+  - yazi-rs/plugins:piper
+  - yazi-rs/plugins:smart-filter
+  - yazi-rs/plugins:toggle-pane
+  - yazi-rs/plugins:zoom
+```
 
 ## Dependencies
 

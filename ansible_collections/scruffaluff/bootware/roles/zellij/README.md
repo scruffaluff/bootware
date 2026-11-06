@@ -8,7 +8,11 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+user_shell_executable: /usr/bin/nu # Linux default
+```
 
 ## Dependencies
 

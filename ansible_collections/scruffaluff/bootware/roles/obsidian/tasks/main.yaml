@@ -29,7 +29,7 @@
 
 - name: Create Obsidian user settings directory for Unix
   ansible.builtin.file:
-    dest: "{{ obsidian_user }}"
+    dest: "{{ obsidian_config }}"
     group: "{{ group_id }}"
     mode: "755"
     owner: "{{ user_id }}"
@@ -41,7 +41,7 @@
 
 - name: Create Obsidian user settings directory for Windows
   ansible.windows.win_file:
-    path: "{{ obsidian_user }}"
+    path: "{{ obsidian_config }}"
     state: directory
   tags:
     - config

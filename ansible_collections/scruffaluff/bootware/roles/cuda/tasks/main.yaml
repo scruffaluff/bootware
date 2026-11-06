@@ -31,7 +31,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install CUDA toolkit for Linux
   ansible.builtin.package:

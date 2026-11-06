@@ -98,6 +98,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Darwin"
     - system_paths | length > 0
 
@@ -111,6 +112,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Darwin"
     - system_paths | length > 0
 

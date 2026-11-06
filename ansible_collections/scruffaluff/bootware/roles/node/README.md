@@ -8,7 +8,26 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+node_applications:
+  - "@playwright/cli"
+  - "@slidev/cli"
+  - "@vue/language-server"
+  - bash-language-server
+  - lean-language-server
+  - live-server
+  - speed-test
+  - speedscope
+  - taze
+  - tombi
+  - typescript-language-server
+  - vls
+  - vscode-langservers-extracted
+  - wikit
+  - yaml-language-server
+```
 
 ## Dependencies
 

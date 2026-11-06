@@ -10,6 +10,7 @@ see the commit logs. The format is based on
 ### Added
 
 - Handy, Marimo, ROCm, and Vulkan roles.
+- Variable documentation for several roles.
 
 ### Changed
 

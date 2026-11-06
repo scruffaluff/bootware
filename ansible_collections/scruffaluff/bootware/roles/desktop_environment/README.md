@@ -8,7 +8,13 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+gnome_extensions:
+  - light-style@gnome-shell-extensions.gcampax.github.com
+  - rounded-window-corners@fxgn
+```
 
 ## Dependencies
 

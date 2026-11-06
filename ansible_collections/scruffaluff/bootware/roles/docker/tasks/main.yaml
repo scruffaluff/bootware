@@ -55,7 +55,6 @@
     dest: "{{ docker_temp.path }}/docker.gpg"
     mode: "640"
     url: https://download.docker.com/linux/debian/gpg
-  become: true
   tags:
     - install
   when: system_pkg_mgr == "apt"
@@ -69,7 +68,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Docker repository for Debian
   ansible.builtin.apt_repository:
@@ -85,7 +86,9 @@
   register: docker_debian
   tags:
     - install
-  when: system_pkg_mgr == "apt"
+  when:
+    - system_install
+    - system_pkg_mgr == "apt"
 
 - name: Add Docker repository for Ubuntu
   ansible.builtin.apt_repository:
@@ -100,6 +103,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apt"
     - docker_debian is failed
 
@@ -125,7 +129,9 @@
   become: true
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install Docker for Fedora
   ansible.builtin.dnf:
@@ -202,6 +208,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - docker_service.stat.exists
 
@@ -213,6 +220,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - systemd
 
@@ -225,6 +233,7 @@
   tags:
     - install
   when:
+    - system_install
     - system_pkg_mgr == "apk"
     - docker_service.stat.exists
 
@@ -236,6 +245,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - systemd
 

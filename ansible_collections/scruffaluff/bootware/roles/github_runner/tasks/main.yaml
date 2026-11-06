@@ -59,6 +59,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system in ["Darwin", "Linux"]
     - github_runner_doas_available.rc == 0
 
@@ -87,6 +88,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system in ["Darwin", "Linux"]
     - github_runner_sudo_available.rc == 0
 
@@ -99,7 +101,9 @@
   become: true
   tags:
     - install
-  when: ansible_facts.system in ["Darwin", "Linux"]
+  when:
+    - system_install
+    - ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Create GitHub Runner user for Windows
   ansible.windows.win_user:
@@ -146,7 +150,9 @@
     github_runner_os:
       Darwin: osx
       Linux: linux
-  when: ansible_facts.system in ["Darwin", "Linux"]
+  when:
+    - system_install
+    - ansible_facts.system in ["Darwin", "Linux"]
 
 - name: Get latest GitHub Runner version for Windows
   ansible.windows.win_uri:

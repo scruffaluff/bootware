@@ -17,6 +17,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - systemd
 

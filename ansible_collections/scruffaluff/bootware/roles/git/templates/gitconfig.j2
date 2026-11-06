@@ -18,8 +18,8 @@ state = status --branch --short
 
 [core]
 autocrlf = input
-editor = hx
-{% if ansible_facts.system != "Linux" or system_architecture == "amd6" or system_libc == "gnu" %}
+editor = {{ git_editor }}
+{% if ansible_facts.system != "Linux" or system_architecture == "amd64" or system_libc == "gnu" %}
 pager = delta
 {% endif %}
 

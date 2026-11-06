@@ -387,17 +387,6 @@
         - sysadmin
         - wsl
 
-    - name: Configure system desktop environment
-      ansible.builtin.include_role:
-        apply:
-          tags:
-            - desktop_environment
-            - desktop
-        name: scruffaluff.bootware.desktop_environment
-      tags:
-        - desktop_environment
-        - desktop
-
     - name: Install Dive container image explorer
       ansible.builtin.include_role:
         apply:
@@ -2043,3 +2032,16 @@
         - sysadmin
         - wsl
         - zoxide
+
+    # Desktop environment role is last since it configures system default
+    # applications.
+    - name: Configure system desktop environment
+      ansible.builtin.include_role:
+        apply:
+          tags:
+            - desktop_environment
+            - desktop
+        name: scruffaluff.bootware.desktop_environment
+      tags:
+        - desktop_environment
+        - desktop

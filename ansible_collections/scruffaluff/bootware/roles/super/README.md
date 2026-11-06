@@ -8,7 +8,11 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+super_passwordless: false
+```
 
 ## Dependencies
 

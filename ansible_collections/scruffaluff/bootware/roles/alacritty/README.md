@@ -8,16 +8,12 @@ None.
 
 ## Role Variables
 
-Role uses the following variables with default values.
+Role variables are listed below with defaults.
 
 ```yaml
-font_size: 14
-user_shell: "{{ shell_name }}"
+alacritty_font_size: 14
+user_shell_executable: /usr/bin/nu # Linux default
 ```
-
-The role will automatically select the standard path for the Fish shell for host
-operating system or the standard path for the latest PowerShell version on
-Windows by default for `user_shell`.
 
 ## Dependencies
 

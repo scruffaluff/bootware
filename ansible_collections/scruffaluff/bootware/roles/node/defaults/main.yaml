@@ -18,5 +18,3 @@ node_applications:
   - vscode-langservers-extracted
   - wikit
   - yaml-language-server
-node_versions:
-  - "22"

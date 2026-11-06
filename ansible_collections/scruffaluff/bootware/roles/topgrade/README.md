@@ -9,7 +9,11 @@ None.
 
 ## Role Variables
 
-None.
+Role variables are listed below with defaults.
+
+```yaml
+topgrade_disables: []
+```
 
 ## Dependencies
 

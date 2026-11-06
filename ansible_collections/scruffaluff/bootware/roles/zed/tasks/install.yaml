@@ -96,6 +96,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
     - zed_linux is failed
@@ -111,6 +112,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
     - zed_linux is failed
@@ -125,6 +127,7 @@
   tags:
     - install
   when:
+    - system_install
     - ansible_facts.system == "Linux"
     - system_pkg_mgr != "apk"
     - zed_linux is failed

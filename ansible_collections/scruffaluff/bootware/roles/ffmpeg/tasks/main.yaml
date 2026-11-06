@@ -7,7 +7,9 @@
   register: ffmpeg_install_fedora
   tags:
     - install
-  when: system_pkg_mgr == "dnf"
+  when:
+    - system_install
+    - system_pkg_mgr == "dnf"
 
 - name: Install FFmpeg for FreeBSD
   become: true

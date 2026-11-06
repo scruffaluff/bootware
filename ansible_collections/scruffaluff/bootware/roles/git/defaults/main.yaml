@@ -3,5 +3,6 @@ git_delta_arch_:
   amd64: x86_64
   arm64: aarch64
 git_delta_arch: "{{ git_delta_arch_[system_architecture] }}"
-git_user_email: "{{ git_user_name | lower | replace(' ', '.') }}@gmail.com"
-git_user_name: User Name
+git_editor: "{{ editor }}"
+git_user_email: "{{ user_email }}"
+git_user_name: "{{ user_name }}"

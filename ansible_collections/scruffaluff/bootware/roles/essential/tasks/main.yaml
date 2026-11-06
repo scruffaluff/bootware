@@ -123,7 +123,9 @@
   changed_when: false
   tags:
     - install
-  when: system_pkg_mgr == "opkg"
+  when:
+    - system_install
+    - system_pkg_mgr == "opkg"
 
 - name: Install essential packages for FreeBSD
   become: true

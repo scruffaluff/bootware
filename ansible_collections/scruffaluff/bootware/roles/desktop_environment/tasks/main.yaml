@@ -53,6 +53,42 @@
     - install
   when: ansible_facts.system == "Win32NT"
 
+- name: Create desktop feature flags directory for MacOS
+  ansible.builtin.file:
+    mode: "755"
+    path: /Library/Preferences/FeatureFlags/Domain
+    state: directory
+  become: true
+  tags:
+    - config
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
+
+# Requires system restart for flags to take effect.
+- name: Set desktop feature flags for MacOS
+  ansible.builtin.command:
+    cmd: /usr/libexec/PlistBuddy -c "{{ item.command }}" "{{ item.path }}"
+  become: true
+  changed_when: >-
+    'Entry Already Exists' not in desktop_feature_flags_macos.stderr
+  failed_when:
+    - desktop_feature_flags_macos.rc != 0
+    - "'Entry Already Exists' not in desktop_feature_flags_macos.stderr"
+  register: desktop_feature_flags_macos
+  loop:
+    # Remove blue caps lock indicator.
+    - command: Add redesigned_text_cursor:Enabled bool false
+      path: /Library/Preferences/FeatureFlags/Domain/UIKit.plist
+    # Remove Write With Siri blue button.
+    - command: Add LightweightUI_macOS:Enabled bool false
+      path: /Library/Preferences/FeatureFlags/Domain/WritingTools.plist
+  tags:
+    - config
+  when:
+    - system_install
+    - ansible_facts.system == "Darwin"
+
 - name: Create keyboard layout directory for MacOS
   ansible.builtin.file:
     group: "{{ group_id }}"
