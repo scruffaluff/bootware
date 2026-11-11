@@ -39,19 +39,19 @@ TERM = "alacritty"
 size = {{ alacritty_font_size }}
 
 [font.bold]
-family = "FiraCode Nerd Font"
+family = "{{ alacritty_font_code }}"
 style = "Bold"
 
 [font.bold_italic]
-family = "FiraCode Nerd Font"
+family = "{{ alacritty_font_code }}"
 style = "Bold Italic"
 
 [font.italic]
-family = "FiraCode Nerd Font"
+family = "{{ alacritty_font_code }}"
 style = "Italic"
 
 [font.normal]
-family = "FiraCode Nerd Font"
+family = "{{ alacritty_font_code }}"
 style = "Regular"
 {% if ansible_facts.system == "Darwin" %}
 

@@ -35,6 +35,8 @@ zed_extensions:
   toml: true
   typst: true
   vue: true
+zed_font_code: FiraCode Nerd Font
+zed_font_sans: Fira Sans
 zed_font_size: 14
 ```
 

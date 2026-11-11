@@ -48,7 +48,7 @@
 {% endif %}
   "auto_update": false,
   "base_keymap": "VSCode",
-  "buffer_font_family": "FiraCode Nerd Font",
+  "buffer_font_family": "{{ zed_font_code }}",
   "buffer_font_size": {{ zed_font_size }},
   "cli_default_open_behavior": "existing_window",
   "collaboration_panel": {
@@ -219,7 +219,7 @@
   "terminal": {
     "cursor_shape": "bar",
     "detect_venv": "off",
-    "font_family": "FiraCode Nerd Font",
+    "font_family": "{{ zed_font_code }}",
     "font_size": {{ zed_font_size }},
     "line_height": "standard",
     "option_as_meta": true,
@@ -253,7 +253,7 @@
     "agent_review": false,
     "code_actions": true
   },
-  "ui_font_family": "Fira Sans",
+  "ui_font_family": "{{ zed_font_sans }}",
   "ui_font_size": {{ zed_font_size }},
   "use_autoclose": false,
   "use_auto_surround": false,

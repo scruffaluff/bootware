@@ -90,6 +90,8 @@ vscode_ctrl_key: "{{ 'cmd' if ansible_facts.system == 'Darwin' else 'ctrl' }}"
 vscode_extensions: >-
   {{ vscode_oss_extensions_ if ansible_facts.system == 'FreeBSD' else
   vscode_extensions_ }}
+vscode_font_code: "{{ font_code }}"
+vscode_font_serif: "{{ font_serif }}"
 vscode_font_size: "{{ editor_font_size }}"
 vscode_remote_extensions: >-
   {{ vscode_oss_remote_extensions_ if ansible_facts.system == 'FreeBSD' else

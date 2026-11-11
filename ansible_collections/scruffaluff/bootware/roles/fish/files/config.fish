@@ -689,6 +689,11 @@ function yazi
     rm $tmp
 end
 
+# Zellij settings
+
+# Disable prompts to integrate with desktop.
+set --export ZELLIJ_DESKTOP_INTEGRATION off
+
 # Zoxide settings.
 
 # Disable Zoxide directory preview window.

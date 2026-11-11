@@ -1,0 +1,3 @@
+---
+zellij_font_code: "{{ font_code }}"
+zellij_font_size: "{{ terminal_font_size }}"

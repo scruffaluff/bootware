@@ -520,6 +520,11 @@ yazi() {
   rm "${tmp}"
 }
 
+# Zellij settings
+
+# Disable prompts to integrate with desktop.
+export ZELLIJ_DESKTOP_INTEGRATION='off'
+
 # Zoxide settings.
 
 # Disable Zoxide directory preview window.

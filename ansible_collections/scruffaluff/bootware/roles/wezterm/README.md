@@ -12,6 +12,7 @@ Role variables are listed below with defaults.
 
 ```yaml
 user_shell_executable: /usr/bin/nu # Linux default
+wezterm_font_code: FiraCode Nerd Font
 wezterm_font_size: 14
 wezterm_wayland: true
 wezterm_window_decorations: false

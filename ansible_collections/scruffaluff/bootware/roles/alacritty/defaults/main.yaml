@@ -1,2 +1,3 @@
 ---
+alacritty_font_code: "{{ font_code }}"
 alacritty_font_size: "{{ terminal_font_size }}"

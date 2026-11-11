@@ -867,264 +867,267 @@ $env.config = {
     color_config: (_color-theme)
     completions: {algorithm: "substring" persistent_menus: true}
     history: {file_format: "sqlite" isolation: true}
-    keybindings: [
-        {
-            event: {
-                until: [
-                    {send: menuright}
-                    {edit: moveright}
-                ]
-            }
-            keycode: "char_;"
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {edit: movewordleft}
-            keycode: char_b
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {cmd: _paste-cwd, send: executehostcommand}
-            keycode: char_c
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {send: openeditor}
-            keycode: char_e
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {
-                until: [
-                    {send: historyhintwordcomplete}
-                    [
-                        {edit: movewordrightend}
-                        {edit: moveright}
-                    ]
-                ]
-            }
-            keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {cmd: _paste-help, send: executehostcommand}
-            keycode: char_h
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {
-                until: [
-                    {send: menuleft}
-                    {edit: moveleft}
-                ]
-            }
-            keycode: char_j
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {send: menudown}
-            keycode: char_k
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {send: menuup}
-            keycode: char_l
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {cmd: _paste-pager, send: executehostcommand}
-            keycode: char_p
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {cmd: _paste-super, send: executehostcommand}
-            keycode: char_s
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {edit: cutbigwordright}
-            keycode: char_w
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {cmd: _delete-from-history, send: executehostcommand}
-            keycode: char_x
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: {edit: undo}
-            keycode: char_z
-            mode: [emacs vi_insert vi_normal]
-            modifier: alt
-        }
-        {
-            event: null
-            keycode: char_d
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {cmd: fzf-path-widget, send: executehostcommand}
-            keycode: char_f
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {
-                until: [
-                    {send: menunext}
-                    {send: down}
-                ]
-            }
-            keycode: char_n
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: null
-            keycode: char_o
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {
-                until: [
-                    {send: menuprevious}
-                    {send: up}
-                ]
-            }
-            keycode: char_p
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {cmd: fzf-history-widget, send: executehostcommand}
-            keycode: char_r
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {cmd: _cut-path-left, send: executehostcommand}
-            keycode: char_w
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {cmd: "commandline | cbcopy", send: executehostcommand}
-            keycode: char_x
-            mode: [emacs vi_insert vi_normal]
-            modifier: control
-        }
-        {
-            event: {
-                until: [
-                    {name: completion_menu, send: menu}
-                    {send: menunext}
-                ]
-            }
-            keycode: char_ue006
-            mode: [emacs vi_insert vi_normal]
-            modifier: none
-        }
-        {
-            event: {edit: movebigwordleft}
-            keycode: left
-            mode: [emacs vi_insert vi_normal]
-            modifier: shift
-        }
-        {
-            event: {
-                until: [
-                    {send: historyhintwordcomplete}
-                    [
-                        {edit: movebigwordrightend}
-                        {edit: moveright}
-                    ]
-                ]
-            }
-            keycode: right
-            mode: [emacs vi_insert vi_normal]
-            modifier: shift
-        }
-        {
-            event: {edit: redo}
-            keycode: char_z
-            mode: [emacs vi_insert vi_normal]
-            modifier: shift_alt
-        }
-    ]
     ls: {clickable_links: true use_ls_colors: true}
-    menus: [
-        {
-            marker: ""
-            name: completion_menu
-            only_buffer_difference: false
-            style: {
-                description_text: yellow
-                selected_text: green_reverse
-                text: green
-            }
-            type: {
-                col_padding: 2
-                col_width: 20
-                columns: 4
-                layout: columnar
-            }
-        }
-        {
-            marker: ""
-            name: help_menu
-            only_buffer_difference: true
-            style: {
-                description_text: yellow
-                selected_text: green_reverse
-                text: green
-            }
-            type: {
-                col_padding: 2
-                col_width: 20
-                columns: 4
-                description_rows: 10
-                layout: description
-                selection_rows: 4
-            }
-        }
-        {
-            marker: ""
-            name: history_menu
-            only_buffer_difference: true
-            style: {
-                description_text: yellow
-                selected_text: green_reverse
-                text: green
-            }
-            type: {
-                layout: list
-                page_size: 10
-            }
-        }
-    ]
     # Prevents prompt duplication in SSH sessions to a remote Windows machine.
     #
     # For more information, visit
     # https://github.com/nushell/nushell/issues/5585.
     shell_integration: {osc133: ($nu.os-info.name != "windows")}
     show_banner: false
+    status_line: { enable: false }
     table: {trim: {methodology: "truncating"}}
 }
+
+$env.config.keybindings ++= [
+    {
+        event: {
+            until: [
+                {send: menuright}
+                {edit: moveright}
+            ]
+        }
+        keycode: "char_;"
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {edit: movewordleft}
+        keycode: char_b
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {cmd: _paste-cwd, send: executehostcommand}
+        keycode: char_c
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {send: openeditor}
+        keycode: char_e
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {
+            until: [
+                {send: historyhintwordcomplete}
+                [
+                    {edit: movewordrightend}
+                    {edit: moveright}
+                ]
+            ]
+        }
+        keycode: char_f
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {cmd: _paste-help, send: executehostcommand}
+        keycode: char_h
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {
+            until: [
+                {send: menuleft}
+                {edit: moveleft}
+            ]
+        }
+        keycode: char_j
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {send: menudown}
+        keycode: char_k
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {send: menuup}
+        keycode: char_l
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {cmd: _paste-pager, send: executehostcommand}
+        keycode: char_p
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {cmd: _paste-super, send: executehostcommand}
+        keycode: char_s
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {edit: cutbigwordright}
+        keycode: char_w
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {cmd: _delete-from-history, send: executehostcommand}
+        keycode: char_x
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: {edit: undo}
+        keycode: char_z
+        mode: [emacs vi_insert vi_normal]
+        modifier: alt
+    }
+    {
+        event: null
+        keycode: char_d
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {cmd: fzf-path-widget, send: executehostcommand}
+        keycode: char_f
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {
+            until: [
+                {send: menunext}
+                {send: down}
+            ]
+        }
+        keycode: char_n
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: null
+        keycode: char_o
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {
+            until: [
+                {send: menuprevious}
+                {send: up}
+            ]
+        }
+        keycode: char_p
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {cmd: fzf-history-widget, send: executehostcommand}
+        keycode: char_r
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {cmd: _cut-path-left, send: executehostcommand}
+        keycode: char_w
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {cmd: "commandline | cbcopy", send: executehostcommand}
+        keycode: char_x
+        mode: [emacs vi_insert vi_normal]
+        modifier: control
+    }
+    {
+        event: {
+            until: [
+                {name: completion_menu, send: menu}
+                {send: menunext}
+            ]
+        }
+        keycode: char_ue006
+        mode: [emacs vi_insert vi_normal]
+        modifier: none
+    }
+    {
+        event: {edit: movebigwordleft}
+        keycode: left
+        mode: [emacs vi_insert vi_normal]
+        modifier: shift
+    }
+    {
+        event: {
+            until: [
+                {send: historyhintwordcomplete}
+                [
+                    {edit: movebigwordrightend}
+                    {edit: moveright}
+                ]
+            ]
+        }
+        keycode: right
+        mode: [emacs vi_insert vi_normal]
+        modifier: shift
+    }
+    {
+        event: {edit: redo}
+        keycode: char_z
+        mode: [emacs vi_insert vi_normal]
+        modifier: shift_alt
+    }
+]
+
+$env.config.menus ++= [
+    {
+        marker: ""
+        name: completion_menu
+        only_buffer_difference: false
+        style: {
+            description_text: yellow
+            selected_text: green_reverse
+            text: green
+        }
+        type: {
+            col_padding: 2
+            col_width: 20
+            columns: 4
+            layout: columnar
+        }
+    }
+    {
+        marker: ""
+        name: help_menu
+        only_buffer_difference: true
+        style: {
+            description_text: yellow
+            selected_text: green_reverse
+            text: green
+        }
+        type: {
+            col_padding: 2
+            col_width: 20
+            columns: 4
+            description_rows: 10
+            layout: description
+            selection_rows: 4
+        }
+    }
+    {
+        marker: ""
+        name: history_menu
+        only_buffer_difference: true
+        style: {
+            description_text: yellow
+            selected_text: green_reverse
+            text: green
+        }
+        type: {
+            layout: list
+            page_size: 10
+        }
+    }
+]
 
 # Enable external completions if available.
 if (which "carapace" | is-not-empty) and (which "fish" | is-not-empty) {
@@ -1215,6 +1218,11 @@ def --env --wrapped yazi [...args: path] {
     }
     rm $log
 }
+
+# Zellij settings
+
+# Disable prompts to integrate with desktop.
+$env.ZELLIJ_DESKTOP_INTEGRATION = "off"
 
 # Zoxide settings.
 

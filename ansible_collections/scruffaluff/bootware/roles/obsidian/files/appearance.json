@@ -1,7 +1,7 @@
 {
   "accentColor": "#268bd2",
   "cssTheme": "Solarized",
-  "interfaceFontFamily": "Fira Sans",
-  "monospaceFontFamily": "FiraCode Nerd Font",
-  "textFontFamily": "PT Serif"
+  "interfaceFontFamily": "{{ obsidian_font_sans }}",
+  "monospaceFontFamily": "{{ obsidian_font_code }}",
+  "textFontFamily": "{{ obsidian_font_serif }}"
 }

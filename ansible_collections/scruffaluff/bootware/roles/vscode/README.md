@@ -12,6 +12,8 @@ Role variables are listed below with defaults.
 
 ```yaml
 vscode_ai: false
+vscode_font_code: FiraCode Nerd Font
+vscode_font_serif: PT Serif
 vscode_font_size: 14
 ```
 

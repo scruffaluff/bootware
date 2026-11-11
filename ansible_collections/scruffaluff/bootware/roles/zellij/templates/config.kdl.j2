@@ -203,23 +203,15 @@ serialize_pane_viewport false
 show_release_notes false
 show_startup_tips false
 styled_underlines true
-theme "default"
 
-themes {
-    default {
-        bg "#93a1a1"
-        black "#fdf6e3"
-        blue "#268bd2"
-        cyan "#2aa198"
-        fg "#2aa198"
-        green "#859900"
-        magenta "#d33682"
-        orange "#cb4b16"
-        red "#dc322f"
-        white "#073642"
-        yellow "#b58900"
-    }
+terminal {
+    cursor_style "bar"
+    font "{{ zellij_font_code }}"
+    font_size {{ zellij_font_size }}
+    theme "solarized-light"
 }
+
+theme "solarized-light"
 
 ui {
     pane_frames {

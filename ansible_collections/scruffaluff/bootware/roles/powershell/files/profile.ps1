@@ -705,6 +705,11 @@ function yazi() {
     Remove-Item $Tmp
 }
 
+# Zellij settings
+
+# Disable prompts to integrate with desktop.
+Env:ZELLIJ_DESKTOP_INTEGRATION = 'off'
+
 # Zoxide settings.
 
 # Disable Zoxide directory preview window.

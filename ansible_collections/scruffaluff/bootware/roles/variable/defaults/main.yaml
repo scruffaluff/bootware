@@ -125,6 +125,10 @@ fish_completion: >-
 fish_executable: >-
   {{ fish_executable_.get(ansible_facts.system, '/usr/bin/fish') }}
 fish_name: fish
+font_code: FiraCode Nerd Font
+font_mono: Fira Mono
+font_sans: Fira Sans
+font_serif: PT Serif
 github_api_headers: >-
   {{ {'Authorization': 'Bearer ' + github_api_token_} if github_api_token_ else
   {} }}

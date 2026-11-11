@@ -137,7 +137,7 @@
     state: directory
   become: "{{ system_install }}"
   tags:
-    - install
+    - config
   when:
     - ansible_facts.system != "Win32NT"
     - system_pkg_mgr != "opkg"
@@ -153,7 +153,7 @@
     src: "{{ helix_temp.path }}/{{ helix_folder }}/runtime"
   become: "{{ system_install }}"
   tags:
-    - install
+    - config
   when: ansible_facts.system == "Linux"
 
 - name: Copy Helix configuration file for Unix

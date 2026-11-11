@@ -11,6 +11,9 @@ None.
 Role variables are listed below with defaults.
 
 ```yaml
+obsidian_font_code: FiraCode Nerd Font
+obsidian_font_sans: Fira Sans
+obsidian_font_serif: PT Serif
 obsidian_vault: null
 ```
 

@@ -6,3 +6,6 @@ obsidian_config_:
 obsidian_config: >-
   {{ obsidian_config_.get(ansible_facts.system, user_home +
   '/.var/app/md.obsidian.Obsidian/config/') }}/obsidian
+obsidian_font_code: "{{ font_code }}"
+obsidian_font_sans: "{{ font_sans }}"
+obsidian_font_serif: "{{ font_serif }}"
